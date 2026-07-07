@@ -3,12 +3,13 @@ name: Custom - Rebase Main from Upstream
 on:
   workflow_dispatch:
   schedule:
-    # Keep Horacio's fork close to upstream once per day.
-    - cron: '17 5 * * *'
+    # Keep Horacio's fork close to upstream every 6 hours.
+    - cron: '17 */6 * * *'
 
 permissions:
   actions: write
   contents: write
+  issues: write
 
 concurrency:
   group: ${{ github.workflow }}-main
@@ -57,6 +58,23 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run custom-ghcr-images.yml --repo horacioh/seed --ref main
+
+      - name: Open or update failure issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title='Upstream rebase failed'
+          body="The scheduled rebase of \`main\` onto \`seed-hypermedia/seed:main\` failed, most likely due to a rebase conflict with the fork's custom commits. Resolve it manually, then re-run the workflow.
+
+          Failed run: $RUN_URL"
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Rebase failed again: $RUN_URL"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body"
+          fi
 
       - name: Branch protection note
         run: |
