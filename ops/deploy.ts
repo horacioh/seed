@@ -103,19 +103,16 @@ export const DEV_DEPLOY_SCRIPT_URL = 'https://seedappdev.s3.eu-west-2.amazonaws.
 /**
  * The deploy.js self-update source.
  *
- * Deliberately INDEPENDENT of the image release channel: the deploy script is
- * the orchestration tool, and its bug fixes must reach EVERY node automatically
- * — without cutting a release or switching channels. So we always track the
- * main-branch build published to S3 on each push (CI-gated by
- * check-deploy-script). `release_channel` governs only which *images* a node
- * runs, never which script manages them.
- *
- * A SEED_DEPLOY_URL / SEED_REPO_URL override (testing / branch builds) still
- * redirects the source to that ops base.
+ * A configured deploy source keeps fork-specific orchestration code aligned
+ * with its compose file and images. Environment overrides take priority for
+ * testing and branch builds. Nodes without a custom source use upstream S3.
  */
-export function getDeployScriptUrl(): string {
+export function getDeployScriptUrl(deployUrl?: string): string {
   if (process.env.SEED_DEPLOY_URL || process.env.SEED_REPO_URL) {
     return `${getOpsBaseUrl()}/dist/deploy.js`
+  }
+  if (deployUrl) {
+    return `${deployUrl.replace(/\/+$/, '')}/dist/deploy.js`
   }
   return DEV_DEPLOY_SCRIPT_URL
 }
@@ -1524,7 +1521,7 @@ async function rollback(
 // with the code already loaded in memory.
 // ---------------------------------------------------------------------------
 
-export async function selfUpdate(scriptPath: string = process.argv[1] || ''): Promise<void> {
+export async function selfUpdate(scriptPath: string = process.argv[1] || '', deployUrl?: string): Promise<void> {
   const report = (msg: string) => {
     if (process.stdout.isTTY) {
       console.log(msg)
@@ -1543,7 +1540,7 @@ export async function selfUpdate(scriptPath: string = process.argv[1] || ''): Pr
   }
 
   try {
-    const url = getDeployScriptUrl()
+    const url = getDeployScriptUrl(deployUrl)
     const response = await fetch(url)
     if (!response.ok) {
       report(`Upgrade: failed to fetch ${url}: ${response.status}`)
@@ -2118,10 +2115,16 @@ async function cmdDeploy(paths: DeployPaths, shell: ShellRunner, reconfigure = f
   p.outro(`Setup complete! Your Seed node is running.\n${MANAGE_HINT}`)
 }
 
-async function cmdUpgrade(): Promise<void> {
-  // The script updates itself in place, from main, for every node — independent
-  // of both the data dir and release_channel.
-  await selfUpdate()
+async function cmdUpgrade(paths: DeployPaths): Promise<void> {
+  let deployUrl: string | undefined
+  try {
+    if (await configExists(paths)) {
+      deployUrl = (await readConfig(paths)).deploy_url
+    }
+  } catch {
+    // If config can't be read, use the upstream updater.
+  }
+  await selfUpdate(undefined, deployUrl)
 }
 
 async function cmdStop(paths: DeployPaths, shell: ShellRunner): Promise<void> {
@@ -2762,7 +2765,7 @@ async function main(): Promise<void> {
     case 'deploy':
       return cmdDeploy(paths, shell, reconfigure, advanced)
     case 'upgrade':
-      return cmdUpgrade()
+      return cmdUpgrade(paths)
     case 'stop':
       return cmdStop(paths, shell)
     case 'start':

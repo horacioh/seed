@@ -2095,15 +2095,28 @@ describe('getOpsBaseUrl', () => {
 // ---------------------------------------------------------------------------
 
 describe('getDeployScriptUrl', () => {
-  test('always returns the S3 main-branch URL, independent of image channel', () => {
-    // The script self-updates from main for every node; release_channel
-    // (dev/latest/custom) never changes where the script comes from.
+  test('returns the S3 main-branch URL without a custom deploy source', () => {
     const origDeploy = process.env.SEED_DEPLOY_URL
     const origRepo = process.env.SEED_REPO_URL
     delete process.env.SEED_DEPLOY_URL
     delete process.env.SEED_REPO_URL
     try {
       expect(getDeployScriptUrl()).toBe(DEV_DEPLOY_SCRIPT_URL)
+    } finally {
+      if (origDeploy !== undefined) process.env.SEED_DEPLOY_URL = origDeploy
+      if (origRepo !== undefined) process.env.SEED_REPO_URL = origRepo
+    }
+  })
+
+  test('uses the persisted deploy source for fork-managed nodes', () => {
+    const origDeploy = process.env.SEED_DEPLOY_URL
+    const origRepo = process.env.SEED_REPO_URL
+    delete process.env.SEED_DEPLOY_URL
+    delete process.env.SEED_REPO_URL
+    try {
+      expect(getDeployScriptUrl('https://raw.githubusercontent.com/horacioh/seed/main/ops/')).toBe(
+        'https://raw.githubusercontent.com/horacioh/seed/main/ops/dist/deploy.js',
+      )
     } finally {
       if (origDeploy !== undefined) process.env.SEED_DEPLOY_URL = origDeploy
       if (origRepo !== undefined) process.env.SEED_REPO_URL = origRepo

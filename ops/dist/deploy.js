@@ -859,9 +859,12 @@ function configuredComposeUrl(existing) {
 }
 var GITHUB_RELEASES_API = "https://api.github.com/repos/seed-hypermedia/seed/releases/latest";
 var DEV_DEPLOY_SCRIPT_URL = "https://seedappdev.s3.eu-west-2.amazonaws.com/dev/latest/deploy.js";
-function getDeployScriptUrl() {
+function getDeployScriptUrl(deployUrl) {
   if (process.env.SEED_DEPLOY_URL || process.env.SEED_REPO_URL) {
     return `${getOpsBaseUrl()}/dist/deploy.js`;
+  }
+  if (deployUrl) {
+    return `${deployUrl.replace(/\/+$/, "")}/dist/deploy.js`;
   }
   return DEV_DEPLOY_SCRIPT_URL;
 }
@@ -1823,7 +1826,7 @@ async function rollback(previousImages, config, paths, shell) {
   shell.runSafe(`${env} docker compose -f ${paths.composePath} up -d --quiet-pull 2>&1`);
   log("Rollback complete. Check container status with: docker ps");
 }
-async function selfUpdate(scriptPath = process.argv[1] || "") {
+async function selfUpdate(scriptPath = process.argv[1] || "", deployUrl) {
   const report = (msg) => {
     if (process.stdout.isTTY) {
       console.log(msg);
@@ -1836,7 +1839,7 @@ async function selfUpdate(scriptPath = process.argv[1] || "") {
     return;
   }
   try {
-    const url = getDeployScriptUrl();
+    const url = getDeployScriptUrl(deployUrl);
     const response = await fetch(url);
     if (!response.ok) {
       report(`Upgrade: failed to fetch ${url}: ${response.status}`);
@@ -2266,8 +2269,14 @@ ${MANAGE_HINT}`);
   fe(`Setup complete! Your Seed node is running.
 ${MANAGE_HINT}`);
 }
-async function cmdUpgrade() {
-  await selfUpdate();
+async function cmdUpgrade(paths) {
+  let deployUrl;
+  try {
+    if (await configExists(paths)) {
+      deployUrl = (await readConfig(paths)).deploy_url;
+    }
+  } catch {}
+  await selfUpdate(undefined, deployUrl);
 }
 async function cmdStop(paths, shell) {
   checkDockerAccess(shell);
@@ -2786,7 +2795,7 @@ async function main() {
     case "deploy":
       return cmdDeploy(paths, shell, reconfigure, advanced);
     case "upgrade":
-      return cmdUpgrade();
+      return cmdUpgrade(paths);
     case "stop":
       return cmdStop(paths, shell);
     case "start":

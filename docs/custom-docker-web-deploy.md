@@ -45,6 +45,8 @@ curl -fsSL https://raw.githubusercontent.com/horacioh/seed/main/ops/deploy.sh | 
 For an existing install, first take a backup, then re-run the fork bootstrap. The deploy script stores state under the
 seed directory, installs/updates `/usr/local/bin/seed-deploy` when allowed, detects legacy installs, writes
 `config.json`, and runs the deploy wizard when configuration is missing or `--reconfigure` is requested.
+The persisted `deploy_url` also controls `deploy.js` self-updates, so cron keeps the fork-specific custom image support
+instead of replacing it with upstream's S3 build.
 
 ```sh
 seed-deploy backup
