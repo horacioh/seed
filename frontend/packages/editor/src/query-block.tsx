@@ -30,12 +30,7 @@ import {useQuerySearchInput} from './query-search-context'
 import {HMBlockSchema} from './schema'
 import {QueryAccountFilterInput} from './query-account-filter-input'
 
-import {
-  defaultQueryFilters,
-  defaultQueryIncludes,
-  defaultQuerySort,
-  getQueryBlockInput,
-} from './query-block-input'
+import {defaultQueryFilters, defaultQueryIncludes, defaultQuerySort, getQueryBlockInput} from './query-block-input'
 
 export const QueryBlock = createReactBlockSpec({
   type: 'query',
