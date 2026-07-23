@@ -53,6 +53,60 @@ How it works / gotchas:
   `xdpyinfo | grep dimensions`).
 - To hand the file to the user: attach the mp4 path in a chat message.
 
+## Driving interactions (mouse, keyboard, scroll)
+
+Recording alone just captures whatever happens on screen — to actually *test* an
+Electron app or a website you also need to drive it. Use `xdotool` (already on
+this VM); it works identically for native/Electron windows and for browser pages.
+Coordinates are in the **real display** resolution (here 1600x1200), with (0,0)
+at the top-left. Always `export DISPLAY=:0` first.
+
+```bash
+export DISPLAY=:0
+
+# Pointer
+xdotool mousemove 640 400              # move to absolute x,y
+xdotool mousemove_relative -- 40 -20   # move relative (-- allows negatives)
+xdotool getmouselocation               # read current position
+xdotool mousemove 640 400 click 1      # move then left-click (1=left,2=mid,3=right)
+xdotool click --repeat 2 --delay 120 1 # double-click
+xdotool click 3                        # right-click (context menu)
+
+# Scroll (wheel = buttons 4=up, 5=down); repeat for longer scrolls
+xdotool click --repeat 5 5             # scroll down 5 notches
+xdotool click --repeat 5 4             # scroll up
+
+# Drag (press, move, release) — e.g. select text or drag a slider
+xdotool mousemove 300 300 mousedown 1 mousemove 500 300 mouseup 1
+
+# Keyboard
+xdotool type --delay 40 "hello world"  # type a string
+xdotool key Return                     # named keys: Return, Tab, Escape, BackSpace,
+xdotool key ctrl+a                     #   Up/Down/Left/Right, Page_Up, ctrl+c, etc.
+xdotool key ctrl+l                     # focus browser address bar, then type a URL
+```
+
+Targeting a specific window (handy when several are open):
+```bash
+xdotool search --name "Seed" windowactivate            # focus the Electron window
+xdotool search --name "Chrome" windowactivate          # focus the browser
+xdotool getactivewindow getwindowname                  # confirm what's focused
+xdotool getactivewindow windowsize 1280 800            # resize for a stable layout
+```
+
+Tips for reliable, testable interactions:
+- Focus/raise the target window first (`windowactivate`), then interact — clicks
+  go to whatever is under the pointer on the active window.
+- Coordinates are absolute screen pixels. Prefer clicking predictable spots
+  (buttons, menus) and, for the browser, navigate via `ctrl+l` + `type` + `Return`
+  instead of guessing pixel positions of links.
+- Add small `--delay`s (typing) and short `sleep`s between steps so the UI can
+  react before the next action — and so the recording shows each step clearly.
+- Typical test loop while recording: `record-screen.sh start` → activate window →
+  `xdotool` click/type/scroll through the flow (with sleeps) → `record-screen.sh
+  stop` → attach the mp4.
+- Requirement: `xdotool` (present on this VM at `/opt/.devin/.../xdotool`).
+
 ### B. Devin's built-in recording tools (agent-only)
 When *Devin itself* is doing the testing, it has three built-in tools that record
 the screen and return an mp4 it attaches in chat: `recording_start`,
