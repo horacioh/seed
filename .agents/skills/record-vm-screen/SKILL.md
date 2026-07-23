@@ -1,66 +1,68 @@
 ---
 name: record-vm-screen
-description: Record a full-screen video of the VM desktop while testing the Seed desktop (Electron) app, and deliver it to the user as a playable attachment. Use whenever the user wants a screen recording / video proof of the app running or of a UI test — this reproduces exactly the recording workflow used when smoke-testing the Electron app.
+description: Record a video of the machine's screen while developing or testing anything that renders on screen (a desktop/Electron app, a web UI, a game, an emulator, a CLI TUI). Produces a self-contained mp4 with plain ffmpeg — no Devin-specific tooling required. Use whenever you want video proof that something renders/works and want to hand the user a playable file.
 ---
 
-# Record the VM Screen While Testing the App
+# Record the Screen While Developing/Testing (generic)
 
-Goal: produce one continuous, annotated full-screen video that a reviewer can watch
-to confirm the app works, and attach it to a chat message so the user can play it.
+Goal: capture one continuous mp4 of the desktop while an app runs, then hand the
+user a playable file. This is app-agnostic — it records whatever is on the X
+display, so it works for the Seed Electron app, a web UI in the browser, an
+Android emulator window, a game, etc.
 
-This uses Devin's built-in **test mode + screen recording** (the same flow used to
-record the Electron app smoke test). The recording captures the whole desktop, so
-maximize the app window first. Recording tools capture GUI interactions only — do
-setup (builds, daemon boot, terminal work) BEFORE you start recording.
+## Two ways to record — pick one
 
-## Prerequisites
-- App already built and runnable — see the `testing-desktop-app` skill (toolchain via
-  mise+direnv, `pnpm install`, `plz build //backend:seed-daemon`, launch with
-  `SEED_KEYSTORE_DIR=<dir> pnpm dev`).
-- Launch the app and wait for its window to render BEFORE recording.
+### A. Self-made ffmpeg recorder (preferred, portable)
+A plain `ffmpeg` x11grab recorder lives next to this skill:
+[`record-screen.sh`](./record-screen.sh). It needs no Devin-specific tools, so
+you (or CI, or a teammate) can run it anywhere with an X display. It captures the
+whole screen by default.
 
-## Procedure
+```bash
+SKILL_DIR=.agents/skills/record-vm-screen
 
-1. **Enter test planning mode.** Call `test_mode` with `target_mode="test_planning"`.
-   Cite the user's request to test/record as `user_approval_citation`. Write a short
-   test-plan `.md` (the flow you'll demonstrate), then call `test_mode` with
-   `target_mode="test_execution"` and the plan path.
+# 1) Start recording (returns immediately, records in the background)
+$SKILL_DIR/record-screen.sh start /tmp/demo.mp4
 
-2. **Maximize the app window** so the full app is visible (do NOT record a
-   half-covered window). On this Ubuntu VM the reliable command is:
-   ```bash
-   wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
-   ```
-   Do NOT use `xdotool key super+Up` (tiles to half-screen on many WMs).
+# 2) Launch / drive the app you want to show (do your normal dev or test steps)
 
-3. **Start recording.** Call `recording_start` (defaults capture the whole screen).
-   Start recording only AFTER setup is done and the window is up.
+# 3) Stop — writes a valid, playable mp4 (waits for ffmpeg to flush the trailer)
+$SKILL_DIR/record-screen.sh stop
 
-4. **Annotate as you go** with `annotate_recording` (~5+ annotations):
-   - `type="setup"` before testing begins (e.g. "App launched, daemon booted").
-   - `type="test_start"` with `test="It should ..."` when each named check begins.
-   - `type="assertion"` with matching `test`, a `test_result`
-     (`passed`/`failed`/`untested`), and a concise `assertion` after each check.
-   Keep assertions consolidated and under ~80 chars.
+$SKILL_DIR/record-screen.sh status   # optional: "recording ..." or "idle"
+```
 
-5. **Drive the app through the primary flow** using the `computer` tool (click/type),
-   taking a screenshot at each key state. For the Electron app the proven flow is:
-   window renders onboarding → open the synced "Seed Hypermedia" site from the sidebar
-   → open a document → navigate the Library.
+Options via env vars:
+- `DISPLAY` — X display to grab (default `:0`).
+- `FPS` — frame rate (default `25`; `15` is fine and smaller).
+- `WINDOW=1` — record only the active window instead of the full screen
+  (uses `xdotool getactivewindow`).
+- `OUTDIR` — where to put the file when you don't pass a path.
 
-6. **Stop recording.** Call `recording_stop` with a `title` and `summary`. It returns
-   the video path (an `.mp4` under `~/screencasts/...`).
+How it works / gotchas:
+- `start` launches `ffmpeg -f x11grab ... -codec:v libx264 -pix_fmt yuv420p` under
+  `setsid nohup` and records the PID + output path under `$TMPDIR/vm-screen-rec`.
+- `stop` sends **SIGINT** to ffmpeg and waits for it to exit so the mp4 trailer
+  (`moov` atom) is written. **Never `kill -9`** the recorder — the file would be
+  headerless and unplayable (a ~48-byte stub).
+- Maximize the app window before starting so the whole app is visible. On this
+  Ubuntu VM: `wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz`
+  (avoid `xdotool key super+Up`, which half-tiles on many WMs).
+- Requirements: `ffmpeg` (with `x11grab`), `xdpyinfo`; `xdotool` only for
+  `WINDOW=1`. Screen here is display `:0` at 1600x1200 (query exact geometry with
+  `xdpyinfo | grep dimensions`).
+- To hand the file to the user: attach the mp4 path in a chat message.
 
-7. **Deliver the video.** Call `message_user` with the returned `.mp4` path in
-   `attachments` so the user can watch it. Also attach a `test-report.md` if reporting
-   results.
-
-## Notes
-- If the app UI itself needs changes during recording, exit with
-  `test_mode target_mode="none"`, make the change, then re-enter planning/execution.
-- Do not `kill -9` anything mid-recording; stop cleanly via `recording_stop`.
-- Screen: display `:0`, 1600x1200 on this VM (query with `xdpyinfo | grep dimensions`
-  if you need exact geometry).
+### B. Devin's built-in recording tools (agent-only)
+When *Devin itself* is doing the testing, it has three built-in tools that record
+the screen and return an mp4 it attaches in chat: `recording_start`,
+`annotate_recording` (adds setup/test_start/assertion markers that the player
+slows down on), and `recording_stop`. These are only callable by the agent during
+a session — you cannot invoke them from your own scripts or CI, which is why
+option A exists. Typical agent flow: enter test mode (`test_mode` →
+`test_planning` → `test_execution`), maximize the window, `recording_start`, drive
+the app while adding `annotate_recording` markers, then `recording_stop` and
+attach the returned mp4. Prefer option A for anything reproducible/portable.
 
 ### Devin Secrets Needed
-None. Recording and local app testing require no external credentials.
+None. Screen recording and local app runs require no external credentials.
