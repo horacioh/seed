@@ -1,0 +1,50 @@
+{
+  "label": "desktop",
+  "runs": {
+    "documentLoad": {
+      "ttfb": 680,
+      "domContentLoaded": 921,
+      "load": 1482,
+      "fcp": 928,
+      "lcp": 928,
+      "cls": 0.2746,
+      "longTasks": {
+        "count": 4,
+        "totalMs": 431,
+        "max": 186
+      },
+      "jsRequests": 19,
+      "jsTransferKB": 1407,
+      "totalTransferKB": 1480,
+      "resourceCount": 51
+    },
+    "docToDocNav": {
+      "navCommitMs": 485,
+      "settledMs": 486,
+      "longTasks": {
+        "count": 0,
+        "totalMs": 0,
+        "max": 0
+      }
+    },
+    "scroll": {
+      "frames": 241,
+      "p50": 16.7,
+      "p95": 16.7,
+      "p99": 16.8,
+      "dropped": 0
+    },
+    "commentEditorOpenMs": 95,
+    "typing": {
+      "keystrokes": 120,
+      "p50": 4,
+      "p95": 5,
+      "max": 16,
+      "longTasks": {
+        "count": 0,
+        "totalMs": 0,
+        "max": 0
+      }
+    }
+  }
+}
