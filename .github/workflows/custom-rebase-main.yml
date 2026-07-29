@@ -40,6 +40,7 @@ jobs:
         run: |
           git remote add upstream https://github.com/seed-hypermedia/seed.git
           git fetch --prune upstream main
+          git fetch upstream '+refs/tags/*:refs/tags/*'
 
       - name: Rebase main onto upstream/main
         run: git rebase upstream/main
@@ -52,6 +53,22 @@ jobs:
         if: steps.after.outputs.sha != steps.before.outputs.sha
         run: git push --force-with-lease origin HEAD:main
 
+      - name: Mirror new upstream tags
+        run: |
+          # Compare local tags (the snapshot fetched from upstream) against origin, so every
+          # tag pushed below is guaranteed to exist locally even if upstream tags mid-run.
+          git tag --list | sort -u > /tmp/upstream-tags
+          git ls-remote --tags origin | awk '{print $2}' | sed 's#^refs/tags/##' | { grep -v '\^{}$' || true; } | sort -u > /tmp/origin-tags
+          new_tags=$(comm -23 /tmp/upstream-tags /tmp/origin-tags)
+          if [ -z "$new_tags" ]; then
+            echo 'No new upstream tags.'
+            exit 0
+          fi
+          echo "New upstream tags:"
+          echo "$new_tags"
+          # shellcheck disable=SC2046
+          git push origin $(echo "$new_tags" | sed 's#^#refs/tags/#')
+
       - name: Open or update failure issue
         if: failure()
         env:
@@ -59,7 +76,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           title='Upstream sync of main failed'
-          body="The scheduled rebase of \`main\` onto \`seed-hypermedia/seed:main\` failed. Resolve it manually, then re-run the workflow.
+          body="The scheduled sync with \`seed-hypermedia/seed\` failed — either the rebase of \`main\` or the mirroring of upstream tags. Check the failed step in the run below, resolve it manually, then re-run the workflow.
 
           Failed run: $RUN_URL"
           existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
@@ -105,6 +122,23 @@ jobs:
         if: steps.after.outputs.sha != steps.before.outputs.sha
         run: git push --force-with-lease origin HEAD:custom-images
 
+      - name: Tag custom-images for the newest mirrored release
+        run: |
+          # Derived from origin rather than from what this run mirrored, so a failed run
+          # is recovered by the next scheduled one instead of losing the marker forever.
+          tags=$(git ls-remote --tags origin | awk '{print $2}' | sed 's#^refs/tags/##' | { grep -v '\^{}$' || true; })
+          latest=$(echo "$tags" | { grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sort -V | tail -1)
+          if [ -z "$latest" ]; then
+            echo 'No release tags on origin yet.'
+            exit 0
+          fi
+          if echo "$tags" | grep -qFx "$latest-custom"; then
+            echo "Tag $latest-custom already exists on origin."
+            exit 0
+          fi
+          git tag -a "$latest-custom" -m "custom-images rebased onto $latest"
+          git push origin "refs/tags/$latest-custom"
+
       - name: Open or update failure issue
         if: failure()
         env:
@@ -112,7 +146,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           title='Rebase of custom-images failed'
-          body="The scheduled rebase of \`custom-images\` onto the freshly synced \`main\` failed, most likely due to a conflict with the fork's custom commits. Resolve it manually, then re-run the workflow.
+          body="The scheduled rebase of \`custom-images\` onto the freshly synced \`main\` failed (most likely a conflict with the fork's custom commits), or the \`<version>-custom\` tag could not be pushed. Check the failed step in the run below, resolve it manually, then re-run the workflow.
 
           Failed run: $RUN_URL"
           existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
