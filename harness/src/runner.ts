@@ -144,7 +144,8 @@ export async function runScenario(
     try {
       try {
         videoRef = relative(runDir, await recorder.stopAndEncode());
-      } catch {
+      } catch (error) {
+        process.stderr.write(`Video encoding failed: ${error instanceof Error ? error.message : String(error)}\n`);
         videoRef = "";
       }
     } finally {

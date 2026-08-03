@@ -76,12 +76,17 @@ export class FrameRecorder {
     this.stopped = true;
     const frameNames = (await readdir(this.framesDir)).filter((name) => name.endsWith(".png")).sort();
     if (frameNames.length === 0) throw new Error("Cannot encode a recording with no frames");
+    const dimensions = await Promise.all(
+      frameNames.map((frameName) => probeDimensions(path.join(this.framesDir, frameName))),
+    );
+    const targetWidth = roundUpEven(Math.max(...dimensions.map(({ width }) => width)));
+    const targetHeight = roundUpEven(Math.max(...dimensions.map(({ height }) => height)));
     const font = process.env.HARNESS_FONT ?? "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
     for (const frameName of frameNames) {
       const raw = path.join(this.framesDir, frameName);
       const caption = path.join(this.captionsDir, `${frameName}.txt`);
       const encoded = path.join(this.encodedDir, frameName);
-      const filter = `drawtext=fontfile=${font}:textfile=${caption}:fontcolor=white:fontsize=28:box=1:boxcolor=black@0.72:boxborderw=12:x=24:y=24`;
+      const filter = `scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:color=black,drawtext=fontfile=${font}:textfile=${caption}:fontcolor=white:fontsize=28:box=1:boxcolor=black@0.72:boxborderw=12:x=24:y=24`;
       await execFileAsync("ffmpeg", ["-y", "-i", raw, "-vf", filter, "-frames:v", "1", encoded], {
         maxBuffer: 2 * 1024 * 1024,
       });
@@ -94,4 +99,25 @@ export class FrameRecorder {
     );
     return output;
   }
+}
+
+async function probeDimensions(filePath: string): Promise<{ width: number; height: number }> {
+  const { stdout } = await execFileAsync("ffprobe", [
+    "-v",
+    "error",
+    "-show_entries",
+    "stream=width,height",
+    "-of",
+    "csv=p=0",
+    filePath,
+  ]);
+  const [width, height] = stdout.trim().split(",").map(Number);
+  if (!Number.isFinite(width) || !Number.isFinite(height)) {
+    throw new Error(`Could not determine dimensions for ${filePath}`);
+  }
+  return { width, height };
+}
+
+function roundUpEven(value: number): number {
+  return Math.ceil(value / 2) * 2;
 }

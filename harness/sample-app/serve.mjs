@@ -7,8 +7,9 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT ?? 39777);
 const server = createServer(async (_request, response) => {
   try {
+    const body = await readFile(path.join(root, "index.html"));
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    response.end(await readFile(path.join(root, "index.html")));
+    response.end(body);
   } catch (error) {
     response.writeHead(500, { "content-type": "text/plain; charset=utf-8" });
     response.end(String(error));
