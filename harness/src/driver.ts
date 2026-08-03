@@ -165,7 +165,10 @@ export class BrowserDriver {
       return { actual };
     }
     if (kind === "attr") {
-      const [attribute, value] = String(expected).split("=", 2);
+      const raw = String(expected);
+      const separator = raw.indexOf("=");
+      const attribute = separator === -1 ? raw : raw.slice(0, separator);
+      const value = separator === -1 ? undefined : raw.slice(separator + 1);
       const actual = await target.getAttribute(attribute);
       if (actual !== value) throw new Error(`Expected ${attribute}=${value}, received ${actual}`);
       return { actual };
