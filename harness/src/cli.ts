@@ -1,6 +1,6 @@
 import { createInterface } from "node:readline";
 import { spawn, type ChildProcess } from "node:child_process";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { runScenario } from "./runner.js";
 import type { Scenario, ScenarioModule } from "./types.js";
@@ -29,7 +29,7 @@ export function parseArgs(argv: string[]): CliOptions {
 /** Run the default, custom-scenario, or generic web workflow. */
 export async function main(argv = process.argv.slice(2)): Promise<number> {
   const options = parseArgs(argv);
-  const harnessRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const harnessRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
   const scenario = await loadScenario(options, harnessRoot);
   let server: ChildProcess | undefined;
   try {

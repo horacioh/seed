@@ -138,7 +138,14 @@ export interface WebTestReport {
 export type StepSpec =
   | { action: "goto"; url: string; description?: string }
   | {
-      action: "click" | "type" | "select" | "hover" | "press" | "drag";
+      action: "type";
+      locator: Locator;
+      value?: string;
+      secret?: boolean;
+      description?: string;
+    }
+  | {
+      action: "click" | "select" | "hover" | "press" | "drag";
       locator: Locator;
       value?: string;
       description?: string;

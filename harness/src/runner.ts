@@ -30,88 +30,116 @@ export async function runScenario(
   let videoRef = "";
   let consoleSeen = 0;
   let networkSeen = 0;
+  let domSnapshot: string | undefined;
+  let fatalError = false;
   driver.setSecretSelectors(scenario.secretSelectors ?? ["input[type=password]"]);
-  await recorder.start();
   try {
-    await driver.launch();
-    const page = await driver.open();
-    if (options.url) await driver.goto(options.url);
-    await recorder.capture(driver, scenario.setup ?? "Harness setup", "untested", "setup", scenario.name);
-    await recorder.capture(driver, scenario.name, "untested", "test_start", scenario.name);
-    for (const [index, spec] of scenario.steps.entries()) {
-      const stepId = `step-${index + 1}`;
-      const stepStarted = Date.now();
-      let status: UiTestStep["status"] = "pass";
-      let screenshotRef = "";
-      let assertionResult;
-      try {
-        if (spec.action === "goto") {
-          await driver.goto(spec.url);
-        } else if (spec.action === "assert") {
-          assertionResult = await assertWithEvidence(driver, recorder, `assertion-${index + 1}`, spec.description, spec.kind, spec.locator, spec.expected, scenario.name);
-          assertionResult.assertion.evidence = assertionResult.assertion.evidence.map((evidence) => relative(runDir, evidence));
-          assertions.push(assertionResult.assertion);
-          screenshotRef = relative(runDir, assertionResult.screenshotRef);
-          if (assertionResult.assertion.status !== "pass") {
-            status = "fail";
-            findings.push({
-              id: `finding-${index + 1}`,
-              severity: "medium",
-              title: spec.description,
-              status: "confirmed",
-              reproSteps: steps.map((step) => step.description ?? step.action),
-              expected: String(spec.expected),
-              actual: assertionResult.assertion.message ?? "Assertion failed",
-              evidence: assertionResult.assertion.evidence,
-            });
-          }
-        } else {
-          await driver.act(spec);
-        }
-        if (!assertionResult) {
-          const frame = await recorder.capture(driver, spec.description ?? spec.action, "passed", "assertion", scenario.name);
-          screenshotRef = relative(runDir, frame.framePath);
-        }
-      } catch (error) {
-        status = "error";
-        const message = error instanceof Error ? error.message : String(error);
+    try {
+      await recorder.start();
+      await driver.launch();
+      await driver.open();
+      if (options.url) await driver.goto(options.url);
+      await recorder.capture(driver, scenario.setup ?? "Harness setup", "untested", "setup", scenario.name);
+      await recorder.capture(driver, scenario.name, "untested", "test_start", scenario.name);
+      for (const [index, spec] of scenario.steps.entries()) {
+        const stepId = `step-${index + 1}`;
+        const stepStarted = Date.now();
+        let status: UiTestStep["status"] = "pass";
+        let screenshotRef = "";
+        let assertionResult;
         try {
-          const frame = await recorder.capture(driver, spec.description ?? spec.action, "failed", "assertion", scenario.name);
-          screenshotRef = relative(runDir, frame.framePath);
-        } catch {
-          // Preserve the original step failure if the browser cannot capture evidence.
+          if (spec.action === "goto") {
+            await driver.goto(spec.url);
+          } else if (spec.action === "assert") {
+            assertionResult = await assertWithEvidence(driver, recorder, `assertion-${index + 1}`, spec.description, spec.kind, spec.locator, spec.expected, scenario.name);
+            assertionResult.assertion.evidence = assertionResult.assertion.evidence.map((evidence) => relative(runDir, evidence));
+            assertions.push(assertionResult.assertion);
+            screenshotRef = relative(runDir, assertionResult.screenshotRef);
+            if (assertionResult.assertion.status !== "pass") {
+              status = "fail";
+              findings.push({
+                id: `finding-${index + 1}`,
+                severity: "medium",
+                title: spec.description,
+                status: "confirmed",
+                reproSteps: steps.map((step) => step.description ?? step.action),
+                expected: String(spec.expected),
+                actual: assertionResult.assertion.message ?? "Assertion failed",
+                evidence: assertionResult.assertion.evidence,
+              });
+            }
+          } else {
+            await driver.act(spec);
+          }
+          if (!assertionResult) {
+            const frame = await recorder.capture(driver, spec.description ?? spec.action, "passed", "assertion", scenario.name);
+            screenshotRef = relative(runDir, frame.framePath);
+          }
+        } catch (error) {
+          status = "error";
+          const message = error instanceof Error ? error.message : String(error);
+          try {
+            const frame = await recorder.capture(driver, spec.description ?? spec.action, "failed", "assertion", scenario.name);
+            screenshotRef = relative(runDir, frame.framePath);
+          } catch {
+            // Preserve the original step failure if the browser cannot capture evidence.
+          }
+          findings.push({
+            id: `finding-${index + 1}`,
+            severity: "high",
+            title: spec.description ?? spec.action,
+            status: "confirmed",
+            reproSteps: steps.map((step) => step.description ?? step.action),
+            expected: "Step completes",
+            actual: message,
+            evidence: screenshotRef ? [screenshotRef] : [],
+          });
         }
-        findings.push({
-          id: `finding-${index + 1}`,
-          severity: "high",
-          title: spec.description ?? spec.action,
-          status: "confirmed",
-          reproSteps: steps.map((step) => step.description ?? step.action),
-          expected: "Step completes",
-          actual: message,
-          evidence: screenshotRef ? [screenshotRef] : [],
+        const consoleLogs = driver.consoleLogs();
+        const networkRequests = driver.networkRequests();
+        steps.push({
+          id: stepId,
+          action: spec.action,
+          locator: "locator" in spec ? spec.locator : undefined,
+          value: spec.action === "type" && spec.secret
+            ? "[REDACTED]"
+            : "value" in spec
+              ? spec.value
+              : "url" in spec
+                ? spec.url
+                : undefined,
+          startedAt: new Date(stepStarted).toISOString(),
+          endedAt: new Date().toISOString(),
+          durationMs: Date.now() - stepStarted,
+          screenshotRef,
+          consoleDelta: consoleLogs.slice(consoleSeen),
+          networkDelta: networkRequests.slice(networkSeen),
+          status,
+          description: spec.description ?? ("url" in spec ? `Navigate to ${spec.url}` : spec.action),
         });
+        consoleSeen = consoleLogs.length;
+        networkSeen = networkRequests.length;
       }
-      const consoleLogs = driver.consoleLogs();
-      const networkRequests = driver.networkRequests();
-      steps.push({
-        id: stepId,
-        action: spec.action,
-        locator: "locator" in spec ? spec.locator : undefined,
-        value: "value" in spec ? spec.value : "url" in spec ? spec.url : undefined,
-        startedAt: new Date(stepStarted).toISOString(),
-        endedAt: new Date().toISOString(),
-        durationMs: Date.now() - stepStarted,
-        screenshotRef,
-        consoleDelta: consoleLogs.slice(consoleSeen),
-        networkDelta: networkRequests.slice(networkSeen),
-        status,
-        description: spec.description ?? ("url" in spec ? `Navigate to ${spec.url}` : spec.action),
+      try {
+        await writeFile(path.join(runDir, "dom.html"), await driver.domSnapshot());
+        domSnapshot = "dom.html";
+      } catch {
+        // DOM capture is supplementary evidence and must not hide the run result.
+      }
+    } catch (error) {
+      fatalError = true;
+      const message = error instanceof Error ? error.message : String(error);
+      findings.push({
+        id: "finding-fatal-harness",
+        severity: "high",
+        title: "Harness could not start the browser session",
+        status: "confirmed",
+        reproSteps: [],
+        expected: "Browser session starts",
+        actual: message,
+        evidence: [],
       });
-      consoleSeen = consoleLogs.length;
-      networkSeen = networkRequests.length;
     }
-    await writeFile(path.join(runDir, "dom.html"), await driver.domSnapshot());
   } finally {
     try {
       try {
@@ -120,11 +148,11 @@ export async function runScenario(
         videoRef = "";
       }
     } finally {
-      await driver.close();
+      await driver.close().catch(() => undefined);
     }
   }
   const endedAt = new Date().toISOString();
-  const failed = assertions.some((assertion) => assertion.status !== "pass") || steps.some((step) => step.status !== "pass");
+  const failed = fatalError || assertions.some((assertion) => assertion.status !== "pass") || steps.some((step) => step.status !== "pass");
   const testCase: TestCase = {
     id: "scenario",
     name: scenario.name,
@@ -152,7 +180,7 @@ export async function runScenario(
     assertions,
     evidence: {
       screenshots: steps.map((step) => step.screenshotRef).filter((value): value is string => Boolean(value)),
-      domSnapshot: "dom.html",
+      domSnapshot,
       consoleLogs: driver.consoleLogs(),
       videoRef,
       annotations: recorder.annotations(),

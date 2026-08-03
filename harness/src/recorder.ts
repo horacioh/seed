@@ -45,11 +45,13 @@ export class FrameRecorder {
     assertion?: string,
   ): Promise<{ framePath: string; marker: RecordingAnnotation }> {
     if (this.stopped) throw new Error("Cannot capture after recorder stop");
-    const frameName = `${String(++this.frameNumber).padStart(4, "0")}.png`;
+    const screenshot = await driver.screenshot();
+    const frameNumber = ++this.frameNumber;
+    const frameName = `${String(frameNumber).padStart(4, "0")}.png`;
     const framePath = path.join(this.framesDir, frameName);
     const captionPath = path.join(this.captionsDir, `${frameName}.txt`);
     const marker: RecordingAnnotation = {
-      id: `marker-${this.frameNumber}`,
+      id: `marker-${frameNumber}`,
       type,
       atMs: Date.now() - this.startedAt,
       description: label,
@@ -57,7 +59,7 @@ export class FrameRecorder {
       testResult: result,
       assertion,
     };
-    await writeFile(framePath, await driver.screenshot());
+    await writeFile(framePath, screenshot);
     await writeFile(captionPath, `${label} — ${result.toUpperCase()}\n`);
     this.markers.push(marker);
     return { framePath, marker };
@@ -87,7 +89,7 @@ export class FrameRecorder {
     const output = path.join(this.runDir, "video.mp4");
     await execFileAsync(
       "ffmpeg",
-      ["-y", "-framerate", "1", "-i", path.join(this.encodedDir, "%04d.png"), "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-c:v", "libx264", "-pix_fmt", "yuv420p", output],
+      ["-y", "-framerate", "1", "-pattern_type", "glob", "-i", path.join(this.encodedDir, "*.png"), "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-c:v", "libx264", "-pix_fmt", "yuv420p", output],
       { maxBuffer: 2 * 1024 * 1024 },
     );
     return output;
