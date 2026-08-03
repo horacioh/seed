@@ -214,11 +214,14 @@ export class BrowserDriver {
       if (selector) {
         await this.page
           .waitForFunction(
-            ({ sel, attribute: name, value: expectedValue }) => {
+            ({ sel, attribute: name, value: expectedValue, presence }) => {
               const element = document.querySelector(sel);
-              return element !== null && element.getAttribute(name) === expectedValue;
+              if (element === null) return false;
+              return presence
+                ? element.getAttribute(name) !== null
+                : element.getAttribute(name) === expectedValue;
             },
-            { sel: selector, attribute, value },
+            { sel: selector, attribute, value, presence: value === undefined },
             { timeout: 5_000 },
           )
           .catch(() => undefined);
@@ -226,7 +229,14 @@ export class BrowserDriver {
         // Role/text attr assertions fall back to a single read.
       }
       const actual = await target.getAttribute(attribute);
-      if (actual !== value) throw new Error(`Expected ${attribute}=${value}, received ${actual}`);
+      const matches = value === undefined ? actual !== null : actual === value;
+      if (!matches) {
+        throw new Error(
+          value === undefined
+            ? `Expected attribute ${attribute} to be present, received ${actual}`
+            : `Expected ${attribute}=${value}, received ${actual}`,
+        );
+      }
       return { actual };
     }
     throw new Error(`Unsupported assertion kind: ${kind}`);
@@ -275,14 +285,13 @@ export class BrowserDriver {
     return this.requests.map((request) => this.redactSecrets(request));
   }
 
-  /** Close pages owned by this driver and any browser launched as fallback. */
+  /** Close pages owned by this driver and disconnect from the browser. */
   public async close(): Promise<void> {
     for (const page of this.ownedPages) {
       await page.close().catch(() => undefined);
     }
-    if (this.launchedBrowser) {
-      await this.browser?.close();
-    }
+    await this.browser?.close().catch(() => undefined);
+    this.browser = undefined;
     this.page = undefined;
   }
 

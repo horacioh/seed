@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
-const port = Number(process.env.PORT ?? 39777);
+const port = 39777;
 const server = createServer(async (_request, response) => {
   try {
     const body = await readFile(path.join(root, "index.html"));
