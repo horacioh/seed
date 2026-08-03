@@ -13,8 +13,11 @@ export interface RunOptions {
   url?: string;
 }
 
-/** Run a scenario, always finalize evidence, and return the Markdown report path. */
-export async function runScenario(scenario: Scenario, options: RunOptions): Promise<string> {
+/** Run a scenario, always finalize evidence, and return its report path and status. */
+export async function runScenario(
+  scenario: Scenario,
+  options: RunOptions,
+): Promise<{ reportPath: string; failed: boolean }> {
   const runId = `run-${new Date().toISOString().replaceAll(/[:.]/g, "-")}`;
   const runDir = path.resolve(options.outputRoot, runId);
   await mkdir(runDir, { recursive: true });
@@ -43,6 +46,7 @@ export async function runScenario(scenario: Scenario, options: RunOptions): Prom
           await driver.goto(spec.url);
         } else if (spec.action === "assert") {
           assertionResult = await assertWithEvidence(driver, recorder, `assertion-${index + 1}`, spec.description, spec.kind, spec.locator, spec.expected, scenario.name);
+          assertionResult.assertion.evidence = assertionResult.assertion.evidence.map((evidence) => relative(runDir, evidence));
           assertions.push(assertionResult.assertion);
           screenshotRef = relative(runDir, assertionResult.screenshotRef);
           if (assertionResult.assertion.status !== "pass") {
@@ -55,7 +59,7 @@ export async function runScenario(scenario: Scenario, options: RunOptions): Prom
               reproSteps: steps.map((step) => step.description ?? step.action),
               expected: String(spec.expected),
               actual: assertionResult.assertion.message ?? "Assertion failed",
-              evidence: assertionResult.assertion.evidence.map((evidence) => relative(runDir, evidence)),
+              evidence: assertionResult.assertion.evidence,
             });
           }
         } else {
@@ -103,7 +107,11 @@ export async function runScenario(scenario: Scenario, options: RunOptions): Prom
     await writeFile(path.join(runDir, "dom.html"), await driver.domSnapshot());
   } finally {
     try {
-      videoRef = relative(runDir, await recorder.stopAndEncode());
+      try {
+        videoRef = relative(runDir, await recorder.stopAndEncode());
+      } catch {
+        videoRef = "";
+      }
     } finally {
       await driver.close();
     }
@@ -145,7 +153,7 @@ export async function runScenario(scenario: Scenario, options: RunOptions): Prom
     findings,
     reportRef: "report.html",
   };
-  return writeReports(runDir, report);
+  return { reportPath: await writeReports(runDir, report), failed };
 }
 
 function relative(runDir: string, filePath: string): string {

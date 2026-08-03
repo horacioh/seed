@@ -27,7 +27,7 @@ export function parseArgs(argv: string[]): CliOptions {
 }
 
 /** Run the default, custom-scenario, or generic web workflow. */
-export async function main(argv = process.argv.slice(2)): Promise<void> {
+export async function main(argv = process.argv.slice(2)): Promise<number> {
   const options = parseArgs(argv);
   const harnessRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
   const scenario = await loadScenario(options, harnessRoot);
@@ -40,16 +40,17 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
       });
       await waitForReadyLine(server);
     }
-    const reportPath = await runScenario(scenario, {
+    const result = await runScenario(scenario, {
       cdpUrl: options.cdp,
       outputRoot: path.resolve(harnessRoot, options.out),
     });
-    const runDir = path.dirname(reportPath);
+    const runDir = path.dirname(result.reportPath);
     process.stdout.write(`Web harness completed: ${scenario.name}\n`);
     for (const file of ["results.json", "markers.json", "report.html", "RUN-REPORT.md", "video.mp4", "dom.html"]) {
       process.stdout.write(`${path.join(runDir, file)}\n`);
     }
     process.stdout.write(`${path.join(runDir, "frames")}\n`);
+    return result.failed ? 1 : 0;
   } finally {
     server?.kill("SIGTERM");
   }
@@ -81,6 +82,9 @@ function requiredValue(argv: string[], index: number, option: string): string {
   return value;
 }
 
+/**
+ * Wait for the event-driven ready line with a deadline failsafe, not synchronization.
+ */
 function waitForReadyLine(server: ChildProcess): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!server.stdout) {
@@ -88,20 +92,41 @@ function waitForReadyLine(server: ChildProcess): Promise<void> {
       return;
     }
     const lines = createInterface({ input: server.stdout });
+    let stderr = "";
+    let settled = false;
+    const deadline = setTimeout(() => {
+      finish(new Error(`sample server did not start within 10s${stderr ? `: ${stderr.trim()}` : ""}`));
+    }, 10_000);
+    const finish = (error?: Error): void => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(deadline);
+      lines.close();
+      if (error) reject(error);
+      else resolve();
+    };
     lines.on("line", (line) => {
       if (line.startsWith("HARNESS_SAMPLE_READY ")) {
-        lines.close();
-        resolve();
+        finish();
       }
     });
-    server.once("error", reject);
-    server.stderr?.on("data", (chunk: Buffer) => process.stderr.write(chunk));
+    server.once("error", (error) => finish(error));
+    server.once("close", (code, signal) => {
+      finish(new Error(`sample server did not start (exited with code ${code ?? "unknown"}${signal ? `, signal ${signal}` : ""})${stderr ? `: ${stderr.trim()}` : ""}`));
+    });
+    server.once("exit", (code, signal) => {
+      finish(new Error(`sample server did not start (exited with code ${code ?? "unknown"}${signal ? `, signal ${signal}` : ""})${stderr ? `: ${stderr.trim()}` : ""}`));
+    });
+    server.stderr?.on("data", (chunk: Buffer) => {
+      stderr += chunk.toString();
+      process.stderr.write(chunk);
+    });
   });
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
   main()
-    .then(() => process.exit(0))
+    .then((code) => process.exit(code))
     .catch((error: unknown) => {
       process.stderr.write(`${error instanceof Error ? error.stack ?? error.message : String(error)}\n`);
       process.exit(1);

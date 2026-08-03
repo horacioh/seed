@@ -4,6 +4,11 @@ This is a standalone, npm-installed TypeScript harness for deterministic web
 application smoke tests. It deliberately does not use the Seed repository's
 pnpm, mise, or build system.
 
+This package deliberately uses `npm`, not the repository's `pnpm`, as a temporary
+intentional exception to the root AGENTS.md rule. It must remain decoupled from
+the mise/pnpm toolchain while GitHub 429s block it and attach to Chrome over CDP;
+it can be folded into the pnpm workspace once that toolchain is reliable.
+
 ## Run the green demo
 
 ```sh
