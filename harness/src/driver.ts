@@ -148,7 +148,9 @@ export class BrowserDriver {
     if (!locator) throw new Error(`${kind} assertions require a locator`);
     const target = this.resolveLocator(locator);
     if (kind === "visible") {
-      await waitForSelector(target);
+      await target
+        .waitFor({ state: expected === false ? "hidden" : "visible", timeout: 5_000 })
+        .catch(() => undefined);
       const actual = await target.isVisible();
       if (actual !== expected) throw new Error(`Expected visibility ${String(expected)}, received ${String(actual)}`);
       return { actual };
@@ -190,36 +192,21 @@ export class BrowserDriver {
   public async domSnapshot(): Promise<string> {
     if (!this.page) throw new Error("No active page");
     return this.page.evaluate((secretSelectors) => {
-      const elements = secretSelectors.flatMap((selector) => {
+      const root = document.documentElement.cloneNode(true) as HTMLElement;
+      for (const selector of secretSelectors) {
         try {
-          return [...document.querySelectorAll(selector)];
+          for (const element of root.querySelectorAll(selector)) {
+            element.setAttribute("value", "[REDACTED]");
+            if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+              element.value = "[REDACTED]";
+            }
+            element.textContent = "[REDACTED]";
+          }
         } catch {
-          return [];
+          // Ignore malformed optional redaction selectors.
         }
-      });
-      const originals = elements.map((element) => ({
-        element,
-        valueAttribute: element.getAttribute("value"),
-        value: element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement ? element.value : undefined,
-        textContent: element.textContent,
-      }));
-      for (const { element } of originals) {
-        element.setAttribute("value", "[REDACTED]");
-        if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-          element.value = "[REDACTED]";
-        }
-        if (element.textContent) element.textContent = "[REDACTED]";
       }
-      const snapshot = document.documentElement.outerHTML;
-      for (const original of originals) {
-        if (original.valueAttribute === null) original.element.removeAttribute("value");
-        else original.element.setAttribute("value", original.valueAttribute);
-        if (original.element instanceof HTMLInputElement || original.element instanceof HTMLTextAreaElement) {
-          original.element.value = original.value ?? "";
-        }
-        original.element.textContent = original.textContent;
-      }
-      return snapshot;
+      return `<!doctype html>\n${root.outerHTML}`;
     }, this.secretSelectors);
   }
 
