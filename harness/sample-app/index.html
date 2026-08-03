@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seed Harness Demo</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; background: #f3f6fa; color: #172033; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; }
+    main { width: min(560px, calc(100vw - 40px)); background: white; padding: 32px; border-radius: 16px; box-shadow: 0 12px 40px #19324a22; }
+    h1 { margin-top: 0; color: #174a7c; }
+    label { display: grid; gap: 6px; margin: 14px 0; font-weight: 600; }
+    input { border: 1px solid #b8c5d2; border-radius: 8px; padding: 10px; font: inherit; }
+    button { border: 0; border-radius: 8px; background: #174a7c; color: white; padding: 10px 16px; font: inherit; cursor: pointer; }
+    button.secondary { background: #e7edf3; color: #174a7c; }
+    .hidden { display: none; }
+    .toolbar { display: flex; gap: 8px; margin: 18px 0; }
+    .todo { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #e7edf3; }
+    .todo.completed span { text-decoration: line-through; color: #6b7785; }
+    .count { color: #526071; }
+    .error { color: #b42318; min-height: 1.4em; }
+  </style>
+</head>
+<body>
+  <main>
+    <section data-testid="login-view">
+      <h1>Seed Harness Demo</h1>
+      <p>Sign in to manage your todos.</p>
+      <form data-testid="login-form">
+        <label>Username <input data-testid="username" name="username" autocomplete="username" required></label>
+        <label>Password <input data-testid="password" name="password" type="password" autocomplete="current-password" required></label>
+        <button data-testid="login-submit" type="submit">Sign in</button>
+        <p class="error" data-testid="login-error" aria-live="polite"></p>
+      </form>
+    </section>
+    <section data-testid="todo-view" class="hidden">
+      <h1>Todo list</h1>
+      <p class="count" data-testid="todo-count">0 items</p>
+      <form class="toolbar" data-testid="todo-form">
+        <input data-testid="todo-input" placeholder="Add a todo" required>
+        <button data-testid="todo-add" type="submit">Add</button>
+      </form>
+      <div data-testid="todo-list"></div>
+    </section>
+  </main>
+  <script>
+    const loginView = document.querySelector('[data-testid="login-view"]');
+    const todoView = document.querySelector('[data-testid="todo-view"]');
+    const loginForm = document.querySelector('[data-testid="login-form"]');
+    const loginError = document.querySelector('[data-testid="login-error"]');
+    const todoForm = document.querySelector('[data-testid="todo-form"]');
+    const todoInput = document.querySelector('[data-testid="todo-input"]');
+    const todoList = document.querySelector('[data-testid="todo-list"]');
+    const todoCount = document.querySelector('[data-testid="todo-count"]');
+    const todos = [];
+    loginForm.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!loginForm.username.value || !loginForm.password.value) {
+        loginError.textContent = 'Enter username and password.';
+        return;
+      }
+      loginView.classList.add('hidden');
+      todoView.classList.remove('hidden');
+    });
+    todoForm.addEventListener('submit', event => {
+      event.preventDefault();
+      const title = todoInput.value.trim();
+      if (!title) return;
+      todos.push({ title, completed: false });
+      todoInput.value = '';
+      render();
+    });
+    function render() {
+      todoList.replaceChildren(...todos.map((todo, index) => {
+        const row = document.createElement('label');
+        row.className = `todo${todo.completed ? ' completed' : ''}`;
+        row.dataset.testid = `todo-${index}`;
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.dataset.testid = `todo-check-${index}`;
+        checkbox.checked = todo.completed;
+        checkbox.addEventListener('change', () => { todo.completed = checkbox.checked; render(); });
+        const text = document.createElement('span');
+        text.dataset.testid = `todo-text-${index}`;
+        text.textContent = todo.title;
+        row.append(checkbox, text);
+        return row;
+      }));
+      const completed = todos.filter(todo => todo.completed).length;
+      todoCount.textContent = `${todos.length} items · ${completed} completed`;
+    }
+  </script>
+</body>
+</html>
