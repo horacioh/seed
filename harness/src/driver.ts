@@ -3,6 +3,11 @@ import { access } from "node:fs/promises";
 import { waitForReady, waitForSelector } from "./waits.js";
 import type { Locator, StepSpec, UiAssertion } from "./types.js";
 
+/** Replace exact known secret values in a text channel. */
+export function redactExactSecrets(text: string, secretValues: string[]): string {
+  return secretValues.reduce((redacted, secretValue) => redacted.replaceAll(secretValue, "[REDACTED]"), text);
+}
+
 /** A Playwright-over-CDP browser driver with a launch fallback. */
 export class BrowserDriver {
   private browser?: Browser;
@@ -12,6 +17,7 @@ export class BrowserDriver {
   private readonly requests: string[] = [];
   private readonly cdpUrl: string;
   private secretSelectors: string[] = [];
+  private secretValues: string[] = [];
   private launchedBrowser = false;
 
   /** Create a driver configured to attach to a CDP browser. */
@@ -51,6 +57,11 @@ export class BrowserDriver {
    */
   public setSecretSelectors(selectors: string[]): void {
     this.secretSelectors = [...selectors];
+  }
+
+  /** Configure exact values to redact from captured text channels. */
+  public setSecretValues(values: string[]): void {
+    this.secretValues = values.filter((value) => value.length > 0);
   }
 
   /** Open a page and optionally navigate to a URL. */
@@ -191,7 +202,7 @@ export class BrowserDriver {
    */
   public async domSnapshot(): Promise<string> {
     if (!this.page) throw new Error("No active page");
-    return this.page.evaluate((secretSelectors) => {
+    const snapshot = await this.page.evaluate((secretSelectors) => {
       const root = document.documentElement.cloneNode(true) as HTMLElement;
       for (const selector of secretSelectors) {
         try {
@@ -208,16 +219,17 @@ export class BrowserDriver {
       }
       return `<!doctype html>\n${root.outerHTML}`;
     }, this.secretSelectors);
+    return this.redactSecrets(snapshot);
   }
 
   /** Return console messages observed since the driver was created. */
   public consoleLogs(): string[] {
-    return [...this.logs];
+    return this.logs.map((log) => this.redactSecrets(log));
   }
 
   /** Return network request URLs observed since the driver was created. */
   public networkRequests(): string[] {
-    return [...this.requests];
+    return this.requests.map((request) => this.redactSecrets(request));
   }
 
   /** Close pages owned by this driver and any browser launched as fallback. */
@@ -244,6 +256,10 @@ export class BrowserDriver {
     page.on("request", (request) => {
       this.requests.push(`${request.method()} ${request.url()}`);
     });
+  }
+
+  private redactSecrets(text: string): string {
+    return redactExactSecrets(text, this.secretValues);
   }
 
   private async withSecretRedaction<T>(capture: () => Promise<T>): Promise<T> {

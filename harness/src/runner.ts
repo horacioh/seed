@@ -32,7 +32,22 @@ export async function runScenario(
   let networkSeen = 0;
   let domSnapshot: string | undefined;
   let fatalError = false;
-  driver.setSecretSelectors(scenario.secretSelectors ?? ["input[type=password]"]);
+  const secretValues = scenario.steps.flatMap((spec) =>
+    spec.action === "type" && spec.secret && spec.value ? [spec.value] : [],
+  );
+  const secretSelectors = new Set(scenario.secretSelectors ?? ["input[type=password]"]);
+  for (const spec of scenario.steps) {
+    if (spec.action !== "type" || !spec.secret) continue;
+    if ("testId" in spec.locator) {
+      secretSelectors.add(`[data-testid="${spec.locator.testId}"]`);
+    } else if ("css" in spec.locator) {
+      secretSelectors.add(spec.locator.css);
+    } else {
+      // Role/text locators cannot become querySelectorAll selectors; exact-value redaction still applies.
+    }
+  }
+  driver.setSecretValues(secretValues);
+  driver.setSecretSelectors([...secretSelectors]);
   try {
     try {
       await recorder.start();
