@@ -62,7 +62,7 @@ jobs:
           body="The scheduled rebase of \`main\` onto \`seed-hypermedia/seed:main\` failed. Resolve it manually, then re-run the workflow.
 
           Failed run: $RUN_URL"
-          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Sync failed again: $RUN_URL"
           else
@@ -115,7 +115,7 @@ jobs:
           body="The scheduled rebase of \`custom-images\` onto the freshly synced \`main\` failed, most likely due to a conflict with the fork's custom commits. Resolve it manually, then re-run the workflow.
 
           Failed run: $RUN_URL"
-          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Rebase failed again: $RUN_URL"
           else
