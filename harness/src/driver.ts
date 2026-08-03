@@ -59,6 +59,17 @@ export class BrowserDriver {
     this.secretSelectors = [...selectors];
   }
 
+  /** Tag fields so selector-based screenshot and DOM redaction can mask them. */
+  public async markSecretField(locator: Locator): Promise<void> {
+    const target = this.resolveLocator(locator);
+    const count = await target.count();
+    for (let index = 0; index < count; index += 1) {
+      await target.nth(index)
+        .evaluate((element) => element.setAttribute("data-harness-secret", "true"))
+        .catch(() => undefined);
+    }
+  }
+
   /** Configure exact values to redact from captured text channels. */
   public setSecretValues(values: string[]): void {
     this.secretValues = values.filter((value) => value.length > 0);
@@ -167,12 +178,29 @@ export class BrowserDriver {
       return { actual };
     }
     if (kind === "count") {
+      const selector = this.cssSelectorFor(locator);
+      if (selector) {
+        await this.page
+          .waitForFunction(
+            ({ sel, n }) => document.querySelectorAll(sel).length === n,
+            { sel: selector, n: expected },
+            { timeout: 5_000 },
+          )
+          .catch(() => undefined);
+      } else {
+        // Role/text count assertions fall back to a single read.
+      }
       const actual = await target.count();
       if (actual !== expected) throw new Error(`Expected count ${String(expected)}, received ${String(actual)}`);
       return { actual };
     }
     await waitForSelector(target);
     if (kind === "text") {
+      await target
+        .filter({ hasText: String(expected) })
+        .first()
+        .waitFor({ state: "visible", timeout: 5_000 })
+        .catch(() => undefined);
       const actual = (await target.innerText()).trim();
       if (actual !== expected) throw new Error(`Expected text ${String(expected)}, received ${actual}`);
       return { actual };
@@ -182,6 +210,21 @@ export class BrowserDriver {
       const separator = raw.indexOf("=");
       const attribute = separator === -1 ? raw : raw.slice(0, separator);
       const value = separator === -1 ? undefined : raw.slice(separator + 1);
+      const selector = this.cssSelectorFor(locator);
+      if (selector) {
+        await this.page
+          .waitForFunction(
+            ({ sel, attribute: name, value: expectedValue }) => {
+              const element = document.querySelector(sel);
+              return element !== null && element.getAttribute(name) === expectedValue;
+            },
+            { sel: selector, attribute, value },
+            { timeout: 5_000 },
+          )
+          .catch(() => undefined);
+      } else {
+        // Role/text attr assertions fall back to a single read.
+      }
       const actual = await target.getAttribute(attribute);
       if (actual !== value) throw new Error(`Expected ${attribute}=${value}, received ${actual}`);
       return { actual };
@@ -260,6 +303,12 @@ export class BrowserDriver {
 
   private redactSecrets(text: string): string {
     return redactExactSecrets(text, this.secretValues);
+  }
+
+  private cssSelectorFor(locator: Locator): string | undefined {
+    if ("css" in locator) return locator.css;
+    if ("testId" in locator) return `[data-testid="${locator.testId}"]`;
+    return undefined;
   }
 
   private async withSecretRedaction<T>(capture: () => Promise<T>): Promise<T> {

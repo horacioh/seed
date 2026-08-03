@@ -35,17 +35,10 @@ export async function runScenario(
   const secretValues = scenario.steps.flatMap((spec) =>
     spec.action === "type" && spec.secret && spec.value ? [spec.value] : [],
   );
-  const secretSelectors = new Set(scenario.secretSelectors ?? ["input[type=password]"]);
-  for (const spec of scenario.steps) {
-    if (spec.action !== "type" || !spec.secret) continue;
-    if ("testId" in spec.locator) {
-      secretSelectors.add(`[data-testid="${spec.locator.testId}"]`);
-    } else if ("css" in spec.locator) {
-      secretSelectors.add(spec.locator.css);
-    } else {
-      // Role/text locators cannot become querySelectorAll selectors; exact-value redaction still applies.
-    }
-  }
+  const secretSelectors = new Set([
+    ...(scenario.secretSelectors ?? ["input[type=password]"]),
+    '[data-harness-secret="true"]',
+  ]);
   driver.setSecretValues(secretValues);
   driver.setSecretSelectors([...secretSelectors]);
   try {
@@ -85,6 +78,9 @@ export async function runScenario(
             }
           } else {
             await driver.act(spec);
+            if (spec.action === "type" && spec.secret) {
+              await driver.markSecretField(spec.locator);
+            }
           }
           if (!assertionResult) {
             const frame = await recorder.capture(driver, spec.description ?? spec.action, "passed", "assertion", scenario.name);
