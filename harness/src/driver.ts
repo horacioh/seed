@@ -11,6 +11,7 @@ export class BrowserDriver {
   private readonly logs: string[] = [];
   private readonly requests: string[] = [];
   private readonly cdpUrl: string;
+  private secretSelectors: string[] = [];
   private launchedBrowser = false;
 
   /** Create a driver configured to attach to a CDP browser. */
@@ -23,6 +24,8 @@ export class BrowserDriver {
     try {
       this.browser = await chromium.connectOverCDP(this.cdpUrl);
     } catch (error) {
+      const attachMessage = error instanceof Error ? error.message : String(error);
+      process.stderr.write(`Browser attach failed for ${this.cdpUrl}: ${attachMessage}\n`);
       const candidates = [
         process.env.CHROME_PATH,
         "/home/ubuntu/.local/bin/google-chrome",
@@ -31,13 +34,23 @@ export class BrowserDriver {
         "/usr/bin/chromium-browser",
         "/opt/.devin/chrome/chrome/linux-133.0.6943.126/chrome-linux64/chrome",
       ].filter((candidate): candidate is string => Boolean(candidate));
-      const executablePath = await firstExecutable(candidates);
-      this.browser = await chromium.launch({ executablePath, headless: true });
-      this.launchedBrowser = true;
-      if (!error) {
-        throw new Error("Browser attach failed without an error");
+      try {
+        const executablePath = await firstExecutable(candidates);
+        this.browser = await chromium.launch({ executablePath, headless: true });
+        this.launchedBrowser = true;
+      } catch (launchError) {
+        process.stderr.write(`Browser launch fallback failed: ${launchError instanceof Error ? launchError.message : String(launchError)}\n`);
+        throw new Error("Browser attach and launch both failed", { cause: error });
       }
     }
+  }
+
+  /**
+   * Configure selectors to blur and mask in captured evidence as best-effort
+   * defense-in-depth, not as proof that credentials are never persisted.
+   */
+  public setSecretSelectors(selectors: string[]): void {
+    this.secretSelectors = [...selectors];
   }
 
   /** Open a page and optionally navigate to a URL. */
@@ -157,19 +170,54 @@ export class BrowserDriver {
       if (actual !== value) throw new Error(`Expected ${attribute}=${value}, received ${actual}`);
       return { actual };
     }
-    return { actual: undefined };
+    throw new Error(`Unsupported assertion kind: ${kind}`);
   }
 
   /** Capture a full-page screenshot into a buffer. */
   public async screenshot(): Promise<Buffer> {
     if (!this.page) throw new Error("No active page");
-    return this.page.screenshot({ fullPage: true });
+    return this.withSecretRedaction(() => this.page!.screenshot({ fullPage: true }));
   }
 
-  /** Capture the current DOM as serialized HTML. */
+  /**
+   * Capture the current DOM with best-effort secret redaction as defense in
+   * depth. This is not proof that secrets cannot appear in artifacts; scenarios
+   * entering real credentials should still avoid persisting artifacts.
+   */
   public async domSnapshot(): Promise<string> {
     if (!this.page) throw new Error("No active page");
-    return this.page.content();
+    return this.page.evaluate((secretSelectors) => {
+      const elements = secretSelectors.flatMap((selector) => {
+        try {
+          return [...document.querySelectorAll(selector)];
+        } catch {
+          return [];
+        }
+      });
+      const originals = elements.map((element) => ({
+        element,
+        valueAttribute: element.getAttribute("value"),
+        value: element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement ? element.value : undefined,
+        textContent: element.textContent,
+      }));
+      for (const { element } of originals) {
+        element.setAttribute("value", "[REDACTED]");
+        if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+          element.value = "[REDACTED]";
+        }
+        if (element.textContent) element.textContent = "[REDACTED]";
+      }
+      const snapshot = document.documentElement.outerHTML;
+      for (const original of originals) {
+        if (original.valueAttribute === null) original.element.removeAttribute("value");
+        else original.element.setAttribute("value", original.valueAttribute);
+        if (original.element instanceof HTMLInputElement || original.element instanceof HTMLTextAreaElement) {
+          original.element.value = original.value ?? "";
+        }
+        original.element.textContent = original.textContent;
+      }
+      return snapshot;
+    }, this.secretSelectors);
   }
 
   /** Return console messages observed since the driver was created. */
@@ -206,6 +254,41 @@ export class BrowserDriver {
     page.on("request", (request) => {
       this.requests.push(`${request.method()} ${request.url()}`);
     });
+  }
+
+  private async withSecretRedaction<T>(capture: () => Promise<T>): Promise<T> {
+    if (!this.page || this.secretSelectors.length === 0) return capture();
+    await this.page.evaluate((selectors) => {
+      for (const selector of selectors) {
+        try {
+          for (const element of document.querySelectorAll(selector)) {
+            element.setAttribute("data-harness-secret-style", element.getAttribute("style") ?? "");
+            (element as HTMLElement).style.setProperty("filter", "blur(14px)", "important");
+          }
+        } catch {
+          // Ignore malformed optional redaction selectors.
+        }
+      }
+    }, this.secretSelectors);
+    try {
+      return await capture();
+    } finally {
+      await this.page.evaluate((selectors) => {
+        for (const selector of selectors) {
+          try {
+            for (const element of document.querySelectorAll(selector)) {
+              const originalStyle = element.getAttribute("data-harness-secret-style");
+              if (originalStyle === null) continue;
+              if (originalStyle === "") element.removeAttribute("style");
+              else element.setAttribute("style", originalStyle);
+              element.removeAttribute("data-harness-secret-style");
+            }
+          } catch {
+            // Ignore malformed optional redaction selectors.
+          }
+        }
+      }, this.secretSelectors);
+    }
   }
 }
 

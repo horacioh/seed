@@ -156,6 +156,7 @@ export interface Scenario {
   name: string;
   description: string;
   setup?: string;
+  secretSelectors?: string[];
   steps: StepSpec[];
 }
 

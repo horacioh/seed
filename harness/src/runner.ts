@@ -28,6 +28,9 @@ export async function runScenario(
   const findings: Finding[] = [];
   const startedAt = new Date().toISOString();
   let videoRef = "";
+  let consoleSeen = 0;
+  let networkSeen = 0;
+  driver.setSecretSelectors(scenario.secretSelectors ?? ["input[type=password]"]);
   await recorder.start();
   try {
     await driver.launch();
@@ -72,6 +75,12 @@ export async function runScenario(
       } catch (error) {
         status = "error";
         const message = error instanceof Error ? error.message : String(error);
+        try {
+          const frame = await recorder.capture(driver, spec.description ?? spec.action, "failed", "assertion", scenario.name);
+          screenshotRef = relative(runDir, frame.framePath);
+        } catch {
+          // Preserve the original step failure if the browser cannot capture evidence.
+        }
         findings.push({
           id: `finding-${index + 1}`,
           severity: "high",
@@ -82,13 +91,9 @@ export async function runScenario(
           actual: message,
           evidence: screenshotRef ? [screenshotRef] : [],
         });
-        try {
-          const frame = await recorder.capture(driver, spec.description ?? spec.action, "failed", "assertion", scenario.name);
-          screenshotRef = relative(runDir, frame.framePath);
-        } catch {
-          // Preserve the original step failure if the browser cannot capture evidence.
-        }
       }
+      const consoleLogs = driver.consoleLogs();
+      const networkRequests = driver.networkRequests();
       steps.push({
         id: stepId,
         action: spec.action,
@@ -98,11 +103,13 @@ export async function runScenario(
         endedAt: new Date().toISOString(),
         durationMs: Date.now() - stepStarted,
         screenshotRef,
-        consoleDelta: driver.consoleLogs(),
-        networkDelta: driver.networkRequests(),
+        consoleDelta: consoleLogs.slice(consoleSeen),
+        networkDelta: networkRequests.slice(networkSeen),
         status,
         description: spec.description ?? ("url" in spec ? `Navigate to ${spec.url}` : spec.action),
       });
+      consoleSeen = consoleLogs.length;
+      networkSeen = networkRequests.length;
     }
     await writeFile(path.join(runDir, "dom.html"), await driver.domSnapshot());
   } finally {

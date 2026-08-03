@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "demo": "tsx src/cli.ts",
-    "harness:web": "tsx src/cli.ts"
+    "harness:web": "tsx src/cli.ts",
+    "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
     "playwright-core": "1.57.0"
