@@ -47,19 +47,36 @@ export function markdownReport(report: WebTestReport): string {
     `**Assertions:** ${report.assertions.filter((assertion) => assertion.status === "pass").length} passed, ${failedAssertions} failed`,
     "",
     "## Reproduction steps",
-    ...report.steps.map((step, index) => `${index + 1}. ${escapeHtml(step.description ?? step.action)}${step.value !== undefined ? ` — value: \`${escapeHtml(step.value)}\`` : ""}`),
+    ...report.steps.map((step, index) => `${index + 1}. ${escapeMarkdownText(step.description ?? step.action)}${step.value !== undefined ? ` — value: ${mdInlineCode(step.value)}` : ""}`),
     "",
     "## Assertions",
-    ...report.assertions.map((assertion) => `- **${assertion.status.toUpperCase()}** ${escapeHtml(assertion.message ?? assertion.id)} (expected \`${escapeHtml(String(assertion.expected))}\`, actual \`${escapeHtml(String(assertion.actual ?? ""))}\`)`),
+    ...report.assertions.map((assertion) => `- **${assertion.status.toUpperCase()}** ${escapeMarkdownText(assertion.message ?? assertion.id)} (expected ${mdInlineCode(String(assertion.expected))}, actual ${mdInlineCode(String(assertion.actual ?? ""))})`),
     "",
     "## Screenshots",
     ...report.evidence.screenshots.map((screenshot) => `![${screenshot}](${screenshot})`),
     "",
     "## Findings",
-    ...(report.findings.length ? report.findings.map((finding) => `- **${escapeHtml(finding.severity.toUpperCase())}** ${escapeHtml(finding.title)}: ${escapeHtml(finding.actual)}`) : ["- None"]),
+    ...(report.findings.length ? report.findings.map((finding) => `- **${escapeMarkdownText(finding.severity.toUpperCase())}** ${escapeMarkdownText(finding.title)}: ${escapeMarkdownText(finding.actual)}`) : ["- None"]),
     "",
   ];
   return `${lines.join("\n")}\n`;
+}
+
+/**
+ * Escape Markdown tag delimiters without entity-mangling ordinary text.
+ * CommonMark renders these entities as literal angle brackets, keeping
+ * injected HTML inert while preserving apostrophes, ampersands, and quotes.
+ */
+export function escapeMarkdownText(value: string): string {
+  return value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+/** Wrap a value in a CommonMark code span using a safe backtick fence. */
+export function mdInlineCode(value: string): string {
+  const runs = [...value.matchAll(/`+/g)].map((match) => match[0].length);
+  const fence = "`".repeat((runs.length ? Math.max(...runs) : 0) + 1);
+  const padding = value.includes("`") || value.startsWith("`") || value.endsWith("`") ? " " : "";
+  return `${fence}${padding}${value}${padding}${fence}`;
 }
 
 function renderFinding(finding: Finding): string {

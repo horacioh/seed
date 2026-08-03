@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import test from "node:test";
 import os from "node:os";
 import path from "node:path";
-import { markdownReport, writeReports } from "../src/report.js";
+import { escapeMarkdownText, markdownReport, mdInlineCode, writeReports } from "../src/report.js";
 import type { WebTestReport } from "../src/types.js";
 
 function report(overrides: Partial<WebTestReport> = {}): WebTestReport {
@@ -116,4 +116,43 @@ test("errored steps use the run FAIL verdict in Markdown and HTML", async () => 
   } finally {
     await rm(runDir, { recursive: true, force: true });
   }
+});
+
+test("markdownReport escapes tags without mangling ordinary text", () => {
+  const markdown = markdownReport(report({
+    steps: [{
+      id: "step-1",
+      action: "type",
+      description: `Don't submit "now" & wait`,
+      value: "a`b",
+      startedAt: "2025-01-01T00:00:00.000Z",
+      status: "pass",
+    }],
+    assertions: [{
+      ...report().assertions[0],
+      actual: "Wrong",
+      message: `Don't submit "now" & wait`,
+    }],
+    findings: [{
+      id: "finding-1",
+      severity: "high",
+      title: `Don't submit "now" & wait`,
+      status: "confirmed",
+      reproSteps: [],
+      expected: "safe",
+      actual: "<img src=x onerror=alert(1)>",
+      evidence: [],
+    }],
+  }));
+  assert.match(markdown, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(markdown, /Don't submit "now" & wait/);
+  assert.doesNotMatch(markdown, /&#39;|&amp;|&quot;/);
+  assert.match(markdown, /`` a`b ``/);
+});
+
+test("Markdown helpers handle tags and backtick-safe code spans", () => {
+  assert.equal(escapeMarkdownText("<tag> & 'quote'"), "&lt;tag&gt; & 'quote'");
+  assert.equal(mdInlineCode("plain"), "`plain`");
+  assert.equal(mdInlineCode("a`b"), "`` a`b ``");
+  assert.equal(mdInlineCode("a``b"), "``` a``b ```");
 });

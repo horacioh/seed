@@ -1,6 +1,7 @@
-import { mkdir, readdir, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import type { BrowserDriver } from "./driver.js";
 import type { RecordingAnnotation } from "./types.js";
@@ -82,23 +83,53 @@ export class FrameRecorder {
     const targetWidth = roundUpEven(Math.max(...dimensions.map(({ width }) => width)));
     const targetHeight = roundUpEven(Math.max(...dimensions.map(({ height }) => height)));
     const font = process.env.HARNESS_FONT ?? "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
-    for (const frameName of frameNames) {
-      const raw = path.join(this.framesDir, frameName);
-      const caption = path.join(this.captionsDir, `${frameName}.txt`);
-      const encoded = path.join(this.encodedDir, frameName);
-      const filter = `scale=${targetWidth}:${targetHeight}:force_original_aspect_ratio=decrease,pad=${targetWidth}:${targetHeight}:(ow-iw)/2:(oh-ih)/2:color=black,drawtext=fontfile=${font}:textfile=${caption}:fontcolor=white:fontsize=28:box=1:boxcolor=black@0.72:boxborderw=12:x=24:y=24`;
-      await execFileAsync("ffmpeg", ["-y", "-i", raw, "-vf", filter, "-frames:v", "1", encoded], {
-        maxBuffer: 2 * 1024 * 1024,
-      });
+    let fallbackDir: string | undefined;
+    try {
+      for (const frameName of frameNames) {
+        const raw = path.join(this.framesDir, frameName);
+        const caption = path.join(this.captionsDir, `${frameName}.txt`);
+        const encoded = path.join(this.encodedDir, frameName);
+        const args = ["-y", "-i", raw, "-vf", frameFilter(targetWidth, targetHeight, font, caption), "-frames:v", "1", encoded];
+        try {
+          await execFileAsync("ffmpeg", args, { maxBuffer: 2 * 1024 * 1024 });
+        } catch (error) {
+          if (!hasFilterPathDelimiter(font) && !hasFilterPathDelimiter(caption)) throw error;
+          fallbackDir ??= await mkdtemp(path.join(tmpdir(), "seed-harness-filter-"));
+          const fallbackFont = path.join(fallbackDir, "font.ttf");
+          const fallbackCaption = path.join(fallbackDir, `${frameName}.txt`);
+          await copyFile(font, fallbackFont);
+          await copyFile(caption, fallbackCaption);
+          await execFileAsync(
+            "ffmpeg",
+            ["-y", "-i", raw, "-vf", frameFilter(targetWidth, targetHeight, fallbackFont, fallbackCaption), "-frames:v", "1", encoded],
+            { maxBuffer: 2 * 1024 * 1024 },
+          );
+        }
+      }
+      const output = path.join(this.runDir, "video.mp4");
+      await execFileAsync(
+        "ffmpeg",
+        ["-y", "-framerate", "1", "-pattern_type", "glob", "-i", path.join(this.encodedDir, "*.png"), "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-c:v", "libx264", "-pix_fmt", "yuv420p", output],
+        { maxBuffer: 2 * 1024 * 1024 },
+      );
+      return output;
+    } finally {
+      if (fallbackDir) await rm(fallbackDir, { recursive: true, force: true });
     }
-    const output = path.join(this.runDir, "video.mp4");
-    await execFileAsync(
-      "ffmpeg",
-      ["-y", "-framerate", "1", "-pattern_type", "glob", "-i", path.join(this.encodedDir, "*.png"), "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2", "-c:v", "libx264", "-pix_fmt", "yuv420p", output],
-      { maxBuffer: 2 * 1024 * 1024 },
-    );
-    return output;
   }
+}
+
+function frameFilter(width: number, height: number, font: string, caption: string): string {
+  return `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black,drawtext=fontfile='${escapeFilterPath(font)}':textfile='${escapeFilterPath(caption)}':fontcolor=white:fontsize=28:box=1:boxcolor=black@0.72:boxborderw=12:x=24:y=24`;
+}
+
+function hasFilterPathDelimiter(filePath: string): boolean {
+  return /[:,'\\[\]]/.test(filePath);
+}
+
+/** Escape backslashes and quotes in paths embedded in an ffmpeg filter. */
+export function escapeFilterPath(filePath: string): string {
+  return filePath.replaceAll("\\", "\\\\").replaceAll("'", "\\'");
 }
 
 async function probeDimensions(filePath: string): Promise<{ width: number; height: number }> {
