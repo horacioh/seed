@@ -88,16 +88,11 @@ export class BrowserDriver {
       throw new Error("BrowserDriver.launch() must be called before open()");
     }
     const context = this.browser.contexts()[0] ?? (await this.browser.newContext());
-    const existingPages = context.pages();
-    this.page = existingPages[0] ?? (await context.newPage());
-    if (existingPages.length === 0) {
-      this.ownedPages.push(this.page);
-    }
+    this.page = await context.newPage();
+    this.ownedPages.push(this.page);
     this.subscribe(this.page);
     if (url) {
       await this.goto(url);
-    } else {
-      await this.goto("about:blank");
     }
     return this.page;
   }

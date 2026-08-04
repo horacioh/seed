@@ -147,7 +147,7 @@ test("markdownReport escapes tags without mangling ordinary text", () => {
       evidence: [],
     }],
   }));
-  assert.match(markdown, /&lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.ok(markdown.includes("&lt;img src=x onerror=alert\\(1\\)&gt;"));
   assert.match(markdown, /Don't submit "now" & wait/);
   assert.doesNotMatch(markdown, /&#39;|&amp;|&quot;/);
   assert.match(markdown, /`` a`b ``/);
@@ -155,9 +155,34 @@ test("markdownReport escapes tags without mangling ordinary text", () => {
 
 test("Markdown helpers handle tags and backtick-safe code spans", () => {
   assert.equal(escapeMarkdownText("<tag> & 'quote'"), "&lt;tag&gt; & 'quote'");
+  assert.equal(escapeMarkdownText("![image](https://attacker/pixel)"), "\\!\\[image\\]\\(https://attacker/pixel\\)");
+  assert.equal(escapeMarkdownText("[link](javascript:alert(1))"), "\\[link\\]\\(javascript:alert\\(1\\)\\)");
   assert.equal(mdInlineCode("plain"), "`plain`");
   assert.equal(mdInlineCode("a`b"), "`` a`b ``");
   assert.equal(mdInlineCode("a``b"), "``` a``b ```");
+});
+
+test("markdownReport neutralizes link and image injection in page text", () => {
+  const markdown = markdownReport(report({
+    assertions: [{
+      ...report().assertions[0],
+      message: "![x](https://attacker/pixel)",
+    }],
+    findings: [{
+      id: "finding-1",
+      severity: "high",
+      title: "[link](javascript:alert(1))",
+      status: "confirmed",
+      reproSteps: [],
+      expected: "safe",
+      actual: "![x](https://attacker/pixel)",
+      evidence: [],
+    }],
+  }));
+  assert.match(markdown, /\\!\\\[x\\\]\\\(https:\/\/attacker\/pixel\\\)/);
+  assert.match(markdown, /\\\[link\\\]\\\(javascript:alert\\\(1\\\)\\\)/);
+  assert.doesNotMatch(markdown, /(?<!\\)\]\(https:\/\/attacker/);
+  assert.doesNotMatch(markdown, /(?<!\\)\]\(javascript:/);
 });
 
 test("assertWithEvidence preserves a passing verdict when capture fails", async () => {

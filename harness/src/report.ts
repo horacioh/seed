@@ -63,12 +63,15 @@ export function markdownReport(report: WebTestReport): string {
 }
 
 /**
- * Escape Markdown tag delimiters without entity-mangling ordinary text.
- * CommonMark renders these entities as literal angle brackets, keeping
- * injected HTML inert while preserving apostrophes, ampersands, and quotes.
+ * Neutralize Markdown control characters in untrusted text so page-derived
+ * content cannot inject links, images, code spans, raw HTML, or emphasis into
+ * reports. Ordinary punctuation remains readable.
  */
 export function escapeMarkdownText(value: string): string {
-  return value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  return value
+    .replace(/[\\`*_[\]()!~|]/g, (character) => `\\${character}`)
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 /** Wrap a value in a CommonMark code span using a safe backtick fence. */
