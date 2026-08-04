@@ -96,6 +96,8 @@ export class BrowserDriver {
     this.subscribe(this.page);
     if (url) {
       await this.goto(url);
+    } else {
+      await this.goto("about:blank");
     }
     return this.page;
   }

@@ -9,7 +9,8 @@ export const scenario: Scenario = {
     { action: "goto", url: "http://127.0.0.1:39777", description: "Open the sample app" },
     { action: "assert", kind: "visible", locator: { testId: "login-form" }, expected: true, description: "Login form is visible" },
     { action: "type", locator: { testId: "username" }, value: "demo-user", description: "Enter the demo username" },
-    { action: "type", locator: { testId: "password" }, value: "demo-password", secret: true, description: "Enter the demo password" },
+    // Real scenarios should source credentials from the environment or a secret broker, not commit them.
+    { action: "type", locator: { testId: "password" }, value: process.env.HARNESS_SAMPLE_PASSWORD ?? "demo-password", secret: true, description: "Enter the demo password" },
     { action: "click", locator: { testId: "login-submit" }, description: "Submit the login form" },
     { action: "assert", kind: "visible", locator: { testId: "todo-view" }, expected: true, description: "Todo view is visible" },
     { action: "type", locator: { testId: "todo-input" }, value: "Prepare demo", description: "Type the first todo" },
