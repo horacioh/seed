@@ -62,7 +62,7 @@ export async function runScenario(
             assertionResult = await assertWithEvidence(driver, recorder, `assertion-${index + 1}`, spec.description, spec.kind, spec.locator, spec.expected, scenario.name);
             assertionResult.assertion.evidence = assertionResult.assertion.evidence.map((evidence) => relative(runDir, evidence));
             assertions.push(assertionResult.assertion);
-            screenshotRef = relative(runDir, assertionResult.screenshotRef);
+            screenshotRef = assertionResult.screenshotRef ? relative(runDir, assertionResult.screenshotRef) : "";
             if (assertionResult.assertion.status !== "pass") {
               status = "fail";
               findings.push({

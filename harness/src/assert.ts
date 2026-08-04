@@ -13,19 +13,32 @@ export async function assertWithEvidence(
   expected: unknown,
   testName: string,
 ): Promise<{ assertion: UiAssertion; screenshotRef: string }> {
+  const verdict = await driver.assert(kind, locator, expected);
+  const frameResult: "passed" | "failed" = verdict.status === "pass" ? "passed" : "failed";
+  let evidence: string[] = [];
+  let screenshotRef = "";
   try {
-    const { actual } = await driver.assert(kind, locator, expected);
-    const frame = await recorder.capture(driver, description, "passed", "assertion", testName, description);
-    return {
-      assertion: { id, kind, locator, expected, actual, status: "pass", evidence: [frame.framePath], message: description },
-      screenshotRef: frame.framePath,
-    };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    const frame = await recorder.capture(driver, description, "failed", "assertion", testName, description);
-    return {
-      assertion: { id, kind, locator, expected, actual: undefined, status: "fail", evidence: [frame.framePath], message },
-      screenshotRef: frame.framePath,
-    };
+    const frame = await recorder.capture(driver, description, frameResult, "assertion", testName, description);
+    evidence = [frame.framePath];
+    screenshotRef = frame.framePath;
+  } catch (captureError) {
+    process.stderr.write(
+      `Evidence capture failed for assertion "${description}": ${
+        captureError instanceof Error ? captureError.message : String(captureError)
+      }\n`,
+    );
   }
+  return {
+    assertion: {
+      id,
+      kind,
+      locator,
+      expected,
+      actual: verdict.actual,
+      status: verdict.status,
+      evidence,
+      message: verdict.message ?? description,
+    },
+    screenshotRef,
+  };
 }

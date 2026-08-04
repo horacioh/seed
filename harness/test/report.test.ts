@@ -3,6 +3,9 @@ import { mkdtemp, readFile, rm } from "node:fs/promises";
 import test from "node:test";
 import os from "node:os";
 import path from "node:path";
+import { assertWithEvidence } from "../src/assert.js";
+import type { BrowserDriver } from "../src/driver.js";
+import type { FrameRecorder } from "../src/recorder.js";
 import { escapeMarkdownText, markdownReport, mdInlineCode, writeReports } from "../src/report.js";
 import type { WebTestReport } from "../src/types.js";
 
@@ -155,4 +158,67 @@ test("Markdown helpers handle tags and backtick-safe code spans", () => {
   assert.equal(mdInlineCode("plain"), "`plain`");
   assert.equal(mdInlineCode("a`b"), "`` a`b ``");
   assert.equal(mdInlineCode("a``b"), "``` a``b ```");
+});
+
+test("assertWithEvidence preserves a passing verdict when capture fails", async () => {
+  const driver = {
+    assert: async () => ({ status: "pass", actual: "observed" as unknown }),
+  } as BrowserDriver;
+  const recorder = {
+    capture: async () => {
+      throw new Error("simulated capture failure");
+    },
+  } as unknown as FrameRecorder;
+  let stderr = "";
+  const originalWrite = process.stderr.write;
+  process.stderr.write = ((chunk: string | Uint8Array) => {
+    stderr += String(chunk);
+    return true;
+  }) as typeof process.stderr.write;
+  try {
+    const result = await assertWithEvidence(
+      driver,
+      recorder,
+      "assertion-1",
+      "Observed value",
+      "text",
+      { css: "#value" },
+      "observed",
+      "Capture failure scenario",
+    );
+    assert.equal(result.assertion.status, "pass");
+    assert.equal(result.assertion.actual, "observed");
+    assert.deepEqual(result.assertion.evidence, []);
+    assert.equal(result.screenshotRef, "");
+    assert.match(stderr, /Evidence capture failed for assertion "Observed value": simulated capture failure/);
+  } finally {
+    process.stderr.write = originalWrite;
+  }
+});
+
+test("assertWithEvidence preserves the observed value for a failed verdict", async () => {
+  const driver = {
+    assert: async () => ({
+      status: "fail",
+      actual: "observed" as unknown,
+      message: "Expected expected, received observed",
+    }),
+  } as BrowserDriver;
+  const recorder = {
+    capture: async () => ({ framePath: "frames/0001.png", marker: {} }),
+  } as unknown as FrameRecorder;
+  const result = await assertWithEvidence(
+    driver,
+    recorder,
+    "assertion-1",
+    "Observed value",
+    "text",
+    { css: "#value" },
+    "expected",
+    "Failed assertion scenario",
+  );
+  assert.equal(result.assertion.status, "fail");
+  assert.equal(result.assertion.actual, "observed");
+  assert.equal(result.assertion.message, "Expected expected, received observed");
+  assert.deepEqual(result.assertion.evidence, ["frames/0001.png"]);
 });

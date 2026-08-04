@@ -8,6 +8,13 @@ export function redactExactSecrets(text: string, secretValues: string[]): string
   return secretValues.reduce((redacted, secretValue) => redacted.replaceAll(secretValue, "[REDACTED]"), text);
 }
 
+/** Outcome of evaluating one normalized assertion: verdict, observed value, and optional failure message. */
+export interface AssertionOutcome {
+  status: "pass" | "fail";
+  actual: unknown;
+  message?: string;
+}
+
 /** A Playwright-over-CDP browser driver with a launch fallback. */
 export class BrowserDriver {
   private browser?: Browser;
@@ -152,20 +159,24 @@ export class BrowserDriver {
     kind: UiAssertion["kind"],
     locator: Locator | undefined,
     expected: unknown,
-  ): Promise<{ actual: unknown; message?: string }> {
+  ): Promise<AssertionOutcome> {
     if (!this.page) throw new Error("No active page");
     if (kind === "url") {
       const actual = this.page.url();
-      if (actual !== expected) throw new Error(`Expected URL ${String(expected)}, received ${actual}`);
-      return { actual };
+      if (actual !== expected) {
+        return { status: "fail", actual, message: `Expected URL ${String(expected)}, received ${actual}` };
+      }
+      return { status: "pass", actual };
     }
     if (kind === "title") {
       const actual = await this.page.title();
-      if (expected === true && actual.length === 0) throw new Error("Expected a non-empty page title");
-      if (typeof expected === "string" && actual !== expected) {
-        throw new Error(`Expected title ${expected}, received ${actual}`);
+      if (expected === true && actual.length === 0) {
+        return { status: "fail", actual, message: "Expected a non-empty page title" };
       }
-      return { actual };
+      if (typeof expected === "string" && actual !== expected) {
+        return { status: "fail", actual, message: `Expected title ${expected}, received ${actual}` };
+      }
+      return { status: "pass", actual };
     }
     if (!locator) throw new Error(`${kind} assertions require a locator`);
     const target = this.resolveLocator(locator);
@@ -174,8 +185,10 @@ export class BrowserDriver {
         .waitFor({ state: expected === false ? "hidden" : "visible", timeout: 5_000 })
         .catch(() => undefined);
       const actual = await target.isVisible();
-      if (actual !== expected) throw new Error(`Expected visibility ${String(expected)}, received ${String(actual)}`);
-      return { actual };
+      if (actual !== expected) {
+        return { status: "fail", actual, message: `Expected visibility ${String(expected)}, received ${String(actual)}` };
+      }
+      return { status: "pass", actual };
     }
     if (kind === "count") {
       const selector = this.cssSelectorFor(locator);
@@ -191,8 +204,10 @@ export class BrowserDriver {
         // Role/text count assertions fall back to a single read.
       }
       const actual = await target.count();
-      if (actual !== expected) throw new Error(`Expected count ${String(expected)}, received ${String(actual)}`);
-      return { actual };
+      if (actual !== expected) {
+        return { status: "fail", actual, message: `Expected count ${String(expected)}, received ${String(actual)}` };
+      }
+      return { status: "pass", actual };
     }
     await waitForSelector(target);
     if (kind === "text") {
@@ -202,8 +217,10 @@ export class BrowserDriver {
         .waitFor({ state: "visible", timeout: 5_000 })
         .catch(() => undefined);
       const actual = (await target.innerText()).trim();
-      if (actual !== expected) throw new Error(`Expected text ${String(expected)}, received ${actual}`);
-      return { actual };
+      if (actual !== expected) {
+        return { status: "fail", actual, message: `Expected text ${String(expected)}, received ${actual}` };
+      }
+      return { status: "pass", actual };
     }
     if (kind === "attr") {
       const raw = String(expected);
@@ -231,13 +248,15 @@ export class BrowserDriver {
       const actual = await target.getAttribute(attribute);
       const matches = value === undefined ? actual !== null : actual === value;
       if (!matches) {
-        throw new Error(
-          value === undefined
+        return {
+          status: "fail",
+          actual,
+          message: value === undefined
             ? `Expected attribute ${attribute} to be present, received ${actual}`
             : `Expected ${attribute}=${value}, received ${actual}`,
-        );
+        };
       }
-      return { actual };
+      return { status: "pass", actual };
     }
     throw new Error(`Unsupported assertion kind: ${kind}`);
   }
