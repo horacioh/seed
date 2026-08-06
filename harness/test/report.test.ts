@@ -5,9 +5,11 @@ import os from 'node:os'
 import path from 'node:path'
 import {assertWithEvidence} from '../src/assert.js'
 import type {BrowserDriver} from '../src/driver.js'
+import {PageDriver} from '../src/page-driver.js'
 import type {FrameRecorder} from '../src/recorder.js'
 import {escapeMarkdownText, markdownReport, mdInlineCode, writeReports} from '../src/report.js'
 import type {WebTestReport} from '../src/types.js'
+import type {Page} from 'playwright-core'
 
 function report(overrides: Partial<WebTestReport> = {}): WebTestReport {
   return {
@@ -48,6 +50,42 @@ function report(overrides: Partial<WebTestReport> = {}): WebTestReport {
     findings: [],
     ...overrides,
   }
+}
+
+class MissingElementDriver extends PageDriver {
+  public constructor() {
+    super()
+    const missingLocator = {
+      waitFor: async () => {
+        throw new Error('element did not appear')
+      },
+      filter: () => ({
+        first: () => ({
+          waitFor: async () => {
+            throw new Error('element did not appear')
+          },
+        }),
+      }),
+      innerText: async () => {
+        throw new Error('element did not appear')
+      },
+      getAttribute: async () => {
+        throw new Error('element did not appear')
+      },
+    }
+    this.page = {
+      locator: () => missingLocator,
+      waitForFunction: async () => undefined,
+    } as unknown as Page
+  }
+
+  public async launch(): Promise<void> {}
+
+  public async open(): Promise<Page> {
+    return this.activePage()
+  }
+
+  public async close(): Promise<void> {}
 }
 
 test('markdownReport renders PASS, assertions, screenshots, and no findings', () => {
@@ -266,4 +304,46 @@ test('assertWithEvidence preserves the observed value for a failed verdict', asy
   assert.equal(result.assertion.actual, 'observed')
   assert.equal(result.assertion.message, 'Expected expected, received observed')
   assert.deepEqual(result.assertion.evidence, ['frames/0001.png'])
+})
+
+test('missing text and attr assertions are recorded as failed assertions', async () => {
+  const driver = new MissingElementDriver()
+  const recorder = {
+    capture: async () => ({framePath: 'frames/0001.png', marker: {}}),
+  } as unknown as FrameRecorder
+  const textResult = await assertWithEvidence(
+    driver,
+    recorder,
+    'assertion-text',
+    'Missing text',
+    'text',
+    {css: '#missing-text'},
+    'Expected text',
+    'Missing element scenario',
+  )
+  const attrResult = await assertWithEvidence(
+    driver,
+    recorder,
+    'assertion-attr',
+    'Missing attribute',
+    'attr',
+    {css: '#missing-attr'},
+    'data-state=ready',
+    'Missing element scenario',
+  )
+
+  assert.equal(textResult.assertion.status, 'fail')
+  assert.equal(textResult.assertion.actual, null)
+  assert.match(textResult.assertion.message ?? '', /Element not found while reading text/)
+  assert.equal(attrResult.assertion.status, 'fail')
+  assert.equal(attrResult.assertion.actual, null)
+  assert.match(attrResult.assertion.message ?? '', /Element not found while reading attribute/)
+
+  const markdown = markdownReport(
+    report({
+      run: {...report().run, status: 'fail'},
+      assertions: [textResult.assertion, attrResult.assertion],
+    }),
+  )
+  assert.match(markdown, /\*\*Assertions:\*\* 0 passed, 2 failed/)
 })

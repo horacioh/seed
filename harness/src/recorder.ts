@@ -3,7 +3,7 @@ import {execFile} from 'node:child_process'
 import {promisify} from 'node:util'
 import {tmpdir} from 'node:os'
 import path from 'node:path'
-import type {BrowserDriver} from './driver.js'
+import type {PageDriver} from './page-driver.js'
 import type {RecordingAnnotation} from './types.js'
 
 const execFileAsync = promisify(execFile)
@@ -38,7 +38,7 @@ export class FrameRecorder {
 
   /** Capture one screenshot and associate it with a semantic marker. */
   public async capture(
-    driver: BrowserDriver,
+    driver: PageDriver,
     label: string,
     result: 'passed' | 'failed' | 'untested',
     type: RecordingAnnotation['type'] = 'assertion',

@@ -1,10 +1,10 @@
-import type {BrowserDriver} from './driver.js'
+import type {PageDriver} from './page-driver.js'
 import type {FrameRecorder} from './recorder.js'
 import type {Locator, UiAssertion} from './types.js'
 
 /** Run a driver assertion, capture evidence, and emit a pass/fail marker. */
 export async function assertWithEvidence(
-  driver: BrowserDriver,
+  driver: PageDriver,
   recorder: FrameRecorder,
   id: string,
   description: string,

@@ -2,6 +2,8 @@ import {mkdir, writeFile} from 'node:fs/promises'
 import path from 'node:path'
 import {assertWithEvidence} from './assert.js'
 import {BrowserDriver} from './driver.js'
+import {ElectronDriver} from './electron-driver.js'
+import type {PageDriver} from './page-driver.js'
 import {writeReports} from './report.js'
 import {FrameRecorder} from './recorder.js'
 import type {
@@ -20,6 +22,11 @@ export interface RunOptions {
   cdpUrl: string
   outputRoot: string
   url?: string
+  electron?: {
+    main: string
+    executable: string
+    args?: string[]
+  }
 }
 
 /** Run a scenario, always finalize evidence, and return its report path and status. */
@@ -30,7 +37,7 @@ export async function runScenario(
   const runId = `run-${new Date().toISOString().replaceAll(/[:.]/g, '-')}`
   const runDir = path.resolve(options.outputRoot, runId)
   await mkdir(runDir, {recursive: true})
-  const driver = new BrowserDriver(options.cdpUrl)
+  const driver: PageDriver = options.electron ? new ElectronDriver(options.electron) : new BrowserDriver(options.cdpUrl)
   const recorder = new FrameRecorder(runDir)
   const steps: UiTestStep[] = []
   const assertions = []
@@ -55,7 +62,7 @@ export async function runScenario(
       await recorder.start()
       await driver.launch()
       await driver.open()
-      if (options.url) await driver.goto(options.url)
+      if (options.url && !options.electron) await driver.goto(options.url)
       await recorder.capture(driver, scenario.setup ?? 'Harness setup', 'untested', 'setup', scenario.name)
       await recorder.capture(driver, scenario.name, 'untested', 'test_start', scenario.name)
       for (const [index, spec] of scenario.steps.entries()) {

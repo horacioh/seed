@@ -10,6 +10,9 @@ interface CliOptions {
   scenario?: string
   cdp: string
   out: string
+  electronMain?: string
+  electronExecutable?: string
+  electronArgs?: string[]
 }
 
 /** Parse the small command-line surface for the standalone harness. */
@@ -17,11 +20,21 @@ export function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {cdp: 'http://localhost:29229', out: 'artifacts'}
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index]
+    if (arg === '--') continue
     if (arg === '--url') options.url = requiredValue(argv, ++index, arg)
     else if (arg === '--scenario') options.scenario = requiredValue(argv, ++index, arg)
     else if (arg === '--cdp') options.cdp = requiredValue(argv, ++index, arg)
     else if (arg === '--out') options.out = requiredValue(argv, ++index, arg)
+    else if (arg === '--electron-main') options.electronMain = requiredValue(argv, ++index, arg)
+    else if (arg === '--electron-executable') options.electronExecutable = requiredValue(argv, ++index, arg)
+    else if (arg === '--electron-arg') (options.electronArgs ??= []).push(requiredValue(argv, ++index, arg, true))
     else throw new Error(`Unknown argument: ${arg}`)
+  }
+  if (Boolean(options.electronMain) !== Boolean(options.electronExecutable)) {
+    throw new Error('--electron-main and --electron-executable must be provided together')
+  }
+  if (options.url && (options.electronMain || options.electronExecutable)) {
+    throw new Error('--url cannot be combined with an Electron target')
   }
   return options
 }
@@ -33,7 +46,7 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
   const scenario = await loadScenario(options, harnessRoot)
   let server: ChildProcess | undefined
   try {
-    if (!options.url && !options.scenario) {
+    if (!options.url && !options.scenario && !options.electronMain) {
       server = spawn(process.execPath, [path.join(harnessRoot, 'sample-app', 'serve.mjs')], {
         cwd: harnessRoot,
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -43,6 +56,14 @@ export async function main(argv = process.argv.slice(2)): Promise<number> {
     const result = await runScenario(scenario, {
       cdpUrl: options.cdp,
       outputRoot: path.resolve(harnessRoot, options.out),
+      electron:
+        options.electronMain && options.electronExecutable
+          ? {
+              main: options.electronMain,
+              executable: options.electronExecutable,
+              args: options.electronArgs,
+            }
+          : undefined,
     })
     const runDir = path.dirname(result.reportPath)
     process.stdout.write(`Web harness completed: ${scenario.name}\n`)
@@ -62,8 +83,9 @@ async function loadScenario(options: CliOptions, harnessRoot: string): Promise<S
     return module.scenario
   }
   if (!options.url) {
+    const scenarioFile = options.electronMain ? 'sample.electron.ts' : 'sample.web.ts'
     const module = (await import(
-      pathToFileURL(path.join(harnessRoot, 'scenarios', 'sample.web.ts')).href
+      pathToFileURL(path.join(harnessRoot, 'scenarios', scenarioFile)).href
     )) as ScenarioModule
     return module.scenario
   }
@@ -78,9 +100,9 @@ async function loadScenario(options: CliOptions, harnessRoot: string): Promise<S
   }
 }
 
-function requiredValue(argv: string[], index: number, option: string): string {
+function requiredValue(argv: string[], index: number, option: string, allowFlagValue = false): string {
   const value = argv[index]
-  if (!value || value.startsWith('--')) throw new Error(`${option} requires a value`)
+  if (!value || (!allowFlagValue && value.startsWith('--'))) throw new Error(`${option} requires a value`)
   return value
 }
 
