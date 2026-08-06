@@ -86,31 +86,31 @@ export abstract class PageDriver {
     return this.page.locator(locator.css)
   }
 
-  /** Execute a step with visible auto-waiting and three bounded retries. */
+  /** Wait for a step target with three bounded retries, then dispatch once. */
   public async act(
     step: Extract<StepSpec, {action: 'click' | 'type' | 'select' | 'hover' | 'press' | 'drag'}>,
   ): Promise<void> {
+    if (step.action === 'drag' && !step.value) {
+      throw new Error('Drag steps require a target CSS selector in value')
+    }
     const locator = this.resolveLocator(step.locator)
     let lastError: unknown
     for (let attempt = 0; attempt < 3; attempt += 1) {
       try {
         await waitForSelector(locator)
-        if (step.action === 'click') await locator.click()
-        if (step.action === 'type') await locator.fill(step.value ?? '')
-        if (step.action === 'select') await locator.selectOption(step.value ?? '')
-        if (step.action === 'hover') await locator.hover()
-        if (step.action === 'press') await locator.press(step.value ?? 'Enter')
-        if (step.action === 'drag') {
-          if (!step.value) throw new Error('Drag steps require a target CSS selector in value')
-          await locator.dragTo(this.page!.locator(step.value))
-        }
-        return
+        break
       } catch (error) {
         lastError = error
-        if (attempt === 2) break
+        if (attempt < 2) continue
+        throw lastError instanceof Error ? lastError : new Error(String(lastError))
       }
     }
-    throw lastError instanceof Error ? lastError : new Error(String(lastError))
+    if (step.action === 'click') await locator.click()
+    if (step.action === 'type') await locator.fill(step.value ?? '')
+    if (step.action === 'select') await locator.selectOption(step.value ?? '')
+    if (step.action === 'hover') await locator.hover()
+    if (step.action === 'press') await locator.press(step.value ?? 'Enter')
+    if (step.action === 'drag') await locator.dragTo(this.page!.locator(step.value!))
   }
 
   /** Evaluate one normalized assertion against the active page. */

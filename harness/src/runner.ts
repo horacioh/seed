@@ -243,7 +243,7 @@ export async function runScenario(
     findings,
     reportRef: 'report.html',
   }
-  return {reportPath: await writeReports(runDir, report), failed}
+  return {reportPath: await writeReports(runDir, report, secretValues), failed}
 }
 
 function relative(runDir: string, filePath: string): string {

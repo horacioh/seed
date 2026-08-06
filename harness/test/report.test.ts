@@ -165,6 +165,26 @@ test('errored steps use the run FAIL verdict in Markdown and HTML', async () => 
   }
 })
 
+test('writeReports recursively redacts JSON-escaped secret values', async () => {
+  const secret = 'quoted "secret"'
+  const runDir = await mkdtemp(path.join(os.tmpdir(), 'seed-harness-report-secret-'))
+  try {
+    await writeReports(
+      runDir,
+      report({
+        evidence: {...report().evidence, screenshots: []},
+        assertions: [{...report().assertions[0], actual: `Observed ${secret}`}],
+      }),
+      [secret],
+    )
+    const results = await readFile(path.join(runDir, 'results.json'), 'utf8')
+    assert.doesNotMatch(results, /quoted \\"secret\\"/)
+    assert.match(results, /\[REDACTED\]/)
+  } finally {
+    await rm(runDir, {recursive: true, force: true})
+  }
+})
+
 test('markdownReport escapes tags without mangling ordinary text', () => {
   const markdown = markdownReport(
     report({

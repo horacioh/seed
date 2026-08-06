@@ -1,16 +1,22 @@
 import {readFile, writeFile} from 'node:fs/promises'
 import path from 'node:path'
+import {redactExactSecrets} from './page-driver.js'
 import type {Finding, WebTestReport} from './types.js'
 
 /** Write machine-readable and human-readable artifacts for a web test run. */
-export async function writeReports(runDir: string, report: WebTestReport): Promise<string> {
+export async function writeReports(
+  runDir: string,
+  report: WebTestReport,
+  secretValues: string[] = [],
+): Promise<string> {
+  const redactedReport = redactReport(report, secretValues)
   const resultsPath = path.join(runDir, 'results.json')
   const markersPath = path.join(runDir, 'markers.json')
   const htmlPath = path.join(runDir, 'report.html')
   const markdownPath = path.join(runDir, 'RUN-REPORT.md')
-  await writeFile(resultsPath, `${JSON.stringify(report, null, 2)}\n`)
-  await writeFile(markersPath, `${JSON.stringify(report.evidence.annotations, null, 2)}\n`)
-  const screenshots = report.evidence.screenshots
+  await writeFile(resultsPath, `${JSON.stringify(redactedReport, null, 2)}\n`)
+  await writeFile(markersPath, `${JSON.stringify(redactedReport.evidence.annotations, null, 2)}\n`)
+  const screenshots = redactedReport.evidence.screenshots
   const imageMarkup = await Promise.all(
     screenshots.map(async (relative) => {
       const data = await readFile(path.join(runDir, relative))
@@ -21,18 +27,18 @@ export async function writeReports(runDir: string, report: WebTestReport): Promi
   )
   const videoPath = path.join(runDir, 'video.mp4')
   const video = await readFile(videoPath).catch(() => undefined)
-  const passed = report.assertions.filter((assertion) => assertion.status === 'pass').length
-  const failedAssertions = report.assertions.filter((assertion) => assertion.status !== 'pass').length
-  const failed = report.run.status !== 'pass'
+  const passed = redactedReport.assertions.filter((assertion) => assertion.status === 'pass').length
+  const failedAssertions = redactedReport.assertions.filter((assertion) => assertion.status !== 'pass').length
+  const failed = redactedReport.run.status !== 'pass'
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(
-    report.scenarioTestCase.name,
+    redactedReport.scenarioTestCase.name,
   )}</title>
 <style>body{font:15px system-ui,sans-serif;max-width:1100px;margin:32px auto;padding:0 20px;color:#172033}h1{color:#174a7c}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccd5df;padding:8px;text-align:left;vertical-align:top}th{background:#eaf1f7}.pass{color:#167447}.fail{color:#b42318}figure{display:inline-block;width:45%;vertical-align:top;margin:10px}figure img{max-width:100%;border:1px solid #ccd5df}video{max-width:100%;border:1px solid #ccd5df}.finding{border-left:4px solid #b42318;padding:8px 12px;background:#fff3f2}</style></head><body>
-<h1>${escapeHtml(report.scenarioTestCase.name)}</h1><p><strong class="${failed ? 'fail' : 'pass'}">${
+<h1>${escapeHtml(redactedReport.scenarioTestCase.name)}</h1><p><strong class="${failed ? 'fail' : 'pass'}">${
     failed ? 'FAIL' : 'PASS'
   }</strong> — ${passed} assertions passed, ${failedAssertions} failed</p>
 <h2>Steps</h2><table><thead><tr><th>Step</th><th>Action</th><th>Value</th><th>Status</th><th>Evidence</th></tr></thead><tbody>
-${report.steps
+${redactedReport.steps
   .map(
     (step) =>
       `<tr><td>${escapeHtml(step.description ?? step.id)}</td><td>${escapeHtml(step.action)}</td><td>${escapeHtml(
@@ -43,7 +49,7 @@ ${report.steps
   )
   .join('')}
 </tbody></table><h2>Assertions</h2><table><thead><tr><th>Assertion</th><th>Expected</th><th>Actual</th><th>Status</th></tr></thead><tbody>
-${report.assertions
+${redactedReport.assertions
   .map(
     (assertion) =>
       `<tr><td>${escapeHtml(assertion.message ?? assertion.id)}</td><td>${escapeHtml(
@@ -59,11 +65,24 @@ ${report.assertions
       : '<p>Video unavailable.</p>'
   }
 <h2>Screenshots</h2>${imageMarkup.join('')}<h2>Findings</h2>${
-    report.findings.length ? report.findings.map(renderFinding).join('') : '<p>No findings.</p>'
+    redactedReport.findings.length ? redactedReport.findings.map(renderFinding).join('') : '<p>No findings.</p>'
   }</body></html>`
   await writeFile(htmlPath, html)
-  await writeFile(markdownPath, markdownReport(report))
+  await writeFile(markdownPath, markdownReport(redactedReport))
   return markdownPath
+}
+
+function redactReport(report: WebTestReport, secretValues: string[]): WebTestReport {
+  return redactValue(report, secretValues) as WebTestReport
+}
+
+function redactValue(value: unknown, secretValues: string[]): unknown {
+  if (typeof value === 'string') return redactExactSecrets(value, secretValues)
+  if (Array.isArray(value)) return value.map((item) => redactValue(item, secretValues))
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, redactValue(item, secretValues)]))
+  }
+  return value
 }
 
 /** Render the concise Markdown report with inline screenshot links. */
