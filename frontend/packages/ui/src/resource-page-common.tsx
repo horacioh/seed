@@ -2671,7 +2671,7 @@ function EditableDocumentHeader({
   const isEditing = useDocumentSelector(selectIsEditing)
   const focusTitleOnMount = useDocumentSelector(selectShouldFocusDraftTitle)
   const send = useDocumentSend()
-  const requestSummaryRef = useRef<(() => void) | null>(null)
+  const [summaryRequested, setSummaryRequested] = useState(false)
 
   // Use machine context metadata if it has been changed, otherwise fall back to document metadata
   const name = ctx.metadata?.name ?? docMetadata?.name ?? ''
@@ -2689,7 +2689,7 @@ function EditableDocumentHeader({
       version={version}
       mobileBylineAction={
         <DocumentMetadataAffordanceButtons
-          metadata={metadata as any}
+          metadata={metadata}
           visible
           mobileOnly
           fileUpload={fileUpload}
@@ -2700,7 +2700,7 @@ function EditableDocumentHeader({
             send({type: 'change', metadata})
           }}
           onRequestSummary={() => {
-            requestSummaryRef.current?.()
+            setSummaryRequested(true)
           }}
         />
       }
@@ -2717,7 +2717,7 @@ function EditableDocumentHeader({
       <EditableDocumentMetadataFields
         name={name}
         summary={summary}
-        metadata={metadata as any}
+        metadata={metadata}
         fileUpload={fileUpload}
         focusTitleOnMount={focusTitleOnMount}
         onBeginEdit={() => {
@@ -2734,7 +2734,8 @@ function EditableDocumentHeader({
         onSummaryEnter={() => {
           send({type: 'edit.start', cursorPosition: 'end'})
         }}
-        requestSummaryRef={requestSummaryRef}
+        summaryRequested={summaryRequested}
+        onSummaryRequestedChange={setSummaryRequested}
       />
     </DocumentHeader>
   )
