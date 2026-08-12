@@ -11,6 +11,19 @@ import {
 ;(globalThis as typeof globalThis & {React?: typeof React; IS_REACT_ACT_ENVIRONMENT?: boolean}).React = React
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT = true
 
+if (!('PointerEvent' in window)) {
+  ;(window as any).PointerEvent = MouseEvent
+}
+if (!HTMLElement.prototype.hasPointerCapture) {
+  HTMLElement.prototype.hasPointerCapture = () => false
+}
+if (!HTMLElement.prototype.setPointerCapture) {
+  HTMLElement.prototype.setPointerCapture = () => {}
+}
+if (!HTMLElement.prototype.releasePointerCapture) {
+  HTMLElement.prototype.releasePointerCapture = () => {}
+}
+
 let container: HTMLDivElement
 let root: Root
 
@@ -45,6 +58,14 @@ function renderButtons(props: Partial<React.ComponentProps<typeof DocumentMetada
 
 function buttonWithText(text: string): HTMLButtonElement | null {
   return Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes(text)) ?? null
+}
+
+function openMobileMenu() {
+  act(() => {
+    container
+      .querySelector<HTMLButtonElement>('button[aria-label="Add document metadata"]')
+      ?.dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, cancelable: true, button: 0, ctrlKey: false}))
+  })
 }
 
 function ControlledEditableDocumentMetadataFields(
@@ -137,6 +158,76 @@ describe('DocumentMetadataAffordanceButtons', () => {
 
     expect(affordanceRow.className).toContain('opacity-100')
     expect(affordanceRow.className).toContain('md:opacity-0')
+  })
+
+  it('shows only the gated actions in the mobile Add menu', () => {
+    renderButtons({mobileOnly: true, fileUpload: vi.fn(), metadata: {icon: 'ipfs://icon-cid'}})
+
+    expect(container.querySelectorAll('button')).toHaveLength(1)
+    openMobileMenu()
+
+    const items = Array.from(document.body.querySelectorAll('[role="menuitem"]')).map(
+      (item) => item.textContent?.trim(),
+    )
+    expect(items).toEqual(['Add Summary', 'Add cover image'])
+  })
+
+  it('renders no mobile Add trigger when every action is gated off', () => {
+    renderButtons({
+      mobileOnly: true,
+      fileUpload: vi.fn(),
+      metadata: {icon: 'ipfs://icon-cid', cover: 'ipfs://cover-cid', summary: 'A summary'},
+    })
+
+    expect(container.querySelector('button[aria-label="Add document metadata"]')).toBeNull()
+  })
+
+  it('uploads an icon selected from the mobile Add menu', async () => {
+    const fileUpload = vi.fn(async () => 'bafyicon')
+    const onMetadata = vi.fn()
+    renderButtons({mobileOnly: true, fileUpload, onMetadata})
+    const input = container.querySelector<HTMLInputElement>('input[aria-label="Choose document icon"]')!
+    const clickSpy = vi.spyOn(input, 'click')
+    openMobileMenu()
+
+    act(() => {
+      Array.from(document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'))
+        .find((item) => item.textContent?.includes('Add icon'))
+        ?.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+    })
+    expect(clickSpy).toHaveBeenCalledOnce()
+    const file = new File(['icon'], 'icon.png', {type: 'image/png'})
+    await act(async () => {
+      Object.defineProperty(input, 'files', {value: [file], configurable: true})
+      input.dispatchEvent(new Event('change', {bubbles: true}))
+    })
+
+    expect(fileUpload).toHaveBeenCalledWith(file)
+    expect(onMetadata).toHaveBeenCalledWith({icon: 'ipfs://bafyicon'})
+  })
+
+  it('uploads a cover selected from the mobile Add menu', async () => {
+    const fileUpload = vi.fn(async () => 'ipfs://bafycover')
+    const onMetadata = vi.fn()
+    renderButtons({mobileOnly: true, fileUpload, onMetadata, metadata: {icon: 'ipfs://icon-cid'}})
+    const input = container.querySelector<HTMLInputElement>('input[aria-label="Choose document cover image"]')!
+    const clickSpy = vi.spyOn(input, 'click')
+    openMobileMenu()
+
+    act(() => {
+      Array.from(document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'))
+        .find((item) => item.textContent?.includes('Add cover image'))
+        ?.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+    })
+    expect(clickSpy).toHaveBeenCalledOnce()
+    const file = new File(['cover'], 'cover.png', {type: 'image/png'})
+    await act(async () => {
+      Object.defineProperty(input, 'files', {value: [file], configurable: true})
+      input.dispatchEvent(new Event('change', {bubbles: true}))
+    })
+
+    expect(fileUpload).toHaveBeenCalledWith(file)
+    expect(onMetadata).toHaveBeenCalledWith({cover: 'ipfs://bafycover'})
   })
 })
 
@@ -328,6 +419,50 @@ describe('EditableDocumentMetadataFields', () => {
 
     expect(container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Document summary"]')).toBeNull()
     expect(buttonWithText('Add Summary')).not.toBeNull()
+  })
+
+  it('keeps the summary textarea focused after Add Summary closes the mobile menu', async () => {
+    function MobileSummaryHarness() {
+      const [summaryRequested, setSummaryRequested] = React.useState(false)
+      return (
+        <>
+          <DocumentMetadataAffordanceButtons
+            metadata={{}}
+            visible
+            mobileOnly
+            fileUpload={vi.fn()}
+            onMetadata={vi.fn()}
+            onRequestSummary={() => setSummaryRequested(true)}
+          />
+          <EditableDocumentMetadataFields
+            name="New page"
+            summary=""
+            metadata={{}}
+            onMetadata={vi.fn()}
+            onBeginEdit={vi.fn()}
+            summaryRequested={summaryRequested}
+            onSummaryRequestedChange={setSummaryRequested}
+          />
+        </>
+      )
+    }
+
+    act(() => {
+      root.render(<MobileSummaryHarness />)
+    })
+    openMobileMenu()
+    act(() => {
+      Array.from(document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'))
+        .find((item) => item.textContent?.includes('Add Summary'))
+        ?.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+
+    const summary = container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Document summary"]')
+    expect(summary).not.toBeNull()
+    expect(document.activeElement).toBe(summary)
   })
 })
 

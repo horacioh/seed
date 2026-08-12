@@ -91,7 +91,7 @@ export function DocumentHeader({
 
   return (
     <Container
-      className={cn('dark:bg-background relative w-full rounded-lg bg-white', hasCover ? 'pt-6' : 'pt-4 md:pt-[60px]')}
+      className={cn('dark:bg-background relative w-full rounded-lg bg-white', hasCover ? 'pt-6' : 'pt-4 md:pt-15')}
       style={{
         marginTop: hasCover ? -40 : 0,
       }}
