@@ -108,7 +108,11 @@ import {DirectoryPageContent} from './directory-page'
 import {DiscussionsPageContent} from './discussions-page'
 import {DocumentCover} from './document-cover'
 import {AuthorPayload, BreadcrumbEntry, Breadcrumbs, DocumentHeader} from './document-header'
-import {EditableDocumentMetadataFields, HomeDocumentMetadataAffordanceBar} from './document-metadata-affordances'
+import {
+  DocumentMetadataAffordanceButtons,
+  EditableDocumentMetadataFields,
+  HomeDocumentMetadataAffordanceBar,
+} from './document-metadata-affordances'
 import {DocumentMetadataView} from './document-metadata-view'
 import {DocumentTools} from './document-tools'
 import {DocumentVersionsPanel, isDocumentVersionsPanelRoute} from './document-versions-panel'
@@ -2797,6 +2801,7 @@ function EditableDocumentHeader({
   const isEditing = useDocumentSelector(selectIsEditing)
   const focusTitleOnMount = useDocumentSelector(selectShouldFocusDraftTitle)
   const send = useDocumentSend()
+  const requestSummaryRef = useRef<(() => void) | null>(null)
 
   // Use machine context metadata if it has been changed, otherwise fall back to document metadata
   const name = ctx.metadata?.name ?? docMetadata?.name ?? ''
@@ -2812,6 +2817,23 @@ function EditableDocumentHeader({
       breadcrumbs={breadcrumbs}
       visibility={visibility as any}
       version={version}
+      mobileBylineAction={
+        <DocumentMetadataAffordanceButtons
+          metadata={metadata as any}
+          visible
+          mobileOnly
+          fileUpload={fileUpload}
+          onBeforeMetadataChange={() => {
+            if (!isEditing) send({type: 'edit.start'})
+          }}
+          onMetadata={(metadata) => {
+            send({type: 'change', metadata})
+          }}
+          onRequestSummary={() => {
+            requestSummaryRef.current?.()
+          }}
+        />
+      }
       showTitle={false}
       onRemoveIcon={
         metadata.icon
@@ -2842,6 +2864,7 @@ function EditableDocumentHeader({
         onSummaryEnter={() => {
           send({type: 'edit.start', cursorPosition: 'end'})
         }}
+        requestSummaryRef={requestSummaryRef}
       />
     </DocumentHeader>
   )
