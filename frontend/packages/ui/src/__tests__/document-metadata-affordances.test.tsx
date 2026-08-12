@@ -3,7 +3,11 @@ import React from 'react'
 import {createRoot, type Root} from 'react-dom/client'
 import {act} from 'react-dom/test-utils'
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
-import {DocumentMetadataAffordanceButtons} from '../document-metadata-affordances'
+import {
+  DocumentMetadataAffordanceButtons,
+  EditableDocumentMetadataFields,
+  HomeDocumentMetadataAffordanceBar,
+} from '../document-metadata-affordances'
 ;(globalThis as typeof globalThis & {React?: typeof React; IS_REACT_ACT_ENVIRONMENT?: boolean}).React = React
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -41,6 +45,22 @@ function renderButtons(props: Partial<React.ComponentProps<typeof DocumentMetada
 
 function buttonWithText(text: string): HTMLButtonElement | null {
   return Array.from(container.querySelectorAll('button')).find((button) => button.textContent?.includes(text)) ?? null
+}
+
+function ControlledEditableDocumentMetadataFields(
+  props: Omit<
+    React.ComponentProps<typeof EditableDocumentMetadataFields>,
+    'summaryRequested' | 'onSummaryRequestedChange'
+  >,
+) {
+  const [summaryRequested, setSummaryRequested] = React.useState(false)
+  return (
+    <EditableDocumentMetadataFields
+      {...props}
+      summaryRequested={summaryRequested}
+      onSummaryRequestedChange={setSummaryRequested}
+    />
+  )
 }
 
 describe('DocumentMetadataAffordanceButtons', () => {
@@ -126,11 +146,10 @@ describe('EditableDocumentMetadataFields', () => {
       React.ComponentProps<typeof import('../document-metadata-affordances').EditableDocumentMetadataFields>
     > = {},
   ) {
-    const module = await import('../document-metadata-affordances')
     const onMetadata = props.onMetadata ?? vi.fn()
     act(() => {
       root.render(
-        <module.EditableDocumentMetadataFields
+        <ControlledEditableDocumentMetadataFields
           name="New page"
           summary=""
           metadata={{}}
@@ -254,12 +273,11 @@ describe('EditableDocumentMetadataFields', () => {
   })
 
   it('keeps the Add Summary button until the summary textarea blurs', async () => {
-    const module = await import('../document-metadata-affordances')
     const onMetadata = vi.fn()
 
     act(() => {
       root.render(
-        <module.EditableDocumentMetadataFields
+        <ControlledEditableDocumentMetadataFields
           name="New page"
           summary=""
           metadata={{}}
@@ -275,7 +293,7 @@ describe('EditableDocumentMetadataFields', () => {
 
     act(() => {
       root.render(
-        <module.EditableDocumentMetadataFields
+        <ControlledEditableDocumentMetadataFields
           name="New page"
           summary="A concise summary"
           metadata={{summary: 'A concise summary'}}
@@ -295,12 +313,11 @@ describe('EditableDocumentMetadataFields', () => {
   })
 
   it('keeps an emptied existing summary textarea visible until blur', async () => {
-    const module = await import('../document-metadata-affordances')
     const onMetadata = vi.fn()
 
     act(() => {
       root.render(
-        <module.EditableDocumentMetadataFields
+        <ControlledEditableDocumentMetadataFields
           name="New page"
           summary="A concise summary"
           metadata={{summary: 'A concise summary'}}
@@ -319,7 +336,7 @@ describe('EditableDocumentMetadataFields', () => {
 
     act(() => {
       root.render(
-        <module.EditableDocumentMetadataFields
+        <ControlledEditableDocumentMetadataFields
           name="New page"
           summary=""
           metadata={{}}
@@ -347,16 +364,10 @@ describe('HomeDocumentMetadataAffordanceBar', () => {
       React.ComponentProps<typeof import('../document-metadata-affordances').HomeDocumentMetadataAffordanceBar>
     > = {},
   ) {
-    const module = await import('../document-metadata-affordances')
     const onMetadata = props.onMetadata ?? vi.fn()
     act(() => {
       root.render(
-        <module.HomeDocumentMetadataAffordanceBar
-          metadata={{}}
-          onMetadata={onMetadata}
-          onBeginEdit={vi.fn()}
-          {...props}
-        />,
+        <HomeDocumentMetadataAffordanceBar metadata={{}} onMetadata={onMetadata} onBeginEdit={vi.fn()} {...props} />,
       )
     })
     return {onMetadata}

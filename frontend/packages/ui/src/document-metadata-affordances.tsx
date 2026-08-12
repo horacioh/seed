@@ -35,7 +35,8 @@ export type EditableDocumentMetadataFieldsProps = {
   focusTitleOnMount?: boolean
   onCancelEdit?: () => void
   onSummaryEnter?: () => void
-  requestSummaryRef?: {current: (() => void) | null}
+  summaryRequested: boolean
+  onSummaryRequestedChange: (requested: boolean) => void
 }
 
 export type HomeDocumentMetadataAffordanceBarProps = {
@@ -264,12 +265,12 @@ export function EditableDocumentMetadataFields({
   focusTitleOnMount,
   onCancelEdit,
   onSummaryEnter,
-  requestSummaryRef,
+  summaryRequested,
+  onSummaryRequestedChange,
 }: EditableDocumentMetadataFieldsProps) {
   const titleRef = useRef<HTMLTextAreaElement | null>(null)
   const summaryRef = useRef<HTMLTextAreaElement | null>(null)
   const [hovered, setHovered] = useState(false)
-  const [summaryRequested, setSummaryRequested] = useState(false)
   const [summaryFocused, setSummaryFocused] = useState(false)
   const summaryText = summary ?? ''
   const showSummaryInput = !!summaryText || summaryRequested || summaryFocused
@@ -329,16 +330,8 @@ export function EditableDocumentMetadataFields({
   }, [summaryRequested])
 
   function requestSummary() {
-    setSummaryRequested(true)
+    onSummaryRequestedChange(true)
   }
-
-  useEffect(() => {
-    if (!requestSummaryRef) return
-    requestSummaryRef.current = requestSummary
-    return () => {
-      requestSummaryRef.current = null
-    }
-  }, [requestSummaryRef, summaryText])
 
   return (
     <div
@@ -363,7 +356,7 @@ export function EditableDocumentMetadataFields({
         rows={1}
         aria-label="Document title"
         className={cn(
-          'w-full resize-none border-none border-transparent bg-transparent text-2xl leading-tight font-bold shadow-none ring-0 ring-transparent outline-none focus:ring-0 md:text-4xl md:leading-normal',
+          'w-full resize-none border-none border-transparent bg-transparent text-2xl font-bold shadow-none ring-0 ring-transparent outline-none focus:ring-0 max-md:leading-tight md:text-4xl',
           titleClassName,
         )}
         value={name}
@@ -405,7 +398,7 @@ export function EditableDocumentMetadataFields({
             onMetadata({summary: nextSummary})
           }}
           onBlur={() => {
-            setSummaryRequested(false)
+            onSummaryRequestedChange(false)
             setSummaryFocused(false)
           }}
           onKeyDown={(event) => {

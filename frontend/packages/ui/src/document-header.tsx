@@ -91,7 +91,7 @@ export function DocumentHeader({
 
   return (
     <Container
-      className={cn('dark:bg-background relative w-full rounded-lg bg-white', !hasCover && '!pt-4 md:!pt-[60px]')}
+      className={cn('dark:bg-background relative w-full rounded-lg bg-white', hasCover ? 'pt-6' : 'pt-4 md:pt-[60px]')}
       style={{
         marginTop: hasCover ? -40 : 0,
       }}
@@ -138,7 +138,7 @@ export function DocumentHeader({
           <>
             {showTitle && (
               <SizableText
-                className="text-2xl leading-tight md:text-4xl md:leading-normal lg:text-5xl"
+                className="text-2xl max-md:leading-tight md:text-4xl lg:text-5xl"
                 weight="bold"
                 {...highlighter(docId)}
               >
@@ -182,13 +182,11 @@ export function DocumentHeader({
             <div className="flex min-w-0 flex-1 items-center gap-2 md:hidden">
               {displayAuthors.length ? (
                 <>
-                  <div className="flex shrink-0 items-center pl-2">
-                    {displayAuthors.slice(0, 3).map((author, index) => (
+                  <div className="flex shrink-0 items-center -space-x-2">
+                    {displayAuthors.slice(0, 3).map((author) => (
                       <div
                         key={author.id.id}
-                        className={`dark:border-background dark:bg-background size-5 overflow-hidden rounded-full border-2 border-white bg-white ${
-                          index > 0 ? '-ml-2' : ''
-                        }`}
+                        className="dark:border-background dark:bg-background size-5 overflow-hidden rounded-full border-2 border-white bg-white"
                       >
                         <HMIcon id={author.id} name={author.metadata?.name} icon={author.metadata?.icon} size={20} />
                       </div>
