@@ -53,6 +53,8 @@ import {
   useSiteMembers,
 } from '@shm/shared/models/entity'
 import {useInteractionSummary} from '@shm/shared/models/interaction-summary'
+import {parseExploreQuery} from '@shm/shared/explore'
+import {useExploreResults} from '@shm/shared/models/explore'
 import {
   documentMachine,
   DocumentMachineProvider,
@@ -101,6 +103,7 @@ import {lazy, ReactNode, Suspense, useCallback, useEffect, useMemo, useRef, useS
 import {createPortal} from 'react-dom'
 import {AccountPage} from './account-page'
 import {AllDocumentsPage} from './all-documents-page'
+import {ExplorePage} from './explore-page'
 import {CollaboratorsPage, getRenderedCollaboratorsCount} from './collaborators-page'
 import {Popover, PopoverAnchor, PopoverContent} from './components/popover'
 import {ScrollArea} from './components/scroll-area'
@@ -388,6 +391,7 @@ export type ActiveView =
   | 'collaborators'
   | 'site-profile'
   | 'all-documents'
+  | 'explore'
   | 'metadata'
 
 /** Returns the document and focused comment rendered by a comments panel. */
@@ -666,6 +670,8 @@ function getActiveView(routeKey: string): ActiveView {
       return 'collaborators'
     case 'all-documents':
       return 'all-documents'
+    case 'explore':
+      return 'explore'
     case 'site-profile':
       return 'site-profile'
     case 'metadata':
@@ -2555,7 +2561,8 @@ function DocumentBody({
                 : activeView === 'activity' ||
                     activeView === 'directory' ||
                     activeView === 'site-profile' ||
-                    activeView === 'all-documents'
+                    activeView === 'all-documents' ||
+                    activeView === 'explore'
                   ? undefined
                   : activeView
             }
@@ -2577,14 +2584,20 @@ function DocumentBody({
                   }
             }
             activeTabAction={
-              activeView !== 'content' && activeView !== 'site-profile' && activeView !== 'all-documents' ? (
+              activeView !== 'content' &&
+              activeView !== 'site-profile' &&
+              activeView !== 'all-documents' &&
+              activeView !== 'explore' ? (
                 <OpenInPanelButton
                   id={docId}
                   panelRoute={
                     route.key === activeView
                       ? extractPanelRoute(route)
                       : {
-                          key: activeView as Exclude<ActiveView, 'content' | 'site-profile' | 'all-documents'>,
+                          key: activeView as Exclude<
+                            ActiveView,
+                            'content' | 'site-profile' | 'all-documents' | 'explore'
+                          >,
                           id: docId,
                         }
                   }
@@ -3189,7 +3202,21 @@ function MainContent({
 }) {
   const {openRouteNewWindow, originHomeId} = useUniversalAppContext()
   const navigate = useNavigate()
+  const replaceRoute = useNavigate('replace')
+  const route = useNavRoute()
   const allDocumentsSiteId = !IS_DESKTOP && originHomeId ? hmId(originHomeId.uid) : hmId(docId.uid)
+  const rawExploreQuery = route.key === 'explore' ? route.q || '' : ''
+  const legacyExploreSort =
+    route.key === 'explore' && route.sort && !/\bsort:/.test(rawExploreQuery) ? `sort:${route.sort}` : ''
+  const exploreQuery = [rawExploreQuery, legacyExploreSort].filter(Boolean).join(' ')
+  const parsedExploreQuery = useMemo(() => parseExploreQuery(exploreQuery), [exploreQuery])
+  const explore = useExploreResults(
+    parsedExploreQuery,
+    {type: 'site', id: allDocumentsSiteId},
+    {
+      enabled: activeView === 'explore',
+    },
+  )
 
   switch (activeView) {
     case 'all-documents':
@@ -3209,6 +3236,36 @@ function MainContent({
               return
             }
             navigate(route)
+          }}
+        />
+      )
+
+    case 'explore':
+      return (
+        <ExplorePage
+          contextLabel={`Site: ${allDocumentsSiteId.uid}`}
+          query={exploreQuery}
+          parsed={parsedExploreQuery}
+          results={explore.results}
+          counts={explore.counts}
+          textTerms={explore.textTerms}
+          diagnostics={explore.diagnostics}
+          blocksByDocument={explore.blocksByDocument}
+          hasMore={explore.hasMore}
+          intersectionPending={explore.intersectionPending}
+          intersectionTruncated={explore.intersectionTruncated}
+          onLoadMore={explore.loadMore}
+          isLoading={explore.isLoading}
+          error={explore.error instanceof Error ? explore.error.message : null}
+          onQueryChange={(q) => replaceRoute({key: 'explore', context: {type: 'site', id: allDocumentsSiteId}, q})}
+          accountUid={allDocumentsSiteId.uid}
+          context={{type: 'site', id: allDocumentsSiteId}}
+          onOpenResult={(result) => {
+            if (result.type === 'comment') {
+              navigate({key: 'comments', id: result.documentId, openComment: result.commentId})
+              return
+            }
+            navigate({key: 'document', id: result.id})
           }}
         />
       )
