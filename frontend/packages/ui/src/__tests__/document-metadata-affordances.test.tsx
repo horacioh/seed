@@ -330,6 +330,29 @@ describe('EditableDocumentMetadataFields', () => {
     expect(buttonWithText('Add Summary')).not.toBeNull()
   })
 
+  it('keeps an empty summary editor mounted when focus moves into a menu', async () => {
+    await renderFields()
+
+    act(() => {
+      container
+        .querySelector<HTMLButtonElement>('button[aria-label="Add document summary"]')
+        ?.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+    })
+
+    const summary = container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Document summary"]')
+    expect(summary).not.toBeNull()
+    const menu = document.createElement('div')
+    menu.setAttribute('role', 'menu')
+    document.body.appendChild(menu)
+
+    act(() => {
+      summary?.dispatchEvent(new FocusEvent('blur', {bubbles: true, relatedTarget: menu}))
+    })
+
+    expect(container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Document summary"]')).toBe(summary)
+    menu.remove()
+  })
+
   it('saves summary text as metadata and keeps the editor visible after blur', async () => {
     const onMetadata = vi.fn()
     await renderFields({onMetadata})
