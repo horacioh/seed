@@ -68,8 +68,8 @@ export function DocumentMetadataAffordanceButtons({
 }: DocumentMetadataAffordanceButtonsProps) {
   const iconInputRef = useRef<HTMLInputElement>(null)
   const coverInputRef = useRef<HTMLInputElement>(null)
+  const summaryMenuRequestedRef = useRef(false)
   const [uploading, setUploading] = useState<MetadataAffordanceKey | null>(null)
-  const [summaryMenuRequested, setSummaryMenuRequested] = useState(false)
   const hasIcon = !!metadata?.icon
   const hasCover = !!metadata?.cover
   const hasSummary = !!metadata?.summary
@@ -121,7 +121,7 @@ export function DocumentMetadataAffordanceButtons({
             label: 'Add Summary',
             icon: <FileText className="size-3.5" />,
             onClick: () => {
-              setSummaryMenuRequested(true)
+              summaryMenuRequestedRef.current = true
               onBeforeMetadataChange?.()
               onRequestSummary()
             },
@@ -178,8 +178,8 @@ export function DocumentMetadataAffordanceButtons({
             </Button>
           }
           onCloseAutoFocus={(event) => {
-            if (summaryMenuRequested) event.preventDefault()
-            setSummaryMenuRequested(false)
+            if (summaryMenuRequestedRef.current) event.preventDefault()
+            summaryMenuRequestedRef.current = false
           }}
         />
       </div>

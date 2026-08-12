@@ -68,6 +68,17 @@ function openMobileMenu() {
   })
 }
 
+function activateMenuItem(item: HTMLElement) {
+  act(() => {
+    item.dispatchEvent(new PointerEvent('pointerdown', {bubbles: true, cancelable: true, button: 0, ctrlKey: false}))
+    item.dispatchEvent(new PointerEvent('pointerup', {bubbles: true, cancelable: true, button: 0, ctrlKey: false}))
+    item.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+    document.body
+      .querySelector<HTMLElement>('[data-radix-menu-content]')
+      ?.dispatchEvent(new Event('animationend', {bubbles: true}))
+  })
+}
+
 function ControlledEditableDocumentMetadataFields(
   props: Omit<
     React.ComponentProps<typeof EditableDocumentMetadataFields>,
@@ -478,10 +489,59 @@ describe('EditableDocumentMetadataFields', () => {
       root.render(<MobileSummaryHarness />)
     })
     openMobileMenu()
+    activateMenuItem(
+      Array.from(document.body.querySelectorAll<HTMLElement>('[role="menuitem"]')).find(
+        (item) => item.textContent?.includes('Add Summary'),
+      )!,
+    )
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+
+    const summary = container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Document summary"]')
+    expect(summary).not.toBeNull()
+    expect(document.activeElement).toBe(summary)
+  })
+
+  it('keeps the summary textarea focused after keyboard Add Summary activation', async () => {
+    function MobileSummaryHarness() {
+      const [summaryRequested, setSummaryRequested] = React.useState(false)
+      return (
+        <>
+          <DocumentMetadataAffordanceButtons
+            metadata={{}}
+            visible
+            mobileOnly
+            fileUpload={vi.fn()}
+            onMetadata={vi.fn()}
+            onRequestSummary={() => setSummaryRequested(true)}
+          />
+          <EditableDocumentMetadataFields
+            name="New page"
+            summary=""
+            metadata={{}}
+            onMetadata={vi.fn()}
+            onBeginEdit={vi.fn()}
+            summaryRequested={summaryRequested}
+            onSummaryRequestedChange={setSummaryRequested}
+          />
+        </>
+      )
+    }
+
     act(() => {
-      Array.from(document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'))
-        .find((item) => item.textContent?.includes('Add Summary'))
-        ?.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+      root.render(<MobileSummaryHarness />)
+    })
+    const trigger = container.querySelector<HTMLButtonElement>('button[aria-label="Add document metadata"]')!
+    act(() => {
+      trigger.focus()
+      trigger.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}))
+    })
+    const summaryItem = Array.from(document.body.querySelectorAll<HTMLElement>('[role="menuitem"]')).find(
+      (item) => item.textContent?.includes('Add Summary'),
+    )!
+    act(() => {
+      summaryItem.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}))
     })
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 0))
