@@ -123,7 +123,6 @@ export function DocumentMetadataAffordanceButtons({
             onClick: () => {
               summaryMenuRequestedRef.current = true
               onBeforeMetadataChange?.()
-              onRequestSummary()
             },
           }
         : null,
@@ -178,7 +177,10 @@ export function DocumentMetadataAffordanceButtons({
             </Button>
           }
           onCloseAutoFocus={(event) => {
-            if (summaryMenuRequestedRef.current) event.preventDefault()
+            if (summaryMenuRequestedRef.current) {
+              event.preventDefault()
+              onRequestSummary()
+            }
             summaryMenuRequestedRef.current = false
           }}
         />
@@ -403,7 +405,14 @@ export function EditableDocumentMetadataFields({
             resizeTextarea(event.currentTarget)
             onMetadata({summary: nextSummary})
           }}
-          onBlur={() => {
+          onBlur={(event) => {
+            const relatedTarget = event.relatedTarget
+            if (
+              relatedTarget instanceof Element &&
+              relatedTarget.closest('[role="menu"], [data-radix-menu-content], [data-radix-popover-content]')
+            ) {
+              return
+            }
             onSummaryRequestedChange(false)
             setSummaryFocused(false)
           }}
