@@ -21,7 +21,7 @@ import {useInteractionSummary} from '@shm/shared/models/interaction-summary'
 import {canShowMoveDocumentAction, canShowRepublishDocumentAction} from '@shm/shared/utils/document-actions'
 import {createWebHMUrl, getVersionHeads, hmIdToURL} from '@shm/shared/utils/entity-id-url'
 import {useNavigate} from '@shm/shared/utils/navigation'
-import {Bookmark, ChevronRight, Copy, Forward, GitFork, MessageSquare, Pencil} from 'lucide-react'
+import {Bookmark, ChevronRight, Copy, Forward, GitFork, History, MessageSquare, Pencil, Pin} from 'lucide-react'
 import {Fragment, useMemo} from 'react'
 import {LibraryEntryUpdateSummary} from './activity'
 import {Button} from './button'
@@ -60,6 +60,14 @@ interface DocumentListItemProps {
     onToggle: () => void
     isLoading?: boolean
   }
+  /** Extra menu items rendered in the row options menu. */
+  extraMenuItems?: MenuItemType[]
+  /** Pin-specific display state. When provided, the row shows pin status badges. */
+  pinState?: {
+    isPinned?: boolean
+    isOutdated?: boolean
+    isDeleted?: boolean
+  }
 }
 
 export function DocumentListItem({
@@ -76,6 +84,8 @@ export function DocumentListItem({
   indent = false,
   onClick,
   expandable,
+  extraMenuItems,
+  pinState,
 }: DocumentListItemProps) {
   const id = item.id
   const actions = useDocumentActions()
@@ -121,6 +131,9 @@ export function DocumentListItem({
   const canExpand = !!expandable && (childCount > 0 || expandable.expanded || expandable.isLoading)
 
   const bookmarked = actions.isBookmarked?.(id) ?? false
+  const pinned = pinState?.isPinned ?? actions.isPinned?.(id) ?? false
+  const itemVersion = 'version' in item ? item.version ?? null : null
+  const itemTitle = getMetadataName(metadata)
   const isOwner = actions.selectedAccountUid === id.uid
   const hasPath = !!id.path?.length
   const selectedAccountCanWriteSource = isOwner || !!actions.canWriteDocument?.(id)
@@ -232,6 +245,9 @@ export function DocumentListItem({
         },
       })
     }
+    if (extraMenuItems) {
+      items.push(...extraMenuItems)
+    }
     return items
   }, [
     actions.onEditDocument,
@@ -251,9 +267,11 @@ export function DocumentListItem({
     onPushReference,
     origin,
     experiments?.advancedCopyLinkOptions,
+    extraMenuItems,
   ])
 
-  const hasActions = !!actions.onBookmarkToggle || commentCount > 0 || menuItems.length > 0
+  const canPin = !!actions.pinDocument || !!actions.unpinDocument
+  const hasActions = !!actions.onBookmarkToggle || canPin || commentCount > 0 || menuItems.length > 0
 
   return (
     <Button
@@ -295,12 +313,28 @@ export function DocumentListItem({
           )}
           <div className="flex flex-1 items-center gap-3">
             <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
-              <SizableText className={cn('truncate text-left font-sans')} weight={computedIsRead ? undefined : 'bold'}>
+              <SizableText
+                className={cn(
+                  'truncate text-left font-sans',
+                  pinState?.isDeleted && 'text-muted-foreground line-through',
+                )}
+                weight={computedIsRead ? undefined : 'bold'}
+              >
                 {getMetadataName(metadata)}
               </SizableText>
               {!!draftId && <DraftBadge />}
               {isPrivate && <PrivateBadge size="sm" />}
               {headCount > 1 && <MergedBadge count={headCount} size="sm" />}
+              {pinState?.isOutdated && (
+                <Tooltip content="Changed since you pinned it">
+                  <History className="size-3.5 text-amber-500" />
+                </Tooltip>
+              )}
+              {pinState?.isDeleted && (
+                <Tooltip content="This document has been deleted">
+                  <Trash className="text-destructive size-3.5" />
+                </Tooltip>
+              )}
             </div>
             {commentCount > 0 && !hasActions && <DocumentListItemCommentCount count={commentCount} />}
             {!itemActivitySummary && 'updateTime' in item && (
@@ -310,6 +344,26 @@ export function DocumentListItem({
             )}
             {hasActions && (
               <div className="flex items-center gap-1">
+                {canPin && (
+                  <Tooltip content={pinned ? 'Unpin document' : 'Pin document'}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="no-window-drag"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        if (pinned) {
+                          actions.unpinDocument?.(id)
+                        } else {
+                          actions.pinDocument?.(id, itemTitle, itemVersion)
+                        }
+                      }}
+                    >
+                      {<Pin className={cn('size-3.5', pinned && 'fill-current')} />}
+                    </Button>
+                  </Tooltip>
+                )}
                 {actions.onBookmarkToggle && (
                   <Tooltip content={bookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks'}>
                     <Button
