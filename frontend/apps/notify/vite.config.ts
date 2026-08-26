@@ -1,6 +1,7 @@
 import {vitePlugin as remix} from '@remix-run/dev'
 // @ts-ignore
 import {sentryVitePlugin} from '@sentry/vite-plugin'
+import stylex from '@stylexjs/unplugin'
 import tailwindcss from '@tailwindcss/vite'
 
 import * as path from 'path'
@@ -43,6 +44,7 @@ export default defineConfig(({isSsrBuild}) => {
           : ['expo-linear-gradient', 'react-icons', '@shm/editor', '@shm/shared', '@remix-run/react'],
     },
     plugins: [
+      stylex.vite(),
       remix(),
       envOnlyMacros(),
       tsconfigPaths({root: path.resolve(__dirname, '../..')}),

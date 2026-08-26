@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   type AgentCollaboratorInfo,
   type AgentCollaboratorRole,
@@ -124,7 +125,347 @@ import {AgentsNoAccountPage} from './no-account'
 import {agentAccessCanChat, agentAccessCanWrite} from './access'
 import {AgentRichMessageComposer} from './rich-message-composer'
 import {type AgentsRichEditorSubmitHandle} from './platform'
-
+const styles = stylex.create({
+  s6ebbda8: {
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s3b59b99: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 12)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s66bdc38b: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s82587a56: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s8327cc80: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    outlineStyle: 'none',
+  },
+  s13678fbc: {
+    height: 'auto',
+    borderTopLeftRadius: '0',
+    borderBottomLeftRadius: '0',
+  },
+  scf14d8e7: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  se4bfffa8: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+    flexShrink: '0',
+  },
+  sb0c158fd: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 0.5)',
+    overflow: 'hidden',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s9d6af5a9: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 3)',
+  },
+  s7026dbcb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  sadecf8c8: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s95536c4e: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+  },
+  se0969a8c: {
+    marginLeft: 'auto',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s789b823d: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s750a469d: {
+    marginLeft: 'auto',
+    flexShrink: '0',
+    textTransform: 'capitalize',
+  },
+  s2b00eca2: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sa173a9a1: {
+    fontFamily: 'var(--font-mono)',
+  },
+  sd18edfa0: {
+    borderColor: 'var(--input)',
+    backgroundColor: 'var(--background)',
+    height: 'calc(0.25rem * 9)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s25987914: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  sd272840a: {
+    color: 'var(--muted-foreground)',
+    fontWeight: '400',
+  },
+  sb87f7412: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sdb1fda99: {
+    backgroundColor: 'var(--muted)',
+    overflowX: 'auto',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 3)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    whiteSpace: 'pre',
+  },
+  s9141e77: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  s3566be63: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sd1c4c9a1: {
+    display: 'grid',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s3484a6: {
+    paddingLeft: 'calc(0.25rem * 7)',
+  },
+  s7a992289: {
+    color: 'var(--primary)',
+    cursor: 'pointer',
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '2px',
+  },
+  sf0768e89: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  s7778dfe9: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s94e66deb: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s8e4be3ed: {
+    flexShrink: '0',
+    fontFamily: 'var(--font-mono)',
+  },
+  scfedb87c: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sea5bafd9: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  sd1c4c9a3: {
+    display: 'grid',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s5661d341: {
+    display: 'flex',
+    height: 'calc(0.25rem * 9)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+  },
+  s911c1714: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 5)',
+  },
+  sc182243e: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 6)',
+  },
+  s592e123d: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+  },
+  scc9904d2: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s6b2af047: {
+    flex: 'none',
+    whiteSpace: 'nowrap',
+  },
+  s8c3d1867: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '3',
+    width: '100%',
+    paddingLeft: 'calc(0.25rem * 5)',
+  },
+  sd39686aa: {
+    marginTop: 'calc(0.25rem * 1)',
+    width: '100%',
+    paddingLeft: 'calc(0.25rem * 5)',
+  },
+})
 function AgentDetailPage({
   agentId,
   routeServerUrl,
@@ -159,7 +500,9 @@ function AgentDetailPage({
   const messageSession = useMessageAgentSession(serverUrl, selectedAccountId)
   const updateAgent = useUpdateAgent(serverUrl, selectedAccountId)
   const updateSigningIdentity = useUpdateSigningIdentity(serverUrl, selectedAccountId)
-  const deleteAgentDialog = useAppDialog(DeleteAgentDialog, {isAlert: true})
+  const deleteAgentDialog = useAppDialog(DeleteAgentDialog, {
+    isAlert: true,
+  })
   const moveAgentDialog = useAppDialog(MoveAgentDialog)
   const signingIdentities = useSigningIdentities(serverUrl, selectedAccountId, agentId)
   const createSigningIdentity = useCreateSigningIdentity(serverUrl, selectedAccountId)
@@ -192,7 +535,6 @@ function AgentDetailPage({
   const promptSaveIdRef = useRef(0)
   const loadedPromptKeyRef = useRef<string | null>(null)
   const startComposerRef = useRef<AgentsRichEditorSubmitHandle | null>(null)
-
   useEffect(() => {
     if (!agent.data) return
     if (!nameModelDirty) {
@@ -219,7 +561,6 @@ function AgentDetailPage({
     const nextModel = pickDefaultProviderModel(providerModels.data, selectedProviderType)?.id
     if (nextModel) setModel(nextModel)
   }, [nameModelDirty, model, providerModels.data, selectedProviderType])
-
   function handleProviderChange(nextProvider: string) {
     if (nextProvider === modelProvider) return
     setModelProvider(nextProvider)
@@ -265,21 +606,35 @@ function AgentDetailPage({
       return otherKeys.includes(agentSigningKey)
     })
   const agentAccountStatus: AgentAccountRenameStatus = !agentSigningKey
-    ? {kind: 'none'}
+    ? {
+        kind: 'none',
+      }
     : isAccountShared
-      ? {kind: 'shared'}
-      : {kind: 'own'}
-
+      ? {
+          kind: 'shared',
+        }
+      : {
+          kind: 'own',
+        }
   async function handleRenameAgent(nextName: string) {
     if (!agent.data) throw new Error('Agent not loaded')
     const trimmed = nextName.trim()
     if (!trimmed) throw new Error('Agent name is required')
     const definition = agent.data.agent.definition
-    const result = await updateAgent.mutateAsync({agentId, definition: {...definition, name: trimmed}})
+    const result = await updateAgent.mutateAsync({
+      agentId,
+      definition: {
+        ...definition,
+        name: trimmed,
+      },
+    })
     if (result._ !== 'GetAgentResponse') throw new Error('Unexpected update response')
     // Keep the dedicated account's profile name in sync; leave shared accounts alone.
     if (isOwner && agentSigningKey && !isAccountShared) {
-      await updateSigningIdentity.mutateAsync({name: agentSigningKey, label: trimmed})
+      await updateSigningIdentity.mutateAsync({
+        name: agentSigningKey,
+        label: trimmed,
+      })
     }
     if (!nameModelDirty) setName(trimmed)
   }
@@ -292,7 +647,9 @@ function AgentDetailPage({
     if (!selectedAccountId) throw new Error('Select an account first')
     // No title at creation: the agent names the session, with a server-side fallback from the
     // first user message — 'Untitled session' is a display placeholder, never data.
-    const result = await createSession.mutateAsync({agentId})
+    const result = await createSession.mutateAsync({
+      agentId,
+    })
     if (result._ !== 'CreateSessionResponse') throw new Error('Unexpected session response')
     // Seed the caches before navigating so the session page renders the optimistic first
     // message immediately instead of an empty transcript while the real fetch lands.
@@ -307,7 +664,6 @@ function AgentDetailPage({
     })
     return result.sessionId
   }
-
   const startSessionSendingRef = useRef(false)
   async function handleStartSession(message: AgentSessionDraftMessage) {
     // The composer already cleared itself; a second send racing the create must not open a second
@@ -318,15 +674,22 @@ function AgentDetailPage({
       const sessionId = await startDraftSession()
       // Send the stamped drafts, so the durable echo replaces the optimistic row by identity.
       const messages = addOptimisticSessionMessage(serverUrl, selectedAccountId, sessionId, [message])
-      messageSession.mutate({sessionId, message: messages})
-      navigate({key: 'agent-session', agentId, sessionId, serverUrl})
+      messageSession.mutate({
+        sessionId,
+        message: messages,
+      })
+      navigate({
+        key: 'agent-session',
+        agentId,
+        sessionId,
+        serverUrl,
+      })
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Could not create session')
     } finally {
       startSessionSendingRef.current = false
     }
   }
-
   useEffect(() => {
     if (!agent.data) return
     const draftName = name.trim()
@@ -346,13 +709,17 @@ function AgentDetailPage({
       setSettingsSaveState('idle')
       return
     }
-
     const saveId = settingsSaveIdRef.current + 1
     settingsSaveIdRef.current = saveId
     const timer = setTimeout(
       () => {
         setSettingsSaveState('saving')
-        const nextDefinition = {...currentDefinition, name: draftName, model, modelProvider}
+        const nextDefinition = {
+          ...currentDefinition,
+          name: draftName,
+          model,
+          modelProvider,
+        }
         // Avoid an explicit-undefined key: CBOR-encoding it would not equal an absent field.
         if (draftReasoningLevel) nextDefinition.reasoningLevel = draftReasoningLevel
         else delete nextDefinition.reasoningLevel
@@ -403,16 +770,13 @@ function AgentDetailPage({
     promptDirty,
     updateAgent.mutateAsync,
   ])
-
   const promptEditorDisabled = !selectedAccountId || serverHealth.isError || agent.isError || !canWrite
-
   useEffect(() => {
     if (!agent.data || !promptDirty || promptEditorDisabled) return
     if (!hasPromptContent(systemPrompt)) {
       setPromptSaveState('error')
       return
     }
-
     const currentDefinition = agent.data.agent.definition
     const nextPromptKey = agentPromptStableKey(systemPrompt)
     if (nextPromptKey === agentPromptStableKey(currentDefinition.systemPrompt)) {
@@ -420,7 +784,6 @@ function AgentDetailPage({
       setPromptSaveState('idle')
       return
     }
-
     const saveId = promptSaveIdRef.current + 1
     promptSaveIdRef.current = saveId
     const timer = setTimeout(() => {
@@ -428,7 +791,10 @@ function AgentDetailPage({
       void updateAgent
         .mutateAsync({
           agentId,
-          definition: {...currentDefinition, systemPrompt: promptBlocksForRequest(systemPrompt)},
+          definition: {
+            ...currentDefinition,
+            systemPrompt: promptBlocksForRequest(systemPrompt),
+          },
         })
         .then((result) => {
           if (promptSaveIdRef.current !== saveId) return
@@ -449,29 +815,37 @@ function AgentDetailPage({
     }, 800)
     return () => clearTimeout(timer)
   }, [agent.data, agentId, promptDirty, promptEditorDisabled, systemPrompt, updateAgent.mutateAsync])
-
   const selectedTriggerName = triggerId ? triggers.data?.find((trigger) => trigger.id === triggerId)?.name : undefined
   const isTriggerDetail = tab === 'triggers' && !!triggerId
   const breadcrumbItems = isTriggerDetail
     ? [
-        {label: 'Triggers', route: {key: 'agent' as const, agentId, serverUrl, tab: 'triggers' as const}},
-        {label: selectedTriggerName || 'Trigger'},
+        {
+          label: 'Triggers',
+          route: {
+            key: 'agent' as const,
+            agentId,
+            serverUrl,
+            tab: 'triggers' as const,
+          },
+        },
+        {
+          label: selectedTriggerName || 'Trigger',
+        },
       ]
     : undefined
-
   return (
-    <PanelContainer className="flex flex-col overflow-hidden">
+    <PanelContainer className={stylex.props(styles.s6ebbda8).className || ''}>
       <div className={isTriggerDetail ? 'border-border flex-none border-b' : 'contents'}>
         <Container
           className={isTriggerDetail ? 'max-w-4xl gap-4 pt-4 pb-4' : 'min-h-0 max-w-4xl flex-1 gap-4 pt-4 pb-0'}
         >
           {agent.isLoading ? (
-            <div className="flex flex-1 items-center justify-center py-12">
-              <Spinner size="large" className="text-muted-foreground" />
+            <div className={stylex.props(styles.s3b59b99).className || ''}>
+              <Spinner size="large" className={stylex.props(styles.sf2718385).className || ''} />
             </div>
           ) : null}
           {agent.isError ? (
-            <SizableText className="text-destructive">
+            <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
               {agent.error instanceof Error ? agent.error.message : 'Could not load agent'}
             </SizableText>
           ) : null}
@@ -497,10 +871,24 @@ function AgentDetailPage({
                 triggersCount={triggers.data?.length}
                 // The session is only created when the first message is sent, so "New session"
                 // just puts the cursor in the composer that will do it.
-                onCreateSession={canChat ? () => startComposerRef.current?.focus({moveCursorToEnd: true}) : undefined}
+                onCreateSession={
+                  canChat
+                    ? () =>
+                        startComposerRef.current?.focus({
+                          moveCursorToEnd: true,
+                        })
+                    : undefined
+                }
                 creatingSession={createSession.isLoading}
                 onCreateTrigger={
-                  canWrite ? () => createTriggerDialog.open({serverUrl, selectedAccountId, agentId}) : undefined
+                  canWrite
+                    ? () =>
+                        createTriggerDialog.open({
+                          serverUrl,
+                          selectedAccountId,
+                          agentId,
+                        })
+                    : undefined
                 }
                 canCreateTrigger={!!selectedAccountId && canWrite}
                 menuItems={
@@ -509,7 +897,7 @@ function AgentDetailPage({
                         {
                           key: 'move-server',
                           label: 'Move to another server…',
-                          icon: <ArrowRightLeft className="size-4" />,
+                          icon: <ArrowRightLeft className={stylex.props(styles.sca3de968).className || ''} />,
                           disabled: !selectedAccountId,
                           onClick: () =>
                             moveAgentDialog.open({
@@ -520,13 +908,17 @@ function AgentDetailPage({
                               modelProvider: agent.data?.agent.definition.modelProvider ?? '',
                               sessionsCount: topLevelSessions.length,
                               onMoved: ({serverUrl: movedServerUrl, agentId: movedAgentId}) =>
-                                navigate({key: 'agent', agentId: movedAgentId, serverUrl: movedServerUrl}),
+                                navigate({
+                                  key: 'agent',
+                                  agentId: movedAgentId,
+                                  serverUrl: movedServerUrl,
+                                }),
                             }),
                         },
                         {
                           key: 'delete-agent',
                           label: 'Delete agent…',
-                          icon: <Trash2 className="size-4" />,
+                          icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
                           variant: 'destructive' as const,
                           disabled: !selectedAccountId,
                           onClick: () =>
@@ -535,7 +927,10 @@ function AgentDetailPage({
                               selectedAccountId: selectedAccountId ?? null,
                               agentId,
                               agentName: name,
-                              onDeleted: () => navigate({key: 'agents'}),
+                              onDeleted: () =>
+                                navigate({
+                                  key: 'agents',
+                                }),
                             }),
                         },
                       ]
@@ -561,11 +956,24 @@ function AgentDetailPage({
                         serverUrl={serverUrl}
                         accountUid={selectedAccountId}
                         onOpen={(event) =>
-                          clickNavigate({key: 'agent-session', agentId, sessionId: session.id, serverUrl}, event)
+                          clickNavigate(
+                            {
+                              key: 'agent-session',
+                              agentId,
+                              sessionId: session.id,
+                              serverUrl,
+                            },
+                            event,
+                          )
                         }
                         onOpenSession={(child, event) =>
                           clickNavigate(
-                            {key: 'agent-session', agentId: child.agentId, sessionId: child.id, serverUrl},
+                            {
+                              key: 'agent-session',
+                              agentId: child.agentId,
+                              sessionId: child.id,
+                              serverUrl,
+                            },
                             event,
                           )
                         }
@@ -600,7 +1008,12 @@ function AgentDetailPage({
                       composerHandleRef={startComposerRef}
                       onToolStartSession={startDraftSession}
                       onToolSessionStarted={(sessionId) =>
-                        navigate({key: 'agent-session', agentId, sessionId, serverUrl})
+                        navigate({
+                          key: 'agent-session',
+                          agentId,
+                          sessionId,
+                          serverUrl,
+                        })
                       }
                       onSend={(message) => void handleStartSession(message)}
                       onStop={() => {}}
@@ -628,7 +1041,13 @@ function AgentDetailPage({
                   agentId={agentId}
                   openPath={memoryPath}
                   onOpenPathChange={(path) =>
-                    replaceRoute({key: 'agent', agentId, serverUrl, tab: 'memory', memoryPath: path})
+                    replaceRoute({
+                      key: 'agent',
+                      agentId,
+                      serverUrl,
+                      tab: 'memory',
+                      memoryPath: path,
+                    })
                   }
                   readOnly={!canWrite}
                 />
@@ -645,7 +1064,10 @@ function AgentDetailPage({
                   webCapabilities={
                     serverHealth.data
                       ? {
-                          ...(serverHealth.data.webTools ?? {search: true, readBrowser: true}),
+                          ...(serverHealth.data.webTools ?? {
+                            search: true,
+                            readBrowser: true,
+                          }),
                           codeExec: serverHealth.data.codeExec,
                           codeExecReason: serverHealth.data.codeExecReason,
                           codeExecReasonCode: serverHealth.data.codeExecReasonCode,
@@ -653,7 +1075,12 @@ function AgentDetailPage({
                         }
                       : undefined
                   }
-                  onSave={(definition) => updateAgent.mutateAsync({agentId, definition})}
+                  onSave={(definition) =>
+                    updateAgent.mutateAsync({
+                      agentId,
+                      definition,
+                    })
+                  }
                   onCreateIdentity={(label) => createSigningIdentity.mutateAsync(label)}
                   saving={updateAgent.isLoading || createSigningIdentity.isLoading}
                   readOnly={!canWrite}
@@ -665,7 +1092,7 @@ function AgentDetailPage({
                 <section className="flex min-h-0 flex-1 flex-col gap-3">
                   <div>
                     <SizableText weight="bold">System prompt</SizableText>
-                    <SizableText size="sm" color="muted" className="block">
+                    <SizableText size="sm" color="muted" className={stylex.props(styles.s597c48d).className || ''}>
                       Use the rich editor for formatting, links, embeds, lists, media, and code. The server converts
                       these blocks to markdown before sending them to the model. Changes autosave.
                       {promptSaveState === 'saving'
@@ -717,7 +1144,7 @@ function AgentDetailPage({
               {tab === 'settings' ? (
                 <section className="flex max-w-2xl flex-col gap-4">
                   <div className="grid gap-3 md:grid-cols-2">
-                    <label className="flex flex-col gap-1">
+                    <label className={stylex.props(styles.sfbc6e28d).className || ''}>
                       <SizableText size="sm" weight="bold">
                         Model
                       </SizableText>
@@ -726,7 +1153,10 @@ function AgentDetailPage({
                         accountUid={selectedAccountId}
                         agentId={agentId}
                         disabled={!canWrite}
-                        value={{provider: modelProvider, model}}
+                        value={{
+                          provider: modelProvider,
+                          model,
+                        }}
                         onChange={(entry) => {
                           setModelProvider(entry.provider)
                           setModel(entry.model)
@@ -755,13 +1185,17 @@ function AgentDetailPage({
                         onAddProvider={
                           isOwner
                             ? () =>
-                                addProviderDialog.open({serverUrl, selectedAccountId, onSaved: handleProviderChange})
+                                addProviderDialog.open({
+                                  serverUrl,
+                                  selectedAccountId,
+                                  onSaved: handleProviderChange,
+                                })
                             : undefined
                         }
                       />
                     </label>
                     {selectedProviderType && model && modelReasoningSupport(selectedProviderType, model) ? (
-                      <div className="flex flex-col justify-end gap-1">
+                      <div className={stylex.props(styles.s66bdc38b).className || ''}>
                         <ReasoningSlider
                           providerType={selectedProviderType}
                           disabled={!canWrite}
@@ -775,7 +1209,7 @@ function AgentDetailPage({
                       </div>
                     ) : null}
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className={stylex.props(styles.sfbc6e28e).className || ''}>
                     <SizableText
                       size="xs"
                       className={`h-4 ${settingsSaveState === 'error' ? 'text-destructive' : ''}`}
@@ -810,26 +1244,27 @@ function AgentDetailPage({
     </PanelContainer>
   )
 }
-
 function sameModelRefs(a: AgentModelRef[], b: AgentModelRef[]): boolean {
   return (
     a.length === b.length &&
     a.every((entry, index) => entry.provider === b[index]?.provider && entry.model === b[index]?.model)
   )
 }
-
 function agentPromptToBlocks(prompt: AgentDefinition['systemPrompt']): HMBlockNode[] {
   if (Array.isArray(prompt)) return prompt as HMBlockNode[]
   return markdownBlockNodesToHMBlockNodes(parseMarkdown(prompt || '').tree)
 }
-
 function agentPromptStableKey(prompt: AgentDefinition['systemPrompt']): string {
   return typeof prompt === 'string' ? prompt : JSON.stringify(prompt)
 }
-
 function hasPromptContent(blocks: HMBlockNode[]): boolean {
   return blocks.some((node) => {
-    const block = node.block as {text?: unknown; type?: unknown; link?: unknown; url?: unknown}
+    const block = node.block as {
+      text?: unknown
+      type?: unknown
+      link?: unknown
+      url?: unknown
+    }
     const type = typeof block.type === 'string' ? block.type.toLowerCase() : ''
     if (typeof block.text === 'string' && block.text.trim()) return true
     if (typeof block.link === 'string' && block.link.trim()) return true
@@ -873,12 +1308,17 @@ function AgentCollaboratorsTab({
   const [selected, setSelected] = useState<SearchResult[]>([])
   const [role, setRole] = useState<AgentCollaboratorRole>('writer')
   const excludedAccountIds = [ownerAccountId, ...collaborators.map((member) => member.accountId)]
-
   async function handleInvite() {
     if (!selected.length) return
     try {
       await Promise.all(
-        selected.map((member) => invite.mutateAsync({agentId, collaboratorAccountId: member.id.uid, role})),
+        selected.map((member) =>
+          invite.mutateAsync({
+            agentId,
+            collaboratorAccountId: member.id.uid,
+            role,
+          }),
+        ),
       )
       toast.success(selected.length === 1 ? 'Invitation sent' : `${selected.length} invitations sent`)
       setSelected([])
@@ -886,12 +1326,11 @@ function AgentCollaboratorsTab({
       toast.error(error instanceof Error ? error.message : 'Could not invite collaborator')
     }
   }
-
   return (
     <section className="flex max-w-2xl flex-col gap-4">
       {isOwner ? (
-        <div className="flex flex-col gap-2">
-          <div className="border-border flex overflow-hidden rounded-md border">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+          <div className={stylex.props(styles.s82587a56).className || ''}>
             <AccountSearchInput
               label="Collaborators"
               placeholder="Invite collaborators"
@@ -903,7 +1342,7 @@ function AgentCollaboratorsTab({
               aria-label="Collaborator role"
               value={role}
               onChange={(event) => setRole(event.currentTarget.value as AgentCollaboratorRole)}
-              className="border-border bg-background text-foreground border-l px-3 text-sm outline-none"
+              className={stylex.props(styles.s8327cc80).className || ''}
             >
               <option value="reader">Can read</option>
               <option value="writer">Can write</option>
@@ -911,12 +1350,12 @@ function AgentCollaboratorsTab({
             {selected.length ? (
               <Button
                 size="sm"
-                className="h-auto rounded-tl-none rounded-bl-none"
+                className={stylex.props(styles.s13678fbc).className || ''}
                 onClick={() => void handleInvite()}
                 disabled={invite.isLoading}
                 aria-label="Send collaborator invitation"
               >
-                <ArrowRight className="size-4" />
+                <ArrowRight className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             ) : null}
           </div>
@@ -926,10 +1365,10 @@ function AgentCollaboratorsTab({
         </div>
       ) : null}
 
-      <div className="border-border flex flex-col gap-3 rounded-md border p-3">
-        <div className="flex items-center gap-3">
-          <Globe className="text-muted-foreground size-5 shrink-0" />
-          <div className="flex flex-1 flex-col gap-0.5 overflow-hidden">
+      <div className={stylex.props(styles.scf14d8e7).className || ''}>
+        <div className={stylex.props(styles.s86ff3e5).className || ''}>
+          <Globe className={stylex.props(styles.se4bfffa8).className || ''} />
+          <div className={stylex.props(styles.sb0c158fd).className || ''}>
             <SizableText size="sm" weight="medium">
               Public access
             </SizableText>
@@ -946,7 +1385,10 @@ function AgentCollaboratorsTab({
               disabled={setPublicRead.isLoading}
               onCheckedChange={(checked) =>
                 setPublicRead.mutate(
-                  {agentId, publicRead: checked},
+                  {
+                    agentId,
+                    publicRead: checked,
+                  },
                   {
                     onError: (error) =>
                       toast.error(error instanceof Error ? error.message : 'Could not change public access'),
@@ -955,7 +1397,7 @@ function AgentCollaboratorsTab({
               }
             />
           ) : publicRead ? (
-            <SizableText size="xs" color="muted" className="shrink-0">
+            <SizableText size="xs" color="muted" className={stylex.props(styles.sf032ed6c).className || ''}>
               Public
             </SizableText>
           ) : null}
@@ -964,9 +1406,9 @@ function AgentCollaboratorsTab({
             off, and the row is hidden with it. Chat is narrower than collaborator "write" access —
             it covers creating and messaging sessions, nothing that edits the agent. */}
         {publicRead ? (
-          <div className="border-border flex items-center gap-3 border-t pt-3">
-            <MessageSquare className="text-muted-foreground size-5 shrink-0" />
-            <div className="flex flex-1 flex-col gap-0.5 overflow-hidden">
+          <div className={stylex.props(styles.s9d6af5a9).className || ''}>
+            <MessageSquare className={stylex.props(styles.se4bfffa8).className || ''} />
+            <div className={stylex.props(styles.sb0c158fd).className || ''}>
               <SizableText size="sm" weight="medium">
                 Public chat
               </SizableText>
@@ -983,7 +1425,10 @@ function AgentCollaboratorsTab({
                 disabled={setPublicChat.isLoading}
                 onCheckedChange={(checked) =>
                   setPublicChat.mutate(
-                    {agentId, publicChat: checked},
+                    {
+                      agentId,
+                      publicChat: checked,
+                    },
                     {
                       onError: (error) =>
                         toast.error(error instanceof Error ? error.message : 'Could not change public chat'),
@@ -992,7 +1437,7 @@ function AgentCollaboratorsTab({
                 }
               />
             ) : publicChat ? (
-              <SizableText size="xs" color="muted" className="shrink-0">
+              <SizableText size="xs" color="muted" className={stylex.props(styles.sf032ed6c).className || ''}>
                 Open
               </SizableText>
             ) : null}
@@ -1001,11 +1446,11 @@ function AgentCollaboratorsTab({
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-8">
-          <Spinner className="size-8" />
+        <div className={stylex.props(styles.s7026dbcb).className || ''}>
+          <Spinner className={stylex.props(styles.sca3de96c).className || ''} />
         </div>
       ) : (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           {collaborators.map((member) => (
             <AgentCollaboratorRow
               key={member.accountId}
@@ -1014,14 +1459,25 @@ function AgentCollaboratorsTab({
               changing={invite.isLoading || remove.isLoading}
               onRoleChange={(nextRole) =>
                 invite.mutate(
-                  {agentId, collaboratorAccountId: member.accountId, role: nextRole},
-                  {onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not change role')},
+                  {
+                    agentId,
+                    collaboratorAccountId: member.accountId,
+                    role: nextRole,
+                  },
+                  {
+                    onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not change role'),
+                  },
                 )
               }
               onRemove={() =>
                 remove.mutate(
-                  {agentId, collaboratorAccountId: member.accountId},
-                  {onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not remove member')},
+                  {
+                    agentId,
+                    collaboratorAccountId: member.accountId,
+                  },
+                  {
+                    onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not remove member'),
+                  },
                 )
               }
             />
@@ -1031,7 +1487,6 @@ function AgentCollaboratorsTab({
     </section>
   )
 }
-
 function AgentCollaboratorRow({
   member,
   isOwner,
@@ -1045,14 +1500,15 @@ function AgentCollaboratorRow({
   onRoleChange: (role: AgentCollaboratorRole) => void
   onRemove: () => void
 }) {
-  const account = useAccount(member.accountId, {subscribe: true})
+  const account = useAccount(member.accountId, {
+    subscribe: true,
+  })
   const metadata = account.data?.metadata
   const canManage = isOwner && member.role !== 'owner'
-
   return (
-    <div className="flex items-center gap-3 rounded-md p-3">
+    <div className={stylex.props(styles.sadecf8c8).className || ''}>
       <HMIcon id={hmId(member.accountId)} name={metadata?.name} icon={metadata?.icon} size={32} />
-      <div className="flex flex-1 items-center gap-2 overflow-hidden">
+      <div className={stylex.props(styles.s95536c4e).className || ''}>
         <SizableText size="sm" className={`truncate ${metadata?.name ? '' : 'text-muted-foreground'}`}>
           {metadata?.name || abbreviateUid(member.accountId)}
         </SizableText>
@@ -1062,13 +1518,13 @@ function AgentCollaboratorRow({
           </span>
         ) : null}
         {canManage ? (
-          <span className="ml-auto flex shrink-0 items-center gap-1">
+          <span className={stylex.props(styles.se0969a8c).className || ''}>
             <select
               aria-label={`Role for ${metadata?.name || member.accountId}`}
               value={member.role}
               onChange={(event) => onRoleChange(event.currentTarget.value as AgentCollaboratorRole)}
               disabled={changing}
-              className="border-border bg-background text-foreground rounded-md border px-2 py-1.5 text-xs"
+              className={stylex.props(styles.s789b823d).className || ''}
             >
               <option value="reader">Can read</option>
               <option value="writer">Can write</option>
@@ -1080,11 +1536,11 @@ function AgentCollaboratorRow({
               disabled={changing}
               aria-label={member.status === 'pending' ? 'Cancel invitation' : 'Remove collaborator'}
             >
-              <X className="size-4" />
+              <X className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
           </span>
         ) : (
-          <SizableText size="xs" color="muted" className="ml-auto shrink-0 capitalize">
+          <SizableText size="xs" color="muted" className={stylex.props(styles.s750a469d).className || ''}>
             {member.role}
           </SizableText>
         )}
@@ -1092,7 +1548,6 @@ function AgentCollaboratorRow({
     </div>
   )
 }
-
 function DeleteAgentDialog({
   input,
   onClose,
@@ -1107,7 +1562,6 @@ function DeleteAgentDialog({
   onClose: () => void
 }) {
   const deleteAgent = useDeleteAgent(input.serverUrl, input.selectedAccountId)
-
   async function handleDelete(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     try {
@@ -1120,9 +1574,8 @@ function DeleteAgentDialog({
       toast.error(error instanceof Error ? error.message : 'Could not delete agent')
     }
   }
-
   return (
-    <div className="flex flex-col gap-4 rounded-lg p-4">
+    <div className={stylex.props(styles.s2b00eca2).className || ''}>
       <AlertDialogTitle>Delete agent?</AlertDialogTitle>
       <AlertDialogDescription>
         This will permanently delete “{input.agentName}” and its sessions, triggers, and drafts from the agent server.
@@ -1136,7 +1589,7 @@ function DeleteAgentDialog({
         </AlertDialogCancel>
         <AlertDialogAction asChild>
           <Button variant="destructive" onClick={(event) => void handleDelete(event)} disabled={deleteAgent.isLoading}>
-            <Trash2 className="size-4" />
+            <Trash2 className={stylex.props(styles.sca3de968).className || ''} />
             Delete agent
           </Button>
         </AlertDialogAction>
@@ -1167,10 +1620,16 @@ function AuthoredToolDialog({
   const [runtime, setRuntime] = useState<'typescript' | 'python'>(tool?.runtime ?? 'typescript')
   const [source, setSource] = useState(tool?.source ?? 'export default async function (input) {\n  return {}\n}\n')
   const [inputSchema, setInputSchema] = useState(
-    JSON.stringify(tool?.input ?? {type: 'object', properties: {}}, null, 2),
+    JSON.stringify(
+      tool?.input ?? {
+        type: 'object',
+        properties: {},
+      },
+      null,
+      2,
+    ),
   )
   const [outputSchema, setOutputSchema] = useState(tool?.output ? JSON.stringify(tool.output, null, 2) : '')
-
   async function handleSave(event: React.FormEvent) {
     event.preventDefault()
     try {
@@ -1187,24 +1646,35 @@ function AuthoredToolDialog({
       }
       const nextTool: AgentToolInput = {
         name: name.trim(),
-        ...(summary.trim() ? {summary: summary.trim()} : {}),
+        ...(summary.trim()
+          ? {
+              summary: summary.trim(),
+            }
+          : {}),
         description,
         input: parsedInput as Record<string, unknown>,
-        ...(parsedOutput ? {output: parsedOutput as Record<string, unknown>} : {}),
+        ...(parsedOutput
+          ? {
+              output: parsedOutput as Record<string, unknown>,
+            }
+          : {}),
         source,
         runtime,
       }
-      await saveTool.mutateAsync({agentId: input.agentId, tool: nextTool, previousName: tool?.name})
+      await saveTool.mutateAsync({
+        agentId: input.agentId,
+        tool: nextTool,
+        previousName: tool?.name,
+      })
       toast.success(tool ? 'Tool updated' : 'Tool created')
       onClose()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Could not save tool')
     }
   }
-
   return (
     <form className="flex max-h-[78vh] w-full max-w-3xl min-w-0 flex-col gap-4 overflow-y-auto" onSubmit={handleSave}>
-      <div className="flex flex-col gap-1">
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <DialogTitle>{tool ? 'Edit authored tool' : 'Add authored tool'}</DialogTitle>
         <DialogDescription>
           Define the name, model-facing contract, runtime, and executable source. Tool names use lowercase letters,
@@ -1218,7 +1688,7 @@ function AuthoredToolDialog({
             Name
           </SizableText>
           <Input
-            className="font-mono"
+            className={stylex.props(styles.sa173a9a1).className || ''}
             value={name}
             onChange={(event) => setName(event.target.value)}
             placeholder="weather_lookup"
@@ -1235,7 +1705,7 @@ function AuthoredToolDialog({
             Runtime
           </SizableText>
           <select
-            className="border-input bg-background h-9 rounded-md border px-3 text-sm"
+            className={stylex.props(styles.sd18edfa0).className || ''}
             value={runtime}
             onChange={(event) => setRuntime(event.target.value === 'python' ? 'python' : 'typescript')}
             disabled={readOnly || saveTool.isLoading}
@@ -1246,7 +1716,7 @@ function AuthoredToolDialog({
         </label>
       </div>
 
-      <label className="flex flex-col gap-1.5">
+      <label className={stylex.props(styles.s25987914).className || ''}>
         <SizableText size="sm" weight="bold">
           List summary
         </SizableText>
@@ -1259,7 +1729,7 @@ function AuthoredToolDialog({
         />
       </label>
 
-      <label className="flex flex-col gap-1.5">
+      <label className={stylex.props(styles.s25987914).className || ''}>
         <SizableText size="sm" weight="bold">
           Description sent to the model
         </SizableText>
@@ -1273,7 +1743,7 @@ function AuthoredToolDialog({
         />
       </label>
 
-      <label className="flex flex-col gap-1.5">
+      <label className={stylex.props(styles.s25987914).className || ''}>
         <SizableText size="sm" weight="bold">
           Source
         </SizableText>
@@ -1303,7 +1773,7 @@ function AuthoredToolDialog({
         </label>
         <label className="flex min-w-0 flex-col gap-1.5">
           <SizableText size="sm" weight="bold">
-            Output schema <span className="text-muted-foreground font-normal">(optional)</span>
+            Output schema <span className={stylex.props(styles.sd272840a).className || ''}>(optional)</span>
           </SizableText>
           <Textarea
             className="min-h-48 resize-y font-mono text-xs"
@@ -1335,7 +1805,7 @@ function AuthoredToolDialog({
         </div>
       ) : null}
 
-      <div className="flex justify-end gap-2">
+      <div className={stylex.props(styles.sb87f7412).className || ''}>
         <Button type="button" variant="ghost" onClick={onClose}>
           {readOnly ? 'Close' : 'Cancel'}
         </Button>
@@ -1349,33 +1819,39 @@ function AuthoredToolDialog({
     </form>
   )
 }
-
 function DeleteAuthoredToolDialog({
   input,
   onClose,
 }: {
-  input: {serverUrl?: string; accountUid: string | null; agentId: string; tool: AgentToolInfo}
+  input: {
+    serverUrl?: string
+    accountUid: string | null
+    agentId: string
+    tool: AgentToolInfo
+  }
   onClose: () => void
 }) {
   const deleteTool = useDeleteAgentTool(input.serverUrl, input.accountUid)
-
   async function handleDelete(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     try {
-      await deleteTool.mutateAsync({agentId: input.agentId, name: input.tool.name})
+      await deleteTool.mutateAsync({
+        agentId: input.agentId,
+        name: input.tool.name,
+      })
       toast.success('Tool deleted')
       onClose()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Could not delete tool')
     }
   }
-
   return (
-    <div className="flex flex-col gap-4 rounded-lg p-4">
+    <div className={stylex.props(styles.s2b00eca2).className || ''}>
       <AlertDialogTitle>Delete authored tool?</AlertDialogTitle>
       <AlertDialogDescription>
-        This permanently deletes <span className="font-mono">{input.tool.name}</span>. Calls and workflows that refer to
-        this name will stop working. This action cannot be undone.
+        This permanently deletes{' '}
+        <span className={stylex.props(styles.sa173a9a1).className || ''}>{input.tool.name}</span>. Calls and workflows
+        that refer to this name will stop working. This action cannot be undone.
       </AlertDialogDescription>
       <AlertDialogFooter>
         <AlertDialogCancel asChild>
@@ -1385,7 +1861,7 @@ function DeleteAuthoredToolDialog({
         </AlertDialogCancel>
         <AlertDialogAction asChild>
           <Button variant="destructive" onClick={(event) => void handleDelete(event)} disabled={deleteTool.isLoading}>
-            <Trash2 className="size-4" />
+            <Trash2 className={stylex.props(styles.sca3de968).className || ''} />
             Delete tool
           </Button>
         </AlertDialogAction>
@@ -1395,11 +1871,19 @@ function DeleteAuthoredToolDialog({
 }
 
 /** Shows the exact model-facing prompt and JSON schemas for a single tool, for agent-owner transparency. */
-function ToolInfoDialog({input, onClose}: {input: {toolName: string}; onClose: () => void}) {
+function ToolInfoDialog({
+  input,
+  onClose,
+}: {
+  input: {
+    toolName: string
+  }
+  onClose: () => void
+}) {
   const meta = getSeedTool(input.toolName)
   if (!meta) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Unknown tool</DialogTitle>
         <SizableText size="sm" color="muted">
           No metadata is registered for "{input.toolName}".
@@ -1409,13 +1893,13 @@ function ToolInfoDialog({input, onClose}: {input: {toolName: string}; onClose: (
   }
   return (
     <div className="flex max-h-[70vh] min-w-0 flex-col gap-4 overflow-y-auto">
-      <div className="flex flex-col gap-1">
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <DialogTitle>{meta.label}</DialogTitle>
-        <SizableText size="xs" color="muted" className="font-mono">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.sa173a9a1).className || ''}>
           {meta.name}
         </SizableText>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText size="sm" weight="bold">
           Description sent to the model
         </SizableText>
@@ -1423,25 +1907,25 @@ function ToolInfoDialog({input, onClose}: {input: {toolName: string}; onClose: (
           {meta.description}
         </SizableText>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText size="sm" weight="bold">
           Input schema
         </SizableText>
-        <pre className="bg-muted overflow-x-auto rounded-lg p-3 text-xs whitespace-pre">
+        <pre className={stylex.props(styles.sdb1fda99).className || ''}>
           {JSON.stringify(meta.inputSchema, null, 2)}
         </pre>
       </div>
       {meta.outputSchema ? (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           <SizableText size="sm" weight="bold">
             Output schema
           </SizableText>
-          <pre className="bg-muted overflow-x-auto rounded-lg p-3 text-xs whitespace-pre">
+          <pre className={stylex.props(styles.sdb1fda99).className || ''}>
             {JSON.stringify(meta.outputSchema, null, 2)}
           </pre>
         </div>
       ) : null}
-      <div className="flex justify-end">
+      <div className={stylex.props(styles.s9141e77).className || ''}>
         <Button variant="ghost" onClick={onClose}>
           Close
         </Button>
@@ -1452,15 +1936,31 @@ function ToolInfoDialog({input, onClose}: {input: {toolName: string}; onClose: (
 
 // Reading, memory, publishing, delegation, and plans are verbs — always on, not configuration.
 // What the user toggles here is the CALLABLE tool set dispatched through the call verb.
-const AGENT_TOOL_OPTIONS: {names: string[]; title: string; infoTool?: string}[] = [
-  {names: [AGENT_SEARCH_TOOL], title: 'Search Seed content'},
-  {names: [AGENT_WEB_SEARCH_TOOL], title: 'Search the web'},
-  {names: [AGENT_EXECUTE_TOOL], title: 'Execute code'},
+const AGENT_TOOL_OPTIONS: {
+  names: string[]
+  title: string
+  infoTool?: string
+}[] = [
+  {
+    names: [AGENT_SEARCH_TOOL],
+    title: 'Search Seed content',
+  },
+  {
+    names: [AGENT_WEB_SEARCH_TOOL],
+    title: 'Search the web',
+  },
+  {
+    names: [AGENT_EXECUTE_TOOL],
+    title: 'Execute code',
+  },
   // The publish grant is not a registry tool — publishing runs through the always-on `write`
   // verb, so its info dialog shows the write verb's model-facing contract.
-  {names: [AGENT_PUBLISH_GRANT], title: 'Publish Seed content', infoTool: 'write'},
+  {
+    names: [AGENT_PUBLISH_GRANT],
+    title: 'Publish Seed content',
+    infoTool: 'write',
+  },
 ]
-
 const AUTHOR_CHIP_CLASS =
   'hover:bg-accent/40 flex min-w-0 cursor-pointer items-center gap-1.5 rounded-full py-0.5 pr-2 pl-0.5 disabled:cursor-default disabled:hover:bg-transparent'
 
@@ -1478,7 +1978,11 @@ function AuthorIdentityChip({
   onEdit: () => void
 }) {
   const profileRoute = identity.accountId
-    ? ({key: 'site-profile', id: hmId(identity.accountId), tab: 'profile'} as const)
+    ? ({
+        key: 'site-profile',
+        id: hmId(identity.accountId),
+        tab: 'profile',
+      } as const)
     : null
   const linkProps = useRouteLink(profileRoute)
   const content = (
@@ -1486,14 +1990,13 @@ function AuthorIdentityChip({
       {identity.accountId ? (
         <HMIcon id={hmId(identity.accountId)} name={displayName} icon={identity.icon} size={24} />
       ) : (
-        <KeyRound className="text-muted-foreground size-4" />
+        <KeyRound className={stylex.props(styles.s3566be63).className || ''} />
       )}
-      <SizableText size="sm" weight="bold" className="truncate">
+      <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
         {displayName}
       </SizableText>
     </>
   )
-
   if (canEdit) {
     return (
       <OptionsDropdown
@@ -1508,16 +2011,20 @@ function AuthorIdentityChip({
             ? {
                 key: 'open',
                 label: 'Open profile',
-                icon: <ExternalLink className="size-4" />,
+                icon: <ExternalLink className={stylex.props(styles.sca3de968).className || ''} />,
                 onClick: (e) => linkProps.onClick?.(e),
               }
             : null,
-          {key: 'edit', label: 'Edit profile', icon: <Pencil className="size-4" />, onClick: onEdit},
+          {
+            key: 'edit',
+            label: 'Edit profile',
+            icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
+            onClick: onEdit,
+          },
         ]}
       />
     )
   }
-
   if (!profileRoute) {
     return (
       <div className="flex min-w-0 items-center gap-1.5 py-0.5 pr-2 pl-0.5" title={displayName}>
@@ -1525,14 +2032,12 @@ function AuthorIdentityChip({
       </div>
     )
   }
-
   return (
     <a {...linkProps} className={AUTHOR_CHIP_CLASS} aria-label={`Open ${displayName}'s profile`}>
       {content}
     </a>
   )
 }
-
 function AgentToolsTab({
   serverUrl,
   accountUid,
@@ -1563,8 +2068,12 @@ function AgentToolsTab({
   canManageIdentities?: boolean
 }) {
   const toolInfoDialog = useAppDialog(ToolInfoDialog)
-  const authoredToolDialog = useAppDialog(AuthoredToolDialog, {className: 'w-full max-w-3xl'})
-  const deleteAuthoredToolDialog = useAppDialog(DeleteAuthoredToolDialog, {isAlert: true})
+  const authoredToolDialog = useAppDialog(AuthoredToolDialog, {
+    className: 'w-full max-w-3xl',
+  })
+  const deleteAuthoredToolDialog = useAppDialog(DeleteAuthoredToolDialog, {
+    isAlert: true,
+  })
   const editAccountDialog = useAppDialog(EditAgentAccountDialog)
   const agentTools = useAgentTools(serverUrl, accountUid, agentId)
   const authoredTools = (agentTools.data?.tools ?? []).filter((tool) => tool.kind === 'lambda')
@@ -1577,12 +2086,10 @@ function AgentToolsTab({
   const [signingKeys, setSigningKeys] = useState<string[]>(definitionSigningKeys)
   const [showNewIdentityPanel, setShowNewIdentityPanel] = useState(false)
   const [newIdentityName, setNewIdentityName] = useState('Agent publisher')
-
   useEffect(() => {
     setEnabledTools(definition.tools ? normalizeStoredAgentTools(definition.tools) : defaultTools)
     setSigningKeys(definition.signingKeys || (definition.signingKey ? [definition.signingKey] : []))
   }, [definition])
-
   async function saveTools(nextTools: string[], nextSigningKeys: string[]) {
     setEnabledTools(nextTools)
     setSigningKeys(nextSigningKeys)
@@ -1600,7 +2107,6 @@ function AgentToolsTab({
       toast.error(error instanceof Error ? error.message : 'Could not update agent tools')
     }
   }
-
   async function handleCreateIdentity() {
     try {
       const label = newIdentityName.trim()
@@ -1612,7 +2118,11 @@ function AgentToolsTab({
         '_' in response &&
         response._ === 'CreateSigningIdentityResponse'
       ) {
-        const identityName = (response as unknown as {identity: SigningIdentity}).identity.name
+        const identityName = (
+          response as unknown as {
+            identity: SigningIdentity
+          }
+        ).identity.name
         await saveTools(enabledTools, Array.from(new Set([...signingKeys, identityName])))
       }
       setNewIdentityName('Agent publisher')
@@ -1622,17 +2132,15 @@ function AgentToolsTab({
       toast.error(error instanceof Error ? error.message : 'Could not create agent account')
     }
   }
-
   const grantedIdentities = identities.filter((identity) => signingKeys.includes(identity.name))
   const ungrantedIdentities = identities.filter((identity) => !signingKeys.includes(identity.name))
-
   return (
     <section className="flex min-h-0 max-w-3xl flex-1 flex-col gap-4 overflow-y-auto pr-1">
       <div>
         <SizableText weight="bold">Tools</SizableText>
       </div>
 
-      <div className="grid gap-2">
+      <div className={stylex.props(styles.sd1c4c9a1).className || ''}>
         {AGENT_TOOL_OPTIONS.map((group) => {
           const availability = group.names.map((name) => getToolAvailability(name, webCapabilities))
           const groupAvailable = availability.some((entry) => entry.available)
@@ -1649,11 +2157,11 @@ function AgentToolsTab({
                 groupAvailable || setupAction ? '' : 'opacity-60'
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className={stylex.props(styles.s86ff3e5).className || ''}>
                 <label className="flex min-w-0 flex-1 items-center gap-3">
                   <input
                     type="checkbox"
-                    className="size-4"
+                    className={stylex.props(styles.sca3de968).className || ''}
                     checked={checked}
                     disabled={readOnly || (!groupAvailable && !setupAction)}
                     onChange={(event) => {
@@ -1669,7 +2177,7 @@ function AgentToolsTab({
                       void saveTools(nextTools, signingKeys)
                     }}
                   />
-                  <SizableText size="sm" weight="bold" className="truncate">
+                  <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
                     {group.title}
                   </SizableText>
                   {!groupAvailable ? (
@@ -1683,18 +2191,22 @@ function AgentToolsTab({
                   size="iconSm"
                   className="opacity-0 group-hover/tool:opacity-100 max-sm:size-10 max-sm:opacity-100"
                   aria-label={`About ${group.title}`}
-                  onClick={() => toolInfoDialog.open({toolName: group.infoTool ?? group.names[0]!})}
+                  onClick={() =>
+                    toolInfoDialog.open({
+                      toolName: group.infoTool ?? group.names[0]!,
+                    })
+                  }
                 >
-                  <Info className="size-3.5" />
+                  <Info className={stylex.props(styles.s3269316e).className || ''} />
                 </Button>
               </div>
               {!groupAvailable && note ? (
-                <SizableText size="xs" color="muted" className="pl-7">
+                <SizableText size="xs" color="muted" className={stylex.props(styles.s3484a6).className || ''}>
                   {note}{' '}
                   {setupAction === 'enable-whp' ? (
                     <button
                       type="button"
-                      className="text-primary cursor-pointer underline underline-offset-2"
+                      className={stylex.props(styles.s7a992289).className || ''}
                       onClick={() => enableWhpDialog.open({})}
                     >
                       Show me how
@@ -1705,8 +2217,8 @@ function AgentToolsTab({
               {isPublishGroup && checked ? (
                 <div className="border-border/60 flex flex-col gap-2 border-t pt-3">
                   <div className="flex min-w-0 items-center gap-2">
-                    <KeyRound className="text-muted-foreground size-4 shrink-0" />
-                    <SizableText size="sm" weight="bold" className="shrink-0">
+                    <KeyRound className={stylex.props(styles.sf0768e89).className || ''} />
+                    <SizableText size="sm" weight="bold" className={stylex.props(styles.sf032ed6c).className || ''}>
                       Author as:
                     </SizableText>
                     <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 pl-1">
@@ -1719,7 +2231,11 @@ function AgentToolsTab({
                               displayName={displayName}
                               canEdit={canManageIdentities}
                               onEdit={() =>
-                                editAccountDialog.open({serverUrl, selectedAccountId: accountUid, identity})
+                                editAccountDialog.open({
+                                  serverUrl,
+                                  selectedAccountId: accountUid,
+                                  identity,
+                                })
                               }
                             />
                             {canManageIdentities ? (
@@ -1736,7 +2252,7 @@ function AgentToolsTab({
                                   )
                                 }
                               >
-                                <X className="size-3.5" />
+                                <X className={stylex.props(styles.s3269316e).className || ''} />
                               </Button>
                             ) : null}
                           </div>
@@ -1749,7 +2265,7 @@ function AgentToolsTab({
                       ) : null}
                     </div>
                     {canManageIdentities ? (
-                      <div className="flex shrink-0 items-center gap-1">
+                      <div className={stylex.props(styles.s7778dfe9).className || ''}>
                         {ungrantedIdentities.length > 0 ? (
                           <OptionsDropdown
                             ariaLabel="Grant a signing identity"
@@ -1769,7 +2285,7 @@ function AgentToolsTab({
                                   size={20}
                                 />
                               ) : (
-                                <KeyRound className="size-4" />
+                                <KeyRound className={stylex.props(styles.sca3de968).className || ''} />
                               ),
                               onClick: () =>
                                 void saveTools(enabledTools, Array.from(new Set([...signingKeys, identity.name]))),
@@ -1783,7 +2299,7 @@ function AgentToolsTab({
                             onClick={() => setShowNewIdentityPanel(true)}
                             disabled={saving}
                           >
-                            <Plus className="size-3.5" />
+                            <Plus className={stylex.props(styles.s3269316e).className || ''} />
                             New Account
                           </Button>
                         ) : null}
@@ -1791,7 +2307,7 @@ function AgentToolsTab({
                     ) : null}
                   </div>
                   {canManageIdentities && !identitiesLoading && identities.length === 0 ? (
-                    <div className="border-border bg-background flex flex-col gap-3 rounded-lg border border-dashed p-3">
+                    <div className={stylex.props(styles.s94e66deb).className || ''}>
                       <SizableText size="sm" color="muted">
                         No agent accounts are available on this server yet. Create a new server-side HM account key,
                         then enable it for this agent.
@@ -1827,9 +2343,17 @@ function AgentToolsTab({
             <button
               type="button"
               className="flex min-w-0 flex-1 items-center gap-2 py-1 text-left"
-              onClick={() => authoredToolDialog.open({serverUrl, accountUid, agentId, tool, readOnly})}
+              onClick={() =>
+                authoredToolDialog.open({
+                  serverUrl,
+                  accountUid,
+                  agentId,
+                  tool,
+                  readOnly,
+                })
+              }
             >
-              <SizableText size="sm" weight="bold" className="shrink-0 font-mono">
+              <SizableText size="sm" weight="bold" className={stylex.props(styles.s8e4be3ed).className || ''}>
                 {tool.name}
               </SizableText>
               <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
@@ -1840,7 +2364,7 @@ function AgentToolsTab({
                   Disabled
                 </span>
               ) : null}
-              <SizableText size="sm" color="muted" className="truncate">
+              <SizableText size="sm" color="muted" className={stylex.props(styles.s6e724d66).className || ''}>
                 {tool.summary}
               </SizableText>
             </button>
@@ -1850,24 +2374,38 @@ function AgentToolsTab({
                   variant="ghost"
                   size="iconSm"
                   aria-label={`Edit ${tool.name}`}
-                  onClick={() => authoredToolDialog.open({serverUrl, accountUid, agentId, tool})}
+                  onClick={() =>
+                    authoredToolDialog.open({
+                      serverUrl,
+                      accountUid,
+                      agentId,
+                      tool,
+                    })
+                  }
                 >
-                  <Pencil className="size-3.5" />
+                  <Pencil className={stylex.props(styles.s3269316e).className || ''} />
                 </Button>
                 <Button
                   variant="ghost"
                   size="iconSm"
                   className="text-muted-foreground hover:text-destructive"
                   aria-label={`Delete ${tool.name}`}
-                  onClick={() => deleteAuthoredToolDialog.open({serverUrl, accountUid, agentId, tool})}
+                  onClick={() =>
+                    deleteAuthoredToolDialog.open({
+                      serverUrl,
+                      accountUid,
+                      agentId,
+                      tool,
+                    })
+                  }
                 >
-                  <Trash2 className="size-3.5" />
+                  <Trash2 className={stylex.props(styles.s3269316e).className || ''} />
                 </Button>
               </div>
             ) : null}
           </div>
         ))}
-        <div className="flex items-center justify-between gap-3 px-1">
+        <div className={stylex.props(styles.scfedb87c).className || ''}>
           {agentTools.isLoading && authoredTools.length === 0 ? (
             <SizableText size="sm" color="muted">
               Loading custom tools…
@@ -1883,10 +2421,16 @@ function AgentToolsTab({
             <Button
               variant="ghost"
               size="sm"
-              className="shrink-0"
-              onClick={() => authoredToolDialog.open({serverUrl, accountUid, agentId})}
+              className={stylex.props(styles.sf032ed6c).className || ''}
+              onClick={() =>
+                authoredToolDialog.open({
+                  serverUrl,
+                  accountUid,
+                  agentId,
+                })
+              }
             >
-              <Plus className="size-4" />
+              <Plus className={stylex.props(styles.sca3de968).className || ''} />
               Add tool
             </Button>
           ) : null}
@@ -1907,7 +2451,6 @@ function AgentToolsTab({
     </section>
   )
 }
-
 function NewAgentAccountPanel({
   name,
   onNameChange,
@@ -1922,7 +2465,7 @@ function NewAgentAccountPanel({
   disabled: boolean
 }) {
   return (
-    <div className="border-border bg-background flex flex-col gap-3 rounded-lg border p-3">
+    <div className={stylex.props(styles.sea5bafd9).className || ''}>
       <div>
         <SizableText size="sm" weight="bold">
           New agent account
@@ -1932,7 +2475,7 @@ function NewAgentAccountPanel({
         </SizableText>
       </div>
       <Input value={name} onChange={(event) => onNameChange(event.target.value)} placeholder="Profile name" />
-      <div className="flex justify-end gap-2">
+      <div className={stylex.props(styles.sb87f7412).className || ''}>
         {onCancel ? (
           <Button variant="ghost" onClick={onCancel} disabled={disabled}>
             Cancel
@@ -1945,7 +2488,6 @@ function NewAgentAccountPanel({
     </div>
   )
 }
-
 function AgentTriggersTab({
   agentId,
   serverUrl,
@@ -1974,25 +2516,35 @@ function AgentTriggersTab({
   const nameSaveIdRef = useRef(0)
   const [enabled, setEnabled] = useState(true)
   const [prompt, setPrompt] = useState<HMBlockNode[]>([])
-  const [source, setSource] = useState<AgentTriggerSource>({type: 'document-comment', resource: ''})
+  const [source, setSource] = useState<AgentTriggerSource>({
+    type: 'document-comment',
+    resource: '',
+  })
   const [detailsDirty, setDetailsDirty] = useState(false)
   const [detailsSaveState, setDetailsSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const detailsSaveIdRef = useRef(0)
   const selectedTriggerRef = useRef<string | null>(null)
   const lastSavedDetailsKeyRef = useRef('')
   const currentDetailsKey = useMemo(() => {
-    return JSON.stringify({prompt, source})
+    return JSON.stringify({
+      prompt,
+      source,
+    })
   }, [prompt, source])
   const currentDetailsKeyRef = useRef(currentDetailsKey)
   currentDetailsKeyRef.current = currentDetailsKey
   const nextScheduledFire = useMemo(
     () =>
       selected
-        ? nextScheduleFire({source, createdAt: selected.createdAt, lastFiredAt: selected.lastFiredAt, enabled})
+        ? nextScheduleFire({
+            source,
+            createdAt: selected.createdAt,
+            lastFiredAt: selected.lastFiredAt,
+            enabled,
+          })
         : null,
     [enabled, selected, source],
   )
-
   useEffect(() => {
     if (!selected) return
     const triggerChanged = selectedTriggerRef.current !== selected.id
@@ -2011,7 +2563,6 @@ function AgentTriggersTab({
     setDetailsDirty(false)
     setDetailsSaveState('idle')
   }, [nameDirty, selected])
-
   useEffect(() => {
     if (readOnly || !selectedTriggerId || !selected || !nameDirty) return
     const draftName = name.trim()
@@ -2026,7 +2577,12 @@ function AgentTriggersTab({
     const timer = setTimeout(() => {
       setNameSaveState('saving')
       void updateTrigger
-        .mutateAsync({triggerId: selectedTriggerId, patch: {name: draftName}})
+        .mutateAsync({
+          triggerId: selectedTriggerId,
+          patch: {
+            name: draftName,
+          },
+        })
         .then((result) => {
           if (nameSaveIdRef.current !== saveId) return
           if (result._ !== 'UpdateAgentTriggerResponse') throw new Error('Unexpected trigger update response')
@@ -2045,20 +2601,23 @@ function AgentTriggersTab({
     }, 600)
     return () => clearTimeout(timer)
   }, [name, nameDirty, readOnly, selected, selectedTriggerId, updateTrigger])
-
   async function handleEnabledChange(nextEnabled: boolean) {
     if (!selectedTriggerId || !selected) return
     const previousEnabled = enabled
     setEnabled(nextEnabled)
     try {
-      const result = await updateTrigger.mutateAsync({triggerId: selectedTriggerId, patch: {enabled: nextEnabled}})
+      const result = await updateTrigger.mutateAsync({
+        triggerId: selectedTriggerId,
+        patch: {
+          enabled: nextEnabled,
+        },
+      })
       if (result._ !== 'UpdateAgentTriggerResponse') throw new Error('Unexpected trigger update response')
     } catch (error) {
       setEnabled(previousEnabled)
       toast.error(error instanceof Error ? error.message : 'Could not update trigger enabled state')
     }
   }
-
   useEffect(() => {
     if (readOnly || !selectedTriggerId || !selected || !detailsDirty || detailsSaveState === 'saving') return
     const detailsKey = currentDetailsKey
@@ -2074,7 +2633,10 @@ function AgentTriggersTab({
       void updateTrigger
         .mutateAsync({
           triggerId: selectedTriggerId,
-          patch: {prompt: promptBlocksForRequest(prompt), source},
+          patch: {
+            prompt: promptBlocksForRequest(prompt),
+            source,
+          },
         })
         .then((result) => {
           if (detailsSaveIdRef.current !== saveId) return
@@ -2099,19 +2661,22 @@ function AgentTriggersTab({
     }, 800)
     return () => clearTimeout(timer)
   }, [currentDetailsKey, detailsDirty, detailsSaveState, prompt, readOnly, selected, selectedTriggerId, source])
-
   async function handleDeleteTrigger() {
     if (!selectedTriggerId) return
     try {
       const result = await deleteTrigger.mutateAsync(selectedTriggerId)
       if (result._ !== 'DeleteAgentTriggerResponse') throw new Error('Unexpected trigger delete response')
       toast.success('Trigger deleted')
-      navigate({key: 'agent', agentId, serverUrl, tab: 'triggers'})
+      navigate({
+        key: 'agent',
+        agentId,
+        serverUrl,
+        tab: 'triggers',
+      })
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Could not delete trigger')
     }
   }
-
   if (selectedTriggerId) {
     return (
       <>
@@ -2125,7 +2690,14 @@ function AgentTriggersTab({
           saveState={nameSaveState}
           disabled={!selected || readOnly}
           backLabel="Back to agent triggers"
-          onBack={() => navigate({key: 'agent', agentId, serverUrl, tab: 'triggers'})}
+          onBack={() =>
+            navigate({
+              key: 'agent',
+              agentId,
+              serverUrl,
+              tab: 'triggers',
+            })
+          }
           actions={
             !readOnly ? (
               <OptionsDropdown
@@ -2133,7 +2705,7 @@ function AgentTriggersTab({
                 menuItems={[
                   {
                     key: 'delete-trigger',
-                    icon: <Trash2 className="size-4" />,
+                    icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
                     label: 'Delete trigger',
                     variant: 'destructive',
                     onClick: () => void handleDeleteTrigger(),
@@ -2146,23 +2718,23 @@ function AgentTriggersTab({
         <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col gap-5 overflow-y-auto px-4 py-4">
           {trigger.isLoading ? <SizableText color="muted">Loading trigger…</SizableText> : null}
           {trigger.isError ? (
-            <SizableText className="text-destructive">
+            <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
               {trigger.error instanceof Error ? trigger.error.message : 'Could not load trigger'}
             </SizableText>
           ) : null}
           {selected ? (
             <>
               {readOnly ? (
-                <div className="grid gap-4">
+                <div className={stylex.props(styles.sd1c4c9a3).className || ''}>
                   <div className="border-border bg-muted/40 rounded-lg border p-3">
-                    <SizableText size="sm" weight="bold" className="block">
+                    <SizableText size="sm" weight="bold" className={stylex.props(styles.s597c48d).className || ''}>
                       Source
                     </SizableText>
                     <SizableText size="sm" color="muted">
                       {summarizeTriggerSource(source)}
                     </SizableText>
                   </div>
-                  <div className="flex flex-col gap-1">
+                  <div className={stylex.props(styles.sfbc6e28d).className || ''}>
                     <SizableText size="sm" weight="bold">
                       Prompt
                     </SizableText>
@@ -2172,7 +2744,7 @@ function AgentTriggersTab({
                   </div>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className={stylex.props(styles.sd1c4c9a3).className || ''}>
                   <TriggerSourceFields
                     source={source}
                     onChange={(nextSource) => {
@@ -2180,7 +2752,7 @@ function AgentTriggersTab({
                       setDetailsDirty(true)
                     }}
                     trailing={
-                      <label className="flex h-9 items-center gap-2 text-base">
+                      <label className={stylex.props(styles.s5661d341).className || ''}>
                         <input
                           type="checkbox"
                           checked={enabled}
@@ -2191,7 +2763,7 @@ function AgentTriggersTab({
                       </label>
                     }
                   />
-                  <div className="flex flex-col gap-1">
+                  <div className={stylex.props(styles.sfbc6e28d).className || ''}>
                     <SizableText size="sm" weight="bold">
                       Prompt
                     </SizableText>
@@ -2215,7 +2787,7 @@ function AgentTriggersTab({
                   </div>
                 </div>
               )}
-              <div className="border-border flex flex-col gap-2 border-t pt-5">
+              <div className={stylex.props(styles.s911c1714).className || ''}>
                 <SizableText weight="bold">Sessions created by this trigger</SizableText>
                 {!trigger.data?.sessions.length ? (
                   <SizableText color="muted">No sessions created yet.</SizableText>
@@ -2226,12 +2798,30 @@ function AgentTriggersTab({
                     session={session}
                     serverUrl={serverUrl}
                     accountUid={selectedAccountId}
-                    onOpen={() => navigate({key: 'agent-session', agentId, sessionId: session.id, serverUrl})}
+                    onOpen={() =>
+                      navigate({
+                        key: 'agent-session',
+                        agentId,
+                        sessionId: session.id,
+                        serverUrl,
+                      })
+                    }
                     onOpenSession={(child) =>
-                      navigate({key: 'agent-session', agentId: child.agentId, sessionId: child.id, serverUrl})
+                      navigate({
+                        key: 'agent-session',
+                        agentId: child.agentId,
+                        sessionId: child.id,
+                        serverUrl,
+                      })
                     }
                     onOpenTrigger={() =>
-                      navigate({key: 'agent', agentId, serverUrl, tab: 'triggers', triggerId: selected.id})
+                      navigate({
+                        key: 'agent',
+                        agentId,
+                        serverUrl,
+                        tab: 'triggers',
+                        triggerId: selected.id,
+                      })
                     }
                   />
                 ))}
@@ -2240,7 +2830,7 @@ function AgentTriggersTab({
                 <TriggerMeta label="Last checked" value={selected.lastCheckedAt} />
                 <TriggerMeta label="Last fired" value={selected.lastFiredAt} />
                 {source.type === 'schedule' ? <TriggerMeta label="Next fire" value={nextScheduledFire} /> : null}
-                <div className="flex flex-col gap-1">
+                <div className={stylex.props(styles.sfbc6e28d).className || ''}>
                   <SizableText size="sm" weight="bold">
                     Last error
                   </SizableText>
@@ -2255,12 +2845,11 @@ function AgentTriggersTab({
       </>
     )
   }
-
   return (
-    <section className="flex flex-col gap-2">
+    <section className={stylex.props(styles.sfbc6e28e).className || ''}>
       {isLoading ? <SizableText color="muted">Loading triggers…</SizableText> : null}
       {!isLoading && !triggers.length ? (
-        <div className="border-border flex flex-col gap-2 rounded-xl border border-dashed p-6">
+        <div className={stylex.props(styles.sc182243e).className || ''}>
           <SizableText weight="bold">No triggers yet.</SizableText>
           <SizableText size="sm" color="muted">
             Create a trigger to start sessions when matching Seed activity appears.
@@ -2271,9 +2860,17 @@ function AgentTriggersTab({
         <button
           key={item.id}
           className="hover:bg-muted/60 flex cursor-pointer flex-col items-start rounded-lg px-3 py-2 text-left transition-colors"
-          onClick={() => navigate({key: 'agent', agentId, serverUrl, tab: 'triggers', triggerId: item.id})}
+          onClick={() =>
+            navigate({
+              key: 'agent',
+              agentId,
+              serverUrl,
+              tab: 'triggers',
+              triggerId: item.id,
+            })
+          }
         >
-          <div className="flex w-full items-center justify-between gap-3">
+          <div className={stylex.props(styles.s592e123d).className || ''}>
             <SizableText weight="bold">{item.name}</SizableText>
             <SizableText size="xs" color={item.enabled ? undefined : 'muted'}>
               {item.enabled ? 'Enabled' : 'Disabled'}
@@ -2290,10 +2887,9 @@ function AgentTriggersTab({
     </section>
   )
 }
-
 function TriggerMeta({label, value}: {label: string; value?: number | string | null}) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       <SizableText size="sm" weight="bold">
         {label}
       </SizableText>
@@ -2303,21 +2899,26 @@ function TriggerMeta({label, value}: {label: string; value?: number | string | n
     </div>
   )
 }
-
 function CreateAgentTriggerDialog({
   input,
   onClose,
 }: {
-  input: {serverUrl: string; selectedAccountId: string | null | undefined; agentId: string}
+  input: {
+    serverUrl: string
+    selectedAccountId: string | null | undefined
+    agentId: string
+  }
   onClose: () => void
 }) {
   const createTrigger = useCreateAgentTrigger(input.serverUrl, input.selectedAccountId)
   const [name, setName] = useState('New activity trigger')
-  const [source, setSource] = useState<AgentTriggerSource>({type: 'document-comment', resource: ''})
+  const [source, setSource] = useState<AgentTriggerSource>({
+    type: 'document-comment',
+    resource: '',
+  })
   const [prompt, setPrompt] = useState<HMBlockNode[]>(() =>
     agentPromptToBlocks('Respond to the mention, performing the action requested.'),
   )
-
   async function handleCreateTrigger() {
     try {
       const trigger: AgentTriggerInput = {
@@ -2326,7 +2927,10 @@ function CreateAgentTriggerDialog({
         source,
         prompt: promptBlocksForRequest(prompt),
       }
-      const result = await createTrigger.mutateAsync({agentId: input.agentId, trigger})
+      const result = await createTrigger.mutateAsync({
+        agentId: input.agentId,
+        trigger,
+      })
       if (result._ !== 'CreateAgentTriggerResponse') throw new Error('Unexpected trigger create response')
       toast.success('Trigger created')
       onClose()
@@ -2334,27 +2938,26 @@ function CreateAgentTriggerDialog({
       toast.error(error instanceof Error ? error.message : 'Could not create trigger')
     }
   }
-
   return (
     <div className="flex w-full max-w-full min-w-0 flex-col gap-5">
       <div>
         <DialogTitle>New trigger</DialogTitle>
         <DialogDescription>Start a new agent session when matching Seed activity appears.</DialogDescription>
       </div>
-      <label className="flex flex-col gap-1">
+      <label className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
         <Input value={name} onChange={(event) => setName(event.target.value)} />
       </label>
       <TriggerSourceFields source={source} onChange={setSource} />
-      <div className="flex flex-col gap-1">
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText size="sm" weight="bold">
           Prompt
         </SizableText>
         <AgentPromptEditor initialBlocks={prompt} onChange={setPrompt} />
       </div>
-      <div className="flex justify-end gap-2">
+      <div className={stylex.props(styles.sb87f7412).className || ''}>
         <Button variant="ghost" onClick={onClose}>
           Cancel
         </Button>
@@ -2365,7 +2968,6 @@ function CreateAgentTriggerDialog({
     </div>
   )
 }
-
 function nextScheduleFire(input: {
   source: AgentTriggerSource
   createdAt: number
@@ -2384,9 +2986,18 @@ function nextScheduleFire(input: {
   if (schedule.kind === 'once') return input.lastFiredAt ? 'Already fired' : schedule.runAt
   return nextWeeklyScheduleFire(schedule, now, after)
 }
-
 function nextWeeklyScheduleFire(
-  schedule: Extract<Extract<AgentTriggerSource, {type: 'schedule'}>['schedule'], {kind: 'weekly'}>,
+  schedule: Extract<
+    Extract<
+      AgentTriggerSource,
+      {
+        type: 'schedule'
+      }
+    >['schedule'],
+    {
+      kind: 'weekly'
+    }
+  >,
   now: number,
   after: number,
 ): number | null {
@@ -2406,7 +3017,6 @@ function nextWeeklyScheduleFire(
   }
   return next
 }
-
 function zonedTimeToUtcMs(
   year: number,
   month: number,
@@ -2426,11 +3036,17 @@ function zonedTimeToUtcMs(
   }
   return guess
 }
-
 function zonedParts(
   ms: number,
   timeZone: string,
-): {year: number; month: number; day: number; hour: number; minute: number; weekday: number} {
+): {
+  year: number
+  month: number
+  day: number
+  hour: number
+  minute: number
+  weekday: number
+} {
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone,
     weekday: 'short',
@@ -2451,7 +3067,6 @@ function zonedParts(
     weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf((values.weekday || 'Sun').slice(0, 3)),
   }
 }
-
 function SessionListItem({
   session,
   serverUrl,
@@ -2471,17 +3086,17 @@ function SessionListItem({
   return (
     <div className="hover:bg-muted flex flex-col items-start rounded-lg px-3 py-2 transition-colors">
       <button type="button" className="flex w-full flex-col gap-0.5 text-left max-sm:min-h-10" onClick={onOpen}>
-        <span className="flex w-full items-center gap-3">
+        <span className={stylex.props(styles.scc9904d2).className || ''}>
           <SessionStatusDot status={session.status} />
           <SizableText weight="bold" className="min-w-0 flex-1 truncate">
             {session.title || 'Untitled session'}
           </SizableText>
-          <SizableText size="sm" color="muted" className="flex-none whitespace-nowrap">
+          <SizableText size="sm" color="muted" className={stylex.props(styles.s6b2af047).className || ''}>
             {formattedDateMedium(new Date(session.updatedAt))}
           </SizableText>
         </span>
         {session.description ? (
-          <SizableText size="sm" color="muted" className="line-clamp-3 w-full pl-5">
+          <SizableText size="sm" color="muted" className={stylex.props(styles.s8c3d1867).className || ''}>
             {session.description}
           </SizableText>
         ) : null}
@@ -2499,7 +3114,7 @@ function SessionListItem({
         </button>
       ) : null}
       {session.childSessionCount && onOpenSession ? (
-        <div className="mt-1 w-full pl-5">
+        <div className={stylex.props(styles.sd39686aa).className || ''}>
           <SubSessionsDisclosure
             serverUrl={serverUrl}
             accountUid={accountUid}
@@ -2512,7 +3127,6 @@ function SessionListItem({
     </div>
   )
 }
-
 export default function AgentDetailRoutePage() {
   const route = useNavRoute()
   const selectedAccountId = useSelectedAccountId()

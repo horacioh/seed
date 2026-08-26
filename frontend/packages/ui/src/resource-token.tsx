@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMMetadata, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useDocumentActions} from '@shm/shared/document-actions-context'
 import {useResource} from '@shm/shared/models/entity'
@@ -5,7 +6,19 @@ import {useRouteLink} from '@shm/shared/routing'
 import {HMIcon} from './hm-icon'
 import {HoverCard, HoverCardContent, HoverCardTrigger} from './hover-card'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s76a06a6d: {
+    marginRight: 'calc(0.25rem * 1)',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  },
+  sd7369eb8: {
+    color: 'var(--foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 export function ResourceToken({
   id,
   metadata,
@@ -18,19 +31,27 @@ export function ResourceToken({
     id: UnpackedHypermediaId
   }>
 }) {
-  const linkProps = useRouteLink({key: 'document', id: id})
+  const linkProps = useRouteLink({
+    key: 'document',
+    id: id,
+  })
   const actions = useDocumentActions()
   const draft = actions.getDraft?.(id)
-  const resource = useResource(id, {subscribed: true})
+  const resource = useResource(id, {
+    subscribed: true,
+  })
   const liveMetadata = resource.data?.type === 'document' ? resource.data.document.metadata : undefined
   const displayMetadata = draft?.metadata
-    ? {...(metadata ?? {}), ...(liveMetadata ?? {}), ...draft.metadata}
+    ? {
+        ...(metadata ?? {}),
+        ...(liveMetadata ?? {}),
+        ...draft.metadata,
+      }
     : liveMetadata ?? metadata
   const icon =
     !id.path?.length || displayMetadata?.icon ? (
       <HMIcon size={20} id={id} name={displayMetadata?.name} icon={displayMetadata?.icon} />
     ) : null
-
   const baseClassName =
     'inline text-sm whitespace-normal bg-gray-100 border hover:dark:text-white dark:bg-gray-800 hover:bg-gray-200'
   const previewTriggerClassName = 'inline-block align-middle whitespace-nowrap px-1 rounded-md'
@@ -39,8 +60,8 @@ export function ResourceToken({
       <HoverCard>
         <HoverCardTrigger asChild>
           <a {...linkProps} className={cn(baseClassName, previewTriggerClassName)}>
-            {icon ? <span className="mr-1 inline-block align-middle">{icon}</span> : null}
-            <span className="text-foreground truncate overflow-hidden">
+            {icon ? <span className={stylex.props(styles.s76a06a6d).className || ''}>{icon}</span> : null}
+            <span className={stylex.props(styles.sd7369eb8).className || ''}>
               {displayMetadata?.name || 'Untitled Resource'}
             </span>
           </a>
@@ -53,7 +74,7 @@ export function ResourceToken({
   }
   return (
     <a {...linkProps} className={baseClassName}>
-      {icon ? <span className="mr-1 inline-block align-middle">{icon}</span> : null}
+      {icon ? <span className={stylex.props(styles.s76a06a6d).className || ''}>{icon}</span> : null}
       {displayMetadata?.name || 'Untitled Resource'}
     </a>
   )

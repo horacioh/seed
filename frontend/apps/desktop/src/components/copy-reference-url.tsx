@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {usePushAfterAction} from '@/models/push-after-action'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {NavRoute, routeToUrl} from '@shm/shared'
@@ -9,7 +10,12 @@ import {copyTextToClipboard} from '@shm/ui/copy-to-clipboard'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useState} from 'react'
 import {useSetPushOnCopy, useSetPushOnPublish} from '../models/gateway-settings'
-
+const styles = stylex.create({
+  se658ac13: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+  },
+})
 export function useCopyReferenceUrl(
   hostname: string,
   originHomeId?: UnpackedHypermediaId | undefined,
@@ -20,7 +26,10 @@ export function useCopyReferenceUrl(
   })
   const pushAfterAction = usePushAfterAction()
   function onCopy(route: NavRoute) {
-    console.log('== onCopy routeToUrl', route, {hostname, originHomeId})
+    console.log('== onCopy routeToUrl', route, {
+      hostname,
+      originHomeId,
+    })
     const url = routeToUrl(route, {
       hostname,
       originHomeId,
@@ -29,12 +38,15 @@ export function useCopyReferenceUrl(
     copyTextToClipboard(url)
     const pushId = route.key === 'document' ? route.id : null
     if (pushId) {
-      pushAfterAction({id: pushId, trigger: 'copy', onlyPushToHost: hostname})
+      pushAfterAction({
+        id: pushId,
+        trigger: 'copy',
+        onlyPushToHost: hostname,
+      })
     }
   }
   return [dialog.content, onCopy] as const
 }
-
 export function PushToGatewayDialog({
   input,
   onClose,
@@ -75,7 +87,7 @@ export function PushToGatewayDialog({
       >
         Do this every time
       </CheckboxField>
-      <div className="flex gap-1">
+      <div className={stylex.props(styles.se658ac13).className || ''}>
         <Button
           variant="ghost"
           size="sm"

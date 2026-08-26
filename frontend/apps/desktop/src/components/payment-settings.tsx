@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {reportError} from '@/errors'
 import {useCurrencyComparisons} from '@/models/compare-currencies'
 import {
@@ -44,7 +45,142 @@ import {Tooltip} from '@shm/ui/tooltip'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useState} from 'react'
 import QRCode from 'react-qr-code'
-
+const styles = stylex.create({
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s760cfea1: {
+    alignSelf: 'flex-start',
+  },
+  s407d9e9: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s51ab7e66: {
+    color: 'var(--destructive)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s3b6ba5e6: {
+    color: 'var(--primary)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s5f6cd3a4: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  se658ac15: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sd4bc3b8d: {
+    color: 'var(--primary)',
+    borderColor: 'var(--primary)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sf38169a7: {
+    margin: 'calc(0.25rem * 4)',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  s52a78f35: {
+    margin: 'calc(0.25rem * 4)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s2d27f4cb: {
+    color: 'var(--muted)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  s86ff3e6: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sbf63c09a: {
+    color: 'var(--link)',
+  },
+  s71e968d9: {
+    color: 'currentcolor',
+  },
+  se658ac16: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sff4cbdec: {
+    marginBlock: 'calc(0.25rem * 4)',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  s78630139: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  s21fb93ac: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+  },
+  saa1b63c3: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export function AccountWallet({
   accountUid,
   onOpenWallet,
@@ -57,13 +193,13 @@ export function AccountWallet({
   if (!wallets.data?.wallets) return null
   if (wallets.isLoading)
     return (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
   if (createWallet.isLoading)
     return (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
@@ -73,17 +209,25 @@ export function AccountWallet({
     ))
   }
   return (
-    <div className="flex">
+    <div className={stylex.props(styles.s2ffff9).className || ''}>
       <Button
         variant="inverse"
         size="sm"
-        className="self-start"
+        className={stylex.props(styles.s760cfea1).className || ''}
         onClick={() => {
-          createWallet.mutateAsync({accountUid}).catch((e) => {
-            console.error(e)
-            toast.error(`Failed to create wallet: ${e.message}`)
-            reportError(e, {feature: 'payments', operation: 'create-wallet', accountUid})
-          })
+          createWallet
+            .mutateAsync({
+              accountUid,
+            })
+            .catch((e) => {
+              console.error(e)
+              toast.error(`Failed to create wallet: ${e.message}`)
+              reportError(e, {
+                feature: 'payments',
+                operation: 'create-wallet',
+                accountUid,
+              })
+            })
         }}
       >
         Create Account Wallet
@@ -91,31 +235,29 @@ export function AccountWallet({
     </div>
   )
 }
-
 function WalletButton({walletId, onOpen}: {walletId: string; onOpen: () => void}) {
   const wallet = useWallet(walletId)
   return (
     <Button onClick={onOpen}>
-      <div className="flex flex-1 items-center justify-between">
+      <div className={stylex.props(styles.s407d9e9).className || ''}>
         <SizableText family="mono">x{walletId.slice(-8).toUpperCase()}</SizableText>
-        <div className="flex items-center gap-3">
+        <div className={stylex.props(styles.s86ff3e5).className || ''}>
           <Badge variant="outline">Account Wallet</Badge>
           {wallet.isLoading ? (
-            <div className="flex items-center justify-center">
+            <div className={stylex.props(styles.s9a378369).className || ''}>
               <Spinner />
             </div>
           ) : wallet.data ? (
             <SizableText family="mono" weight="bold">{`${wallet.data?.balance} SAT`}</SizableText>
           ) : wallet.isError ? (
-            <AlertCircle className="text-destructive size-4" />
+            <AlertCircle className={stylex.props(styles.s51ab7e66).className || ''} />
           ) : null}
-          <ChevronRight className="text-primary size-4" />
+          <ChevronRight className={stylex.props(styles.s3b6ba5e6).className || ''} />
         </div>
       </div>
     </Button>
   )
 }
-
 export function WalletPage({
   walletId,
   accountUid,
@@ -133,13 +275,13 @@ export function WalletPage({
   const document = accountDoc.data?.type === 'document' ? accountDoc.data.document : undefined
   const walletName = `${getAccountName(document)} Main Wallet`
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
+      <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
         <Button size="sm" onClick={onClose}>
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className={stylex.props(styles.sca3de968).className || ''} />
           Profile
         </Button>
-        <div className="flex gap-3">
+        <div className={stylex.props(styles.se658ac15).className || ''}>
           {/* <DeleteWalletButton
             walletId={walletId}
             accountUid={accountUid}
@@ -154,7 +296,7 @@ export function WalletPage({
               })
             }
             variant="outline"
-            className="text-primary border-primary border"
+            className={stylex.props(styles.sd4bc3b8d).className || ''}
           >
             Export
           </Button>
@@ -163,12 +305,12 @@ export function WalletPage({
       </div>
       {
         wallet.isLoading ? (
-          <div className="flex items-center justify-center">
+          <div className={stylex.props(styles.s9a378369).className || ''}>
             <Spinner />
           </div>
         ) : wallet.isError ? (
-          <div className="m-4 flex flex-col">
-            <SizableText weight="bold" size="2xl" className="text-destructive">
+          <div className={stylex.props(styles.sf38169a7).className || ''}>
+            <SizableText weight="bold" size="2xl" className={stylex.props(styles.s8a2570e2).className || ''}>
               Error Loading Wallet
             </SizableText>
           </div>
@@ -181,13 +323,13 @@ export function WalletPage({
         {invoices.data ? (
           <WalletTransactions invoices={invoices.data} />
         ) : invoices.isError ? (
-          <div className="m-4 flex flex-col">
-            <SizableText className="text-destructive">
+          <div className={stylex.props(styles.sf38169a7).className || ''}>
+            <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
               Error Loading Transaction History. May be disconnected from Seed Lightning Server.
             </SizableText>
           </div>
         ) : (
-          <div className="m-4 flex items-center justify-center">
+          <div className={stylex.props(styles.s52a78f35).className || ''}>
             <Spinner />
           </div>
         )}
@@ -195,7 +337,6 @@ export function WalletPage({
     </div>
   )
 }
-
 function WalletTransactions({
   invoices,
 }: {
@@ -207,19 +348,18 @@ function WalletTransactions({
 }) {
   if (invoices.all.length === 0)
     return (
-      <div className="m-4 flex flex-col">
-        <SizableText className="text-muted">No transactions yet.</SizableText>
+      <div className={stylex.props(styles.sf38169a7).className || ''}>
+        <SizableText className={stylex.props(styles.s2d27f4cb).className || ''}>No transactions yet.</SizableText>
       </div>
     )
   return (
-    <div className="flex flex-col">
+    <div className={stylex.props(styles.s783f19f3).className || ''}>
       {invoices.all.map((invoice) => (
         <InvoiceRow invoice={invoice} />
       ))}
     </div>
   )
 }
-
 function WalletDetails({
   wallet,
   walletName,
@@ -233,18 +373,17 @@ function WalletDetails({
 }) {
   const withdrawDialog = useAppDialog(WithdrawDialog)
   const addFundsDialog = useAppDialog(AddFundsDialog)
-
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className={stylex.props(styles.s78289774).className || ''}>
         <SizableText weight="bold" size="2xl">
           {walletName}
         </SizableText>
-        <div className="flex items-center gap-4">
+        <div className={stylex.props(styles.s86ff3e6).className || ''}>
           <WalletValue amount={Number(wallet.balance)} />
         </div>
       </div>
-      <div className="flex justify-between">
+      <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
         <Tooltip content="Click to Copy Lightning Address">
           <Button
             size="sm"
@@ -252,36 +391,46 @@ function WalletDetails({
               copyTextToClipboard(walletId)
               toast.success('Copied Lightning Address to Clipboard')
             }}
-            className="text-link"
+            className={stylex.props(styles.sbf63c09a).className || ''}
           >
-            <Copy className="size-4" />
-            <SizableText family="mono" className="text-current">{`x${wallet.id.slice(-8).toUpperCase()}`}</SizableText>
+            <Copy className={stylex.props(styles.sca3de968).className || ''} />
+            <SizableText family="mono" className={stylex.props(styles.s71e968d9).className || ''}>{`x${wallet.id
+              .slice(-8)
+              .toUpperCase()}`}</SizableText>
           </Button>
         </Tooltip>
         <SizableText family="mono" size="2xl">
           {wallet.balance ? Number(wallet.balance) : '0'} SATS
         </SizableText>
       </div>
-      <div className="flex gap-4">
+      <div className={stylex.props(styles.se658ac16).className || ''}>
         <Button
-          className="flex-1"
+          className={stylex.props(styles.sb42feb5d).className || ''}
           size="sm"
           onClick={() => {
-            addFundsDialog.open({walletId, accountUid, walletName})
+            addFundsDialog.open({
+              walletId,
+              accountUid,
+              walletName,
+            })
           }}
         >
-          <Download className="size-4" />
+          <Download className={stylex.props(styles.sca3de968).className || ''} />
           Add Funds
         </Button>
         {addFundsDialog.content}
         <Button
-          className="flex-1"
+          className={stylex.props(styles.sb42feb5d).className || ''}
           size="sm"
           onClick={() => {
-            withdrawDialog.open({walletId, accountUid, walletName})
+            withdrawDialog.open({
+              walletId,
+              accountUid,
+              walletName,
+            })
           }}
         >
-          <Upload className="size-4" />
+          <Upload className={stylex.props(styles.sca3de968).className || ''} />
           Withdraw
         </Button>
         {withdrawDialog.content}
@@ -289,12 +438,15 @@ function WalletDetails({
     </>
   )
 }
-
 function WithdrawDialog({
   input,
   onClose,
 }: {
-  input: {walletId: string; walletName: string; accountUid: string}
+  input: {
+    walletId: string
+    walletName: string
+    accountUid: string
+  }
   onClose: () => void
 }) {
   const {walletId, accountUid, walletName} = input
@@ -320,12 +472,12 @@ function WithdrawDialog({
           Send <AmountSats amount={invoice.amount} /> to <DestWallet walletIds={Object.keys(invoice.share)} />
         </DialogDescription>
         <DialogDescription color="$color10">{invoice.description}</DialogDescription>
-        <div className="my-4 flex justify-center">
+        <div className={stylex.props(styles.sff4cbdec).className || ''}>
           <Spinner hide={!payInvoice.isLoading} />
         </div>
-        <div className="flex gap-4">
+        <div className={stylex.props(styles.se658ac16).className || ''}>
           <Button
-            className="flex-1"
+            className={stylex.props(styles.sb42feb5d).className || ''}
             onClick={() => {
               reset()
               setPayreqInput('')
@@ -334,7 +486,7 @@ function WithdrawDialog({
             Cancel
           </Button>
           <Button
-            className="flex-1"
+            className={stylex.props(styles.sb42feb5d).className || ''}
             onClick={() => {
               payInvoice
                 .mutateAsync({
@@ -366,22 +518,20 @@ function WithdrawDialog({
       <Field id="payreq" label="Payment Request">
         <Input value={payreqInput} onChangeText={setPayreqInput} />
       </Field>
-      <div className="flex gap-4">
-        <Button className="flex-1" onClick={onClose}>
+      <div className={stylex.props(styles.se658ac16).className || ''}>
+        <Button className={stylex.props(styles.sb42feb5d).className || ''} onClick={onClose}>
           Cancel
         </Button>
-        <Button className="flex-1" disabled>
+        <Button className={stylex.props(styles.sb42feb5d).className || ''} disabled>
           Send Funds
         </Button>
       </div>
     </>
   )
 }
-
 function AmountSats({amount}: {amount: number}) {
   return <SizableText family="mono">{amount} SATS</SizableText>
 }
-
 function DestWallet({walletIds}: {walletIds: string[]}) {
   return (
     <Tooltip content="Copy Wallet Address">
@@ -397,12 +547,15 @@ function DestWallet({walletIds}: {walletIds: string[]}) {
     </Tooltip>
   )
 }
-
 function AddFundsDialog({
   input,
   onClose,
 }: {
-  input: {walletId: string; walletName: string; accountUid: string}
+  input: {
+    walletId: string
+    walletName: string
+    accountUid: string
+  }
   onClose: () => void
 }) {
   const {walletId, accountUid, walletName} = input
@@ -434,7 +587,7 @@ function AddFundsDialog({
     <>
       <DialogTitle>Add Funds to {walletName}</DialogTitle>
       <form onSubmit={submit}>
-        <div className="flex flex-col gap-4">
+        <div className={stylex.props(styles.sfbc6e290).className || ''}>
           <Field id="amount" label="Amount (Sats)">
             <Input
               // type="number"
@@ -447,15 +600,15 @@ function AddFundsDialog({
               // onSubmitEditing={submit}
             />
           </Field>
-          <div className="flex justify-center">
+          <div className={stylex.props(styles.s78630139).className || ''}>
             <Spinner hide={!createInvoice.isLoading} />
           </div>
-          <div className="flex gap-4">
-            <Button className="flex-1" onClick={onClose}>
+          <div className={stylex.props(styles.se658ac16).className || ''}>
+            <Button className={stylex.props(styles.sb42feb5d).className || ''} onClick={onClose}>
               Cancel
             </Button>
 
-            <Button type="submit" className="flex-1" onClick={submit}>
+            <Button type="submit" className={stylex.props(styles.sb42feb5d).className || ''} onClick={submit}>
               Create Invoice
             </Button>
           </div>
@@ -464,7 +617,6 @@ function AddFundsDialog({
     </>
   )
 }
-
 function InvoiceInfo({
   invoice,
   accountUid,
@@ -490,14 +642,13 @@ function InvoiceInfo({
       </>
     )
   }
-
   return (
     <>
       <DialogTitle>Add Funds with External Wallet</DialogTitle>
       <DialogDescription>
         Scan this code to pay with your lightning wallet, or copy and paste the invoice text.
       </DialogDescription>
-      <div className="flex flex-col items-center gap-4">
+      <div className={stylex.props(styles.s21fb93ac).className || ''}>
         <QRCode value={invoice.payload} />
         <Tooltip content="Click to Copy Invoice Text">
           <Button
@@ -507,7 +658,7 @@ function InvoiceInfo({
             }}
             size="sm"
           >
-            <Copy className="size-4" />
+            <Copy className={stylex.props(styles.sca3de968).className || ''} />
             Copy Invoice
           </Button>
         </Tooltip>
@@ -516,7 +667,6 @@ function InvoiceInfo({
     </>
   )
 }
-
 function ExportWalletDialog({input, onClose}: {input: string; onClose: () => void}) {
   return (
     <>
@@ -526,7 +676,6 @@ function ExportWalletDialog({input, onClose}: {input: string; onClose: () => voi
     </>
   )
 }
-
 function DeleteWalletButton({
   walletId,
   accountUid,
@@ -542,7 +691,10 @@ function DeleteWalletButton({
       variant="destructive"
       onClick={() =>
         deleteWallet
-          .mutateAsync({walletId, accountUid})
+          .mutateAsync({
+            walletId,
+            accountUid,
+          })
           .then(() => {
             onDeleted()
             toast.success('Wallet deleted')
@@ -557,14 +709,13 @@ function DeleteWalletButton({
     </Button>
   )
 }
-
 function InvoiceRow({invoice}: {invoice: PlainMessage<Invoice>}) {
   const isPaid = invoice.type === 'paid_invoice'
   const Chevron = isPaid ? ChevronUp : ChevronDown
   const paymentColor = isPaid ? '$red9' : '$green9'
   return (
-    <div className="flex justify-between px-4 py-2">
-      <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.saa1b63c3).className || ''}>
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText>{formattedDateMedium(new Date(invoice.settledAt))}</SizableText>
         <SizableText>
           {invoice.description ? <SizableText weight="bold">{invoice.description} </SizableText> : null}
@@ -581,9 +732,14 @@ function InvoiceRow({invoice}: {invoice: PlainMessage<Invoice>}) {
           </Tooltip>
         </SizableText>
       </div>
-      <div className="flex flex-col gap-3">
-        <div className="flex gap-2">
-          <SizableText family="mono" style={{color: paymentColor}}>
+      <div className={stylex.props(styles.sfbc6e28f).className || ''}>
+        <div className={stylex.props(styles.se658ac14).className || ''}>
+          <SizableText
+            family="mono"
+            style={{
+              color: paymentColor,
+            }}
+          >
             {Number(invoice.amount)} SATS
           </SizableText>
           <Chevron color={paymentColor} size={18} />
@@ -592,17 +748,18 @@ function InvoiceRow({invoice}: {invoice: PlainMessage<Invoice>}) {
     </div>
   )
 }
-
 function WalletValue({amount}: {amount: number}) {
   const currencies = useCurrencyComparisons(amount || 0)
   const [activeCurrency, setActiveCurrency] = useState<(typeof currencies)[number]['code']>('usd')
   if (!currencies.length) return null
   const currency = currencies.find(({code}) => code === activeCurrency)
-  const {value, precision, character} = currency || {value: 0, precision: 0}
+  const {value, precision, character} = currency || {
+    value: 0,
+    precision: 0,
+  }
   const displayValue = precision === 0 ? Math.round(value) : value.toFixed(precision)
-
   return (
-    <div className="flex items-center gap-3">
+    <div className={stylex.props(styles.s86ff3e5).className || ''}>
       <SizableText size="2xl" family="mono">{`${character}${displayValue}`}</SizableText>
       <Select onValueChange={(value) => setActiveCurrency(value as typeof activeCurrency)} value={activeCurrency}>
         <SelectTrigger className="w-[180px]">

@@ -1,8 +1,23 @@
+import * as stylex from '@stylexjs/stylex'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s284c2f1: {
+    height: '100%',
+    width: '100%',
+  },
+  sede8610d: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    flexShrink: '0',
+    flexDirection: 'column',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 6)',
+  },
+})
 export function PanelContainer({className, children, ...props}: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className="h-full w-full">
+    <div className={[stylex.props(styles.s284c2f1).className || '', className].filter(Boolean).join(' ')}>
       <div
         className={cn('bg-panel sm:border-border h-full overflow-hidden sm:rounded-md sm:border', className)}
         {...props}
@@ -12,7 +27,6 @@ export function PanelContainer({className, children, ...props}: React.HTMLAttrib
     </div>
   )
 }
-
 export const Container = ({
   className,
   clearVerticalSpace = false,
@@ -26,7 +40,7 @@ export const Container = ({
   return (
     <div
       className={cn(
-        'mx-auto flex w-full flex-shrink-0 flex-col px-4 pt-6',
+        stylex.props(styles.sede8610d).className || '',
         props.hide && 'pointer-events-none opacity-0',
         clearVerticalSpace && 'py-0',
         centered && 'max-w-[calc(85ch+1em)]',
@@ -36,9 +50,7 @@ export const Container = ({
     />
   )
 }
-
 export const windowContainerStyles = cn('flex flex-col w-screen h-screen min-h-svh bg-panel-background p-2')
-
 export const panelContainerStyles = cn(
   'flex flex-col w-full h-full min-h-0 rounded-md overflow-hidden bg-panel border border-border',
 )

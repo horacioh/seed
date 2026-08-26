@@ -1,9 +1,24 @@
+import * as stylex from '@stylexjs/stylex'
 import {Button} from '@shm/ui/button'
 import {cn} from '@shm/ui/utils'
 import {Send} from 'lucide-react'
 import React, {useLayoutEffect, useRef} from 'react'
 
 /** Shared multiline chat composer used by assistant and agent session chat inputs. */
+const styles = stylex.create({
+  sa13a17a6: {
+    backgroundColor: 'var(--panel)',
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+    paddingBottom: 'calc(0.25rem * 3)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export function ChatMessageComposer({
   textareaRef,
   value,
@@ -33,13 +48,11 @@ export function ChatMessageComposer({
 }) {
   const localRef = useRef<HTMLTextAreaElement>(null)
   const ref = textareaRef || localRef
-
   useLayoutEffect(() => {
     if (ref.current) resizeChatComposerTextarea(ref.current)
   }, [ref, value])
-
   return (
-    <div className={cn('bg-panel flex flex-none items-end gap-2 pb-3', className)}>
+    <div className={cn(stylex.props(styles.sa13a17a6).className || '', className)}>
       <textarea
         ref={ref}
         value={value}
@@ -66,13 +79,12 @@ export function ChatMessageComposer({
       />
       {actions ?? (
         <Button onClick={onSend} disabled={disabled || sendDisabled}>
-          <Send className="size-4" />
+          <Send className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       )}
     </div>
   )
 }
-
 function resizeChatComposerTextarea(textarea: HTMLTextAreaElement) {
   const maxHeight = 192
   textarea.style.height = 'auto'

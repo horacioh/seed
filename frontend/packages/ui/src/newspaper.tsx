@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {HMBlockImage} from '@seed-hypermedia/client/hm-types'
 import {
   HMAccountsMetadata,
@@ -42,6 +43,71 @@ import {Tooltip} from './tooltip'
 import {cn} from './utils'
 
 /** Builds the DocumentCard inline menu items */
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s66f9345d: {
+    position: 'absolute',
+    top: 'calc(0.25rem * 0)',
+    left: 'calc(0.25rem * 0)',
+    height: '100%',
+    width: '100%',
+    objectFit: 'cover',
+  },
+  s5d7ceece: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  sf73e7bf5: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBlock: 'calc(0.25rem * 2)',
+    paddingRight: 'calc(0.25rem * 2)',
+    paddingLeft: 'calc(0.25rem * 3)',
+  },
+  sac428cea: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  se4b59c31: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '2',
+    fontFamily: 'var(--font-sans)',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s55ac44a1: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    fill: 'currentcolor',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+})
 export function useDocumentCardMenuItems(
   docId: UnpackedHypermediaId,
   doc?: HMResourceFetchResult['document'] | null,
@@ -55,14 +121,13 @@ export function useDocumentCardMenuItems(
   const isOwner = actions.selectedAccountUid === docId.uid
   const hasPath = !!docId.path?.length
   const selectedAccountCanWriteSource = isOwner || !!actions.canWriteDocument?.(docId)
-
   return useMemo(() => {
     const items: MenuItemType[] = []
     if (actions.onEditDocument && isOwner) {
       items.push({
         key: 'edit',
         label: draftId ? 'Resume Editing' : 'Edit',
-        icon: <Pencil className="size-4" />,
+        icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onEditDocument!(docId, draftId)
@@ -72,7 +137,7 @@ export function useDocumentCardMenuItems(
     items.push({
       key: 'versions',
       label: 'Versions history',
-      icon: <History className="size-4" />,
+      icon: <History className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: (e) => {
         e?.stopPropagation()
         navigate({
@@ -86,10 +151,16 @@ export function useDocumentCardMenuItems(
       items.push({
         key: 'options',
         label: 'Document Settings',
-        icon: <FilePen className="size-4" />,
+        icon: <FilePen className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
-          navigate({key: 'document', id: docId, panel: {key: 'options'}} as any)
+          navigate({
+            key: 'document',
+            id: docId,
+            panel: {
+              key: 'options',
+            },
+          } as any)
         },
       })
     }
@@ -112,8 +183,12 @@ export function useDocumentCardMenuItems(
         createCopyLinkMenuItem({
           advanced: experiments?.advancedCopyLinkOptions,
           label: 'Copy link',
-          canonical: {copy: copyCanonical},
-          gateway: {copy: copyGateway},
+          canonical: {
+            copy: copyCanonical,
+          },
+          gateway: {
+            copy: copyGateway,
+          },
           hypermedia: {
             copy: () => copyUrlToClipboardWithFeedback(hmIdToURL(docId), 'Hypermedia'),
           },
@@ -131,7 +206,7 @@ export function useDocumentCardMenuItems(
       items.push({
         key: 'move',
         label: 'Move',
-        icon: <Forward className="size-4" />,
+        icon: <Forward className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onMoveDocument!(docId, relocationOrigin)
@@ -142,7 +217,7 @@ export function useDocumentCardMenuItems(
       items.push({
         key: 'duplicate',
         label: 'Duplicate document',
-        icon: <Copy className="size-4" />,
+        icon: <Copy className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onDuplicateDocument!(docId)
@@ -151,12 +226,15 @@ export function useDocumentCardMenuItems(
     }
     if (
       actions.onRepublishDocument &&
-      canShowRepublishDocumentAction({id: docId, selectedAccountUid: actions.selectedAccountUid})
+      canShowRepublishDocumentAction({
+        id: docId,
+        selectedAccountUid: actions.selectedAccountUid,
+      })
     ) {
       items.push({
         key: 'republish',
         label: 'Republish',
-        icon: <Split className="size-4" />,
+        icon: <Split className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onRepublishDocument!(docId, relocationOrigin)
@@ -167,7 +245,7 @@ export function useDocumentCardMenuItems(
       items.push({
         key: 'export',
         label: 'Export document',
-        icon: <Download className="size-4" />,
+        icon: <Download className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onExportDocument!(doc)
@@ -177,17 +255,20 @@ export function useDocumentCardMenuItems(
     items.push({
       key: 'directory',
       label: 'Sub documents',
-      icon: <Layers className="size-4" />,
+      icon: <Layers className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: (e) => {
         e?.stopPropagation()
-        navigate({key: 'directory', id: docId} as any)
+        navigate({
+          key: 'directory',
+          id: docId,
+        } as any)
       },
     })
     if (actions.onDeleteDocument && isOwner && hasPath) {
       items.push({
         key: 'delete',
         label: 'Delete document',
-        icon: <Trash className="size-4" />,
+        icon: <Trash className={stylex.props(styles.sca3de968).className || ''} />,
         variant: 'destructive' as const,
         onClick: (e) => {
           e?.stopPropagation()
@@ -220,7 +301,10 @@ export function useDocumentCardMenuItems(
 export function documentCardContainerClassName({
   banner = false,
   hasCover = false,
-}: {banner?: boolean; hasCover?: boolean} = {}) {
+}: {
+  banner?: boolean
+  hasCover?: boolean
+} = {}) {
   return cn(
     'group/item hover:bg-accent dark:hover:bg-accent @container flex w-full overflow-hidden rounded-lg border border-border bg-white shadow-md transition-colors duration-300 dark:bg-black',
     banner && hasCover && 'rounded-xl md:min-h-[240px] lg:min-h-[280px]',
@@ -250,7 +334,7 @@ export function DocumentCardThumbnail({
           banner ? '@md:w-1/2' : '@md:w-32',
         )}
       >
-        <img className="absolute top-0 left-0 h-full w-full object-cover" src={imageUrl(coverImage, 'L')} alt="" />
+        <img className={stylex.props(styles.s66f9345d).className || ''} src={imageUrl(coverImage, 'L')} alt="" />
       </div>
     )
   }
@@ -259,7 +343,7 @@ export function DocumentCardThumbnail({
     // thumbnail aligned top-left next to the title.
     return (
       <div className="bg-muted m-3 flex aspect-square size-12 shrink-0 items-center justify-center overflow-hidden rounded-md @md:size-14">
-        <img src={imageUrl(iconImage, 'S')} alt="" className="size-full object-cover" />
+        <img src={imageUrl(iconImage, 'S')} alt="" className={stylex.props(styles.s5d7ceece).className || ''} />
       </div>
     )
   }
@@ -306,19 +390,18 @@ export function DocumentCardShell({
     >
       {thumbnail}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-between">
-        <div className="p-3">
+        <div className={stylex.props(styles.s1aa16).className || ''}>
           {title}
           {summary}
         </div>
-        <div className="flex items-center justify-between py-2 pr-2 pl-3">
-          <div className="flex items-center gap-1.5">{badges}</div>
+        <div className={stylex.props(styles.sf73e7bf5).className || ''}>
+          <div className={stylex.props(styles.sac428cea).className || ''}>{badges}</div>
           {actions}
         </div>
       </div>
     </div>
   )
 }
-
 export function DocumentCard({
   docId,
   route,
@@ -363,18 +446,39 @@ export function DocumentCard({
   relocationOrigin?: DocumentCardActionOrigin
 }) {
   const highlighter = useHighlighter()
-  const linkProps = useRouteLink(route ?? (docId ? {key: 'document', id: docId} : null))
+  const linkProps = useRouteLink(
+    route ??
+      (docId
+        ? {
+            key: 'document',
+            id: docId,
+          }
+        : null),
+  )
   const {onClick: routeOnClick, tag: _routeTag, ...linkAttributes} = linkProps
   const navigate = useNavigate()
   const actions = useDocumentActions()
   const draft = actions.getDraft?.(docId)
-
-  const summaryId = useMemo(() => (docId ? hmId(docId.uid, {path: docId.path}) : null), [docId?.uid, docId?.path])
-  const interactionSummary = useInteractionSummary(summaryId, {enabled: !interactionSummaryProp})
+  const summaryId = useMemo(
+    () =>
+      docId
+        ? hmId(docId.uid, {
+            path: docId.path,
+          })
+        : null,
+    [docId?.uid, docId?.path],
+  )
+  const interactionSummary = useInteractionSummary(summaryId, {
+    enabled: !interactionSummaryProp,
+  })
   const commentCount = interactionSummaryProp?.comments ?? interactionSummary.data?.comments ?? 0
-
   const baseMetadata = metadata ?? entity?.document?.metadata
-  const resolvedMetadata = draft?.metadata ? {...baseMetadata, ...draft.metadata} : baseMetadata
+  const resolvedMetadata = draft?.metadata
+    ? {
+        ...baseMetadata,
+        ...draft.metadata,
+      }
+    : baseMetadata
   const textContent = useMemo(() => {
     if (!showSummary) return null
     if (resolvedMetadata?.summary) {
@@ -382,7 +486,6 @@ export function DocumentCard({
     }
     return plainTextOfContent(entity?.document?.content)
   }, [showSummary, resolvedMetadata, entity?.document?.content])
-
   const explicitCover = resolvedMetadata?.cover
   const explicitIcon = resolvedMetadata?.icon
   // The indexer precomputes the first content image, delivered as a typed
@@ -414,12 +517,13 @@ export function DocumentCard({
   // Context-driven state for the inline row (badges, bookmark button).
   const draftId = actions.getDraftId?.(docId) ?? draft?.id
   const bookmarked = actions.isBookmarked?.(docId) ?? false
-
   const menuItems = useDocumentCardMenuItems(docId, doc, relocationOrigin)
-
   const sharedProps = {
     ...highlighter(docId),
-    className: documentCardContainerClassName({banner, hasCover: !!coverImage}),
+    className: documentCardContainerClassName({
+      banner,
+      hasCover: !!coverImage,
+    }),
   }
   const titleClassName = cn(
     'text-foreground font-sans leading-tight! font-bold',
@@ -452,7 +556,7 @@ export function DocumentCard({
       }
       summary={
         textContent ? (
-          <p className={cn('text-muted-foreground mt-2 line-clamp-2 font-sans', !banner && 'text-sm')}>{textContent}</p>
+          <p className={cn(stylex.props(styles.se4b59c31).className || '', !banner && 'text-sm')}>{textContent}</p>
         ) : null
       }
       badges={
@@ -467,7 +571,7 @@ export function DocumentCard({
       }
       actions={
         !hideInlineActions ? (
-          <div className="flex items-center gap-1">
+          <div className={stylex.props(styles.s86ff3e3).className || ''}>
             {actions.onBookmarkToggle && (
               <Tooltip content={bookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks'}>
                 <Button
@@ -480,7 +584,11 @@ export function DocumentCard({
                     actions.onBookmarkToggle!(docId)
                   }}
                 >
-                  {bookmarked ? <Bookmark className="size-3.5 fill-current" /> : <Bookmark className="size-3.5" />}
+                  {bookmarked ? (
+                    <Bookmark className={stylex.props(styles.s55ac44a1).className || ''} />
+                  ) : (
+                    <Bookmark className={stylex.props(styles.s3269316e).className || ''} />
+                  )}
                 </Button>
               </Tooltip>
             )}
@@ -493,11 +601,14 @@ export function DocumentCard({
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
-                    navigate({key: 'comments', id: docId})
+                    navigate({
+                      key: 'comments',
+                      id: docId,
+                    })
                   }}
                 >
-                  <MessageSquare className="size-3" />
-                  <SizableText size="xs" className="font-sans">
+                  <MessageSquare className={stylex.props(styles.sca3de967).className || ''} />
+                  <SizableText size="xs" className={stylex.props(styles.sa1762f51).className || ''}>
                     {commentCount}
                   </SizableText>
                 </Button>
@@ -511,7 +622,6 @@ export function DocumentCard({
       }
     />
   )
-
   if (navigateProp && linkProps) {
     return (
       <a {...sharedProps} {...linkAttributes} onClick={routeOnClick} {...(props as any)}>
@@ -519,7 +629,6 @@ export function DocumentCard({
       </a>
     )
   }
-
   return (
     <div {...sharedProps} {...props}>
       {content}

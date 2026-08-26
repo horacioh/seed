@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import * as Ariakit from '@ariakit/react'
 import {CompositeInput} from '@ariakit/react-core/composite/composite-input'
 import {
@@ -31,7 +32,118 @@ import {ArrowRight, X} from './icons'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {toast} from './toast'
-
+const styles = stylex.create({
+  sb8c7436a: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+  s4e23427a: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s13678fbc: {
+    height: 'auto',
+    borderTopLeftRadius: '0',
+    borderBottomLeftRadius: '0',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  se39f1964: {
+    display: 'flex',
+    flex: '1',
+  },
+  s5fc7c349: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 16)',
+  },
+  s77710dd6: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 16)',
+    height: 'calc(0.25rem * 16)',
+  },
+  s95536c4e: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+  },
+  s67b8a10f: {
+    marginLeft: 'auto',
+    flexShrink: '0',
+  },
+  s7026dbcb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s34f4d0a0: {
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s2b4c4567: {
+    display: 'flex',
+    flex: '1',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(0.25rem * 1)',
+  },
+  sa6152a04: {
+    display: 'flex',
+    width: '100%',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s486e68e8: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  sd5b2c253: {
+    pointerEvents: 'auto',
+  },
+  s48372d44: {
+    display: 'flex',
+    flex: '1',
+    justifyContent: 'flex-start',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export type SearchResult = {
   id: UnpackedHypermediaId
   label: string
@@ -45,7 +157,6 @@ export function getRenderedCollaboratorsCount(
   isSiteRoot: boolean,
 ) {
   if (!collaborators) return 0
-
   const {accounts} = collaborators
   if (isSiteRoot) {
     return (
@@ -54,29 +165,25 @@ export function getRenderedCollaboratorsCount(
       collaborators.members.filter((member) => accounts[member.account.uid]).length
     )
   }
-
   return (
     1 +
     collaborators.parentCapabilities.filter((capability) => accounts[capability.accountUid]).length +
     collaborators.grantedCapabilities.filter((capability) => accounts[capability.accountUid]).length
   )
 }
-
 function AddCollaboratorForm({id, domainResolver}: {id: UnpackedHypermediaId; domainResolver?: DomainResolverFn}) {
   const myCapability = useSelectedAccountCapability(id, 'owner')
   const addCapabilities = useAddCapabilities(id)
   const [selectedCollaborators, setSelectedCollaborators] = useState<SearchResult[]>([])
   const capabilities = useCapabilities(id)
-
   const excludeUids = useMemo(() => {
     // The owner cannot be added, and accounts that already have a capability are filtered out.
     return [id.uid, ...(capabilities.data?.map((capability) => capability.grantId.uid) ?? [])]
   }, [id.uid, capabilities.data])
-
   if (!myCapability) return null
   return (
-    <div className="flex flex-col gap-2 px-4 pt-4">
-      <div className="border-border flex overflow-hidden rounded-md border-1">
+    <div className={stylex.props(styles.sb8c7436a).className || ''}>
+      <div className={stylex.props(styles.s4e23427a).className || ''}>
         <AccountSearchInput
           label="Members"
           placeholder="Invite members"
@@ -88,7 +195,7 @@ function AddCollaboratorForm({id, domainResolver}: {id: UnpackedHypermediaId; do
         {selectedCollaborators.length ? (
           <Button
             size="sm"
-            className="h-auto rounded-tl-none rounded-bl-none"
+            className={stylex.props(styles.s13678fbc).className || ''}
             onClick={() => {
               addCapabilities.mutate(
                 {
@@ -106,7 +213,7 @@ function AddCollaboratorForm({id, domainResolver}: {id: UnpackedHypermediaId; do
             }}
             variant="default"
           >
-            <ArrowRight className="size-4" />
+            <ArrowRight className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         ) : null}
       </div>
@@ -148,23 +255,38 @@ export function AccountSearchInput({
       if (hmUrl) {
         const label = hmIdToURL(hmId(hmUrl.uid))
         if (label) {
-          onValuesChange([...values, {id: hmUrl, label, unresolved: true}])
+          onValuesChange([
+            ...values,
+            {
+              id: hmUrl,
+              label,
+              unresolved: true,
+            },
+          ])
           setSearch('')
           return
         }
       }
-
       setSearch(value)
 
       // Try resolving full URLs asynchronously
       const isUrl = value.startsWith('http://') || value.startsWith('https://')
       if (isUrl) {
-        resolveHypermediaUrl(value, {domainResolver})
+        resolveHypermediaUrl(value, {
+          domainResolver,
+        })
           .then((resolved) => {
             if (!resolved?.hmId) return
             const resolvedId = hmId(resolved.hmId.uid)
             const label = resolved.title || hmIdToURL(resolvedId) || resolved.hmId.uid
-            onValuesChange([...values, {id: resolvedId, label, unresolved: true}])
+            onValuesChange([
+              ...values,
+              {
+                id: resolvedId,
+                label,
+                unresolved: true,
+              },
+            ])
             setSearch('')
           })
           .catch(() => {})
@@ -172,19 +294,21 @@ export function AccountSearchInput({
     },
     [values, onValuesChange, domainResolver],
   )
-
   const matches = useMemo(() => {
-    const matchesByAccountUid = new Map<string, SearchResult & {type: string}>()
+    const matchesByAccountUid = new Map<
+      string,
+      SearchResult & {
+        type: string
+      }
+    >()
     const orderedAccountUids: string[] = []
     const excluded = new Set(excludeUids ?? [])
-
     for (const result of search ? searchResults.data?.entities || [] : []) {
       if (!result) continue // probably id was not parsed correctly
       if (result.id.path?.length) continue // this is a directory document, not an account
       if (excluded.has(result.id.uid)) continue // owner or already-added account
       if (values.find((value) => value.id.uid === result.id.uid)) continue // already selected
       if (result.type !== 'contact' && result.type !== 'document') continue
-
       const match = {
         id: result.id,
         label: result.title,
@@ -200,12 +324,10 @@ export function AccountSearchInput({
         matchesByAccountUid.set(result.id.uid, match)
       }
     }
-
     return orderedAccountUids.map((uid) => matchesByAccountUid.get(uid)!).filter(Boolean)
   }, [search, searchResults.data?.entities, values, excludeUids])
-
   return (
-    <div className="flex flex-1">
+    <div className={stylex.props(styles.se39f1964).className || ''}>
       <TagInput
         label={label}
         value={search}
@@ -235,11 +357,20 @@ export function AccountSearchInput({
               if (search.includes('.')) {
                 const url = search.startsWith('http') ? search : `https://${search}`
                 try {
-                  const resolved = await resolveHypermediaUrl(url, {domainResolver})
+                  const resolved = await resolveHypermediaUrl(url, {
+                    domainResolver,
+                  })
                   if (resolved?.hmId) {
                     const resolvedId = hmId(resolved.hmId.uid)
                     const label = resolved.title || hmIdToURL(resolvedId) || resolved.hmId.uid
-                    onValuesChange([...values, {id: resolvedId, label, unresolved: true}])
+                    onValuesChange([
+                      ...values,
+                      {
+                        id: resolvedId,
+                        label,
+                        unresolved: true,
+                      },
+                    ])
                     setSearch('')
                     return
                   }
@@ -255,11 +386,10 @@ export function AccountSearchInput({
     </div>
   )
 }
-
 export function CollaboratorsEmpty() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16">
-      <Users className="text-muted-foreground size-16" />
+    <div className={stylex.props(styles.s5fc7c349).className || ''}>
+      <Users className={stylex.props(styles.s77710dd6).className || ''} />
       <SizableText color="muted" weight="medium" size="xl">
         No collaborators yet
       </SizableText>
@@ -269,7 +399,6 @@ export function CollaboratorsEmpty() {
     </div>
   )
 }
-
 function getRoleDisplayName(role: string | undefined): string {
   if (role === 'writer') return 'Writer'
   if (role === 'agent') return 'Device'
@@ -287,24 +416,21 @@ function PublisherCollaborator({uid, siteUid, account}: {uid: string; siteUid: s
     accountUid: uid !== siteUid ? uid : undefined,
     tab: 'profile',
   })
-
   const metadata = account?.metadata
-
   return (
     <a {...linkProps} className="hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
       <HMIcon id={publisherId} name={metadata?.name} icon={metadata?.icon} size={32} />
-      <div className="flex flex-1 items-center gap-2 overflow-hidden">
+      <div className={stylex.props(styles.s95536c4e).className || ''}>
         <SizableText size="sm" className={`truncate ${metadata?.name ? '' : 'text-muted-foreground'}`}>
           {metadata?.name || abbreviateUid(uid)}
         </SizableText>
-        <SizableText size="xs" color="muted" className="ml-auto shrink-0">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.s67b8a10f).className || ''}>
           Publisher
         </SizableText>
       </div>
     </a>
   )
 }
-
 function CollaboratorListItem({
   capability,
   docId,
@@ -321,18 +447,16 @@ function CollaboratorListItem({
     accountUid: capability.accountUid !== docId.uid ? capability.accountUid : undefined,
     tab: 'profile',
   })
-
   const metadata = account?.metadata
   const isParentCapability = capability.grantId.id !== docId.id
-
   return (
     <a {...linkProps} className="hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
       <HMIcon id={collaboratorId} name={metadata?.name} icon={metadata?.icon} size={32} />
-      <div className="flex flex-1 items-center gap-2 overflow-hidden">
+      <div className={stylex.props(styles.s95536c4e).className || ''}>
         <SizableText size="sm" className={`truncate ${metadata?.name ? '' : 'text-muted-foreground'}`}>
           {metadata?.name || abbreviateUid(capability.accountUid)}
         </SizableText>
-        <SizableText size="xs" color="muted" className="ml-auto shrink-0">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.s67b8a10f).className || ''}>
           {getRoleDisplayName(capability.role)}
           {isParentCapability ? ' (Parent Capability)' : ''}
         </SizableText>
@@ -340,7 +464,6 @@ function CollaboratorListItem({
     </a>
   )
 }
-
 export function CollaboratorsPage({
   docId,
   domainResolver,
@@ -354,7 +477,6 @@ export function CollaboratorsPage({
     return <SiteMembers docId={docId} domainResolver={domainResolver} />
   }
 }
-
 function SiteMembers({docId, domainResolver}: {docId: UnpackedHypermediaId; domainResolver?: DomainResolverFn}) {
   const {accounts, grantedMembers, isInitialLoading, members} = useSiteMembers(docId)
   const myCapability = useSelectedAccountCapability(docId, 'owner')
@@ -362,8 +484,8 @@ function SiteMembers({docId, domainResolver}: {docId: UnpackedHypermediaId; doma
   const [promotingAccountUid, setPromotingAccountUid] = useState<string | null>(null)
   if (isInitialLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Spinner className="size-8" />
+      <div className={stylex.props(styles.s7026dbcb).className || ''}>
+        <Spinner className={stylex.props(styles.sca3de96c).className || ''} />
       </div>
     )
   }
@@ -390,13 +512,12 @@ function SiteMembers({docId, domainResolver}: {docId: UnpackedHypermediaId; doma
       },
     )
   }
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <AddCollaboratorForm id={docId} domainResolver={domainResolver} />
       <PublisherCollaborator uid={docId.uid} siteUid={docId.uid} account={accounts[docId.uid]} />
       {grantedMembers.length > 0 && (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           {grantedMembers.map((member) => (
             <MemberListItem
               member={member}
@@ -409,7 +530,7 @@ function SiteMembers({docId, domainResolver}: {docId: UnpackedHypermediaId; doma
         </div>
       )}
       {members.length > 0 && (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           {members.map((member) => (
             <MemberListItem
               member={member}
@@ -424,14 +545,13 @@ function SiteMembers({docId, domainResolver}: {docId: UnpackedHypermediaId; doma
         </div>
       )}
       {hasNoMembers && (
-        <SizableText size="sm" color="muted" className="px-3 py-2">
+        <SizableText size="sm" color="muted" className={stylex.props(styles.s34f4d0a0).className || ''}>
           No additional members
         </SizableText>
       )}
     </div>
   )
 }
-
 function MemberListItem({
   member,
   siteUid,
@@ -453,10 +573,8 @@ function MemberListItem({
     accountUid: member.account.uid !== siteUid ? member.account.uid : undefined,
     tab: 'profile',
   })
-
   const metadata = account?.metadata
   const showAddAsWriter = canAddAsWriter && member.role === 'member'
-
   return (
     <div className="group hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
       <HMIcon id={member.account} name={metadata?.name} icon={metadata?.icon} size={32} />
@@ -467,7 +585,7 @@ function MemberListItem({
             metadata?.name ? '' : 'text-muted-foreground'
           }`}
         >
-          <SizableText size="sm" className="truncate">
+          <SizableText size="sm" className={stylex.props(styles.s6e724d66).className || ''}>
             {metadata?.name || abbreviateUid(member.account.uid)}
           </SizableText>
         </a>
@@ -483,14 +601,13 @@ function MemberListItem({
             Add as writer
           </Button>
         ) : null}
-        <SizableText size="xs" color="muted" className="shrink-0">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.sf032ed6c).className || ''}>
           {getRoleDisplayName(member.role)}
         </SizableText>
       </div>
     </div>
   )
 }
-
 function DocumentCollaborators({
   docId,
   domainResolver,
@@ -499,19 +616,16 @@ function DocumentCollaborators({
   domainResolver?: DomainResolverFn
 }) {
   const {accounts, parentCapabilities, grantedCapabilities, publisherUid, isInitialLoading} = useCollaborators(docId)
-
   if (isInitialLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Spinner className="size-8" />
+      <div className={stylex.props(styles.s7026dbcb).className || ''}>
+        <Spinner className={stylex.props(styles.sca3de96c).className || ''} />
       </div>
     )
   }
-
   const hasNoCollaborators = parentCapabilities.length === 0 && grantedCapabilities.length === 0
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <AddCollaboratorForm id={docId} domainResolver={domainResolver} />
 
       {/* Publisher always shown first */}
@@ -519,7 +633,7 @@ function DocumentCollaborators({
 
       {/* Parent capabilities section */}
       {parentCapabilities.length > 0 && (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           {parentCapabilities.map((cap) => (
             <CollaboratorListItem
               key={cap.accountUid}
@@ -533,8 +647,8 @@ function DocumentCollaborators({
 
       {/* Granted section */}
       {grantedCapabilities.length > 0 && (
-        <div className="flex flex-col gap-1">
-          <SizableText size="xs" color="muted" className="px-3 py-2">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+          <SizableText size="xs" color="muted" className={stylex.props(styles.s34f4d0a0).className || ''}>
             Granted
           </SizableText>
           {grantedCapabilities.map((cap) => (
@@ -549,14 +663,13 @@ function DocumentCollaborators({
       )}
 
       {hasNoCollaborators && (
-        <SizableText size="sm" color="muted" className="px-3 py-2">
+        <SizableText size="sm" color="muted" className={stylex.props(styles.s34f4d0a0).className || ''}>
           No additional collaborators
         </SizableText>
       )}
     </div>
   )
 }
-
 interface TagInputProps extends Omit<Ariakit.ComboboxProps, 'onChange'> {
   label: string
   value?: string
@@ -566,11 +679,9 @@ interface TagInputProps extends Omit<Ariakit.ComboboxProps, 'onChange'> {
   onValuesChange?: (values: Array<SearchResult>) => void
   defaultValues?: Array<SearchResult>
 }
-
 const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(props, ref) {
   const {label, defaultValue, value, onChange, defaultValues, values, onValuesChange, children, ...comboboxProps} =
     props
-
   const comboboxRef = useRef<HTMLInputElement>(null)
   const defaultComboboxId = useId()
   const comboboxId = comboboxProps.id || defaultComboboxId
@@ -584,7 +695,6 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
   const popoverRef = useCallback((node: HTMLElement | null) => {
     node?.addEventListener('pointerdown', (event) => event.stopPropagation())
   }, [])
-
   const combobox = Ariakit.useComboboxStore({
     value,
     defaultValue,
@@ -599,16 +709,13 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
     defaultValue: defaultValues,
     setValue: onValuesChange,
   })
-
   const composite = Ariakit.useCompositeStore({
     defaultActiveId: comboboxId,
   })
-
   const selectedValues = select.useState('value')
 
   // Reset the combobox value whenever an item is checked or unchecked.
   useEffect(() => combobox.setValue(''), [selectedValues, combobox])
-
   const toggleValueFromSelectedValues = (value: SearchResult) => {
     // @ts-expect-error
     select.setValue((prevSelectedValues: Array<SearchResult>) => {
@@ -619,17 +726,14 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
       return [...prevSelectedValues, value]
     })
   }
-
   const onItemClick = (value: SearchResult) => () => {
     toggleValueFromSelectedValues(value)
   }
-
   const onItemKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (event.key === 'Backspace' || event.key === 'Delete') {
       event.currentTarget.click()
     }
   }
-
   const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Backspace') return
     const {selectionStart, selectionEnd} = event.currentTarget
@@ -642,7 +746,6 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
     })
     combobox.hide()
   }
-
   return (
     <Ariakit.Composite
       store={composite}
@@ -650,9 +753,9 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
       aria-label={label}
       className="tag-grid"
       onClick={() => comboboxRef.current?.focus()}
-      render={<div className="flex flex-1 rounded-md p-1" />}
+      render={<div className={stylex.props(styles.s2b4c4567).className || ''} />}
     >
-      <Ariakit.CompositeRow role="row" render={<div className="flex w-full flex-wrap gap-1" />}>
+      <Ariakit.CompositeRow role="row" render={<div className={stylex.props(styles.sa6152a04).className || ''} />}>
         {/* @ts-expect-error */}
         {selectedValues.map((value: SearchResult) => {
           // TODO: (horacio): Should I cleanup the list from the `unresolved` value?
@@ -679,7 +782,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
             </Ariakit.CompositeItem>
           )
         })}
-        <div role="cell" className="flex flex-1 flex-col">
+        <div role="cell" className={stylex.props(styles.s486e68e8).className || ''}>
           <Ariakit.CompositeItem
             id={comboboxId}
             render={
@@ -697,7 +800,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
           portal
           sameWidth
           gutter={8}
-          className="pointer-events-auto"
+          className={stylex.props(styles.sd5b2c253).className || ''}
           render={
             <Ariakit.SelectList
               // @ts-expect-error
@@ -712,9 +815,10 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
     </Ariakit.Composite>
   )
 })
-
 function UnresolvedItem({value}: {value: SearchResult}) {
-  const account = useAccount(value.id.uid, {subscribe: true})
+  const account = useAccount(value.id.uid, {
+    subscribe: true,
+  })
   const metadata = account.data?.metadata
   const label = metadata?.name || abbreviateUid(value.id.uid)
   return (
@@ -724,12 +828,10 @@ function UnresolvedItem({value}: {value: SearchResult}) {
     </>
   )
 }
-
 interface TagInputItemProps extends Ariakit.SelectItemProps {
   children?: React.ReactNode
   member?: SearchResult
 }
-
 const TagInputItem = forwardRef<HTMLDivElement, TagInputItemProps>(function TagInputItem(props, ref) {
   const resource = useResource(props.member?.id)
   const metadata = resource.data?.type === 'document' ? resource.data.document?.metadata : undefined
@@ -739,11 +841,11 @@ const TagInputItem = forwardRef<HTMLDivElement, TagInputItemProps>(function TagI
       {...props}
       render={<Ariakit.ComboboxItem render={<TagInputItemContent className="combobox-item" render={props.render} />} />}
     >
-      <div className="flex flex-1 justify-start gap-2">
+      <div className={stylex.props(styles.s48372d44).className || ''}>
         {metadata && props.member?.id ? (
           <HMIcon size={16} name={metadata?.name} icon={metadata?.icon} id={props.member?.id} />
         ) : null}
-        <div className="flex flex-1">
+        <div className={stylex.props(styles.se39f1964).className || ''}>
           <SizableText size="sm" className="text-currentColor">
             {props.children || props.member?.label}
           </SizableText>
@@ -752,10 +854,8 @@ const TagInputItem = forwardRef<HTMLDivElement, TagInputItemProps>(function TagI
     </Ariakit.SelectItem>
   )
 })
-
 const TagInputItemContent = forwardRef<any, any>(function TagInputItemContent(props, ref) {
   let {render, children, ...restProps} = props
-
   return (
     <div ref={ref} {...restProps} className="combobox-item data-[active-item]:bg-accent flex flex-1 gap-2 p-3">
       {render ? render : children}

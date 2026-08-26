@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useDeletedContent, useUndeleteEntity} from '@/models/entities'
 import {HMDeletedEntity} from '@seed-hypermedia/client/hm-types'
 import {formattedDateLong, formattedDateMedium} from '@shm/shared/utils/date'
@@ -7,14 +8,25 @@ import {ShieldX} from '@shm/ui/icons'
 import {List} from '@shm/ui/list'
 import {SizableText} from '@shm/ui/text'
 import {Tooltip} from '@shm/ui/tooltip'
-
+const styles = stylex.create({
+  s18c10: {
+    height: 'calc(0.25rem * 5)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export default function DeletedContent() {
   const deleted = useDeletedContent()
   return (
     <List
       items={deleted.data || []}
-      header={<div className="h-5" />}
-      footer={<div className="h-5" />}
+      header={<div className={stylex.props(styles.s18c10).className || ''} />}
+      footer={<div className={stylex.props(styles.s18c10).className || ''} />}
       renderItem={({item}) => {
         return (
           <div className="flex w-full max-w-[600px] items-center gap-2 px-4 py-1.5">
@@ -30,7 +42,7 @@ export default function DeletedContent() {
                 {item.metadata}
               </SizableText>
             </Tooltip>
-            <div className="flex-1" />
+            <div className={stylex.props(styles.sb42feb5d).className || ''} />
             <Tooltip
               content={`You deleted this on ${formattedDateLong(
                 // @ts-expect-error
@@ -50,7 +62,6 @@ export default function DeletedContent() {
     />
   )
 }
-
 function UndeleteButton({item}: {item: HMDeletedEntity}) {
   const undelete = useUndeleteEntity()
   const unpackedId = item.id ? unpackHmId(item.id) : null
@@ -61,10 +72,12 @@ function UndeleteButton({item}: {item: HMDeletedEntity}) {
         size="sm"
         onClick={() => {
           if (!item.id) return
-          undelete.mutate({id: item.id})
+          undelete.mutate({
+            id: item.id,
+          })
         }}
       >
-        <ShieldX className="size-4" />
+        <ShieldX className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
     </Tooltip>
   )

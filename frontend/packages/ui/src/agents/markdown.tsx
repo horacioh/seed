@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {resolveHypermediaRoute, useOpenUrl} from './navigation'
 import {getAgentsPlatform} from './platform'
 import {DEFAULT_GATEWAY_URL} from '@shm/shared/constants'
@@ -12,8 +13,47 @@ import ReactMarkdown, {defaultUrlTransform, type Components, type ExtraProps} fr
 // v4 mdast context — feeding it v3 throws `this.getData is not a function`
 // on inline code inside tables. The npm-aliased name pins v4 unambiguously.
 import remarkGfm from 'remark-gfm-v4'
-
-type MdastNode = {type?: string; value?: string; children?: MdastNode[]}
+const styles = stylex.create({
+  sbf7a69bf: {
+    marginBottom: 'calc(0.25rem * 0.5)',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  s9c6533a5: {
+    borderColor: 'var(--border)',
+    marginBlock: 'calc(0.25rem * 3)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s1026c40: {
+    marginBlock: 'calc(0.25rem * 2)',
+    overflowX: 'auto',
+  },
+  sf88965b7: {
+    borderColor: 'var(--border)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    textAlign: 'left',
+    fontWeight: '600',
+  },
+  s6904bfdf: {
+    borderColor: 'var(--border)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+})
+type MdastNode = {
+  type?: string
+  value?: string
+  children?: MdastNode[]
+}
 
 /**
  * Removes HTML comment nodes so HM identity markers (`<!-- id:… -->`,
@@ -38,7 +78,6 @@ function remarkStripHtmlComments() {
 const useGatewayUrlHook: () => string | undefined = () => {
   return (getAgentsPlatform().useGatewayUrl ?? (() => undefined))()
 }
-
 function MarkdownLink({href, children}: React.ComponentProps<'a'> & ExtraProps) {
   const openUrl = useOpenUrl()
   const gatewayUrl = useGatewayUrlHook() || DEFAULT_GATEWAY_URL
@@ -58,7 +97,6 @@ function MarkdownLink({href, children}: React.ComponentProps<'a'> & ExtraProps) 
       }) || href
     )
   }, [gatewayUrl, href, resolvedLink, siteUrl])
-
   return (
     <a
       href={renderedHref}
@@ -89,32 +127,35 @@ export function Markdown({children, enableGfm = true}: {children: string; enable
     p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
     ul: ({children}) => <ul className="mb-2 list-disc pl-4 last:mb-0">{children}</ul>,
     ol: ({children}) => <ol className="mb-2 list-decimal pl-4 last:mb-0">{children}</ol>,
-    li: ({children}) => <li className="mb-0.5">{children}</li>,
+    li: ({children}) => <li className={stylex.props(styles.sbf7a69bf).className || ''}>{children}</li>,
     a: MarkdownLink,
     blockquote: ({children}) => (
       <blockquote className="border-muted-foreground/30 my-2 border-l-2 pl-3 italic">{children}</blockquote>
     ),
-    strong: ({children}) => <strong className="font-semibold">{children}</strong>,
+    strong: ({children}) => <strong className={stylex.props(styles.s62c182b1).className || ''}>{children}</strong>,
     em: ({children}) => <em>{children}</em>,
-    hr: () => <hr className="border-border my-3" />,
+    hr: () => <hr className={stylex.props(styles.s9c6533a5).className || ''} />,
     pre: ({children}) => <pre className="bg-background/50 my-2 overflow-x-auto rounded p-2 text-xs">{children}</pre>,
     code: ({className, children}) => {
       const isBlock = !!className
       if (isBlock) {
-        return <code className="text-xs">{children}</code>
+        return (
+          <code className={[stylex.props(styles.sab7cc79b).className || '', className].filter(Boolean).join(' ')}>
+            {children}
+          </code>
+        )
       }
       return <code className="bg-background/50 rounded px-1 py-0.5 text-xs">{children}</code>
     },
     table: ({children}) => (
-      <div className="my-2 overflow-x-auto">
+      <div className={stylex.props(styles.s1026c40).className || ''}>
         <table className="border-border min-w-full border-collapse text-xs">{children}</table>
       </div>
     ),
     thead: ({children}) => <thead className="bg-background/30">{children}</thead>,
-    th: ({children}) => <th className="border-border border px-2 py-1 text-left font-semibold">{children}</th>,
-    td: ({children}) => <td className="border-border border px-2 py-1">{children}</td>,
+    th: ({children}) => <th className={stylex.props(styles.sf88965b7).className || ''}>{children}</th>,
+    td: ({children}) => <td className={stylex.props(styles.s6904bfdf).className || ''}>{children}</td>,
   }
-
   return (
     <ReactMarkdown
       remarkPlugins={enableGfm ? [remarkGfm, remarkStripHtmlComments] : [remarkStripHtmlComments]}

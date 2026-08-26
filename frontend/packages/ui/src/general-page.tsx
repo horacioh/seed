@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {HTMLAttributes, ReactNode} from 'react'
 import {widthValues} from './layout'
 import {PageLayout} from './page-layout'
@@ -6,6 +7,32 @@ import {Text} from './text'
 import {cn} from './utils'
 
 /** GeneralPageSurface provides the shared page background for feed-like pages. */
+const styles = stylex.create({
+  se290a8f0: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 8)',
+  },
+  sbbe27b51: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s7778dfea: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export function GeneralPageSurface({className, ...props}: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('dark:bg-background flex flex-1 flex-col bg-white', className)} {...props} />
 }
@@ -22,7 +49,7 @@ export function GeneralPageContainer({
 }) {
   return (
     <PageLayout contentMaxWidth={contentMaxWidth}>
-      <div className={cn('flex flex-col gap-4 px-4 pt-8', className)}>{children}</div>
+      <div className={cn(stylex.props(styles.se290a8f0).className || '', className)}>{children}</div>
     </PageLayout>
   )
 }
@@ -40,10 +67,10 @@ export function GeneralPageHeader({
   className?: string
 }) {
   return (
-    <div className={cn('flex items-center justify-between gap-4', className)}>
+    <div className={cn(stylex.props(styles.sbbe27b51).className || '', className)}>
       <div className="flex min-w-0 items-center gap-2">
         {typeof title === 'string' ? (
-          <Text weight="bold" size="3xl" className="truncate">
+          <Text weight="bold" size="3xl" className={stylex.props(styles.s6e724d66).className || ''}>
             {title}
           </Text>
         ) : (
@@ -51,7 +78,7 @@ export function GeneralPageHeader({
         )}
         {loading ? <Spinner /> : null}
       </div>
-      {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
+      {actions ? <div className={stylex.props(styles.s7778dfea).className || ''}>{actions}</div> : null}
     </div>
   )
 }

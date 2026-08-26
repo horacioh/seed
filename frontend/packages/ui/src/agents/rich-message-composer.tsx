@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {trimTrailingEmptyBlocks} from '@seed-hypermedia/client'
 import {Button} from '@shm/ui/button'
 import {Send, Square} from 'lucide-react'
@@ -18,13 +19,59 @@ import {UserToolPalette} from './user-tool-palette'
  */
 
 /** Run states a sub-session's parent can no longer be driving it from. */
+const styles = stylex.create({
+  saa9e18e6: {
+    borderColor: 'var(--border)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  sb5c8d341: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s34f4bddb: {
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingTop: 'calc(0.25rem * 2)',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s6bbccae4: {
+    backgroundColor: 'var(--muted)',
+    height: 'calc(0.25rem * 1)',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sb57c4182: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sde768909: {
+    display: 'flex',
+    flexShrink: '0',
+    gap: 'calc(0.25rem * 1)',
+    paddingBottom: 'calc(0.25rem * 1)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+})
 export const TERMINAL_RUN_STATUSES = new Set<RunStatus>(['succeeded', 'failed', 'canceled'])
-
 export const SUB_SESSION_DRIVEN_MESSAGE =
   'This sub-session is being driven by its parent — watch, or open the parent to intervene'
-
 type CommentEditorGetContent = AgentsRichEditorGetContent
-
 export function AgentRichMessageComposer({
   isBusy,
   isStreaming,
@@ -75,14 +122,24 @@ export function AgentRichMessageComposer({
   const internalHandleRef = useRef<AgentsRichEditorSubmitHandle | null>(null)
   const submitHandleRef = composerHandleRef ?? internalHandleRef
   /** In-flight attachment upload shown as a slim progress bar; null when idle. */
-  const [attachmentUpload, setAttachmentUpload] = useState<{name: string; sent: number; total: number} | null>(null)
+  const [attachmentUpload, setAttachmentUpload] = useState<{
+    name: string
+    sent: number
+    total: number
+  } | null>(null)
   /** Metadata for every attachment uploaded from this composer, keyed by id, so a sent message
    * can carry the infos of the attachments its blocks still reference. */
   const uploadedAttachmentsRef = useRef(new Map<string, SessionAttachmentInfo>())
 
   // The editor captures handleFileAttachment on creation, so route changing values through a ref.
-  const uploadContextRef = useRef({accountId, sessionId})
-  uploadContextRef.current = {accountId, sessionId}
+  const uploadContextRef = useRef({
+    accountId,
+    sessionId,
+  })
+  uploadContextRef.current = {
+    accountId,
+    sessionId,
+  }
 
   // Dropped/pasted files upload as session-private attachments on the agent server — never to
   // IPFS or agent memory. The agent sees metadata and pulls content on demand (view_attachment);
@@ -93,7 +150,11 @@ export function AgentRichMessageComposer({
     if (!currentAccountId) throw new Error('Select an account first')
     if (!currentSessionId) throw new Error('Send a message to start the chat before attaching files')
     const content = new Uint8Array(await file.arrayBuffer())
-    setAttachmentUpload({name: file.name, sent: 0, total: content.byteLength})
+    setAttachmentUpload({
+      name: file.name,
+      sent: 0,
+      total: content.byteLength,
+    })
     try {
       const {attachment} = await uploadFileToAgentServer({
         serverUrl,
@@ -105,18 +166,27 @@ export function AgentRichMessageComposer({
           mimeType: file.type || undefined,
         },
         data: content,
-        onProgress: (progress) => setAttachmentUpload({name: file.name, ...progress}),
+        onProgress: (progress) =>
+          setAttachmentUpload({
+            name: file.name,
+            ...progress,
+          }),
       })
       if (!attachment) throw new Error('Upload did not return an attachment')
       uploadedAttachmentsRef.current.set(attachment.id, attachment)
-      return {displaySrc: URL.createObjectURL(file), url: `attachment://${attachment.id}`}
+      return {
+        displaySrc: URL.createObjectURL(file),
+        url: `attachment://${attachment.id}`,
+      }
     } finally {
       setAttachmentUpload(null)
     }
   }
-
   async function submitRichMessage(getContent: CommentEditorGetContent, reset: () => void) {
-    const {blockNodes} = await getContent(async () => ({blobs: [], resultCIDs: []}))
+    const {blockNodes} = await getContent(async () => ({
+      blobs: [],
+      resultCIDs: [],
+    }))
     const trimmedBlocks = trimTrailingEmptyBlocks(blockNodes)
     const markdown = promptBlocksToMarkdown(trimmedBlocks)
     if (!markdown.trim()) return
@@ -126,37 +196,50 @@ export function AgentRichMessageComposer({
       .filter((info): info is SessionAttachmentInfo => !!info)
     reset()
     setDraftMarkdown('')
-    requestAnimationFrame(() => submitHandleRef.current?.focus({moveCursorToEnd: true}))
-    onSend({text: markdown, blocks: trimmedBlocks, ...(attachments.length ? {attachments} : {})})
+    requestAnimationFrame(
+      () =>
+        submitHandleRef.current?.focus({
+          moveCursorToEnd: true,
+        }),
+    )
+    onSend({
+      text: markdown,
+      blocks: trimmedBlocks,
+      ...(attachments.length
+        ? {
+            attachments,
+          }
+        : {}),
+    })
   }
-
   if (disabledMessage) {
     return (
-      <div className="border-border border-t">
-        <div className="text-muted-foreground px-3 py-3 text-xs">{disabledMessage}</div>
+      <div className={stylex.props(styles.saa9e18e6).className || ''}>
+        <div className={stylex.props(styles.sb5c8d341).className || ''}>{disabledMessage}</div>
       </div>
     )
   }
-
   return (
-    <div className="border-border border-t">
+    <div className={stylex.props(styles.saa9e18e6).className || ''}>
       {attachmentUpload ? (
-        <div className="px-3 pt-2">
+        <div className={stylex.props(styles.s34f4bddb).className || ''}>
           <div className="text-muted-foreground mb-1 flex items-center justify-between gap-2 text-[11px]">
             <span className="min-w-0 truncate">Uploading {attachmentUpload.name}…</span>
-            <span className="flex-none">
+            <span className={stylex.props(styles.s948be48c).className || ''}>
               {Math.floor((attachmentUpload.sent / Math.max(1, attachmentUpload.total)) * 100)}%
             </span>
           </div>
-          <div className="bg-muted h-1 w-full overflow-hidden rounded-full">
+          <div className={stylex.props(styles.s6bbccae4).className || ''}>
             <div
               className="bg-primary h-full rounded-full transition-[width] duration-200"
-              style={{width: `${(attachmentUpload.sent / Math.max(1, attachmentUpload.total)) * 100}%`}}
+              style={{
+                width: `${(attachmentUpload.sent / Math.max(1, attachmentUpload.total)) * 100}%`,
+              }}
             />
           </div>
         </div>
       ) : null}
-      <div className="flex items-end gap-2 px-3 py-2">
+      <div className={stylex.props(styles.sb57c4182).className || ''}>
         {/* The compact chat sizing is desktop-only: iOS Safari zooms the whole page whenever a
             focused field is under 16px, so phones get 16px in the composer instead. */}
         <div className="min-w-0 flex-1 font-sans [&_.ProseMirror]:font-sans max-sm:[&_.ProseMirror]:!text-base sm:[&_.ProseMirror]:!text-sm [&_.comment-editor]:!min-h-8 [&_.comment-editor]:!pt-1 [&_.comment-editor]:!pb-1 [&_.comment-editor]:font-sans sm:[&_.comment-editor]:!text-sm [&_.comment-editor_.ProseMirror]:!min-h-0 [&_.comment-editor_.bn-editor]:!min-h-0 sm:[&_.hm-prose]:!text-sm">
@@ -174,7 +257,7 @@ export function AgentRichMessageComposer({
             submitButton={() => <></>}
           />
         </div>
-        <div className="flex shrink-0 gap-1 pb-1">
+        <div className={stylex.props(styles.sde768909).className || ''}>
           {canInvokeTools ? (
             <UserToolPalette
               serverUrl={serverUrl}
@@ -194,16 +277,16 @@ export function AgentRichMessageComposer({
               onClick={() => submitHandleRef.current?.submit()}
               title={isBusy ? 'Send while the agent is working' : 'Send'}
             >
-              <Send className="size-3.5" />
+              <Send className={stylex.props(styles.s3269316e).className || ''} />
             </Button>
           ) : !isBusy ? (
             <Button size="sm" className="max-sm:size-10" disabled>
-              <Send className="size-3.5" />
+              <Send className={stylex.props(styles.s3269316e).className || ''} />
             </Button>
           ) : null}
           {isStreaming ? (
             <Button size="sm" variant="destructive" className="max-sm:size-10" onClick={onStop} disabled={stopPending}>
-              <Square className="size-3" />
+              <Square className={stylex.props(styles.sca3de967).className || ''} />
             </Button>
           ) : null}
         </div>
@@ -218,7 +301,12 @@ function collectAttachmentIds(blocks: unknown[]): string[] {
   const visit = (nodes: unknown[]) => {
     for (const node of nodes) {
       if (!node || typeof node !== 'object') continue
-      const {block, children} = node as {block?: {link?: unknown}; children?: unknown}
+      const {block, children} = node as {
+        block?: {
+          link?: unknown
+        }
+        children?: unknown
+      }
       const link = block?.link
       if (typeof link === 'string' && link.startsWith('attachment://')) {
         const id = link.slice('attachment://'.length)

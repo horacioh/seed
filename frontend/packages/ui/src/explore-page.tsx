@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {
   ExplorePresentation,
   ExploreSortRule,
@@ -46,6 +47,370 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from './s
 import {cn} from './utils'
 
 /** Highlights query terms in text without interpreting them as a regular expression. */
+const styles = stylex.create({
+  s8ba11029: {
+    backgroundColor: 'var(--brand-10)',
+    color: 'var(--secondary-foreground)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s75f4ad6b: {
+    marginLeft: 'calc(0.25rem * 1)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s7f7d213: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s514b5fd3: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(0.25rem * 1)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  s3fa69aa1: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s261b6cd6: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingBottom: 'calc(0.25rem * 5)',
+  },
+  sbbe27b50: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s95e874dc: {
+    marginTop: 'calc(0.25rem * 1)',
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '600',
+    letterSpacing: '-0.025em',
+  },
+  s8cc1e96a: {
+    backgroundColor: 'var(--background)',
+    height: 'calc(0.25rem * 11)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sc5c9a492: {
+    position: 'relative',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sf64c667d: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 1)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s337d6708: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '2px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  sc5f26018: {
+    color: 'var(--muted-foreground)',
+    fontVariantNumeric: '   tabular-nums ',
+  },
+  s9d4b128d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s4318b0f5: {
+    color: 'var(--muted-foreground)',
+    marginBottom: 'calc(0.25rem * 3)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s4d016d20: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    animation: 'spin 1s linear infinite',
+  },
+  s3b858bae: {
+    animation: 'spin 1s linear infinite',
+  },
+  sd467b8c3: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  saaee5cf7: {
+    marginTop: 'calc(0.25rem * 4)',
+    width: '100%',
+  },
+  sa843339a: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 5)',
+    textAlign: 'center',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sabdedac1: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s5d77118: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s76945554: {
+    cursor: 'pointer',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s9cddff9f: {
+    borderColor: 'var(--border)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '2px',
+    paddingLeft: 'calc(0.25rem * 3)',
+  },
+  s97ff1ece: {
+    marginBottom: 'calc(0.25rem * 2)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sb2f68493: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  sc1c9c63d: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  sbbe27b4f: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s36c758: {
+    width: 'calc(0.25rem * 24)',
+  },
+  se658ac13: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s2e13e93d: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 2)',
+  },
+  s335ce1: {
+    height: 'calc(0.25rem * 8)',
+    width: 'calc(0.25rem * 36)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s36c75c: {
+    width: 'calc(0.25rem * 28)',
+  },
+  s36c73b: {
+    width: 'calc(0.25rem * 16)',
+  },
+  s2fb76463: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    overflowX: 'auto',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sc3e0f3e2: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontWeight: '500',
+    whiteSpace: 'nowrap',
+  },
+  s4f7ac506: {
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 1)',
+    textAlign: 'left',
+  },
+  s332783: {
+    marginLeft: 'calc(0.25rem * 1)',
+  },
+  sbdcf888f: {
+    display: 'flex',
+    width: '100%',
+    gap: 'calc(0.25rem * 3)',
+    textAlign: 'left',
+  },
+  s87a7d048: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 0.5)',
+    display: 'inline-flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf56ac00b: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+  },
+  sd45be9ae: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    display: 'block',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s66d9f4dd: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 2)',
+    display: 'block',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+  },
+  sd44866c: {
+    marginTop: 'calc(0.25rem * 2)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s3bb14b3e: {
+    marginTop: 'calc(0.25rem * 3)',
+    paddingLeft: 'calc(0.25rem * 11)',
+  },
+  s8dd19d6b: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(0.25rem * 2)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '2px',
+    paddingLeft: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sd1dfa3c9: {
+    color: 'var(--primary)',
+    marginTop: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '2px',
+  },
+  s5bf2d9b6: {
+    color: 'var(--muted-foreground)',
+    marginBottom: 'calc(0.25rem * 3)',
+  },
+})
 export function highlightExploreText(text: string, terms: string[]): ReactNode {
   const normalized = terms.map((term) => term.replace(/^"|"$/g, '').trim()).filter(Boolean)
   if (!normalized.length || !text) return text
@@ -57,8 +422,13 @@ export function highlightExploreText(text: string, terms: string[]): ReactNode {
     'giu',
   )
   return text.split(pattern).map((part, index) =>
-    normalized.some((term) => part.localeCompare(term, undefined, {sensitivity: 'accent'}) === 0) ? (
-      <mark key={index} className="bg-brand-10 text-secondary-foreground">
+    normalized.some(
+      (term) =>
+        part.localeCompare(term, undefined, {
+          sensitivity: 'accent',
+        }) === 0,
+    ) ? (
+      <mark key={index} className={stylex.props(styles.s8ba11029).className || ''}>
         {part}
       </mark>
     ) : (
@@ -66,11 +436,9 @@ export function highlightExploreText(text: string, terms: string[]): ReactNode {
     ),
   )
 }
-
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
-
 function exploreColumnLabel(column: string) {
   const builtIns: Record<string, string> = {
     title: 'Title',
@@ -81,7 +449,6 @@ function exploreColumnLabel(column: string) {
   }
   return builtIns[column] ?? column
 }
-
 function ExploreScopePill({
   context,
   contextLabel,
@@ -90,7 +457,10 @@ function ExploreScopePill({
 }: {
   context: HMExploreContext
   contextLabel: string
-  accounts: Array<{value: string; label: string}>
+  accounts: Array<{
+    value: string
+    label: string
+  }>
   onChange?: (scope: HMExploreContext) => void
 }) {
   const [open, setOpen] = useState(false)
@@ -103,10 +473,10 @@ function ExploreScopePill({
   }
   const scopeLabel = context.type === 'node' ? 'Whole node' : context.id.uid
   return (
-    <div className="relative">
+    <div className={stylex.props(styles.sdef3facc).className || ''}>
       <Button size="sm" variant="outline" onClick={() => setOpen((value) => !value)}>
         {scopeLabel}
-        <ChevronDown className="ml-1 size-3.5" aria-hidden />
+        <ChevronDown className={stylex.props(styles.s75f4ad6b).className || ''} aria-hidden />
       </Button>
       {open ? (
         <div className="bg-popover text-popover-foreground absolute top-full right-0 z-30 mt-2 min-w-48 rounded-md border p-1 shadow-md">
@@ -114,11 +484,17 @@ function ExploreScopePill({
             type="button"
             className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
             onClick={() => {
-              onChange({type: 'node'})
+              onChange({
+                type: 'node',
+              })
               setOpen(false)
             }}
           >
-            {context.type === 'node' ? <Check className="size-3.5" /> : <span className="size-3.5" />}
+            {context.type === 'node' ? (
+              <Check className={stylex.props(styles.s3269316e).className || ''} />
+            ) : (
+              <span className={stylex.props(styles.s3269316e).className || ''} />
+            )}
             Whole node
           </button>
           {accounts.map((account) => (
@@ -127,14 +503,17 @@ function ExploreScopePill({
               type="button"
               className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
               onClick={() => {
-                onChange({type: 'site', id: hmId(account.value)})
+                onChange({
+                  type: 'site',
+                  id: hmId(account.value),
+                })
                 setOpen(false)
               }}
             >
               {context.type === 'site' && context.id.uid === account.value ? (
-                <Check className="size-3.5" />
+                <Check className={stylex.props(styles.s3269316e).className || ''} />
               ) : (
-                <span className="size-3.5" />
+                <span className={stylex.props(styles.s3269316e).className || ''} />
               )}
               {account.label}
             </button>
@@ -144,7 +523,6 @@ function ExploreScopePill({
     </div>
   )
 }
-
 function ExploreColumnsMenu({
   columns,
   selected,
@@ -164,14 +542,17 @@ function ExploreColumnsMenu({
           className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
           onClick={() => onToggle(column)}
         >
-          {selected.includes(column) ? <Check className="size-3.5" /> : <span className="size-3.5" />}
+          {selected.includes(column) ? (
+            <Check className={stylex.props(styles.s3269316e).className || ''} />
+          ) : (
+            <span className={stylex.props(styles.s3269316e).className || ''} />
+          )}
           {exploreColumnLabel(column)}
         </button>
       ))}
     </div>
   )
 }
-
 function ExploreSortMenu({
   rules,
   availableKeys,
@@ -191,14 +572,18 @@ function ExploreSortMenu({
       <p className="text-muted-foreground px-2 py-1.5 text-[11px] font-medium uppercase">Sort order</p>
       {rules.length
         ? rules.map((rule) => (
-            <div key={rule.key} className="flex items-center gap-2 rounded px-2 py-1.5 text-xs">
+            <div key={rule.key} className={stylex.props(styles.s7f7d213).className || ''}>
               <button
                 type="button"
                 className="hover:bg-accent rounded p-1"
                 onClick={() => onCycleDirection(rule.key)}
                 aria-label={`Change ${rule.key} sort direction`}
               >
-                {rule.direction === 'asc' ? <ArrowUp className="size-3.5" /> : <ArrowDown className="size-3.5" />}
+                {rule.direction === 'asc' ? (
+                  <ArrowUp className={stylex.props(styles.s3269316e).className || ''} />
+                ) : (
+                  <ArrowDown className={stylex.props(styles.s3269316e).className || ''} />
+                )}
               </button>
               <span className="min-w-0 flex-1 truncate">{rule.key}</span>
               <button
@@ -212,7 +597,7 @@ function ExploreSortMenu({
             </div>
           ))
         : null}
-      <div className="border-border mt-1 border-t pt-1">
+      <div className={stylex.props(styles.s514b5fd3).className || ''}>
         <p className="text-muted-foreground px-2 py-1.5 text-[11px] font-medium uppercase">Add attribute sort</p>
         {availableKeys
           .filter((key) => !activeKeys.has(key))
@@ -227,7 +612,7 @@ function ExploreSortMenu({
             </button>
           ))}
         {!availableKeys.some((key) => !activeKeys.has(key)) ? (
-          <p className="text-muted-foreground px-2 py-2 text-xs">
+          <p className={stylex.props(styles.s3fa69aa1).className || ''}>
             {rules.length ? 'All attributes are already selected.' : 'No attribute names available.'}
           </p>
         ) : null}
@@ -235,7 +620,6 @@ function ExploreSortMenu({
     </div>
   )
 }
-
 export type ExplorePageProps = {
   contextLabel: string
   query: string
@@ -244,7 +628,15 @@ export type ExplorePageProps = {
   counts: Record<HMExploreResultType | 'all', number>
   textTerms: string[]
   diagnostics?: ParsedExploreQuery['diagnostics']
-  blocksByDocument?: Record<string, Extract<HMExploreResult, {type: 'block'}>[]>
+  blocksByDocument?: Record<
+    string,
+    Extract<
+      HMExploreResult,
+      {
+        type: 'block'
+      }
+    >[]
+  >
   isLoading?: boolean
   isRefetching?: boolean
   error?: string | null
@@ -258,13 +650,27 @@ export type ExplorePageProps = {
   context: HMExploreContext
   onScopeChange?: (scope: HMExploreContext) => void
 }
-
 type ResultTab = 'all' | HMExploreResultType
-const tabs: Array<{id: ResultTab; label: string}> = [
-  {id: 'all', label: 'All'},
-  {id: 'document', label: 'Documents'},
-  {id: 'block', label: 'Text blocks'},
-  {id: 'comment', label: 'Conversations'},
+const tabs: Array<{
+  id: ResultTab
+  label: string
+}> = [
+  {
+    id: 'all',
+    label: 'All',
+  },
+  {
+    id: 'document',
+    label: 'Documents',
+  },
+  {
+    id: 'block',
+    label: 'Text blocks',
+  },
+  {
+    id: 'comment',
+    label: 'Conversations',
+  },
 ]
 
 /** Shared Explore search/results surface used by desktop and web wrappers. */
@@ -293,7 +699,6 @@ export function ExplorePage(props: ExplorePageProps) {
       if (debounceRef.current === timer) debounceRef.current = null
     }
   }, [draft, props.query])
-
   const chips = useMemo(() => exploreQueryChips(props.parsed), [props.parsed])
   const accounts = useExploreAccounts(true)
   const attributeNames = useExploreAttributeNames(props.accountUid || '', true)
@@ -323,27 +728,40 @@ export function ExplorePage(props: ExplorePageProps) {
   const sortRules = props.parsed.presentation.sort ?? []
   const cycleSort = (key: string) => {
     const nextRules = cycleExploreSort(sortRules, key)
-    updatePresentation({...props.parsed.presentation, sort: nextRules.length ? nextRules : undefined})
+    updatePresentation({
+      ...props.parsed.presentation,
+      sort: nextRules.length ? nextRules : undefined,
+    })
   }
   const cycleSortDirection = (key: string) => {
     const nextRules = sortRules.map((rule) =>
-      rule.key === key ? {...rule, direction: rule.direction === 'asc' ? ('desc' as const) : ('asc' as const)} : rule,
+      rule.key === key
+        ? {
+            ...rule,
+            direction: rule.direction === 'asc' ? ('desc' as const) : ('asc' as const),
+          }
+        : rule,
     )
-    updatePresentation({...props.parsed.presentation, sort: nextRules})
+    updatePresentation({
+      ...props.parsed.presentation,
+      sort: nextRules,
+    })
   }
   const removeSort = (key: string) => {
     const nextRules = sortRules.filter((rule) => rule.key !== key)
-    updatePresentation({...props.parsed.presentation, sort: nextRules.length ? nextRules : undefined})
+    updatePresentation({
+      ...props.parsed.presentation,
+      sort: nextRules.length ? nextRules : undefined,
+    })
   }
   const tableMode = props.parsed.presentation.view === 'table' && activeTab !== 'block' && activeTab !== 'comment'
-
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8">
-      <header className="border-border flex flex-col gap-4 border-b pb-5">
-        <div className="flex items-center justify-between gap-3">
+      <header className={stylex.props(styles.s261b6cd6).className || ''}>
+        <div className={stylex.props(styles.sbbe27b50).className || ''}>
           <div>
             <div className="text-muted-foreground text-[11px] font-semibold tracking-[0.2em] uppercase">Explore</div>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight">Advanced search</h1>
+            <h1 className={stylex.props(styles.s95e874dc).className || ''}>Advanced search</h1>
           </div>
           <ExploreScopePill
             context={props.context}
@@ -357,10 +775,10 @@ export function ExplorePage(props: ExplorePageProps) {
           onChangeText={setDraft}
           placeholder="Search documents, blocks, conversations, and attributes"
           aria-label="Explore query"
-          className="bg-background h-11 font-mono text-sm"
+          className={stylex.props(styles.s8cc1e96a).className || ''}
         />
-        <div className="relative flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1">
+        <div className={stylex.props(styles.sc5c9a492).className || ''}>
+          <div className={stylex.props(styles.s86ff3e3).className || ''}>
             <Button
               size="sm"
               variant={props.parsed.presentation.view === 'table' ? 'secondary' : 'outline'}
@@ -398,7 +816,10 @@ export function ExplorePage(props: ExplorePageProps) {
               selected={selectedColumns}
               onToggle={(column) => {
                 const next = toggleExploreColumn(selectedColumns, column)
-                updatePresentation({...props.parsed.presentation, columns: next.length ? next : ['title']})
+                updatePresentation({
+                  ...props.parsed.presentation,
+                  columns: next.length ? next : ['title'],
+                })
               }}
             />
           ) : null}
@@ -412,7 +833,7 @@ export function ExplorePage(props: ExplorePageProps) {
             />
           ) : null}
           {(['type', 'in', 'attributes'] as const).map((kind) => (
-            <div key={kind} className="relative">
+            <div key={kind} className={stylex.props(styles.sdef3facc).className || ''}>
               <Button size="sm" variant="outline" onClick={() => setMenu(menu === kind ? null : kind)}>
                 {kind[0]!.toUpperCase() + kind.slice(1)}
               </Button>
@@ -444,7 +865,7 @@ export function ExplorePage(props: ExplorePageProps) {
           </Button>
         </div>
         {chips.length ? (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
             {chips.map((chip) => (
               <button
                 key={chip.id}
@@ -453,7 +874,7 @@ export function ExplorePage(props: ExplorePageProps) {
                 className="border-border bg-muted/40 hover:bg-muted inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-mono text-xs transition-colors"
               >
                 {chip.label}
-                <X className="size-3" aria-hidden />
+                <X className={stylex.props(styles.sca3de967).className || ''} aria-hidden />
               </button>
             ))}
             <button
@@ -488,7 +909,7 @@ export function ExplorePage(props: ExplorePageProps) {
         />
       ) : null}
 
-      <nav className="border-border flex flex-wrap gap-1 border-b" role="tablist" aria-label="Explore result types">
+      <nav className={stylex.props(styles.sf64c667d).className || ''} role="tablist" aria-label="Explore result types">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -497,25 +918,25 @@ export function ExplorePage(props: ExplorePageProps) {
             aria-selected={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'border-b-2 px-3 py-2 text-sm transition-colors',
+              stylex.props(styles.s337d6708).className || '',
               activeTab === tab.id
                 ? 'border-foreground text-foreground font-medium'
                 : 'text-muted-foreground hover:text-foreground border-transparent',
             )}
           >
-            {tab.label} <span className="text-muted-foreground tabular-nums">{props.counts[tab.id]}</span>
+            {tab.label} <span className={stylex.props(styles.sc5f26018).className || ''}>{props.counts[tab.id]}</span>
           </button>
         ))}
       </nav>
 
-      <div className="flex items-center justify-between gap-3">
+      <div className={stylex.props(styles.sbbe27b50).className || ''}>
         <div>
-          <p className="text-sm font-medium">{props.counts[activeTab]} results</p>
+          <p className={stylex.props(styles.s9d4b128d).className || ''}>{props.counts[activeTab]} results</p>
           {documentOnly ? (
-            <p className="text-muted-foreground text-xs">Attribute sorting applies to documents.</p>
+            <p className={stylex.props(styles.sa56e9200).className || ''}>Attribute sorting applies to documents.</p>
           ) : null}
         </div>
-        <span className="text-muted-foreground text-xs">
+        <span className={stylex.props(styles.sa56e9200).className || ''}>
           {props.textTerms.length ? 'Text matches highlighted below' : 'Attribute query'}
         </span>
       </div>
@@ -523,13 +944,13 @@ export function ExplorePage(props: ExplorePageProps) {
       <section aria-live="polite" className="min-h-48">
         {props.isLoading || props.intersectionPending || props.isRefetching ? (
           visibleResults.length ? (
-            <p className="text-muted-foreground mb-3 flex items-center gap-2 text-xs">
-              <Loader2 className="size-3.5 animate-spin" aria-hidden />
+            <p className={stylex.props(styles.s4318b0f5).className || ''}>
+              <Loader2 className={stylex.props(styles.s4d016d20).className || ''} aria-hidden />
               Updating results…
             </p>
           ) : (
             <ExploreState
-              icon={<Loader2 className="animate-spin" />}
+              icon={<Loader2 className={stylex.props(styles.s3b858bae).className || ''} />}
               title="Searching"
               detail="Loading Explore results."
             />
@@ -548,7 +969,14 @@ export function ExplorePage(props: ExplorePageProps) {
         {visibleResults.length && tableMode ? (
           <ExploreTable
             results={visibleResults.filter(
-              (result): result is Extract<HMExploreResult, {type: 'document'}> => result.type === 'document',
+              (
+                result,
+              ): result is Extract<
+                HMExploreResult,
+                {
+                  type: 'document'
+                }
+              > => result.type === 'document',
             )}
             columns={selectedColumns}
             sortRules={sortRules}
@@ -575,22 +1003,25 @@ export function ExplorePage(props: ExplorePageProps) {
           </div>
         ) : null}
         {props.intersectionTruncated ? (
-          <p className="text-muted-foreground mt-3 text-xs">
+          <p className={stylex.props(styles.sd467b8c3).className || ''}>
             Some matches may be omitted because the document intersection reached its limit.
           </p>
         ) : null}
         {props.hasMore ? (
-          <Button className="mt-4 w-full" variant="outline" onClick={props.onLoadMore}>
+          <Button
+            className={stylex.props(styles.saaee5cf7).className || ''}
+            variant="outline"
+            onClick={props.onLoadMore}
+          >
             Load more
           </Button>
         ) : visibleResults.length ? (
-          <p className="text-muted-foreground mt-5 text-center text-xs">End of results</p>
+          <p className={stylex.props(styles.sa843339a).className || ''}>End of results</p>
         ) : null}
       </section>
     </main>
   )
 }
-
 function ExploreFilterMenu({
   options,
   activeTokens,
@@ -617,50 +1048,69 @@ function ExploreFilterMenu({
           </button>
         ))
       ) : (
-        <p className="text-muted-foreground px-2 py-2 text-xs">No suggestions available.</p>
+        <p className={stylex.props(styles.s3fa69aa1).className || ''}>No suggestions available.</p>
       )}
     </div>
   )
 }
-
 type BuilderNode = ExploreQueryNode
-
 function builderPredicateIsComplete(predicate: ExplorePredicate) {
   if (predicate.kind === 'type') return Boolean(predicate.value)
   if (predicate.kind === 'scope') return Boolean(predicate.value.trim())
   if (predicate.operator === 'exists' || predicate.operator === 'missing') return Boolean(predicate.key.trim())
   return Boolean(predicate.key.trim() && 'value' in predicate && String(predicate.value).trim())
 }
-
 function serializableBuilderNode(node: ExploreQueryNode | null): ExploreQueryNode | null {
   if (!node || (node.kind === 'predicate' && !builderPredicateIsComplete(node.predicate))) return null
   if (node.kind === 'text' || node.kind === 'predicate') return node
   if (node.kind === 'not') {
     const child = serializableBuilderNode(node.child)
-    return child ? {kind: 'not', child} : null
+    return child
+      ? {
+          kind: 'not',
+          child,
+        }
+      : null
   }
   const children = node.children.flatMap((child) => {
     const next = serializableBuilderNode(child)
     return next ? [next] : []
   })
-  return children.length ? {...node, children} : null
+  return children.length
+    ? {
+        ...node,
+        children,
+      }
+    : null
 }
 
 /** Serializes the completed portion of a builder AST while retaining pending UI nodes locally. */
 export function serializeExploreBuilderQuery(ast: ExploreQueryNode | null, presentation: ExplorePresentation) {
-  return serializeExploreQuery({ast: serializableBuilderNode(ast), presentation, diagnostics: []})
+  return serializeExploreQuery({
+    ast: serializableBuilderNode(ast),
+    presentation,
+    diagnostics: [],
+  })
 }
-
 function appendExploreNode(ast: ExploreQueryNode | null, next: ExploreQueryNode): ExploreQueryNode {
   if (!ast) return next
-  if (ast.kind === 'and') return {kind: 'and', children: [...ast.children, next]}
-  return {kind: 'and', children: [ast, next]}
+  if (ast.kind === 'and')
+    return {
+      kind: 'and',
+      children: [...ast.children, next],
+    }
+  return {
+    kind: 'and',
+    children: [ast, next],
+  }
 }
-
 function withPresentation(ast: ExploreQueryNode | null, presentation: ExplorePresentation) {
-  return serializeExploreQuery({ast, presentation, diagnostics: []})
+  return serializeExploreQuery({
+    ast,
+    presentation,
+    diagnostics: [],
+  })
 }
-
 function predicateToDraft(predicate: ExplorePredicate): {
   field: string
   kind: 'comparison' | 'contains' | 'prefix' | 'exists' | 'missing'
@@ -678,14 +1128,38 @@ function predicateToDraft(predicate: ExplorePredicate): {
     }
   }
   if (predicate.kind === 'type') {
-    return {field: 'type', kind: 'contains', operator: '=', valueKind: 'string', value: predicate.value}
+    return {
+      field: 'type',
+      kind: 'contains',
+      operator: '=',
+      valueKind: 'string',
+      value: predicate.value,
+    }
   }
   if (predicate.operator === 'exists' || predicate.operator === 'missing')
-    return {field: predicate.key, kind: predicate.operator, operator: '=', valueKind: 'string', value: ''}
+    return {
+      field: predicate.key,
+      kind: predicate.operator,
+      operator: '=',
+      valueKind: 'string',
+      value: '',
+    }
   if (predicate.operator === 'contains' || predicate.operator === 'prefix')
-    return {field: predicate.key, kind: predicate.operator, operator: '=', valueKind: 'string', value: predicate.value}
+    return {
+      field: predicate.key,
+      kind: predicate.operator,
+      operator: '=',
+      valueKind: 'string',
+      value: predicate.value,
+    }
   if (predicate.operator !== 'comparison')
-    return {field: predicate.key, kind: 'contains', operator: '=', valueKind: 'string', value: ''}
+    return {
+      field: predicate.key,
+      kind: 'contains',
+      operator: '=',
+      valueKind: 'string',
+      value: '',
+    }
   return {
     field: predicate.key,
     kind: 'comparison',
@@ -694,7 +1168,6 @@ function predicateToDraft(predicate: ExplorePredicate): {
     value: String(predicate.value),
   }
 }
-
 function draftToPredicate(
   field: string,
   kind: 'comparison' | 'contains' | 'prefix' | 'exists' | 'missing',
@@ -704,16 +1177,46 @@ function draftToPredicate(
 ): ExplorePredicate | null {
   if (!field.trim()) return null
   if (field === 'type' && ['document', 'block', 'comment'].includes(value))
-    return {kind: 'type', value: value as HMExploreResultType}
-  if (field === '$space') return {kind: 'scope', scope: 'space', value: value.trim()}
-  if (field === '$path') return {kind: 'scope', scope: 'path', value: value.trim() || '/', prefix: kind === 'prefix'}
-  if (kind === 'exists' || kind === 'missing') return {kind: 'attribute', key: field.trim(), operator: kind}
+    return {
+      kind: 'type',
+      value: value as HMExploreResultType,
+    }
+  if (field === '$space')
+    return {
+      kind: 'scope',
+      scope: 'space',
+      value: value.trim(),
+    }
+  if (field === '$path')
+    return {
+      kind: 'scope',
+      scope: 'path',
+      value: value.trim() || '/',
+      prefix: kind === 'prefix',
+    }
+  if (kind === 'exists' || kind === 'missing')
+    return {
+      kind: 'attribute',
+      key: field.trim(),
+      operator: kind,
+    }
   if (!value.trim()) return null
-  if (kind === 'contains' || kind === 'prefix') return {kind: 'attribute', key: field.trim(), operator: kind, value}
+  if (kind === 'contains' || kind === 'prefix')
+    return {
+      kind: 'attribute',
+      key: field.trim(),
+      operator: kind,
+      value,
+    }
   const typedValue = valueKind === 'int' ? Number(value) : valueKind === 'bool' ? value === 'true' : value
-  return {kind: 'attribute', key: field.trim(), operator: 'comparison', comparison: operator, value: typedValue}
+  return {
+    kind: 'attribute',
+    key: field.trim(),
+    operator: 'comparison',
+    comparison: operator,
+    value: typedValue,
+  }
 }
-
 function ExploreBuilder({
   ast,
   attributeNames,
@@ -727,7 +1230,10 @@ function ExploreBuilder({
   ast: ExploreQueryNode | null
   attributeNames: string[]
   attributeValues: string[]
-  accounts: Array<{value: string; label: string}>
+  accounts: Array<{
+    value: string
+    label: string
+  }>
   context: HMExploreContext
   presentation: ExplorePresentation
   onFocusValue: (field: string, kind: 'string' | 'int' | 'bool') => void
@@ -742,10 +1248,10 @@ function ExploreBuilder({
   }
   return (
     <section className="border-border bg-muted/10 flex flex-col gap-4 rounded-lg border p-4">
-      <div className="flex items-center justify-between">
+      <div className={stylex.props(styles.s78289774).className || ''}>
         <div>
           <p className="text-muted-foreground text-[11px] font-semibold tracking-[0.18em] uppercase">Query builder</p>
-          <p className="text-muted-foreground mt-1 text-xs">
+          <p className={stylex.props(styles.sabdedac1).className || ''}>
             Edit document conditions without losing text or presentation directives.
           </p>
         </div>
@@ -763,14 +1269,25 @@ function ExploreBuilder({
         onChange={onChange}
       />
       <BuilderToolbar onAdd={(node) => onChange(appendExploreNode(ast, node))} />
-      <details className="border-border bg-background rounded-md border px-3 py-2">
-        <summary className="cursor-pointer text-xs font-medium">Request preview</summary>
+      <details className={stylex.props(styles.s5d77118).className || ''}>
+        <summary className={stylex.props(styles.s76945554).className || ''}>Request preview</summary>
         <pre className="text-muted-foreground mt-2 overflow-auto text-[11px]">
           {JSON.stringify(
             new QueryDocumentsRequest({
-              filter: compileExploreQuery({ast, presentation, diagnostics: []}, context).filter,
+              filter: compileExploreQuery(
+                {
+                  ast,
+                  presentation,
+                  diagnostics: [],
+                },
+                context,
+              ).filter,
               sort: (presentation.sort ?? []).map(
-                (rule) => new DocumentSort({key: rule.key, descending: rule.direction === 'desc'}),
+                (rule) =>
+                  new DocumentSort({
+                    key: rule.key,
+                    descending: rule.direction === 'desc',
+                  }),
               ),
             }).toJson(),
             null,
@@ -781,29 +1298,41 @@ function ExploreBuilder({
     </section>
   )
 }
-
 function BuilderToolbar({onAdd}: {onAdd: (node: ExploreQueryNode) => void}) {
   return (
-    <div className="flex gap-2">
+    <div className={stylex.props(styles.se658ac14).className || ''}>
       <Button
         size="sm"
         variant="outline"
         onClick={() =>
           onAdd({
             kind: 'predicate',
-            predicate: {kind: 'attribute', key: '', operator: 'contains', value: ''},
+            predicate: {
+              kind: 'attribute',
+              key: '',
+              operator: 'contains',
+              value: '',
+            },
           })
         }
       >
         Add condition
       </Button>
-      <Button size="sm" variant="outline" onClick={() => onAdd({kind: 'and', children: []})}>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() =>
+          onAdd({
+            kind: 'and',
+            children: [],
+          })
+        }
+      >
         Add group
       </Button>
     </div>
   )
 }
-
 function BuilderNodeEditor({
   node,
   path,
@@ -817,7 +1346,10 @@ function BuilderNodeEditor({
   path: number[]
   attributeNames: string[]
   attributeValues: string[]
-  accounts: Array<{value: string; label: string}>
+  accounts: Array<{
+    value: string
+    label: string
+  }>
   onFocusValue: (field: string, kind: 'string' | 'int' | 'bool') => void
   onChange: (ast: ExploreQueryNode | null) => void
 }) {
@@ -834,16 +1366,25 @@ function BuilderNodeEditor({
         attributeValues={attributeValues}
         accounts={accounts}
         onFocusValue={onFocusValue}
-        onChange={(next) => replace(next ? {kind: 'predicate', predicate: next} : null)}
+        onChange={(next) =>
+          replace(
+            next
+              ? {
+                  kind: 'predicate',
+                  predicate: next,
+                }
+              : null,
+          )
+        }
         onRemove={() => replace(null)}
       />
     )
   }
   if (node.kind === 'not') {
     return (
-      <div className="border-border border-l-2 pl-3">
-        <div className="mb-2 flex items-center justify-between">
-          <div className="text-muted-foreground text-xs font-medium">Not</div>
+      <div className={stylex.props(styles.s9cddff9f).className || ''}>
+        <div className={stylex.props(styles.s97ff1ece).className || ''}>
+          <div className={stylex.props(styles.sb2f68493).className || ''}>Not</div>
           <Button size="xs" variant="ghost" onClick={() => onChange(node.child)}>
             Remove Not
           </Button>
@@ -855,21 +1396,40 @@ function BuilderNodeEditor({
           attributeValues={attributeValues}
           accounts={accounts}
           onFocusValue={onFocusValue}
-          onChange={(next) => onChange(next ? {kind: 'not', child: next} : null)}
+          onChange={(next) =>
+            onChange(
+              next
+                ? {
+                    kind: 'not',
+                    child: next,
+                  }
+                : null,
+            )
+          }
         />
       </div>
     )
   }
   return (
-    <div className="border-border bg-background flex flex-col gap-3 rounded-md border p-3">
-      <div className="flex items-center justify-between gap-2">
+    <div className={stylex.props(styles.sc1c9c63d).className || ''}>
+      <div className={stylex.props(styles.sbbe27b4f).className || ''}>
         <Select
           value={node.kind}
           onValueChange={(mode) =>
-            onChange(mode === 'not' ? {kind: 'not', child: node} : {...node, kind: mode as 'and' | 'or'})
+            onChange(
+              mode === 'not'
+                ? {
+                    kind: 'not',
+                    child: node,
+                  }
+                : {
+                    ...node,
+                    kind: mode as 'and' | 'or',
+                  },
+            )
           }
         >
-          <SelectTrigger size="sm" className="w-24">
+          <SelectTrigger size="sm" className={stylex.props(styles.s36c758).className || ''}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -878,7 +1438,7 @@ function BuilderNodeEditor({
             <SelectItem value="not">Not</SelectItem>
           </SelectContent>
         </Select>
-        <div className="flex gap-1">
+        <div className={stylex.props(styles.se658ac13).className || ''}>
           <Button
             size="xs"
             variant="outline"
@@ -887,7 +1447,14 @@ function BuilderNodeEditor({
                 kind: node.kind,
                 children: [
                   ...node.children,
-                  {kind: 'predicate', predicate: {kind: 'attribute', key: '', operator: 'exists'}},
+                  {
+                    kind: 'predicate',
+                    predicate: {
+                      kind: 'attribute',
+                      key: '',
+                      operator: 'exists',
+                    },
+                  },
                 ],
               })
             }
@@ -897,7 +1464,18 @@ function BuilderNodeEditor({
           <Button
             size="xs"
             variant="outline"
-            onClick={() => onChange({kind: node.kind, children: [...node.children, {kind: 'and', children: []}]})}
+            onClick={() =>
+              onChange({
+                kind: node.kind,
+                children: [
+                  ...node.children,
+                  {
+                    kind: 'and',
+                    children: [],
+                  },
+                ],
+              })
+            }
           >
             Add group
           </Button>
@@ -921,14 +1499,20 @@ function BuilderNodeEditor({
             const children = [...node.children]
             if (next) children[index] = next
             else children.splice(index, 1)
-            onChange(children.length ? {...node, children} : null)
+            onChange(
+              children.length
+                ? {
+                    ...node,
+                    children,
+                  }
+                : null,
+            )
           }}
         />
       ))}
     </div>
   )
 }
-
 function BuilderCondition({
   draft,
   attributeNames,
@@ -941,7 +1525,10 @@ function BuilderCondition({
   draft: ReturnType<typeof predicateToDraft>
   attributeNames: string[]
   attributeValues: string[]
-  accounts: Array<{value: string; label: string}>
+  accounts: Array<{
+    value: string
+    label: string
+  }>
   onFocusValue: (field: string, kind: 'string' | 'int' | 'bool') => void
   onChange: (predicate: ExplorePredicate | null) => void
   onRemove: () => void
@@ -959,7 +1546,14 @@ function BuilderCondition({
     setValue(draft.value)
   }, [draft.field, draft.kind, draft.operator, draft.valueKind, draft.value])
   const commit = (next: Partial<typeof draft>) => {
-    const merged = {field, kind, operator, valueKind, value, ...next}
+    const merged = {
+      field,
+      kind,
+      operator,
+      valueKind,
+      value,
+      ...next,
+    }
     setField(merged.field)
     setKind(merged.kind)
     setOperator(merged.operator)
@@ -968,16 +1562,27 @@ function BuilderCondition({
     onChange(draftToPredicate(merged.field, merged.kind, merged.operator, merged.valueKind, merged.value))
   }
   return (
-    <div className="border-border flex flex-wrap items-center gap-2 rounded-md border p-2">
+    <div className={stylex.props(styles.s2e13e93d).className || ''}>
       <ExploreAutocomplete
         value={field}
         options={[...attributeNames, '$space', '$path']}
-        onChange={(next) => commit({field: next})}
+        onChange={(next) =>
+          commit({
+            field: next,
+          })
+        }
         placeholder="field"
-        className="h-8 w-36 text-xs"
+        className={stylex.props(styles.s335ce1).className || ''}
       />
-      <Select value={kind} onValueChange={(next) => commit({kind: next as typeof kind})}>
-        <SelectTrigger size="sm" className="w-28">
+      <Select
+        value={kind}
+        onValueChange={(next) =>
+          commit({
+            kind: next as typeof kind,
+          })
+        }
+      >
+        <SelectTrigger size="sm" className={stylex.props(styles.s36c75c).className || ''}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -989,8 +1594,15 @@ function BuilderCondition({
         </SelectContent>
       </Select>
       {kind === 'comparison' ? (
-        <Select value={operator} onValueChange={(next) => commit({operator: next as typeof operator})}>
-          <SelectTrigger size="sm" className="w-16">
+        <Select
+          value={operator}
+          onValueChange={(next) =>
+            commit({
+              operator: next as typeof operator,
+            })
+          }
+        >
+          <SelectTrigger size="sm" className={stylex.props(styles.s36c73b).className || ''}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -1003,8 +1615,15 @@ function BuilderCondition({
         </Select>
       ) : null}
       {kind !== 'exists' && kind !== 'missing' ? (
-        <Select value={valueKind} onValueChange={(next) => commit({valueKind: next as typeof valueKind})}>
-          <SelectTrigger size="sm" className="w-24">
+        <Select
+          value={valueKind}
+          onValueChange={(next) =>
+            commit({
+              valueKind: next as typeof valueKind,
+            })
+          }
+        >
+          <SelectTrigger size="sm" className={stylex.props(styles.s36c758).className || ''}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -1019,7 +1638,11 @@ function BuilderCondition({
           value={value}
           options={attributeValues.length ? attributeValues : accounts.map((account) => account.value)}
           onFocus={() => onFocusValue(field, valueKind)}
-          onChange={(next) => commit({value: next})}
+          onChange={(next) =>
+            commit({
+              value: next,
+            })
+          }
           placeholder="value"
           className="h-8 min-w-32 flex-1 text-xs"
         />
@@ -1030,7 +1653,6 @@ function BuilderCondition({
     </div>
   )
 }
-
 function ExploreAutocomplete({
   value,
   options,
@@ -1046,7 +1668,10 @@ function ExploreAutocomplete({
   placeholder: string
   className?: string
 }) {
-  const store = Ariakit.useComboboxStore({value, setValue: onChange})
+  const store = Ariakit.useComboboxStore({
+    value,
+    setValue: onChange,
+  })
   const query = value.trim().toLocaleLowerCase()
   const suggestions = options.filter((option) => !query || option.toLocaleLowerCase().includes(query)).slice(0, 50)
   return (
@@ -1080,8 +1705,15 @@ function ExploreAutocomplete({
     </div>
   )
 }
-
-function tableCellValue(result: Extract<HMExploreResult, {type: 'document'}>, column: string) {
+function tableCellValue(
+  result: Extract<
+    HMExploreResult,
+    {
+      type: 'document'
+    }
+  >,
+  column: string,
+) {
   const document = result.document
   if (column === 'title') return document?.metadata?.name || result.matchText || 'Untitled'
   if (column === 'space') return result.id.uid
@@ -1095,7 +1727,6 @@ function tableCellValue(result: Extract<HMExploreResult, {type: 'document'}>, co
   }
   return value === undefined || value === null ? '—' : typeof value === 'object' ? JSON.stringify(value) : String(value)
 }
-
 function ExploreTable({
   results,
   columns,
@@ -1103,14 +1734,19 @@ function ExploreTable({
   onSort,
   onOpen,
 }: {
-  results: Extract<HMExploreResult, {type: 'document'}>[]
+  results: Extract<
+    HMExploreResult,
+    {
+      type: 'document'
+    }
+  >[]
   columns: string[]
   sortRules: ExploreSortRule[]
   onSort: (key: string) => void
   onOpen: (result: HMExploreResult) => void
 }) {
   return (
-    <div className="border-border bg-background overflow-x-auto rounded-lg border">
+    <div className={stylex.props(styles.s2fb76463).className || ''}>
       <table className="w-full min-w-max border-collapse text-left text-sm">
         <thead className="bg-muted/40 text-muted-foreground">
           <tr>
@@ -1118,11 +1754,11 @@ function ExploreTable({
               const sort = sortRules.find((rule) => rule.key === column)
               const sortable = !['title', 'space', 'path', 'updated', 'version'].includes(column)
               return (
-                <th key={column} className="border-border border-b px-3 py-2 font-medium whitespace-nowrap">
+                <th key={column} className={stylex.props(styles.sc3e0f3e2).className || ''}>
                   <button
                     type="button"
                     className={cn(
-                      'rounded px-1 text-left',
+                      stylex.props(styles.s4f7ac506).className || '',
                       sortable
                         ? 'hover:bg-muted focus-visible:ring-ring outline-none focus-visible:ring-2'
                         : 'cursor-default',
@@ -1132,7 +1768,11 @@ function ExploreTable({
                     aria-label={sortable ? `Sort by ${column}` : undefined}
                   >
                     {column}
-                    {sort ? <span className="ml-1">{sort.direction === 'asc' ? '↑' : '↓'}</span> : null}
+                    {sort ? (
+                      <span className={stylex.props(styles.s332783).className || ''}>
+                        {sort.direction === 'asc' ? '↑' : '↓'}
+                      </span>
+                    ) : null}
                   </button>
                 </th>
               )
@@ -1164,7 +1804,6 @@ function ExploreTable({
     </div>
   )
 }
-
 function ExploreResultRow({
   result,
   terms,
@@ -1173,7 +1812,12 @@ function ExploreResultRow({
 }: {
   result: HMExploreResult
   terms: string[]
-  blocks?: Extract<HMExploreResult, {type: 'block'}>[]
+  blocks?: Extract<
+    HMExploreResult,
+    {
+      type: 'block'
+    }
+  >[]
   onOpen: (result: HMExploreResult) => void
 }) {
   const title =
@@ -1183,28 +1827,28 @@ function ExploreResultRow({
   const Icon = result.type === 'document' ? FileText : result.type === 'block' ? Pilcrow : MessageSquare
   return (
     <article className="hover:bg-muted/20 border-b p-4 last:border-b-0">
-      <button type="button" className="flex w-full gap-3 text-left" onClick={() => onOpen(result)}>
-        <span className="border-border bg-muted text-muted-foreground mt-0.5 inline-flex size-8 shrink-0 items-center justify-center rounded-md border">
-          <Icon className="size-4" />
+      <button type="button" className={stylex.props(styles.sbdcf888f).className || ''} onClick={() => onOpen(result)}>
+        <span className={stylex.props(styles.s87a7d048).className || ''}>
+          <Icon className={stylex.props(styles.sca3de968).className || ''} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2">
-            <span className="text-sm font-semibold">{highlightExploreText(title, terms)}</span>
+          <span className={stylex.props(styles.s86ff3e4).className || ''}>
+            <span className={stylex.props(styles.sf56ac00b).className || ''}>{highlightExploreText(title, terms)}</span>
             <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
               {result.type}
             </span>
           </span>
-          <span className="text-muted-foreground mt-1 block text-xs">
+          <span className={stylex.props(styles.sd45be9ae).className || ''}>
             {result.breadcrumb?.join(' · ') || 'Explore result'}
             {result.versionTime ? ` · ${new Date(result.versionTime).toLocaleDateString()}` : ''}
           </span>
           {result.matchText ? (
-            <span className="text-muted-foreground mt-2 block text-sm leading-6">
+            <span className={stylex.props(styles.s66d9f4dd).className || ''}>
               {highlightExploreText(result.matchText, terms)}
             </span>
           ) : null}
           {result.matchedFields?.length ? (
-            <span className="mt-2 flex flex-wrap gap-1.5">
+            <span className={stylex.props(styles.sd44866c).className || ''}>
               {result.matchedFields.map((field) => (
                 <span key={field.label} className="bg-muted rounded px-2 py-1 font-mono text-[11px]">
                   {field.label} {field.value}
@@ -1215,14 +1859,16 @@ function ExploreResultRow({
         </span>
       </button>
       {blocks?.length ? (
-        <div className="mt-3 pl-11">
-          <p className="text-muted-foreground text-xs font-medium">{blocks.length} matching blocks</p>
+        <div className={stylex.props(styles.s3bb14b3e).className || ''}>
+          <p className={stylex.props(styles.sb2f68493).className || ''}>{blocks.length} matching blocks</p>
           {blocks.map((block) => (
-            <div key={packHmId(block.id)} className="border-border mt-2 border-l-2 pl-3 text-sm">
-              <p className="text-muted-foreground">{highlightExploreText(block.matchText || '', terms)}</p>
+            <div key={packHmId(block.id)} className={stylex.props(styles.s8dd19d6b).className || ''}>
+              <p className={stylex.props(styles.sf2718385).className || ''}>
+                {highlightExploreText(block.matchText || '', terms)}
+              </p>
               <button
                 type="button"
-                className="text-primary mt-1 text-xs underline underline-offset-2"
+                className={stylex.props(styles.sd1dfa3c9).className || ''}
                 onClick={() => onOpen(block)}
               >
                 Jump to source
@@ -1234,7 +1880,6 @@ function ExploreResultRow({
     </article>
   )
 }
-
 function ExploreState({icon, title, detail, tone}: {icon: ReactNode; title: string; detail: string; tone?: 'error'}) {
   return (
     <div
@@ -1243,8 +1888,10 @@ function ExploreState({icon, title, detail, tone}: {icon: ReactNode; title: stri
         tone === 'error' && 'border-destructive/40 bg-destructive/5',
       )}
     >
-      <span className={cn('text-muted-foreground mb-3', tone === 'error' && 'text-destructive')}>{icon}</span>
-      <h2 className="text-sm font-medium">{title}</h2>
+      <span className={cn(stylex.props(styles.s5bf2d9b6).className || '', tone === 'error' && 'text-destructive')}>
+        {icon}
+      </span>
+      <h2 className={stylex.props(styles.s9d4b128d).className || ''}>{title}</h2>
       <p className="text-muted-foreground mt-1 max-w-sm text-sm">{detail}</p>
     </div>
   )

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {NotificationPayload} from '@shm/shared/models/notification-payload'
 import {Bell} from 'lucide-react'
 import {ReactNode, useMemo} from 'react'
@@ -8,6 +9,46 @@ import {Spinner} from './spinner'
 import {SizableText, Text} from './text'
 
 /** NotificationFilter controls whether all notifications or only unread notifications are shown. */
+const styles = stylex.create({
+  s72a2b24b: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    width: 'calc(0.25rem * 20)',
+    height: 'calc(0.25rem * 20)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sfbe982bd: {
+    display: 'flex',
+    alignSelf: 'flex-start',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s9eb1497c: {
+    borderTopRightRadius: '0',
+    borderBottomRightRadius: '0',
+    borderStyle: 'solid',
+    borderWidth: '0px',
+  },
+  s838ccbf6: {
+    borderTopLeftRadius: '0',
+    borderBottomLeftRadius: '0',
+    borderStyle: 'solid',
+    borderWidth: '0px',
+  },
+  s3b59bb6: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 20)',
+  },
+})
 export type NotificationFilter = 'all' | 'unread'
 
 /** NotificationPageEmptyState renders the shared centered empty/error state for notifications pages. */
@@ -22,8 +63,8 @@ export function NotificationPageEmptyState({
 }) {
   return (
     <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4">
-      <div className="bg-muted flex size-20 items-center justify-center rounded-lg">
-        <Bell size={50} className="text-muted-foreground" />
+      <div className={stylex.props(styles.s72a2b24b).className || ''}>
+        <Bell size={50} className={stylex.props(styles.sf2718385).className || ''} />
       </div>
       {titleSize === '2xl' ? (
         <Text weight="bold" size="2xl">
@@ -46,11 +87,11 @@ export function NotificationFilterTabs({
   onFilterChange: (filter: NotificationFilter) => void
 }) {
   return (
-    <div className="flex self-start rounded-md border">
+    <div className={stylex.props(styles.sfbe982bd).className || ''}>
       <Button
         size="sm"
         variant={filter === 'all' ? 'secondary' : 'ghost'}
-        className="rounded-r-none border-0"
+        className={stylex.props(styles.s9eb1497c).className || ''}
         onClick={() => onFilterChange('all')}
       >
         All
@@ -58,7 +99,7 @@ export function NotificationFilterTabs({
       <Button
         size="sm"
         variant={filter === 'unread' ? 'secondary' : 'ghost'}
-        className="rounded-l-none border-0"
+        className={stylex.props(styles.s838ccbf6).className || ''}
         onClick={() => onFilterChange('unread')}
       >
         Unread
@@ -95,7 +136,6 @@ export function NotificationsPageContent({
     if (filter === 'all') return notifications
     return notifications.filter((item) => !isNotificationRead(item))
   }, [filter, isNotificationRead, notifications])
-
   return (
     <GeneralPageContainer>
       <GeneralPageHeader title="Notifications" loading={headerLoading} actions={headerActions} />
@@ -103,7 +143,7 @@ export function NotificationsPageContent({
       <NotificationFilterTabs filter={filter} onFilterChange={onFilterChange} />
 
       {isLoading ? (
-        <div className="flex flex-1 items-center justify-center py-20">
+        <div className={stylex.props(styles.s3b59bb6).className || ''}>
           <Spinner />
         </div>
       ) : errorMessage ? (

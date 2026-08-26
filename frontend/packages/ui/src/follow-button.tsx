@@ -1,5 +1,11 @@
+import * as stylex from '@stylexjs/stylex'
 import {UserCheck, UserPlus} from 'lucide-react'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export interface FollowButtonProps {
   onClick: () => void
   disabled?: boolean
@@ -19,12 +25,12 @@ export function FollowButton({onClick, disabled, isFollowing}: FollowButtonProps
     >
       {isFollowing ? (
         <>
-          <UserCheck className="size-4" />
+          <UserCheck className={stylex.props(styles.sca3de968).className || ''} />
           Following
         </>
       ) : (
         <>
-          <UserPlus className="size-4" />
+          <UserPlus className={stylex.props(styles.sca3de968).className || ''} />
           Follow
         </>
       )}

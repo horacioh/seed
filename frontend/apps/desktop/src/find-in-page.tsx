@@ -1,5 +1,5 @@
 // Find-in-page UI using vanilla JS to avoid React duplication issues
-import './tailwind.css'
+import './stylex.css'
 
 type FindInPageResult = {
   activeMatchOrdinal: number

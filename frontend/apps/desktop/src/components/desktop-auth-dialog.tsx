@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   invalidateVaultDependentQueries,
   useMyAccountIds,
@@ -19,7 +20,22 @@ import {CreateAccountDialogContent, type CreateAccountDialogSubmit} from '@shm/u
 import {toast} from '@shm/ui/toast'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react'
-
+const styles = stylex.create({
+  sb3b0ca3b: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    overflowWrap: 'break-word',
+  },
+  s96a43180: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+})
 type DesktopAuthDialogInput = {
   initialSubmit?: CreateAccountDialogSubmit
   initialStep?: 'main' | 'custom-identity'
@@ -36,7 +52,6 @@ function connectErrorGuidance(error: string) {
   }
   return 'Something went wrong while connecting to the identity server. Your account is safe — try again to restart the sign-in in your browser.'
 }
-
 function DesktopAuthDialogContent({
   input,
   onClose,
@@ -66,12 +81,13 @@ function DesktopAuthDialogContent({
   const handledReadyRef = useRef(false)
   const handledInitialSubmitRef = useRef(false)
   const lastSubmitRef = useRef<CreateAccountDialogSubmit | null>(null)
-
   useLayoutEffect(() => {
     const preventClose = (!!input.initialSubmit || !!browserUrl) && !connectError
-    setDialogCloseProtection?.({preventClose, showCloseButton: !preventClose})
+    setDialogCloseProtection?.({
+      preventClose,
+      showCloseButton: !preventClose,
+    })
   }, [browserUrl, connectError, input.initialSubmit, setDialogCloseProtection])
-
   useEffect(() => {
     if (!browserUrl || isReady) return
     vaultStatus.refetch()
@@ -82,18 +98,15 @@ function DesktopAuthDialogContent({
     }, 500)
     return () => clearInterval(interval)
   }, [browserUrl, isReady, vaultStatus.refetch, accountIds.refetch])
-
   useEffect(() => {
     if (!isConnected) return
     invalidateVaultDependentQueries()
   }, [isConnected])
-
   useEffect(() => {
     const firstAccountId = accountIds.data?.[0]
     if (!isReady || !firstAccountId || handledReadyRef.current) return
     handledReadyRef.current = true
     const readyAccountId = firstAccountId
-
     async function finishRemoteSignIn() {
       onClose()
       if (browserUrl && accountIds.data?.length) {
@@ -102,7 +115,9 @@ function DesktopAuthDialogContent({
           await syncRemoteSignInSiteHomes(accountIds.data)
           toast.dismiss(toastId)
         } catch (error) {
-          toast.error('Could not sync your content. Connect to the internet and try again.', {id: toastId})
+          toast.error('Could not sync your content. Connect to the internet and try again.', {
+            id: toastId,
+          })
           throw error
         }
       }
@@ -115,13 +130,11 @@ function DesktopAuthDialogContent({
       await input.onReady?.(readyAccountId)
       if (!input.onReady) toast.success('Authenticated')
     }
-
     finishRemoteSignIn().catch((error) => {
       handledReadyRef.current = false
       console.error('Failed to finish remote vault sign-in', error)
     })
   }, [accountIds.data, browserUrl, input, isReady, onClose, selectedIdentityValue, setSelectedIdentity])
-
   const handleSubmit = useCallback(
     async (submit: CreateAccountDialogSubmit) => {
       lastSubmitRef.current = submit
@@ -133,7 +146,6 @@ function DesktopAuthDialogContent({
         toast.error(error instanceof Error ? error.message : 'Invalid identity server URL')
         return
       }
-
       try {
         const vaultConnect = await startVaultConnection.mutateAsync({
           vaultUrl: normalizedVaultUrl,
@@ -153,15 +165,12 @@ function DesktopAuthDialogContent({
     },
     [defaultVaultUrl, input.siteName, openUrl, startVaultConnection],
   )
-
   useEffect(() => {
     if (!input.initialSubmit || handledInitialSubmitRef.current) return
     handledInitialSubmitRef.current = true
     handleSubmit(input.initialSubmit)
   }, [handleSubmit, input.initialSubmit])
-
   if (isReady) return null
-
   if (input.initialSubmit && !browserUrl) {
     return (
       <>
@@ -170,21 +179,25 @@ function DesktopAuthDialogContent({
       </>
     )
   }
-
   if (browserUrl && connectError) {
     return (
       <>
         <DialogTitle className="max-sm:text-base">Sign-in could not be completed</DialogTitle>
         <DialogDescription className="max-sm:text-sm">{connectErrorGuidance(connectError)}</DialogDescription>
-        <p className="text-muted-foreground text-xs break-words">{connectError}</p>
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" size="lg" className="font-semibold" onClick={onClose}>
+        <p className={stylex.props(styles.sb3b0ca3b).className || ''}>{connectError}</p>
+        <div className={stylex.props(styles.s96a43180).className || ''}>
+          <Button
+            variant="outline"
+            size="lg"
+            className={stylex.props(styles.s62c182b1).className || ''}
+            onClick={onClose}
+          >
             Cancel
           </Button>
           <Button
             variant="default"
             size="lg"
-            className="font-semibold"
+            className={stylex.props(styles.s62c182b1).className || ''}
             onClick={() => {
               const lastSubmit = lastSubmitRef.current
               if (lastSubmit) handleSubmit(lastSubmit)
@@ -196,7 +209,6 @@ function DesktopAuthDialogContent({
       </>
     )
   }
-
   if (browserUrl) {
     return (
       <>
@@ -204,18 +216,27 @@ function DesktopAuthDialogContent({
         <DialogDescription className="max-sm:text-sm">
           Complete your identity creation there, then come back to Seed app.
         </DialogDescription>
-        <div className="grid grid-cols-2 gap-2">
-          <Button variant="outline" size="lg" className="font-semibold" onClick={onClose}>
+        <div className={stylex.props(styles.s96a43180).className || ''}>
+          <Button
+            variant="outline"
+            size="lg"
+            className={stylex.props(styles.s62c182b1).className || ''}
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button variant="default" size="lg" className="font-semibold" onClick={() => openUrl(browserUrl)}>
+          <Button
+            variant="default"
+            size="lg"
+            className={stylex.props(styles.s62c182b1).className || ''}
+            onClick={() => openUrl(browserUrl)}
+          >
             Ok, open browser
           </Button>
         </div>
       </>
     )
   }
-
   return (
     <CreateAccountDialogContent
       header={input.title ? 'Hypermedia' : undefined}

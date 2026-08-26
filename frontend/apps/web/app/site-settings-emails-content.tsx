@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useLocalKeyPair} from '@/auth'
 import {ClientOnly} from '@/client-lazy'
 import type {SiteHeaderPayload} from '@/loaders'
@@ -16,6 +17,11 @@ import {useQuery} from '@tanstack/react-query'
 import {Suspense} from 'react'
 
 /** Loader payload for the email subscribers page, served at /:settings/email-subscribers. */
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+})
 export type SiteSettingsEmailsPayload = SiteHeaderPayload & {
   kind: 'site-settings-emails'
   // The account whose subscribers are shown: the registered site account, or
@@ -49,7 +55,7 @@ export function SiteSettingsEmailsScreen({payload}: {payload: SiteSettingsEmails
             </Suspense>
           </ClientOnly>
         </NavigationLoadingContent>
-        <PageFooter className="w-full" />
+        <PageFooter className={stylex.props(styles.scdbaf625).className || ''} />
       </GeneralPageSurface>
     </WebSiteProvider>
   )
@@ -70,7 +76,6 @@ export function WebSiteSettingsEmailsPage({
   const keyPair = useLocalKeyPair()
   const signer = useWebNotificationSigner()
   const {isSiteOwner, isLoading: isOwnershipLoading} = useIsSiteOwner(siteAccountUid)
-
   if (!siteAccountUid) {
     return <SiteEmailSubscribersPanel message="This site does not have a registered owner account." />
   }
@@ -88,7 +93,6 @@ export function WebSiteSettingsEmailsPage({
   }
   return <SiteEmailSubscribers notifyServiceHost={notifyServiceHost} siteAccountUid={siteAccountUid} signer={signer} />
 }
-
 function SiteEmailSubscribers({
   notifyServiceHost,
   siteAccountUid,
@@ -101,13 +105,17 @@ function SiteEmailSubscribers({
   // Ask for the SITE account's subscribers: the web session key signs the
   // request and the notify server verifies the AGENT capability chain from
   // the site account down to the session key.
-  const siteSigner = signer ? {...signer, accountUid: siteAccountUid} : undefined
+  const siteSigner = signer
+    ? {
+        ...signer,
+        accountUid: siteAccountUid,
+      }
+    : undefined
   const subscribers = useQuery({
     queryKey: [queryKeys.SITE_EMAIL_SUBSCRIBERS, notifyServiceHost, siteAccountUid],
     enabled: !!siteSigner,
     queryFn: () => getSiteEmailSubscribers(notifyServiceHost, siteSigner!),
   })
-
   return (
     <SiteEmailSubscribersPanel
       subscribers={subscribers.data?.subscribers}

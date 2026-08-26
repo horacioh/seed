@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {type DocumentMachineEvent} from '@shm/shared/models/document-machine'
 import {useAccount} from '@shm/shared/models/entity'
@@ -27,6 +28,135 @@ import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
 
 /** Platform callbacks injected by the host (desktop or web). */
+const styles = stylex.create({
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sfbc6e291: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 5)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sbf1d6884: {
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+    fontWeight: '500',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s8e245e23: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s3566be64: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s9b0705b1: {
+    marginInline: 'calc(0.25rem * -3)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2.5)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s1f58c058: {
+    color: 'var(--muted-foreground)',
+    flex: '1',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s5bf31d46: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+  },
+  sb7e18fa: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  sfc33e6c7: {
+    height: 'calc(0.25rem * 11)',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+    fontWeight: '600',
+  },
+  s5b9173f5: {
+    height: 'calc(0.25rem * 10)',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+  },
+  sf4676641: {
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s45268f: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sc6f2d5a5: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    right: '100%',
+    marginRight: 'calc(0.25rem * 2)',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+})
 export type EditingToolbarCallbacks = {
   /** Resolve the public URL where this doc is/will be available. */
   getDocumentUrl?: (docId: UnpackedHypermediaId) => string | null
@@ -54,12 +184,14 @@ export type EditingToolbarCallbacks = {
 /** Dark pill shown top-right while autosave is saving or just saved. */
 export function SaveIndicator() {
   const status = useDocumentSelector(selectSaveIndicatorStatus)
-
   if (status === 'hidden') return null
-
   const label = status === 'saving' ? 'Saving…' : 'Saved'
-  const icon = status === 'saving' ? <Spinner className="size-3" /> : <Check className="size-3" />
-
+  const icon =
+    status === 'saving' ? (
+      <Spinner className={stylex.props(styles.sca3de967).className || ''} />
+    ) : (
+      <Check className={stylex.props(styles.sca3de967).className || ''} />
+    )
   return (
     <div className="flex items-center gap-1.5 rounded-full bg-neutral-800 px-2 py-1 text-white sm:px-3 dark:bg-neutral-700">
       {icon}
@@ -67,7 +199,6 @@ export function SaveIndicator() {
     </div>
   )
 }
-
 function formatRelativeTime(updateTime: AnyTimestamp): string | null {
   const date = normalizeDate(updateTime)
   if (!date) return null
@@ -78,7 +209,6 @@ function formatRelativeTime(updateTime: AnyTimestamp): string | null {
   if (diffSeconds < 86400 * 7) return `${Math.floor(diffSeconds / 86400)}d ago`
   return formattedDateShort(date)
 }
-
 function slugifyEditedPathSegment(raw: string, slugify: (raw: string) => string): string {
   const withoutLeadingWhitespace = raw.replace(/^\s+/, '')
   const slug = slugify(withoutLeadingWhitespace)
@@ -113,31 +243,26 @@ export function PublishPopoverBody({
   const publishedDoc = useDocumentSelector(selectDocument)
   const draftId = useDocumentSelector(selectDraftId)
   const metadata = useDocumentSelector(selectMetadata)
-
   const homeDraftOverride = useIsHomeDraftOverride()
   const isHomeDoc = homeDraftOverride ?? (docId.path?.length ?? 0) === 0
   const isFirstPublish = !publishedDoc?.version && !isHomeDoc
   const isPrivate = publishedDoc?.visibility === 'PRIVATE'
   const lastSeg = docId.path?.at(-1) || ''
   const isPlaceholderPath = !!draftId && lastSeg === `-${draftId}`
-
   const slugFromTitle = useMemo(() => {
     if (!isFirstPublish || !draftId || !isPlaceholderPath || !computeFirstPublishPath) return null
     return computeFirstPublishPath(docId.path ?? [], metadata?.name || '', draftId)
   }, [isFirstPublish, isPlaceholderPath, docId.path, metadata?.name, draftId, computeFirstPublishPath])
-
   const autoSlugSegment = slugFromTitle?.at(-1) ?? lastSeg
   const lastAutoSlugRef = useRef<string | null>(null)
   const [editedPathSegment, setEditedPathSegment] = useState<string | null>(null)
   const userEditedRef = useRef(false)
-
   if (autoSlugSegment !== lastAutoSlugRef.current) {
     lastAutoSlugRef.current = autoSlugSegment
     if (!userEditedRef.current) {
       setEditedPathSegment(autoSlugSegment)
     }
   }
-
   const effectivePathSegment = editedPathSegment ?? autoSlugSegment ?? ''
   const normalizedPathSegment = slugify ? slugify(effectivePathSegment) : effectivePathSegment
   const previewPath = useMemo(() => {
@@ -145,23 +270,25 @@ export function PublishPopoverBody({
     const parent = (docId.path ?? []).slice(0, -1)
     return [...parent, normalizedPathSegment || `untitled-${draftId ?? ''}`]
   }, [isFirstPublish, docId.path, normalizedPathSegment, draftId])
-
-  const effectiveDocId = isFirstPublish ? {...docId, path: previewPath} : docId
+  const effectiveDocId = isFirstPublish
+    ? {
+        ...docId,
+        path: previewPath,
+      }
+    : docId
   const documentUrl = getDocumentUrl?.(effectiveDocId) ?? null
-
   const firstAuthorUid = publishedDoc?.authors?.[0]
   const authorAccount = useAccount(firstAuthorUid)
   const authorName = authorAccount.data?.metadata?.name
   const relativeTime = formatRelativeTime(publishedDoc?.updateTime)
   const absoluteTime = publishedDoc?.updateTime ? formattedDateMedium(publishedDoc.updateTime) : undefined
-
   return (
-    <div className="flex flex-col gap-5">
+    <div className={stylex.props(styles.sfbc6e291).className || ''}>
       {/* URL row */}
-      <div className="flex flex-col gap-3">
-        <p className="text-base font-medium">Your document will be available at</p>
+      <div className={stylex.props(styles.sfbc6e28f).className || ''}>
+        <p className={stylex.props(styles.sbf1d6884).className || ''}>Your document will be available at</p>
         {documentUrl ? (
-          <div className="flex items-center gap-3">
+          <div className={stylex.props(styles.s86ff3e5).className || ''}>
             <span
               className="text-muted-foreground min-w-0 flex-1 text-sm"
               style={{
@@ -178,7 +305,7 @@ export function PublishPopoverBody({
               <Button
                 size="icon"
                 variant="ghost"
-                className="shrink-0"
+                className={stylex.props(styles.sf032ed6c).className || ''}
                 onClick={() => {
                   copyTextToClipboard(documentUrl).then(() => toast.success('Copied document URL'))
                 }}
@@ -188,14 +315,14 @@ export function PublishPopoverBody({
             </Tooltip>
           </div>
         ) : (
-          <div className="text-muted-foreground flex items-center gap-2 text-sm">
-            <Spinner className="size-4" />
+          <div className={stylex.props(styles.s8e245e23).className || ''}>
+            <Spinner className={stylex.props(styles.sca3de968).className || ''} />
             <span>Loading…</span>
           </div>
         )}
         {isFirstPublish && slugify && (
-          <div className="flex flex-col gap-2">
-            <p className="text-muted-foreground text-sm">Edit your permalink</p>
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+            <p className={stylex.props(styles.sa56e915f).className || ''}>Edit your permalink</p>
             <Input
               value={`/${effectivePathSegment}`}
               disabled={isPrivate}
@@ -215,7 +342,9 @@ export function PublishPopoverBody({
               className="h-10 border-black/10 text-sm dark:border-white/20"
             />
             {isPrivate ? (
-              <p className="text-muted-foreground text-sm">Private document paths are generated automatically.</p>
+              <p className={stylex.props(styles.sa56e915f).className || ''}>
+                Private document paths are generated automatically.
+              </p>
             ) : null}
           </div>
         )}
@@ -235,45 +364,49 @@ export function PublishPopoverBody({
             title={absoluteTime}
             className="hover:bg-muted -mx-3 flex items-center gap-3 rounded px-3 py-2.5 text-left text-sm"
           >
-            <Clock className="text-muted-foreground size-5" />
-            <span className="flex-1">
-              <span className="text-foreground">{relativeTime ?? 'Published'}</span>
-              {authorName ? <span className="text-muted-foreground"> by {authorName}</span> : null}
+            <Clock className={stylex.props(styles.s3566be64).className || ''} />
+            <span className={stylex.props(styles.sb42feb5d).className || ''}>
+              <span className={stylex.props(styles.sc05281e3).className || ''}>{relativeTime ?? 'Published'}</span>
+              {authorName ? (
+                <span className={stylex.props(styles.sf2718385).className || ''}> by {authorName}</span>
+              ) : null}
             </span>
-            <ChevronRight className="text-muted-foreground size-5" />
+            <ChevronRight className={stylex.props(styles.s3566be64).className || ''} />
           </button>
         ) : (
-          <div title={absoluteTime} className="-mx-3 flex items-center gap-3 rounded px-3 py-2.5 text-sm">
-            <Clock className="text-muted-foreground size-5" />
-            <span className="flex-1">
-              <span className="text-foreground">{relativeTime ?? 'Published'}</span>
-              {authorName ? <span className="text-muted-foreground"> by {authorName}</span> : null}
+          <div title={absoluteTime} className={stylex.props(styles.s9b0705b1).className || ''}>
+            <Clock className={stylex.props(styles.s3566be64).className || ''} />
+            <span className={stylex.props(styles.sb42feb5d).className || ''}>
+              <span className={stylex.props(styles.sc05281e3).className || ''}>{relativeTime ?? 'Published'}</span>
+              {authorName ? (
+                <span className={stylex.props(styles.sf2718385).className || ''}> by {authorName}</span>
+              ) : null}
             </span>
           </div>
         )
       ) : (
-        <div className="-mx-3 flex items-center gap-3 rounded px-3 py-2.5 text-sm">
-          <Clock className="text-muted-foreground size-5" />
-          <span className="text-muted-foreground flex-1">Not yet published</span>
+        <div className={stylex.props(styles.s9b0705b1).className || ''}>
+          <Clock className={stylex.props(styles.s3566be64).className || ''} />
+          <span className={stylex.props(styles.s1f58c058).className || ''}>Not yet published</span>
         </div>
       )}
 
       {/* Changes count row */}
-      <div className="-mx-3 flex items-center gap-3 rounded px-3 py-2.5 text-sm">
-        <FileDiff className="text-muted-foreground size-5" />
-        <span className="flex-1">
+      <div className={stylex.props(styles.s9b0705b1).className || ''}>
+        <FileDiff className={stylex.props(styles.s3566be64).className || ''} />
+        <span className={stylex.props(styles.sb42feb5d).className || ''}>
           {changeCount === 0 ? 'No changes to publish' : `${changeCount} ${changeCount === 1 ? 'change' : 'changes'}`}
         </span>
       </div>
 
       {unpublishedChildCount > 0 ? (
         <div className="border-warning bg-warning/10 text-warning-foreground -mx-2 rounded-md border px-4 py-3 text-sm">
-          <p className="font-medium">
+          <p className={stylex.props(styles.s129e46b3).className || ''}>
             {unpublishedChildCount === 1
               ? 'This document embeds an unpublished draft.'
               : `This document embeds ${unpublishedChildCount} unpublished drafts.`}
           </p>
-          <p className="text-muted-foreground mt-1">
+          <p className={stylex.props(styles.s5bf31d46).className || ''}>
             Publish {unpublishedChildCount === 1 ? 'it' : 'them'} first before publishing this document.
           </p>
         </div>
@@ -281,12 +414,12 @@ export function PublishPopoverBody({
 
       <Separator className="bg-black/10 dark:bg-white/10" />
 
-      <div className="flex flex-col gap-2 pt-1">
+      <div className={stylex.props(styles.sb7e18fa).className || ''}>
         <Button
           size="default"
           variant={publishDisabled ? 'ghost' : 'brand'}
           className={cn(
-            'h-11 text-base font-semibold',
+            stylex.props(styles.sfc33e6c7).className || '',
             publishDisabled &&
               'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 disabled:opacity-100 dark:bg-neutral-800 dark:text-neutral-400',
           )}
@@ -299,14 +432,18 @@ export function PublishPopoverBody({
         >
           Publish: Make it live now
         </Button>
-        <Button size="default" variant="ghost" className="h-10 text-base" onClick={onClose}>
+        <Button
+          size="default"
+          variant="ghost"
+          className={stylex.props(styles.s5b9173f5).className || ''}
+          onClick={onClose}
+        >
           Cancel
         </Button>
       </div>
     </div>
   )
 }
-
 function canPublishDocument({
   changeCount,
   unpublishedChildCount,
@@ -318,25 +455,28 @@ function canPublishDocument({
 }
 
 /** Trigger button for the Publish popover. */
-const PublishTrigger = forwardRef<HTMLButtonElement, {canPublish: boolean; onClick: (e: React.MouseEvent) => void}>(
-  ({canPublish, onClick}, ref) => {
-    return (
-      <Button
-        ref={ref}
-        size="sm"
-        variant={canPublish ? 'green' : 'ghost'}
-        className={cn(
-          'gap-1.5',
-          !canPublish &&
-            'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400',
-        )}
-        onClick={onClick}
-      >
-        <span>Publish</span>
-      </Button>
-    )
-  },
-)
+const PublishTrigger = forwardRef<
+  HTMLButtonElement,
+  {
+    canPublish: boolean
+    onClick: (e: React.MouseEvent) => void
+  }
+>(({canPublish, onClick}, ref) => {
+  return (
+    <Button
+      ref={ref}
+      size="sm"
+      variant={canPublish ? 'green' : 'ghost'}
+      className={cn(
+        stylex.props(styles.sf4676641).className || '',
+        !canPublish && 'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400',
+      )}
+      onClick={onClick}
+    >
+      <span>Publish</span>
+    </Button>
+  )
+})
 PublishTrigger.displayName = 'PublishTrigger'
 
 /**
@@ -368,38 +508,39 @@ export function PublishButtonWithPopover({
     unpublishedChildCount: effectiveUnpublishedChildCount,
   })
   const send = useDocumentSend()
-
   const popoverState = usePopoverState()
-
   const editingTrailingItems: MenuItemType[] = []
-
   if (draftId) {
     editingTrailingItems.push({
       key: 'discard-changes',
       label: 'Discard Changes',
-      icon: <Trash className="size-4" />,
+      icon: <Trash className={stylex.props(styles.sca3de968).className || ''} />,
       variant: 'destructive' as const,
       onClick: () => {
         if (onDiscardConfirm) {
           onDiscardConfirm(draftId, send)
         } else {
-          send({type: 'edit.discard'})
+          send({
+            type: 'edit.discard',
+          })
         }
       },
     })
   }
-
   const allItems = [...existingMenuItems, ...editingTrailingItems]
-
   const publishNow = (pathOverride?: string[]) => {
     if (!canPublish) return
     popoverState.onOpenChange(false)
     // Signed-out drafts hand off to account creation instead of publishing directly.
     if (onPublishIntercept?.(pathOverride)) return
-    send({type: 'edit.start'})
-    send({type: 'publish.start', pathOverride})
+    send({
+      type: 'edit.start',
+    })
+    send({
+      type: 'publish.start',
+      pathOverride,
+    })
   }
-
   const handlePublishTriggerClick = (e: React.MouseEvent) => {
     e.preventDefault()
     const livePeekAtClick = getUnpublishedChildCount?.() ?? 0
@@ -409,9 +550,8 @@ export function PublishButtonWithPopover({
     }
     popoverState.onOpenChange(!popoverState.open)
   }
-
   return (
-    <div className="flex items-center gap-2">
+    <div className={stylex.props(styles.s86ff3e4).className || ''}>
       <Popover open={popoverState.open} onOpenChange={popoverState.onOpenChange}>
         <PopoverAnchor asChild>
           <PublishTrigger canPublish={canPublish} onClick={handlePublishTriggerClick} />
@@ -451,8 +591,8 @@ export function EditingDocToolsRight({
   unpublishedChildCount?: number
 } & EditingToolbarCallbacks) {
   return (
-    <div className="relative flex items-center gap-1">
-      <div className="pointer-events-none absolute right-full mr-2">
+    <div className={stylex.props(styles.s45268f).className || ''}>
+      <div className={stylex.props(styles.sc6f2d5a5).className || ''}>
         <SaveIndicator />
       </div>
       <PublishButtonWithPopover
@@ -480,7 +620,7 @@ export function DraftActionsToolbar({
   unpublishedChildCount?: number
 } & EditingToolbarCallbacks) {
   return (
-    <div className="flex items-center gap-1">
+    <div className={stylex.props(styles.s86ff3e3).className || ''}>
       <PublishButtonWithPopover
         docId={docId}
         existingMenuItems={existingMenuItems}

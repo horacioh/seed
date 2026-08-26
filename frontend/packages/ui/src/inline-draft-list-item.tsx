@@ -1,10 +1,42 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMListedDraft} from '@seed-hypermedia/client/hm-types'
 import {FileText, MoreVertical, Forward, Pencil, Trash2} from 'lucide-react'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {Button} from './button'
 import {DraftBadge} from './draft-badge'
 import {OptionsDropdown} from './options-dropdown'
-
+const styles = stylex.create({
+  s7091d227: {
+    color: 'var(--muted-foreground)',
+    marginRight: 'calc(0.25rem * 3)',
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+    flexShrink: '0',
+  },
+  se5fd4a4f: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    overflow: 'hidden',
+  },
+  sf2746014: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    overflow: 'hidden',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export interface InlineDraftListItemProps {
   draft: HMListedDraft
   autoFocus?: boolean
@@ -13,7 +45,6 @@ export interface InlineDraftListItemProps {
   onMoveDraft?: (draftId: string) => void
   onUpdateDraftName: (draftId: string, name: string) => void
 }
-
 export function InlineDraftListItem({
   draft,
   autoFocus,
@@ -26,10 +57,12 @@ export function InlineDraftListItem({
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
-
   useEffect(() => {
     if (!autoFocus || !containerRef.current) return
-    containerRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest'})
+    containerRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    })
     const timer = setTimeout(() => {
       inputRef.current?.focus()
     }, 300)
@@ -40,7 +73,6 @@ export function InlineDraftListItem({
   useEffect(() => {
     setTitle(draft.metadata?.name || '')
   }, [draft.metadata?.name])
-
   const saveName = useCallback(
     (name: string) => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
@@ -57,7 +89,6 @@ export function InlineDraftListItem({
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     }
   }, [])
-
   const openDraft = useCallback(() => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current)
@@ -66,13 +97,11 @@ export function InlineDraftListItem({
     onUpdateDraftName(draft.id, title)
     onOpenDraft(draft.id)
   }, [draft.id, title, onOpenDraft, onUpdateDraftName])
-
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setTitle(val)
     saveName(val)
   }
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation()
     if (e.key === 'Enter') {
@@ -84,7 +113,6 @@ export function InlineDraftListItem({
       inputRef.current?.blur()
     }
   }
-
   return (
     <div
       ref={containerRef}
@@ -94,9 +122,9 @@ export function InlineDraftListItem({
       }}
       className="group/item flex w-full cursor-pointer items-center rounded border-2 border-dashed border-yellow-400/50 bg-white px-4 py-2 shadow-sm dark:bg-black"
     >
-      <FileText className="text-muted-foreground mr-3 size-7 shrink-0" />
-      <div className="flex flex-1 items-center gap-3 overflow-hidden">
-        <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
+      <FileText className={stylex.props(styles.s7091d227).className || ''} />
+      <div className={stylex.props(styles.se5fd4a4f).className || ''}>
+        <div className={stylex.props(styles.sf2746014).className || ''}>
           <input
             ref={inputRef}
             type="text"
@@ -109,19 +137,19 @@ export function InlineDraftListItem({
           />
           <DraftBadge />
         </div>
-        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div className={stylex.props(styles.s86ff3e3).className || ''} onClick={(e) => e.stopPropagation()}>
           <OptionsDropdown
             align="end"
             button={
               <Button variant="ghost" size="iconSm" aria-label="Draft options">
-                <MoreVertical className="size-4" />
+                <MoreVertical className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             }
             menuItems={[
               {
                 key: 'open',
                 label: 'Open Draft',
-                icon: <Pencil className="size-4" />,
+                icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
                 onClick: openDraft,
               },
               ...(onMoveDraft
@@ -129,7 +157,7 @@ export function InlineDraftListItem({
                     {
                       key: 'move',
                       label: 'Move',
-                      icon: <Forward className="size-4" />,
+                      icon: <Forward className={stylex.props(styles.sca3de968).className || ''} />,
                       onClick: () => onMoveDraft(draft.id),
                     },
                   ]
@@ -137,7 +165,7 @@ export function InlineDraftListItem({
               {
                 key: 'delete',
                 label: 'Delete Draft',
-                icon: <Trash2 className="size-4" />,
+                icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
                 variant: 'destructive',
                 onClick: () => onDeleteDraft(draft.id),
               },

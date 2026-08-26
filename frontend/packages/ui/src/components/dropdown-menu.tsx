@@ -1,17 +1,53 @@
+import * as stylex from '@stylexjs/stylex'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import {CheckIcon, ChevronRightIcon, CircleIcon} from 'lucide-react'
 import * as React from 'react'
-
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  scca54036: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    left: 'calc(0.25rem * 2)',
+    display: 'flex',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s70543fa9: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+    fill: 'currentcolor',
+  },
+  s2b9c850d: {
+    backgroundColor: 'var(--border)',
+    marginInline: 'calc(0.25rem * -1)',
+    marginBlock: 'calc(0.25rem * 1)',
+    height: '1px',
+  },
+  s40833f27: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'auto',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    letterSpacing: '0.1em',
+  },
+  sd5d229cb: {
+    marginLeft: 'auto',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 function DropdownMenu({...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
 }
-
 function DropdownMenuPortal({...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
 }
-
 function DropdownMenuTrigger({className, ...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
   return (
     <DropdownMenuPrimitive.Trigger
@@ -21,9 +57,7 @@ function DropdownMenuTrigger({className, ...props}: React.ComponentProps<typeof 
     />
   )
 }
-
 export type DropdownMenuContentProps = React.ComponentProps<typeof DropdownMenuPrimitive.Content>
-
 function DropdownMenuContent({className, sideOffset = 4, ...props}: DropdownMenuContentProps) {
   return (
     <DropdownMenuPrimitive.Portal>
@@ -39,11 +73,9 @@ function DropdownMenuContent({className, sideOffset = 4, ...props}: DropdownMenu
     </DropdownMenuPrimitive.Portal>
   )
 }
-
 function DropdownMenuGroup({...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
   return <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
 }
-
 function DropdownMenuItem({
   className,
   inset,
@@ -66,7 +98,6 @@ function DropdownMenuItem({
     />
   )
 }
-
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -83,20 +114,18 @@ function DropdownMenuCheckboxItem({
       checked={checked}
       {...props}
     >
-      <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+      <span className={stylex.props(styles.scca54036).className || ''}>
         <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={stylex.props(styles.sca3de968).className || ''} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
     </DropdownMenuPrimitive.CheckboxItem>
   )
 }
-
 function DropdownMenuRadioGroup({...props}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
   return <DropdownMenuPrimitive.RadioGroup data-slot="dropdown-menu-radio-group" {...props} />
 }
-
 function DropdownMenuRadioItem({
   className,
   children,
@@ -111,16 +140,15 @@ function DropdownMenuRadioItem({
       )}
       {...props}
     >
-      <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+      <span className={stylex.props(styles.scca54036).className || ''}>
         <DropdownMenuPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <CircleIcon className={stylex.props(styles.s70543fa9).className || ''} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
     </DropdownMenuPrimitive.RadioItem>
   )
 }
-
 function DropdownMenuLabel({
   className,
   inset,
@@ -137,31 +165,27 @@ function DropdownMenuLabel({
     />
   )
 }
-
 function DropdownMenuSeparator({className, ...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
   return (
     <DropdownMenuPrimitive.Separator
       data-slot="dropdown-menu-separator"
-      className={cn('bg-border -mx-1 my-1 h-px', className)}
+      className={cn(stylex.props(styles.s2b9c850d).className || '', className)}
       {...props}
     />
   )
 }
-
 function DropdownMenuShortcut({className, ...props}: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="dropdown-menu-shortcut"
-      className={cn('text-muted-foreground ml-auto text-xs tracking-widest', className)}
+      className={cn(stylex.props(styles.s40833f27).className || '', className)}
       {...props}
     />
   )
 }
-
 function DropdownMenuSub({...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
   return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
 }
-
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -181,11 +205,10 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className="ml-auto size-4" />
+      <ChevronRightIcon className={stylex.props(styles.sd5d229cb).className || ''} />
     </DropdownMenuPrimitive.SubTrigger>
   )
 }
-
 function DropdownMenuSubContent({className, ...props}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
     <DropdownMenuPrimitive.SubContent
@@ -198,7 +221,6 @@ function DropdownMenuSubContent({className, ...props}: React.ComponentProps<type
     />
   )
 }
-
 export {
   DropdownMenu,
   DropdownMenuCheckboxItem,

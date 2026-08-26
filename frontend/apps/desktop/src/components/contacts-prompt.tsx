@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useGatewayUrl} from '@/models/gateway-settings'
 import {encode as cborEncode} from '@ipld/dag-cbor'
 import {Button} from '@shm/ui/button'
@@ -13,14 +14,27 @@ import appError from '../errors'
 import {useConnectPeer} from '../models/contacts'
 import {useDaemonInfo} from '../models/daemon'
 import {usePeerInfo} from '../models/networking'
-
+const styles = stylex.create({
+  s5f6cd3a4: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 export function AddConnectionDialog({input, onClose}: {onClose: () => void; input: true}) {
   const [peerText, setPeer] = useState('')
   const daemonInfo = useDaemonInfo()
   const deviceId = daemonInfo.data?.peerId
   const peerInfo = usePeerInfo(deviceId)
   const gatewayUrl = useGatewayUrl()
-
   const connect = useConnectPeer({
     onSuccess: () => {
       onClose()
@@ -28,7 +42,9 @@ export function AddConnectionDialog({input, onClose}: {onClose: () => void; inpu
     },
     onError: (error) => {
       // @ts-expect-error
-      appError(`Connect to peer error: ${error?.rawMessage}`, {error})
+      appError(`Connect to peer error: ${error?.rawMessage}`, {
+        error,
+      })
     },
   })
   const connectInfo = useMemo(() => {
@@ -64,13 +80,13 @@ export function AddConnectionDialog({input, onClose}: {onClose: () => void; inpu
       />
       <DialogDescription>You can also paste the full peer address here.</DialogDescription>
 
-      <div className="flex justify-between">
+      <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
         <Button onClick={() => connect.mutate(peerText)} disabled={!peerText} variant="default" size="sm">
-          <UserPlus className="size-3" />
+          <UserPlus className={stylex.props(styles.sca3de967).className || ''} />
           Connect to Peer
         </Button>
         {connect.isLoading ? (
-          <div className="flex items-center justify-center">
+          <div className={stylex.props(styles.s9a378369).className || ''}>
             <Spinner />
           </div>
         ) : null}

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {roleCanWrite, useSelectedAccountCapability} from '@/models/access-control'
 import {useMyAccountIds} from '@/models/daemon'
 import {useCreateDraft} from '@/models/documents'
@@ -17,6 +18,23 @@ import {ReactNode, useCallback, useMemo} from 'react'
 import {useImportDialog, useImporting} from './import-doc-button'
 
 /** Builds the document creation submenu item and its dialog content for the document options menu. */
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s36c7b7: {
+    width: 'calc(0.25rem * 56)',
+  },
+})
 export function useCreateDocumentMenuItem({
   locationId,
   canCreateChildren = true,
@@ -36,7 +54,6 @@ export function useCreateDocumentMenuItem({
   const myAccountIds = useMyAccountIds()
   const importing = useImporting(locationId)
   const importDialog = useImportDialog()
-
   const openImportDialog = useCallback(() => {
     importDialog.open({
       onImportFile: importing.importFile,
@@ -47,20 +64,18 @@ export function useCreateDocumentMenuItem({
       onImportWordPress: importing.importWordPress,
     })
   }, [importDialog, importing])
-
   const menuItem = useMemo<MenuItemType | null>(() => {
     if (!myAccountIds.data?.length) return null
     if (!canEdit || !canCreateChildren) return null
-
     return {
       key: 'new',
       label: 'New',
-      icon: <Add className="size-4" />,
+      icon: <Add className={stylex.props(styles.sca3de968).className || ''} />,
       children: [
         {
           key: 'new-document',
           label: 'New Document',
-          icon: <FilePlus2 className="size-4" />,
+          icon: <FilePlus2 className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: () => {
             void createDraft()
           },
@@ -68,21 +83,22 @@ export function useCreateDocumentMenuItem({
         {
           key: 'new-private-document',
           label: 'New Private Document',
-          icon: <Lock className="size-4" />,
+          icon: <Lock className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: () => {
-            void createDraft({visibility: 'PRIVATE'})
+            void createDraft({
+              visibility: 'PRIVATE',
+            })
           },
         },
         {
           key: 'import',
           label: 'Import',
-          icon: <Import className="size-4" />,
+          icon: <Import className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: openImportDialog,
         },
       ],
     }
   }, [canCreateChildren, canEdit, createDraft, myAccountIds.data?.length, openImportDialog])
-
   return {
     menuItem,
     content: (
@@ -93,22 +109,21 @@ export function useCreateDocumentMenuItem({
     ),
   }
 }
-
 function CreateDocumentButtonContent({locationId}: {locationId: UnpackedHypermediaId}) {
-  const {menuItem, content} = useCreateDocumentMenuItem({locationId})
-
+  const {menuItem, content} = useCreateDocumentMenuItem({
+    locationId,
+  })
   if (!menuItem) return null
-
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="default" size="sm" className="justify-center">
-            <Add className="size-4" />
-            <span className="truncate">New</span>
+          <Button variant="default" size="sm" className={stylex.props(styles.sce22ca32).className || ''}>
+            <Add className={stylex.props(styles.sca3de968).className || ''} />
+            <span className={stylex.props(styles.s6e724d66).className || ''}>New</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent align="end" className={stylex.props(styles.s36c7b7).className || ''}>
           {menuItem.children?.map((item, index) => (
             <div key={item.key}>
               {index === 2 ? <DropdownMenuSeparator /> : null}
@@ -128,6 +143,5 @@ function CreateDocumentButtonContent({locationId}: {locationId: UnpackedHypermed
 /** Renders the standalone document creation dropdown used outside the document top bar. */
 export function CreateDocumentButton({locationId}: {locationId?: UnpackedHypermediaId}) {
   if (!locationId) return null
-
   return <CreateDocumentButtonContent locationId={locationId} />
 }

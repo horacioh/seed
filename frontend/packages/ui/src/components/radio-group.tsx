@@ -1,13 +1,29 @@
+import * as stylex from '@stylexjs/stylex'
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import {CircleIcon} from 'lucide-react'
 import * as React from 'react'
-
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  sd1c4c9a2: {
+    display: 'grid',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s1b72923d: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 function RadioGroup({className, ...props}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
-  return <RadioGroupPrimitive.Root data-slot="radio-group" className={cn('grid gap-3', className)} {...props} />
+  return (
+    <RadioGroupPrimitive.Root
+      data-slot="radio-group"
+      className={cn(stylex.props(styles.sd1c4c9a2).className || '', className)}
+      {...props}
+    />
+  )
 }
-
 function RadioGroupItem({className, ...props}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
   return (
     <RadioGroupPrimitive.Item
@@ -20,12 +36,11 @@ function RadioGroupItem({className, ...props}: React.ComponentProps<typeof Radio
     >
       <RadioGroupPrimitive.Indicator
         data-slot="radio-group-indicator"
-        className="relative flex items-center justify-center"
+        className={stylex.props(styles.s1b72923d).className || ''}
       >
         <CircleIcon className="fill-primary absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   )
 }
-
 export {RadioGroup, RadioGroupItem}

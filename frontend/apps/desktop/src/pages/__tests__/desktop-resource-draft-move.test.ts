@@ -7,7 +7,7 @@ describe('DesktopResourcePage draft move action wiring', () => {
     const source = readFileSync(join(__dirname, '../desktop-resource.tsx'), 'utf8')
 
     expect(source).toContain('const draftMoveId = currentDraftId || placeholderDraftId')
-    expect(source).toContain('draft: {draftId: draftMoveId')
+    expect(source).toMatch(/draft:\s*\{\s*draftId:\s*draftMoveId/)
     expect(source).toContain('parentDocumentId: fallbackParent')
   })
 })

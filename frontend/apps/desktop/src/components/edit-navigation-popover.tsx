@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import React from 'react'
 import {combine} from '@atlaskit/pragmatic-drag-and-drop/combine'
 import {draggable, dropTargetForElements, monitorForElements} from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
@@ -17,7 +18,90 @@ import {cn} from '@shm/ui/utils'
 import {ChevronDown, EllipsisVertical, Globe, Pencil, Plus, Search, Trash} from 'lucide-react'
 import {nanoid} from 'nanoid'
 import {useEffect, useRef, useState} from 'react'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  s9d4b128d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  sabdedac1: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s21672184: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 3)',
+  },
+  scdaedd9c: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s83ece90e: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'auto',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  s25987cd5: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2.5)',
+  },
+  s81d6e6b1: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  s873ae75f: {
+    marginRight: 'calc(0.25rem * 1)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s3484a8: {
+    paddingLeft: 'calc(0.25rem * 9)',
+  },
+  sa02df2af: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s2184639f: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 function createEmptyNavigationItem(): HMNavigationItem {
   return {
     id: nanoid(),
@@ -26,13 +110,11 @@ function createEmptyNavigationItem(): HMNavigationItem {
     link: '',
   }
 }
-
 function getDisplayValueForLink(link: string) {
   if (!link) return ''
   const unpackedLink = unpackHmId(link)
   return unpackedLink ? `/${unpackedLink.path?.join('/') || ''}` : link
 }
-
 export function EditNavPopover({
   docNav,
   editDocNav,
@@ -49,12 +131,12 @@ export function EditNavPopover({
       <PopoverTrigger asChild className="no-window-drag">
         {isEmpty ? (
           <Button size="sm" variant="ghost">
-            <Plus className="size-4" />
+            <Plus className={stylex.props(styles.sca3de968).className || ''} />
             Add Navigation Item
           </Button>
         ) : (
           <Button size="sm" variant="ghost">
-            <Pencil className="size-4" />
+            <Pencil className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         )}
       </PopoverTrigger>
@@ -64,7 +146,6 @@ export function EditNavPopover({
     </Popover>
   )
 }
-
 function EditNavigation({
   docNav,
   onDocNav,
@@ -80,7 +161,6 @@ function EditNavigation({
   const firstBlankItemId = docNav.find((item) => !item.text && !item.link)?.id ?? null
   const [expandedItemId, setExpandedItemId] = useState<string | null>(firstBlankItemId)
   const [autoFocusItemId, setAutoFocusItemId] = useState<string | null>(firstBlankItemId)
-
   useEffect(() => {
     if (!didAutoAdd.current && docNav.length === 0) {
       didAutoAdd.current = true
@@ -88,10 +168,8 @@ function EditNavigation({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
   useEffect(() => {
     if (!containerRef.current) return
-
     const cleanup = monitorForElements({
       onDrag: ({location}) => {
         const over = location.current.dropTargets[0]
@@ -106,16 +184,13 @@ function EditNavigation({
         if (!location.current.dropTargets.length) {
           return
         }
-
         const over = location.current.dropTargets[0]
         const sourceIndex = docNav.findIndex((item) => item.id === source.data.id)
         // @ts-ignore
         const overIndex = docNav.findIndex((item) => item.id === over.data.id)
-
         if (sourceIndex === -1 || overIndex === -1) {
           return
         }
-
         const newItems = [...docNav]
         const [removed] = newItems.splice(sourceIndex, 1)
         // @ts-ignore
@@ -123,22 +198,19 @@ function EditNavigation({
         onDocNav(newItems)
       },
     })
-
     return cleanup
   }, [docNav, onDocNav])
-
   useEffect(() => {
     if (expandedItemId && docNav.some((item) => item.id === expandedItemId)) return
     setExpandedItemId(docNav.find((item) => !item.text && !item.link)?.id ?? null)
   }, [docNav, expandedItemId])
-
   return (
-    <div className="flex flex-col" ref={containerRef}>
+    <div className={stylex.props(styles.s783f19f3).className || ''} ref={containerRef}>
       <div className="border-b border-black/8 px-4 py-3 dark:border-white/10">
-        <div className="text-sm font-medium">Navigation</div>
-        <div className="text-muted-foreground mt-1 text-xs">Choose the links shown in the top bar.</div>
+        <div className={stylex.props(styles.s9d4b128d).className || ''}>Navigation</div>
+        <div className={stylex.props(styles.sabdedac1).className || ''}>Choose the links shown in the top bar.</div>
       </div>
-      <div className="flex flex-col gap-2 p-3">
+      <div className={stylex.props(styles.s21672184).className || ''}>
         {docNav.map((item) => {
           return (
             <DraggableNavItem
@@ -176,7 +248,7 @@ function EditNavigation({
               onDocNav([...docNav, newItem])
             }}
           >
-            <Plus className="size-4" />
+            <Plus className={stylex.props(styles.sca3de968).className || ''} />
             Add Navigation Item
           </Button>
         ) : null}
@@ -184,7 +256,6 @@ function EditNavigation({
     </div>
   )
 }
-
 function DraggableNavItem({
   item,
   filterPresets,
@@ -209,30 +280,30 @@ function DraggableNavItem({
   const cardRef = useRef<HTMLDivElement>(null)
   const dragHandleRef = useRef<HTMLDivElement>(null)
   const isIncomplete = !item.text.trim() || !item.link.trim()
-
   useEffect(() => {
     if (!dragHandleRef.current || !cardRef.current) return
-
     const cleanup = combine(
       draggable({
         element: dragHandleRef.current,
         getInitialData: () => {
-          return {id: item.id}
+          return {
+            id: item.id,
+          }
         },
       }),
       dropTargetForElements({
         element: cardRef.current,
         getData: () => {
-          return {id: item.id}
+          return {
+            id: item.id,
+          }
         },
       }),
     )
-
     return () => {
       cleanup()
     }
   }, [item.id])
-
   return (
     <div
       ref={cardRef}
@@ -259,7 +330,10 @@ function DraggableNavItem({
         </div>
         <button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={onToggleExpanded}>
           <span
-            className={cn('truncate text-sm font-medium select-none', item.text === '' ? 'text-muted-foreground' : '')}
+            className={cn(
+              stylex.props(styles.scdaedd9c).className || '',
+              item.text === '' ? 'text-muted-foreground' : '',
+            )}
           >
             {item.text || 'Untitled item'}
           </span>
@@ -268,9 +342,7 @@ function DraggableNavItem({
               Incomplete
             </span>
           ) : null}
-          <ChevronDown
-            className={cn('text-muted-foreground ml-auto size-4 transition-transform', isExpanded && 'rotate-180')}
-          />
+          <ChevronDown className={cn(stylex.props(styles.s83ece90e).className || '', isExpanded && 'rotate-180')} />
         </button>
       </div>
       {isExpanded ? (
@@ -290,7 +362,6 @@ function DraggableNavItem({
     </div>
   )
 }
-
 function NavItemForm({
   item,
   onUpdate,
@@ -307,11 +378,17 @@ function NavItemForm({
   autoFocusLabel?: boolean
 }) {
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className={stylex.props(styles.s25987cd5).className || ''}>
       <FormField name="link" label="Link">
         <HMDocURLInput
           link={item.link}
-          onUpdate={(link, title) => onUpdate({...item, link, text: title})}
+          onUpdate={(link, title) =>
+            onUpdate({
+              ...item,
+              link,
+              text: title,
+            })
+          }
           homeId={homeId}
           filterPresets={filterPresets}
         />
@@ -321,11 +398,16 @@ function NavItemForm({
           autoFocus={autoFocusLabel}
           value={item?.text}
           id="label"
-          onChange={(e) => onUpdate({...item, text: e.target.value})}
+          onChange={(e) =>
+            onUpdate({
+              ...item,
+              text: e.target.value,
+            })
+          }
           placeholder="My Link…"
         />
       </FormField>
-      <div className="flex justify-end pt-1">
+      <div className={stylex.props(styles.s81d6e6b1).className || ''}>
         {onRemove && (
           <Button
             size="sm"
@@ -335,7 +417,7 @@ function NavItemForm({
               onRemove()
             }}
           >
-            <Trash className="mr-1 size-4" />
+            <Trash className={stylex.props(styles.s873ae75f).className || ''} />
             Remove
           </Button>
         )}
@@ -343,7 +425,6 @@ function NavItemForm({
     </div>
   )
 }
-
 export function HMDocURLInput({
   link,
   onUpdate,
@@ -366,11 +447,9 @@ export function HMDocURLInput({
   const displayValue = getDisplayValueForLink(link)
   const isWebUrl = /^https?:\/\//.test(query.trim())
   const Icon = isWebUrl ? Globe : Search
-
   useEffect(() => {
     setQuery(displayValue)
   }, [displayValue])
-
   function closeAndReset() {
     setIsOpen(false)
     setFocusedIndex(0)
@@ -378,14 +457,13 @@ export function HMDocURLInput({
     setQuery(displayValue)
     setIsResolvingUrl(false)
   }
-
   return (
-    <div className="flex flex-col gap-2">
-      <div className="relative">
+    <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+      <div className={stylex.props(styles.sdef3facc).className || ''}>
         <Icon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
         <Input
           aria-label="Link"
-          className={cn('pl-9', link ? 'text-primary' : 'text-muted-foreground')}
+          className={cn(stylex.props(styles.s3484a8).className || '', link ? 'text-primary' : 'text-muted-foreground')}
           value={query}
           placeholder="Search documents or paste URL"
           onFocus={() => {
@@ -414,26 +492,20 @@ export function HMDocURLInput({
               closeAndReset()
               return
             }
-
             if (e.key === 'ArrowUp') {
               e.preventDefault()
               setFocusedIndex((prev) => prev - 1)
               return
             }
-
             if (e.key === 'ArrowDown') {
               e.preventDefault()
               setFocusedIndex((prev) => prev + 1)
               return
             }
-
             if (e.key !== 'Enter') return
-
             const trimmedQuery = query.trim()
             if (!trimmedQuery) return
-
             e.preventDefault()
-
             if (/^https?:\/\//.test(trimmedQuery)) {
               onUpdate(trimmedQuery, trimmedQuery)
               setIsResolvingUrl(true)
@@ -451,7 +523,6 @@ export function HMDocURLInput({
               }
               return
             }
-
             if (activeSelection) {
               onUpdate(activeSelection.link, activeSelection.title)
               setQuery(getDisplayValueForLink(activeSelection.link))
@@ -484,7 +555,6 @@ export function HMDocURLInput({
     </div>
   )
 }
-
 function SearchUI({
   query,
   focusedIndex,
@@ -498,7 +568,12 @@ function SearchUI({
   query: string
   focusedIndex: number
   isResolvingUrl: boolean
-  onActiveResultChange: (result: {link: string; title: string} | null) => void
+  onActiveResultChange: (
+    result: {
+      link: string
+      title: string
+    } | null,
+  ) => void
   onFocusedIndexChange: (index: number | ((prev: number) => number)) => void
   onValue: (link: string, title: string) => void
   homeId?: UnpackedHypermediaId
@@ -507,8 +582,12 @@ function SearchUI({
   const trimmedQuery = query.trim()
   const isWebUrl = /^https?:\/\//.test(trimmedQuery)
   const isSearching = !!trimmedQuery.length
-  const search = useSearch(query, {enabled: isSearching && !isWebUrl})
-  const dirList = useDirectory(homeId, {mode: 'Children'})
+  const search = useSearch(query, {
+    enabled: isSearching && !isWebUrl,
+  })
+  const dirList = useDirectory(homeId, {
+    mode: 'Children',
+  })
   const results: SearchResult[] = (
     isSearching
       ? search?.data?.entities
@@ -551,41 +630,47 @@ function SearchUI({
             },
           }
         }) ?? []
-  ).filter((item) => filterPresets({link: item.key}))
-
+  ).filter((item) =>
+    filterPresets({
+      link: item.key,
+    }),
+  )
   const normalizedFocusedIndex =
     results.length > 0 ? ((focusedIndex % results.length) + results.length) % results.length : 0
-
   const prevActiveKeyRef = useRef<string | null>(null)
-
   useEffect(() => {
     const activeItem = results[normalizedFocusedIndex]
     const nextKey = activeItem?.key ?? null
     if (nextKey !== prevActiveKeyRef.current) {
       prevActiveKeyRef.current = nextKey
-      onActiveResultChange(activeItem ? {link: activeItem.key, title: activeItem.title || ''} : null)
+      onActiveResultChange(
+        activeItem
+          ? {
+              link: activeItem.key,
+              title: activeItem.title || '',
+            }
+          : null,
+      )
     }
   }, [normalizedFocusedIndex, onActiveResultChange, results])
-
   return (
     <div className="z-50 max-h-[50vh] overflow-y-auto rounded-md border border-black/8 bg-white shadow-sm dark:border-white/10 dark:bg-black">
       {isResolvingUrl ? (
-        <div className="flex justify-center p-3">
+        <div className={stylex.props(styles.sa02df2af).className || ''}>
           <Spinner />
         </div>
       ) : null}
       {!isResolvingUrl && isWebUrl ? (
-        <div className="text-muted-foreground px-3 py-2 text-sm">Press Enter to use this URL.</div>
+        <div className={stylex.props(styles.s2184639f).className || ''}>Press Enter to use this URL.</div>
       ) : null}
       {!isResolvingUrl && !results.length && !isWebUrl ? (
-        <div className="text-muted-foreground px-3 py-2 text-sm">
+        <div className={stylex.props(styles.s2184639f).className || ''}>
           {isSearching ? 'No documents found.' : 'No documents available.'}
         </div>
       ) : null}
       {!isResolvingUrl &&
         results.map((item, itemIndex) => {
           const isSelected = normalizedFocusedIndex === itemIndex
-
           return (
             <div key={item.key} data-nav-link-result="true" tabIndex={-1} onMouseDown={(e) => e.preventDefault()}>
               <SearchResultItem

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {
   HMAccountsMetadata,
   HMDocumentInfo,
@@ -33,7 +34,138 @@ import {
   queryTableItemMatchesSearch,
 } from './query-block-table-model'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sf8e652db: {
+    whiteSpace: 'nowrap',
+  },
+  s12583799: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s87c83994: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    marginBlock: 'calc(0.25rem * 4)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+    fontFamily: 'var(--font-sans)',
+  },
+  sb9bd3a30: {
+    fontStyle: 'italic',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s3484a8: {
+    paddingLeft: 'calc(0.25rem * 9)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s86bb3ab7: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    position: 'absolute',
+    right: 'calc(0.25rem * 0)',
+    zIndex: '30',
+    marginTop: 'calc(0.25rem * 1)',
+    display: 'flex',
+    width: 'calc(0.25rem * 80)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+  },
+  se658ac13: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sc93df855: {
+    borderColor: 'var(--border)',
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s67c3557b: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    position: 'absolute',
+    right: 'calc(0.25rem * 0)',
+    zIndex: '30',
+    marginTop: 'calc(0.25rem * 1)',
+    width: 'calc(0.25rem * 56)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 2)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s9af0cfd6: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    height: 'calc(0.25rem * 28)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sce14a4b5: {
+    tableLayout: 'fixed',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s5fd2960c: {
+    position: 'absolute',
+    top: 'calc(0.25rem * 0)',
+    right: 'calc(0.25rem * 0)',
+    height: '100%',
+    width: 'calc(0.25rem * 2)',
+    cursor: 'col-resize',
+    touchAction: 'none',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s18c11: {
+    height: 'calc(0.25rem * 6)',
+  },
+})
 const INITIAL_ROWS = 25
 const ROW_CHUNK = 25
 
@@ -48,21 +180,25 @@ export interface QueryBlockTableProps {
   sorting?: SortingState
   onSortingChange?: (sorting: SortingState) => void
 }
-
 function CitationCell({item}: {item: HMDocumentInfo}) {
   const summary = useInteractionSummary(item.id)
-  return <span className="text-muted-foreground">{summary.isLoading ? '…' : summary.data?.citations ?? 0}</span>
+  return (
+    <span className={stylex.props(styles.sf2718385).className || ''}>
+      {summary.isLoading ? '…' : summary.data?.citations ?? 0}
+    </span>
+  )
 }
-
 function TitleCell({item}: {item: HMDocumentInfo}) {
-  const linkProps = useRouteLink({key: 'document', id: item.id})
+  const linkProps = useRouteLink({
+    key: 'document',
+    id: item.id,
+  })
   return (
     <a {...linkProps} className="block truncate font-medium hover:underline">
       {getMetadataName(item.metadata) || item.path.at(-1) || 'Untitled'}
     </a>
   )
 }
-
 function displayValue(value: unknown) {
   if (value === null || value === undefined || value === '') return '—'
   if (Array.isArray(value)) return value.join(', ')
@@ -88,7 +224,6 @@ export function QueryBlockTable({
   const [sorting, setSorting] = useState<SortingState>([])
   const [visibleCount, setVisibleCount] = useState(() => Math.min(items.length, INITIAL_ROWS))
   const sentinelRef = useRef<HTMLDivElement>(null)
-
   const configuredColumns = tableConfig?.columns ?? []
   const initialOrder = [
     ...configuredColumns.map((column) => column.id),
@@ -106,7 +241,6 @@ export function QueryBlockTable({
   const [columnSizing, setColumnSizing] = useState<ColumnSizingState>(() =>
     Object.fromEntries(configuredColumns.flatMap((column) => (column.width ? [[column.id, column.width]] : []))),
   )
-
   useEffect(() => {
     setColumnOrder((current) => [
       ...current.filter((id) => descriptors.some((descriptor) => descriptor.id === id)),
@@ -117,7 +251,6 @@ export function QueryBlockTable({
       ...current,
     }))
   }, [descriptors])
-
   const filteredItems = useMemo(
     () =>
       filterQueryTableItems(
@@ -126,7 +259,6 @@ export function QueryBlockTable({
       ),
     [filters, items, search],
   )
-
   useEffect(() => setVisibleCount(Math.min(filteredItems.length, INITIAL_ROWS)), [filteredItems])
   useEffect(() => {
     if (visibleCount >= filteredItems.length || typeof IntersectionObserver === 'undefined') return
@@ -136,12 +268,13 @@ export function QueryBlockTable({
       ([entry]) => {
         if (entry?.isIntersecting) setVisibleCount((count) => Math.min(filteredItems.length, count + ROW_CHUNK))
       },
-      {rootMargin: '800px 0px'},
+      {
+        rootMargin: '800px 0px',
+      },
     )
     observer.observe(sentinel)
     return () => observer.disconnect()
   }, [filteredItems.length, visibleCount])
-
   const columns = useMemo<ColumnDef<HMDocumentInfo>[]>(
     () =>
       descriptors.map((descriptor) => ({
@@ -168,20 +301,32 @@ export function QueryBlockTable({
           }
           if (descriptor.id === 'children') return <span>{interactionSummaries[item.id.id]?.children ?? 0}</span>
           if (descriptor.id === 'updated')
-            return <span className="whitespace-nowrap">{formattedDate(item.updateTime)}</span>
+            return (
+              <span className={stylex.props(styles.sf8e652db).className || ''}>{formattedDate(item.updateTime)}</span>
+            )
           if (descriptor.id === 'created')
-            return <span className="whitespace-nowrap">{formattedDate(item.createTime)}</span>
-          return <span className="block truncate">{displayValue(getQueryTableValue(item, descriptor.id))}</span>
+            return (
+              <span className={stylex.props(styles.sf8e652db).className || ''}>{formattedDate(item.createTime)}</span>
+            )
+          return (
+            <span className={stylex.props(styles.s12583799).className || ''}>
+              {displayValue(getQueryTableValue(item, descriptor.id))}
+            </span>
+          )
         },
       })),
     [accountsMetadata, descriptors, interactionSummaries],
   )
-
   const activeSorting = controlledSorting ?? sorting
   const table = useReactTable({
     data: filteredItems,
     columns,
-    state: {sorting: activeSorting, columnOrder, columnVisibility, columnSizing},
+    state: {
+      sorting: activeSorting,
+      columnOrder,
+      columnVisibility,
+      columnSizing,
+    },
     onSortingChange: (updater) => {
       const next = typeof updater === 'function' ? updater(activeSorting) : updater
       setSorting(next)
@@ -194,25 +339,26 @@ export function QueryBlockTable({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
-
   function persistColumns(nextVisibility = columnVisibility) {
     onTableConfigChange?.({
-      columns: columnOrder.map((id) => ({id, visible: nextVisibility[id] !== false, width: columnSizing[id]})),
+      columns: columnOrder.map((id) => ({
+        id,
+        visible: nextVisibility[id] !== false,
+        width: columnSizing[id],
+      })),
     })
   }
-
   if (items.length === 0 && isDiscovering) {
     return (
-      <div className="bg-muted text-muted-foreground my-4 flex items-center gap-2 rounded-lg p-4 font-sans">
+      <div className={stylex.props(styles.s87c83994).className || ''}>
         <Spinner size="small" />
-        <span className="italic">Searching for documents…</span>
+        <span className={stylex.props(styles.sb9bd3a30).className || ''}>Searching for documents…</span>
       </div>
     )
   }
-
   return (
     <div className="my-4 flex min-w-0 flex-col gap-2 font-sans">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
         <div className="relative min-w-48 flex-1">
           <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
@@ -220,23 +366,31 @@ export function QueryBlockTable({
             onChangeText={setSearch}
             placeholder="Search table…"
             aria-label="Search table"
-            className="pl-9"
+            className={stylex.props(styles.s3484a8).className || ''}
           />
         </div>
-        <details className="relative">
+        <details className={stylex.props(styles.sdef3facc).className || ''}>
           <summary className="border-border hover:bg-muted flex h-9 cursor-pointer list-none items-center gap-2 rounded-md border px-3 text-sm">
-            <Filter className="size-4" /> Filter <ChevronDown className="size-3" />
+            <Filter className={stylex.props(styles.sca3de968).className || ''} /> Filter{' '}
+            <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
           </summary>
-          <div className="bg-background border-border absolute right-0 z-30 mt-1 flex w-80 flex-col gap-2 rounded-md border p-3 shadow-lg">
+          <div className={stylex.props(styles.s86bb3ab7).className || ''}>
             {filters.map((filter, index) => (
-              <div key={index} className="flex gap-1">
+              <div key={index} className={stylex.props(styles.se658ac13).className || ''}>
                 <select
                   aria-label="Filter attribute"
                   className="border-border min-w-0 flex-1 rounded border px-2 text-sm"
                   value={filter.columnId}
                   onChange={(event) =>
                     setFilters((current) =>
-                      current.map((value, i) => (i === index ? {...value, columnId: event.target.value} : value)),
+                      current.map((value, i) =>
+                        i === index
+                          ? {
+                              ...value,
+                              columnId: event.target.value,
+                            }
+                          : value,
+                      ),
                     )
                   }
                 >
@@ -248,12 +402,17 @@ export function QueryBlockTable({
                 </select>
                 <select
                   aria-label="Filter operator"
-                  className="border-border rounded border px-2 text-sm"
+                  className={stylex.props(styles.sc93df855).className || ''}
                   value={filter.operator}
                   onChange={(event) =>
                     setFilters((current) =>
                       current.map((value, i) =>
-                        i === index ? {...value, operator: event.target.value as QueryTableFilter['operator']} : value,
+                        i === index
+                          ? {
+                              ...value,
+                              operator: event.target.value as QueryTableFilter['operator'],
+                            }
+                          : value,
                       ),
                     )
                   }
@@ -266,7 +425,16 @@ export function QueryBlockTable({
                 <Input
                   value={filter.value}
                   onChangeText={(value) =>
-                    setFilters((current) => current.map((item, i) => (i === index ? {...item, value} : item)))
+                    setFilters((current) =>
+                      current.map((item, i) =>
+                        i === index
+                          ? {
+                              ...item,
+                              value,
+                            }
+                          : item,
+                      ),
+                    )
                   }
                   aria-label="Filter value"
                 />
@@ -276,7 +444,7 @@ export function QueryBlockTable({
                   aria-label="Remove filter"
                   onClick={() => setFilters((current) => current.filter((_, i) => i !== index))}
                 >
-                  <X className="size-4" />
+                  <X className={stylex.props(styles.sca3de968).className || ''} />
                 </Button>
               </div>
             ))}
@@ -285,19 +453,23 @@ export function QueryBlockTable({
               onClick={() =>
                 setFilters((current) => [
                   ...current,
-                  {columnId: descriptors[0]?.id ?? 'title', operator: 'contains', value: ''},
+                  {
+                    columnId: descriptors[0]?.id ?? 'title',
+                    operator: 'contains',
+                    value: '',
+                  },
                 ])
               }
             >
-              <Plus className="size-4" /> Add filter
+              <Plus className={stylex.props(styles.sca3de968).className || ''} /> Add filter
             </Button>
           </div>
         </details>
-        <details className="relative">
+        <details className={stylex.props(styles.sdef3facc).className || ''}>
           <summary className="border-border hover:bg-muted flex h-9 cursor-pointer list-none items-center gap-2 rounded-md border px-3 text-sm">
-            <Columns3 className="size-4" /> Columns
+            <Columns3 className={stylex.props(styles.sca3de968).className || ''} /> Columns
           </summary>
-          <div className="bg-background border-border absolute right-0 z-30 mt-1 w-56 rounded-md border p-2 shadow-lg">
+          <div className={stylex.props(styles.s67c3557b).className || ''}>
             {table.getAllLeafColumns().map((column) => (
               <div key={column.id} className="hover:bg-muted flex items-center gap-1 rounded px-2 py-1.5 text-sm">
                 <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2">
@@ -305,12 +477,15 @@ export function QueryBlockTable({
                     type="checkbox"
                     checked={column.getIsVisible()}
                     onChange={(event) => {
-                      const next = {...columnVisibility, [column.id]: event.target.checked}
+                      const next = {
+                        ...columnVisibility,
+                        [column.id]: event.target.checked,
+                      }
                       setColumnVisibility(next)
                       persistColumns(next)
                     }}
                   />
-                  <span className="truncate">
+                  <span className={stylex.props(styles.s6e724d66).className || ''}>
                     {descriptors.find((descriptor) => descriptor.id === column.id)?.label}
                   </span>
                 </label>
@@ -330,7 +505,7 @@ export function QueryBlockTable({
                     })
                   }}
                 >
-                  <ChevronUp className="size-3" />
+                  <ChevronUp className={stylex.props(styles.sca3de967).className || ''} />
                 </Button>
                 <Button
                   size="icon"
@@ -348,7 +523,7 @@ export function QueryBlockTable({
                     })
                   }}
                 >
-                  <ChevronDown className="size-3" />
+                  <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
                 </Button>
               </div>
             ))}
@@ -357,29 +532,39 @@ export function QueryBlockTable({
       </div>
 
       {filteredItems.length === 0 ? (
-        <div className="text-muted-foreground flex h-28 items-center justify-center rounded-md border text-sm">
+        <div className={stylex.props(styles.s9af0cfd6).className || ''}>
           {items.length === 0 ? 'No documents found.' : 'No documents match the current search and filters.'}
         </div>
       ) : (
         <div className="border-border max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-md border">
-          <Table className="table-fixed" style={{width: table.getCenterTotalSize()}}>
+          <Table
+            className={stylex.props(styles.sce14a4b5).className || ''}
+            style={{
+              width: table.getCenterTotalSize(),
+            }}
+          >
             <TableHeader>
               {table.getHeaderGroups().map((group) => (
                 <TableRow key={group.id}>
                   {group.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className={cn('relative', header.column.id === 'title' && 'bg-background sticky left-0 z-20')}
-                      style={{width: header.getSize()}}
+                      className={cn(
+                        stylex.props(styles.sdef3facc).className || '',
+                        header.column.id === 'title' && 'bg-background sticky left-0 z-20',
+                      )}
+                      style={{
+                        width: header.getSize(),
+                      }}
                     >
                       {header.column.getCanSort() ? (
                         <button
                           type="button"
-                          className="flex items-center gap-1"
+                          className={stylex.props(styles.s86ff3e3).className || ''}
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
-                          <ChevronsUpDown className="size-3" />
+                          <ChevronsUpDown className={stylex.props(styles.sca3de967).className || ''} />
                         </button>
                       ) : (
                         flexRender(header.column.columnDef.header, header.getContext())
@@ -387,7 +572,7 @@ export function QueryBlockTable({
                       <button
                         type="button"
                         aria-label={`Resize ${header.column.id} column`}
-                        className="absolute top-0 right-0 h-full w-2 cursor-col-resize touch-none"
+                        className={stylex.props(styles.s5fd2960c).className || ''}
                         onMouseDown={header.getResizeHandler()}
                         onTouchStart={header.getResizeHandler()}
                         onDoubleClick={() => header.column.resetSize()}
@@ -409,10 +594,12 @@ export function QueryBlockTable({
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          'overflow-hidden',
+                          stylex.props(styles.s92852dd5).className || '',
                           cell.column.id === 'title' && 'bg-background sticky left-0 z-10',
                         )}
-                        style={{width: cell.column.getSize()}}
+                        style={{
+                          width: cell.column.getSize(),
+                        }}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
@@ -421,7 +608,9 @@ export function QueryBlockTable({
                 ))}
             </TableBody>
           </Table>
-          {visibleCount < filteredItems.length ? <div ref={sentinelRef} className="h-6" aria-hidden="true" /> : null}
+          {visibleCount < filteredItems.length ? (
+            <div ref={sentinelRef} className={stylex.props(styles.s18c11).className || ''} aria-hidden="true" />
+          ) : null}
         </div>
       )}
     </div>

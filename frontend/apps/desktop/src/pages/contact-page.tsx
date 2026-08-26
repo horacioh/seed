@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {BookmarkButton} from '@/components/bookmarking'
 import {useAllAccountsWithContacts, useContactList} from '@/models/contacts'
 import {useSelectedAccount} from '@/selected-account'
@@ -31,14 +32,115 @@ import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels'
 import {z} from 'zod'
-
+const styles = stylex.create({
+  s1bc0c969: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+  s71a8f402: {
+    marginTop: 'calc(0.25rem * 4)',
+    display: 'flex',
+    flexShrink: '0',
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  s33b9074e: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    overflowY: 'auto',
+  },
+  s2dbdd8a2: {
+    color: 'var(--foreground)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    paddingLeft: 'calc(0.25rem * 2)',
+    textAlign: 'left',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfa3acb62: {
+    height: '100%',
+    overflowY: 'auto',
+  },
+  s20d4515d: {
+    fontSize: '1.875rem',
+    lineHeight: 'calc(2.25 / 1.875)',
+    fontWeight: '700',
+    wordBreak: 'break-all',
+  },
+  s942bdb85: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s3b6ba5e6: {
+    color: 'var(--primary)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sf640687b: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sabcdd9c6: {
+    borderColor: 'var(--border)',
+    alignSelf: 'stretch',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '2px',
+    padding: 'calc(0.25rem * 2)',
+  },
+  s78630139: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  s535dfa64: {
+    color: 'var(--foreground)',
+    display: 'block',
+    width: '100%',
+    textAlign: 'center',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sfbc6e292: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 6)',
+  },
+  s8a39cb0d: {
+    color: 'var(--foreground)',
+    fontStyle: 'italic',
+  },
+})
 export default function ContactPage() {
   const route = useNavRoute()
   const contactRoute = route.key === 'contact' ? route : null
   if (!contactRoute) throw new Error('Invalid route for contact page')
   return <ContactListPage contactId={contactRoute.id} />
 }
-
 export function ContactListPage({contactId}: {contactId?: UnpackedHypermediaId | undefined}) {
   return (
     <PanelContainer>
@@ -52,7 +154,6 @@ export function ContactListPage({contactId}: {contactId?: UnpackedHypermediaId |
     </PanelContainer>
   )
 }
-
 function Tab({label, isActive, onPress}: {label: string; isActive: boolean; onPress: () => void}) {
   return (
     <button
@@ -70,7 +171,6 @@ function Tab({label, isActive, onPress}: {label: string; isActive: boolean; onPr
     </button>
   )
 }
-
 function ContactPageSidebar({contactId}: {contactId?: UnpackedHypermediaId | undefined}) {
   const selectedAccountContacts = useSelectedAccountContacts()
   const [tab, setTab] = useState<'all' | 'saved'>('saved')
@@ -82,12 +182,12 @@ function ContactPageSidebar({contactId}: {contactId?: UnpackedHypermediaId | und
           return !!selectedAccountContacts.data?.find((c) => c.subject === account.id)
         })
   return (
-    <div className="flex h-full flex-col items-stretch">
-      <div className="mt-4 flex flex-shrink-0 px-2">
+    <div className={stylex.props(styles.s1bc0c969).className || ''}>
+      <div className={stylex.props(styles.s71a8f402).className || ''}>
         <Tab label="Saved Contacts" isActive={tab === 'saved'} onPress={() => setTab('saved')} />
         <Tab label="All Contacts" isActive={tab === 'all'} onPress={() => setTab('all')} />
       </div>
-      <div className="flex flex-1 flex-col items-stretch overflow-y-auto">
+      <div className={stylex.props(styles.s33b9074e).className || ''}>
         {displayContacts?.map((account) => {
           if (account.aliasAccount) return null
           return (
@@ -103,7 +203,6 @@ function ContactPageSidebar({contactId}: {contactId?: UnpackedHypermediaId | und
     </div>
   )
 }
-
 function ContactListItem({
   account,
   active,
@@ -120,21 +219,29 @@ function ContactListItem({
       className="group mx-2 h-auto items-center gap-1 py-2"
       variant={active ? 'brand-12' : 'ghost'}
       onClick={() => {
-        navigate({key: 'contact', id})
+        navigate({
+          key: 'contact',
+          id,
+        })
       }}
     >
       <HMIcon size={28} id={id} name={account.metadata?.name} icon={account.metadata?.icon} />
-      <span className="text-foreground flex-1 truncate overflow-hidden pl-2 text-left whitespace-nowrap">
+      <span className={stylex.props(styles.s2dbdd8a2).className || ''}>
         {savedContact?.name ? savedContact.name : getMetadataName(account.metadata)}
       </span>
 
       <BookmarkButton active={active} hideUntilItemHover id={id} />
 
-      <ShieldCheck className={cn('size-4', 'text-primary dark:text-brand-5', !savedContact && 'opacity-0')} />
+      <ShieldCheck
+        className={cn(
+          stylex.props(styles.sca3de968).className || '',
+          'text-primary dark:text-brand-5',
+          !savedContact && 'opacity-0',
+        )}
+      />
     </Button>
   )
 }
-
 function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
   const contact = useContact(contactId)
   const contactFormDialog = useAppDialog(ContactFormDialog)
@@ -158,12 +265,12 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
     }
   }
   return (
-    <div className="h-full overflow-y-auto">
+    <div className={stylex.props(styles.sfa3acb62).className || ''}>
       <div className="flex min-h-full flex-1 flex-row justify-center p-4">
         <div className="border-border bg-background mx-auto flex w-full max-w-lg flex-col items-center gap-3 rounded-lg border p-4 py-7 dark:bg-black">
           <HMIcon id={contactId} name={contact.data?.metadata?.name} icon={contact.data?.metadata?.icon} size={80} />
           <Tooltip content={primaryTooltip}>
-            <h2 className="text-3xl font-bold break-all">{primaryTitle}</h2>
+            <h2 className={stylex.props(styles.s20d4515d).className || ''}>{primaryTitle}</h2>
           </Tooltip>
           {secondaryTitle && (
             <Tooltip content={secondaryTooltip}>
@@ -171,7 +278,7 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
             </Tooltip>
           )}
           {contact.data ? <ContactEdgeNames contact={contact.data} accounts={accounts.data?.accountsMetadata} /> : null}
-          <div className="flex items-center justify-center gap-3">
+          <div className={stylex.props(styles.s942bdb85).className || ''}>
             <Button
               variant="outline"
               onClick={() =>
@@ -181,7 +288,7 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
                 })
               }
             >
-              <ArrowUpRight className="size-4" />
+              <ArrowUpRight className={stylex.props(styles.sca3de968).className || ''} />
               Open Site
             </Button>
             {myContact ? (
@@ -196,17 +303,19 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
                     })
                   }}
                 >
-                  <Pencil className="size-4" />
+                  <Pencil className={stylex.props(styles.sca3de968).className || ''} />
                   Edit Contact
                 </Button>
                 <OptionsDropdown
                   menuItems={[
                     {
                       key: 'delete',
-                      icon: <Trash className="size-4" />,
+                      icon: <Trash className={stylex.props(styles.sca3de968).className || ''} />,
                       label: 'Delete Contact',
                       onClick: () => {
-                        deleteContactDialog.open({contact: myContact})
+                        deleteContactDialog.open({
+                          contact: myContact,
+                        })
                       },
                     },
                   ]}
@@ -221,7 +330,7 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
                   })
                 }}
               >
-                <ShieldPlus className="text-primary size-4" />
+                <ShieldPlus className={stylex.props(styles.s3b6ba5e6).className || ''} />
                 Save Contact
               </Button>
             )}
@@ -234,14 +343,21 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
     </div>
   )
 }
-
-function DeleteContactDialog({input, onClose}: {input: {contact: HMContactRecord}; onClose: () => void}) {
+function DeleteContactDialog({
+  input,
+  onClose,
+}: {
+  input: {
+    contact: HMContactRecord
+  }
+  onClose: () => void
+}) {
   const deleteContact = useDeleteContact()
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle>Delete Contact?</DialogTitle>
       <div>You will publicly delete this contact named "{input.contact.name}".</div>
-      <div className="flex flex-row items-center justify-between gap-2">
+      <div className={stylex.props(styles.sf640687b).className || ''}>
         <Spinner hide={!deleteContact.isLoading} />
         <Button
           variant="destructive"
@@ -252,37 +368,39 @@ function DeleteContactDialog({input, onClose}: {input: {contact: HMContactRecord
             })
           }}
         >
-          <Trash className="size-4" />
+          <Trash className={stylex.props(styles.sca3de968).className || ''} />
           Confirm Delete
         </Button>
       </div>
     </div>
   )
 }
-
 function ContactEdgeNames({contact, accounts}: {contact: HMContact; accounts: HMAccountsMetadata}) {
   const [isExpanded, setIsExpanded] = useState(false)
   const navigate = useNavigate()
   const buttonLabel = isExpanded ? 'Collapse List of Edge Names' : 'Expand List of Edge Names'
   const buttonIcon = isExpanded ? ChevronDown : ChevronRight
-
   return (
-    <div className="border-border self-stretch rounded-md border-2 p-2">
+    <div className={stylex.props(styles.sabcdd9c6).className || ''}>
       {contact.subjectContacts?.length ? (
         <>
-          <div className="flex justify-center">
+          <div className={stylex.props(styles.s78630139).className || ''}>
             <Button variant="ghost" size="sm" onClick={() => setIsExpanded((v) => !v)}>
-              {isExpanded ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+              {isExpanded ? (
+                <ChevronUp className={stylex.props(styles.sca3de968).className || ''} />
+              ) : (
+                <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
+              )}
               {buttonLabel}
             </Button>
           </div>
           {isExpanded ? (
-            <div className="flex flex-col">
+            <div className={stylex.props(styles.s783f19f3).className || ''}>
               {contact.subjectContacts?.map((contact) => {
                 const account = accounts[contact.account]
                 return (
-                  <div className="flex flex-row items-center justify-between gap-2">
-                    <span className="font-bold">{contact.name}</span>
+                  <div className={stylex.props(styles.sf640687b).className || ''}>
+                    <span className={stylex.props(styles.sa16ea943).className || ''}>{contact.name}</span>
                     {account ? (
                       <Tooltip content={account.metadata?.name || 'Unknown Account'}>
                         <button
@@ -309,28 +427,28 @@ function ContactEdgeNames({contact, accounts}: {contact: HMContact; accounts: HM
           ) : null}
         </>
       ) : (
-        <span className="text-foreground block w-full text-center text-sm">No Edge Names</span>
+        <span className={stylex.props(styles.s535dfa64).className || ''}>No Edge Names</span>
       )}
     </div>
   )
 }
-
 function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel: string}) {
-  const subjectAccounts = useResources(contact.contacts?.map((c) => hmId(c.subject)) || [], {subscribed: true})
+  const subjectAccounts = useResources(contact.contacts?.map((c) => hmId(c.subject)) || [], {
+    subscribed: true,
+  })
   const navigate = useNavigate()
   return (
     <div className="border-border dark:bg-background mt-4 self-stretch rounded-md border bg-white p-2">
       <h3 className="text-l p-3 font-bold break-words">
         {contact.contacts?.length ? `${ownerLabel}'s Contacts` : `${ownerLabel} has no Contacts`}
       </h3>
-      <div className="flex flex-col">
+      <div className={stylex.props(styles.s783f19f3).className || ''}>
         {contact.contacts?.map((contact) => {
           const subjectAccountResult = subjectAccounts.find((a) => a.data?.id?.uid === contact.subject)
           const subjectAccount = subjectAccountResult?.data
           const isDiscovering = subjectAccountResult?.isDiscovering
           const contactName = contact.name
           const subjectName = subjectAccount?.type === 'document' ? subjectAccount.document?.metadata?.name : undefined
-
           return (
             <div
               className="flex flex-row items-center gap-2 p-2 text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -351,7 +469,9 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
               ) : (
                 <HMIcon id={hmId(contact.subject)} size={32} />
               )}
-              <span className="font-bold">{isDiscovering ? 'Loading…' : subjectName}</span>
+              <span className={stylex.props(styles.sa16ea943).className || ''}>
+                {isDiscovering ? 'Loading…' : subjectName}
+              </span>
               {subjectName !== contactName ? (
                 <span className="text-gray-500 dark:text-gray-300">| {contactName}</span>
               ) : null}
@@ -362,11 +482,9 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
     </div>
   )
 }
-
 const SaveContactSchema = z.object({
   name: z.string().min(1),
 })
-
 function ContactFormDialog({
   input,
   onClose,
@@ -409,16 +527,18 @@ function ContactFormDialog({
       })
   }
   return (
-    <div className="flex flex-col gap-6">
+    <div className={stylex.props(styles.sfbc6e292).className || ''}>
       <DialogTitle>Save Contact</DialogTitle>
-      <p className="text-foreground italic">This contact will be saved publicly for others to see.</p>
+      <p className={stylex.props(styles.s8a39cb0d).className || ''}>
+        This contact will be saved publicly for others to see.
+      </p>
 
       <form
         onSubmit={(e) => {
           e.preventDefault()
           handleSubmit(onSubmit)()
         }}
-        className="flex flex-col gap-4"
+        className={stylex.props(styles.sfbc6e290).className || ''}
       >
         <FormField name="name" label="New Name for this Contact" errors={errors}>
           <FormInput control={control} name="name" placeholder="What you will publicly name this contact" />

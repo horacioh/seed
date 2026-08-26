@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 /**
  * The way to answer a run that is waiting on you.
  *
@@ -17,6 +18,14 @@ import {toast} from '@shm/ui/toast'
 import {useState} from 'react'
 
 /** The signal that releases a budget pause; the server accepts any name for that wait. */
+const styles = stylex.create({
+  sc250396c: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+})
 const RESUME_SIGNAL = 'resume'
 
 /**
@@ -24,13 +33,27 @@ const RESUME_SIGNAL = 'resume'
  * is working, sleeping, waiting on its own children, or watching the activity feed is not asking
  * anybody for anything.
  */
-function pendingAsk(run: RunInfo): {kind: 'answer'; signal: string} | {kind: 'resume'} | null {
+function pendingAsk(run: RunInfo):
+  | {
+      kind: 'answer'
+      signal: string
+    }
+  | {
+      kind: 'resume'
+    }
+  | null {
   if (run.status !== 'waiting') return null
-  if (run.wait?.reason === 'budget-pause') return {kind: 'resume'}
-  if (run.wait?.reason === 'event' && run.wait.answerWith) return {kind: 'answer', signal: run.wait.answerWith}
+  if (run.wait?.reason === 'budget-pause')
+    return {
+      kind: 'resume',
+    }
+  if (run.wait?.reason === 'event' && run.wait.answerWith)
+    return {
+      kind: 'answer',
+      signal: run.wait.answerWith,
+    }
   return null
 }
-
 export function ParkedRunActions({
   run,
   serverUrl,
@@ -46,15 +69,17 @@ export function ParkedRunActions({
   // more than making the rare structured reply one click.
   const [payloadOpen, setPayloadOpen] = useState(false)
   const [payloadText, setPayloadText] = useState('')
-
   if (!ask) return null
-
   const send = (payload?: unknown) => {
     signalRun.mutate(
       {
         runId: run.id,
         signal: ask.kind === 'resume' ? RESUME_SIGNAL : ask.signal,
-        ...(payload === undefined ? {} : {payload}),
+        ...(payload === undefined
+          ? {}
+          : {
+              payload,
+            }),
       },
       {
         onSuccess: (result) => {
@@ -70,7 +95,6 @@ export function ParkedRunActions({
       },
     )
   }
-
   const sendTypedPayload = () => {
     const text = payloadText.trim()
     if (!text) return send()
@@ -83,10 +107,9 @@ export function ParkedRunActions({
     }
     send(payload)
   }
-
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className={stylex.props(styles.sc250396c).className || ''}>
         <Button size="sm" disabled={signalRun.isPending} onClick={() => (payloadOpen ? sendTypedPayload() : send())}>
           {signalRun.isPending ? 'Sending…' : ask.kind === 'resume' ? 'Resume' : 'Answer'}
         </Button>

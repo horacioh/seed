@@ -1,12 +1,26 @@
+import * as stylex from '@stylexjs/stylex'
 import {UpdateStatus} from '@/types/updater-types'
 import {Button} from '@shm/ui/button'
 import {Progress} from '@shm/ui/components/progress'
 import {SizableText} from '@shm/ui/text'
 import {useState} from 'react'
-
 import {useEffect} from 'react'
 
 // Add type declaration for window.autoUpdate
+const styles = stylex.create({
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 declare global {
   interface Window {
     autoUpdate?: {
@@ -18,18 +32,16 @@ declare global {
     }
   }
 }
-
 export function AutoUpdater() {
   const updateStatus = useUpdateStatus()
-
   const handleDownloadAndInstall = () => {
     window.autoUpdate?.downloadAndInstall()
   }
-
   function handleLater() {
-    window.autoUpdate?.setUpdateStatus({type: 'idle'})
+    window.autoUpdate?.setUpdateStatus({
+      type: 'idle',
+    })
   }
-
   return (
     <div
       className="absolute right-5 bottom-5 z-40 flex min-h-[100px] min-w-[360px] flex-col gap-4 rounded bg-white p-4 shadow-md dark:bg-black"
@@ -51,11 +63,15 @@ export function AutoUpdater() {
     >
       <SizableText>{getUpdateStatusLabel(updateStatus)}</SizableText>
       {updateStatus?.type == 'update-available' && updateStatus.updateInfo ? (
-        <div className="flex gap-2">
+        <div className={stylex.props(styles.se658ac14).className || ''}>
           <Button variant="default" onClick={handleDownloadAndInstall}>
             Download and Install
           </Button>
-          <Button variant="ghost" className="text-muted-foreground" onClick={() => handleLater()}>
+          <Button
+            variant="ghost"
+            className={stylex.props(styles.sf2718385).className || ''}
+            onClick={() => handleLater()}
+          >
             Later
           </Button>
           {updateStatus?.type == 'update-available' && updateStatus.updateInfo.release_notes && (
@@ -65,14 +81,13 @@ export function AutoUpdater() {
           )}
         </div>
       ) : updateStatus?.type == 'downloading' ? (
-        <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <Progress key="download-progress" value={updateStatus.progress} />
         </div>
       ) : null}
     </div>
   )
 }
-
 export function useUpdateStatus() {
   const [updateStatus, setUpdateStatus] = useState<UpdateStatus | null>(null)
   useEffect(() => {
@@ -81,10 +96,8 @@ export function useUpdateStatus() {
       setUpdateStatus(status)
     })
   }, [])
-
   return updateStatus
 }
-
 export function getUpdateStatusLabel(updateStatus: UpdateStatus | null) {
   if (updateStatus == null) return updateStatus
   switch (updateStatus.type) {
@@ -98,7 +111,8 @@ export function getUpdateStatusLabel(updateStatus: UpdateStatus | null) {
       return 'Restarting…'
     case 'error':
       return `Update error: ${updateStatus.error}`
-    default: // idle
+    default:
+      // idle
       return null
   }
 }

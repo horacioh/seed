@@ -1,5 +1,5 @@
 import {sentryVitePlugin} from '@sentry/vite-plugin'
-import tailwindcss from '@tailwindcss/vite'
+import stylex from '@stylexjs/unplugin'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import {defineConfig} from 'vite'
@@ -33,11 +33,11 @@ export default defineConfig(({command, mode}) => {
     publicDir: 'assets',
     assetsInclude: ['**/*.png'],
     plugins: [
+      stylex.vite(),
       tsConfigPaths({
         root: '../../',
       }),
       react(),
-      tailwindcss(),
     ],
     resolve: {
       extensions,

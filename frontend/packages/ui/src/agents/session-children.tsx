@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {type SessionInfo} from './client'
 import {useChildSessions} from './models'
 import {ChevronDown, ChevronRight} from 'lucide-react'
@@ -8,6 +9,39 @@ import React, {useState} from 'react'
  * The agent's own summary of a session (status verb, or the server's namer), pinned above the
  * chat so a reader knows what the session is doing without scrolling the transcript.
  */
+const styles = stylex.create({
+  s730eff20: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+  },
+  se6c9d13: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flex: 'none',
+  },
+  sca3de966: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+  },
+  scc9904d1: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sc20ef71c: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '3',
+    width: '100%',
+    paddingLeft: 'calc(0.25rem * 4)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 export function SessionSummaryBanner({
   description,
   compact,
@@ -31,7 +65,6 @@ export function SessionSummaryBanner({
     </div>
   )
 }
-
 export function SessionStatusDot({status, className}: {status: SessionInfo['status']; className?: string}) {
   const statusClass =
     status === 'error'
@@ -85,12 +118,13 @@ export function SubSessionsDisclosure({
   onOpenSession: (session: SessionInfo, event: React.MouseEvent<HTMLButtonElement>) => void
 }) {
   const [expanded, setExpanded] = useState(false)
-  const children = useChildSessions(serverUrl, accountUid, parentSessionId, {enabled: expanded})
+  const children = useChildSessions(serverUrl, accountUid, parentSessionId, {
+    enabled: expanded,
+  })
   const summaryStatus = summarizeChildStatus(children.data)
   const textClass = compact ? 'text-[11px]' : 'text-xs'
-
   return (
-    <div className="flex w-full flex-col">
+    <div className={stylex.props(styles.s730eff20).className || ''}>
       <button
         type="button"
         aria-expanded={expanded}
@@ -100,9 +134,13 @@ export function SubSessionsDisclosure({
           setExpanded((current) => !current)
         }}
       >
-        {expanded ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}
+        {expanded ? (
+          <ChevronDown className={stylex.props(styles.se6c9d13).className || ''} />
+        ) : (
+          <ChevronRight className={stylex.props(styles.se6c9d13).className || ''} />
+        )}
         {summaryStatus ? (
-          <SessionStatusDot status={summaryStatus} className="size-2" />
+          <SessionStatusDot status={summaryStatus} className={stylex.props(styles.sca3de966).className || ''} />
         ) : (
           <span className="bg-muted-foreground/40 size-2 flex-none rounded-full" />
         )}
@@ -133,12 +171,12 @@ export function SubSessionsDisclosure({
                 onOpenSession(child, event)
               }}
             >
-              <span className="flex w-full items-center gap-2">
-                <SessionStatusDot status={child.status} className="size-2" />
+              <span className={stylex.props(styles.scc9904d1).className || ''}>
+                <SessionStatusDot status={child.status} className={stylex.props(styles.sca3de966).className || ''} />
                 <span className="min-w-0 flex-1 truncate">{child.title || 'Untitled sub-session'}</span>
               </span>
               {child.description ? (
-                <span className="text-muted-foreground line-clamp-3 w-full pl-4 text-xs">{child.description}</span>
+                <span className={stylex.props(styles.sc20ef71c).className || ''}>{child.description}</span>
               ) : null}
             </button>
           ))}

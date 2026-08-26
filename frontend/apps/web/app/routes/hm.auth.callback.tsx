@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {keyPairStore} from '@/auth'
 import * as authSession from '@/auth-session'
 import {
@@ -20,28 +21,45 @@ import {Spinner} from '@shm/ui/spinner'
 import {SizableText} from '@shm/ui/text'
 import {XCircle} from 'lucide-react'
 import {useEffect, useState} from 'react'
-
+const styles = stylex.create({
+  s9ecf71fb: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sda565281: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+  },
+})
 const inFlightAuthCallbacks = new Map<string, Promise<void>>()
 const completedAuthCallbacks = new Set<string>()
-
 export default function AuthCallbackRoute() {
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
   const {origin, originHomeId} = useUniversalAppContext()
-
   useEffect(() => {
     const callbackKey = window.location.href
     if (completedAuthCallbacks.has(callbackKey) || inFlightAuthCallbacks.has(callbackKey)) {
-      console.log('[auth-callback] Skipping duplicate callback handling', {callbackKey})
+      console.log('[auth-callback] Skipping duplicate callback handling', {
+        callbackKey,
+      })
       return
     }
-
     async function handleAuth() {
       const vaultUrl = (await getAuthState(AUTH_STATE_DELEGATION_VAULT_URL)) || `${origin}/vault/delegate`
       const returnUrl = (await getAuthState(AUTH_STATE_DELEGATION_RETURN_URL)) || '/'
-
       try {
-        const result = await authSession.handleCallback({vaultUrl})
+        const result = await authSession.handleCallback({
+          vaultUrl,
+        })
         if (!result) {
           setError('No authentication data received.')
           return
@@ -51,9 +69,9 @@ export default function AuthCallbackRoute() {
 
         let hadExistingAccountAtOrigin = false
         try {
-          const accountResult = await queryAPI<{type?: string}>(
-            `/api/Account?id=${encodeURIComponent(result.accountPrincipal)}`,
-          )
+          const accountResult = await queryAPI<{
+            type?: string
+          }>(`/api/Account?id=${encodeURIComponent(result.accountPrincipal)}`)
           hadExistingAccountAtOrigin = accountResult?.type === 'account'
         } catch {
           hadExistingAccountAtOrigin = false
@@ -61,7 +79,6 @@ export default function AuthCallbackRoute() {
 
         // Build the session Signer for creating reverse blobs.
         const sessionSigner = new blobs.WebCryptoKeyPair(result.session.keyPair, result.session.publicKeyRaw)
-
         const accountPrincipal = blobs.principalFromString(result.accountPrincipal)
         const ts = Date.now()
 
@@ -70,17 +87,26 @@ export default function AuthCallbackRoute() {
 
         // Reverse Profile: session key aliases to vault account.
         const reverseProf = await blobs.createProfileAlias(sessionSigner, accountPrincipal, ts)
-
         const publishBlobs = [
-          {cid: result.capability.cid.toString(), data: result.capability.data},
-          {cid: reverseCap.cid.toString(), data: reverseCap.data},
-          {cid: reverseProf.cid.toString(), data: reverseProf.data},
+          {
+            cid: result.capability.cid.toString(),
+            data: result.capability.data,
+          },
+          {
+            cid: reverseCap.cid.toString(),
+            data: reverseCap.data,
+          },
+          {
+            cid: reverseProf.cid.toString(),
+            data: reverseProf.data,
+          },
         ]
-
         if (result.profile) {
-          publishBlobs.push({cid: result.profile.cid.toString(), data: result.profile.data})
+          publishBlobs.push({
+            cid: result.profile.cid.toString(),
+            data: result.profile.data,
+          })
         }
-
         console.log('[auth-callback] Publishing delegation blobs via client.publish', {
           blobCids: publishBlobs.map((b) => b.cid),
           account: result.accountPrincipal,
@@ -91,17 +117,23 @@ export default function AuthCallbackRoute() {
 
         // 1. Current origin (must succeed).
         uploadPromises.push(
-          webUniversalClient.publish({blobs: publishBlobs}).then((res) => {
-            console.log('[auth-callback] Published delegation blobs to current origin', res)
-            return res
-          }),
+          webUniversalClient
+            .publish({
+              blobs: publishBlobs,
+            })
+            .then((res) => {
+              console.log('[auth-callback] Published delegation blobs to current origin', res)
+              return res
+            }),
         )
 
         // 2. Identity origin (failure is non-fatal).
         if (WEB_IDENTITY_ORIGIN && WEB_IDENTITY_ORIGIN !== origin) {
           uploadPromises.push(
             createSeedClient(WEB_IDENTITY_ORIGIN)
-              .publish({blobs: publishBlobs})
+              .publish({
+                blobs: publishBlobs,
+              })
               .then((res) => {
                 console.log('[auth-callback] Published delegation blobs to identity origin', res)
                 return res
@@ -111,7 +143,6 @@ export default function AuthCallbackRoute() {
               }),
           )
         }
-
         await Promise.all(uploadPromises)
 
         // Store the session key pair as the active local keys with delegation info.
@@ -136,12 +167,9 @@ export default function AuthCallbackRoute() {
         // Cleanup delegation markers.
         await deleteAuthState(AUTH_STATE_DELEGATION_VAULT_URL)
         await deleteAuthState(AUTH_STATE_DELEGATION_RETURN_URL)
-
         const intentResult = await processPendingIntent(originHomeId)
-
         let targetUrl = returnUrl
         let successVariant: 'comment' | 'join' | 'login' | 'welcome-back' | 'publish-draft' | null = 'login'
-
         if (intentResult.type === 'comment') {
           targetUrl = intentResult.commentUrl
           successVariant = 'comment'
@@ -159,10 +187,11 @@ export default function AuthCallbackRoute() {
         } else if (hadExistingAccountAtOrigin) {
           successVariant = 'welcome-back'
         }
-
         const nextUrl = new URL(targetUrl, window.location.origin)
         if (successVariant) nextUrl.searchParams.set('vault_success', successVariant)
-        navigate(`${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`, {replace: true})
+        navigate(`${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`, {
+          replace: true,
+        })
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)
         setError(message)
@@ -171,7 +200,6 @@ export default function AuthCallbackRoute() {
         deleteAuthState(AUTH_STATE_DELEGATION_RETURN_URL).catch(console.error)
       }
     }
-
     const authPromise = handleAuth().finally(() => {
       inFlightAuthCallbacks.delete(callbackKey)
       completedAuthCallbacks.add(callbackKey)
@@ -179,7 +207,6 @@ export default function AuthCallbackRoute() {
     inFlightAuthCallbacks.set(callbackKey, authPromise)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [origin, navigate])
-
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
       {error ? (
@@ -195,17 +222,28 @@ export default function AuthCallbackRoute() {
               {error}
             </SizableText>
           </div>
-          <div className="flex w-full flex-col gap-2">
-            <Button onClick={() => navigate('/', {replace: true})} className="w-full">
+          <div className={stylex.props(styles.s9ecf71fb).className || ''}>
+            <Button
+              onClick={() =>
+                navigate('/', {
+                  replace: true,
+                })
+              }
+              className={stylex.props(styles.scdbaf625).className || ''}
+            >
               Return Home
             </Button>
-            <Button variant="outline" onClick={() => window.location.reload()} className="w-full">
+            <Button
+              variant="outline"
+              onClick={() => window.location.reload()}
+              className={stylex.props(styles.scdbaf625).className || ''}
+            >
               Try Again
             </Button>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-4 text-center">
+        <div className={stylex.props(styles.sda565281).className || ''}>
           <Spinner />
           <SizableText>Securing your identity session…</SizableText>
         </div>

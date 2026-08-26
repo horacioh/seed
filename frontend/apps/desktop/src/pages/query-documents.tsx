@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {MainWrapper} from '@/components/main-wrapper'
 import {grpcClient} from '@/grpc-client'
 import {useAccountList} from '@/models/accounts'
@@ -40,22 +41,222 @@ import {
   Trash2,
 } from 'lucide-react'
 import {useEffect, useId, useMemo, useRef, useState, type ReactNode} from 'react'
-
+const styles = stylex.create({
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sc3771bb1: {
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '600',
+    letterSpacing: '-0.025em',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf80b4c8a: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s4d016d20: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    animation: 'spin 1s linear infinite',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s7ceacacd: {
+    color: 'var(--muted-foreground)',
+    marginRight: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+    letterSpacing: '0.025em',
+    textTransform: 'uppercase',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sd46c5b0e: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+    letterSpacing: '0.025em',
+    textTransform: 'uppercase',
+  },
+  s10a6312: {
+    backgroundColor: 'var(--background)',
+    display: 'inline-flex',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 0.5)',
+  },
+  s60699f3c: {
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 2.5)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  s11c1d25d: {
+    color: 'var(--destructive)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s8a8b6bdd: {
+    borderColor: 'var(--border)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sab2acd6c: {
+    marginBottom: 'calc(0.25rem * 3)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sfaa15d2: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+    letterSpacing: '0.025em',
+    textTransform: 'uppercase',
+  },
+  s51bcccdb: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontVariantNumeric: '   tabular-nums ',
+  },
+  sd36a4a47: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  se3172170: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+  },
+  s3b858bae: {
+    animation: 'spin 1s linear infinite',
+  },
+  sce049c4e: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingInline: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s4bed10d3: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 1.5)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 3)',
+    paddingLeft: 'calc(0.25rem * 12)',
+  },
+  s120e1b03: {
+    color: 'var(--foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s65916d2f: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  s349b2d: {
+    paddingRight: 'calc(0.25rem * 8)',
+  },
+  s12583799: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s1047710f: {
+    color: 'var(--muted-foreground)',
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sa2b7e80d: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontStyle: 'italic',
+  },
+  s36c758: {
+    width: 'calc(0.25rem * 24)',
+  },
+  s5bf2d9b6: {
+    color: 'var(--muted-foreground)',
+    marginBottom: 'calc(0.25rem * 3)',
+  },
+  s9d4b128d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+})
 type ConditionMode = 'and' | 'or'
 type ConditionKind = 'comparison' | 'contains' | 'prefix' | 'exists' | 'missing'
 type ValueKind = 'string' | 'int' | 'bool'
-
 const spaceField = '$space'
 const pathField = '$path'
 const maxSortRules = 16
-
 type AutocompleteSuggestion = {
   value: string
   label?: string
   meta?: string
   description?: string
 }
-
 type Condition = {
   id: number
   key: string
@@ -64,15 +265,12 @@ type Condition = {
   valueKind: ValueKind
   value: string
 }
-
 type SortRule = {
   id: number
   key: string
   descending: boolean
 }
-
 type QueryResult = Awaited<ReturnType<typeof grpcClient.documents.queryDocuments>>
-
 const comparisonOperators = [
   ['=', DocumentFilter_Comparison_Operator.EQUAL],
   ['≠', DocumentFilter_Comparison_Operator.NOT_EQUAL],
@@ -81,32 +279,47 @@ const comparisonOperators = [
   ['>', DocumentFilter_Comparison_Operator.GREATER_THAN],
   ['≥', DocumentFilter_Comparison_Operator.GREATER_THAN_OR_EQUAL],
 ] as const
-
 function emptyCondition(id: number): Condition {
-  return {id, key: '', kind: 'comparison', operator: '=', valueKind: 'string', value: ''}
+  return {
+    id,
+    key: '',
+    kind: 'comparison',
+    operator: '=',
+    valueKind: 'string',
+    value: '',
+  }
 }
-
 function emptySortRule(id: number): SortRule {
-  return {id, key: '', descending: false}
+  return {
+    id,
+    key: '',
+    descending: false,
+  }
 }
-
 function conditionFilter(condition: Condition): DocumentFilter | null {
   const key = condition.key.trim()
   if (!key) return null
-
   if (key === spaceField) {
     if (!condition.value.trim()) return null
     const filter = new DocumentFilter({
       filter: {
         case: 'spaceMatch',
-        value: new DocumentFilter_SpaceMatch({space: condition.value.trim()}),
+        value: new DocumentFilter_SpaceMatch({
+          space: condition.value.trim(),
+        }),
       },
     })
     return condition.operator === '≠'
-      ? new DocumentFilter({filter: {case: 'not', value: new DocumentFilter_Not({filter})}})
+      ? new DocumentFilter({
+          filter: {
+            case: 'not',
+            value: new DocumentFilter_Not({
+              filter,
+            }),
+          },
+        })
       : filter
   }
-
   if (key === pathField) {
     if (!condition.value.trim()) return null
     const filter = new DocumentFilter({
@@ -119,38 +332,56 @@ function conditionFilter(condition: Condition): DocumentFilter | null {
       },
     })
     return condition.operator === '≠'
-      ? new DocumentFilter({filter: {case: 'not', value: new DocumentFilter_Not({filter})}})
+      ? new DocumentFilter({
+          filter: {
+            case: 'not',
+            value: new DocumentFilter_Not({
+              filter,
+            }),
+          },
+        })
       : filter
   }
-
   if (condition.kind === 'exists' || condition.kind === 'missing') {
     return new DocumentFilter({
       filter: {
         case: condition.kind,
-        value: new DocumentFilter_Presence({key}),
+        value: new DocumentFilter_Presence({
+          key,
+        }),
       },
     })
   }
-
   if (!condition.value.trim()) return null
-
   if (condition.kind === 'contains' || condition.kind === 'prefix') {
     return new DocumentFilter({
       filter: {
         case: 'stringMatch',
-        value: new DocumentFilter_StringMatch({key, value: condition.value, prefix: condition.kind === 'prefix'}),
+        value: new DocumentFilter_StringMatch({
+          key,
+          value: condition.value,
+          prefix: condition.kind === 'prefix',
+        }),
       },
     })
   }
-
   const operator = comparisonOperators.find(([label]) => label === condition.operator)?.[1]
   const value = new AttributeValue({
     value:
       condition.valueKind === 'int'
-        ? {case: 'intValue', value: BigInt(condition.value)}
+        ? {
+            case: 'intValue',
+            value: BigInt(condition.value),
+          }
         : condition.valueKind === 'bool'
-          ? {case: 'boolValue', value: condition.value === 'true'}
-          : {case: 'stringValue', value: condition.value},
+          ? {
+              case: 'boolValue',
+              value: condition.value === 'true',
+            }
+          : {
+              case: 'stringValue',
+              value: condition.value,
+            },
   })
   return new DocumentFilter({
     filter: {
@@ -163,7 +394,6 @@ function conditionFilter(condition: Condition): DocumentFilter | null {
     },
   })
 }
-
 function isComplete(condition: Condition) {
   if (!condition.key.trim()) return false
   if (condition.key.trim() === spaceField) return !!condition.value.trim()
@@ -175,10 +405,13 @@ function isComplete(condition: Condition) {
   if (condition.kind === 'comparison' && condition.valueKind === 'int') return /^-?\d+$/.test(condition.value.trim())
   return !!condition.value.trim()
 }
-
 export default function QueryDocumentsPage() {
   const selectedSpaceId = useSelectedAccountId()
-  const spaceList = useAccountList({queryOptions: {pageSize: 1000}})
+  const spaceList = useAccountList({
+    queryOptions: {
+      pageSize: 1000,
+    },
+  })
   const [mode, setMode] = useState<ConditionMode>('and')
   const [conditions, setConditions] = useState<Condition[]>([emptyCondition(1)])
   const [sortRules, setSortRules] = useState<SortRule[]>([emptySortRule(1)])
@@ -196,7 +429,6 @@ export default function QueryDocumentsPage() {
       })) ?? [],
     [spaceList.data?.accounts],
   )
-
   useEffect(() => {
     const controller = new AbortController()
     async function loadNames() {
@@ -204,8 +436,14 @@ export default function QueryDocumentsPage() {
       let pageToken = ''
       do {
         const response = await grpcClient.documents.listDocumentAttributeNames(
-          {recursive: true, pageSize: 100, pageToken},
-          {signal: controller.signal},
+          {
+            recursive: true,
+            pageSize: 100,
+            pageToken,
+          },
+          {
+            signal: controller.signal,
+          },
         )
         names.push(...response.names.map((name) => name.name))
         pageToken = response.nextPageToken
@@ -217,7 +455,6 @@ export default function QueryDocumentsPage() {
     })
     return () => controller.abort()
   }, [])
-
   const invalidConditions = conditions.filter((condition) => condition.key.trim() && !isComplete(condition))
   const filters = useMemo(
     () =>
@@ -228,17 +465,38 @@ export default function QueryDocumentsPage() {
     [conditions],
   )
   const request = useMemo(() => {
-    const filter = filters.length === 0 ? undefined : new DocumentFilter({filter: {case: mode, value: {filters}}})
+    const filter =
+      filters.length === 0
+        ? undefined
+        : new DocumentFilter({
+            filter: {
+              case: mode,
+              value: {
+                filters,
+              },
+            },
+          })
     return {
       filter,
       sort: sortRules
         .filter((rule) => rule.key.trim())
-        .map((rule) => new DocumentSort({key: rule.key.trim(), descending: rule.descending})),
+        .map(
+          (rule) =>
+            new DocumentSort({
+              key: rule.key.trim(),
+              descending: rule.descending,
+            }),
+        ),
       pageSize: 30,
     }
   }, [filters, mode, sortRules])
-
-  const requestPreview = useMemo(() => new QueryDocumentsRequest(request).toJsonString({prettySpaces: 2}), [request])
+  const requestPreview = useMemo(
+    () =>
+      new QueryDocumentsRequest(request).toJsonString({
+        prettySpaces: 2,
+      }),
+    [request],
+  )
   const resultAttributeKeys = useMemo(
     () =>
       Array.from(
@@ -253,7 +511,6 @@ export default function QueryDocumentsPage() {
   )
   const queryIsValid = invalidConditions.length === 0
   const queryGeneration = useRef(0)
-
   useEffect(() => {
     const generation = ++queryGeneration.current
     setError(null)
@@ -262,12 +519,13 @@ export default function QueryDocumentsPage() {
       setIsLoading(false)
       return
     }
-
     const controller = new AbortController()
     setIsLoading(true)
     const timeout = setTimeout(() => {
       grpcClient.documents
-        .queryDocuments(request, {signal: controller.signal})
+        .queryDocuments(request, {
+          signal: controller.signal,
+        })
         .then((response) => {
           if (queryGeneration.current === generation) setResult(response)
         })
@@ -281,29 +539,39 @@ export default function QueryDocumentsPage() {
           if (queryGeneration.current === generation) setIsLoading(false)
         })
     }, 250)
-
     return () => {
       clearTimeout(timeout)
       controller.abort()
     }
   }, [queryIsValid, request])
-
   const updateCondition = (id: number, update: Partial<Condition>) => {
     setConditions((current) =>
-      current.map((condition) => (condition.id === id ? {...condition, ...update} : condition)),
+      current.map((condition) =>
+        condition.id === id
+          ? {
+              ...condition,
+              ...update,
+            }
+          : condition,
+      ),
     )
   }
-
   const loadMore = async (pageToken: string) => {
     const generation = queryGeneration.current
     setIsLoading(true)
     setError(null)
     try {
-      const response = await grpcClient.documents.queryDocuments({...request, pageToken})
+      const response = await grpcClient.documents.queryDocuments({
+        ...request,
+        pageToken,
+      })
       if (queryGeneration.current !== generation) return
       setResult((current) =>
         current
-          ? new QueryDocumentsResponse({...response, documents: [...current.documents, ...response.documents]})
+          ? new QueryDocumentsResponse({
+              ...response,
+              documents: [...current.documents, ...response.documents],
+            })
           : response,
       )
     } catch (reason) {
@@ -314,7 +582,6 @@ export default function QueryDocumentsPage() {
       if (queryGeneration.current === generation) setIsLoading(false)
     }
   }
-
   const reset = () => {
     setMode('and')
     setConditions([emptyCondition(1)])
@@ -322,7 +589,6 @@ export default function QueryDocumentsPage() {
     setResult(null)
     setError(null)
   }
-
   const applySelectedSpace = () => {
     if (!selectedSpaceId) return
     setConditions((current) => {
@@ -345,7 +611,6 @@ export default function QueryDocumentsPage() {
       return [spaceCondition, ...current]
     })
   }
-
   const clearLocationFilters = () => {
     setConditions((current) => {
       const remaining = current.filter((condition) => {
@@ -355,16 +620,22 @@ export default function QueryDocumentsPage() {
       return remaining.length ? remaining : [emptyCondition(Math.max(...current.map((item) => item.id), 0) + 1)]
     })
   }
-
   const hasLocationFilters = conditions.some((condition) => {
     const key = condition.key.trim()
     return key === spaceField || key === pathField
   })
-
   const updateSortRule = (id: number, update: Partial<SortRule>) => {
-    setSortRules((current) => current.map((rule) => (rule.id === id ? {...rule, ...update} : rule)))
+    setSortRules((current) =>
+      current.map((rule) =>
+        rule.id === id
+          ? {
+              ...rule,
+              ...update,
+            }
+          : rule,
+      ),
+    )
   }
-
   const moveSortRule = (index: number, offset: -1 | 1) => {
     setSortRules((current) => {
       const target = index + offset
@@ -374,7 +645,6 @@ export default function QueryDocumentsPage() {
       return next
     })
   }
-
   return (
     <PanelContainer>
       <MainWrapper scrollable>
@@ -382,17 +652,17 @@ export default function QueryDocumentsPage() {
           <header className="border-border flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1">
               <div className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-[0.18em] uppercase">
-                <Filter className="size-3.5" /> Document index
+                <Filter className={stylex.props(styles.s3269316e).className || ''} /> Document index
               </div>
-              <h1 className="text-2xl font-semibold tracking-tight">Query Documents</h1>
+              <h1 className={stylex.props(styles.sc3771bb1).className || ''}>Query Documents</h1>
               <p className="text-muted-foreground max-w-xl text-sm">
                 Explore visible document attributes without saving a search.
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className={stylex.props(styles.s86ff3e4).className || ''}>
               {isLoading ? (
-                <span className="text-muted-foreground flex items-center gap-1.5 text-xs" role="status">
-                  <Loader2 className="size-3.5 animate-spin" /> Updating
+                <span className={stylex.props(styles.sf80b4c8a).className || ''} role="status">
+                  <Loader2 className={stylex.props(styles.s4d016d20).className || ''} /> Updating
                 </span>
               ) : null}
               <Button variant="ghost" size="sm" onClick={reset} aria-label="Reset query">
@@ -403,10 +673,8 @@ export default function QueryDocumentsPage() {
 
           <section className="border-border bg-muted/20 rounded-lg border shadow-sm">
             <div className="border-border flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground mr-1 text-xs font-medium tracking-wide uppercase">
-                  Quick scope
-                </span>
+              <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
+                <span className={stylex.props(styles.s7ceacacd).className || ''}>Quick scope</span>
                 <Button variant="outline" size="sm" onClick={applySelectedSpace} disabled={!selectedSpaceId}>
                   <AtSign /> Selected space
                 </Button>
@@ -414,26 +682,22 @@ export default function QueryDocumentsPage() {
                   <LocateFixed /> All visible
                 </Button>
               </div>
-              <span className="text-muted-foreground text-xs">
+              <span className={stylex.props(styles.sa56e9200).className || ''}>
                 Space and path are also available as built-in fields.
               </span>
             </div>
 
             <div className="space-y-3 p-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Match</span>
-                <div
-                  className="bg-background inline-flex rounded-md border p-0.5"
-                  role="group"
-                  aria-label="Condition mode"
-                >
+              <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
+                <span className={stylex.props(styles.sd46c5b0e).className || ''}>Match</span>
+                <div className={stylex.props(styles.s10a6312).className || ''} role="group" aria-label="Condition mode">
                   {(['and', 'or'] as const).map((value) => (
                     <button
                       key={value}
                       type="button"
                       onClick={() => setMode(value)}
                       className={cn(
-                        'rounded px-2.5 py-1 text-xs font-medium transition-colors',
+                        stylex.props(styles.s60699f3c).className || '',
                         mode === value && 'bg-primary text-primary-foreground shadow-sm',
                       )}
                     >
@@ -441,7 +705,7 @@ export default function QueryDocumentsPage() {
                     </button>
                   ))}
                 </div>
-                <span className="text-muted-foreground text-xs">conditions</span>
+                <span className={stylex.props(styles.sa56e9200).className || ''}>conditions</span>
               </div>
 
               <div className="space-y-2">
@@ -459,7 +723,9 @@ export default function QueryDocumentsPage() {
                 ))}
               </div>
               {invalidConditions.length ? (
-                <p className="text-destructive text-xs">Finish the highlighted value to update the results.</p>
+                <p className={stylex.props(styles.s11c1d25d).className || ''}>
+                  Finish the highlighted value to update the results.
+                </p>
               ) : null}
               <Button
                 variant="outline"
@@ -475,12 +741,12 @@ export default function QueryDocumentsPage() {
               </Button>
             </div>
 
-            <div className="border-border border-t p-4">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <div className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-wide uppercase">
-                  <SlidersHorizontal className="size-3.5" /> Sort
+            <div className={stylex.props(styles.s8a8b6bdd).className || ''}>
+              <div className={stylex.props(styles.sab2acd6c).className || ''}>
+                <div className={stylex.props(styles.sfaa15d2).className || ''}>
+                  <SlidersHorizontal className={stylex.props(styles.s3269316e).className || ''} /> Sort
                 </div>
-                <span className="text-muted-foreground text-xs">
+                <span className={stylex.props(styles.sa56e9200).className || ''}>
                   Earlier rows have higher priority. Up to {maxSortRules} attributes.
                 </span>
               </div>
@@ -490,12 +756,16 @@ export default function QueryDocumentsPage() {
                     key={rule.id}
                     className="bg-background border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-md border p-2 sm:grid-cols-[auto_minmax(12rem,1fr)_10rem_auto]"
                   >
-                    <span className="text-muted-foreground px-1 text-xs tabular-nums">
+                    <span className={stylex.props(styles.s51bcccdb).className || ''}>
                       {String(index + 1).padStart(2, '0')}
                     </span>
                     <AutocompleteInput
                       value={rule.key}
-                      onChangeText={(key) => updateSortRule(rule.id, {key})}
+                      onChangeText={(key) =>
+                        updateSortRule(rule.id, {
+                          key,
+                        })
+                      }
                       suggestions={attributeNames.map((name) => ({
                         value: name,
                         description: DOCUMENT_ATTRIBUTE_DESCRIPTIONS[name],
@@ -505,7 +775,11 @@ export default function QueryDocumentsPage() {
                     />
                     <Select
                       value={rule.descending ? 'desc' : 'asc'}
-                      onValueChange={(value) => updateSortRule(rule.id, {descending: value === 'desc'})}
+                      onValueChange={(value) =>
+                        updateSortRule(rule.id, {
+                          descending: value === 'desc',
+                        })
+                      }
                       disabled={!rule.key.trim()}
                     >
                       <SelectTrigger className="col-span-2 w-full sm:col-span-1">
@@ -516,7 +790,7 @@ export default function QueryDocumentsPage() {
                         <SelectItem value="desc">Descending</SelectItem>
                       </SelectContent>
                     </Select>
-                    <div className="flex items-center justify-end">
+                    <div className={stylex.props(styles.sd36a4a47).className || ''}>
                       <button
                         type="button"
                         className="text-muted-foreground hover:bg-accent hover:text-foreground rounded-sm p-1 disabled:opacity-30"
@@ -524,7 +798,7 @@ export default function QueryDocumentsPage() {
                         disabled={index === 0}
                         aria-label={`Move sort ${index + 1} up`}
                       >
-                        <ChevronUp className="size-4" />
+                        <ChevronUp className={stylex.props(styles.sca3de968).className || ''} />
                       </button>
                       <button
                         type="button"
@@ -533,7 +807,7 @@ export default function QueryDocumentsPage() {
                         disabled={index === sortRules.length - 1}
                         aria-label={`Move sort ${index + 1} down`}
                       >
-                        <ChevronDown className="size-4" />
+                        <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
                       </button>
                       <button
                         type="button"
@@ -542,14 +816,14 @@ export default function QueryDocumentsPage() {
                         disabled={sortRules.length === 1}
                         aria-label={`Remove sort ${index + 1}`}
                       >
-                        <Trash2 className="size-4" />
+                        <Trash2 className={stylex.props(styles.sca3de968).className || ''} />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
               <Button
-                className="mt-2"
+                className={stylex.props(styles.s33458c).className || ''}
                 variant="outline"
                 size="sm"
                 disabled={sortRules.length >= maxSortRules}
@@ -565,17 +839,21 @@ export default function QueryDocumentsPage() {
             </div>
           </section>
 
-          <section className="border-border bg-background overflow-hidden rounded-lg border shadow-sm">
+          <section className={stylex.props(styles.se3172170).className || ''}>
             <button
               className="text-muted-foreground hover:bg-muted/60 flex w-full items-center justify-between px-4 py-3 text-left text-xs font-medium tracking-wide uppercase transition-colors"
               type="button"
               onClick={() => setShowPreview((value) => !value)}
               aria-expanded={showPreview}
             >
-              <span className="flex items-center gap-2">
-                <Braces className="size-3.5" /> Request preview
+              <span className={stylex.props(styles.s86ff3e4).className || ''}>
+                <Braces className={stylex.props(styles.s3269316e).className || ''} /> Request preview
               </span>
-              {showPreview ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
+              {showPreview ? (
+                <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
+              ) : (
+                <ChevronRight className={stylex.props(styles.sca3de968).className || ''} />
+              )}
             </button>
             {showPreview ? (
               <pre className="border-border bg-muted/30 overflow-x-auto border-t p-4 text-xs leading-5">
@@ -587,7 +865,7 @@ export default function QueryDocumentsPage() {
           <section aria-live="polite" className="min-h-40">
             {isLoading && !result ? (
               <QueryState
-                icon={<Loader2 className="animate-spin" />}
+                icon={<Loader2 className={stylex.props(styles.s3b858bae).className || ''} />}
                 title="Searching documents"
                 detail="Applying your current scope and conditions."
               />
@@ -602,7 +880,7 @@ export default function QueryDocumentsPage() {
             ) : null}
             {result?.documents.length ? (
               <div className="space-y-2">
-                <div className="text-muted-foreground flex items-center justify-between px-1 text-xs">
+                <div className={stylex.props(styles.sce049c4e).className || ''}>
                   <span>
                     {result.documents.length} result{result.documents.length === 1 ? '' : 's'}
                   </span>
@@ -615,14 +893,14 @@ export default function QueryDocumentsPage() {
                       <div key={`${document.account}/${document.path}`}>
                         <DocumentListItem item={item} />
                         {resultAttributeKeys.length ? (
-                          <div className="flex flex-wrap gap-1.5 px-4 pb-3 pl-12">
+                          <div className={stylex.props(styles.s4bed10d3).className || ''}>
                             {resultAttributeKeys.map((key) => (
                               <span
                                 key={key}
                                 className="border-border bg-muted/40 text-muted-foreground inline-flex max-w-full items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[11px]"
                               >
                                 <span>{key}</span>
-                                <span className="text-foreground truncate">
+                                <span className={stylex.props(styles.s120e1b03).className || ''}>
                                   {formatAttributeValue(item.metadata, key)}
                                 </span>
                               </span>
@@ -634,7 +912,7 @@ export default function QueryDocumentsPage() {
                   })}
                 </div>
                 {result.nextPageToken ? (
-                  <div className="flex justify-center pt-1">
+                  <div className={stylex.props(styles.s65916d2f).className || ''}>
                     <Button
                       variant="outline"
                       size="sm"
@@ -653,7 +931,6 @@ export default function QueryDocumentsPage() {
     </PanelContainer>
   )
 }
-
 function formatAttributeValue(metadata: unknown, key: string) {
   let value = metadata
   for (const segment of key.split('.')) {
@@ -664,7 +941,6 @@ function formatAttributeValue(metadata: unknown, key: string) {
   if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value)
   return JSON.stringify(value)
 }
-
 function AutocompleteInput({
   value,
   onChangeText,
@@ -707,28 +983,31 @@ function AutocompleteInput({
                   : rawValue.includes(query) || meta.includes(query)
                     ? 4
                     : -1
-        return {suggestion, index, rank}
+        return {
+          suggestion,
+          index,
+          rank,
+        }
       })
       .filter((item) => item.rank >= 0)
       .sort((a, b) => a.rank - b.rank || a.index - b.index)
       .slice(0, 100)
       .map((item) => item.suggestion)
   }, [suggestions, value])
-
   useEffect(() => {
     setActiveIndex(null)
   }, [value])
   useEffect(() => {
     if (activeIndex === null) return
-    listRef.current?.children[activeIndex]?.scrollIntoView({block: 'nearest'})
+    listRef.current?.children[activeIndex]?.scrollIntoView({
+      block: 'nearest',
+    })
   }, [activeIndex])
-
   const choose = (suggestion: AutocompleteSuggestion) => {
     onChangeText(suggestion.value)
     setOpen(false)
     setActiveIndex(null)
   }
-
   return (
     <div className="relative w-full min-w-0">
       <Input
@@ -770,7 +1049,7 @@ function AutocompleteInput({
         aria-expanded={open && visibleSuggestions.length > 0}
         aria-controls={listId}
         aria-activedescendant={activeIndex === null ? undefined : `${listId}-option-${activeIndex}`}
-        className={cn('pr-8', className)}
+        className={cn(stylex.props(styles.s349b2d).className || '', className)}
         placeholder={placeholder}
         aria-label={ariaLabel}
       />
@@ -798,9 +1077,11 @@ function AutocompleteInput({
               onClick={() => choose(suggestion)}
             >
               <span className="min-w-0">
-                <span className="block truncate">{suggestion.label ?? suggestion.value}</span>
+                <span className={stylex.props(styles.s12583799).className || ''}>
+                  {suggestion.label ?? suggestion.value}
+                </span>
                 {suggestion.description ? (
-                  <span className="text-muted-foreground block truncate text-xs">{suggestion.description}</span>
+                  <span className={stylex.props(styles.s1047710f).className || ''}>{suggestion.description}</span>
                 ) : null}
               </span>
               {suggestion.meta ? (
@@ -813,7 +1094,6 @@ function AutocompleteInput({
     </div>
   )
 }
-
 function ConditionRow({
   condition,
   index,
@@ -842,23 +1122,46 @@ function ConditionRow({
       : comparisonOperators
   return (
     <div className="bg-background border-border grid grid-cols-[auto_minmax(0,1fr)] gap-2 rounded-md border p-2 sm:grid-cols-[auto_minmax(10rem,1fr)_9rem_7rem_minmax(9rem,1fr)_auto] sm:items-center">
-      <span className="text-muted-foreground px-1 text-xs tabular-nums">{String(index + 1).padStart(2, '0')}</span>
+      <span className={stylex.props(styles.s51bcccdb).className || ''}>{String(index + 1).padStart(2, '0')}</span>
       <AutocompleteInput
         value={condition.key}
         onChangeText={(key) => {
           if (key === spaceField) {
-            onChange({key, kind: 'comparison', operator: '=', valueKind: 'string', value: ''})
+            onChange({
+              key,
+              kind: 'comparison',
+              operator: '=',
+              valueKind: 'string',
+              value: '',
+            })
           } else if (key === pathField) {
-            onChange({key, kind: 'prefix', operator: '=', valueKind: 'string', value: ''})
+            onChange({
+              key,
+              kind: 'prefix',
+              operator: '=',
+              valueKind: 'string',
+              value: '',
+            })
           } else {
-            onChange({key})
+            onChange({
+              key,
+            })
           }
         }}
         className={cn(isBuiltIn && 'border-primary/40 bg-primary/5 font-medium')}
         suggestions={[
-          {value: spaceField, description: 'Space containing the document.'},
-          {value: pathField, description: 'Document path within its space.'},
-          ...attributeNames.map((name) => ({value: name, description: DOCUMENT_ATTRIBUTE_DESCRIPTIONS[name]})),
+          {
+            value: spaceField,
+            description: 'Space containing the document.',
+          },
+          {
+            value: pathField,
+            description: 'Document path within its space.',
+          },
+          ...attributeNames.map((name) => ({
+            value: name,
+            description: DOCUMENT_ATTRIBUTE_DESCRIPTIONS[name],
+          })),
         ]}
         placeholder="Field or attribute"
         ariaLabel={`Condition ${index + 1} field`}
@@ -876,9 +1179,15 @@ function ConditionRow({
           }
           onValueChange={(operator) => {
             if (operator === 'within' || operator === 'outside') {
-              onChange({kind: 'prefix', operator: operator === 'outside' ? '≠' : '='})
+              onChange({
+                kind: 'prefix',
+                operator: operator === 'outside' ? '≠' : '=',
+              })
             } else {
-              onChange({kind: 'comparison', operator: operator === 'is-not' ? '≠' : '='})
+              onChange({
+                kind: 'comparison',
+                operator: operator === 'is-not' ? '≠' : '=',
+              })
             }
           }}
         >
@@ -894,7 +1203,14 @@ function ConditionRow({
         </Select>
       ) : (
         <>
-          <Select value={condition.kind} onValueChange={(kind: ConditionKind) => onChange({kind})}>
+          <Select
+            value={condition.kind}
+            onValueChange={(kind: ConditionKind) =>
+              onChange({
+                kind,
+              })
+            }
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -909,7 +1225,11 @@ function ConditionRow({
           {condition.kind === 'comparison' ? (
             <Select
               value={condition.operator}
-              onValueChange={(operator: Condition['operator']) => onChange({operator})}
+              onValueChange={(operator: Condition['operator']) =>
+                onChange({
+                  operator,
+                })
+              }
             >
               <SelectTrigger aria-label={`Condition ${index + 1} comparison operator`}>
                 <SelectValue />
@@ -930,7 +1250,11 @@ function ConditionRow({
       {isSpace ? (
         <AutocompleteInput
           value={condition.value}
-          onChangeText={(value) => onChange({value})}
+          onChangeText={(value) =>
+            onChange({
+              value,
+            })
+          }
           suggestions={spaceSuggestions}
           placeholder="Space ID or site name"
           ariaLabel={`Condition ${index + 1} space`}
@@ -938,7 +1262,11 @@ function ConditionRow({
       ) : isPath ? (
         <Input
           value={condition.value}
-          onChangeText={(value) => onChange({value})}
+          onChangeText={(value) =>
+            onChange({
+              value,
+            })
+          }
           placeholder="/path or /"
           aria-label={`Condition ${index + 1} path`}
           aria-invalid={!!condition.value.trim() && !isComplete(condition)}
@@ -946,7 +1274,7 @@ function ConditionRow({
       ) : needsValue ? (
         <ConditionValue condition={condition} onChange={onChange} label={`Condition ${index + 1} value`} />
       ) : (
-        <span className="text-muted-foreground px-2 text-xs italic">No value</span>
+        <span className={stylex.props(styles.sa2b7e80d).className || ''}>No value</span>
       )}
       <Button
         variant="ghost"
@@ -960,7 +1288,6 @@ function ConditionRow({
     </div>
   )
 }
-
 function ConditionValue({
   condition,
   onChange,
@@ -971,8 +1298,9 @@ function ConditionValue({
   label: string
 }) {
   const suggestions = useGlobalAttributeValues(condition)
-  const autocompleteSuggestions = suggestions.map((value) => ({value}))
-
+  const autocompleteSuggestions = suggestions.map((value) => ({
+    value,
+  }))
   if (condition.kind === 'comparison') {
     return (
       <div className="flex min-w-0 gap-2">
@@ -987,7 +1315,7 @@ function ConditionValue({
             })
           }}
         >
-          <SelectTrigger className="w-24" aria-label={`${label} type`}>
+          <SelectTrigger className={stylex.props(styles.s36c758).className || ''} aria-label={`${label} type`}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -997,7 +1325,14 @@ function ConditionValue({
           </SelectContent>
         </Select>
         {condition.valueKind === 'bool' ? (
-          <Select value={condition.value || 'true'} onValueChange={(value) => onChange({value})}>
+          <Select
+            value={condition.value || 'true'}
+            onValueChange={(value) =>
+              onChange({
+                value,
+              })
+            }
+          >
             <SelectTrigger aria-label={label}>
               <SelectValue />
             </SelectTrigger>
@@ -1009,7 +1344,11 @@ function ConditionValue({
         ) : (
           <AutocompleteInput
             value={condition.value}
-            onChangeText={(value) => onChange({value})}
+            onChangeText={(value) =>
+              onChange({
+                value,
+              })
+            }
             suggestions={autocompleteSuggestions}
             inputMode={condition.valueKind === 'int' ? 'numeric' : undefined}
             placeholder="Value"
@@ -1023,14 +1362,17 @@ function ConditionValue({
   return (
     <AutocompleteInput
       value={condition.value}
-      onChangeText={(value) => onChange({value})}
+      onChangeText={(value) =>
+        onChange({
+          value,
+        })
+      }
       suggestions={autocompleteSuggestions}
       placeholder={condition.kind === 'prefix' ? 'Prefix' : 'Text to find'}
       ariaLabel={label}
     />
   )
 }
-
 function useGlobalAttributeValues(condition: Condition) {
   const [values, setValues] = useState<string[]>([])
   useEffect(() => {
@@ -1045,7 +1387,6 @@ function useGlobalAttributeValues(condition: Condition) {
       setValues([])
       return
     }
-
     const controller = new AbortController()
     grpcClient.documents
       .listDocumentAttributeValues(
@@ -1055,7 +1396,9 @@ function useGlobalAttributeValues(condition: Condition) {
           prefix: condition.value,
           pageSize: 30,
         },
-        {signal: controller.signal},
+        {
+          signal: controller.signal,
+        },
       )
       .then((response) => {
         setValues(
@@ -1073,7 +1416,6 @@ function useGlobalAttributeValues(condition: Condition) {
   }, [condition.key, condition.kind, condition.value, condition.valueKind])
   return values
 }
-
 function QueryState({icon, title, detail, tone}: {icon: ReactNode; title: string; detail: string; tone?: 'error'}) {
   return (
     <div
@@ -1082,8 +1424,10 @@ function QueryState({icon, title, detail, tone}: {icon: ReactNode; title: string
         tone === 'error' && 'border-destructive/40 bg-destructive/5',
       )}
     >
-      <span className={cn('text-muted-foreground mb-3', tone === 'error' && 'text-destructive')}>{icon}</span>
-      <h2 className="text-sm font-medium">{title}</h2>
+      <span className={cn(stylex.props(styles.s5bf2d9b6).className || '', tone === 'error' && 'text-destructive')}>
+        {icon}
+      </span>
+      <h2 className={stylex.props(styles.s9d4b128d).className || ''}>{title}</h2>
       <p className="text-muted-foreground mt-1 max-w-sm text-sm">{detail}</p>
     </div>
   )

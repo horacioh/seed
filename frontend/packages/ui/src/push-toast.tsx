@@ -1,6 +1,11 @@
+import * as stylex from '@stylexjs/stylex'
 import {hostnameStripProtocol, StateStream} from '@shm/shared'
 import {useStream} from '@shm/shared/use-stream'
-
+const styles = stylex.create({
+  sa176bd57: {
+    fontWeight: '100',
+  },
+})
 export type PushResourceStatus = {
   hosts: {
     host: string
@@ -11,10 +16,16 @@ export type PushResourceStatus = {
 }
 
 /** Counts of completed (success or error) and total destination hosts. */
-function pushProgress(state: PushResourceStatus | null | undefined): {done: number; total: number} {
+function pushProgress(state: PushResourceStatus | null | undefined): {
+  done: number
+  total: number
+} {
   const total = state?.hosts.length ?? 0
   const done = state?.hosts.filter((h) => h.status === 'success' || h.status === 'error').length ?? 0
-  return {done, total}
+  return {
+    done,
+    total,
+  }
 }
 
 /**
@@ -43,7 +54,6 @@ export function CopiedToast({
   }
   return <p>{errorMessage ? `Copied URL. Failed to push: ${errorMessage}` : 'Copied URL. Failed to push to servers'}</p>
 }
-
 export function PublishedToast({
   pushStatus,
   status,
@@ -89,7 +99,6 @@ export function PushedToast({
   }
   return <p>{errorMessage ? `Failed to push to servers: ${errorMessage}` : 'Failed to push to servers'}</p>
 }
-
 export function PushToast({
   pushStatus,
   status,
@@ -119,7 +128,7 @@ export function PushToast({
         return (
           <p key={host} className={status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>
             <span>{hostnameStripProtocol(host)}</span>
-            <span className="font-thin">{` - ${message || 'Syncing...'}`}</span>
+            <span className={stylex.props(styles.sa176bd57).className || ''}>{` - ${message || 'Syncing...'}`}</span>
           </p>
         )
       })}

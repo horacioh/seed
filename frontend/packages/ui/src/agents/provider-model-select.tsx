@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {AgentModelRef, ModelProviderInfo, ModelProviderType} from './client'
 import {useModelProviders, useProviderModels} from './models'
 import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
@@ -17,6 +18,95 @@ import {ProviderIcon} from './provider-icons'
  * providers) without changing the active pair. Replaces the separate provider
  * dropdown + model dropdown in agent settings and agent creation.
  */
+const styles = stylex.create({
+  sf8eef924: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sccf39e3a: {
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sf0768e89: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  s898dc4c9: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    padding: 'calc(0.25rem * 2)',
+  },
+  s333ff802: {
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  s8a8b6bda: {
+    borderColor: 'var(--border)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s345f16: {
+    paddingBottom: 'calc(0.25rem * 1)',
+  },
+  s96733437: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 2)',
+    paddingBottom: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '600',
+  },
+  s658e7cef: {
+    color: 'var(--destructive)',
+    display: 'block',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  sc17542d: {
+    display: 'block',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  s8e73fafa: {
+    marginLeft: 'calc(0.25rem * 2)',
+    display: 'flex',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '0.125rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+})
 export function ProviderModelSelect({
   serverUrl,
   accountUid,
@@ -45,11 +135,9 @@ export function ProviderModelSelect({
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const providers = useModelProviders(serverUrl, accountUid, agentId)
-
   const trimmedQuery = query.trim().toLowerCase()
   const valueProvider = providers.data?.find((provider) => provider.name === value.provider)
   const triggerLabel = value.model || 'Select a model'
-
   return (
     <Popover
       open={open}
@@ -68,21 +156,26 @@ export function ProviderModelSelect({
       >
         <span className="flex min-w-0 items-center gap-2">
           {valueProvider ? (
-            <ProviderIcon type={valueProvider.type as ModelProviderType} className="size-4 shrink-0" />
+            <ProviderIcon
+              type={valueProvider.type as ModelProviderType}
+              className={stylex.props(styles.sf8eef924).className || ''}
+            />
           ) : null}
-          <span className={cn('truncate', !value.model && 'text-muted-foreground')}>{triggerLabel}</span>
+          <span className={cn(stylex.props(styles.s6e724d66).className || '', !value.model && 'text-muted-foreground')}>
+            {triggerLabel}
+          </span>
           {value.model && (providers.data?.length ?? 0) > 1 ? (
-            <span className="text-muted-foreground shrink-0 truncate text-xs">{value.provider}</span>
+            <span className={stylex.props(styles.sccf39e3a).className || ''}>{value.provider}</span>
           ) : null}
         </span>
-        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+        <ChevronsUpDown className={stylex.props(styles.sf0768e89).className || ''} />
       </PopoverTrigger>
       <PopoverContent
         align="start"
         className="w-[var(--radix-popover-trigger-width)] min-w-[320px] p-0"
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
-        <div className="border-border border-b p-2">
+        <div className={stylex.props(styles.s898dc4c9).className || ''}>
           <Input
             autoFocus
             value={query}
@@ -92,13 +185,13 @@ export function ProviderModelSelect({
         </div>
         <div className="max-h-80 overflow-y-auto p-1">
           {providers.isLoading ? (
-            <div className="px-2 py-3">
+            <div className={stylex.props(styles.s333ff802).className || ''}>
               <SizableText size="sm" color="muted">
                 Loading providers…
               </SizableText>
             </div>
           ) : !providers.data?.length ? (
-            <div className="px-2 py-3">
+            <div className={stylex.props(styles.s333ff802).className || ''}>
               <SizableText size="sm" color="muted">
                 No providers configured yet.
               </SizableText>
@@ -124,7 +217,7 @@ export function ProviderModelSelect({
           )}
         </div>
         {onAddProvider ? (
-          <div className="border-border border-t p-1">
+          <div className={stylex.props(styles.s8a8b6bda).className || ''}>
             <button
               type="button"
               className="hover:bg-muted text-muted-foreground flex w-full items-center gap-1.5 rounded-sm px-2 py-1.5 text-left text-xs"
@@ -133,7 +226,7 @@ export function ProviderModelSelect({
                 onAddProvider()
               }}
             >
-              <Plus className="size-3.5" />
+              <Plus className={stylex.props(styles.s3269316e).className || ''} />
               Add provider…
             </button>
           </div>
@@ -169,7 +262,6 @@ function ProviderModelSection({
   const models = useProviderModels(serverUrl, accountUid, provider.name, agentId)
   const [showAll, setShowAll] = useState(false)
   const curated = useMemo(() => curateProviderModels(models.data, provider.type), [models.data, provider.type])
-
   const visibleModels = useMemo(() => {
     if (query) {
       return curated.all.filter(
@@ -182,23 +274,25 @@ function ProviderModelSection({
   // While searching, a provider with no matches drops out entirely instead of
   // showing an empty header.
   if (query && !visibleModels.length) return null
-
   return (
-    <div className="pb-1">
-      <div className="text-muted-foreground flex items-center gap-1.5 px-2 pt-2 pb-1 text-xs font-semibold">
-        <ProviderIcon type={provider.type as ModelProviderType} className="size-3.5" />
-        <span className="truncate">{provider.name}</span>
+    <div className={stylex.props(styles.s345f16).className || ''}>
+      <div className={stylex.props(styles.s96733437).className || ''}>
+        <ProviderIcon
+          type={provider.type as ModelProviderType}
+          className={stylex.props(styles.s3269316e).className || ''}
+        />
+        <span className={stylex.props(styles.s6e724d66).className || ''}>{provider.name}</span>
       </div>
       {models.isError ? (
-        <SizableText size="xs" className="text-destructive block px-2 py-1">
+        <SizableText size="xs" className={stylex.props(styles.s658e7cef).className || ''}>
           {models.error instanceof Error ? models.error.message : 'Could not load models'}
         </SizableText>
       ) : models.isLoading ? (
-        <SizableText size="xs" color="muted" className="block px-2 py-1">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.sc17542d).className || ''}>
           Loading models…
         </SizableText>
       ) : !visibleModels.length ? (
-        <SizableText size="xs" color="muted" className="block px-2 py-1">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.sc17542d).className || ''}>
           No models found.
         </SizableText>
       ) : (
@@ -226,22 +320,35 @@ function ProviderModelSection({
                   }
                   disabled={isActive}
                   className={cn(
-                    'ml-2 flex size-4 shrink-0 items-center justify-center rounded-xs border',
+                    stylex.props(styles.s8e73fafa).className || '',
                     isEnabled ? 'bg-primary border-primary text-primary-foreground' : 'border-border bg-transparent',
                     isActive && 'opacity-50',
                   )}
-                  onClick={() => onToggleModel({provider: provider.name, model: model.id}, !isEnabled)}
+                  onClick={() =>
+                    onToggleModel(
+                      {
+                        provider: provider.name,
+                        model: model.id,
+                      },
+                      !isEnabled,
+                    )
+                  }
                 >
-                  {isEnabled ? <Check className="size-3" /> : null}
+                  {isEnabled ? <Check className={stylex.props(styles.sca3de967).className || ''} /> : null}
                 </button>
               ) : null}
               <button
                 type="button"
                 className="flex min-w-0 flex-1 items-center justify-between gap-2 px-2 py-1.5 text-left text-sm"
-                onClick={() => onSelect({provider: provider.name, model: model.id})}
+                onClick={() =>
+                  onSelect({
+                    provider: provider.name,
+                    model: model.id,
+                  })
+                }
               >
                 <span className="min-w-0 truncate">{modelLabel(model)}</span>
-                {isActive ? <Check className="size-4 shrink-0" /> : null}
+                {isActive ? <Check className={stylex.props(styles.sf8eef924).className || ''} /> : null}
               </button>
             </div>
           )

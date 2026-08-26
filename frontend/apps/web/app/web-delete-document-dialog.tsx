@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {createTombstoneRef, followToDocument, type SeedClient} from '@seed-hypermedia/client'
 import type {HMDocumentInfo, HMSigner, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {hmId, useUniversalClient} from '@shm/shared'
@@ -15,12 +16,22 @@ import {Text} from '@shm/ui/text'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useQuery} from '@tanstack/react-query'
 import {enqueueWebDocumentCardCleanup} from './document-edit/web-document-card-cleanup'
-
+const styles = stylex.create({
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s11c1d1bc: {
+    color: 'var(--destructive)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 export type WebDeleteDocumentDialogInput = {
   id: UnpackedHypermediaId
   onSuccess?: () => void
 }
-
 export type WebDeleteDocumentDialogOptions = {
   signingAccountId?: string
   capabilityId?: string
@@ -33,7 +44,6 @@ export function useWebDeleteDocumentDialog(options: WebDeleteDocumentDialogOptio
     isAlert: true,
   })
 }
-
 function WebDeleteDocumentDialog({
   input: {id, onSuccess},
   onClose,
@@ -48,21 +58,25 @@ function WebDeleteDocumentDialog({
   const doc = useResource(id)
   const directory = useQuery(queryDirectory(client, id, 'AllDescendants'))
   const childDocs = getChildDocuments(id, directory.data)
-
   if (doc.isLoading)
     return (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
-
   if (doc.isError || doc.data?.type !== 'document') {
-    return <Text className="text-destructive text-sm">{doc.error ? String(doc.error) : 'Could not load document'}</Text>
+    return (
+      <Text className={stylex.props(styles.s11c1d1bc).className || ''}>
+        {doc.error ? String(doc.error) : 'Could not load document'}
+      </Text>
+    )
   }
-
-  const childDocIds = childDocs.map((item) => hmId(id.uid, {path: item.path}))
+  const childDocIds = childDocs.map((item) =>
+    hmId(id.uid, {
+      path: item.path,
+    }),
+  )
   const document = doc.data.document
-
   return (
     <DeleteDocumentDialog
       document={{
@@ -90,7 +104,6 @@ function WebDeleteDocumentDialog({
     />
   )
 }
-
 function getChildDocuments(id: UnpackedHypermediaId, documents: HMDocumentInfo[] | undefined): HMDocumentInfo[] {
   const parentPath = id.path ?? []
   return (documents || []).filter((item) => {
@@ -99,14 +112,16 @@ function getChildDocuments(id: UnpackedHypermediaId, documents: HMDocumentInfo[]
     return parentPath.every((segment, index) => item.path[index] === segment)
   })
 }
-
 export async function deleteWebDocuments(
   client: Pick<UniversalClient, 'request' | 'publish' | 'getSigner' | 'deleteRecent'>,
-  input: {ids: UnpackedHypermediaId[]; signingAccountId: string; capabilityId?: string},
+  input: {
+    ids: UnpackedHypermediaId[]
+    signingAccountId: string
+    capabilityId?: string
+  },
 ): Promise<void> {
   if (!client.getSigner) throw new Error('Signing not available')
   const signer = client.getSigner(input.signingAccountId) as HMSigner
-
   await Promise.all(
     input.ids.map(async (id) => {
       await client.deleteRecent?.(id.id)
@@ -141,7 +156,6 @@ export async function deleteWebDocuments(
       await client.publish(refInput)
     }),
   )
-
   const selectedDeletedDocument = input.ids[0]
   if (selectedDeletedDocument) {
     await enqueueWebDocumentCardCleanup(
@@ -150,17 +164,20 @@ export async function deleteWebDocuments(
         signingAccountUid: input.signingAccountId,
         capabilityId: input.capabilityId,
       },
-      {client},
+      {
+        client,
+      },
     )
   }
-
   invalidateQueries([])
   input.ids.forEach((id) => {
     invalidateQueries([queryKeys.ENTITY, id.id])
     invalidateQueries([queryKeys.RESOLVED_ENTITY, id.id])
     invalidateQueries([queryKeys.DOCUMENT_INTERACTION_SUMMARY, id.id])
     getParentPaths(id.path).forEach((path) => {
-      const parentId = hmId(id.uid, {path})
+      const parentId = hmId(id.uid, {
+        path,
+      })
       invalidateQueries([queryKeys.DOC_LIST_DIRECTORY, parentId.id, 'Children'])
       invalidateQueries([queryKeys.DOC_LIST_DIRECTORY, parentId.id, 'AllDescendants'])
       invalidateQueries([queryKeys.DOCUMENT_INTERACTION_SUMMARY, parentId.id])

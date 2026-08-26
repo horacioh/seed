@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {MainWrapper} from '@/components/main-wrapper'
 import {useNotifyServiceHost} from '@/models/gateway-settings'
 import {
@@ -38,11 +39,63 @@ import {useNavRoute} from '@shm/shared/utils/navigation'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {Info, Settings} from 'lucide-react'
 import {useCallback, useEffect, useMemo, useState} from 'react'
-
+const styles = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s6aa0f3d9: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+    color: 'oklch(66.6% 0.179 58.318)',
+  },
+  s70e15751: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    color: 'oklch(66.6% 0.179 58.318)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s6f6244df: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(87.9% 0.169 91.605)',
+    backgroundColor: 'oklch(98.7% 0.022 95.277)',
+    padding: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(41.4% 0.112 45.904)',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  s67e3bb2b: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s9d4b128d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  sb87f7412: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s9141e77: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+})
 export default function NotificationsPage() {
   const selectedAccount = useSelectedAccount()
   const accountUid = selectedAccount?.id.uid
-
   if (!accountUid) {
     return (
       <PanelContainer className="dark:bg-background bg-white">
@@ -54,12 +107,9 @@ export default function NotificationsPage() {
       </PanelContainer>
     )
   }
-
   return <NotificationsForAccount accountUid={accountUid} />
 }
-
 const NOTIFICATIONS_VIEW_KEY = 'notifications-view'
-
 function NotificationsForAccount({accountUid}: {accountUid: string}) {
   const navigate = useNavigate()
   const replaceNavigate = useNavigate('replace')
@@ -74,20 +124,25 @@ function NotificationsForAccount({accountUid}: {accountUid: string}) {
   const inbox = useNotificationInbox(accountUid)
   const notifications = inbox.data || []
   const filter = (route.key === 'notifications' && route.view) || 'all'
-
   const persistedView = useQuery({
     queryKey: [queryKeys.SETTINGS, NOTIFICATIONS_VIEW_KEY],
     queryFn: () => client.appSettings.getSetting.query(NOTIFICATIONS_VIEW_KEY),
   })
   const setPersistedView = useMutation({
-    mutationFn: (view: string) => client.appSettings.setSetting.mutate({key: NOTIFICATIONS_VIEW_KEY, value: view}),
+    mutationFn: (view: string) =>
+      client.appSettings.setSetting.mutate({
+        key: NOTIFICATIONS_VIEW_KEY,
+        value: view,
+      }),
     onSuccess: () => invalidateQueries([queryKeys.SETTINGS, NOTIFICATIONS_VIEW_KEY]),
   })
-
   const setFilter = useCallback(
     (view: 'all' | 'unread') => {
       setPersistedView.mutate(view)
-      replaceNavigate({key: 'notifications', view})
+      replaceNavigate({
+        key: 'notifications',
+        view,
+      })
     },
     [replaceNavigate, setPersistedView],
   )
@@ -96,7 +151,10 @@ function NotificationsForAccount({accountUid}: {accountUid: string}) {
   useEffect(() => {
     if (route.key !== 'notifications' || route.view) return
     if (persistedView.data === 'unread') {
-      replaceNavigate({key: 'notifications', view: 'unread'})
+      replaceNavigate({
+        key: 'notifications',
+        view: 'unread',
+      })
     }
   }, [persistedView.data]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -109,17 +167,17 @@ function NotificationsForAccount({accountUid}: {accountUid: string}) {
       }),
     [readState.data],
   )
-
   const maxLoadedEventAtMs = useMemo(() => {
     return getMaxLoadedNotificationEventAtMs(notifications)
   }, [notifications])
-
   useEffect(() => {
     if (!notifyServiceHost) return
     if (syncNow.isLoading) return
-    syncNow.mutate({accountUid, notifyServiceHost})
+    syncNow.mutate({
+      accountUid,
+      notifyServiceHost,
+    })
   }, [accountUid, notifyServiceHost])
-
   return (
     <PanelContainer className="dark:bg-background bg-white">
       <MainWrapper scrollable>
@@ -135,7 +193,7 @@ function NotificationsForAccount({accountUid}: {accountUid: string}) {
               <>
                 {syncStatus.data?.lastSyncError ? (
                   <Tooltip content={syncStatus.data.lastSyncError}>
-                    <Info size={16} className="text-muted-foreground" />
+                    <Info size={16} className={stylex.props(styles.sf2718385).className || ''} />
                   </Tooltip>
                 ) : null}
                 <NotificationEmailSettingsDialog accountUid={accountUid} />
@@ -187,7 +245,6 @@ function NotificationsForAccount({accountUid}: {accountUid: string}) {
     </PanelContainer>
   )
 }
-
 function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
   // Never fall back to a hardcoded host: passing the wrong server poisons the
   // per-account notify host hint and clobbers the stored config. Gate on a
@@ -209,7 +266,6 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
   const verificationExpired = Boolean(config?.verificationExpired)
   const needsVerification = Boolean(currentEmail && !isVerified)
   const canResendVerification = needsVerification && (verificationExpired || !verificationSendTime)
-
   return (
     <Dialog
       open={isOpen}
@@ -226,8 +282,8 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
           <div className="flex min-w-0 flex-col items-end">
             <p className="text-muted-foreground max-w-[260px] truncate text-sm">{currentEmail}</p>
             {needsVerification ? (
-              <div className="flex gap-1 text-amber-600">
-                <p className="text-xs text-amber-600">Email not verified</p>
+              <div className={stylex.props(styles.s6aa0f3d9).className || ''}>
+                <p className={stylex.props(styles.s70e15751).className || ''}>Email not verified</p>
                 <Spinner size="small" />
               </div>
             ) : null}
@@ -248,14 +304,14 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
         {isLoading ? (
           <Spinner />
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className={stylex.props(styles.sfbc6e28f).className || ''}>
             {!isNotifyServerConnected ? (
-              <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+              <div className={stylex.props(styles.s6f6244df).className || ''}>
                 You are not connected to the notification server.
               </div>
             ) : null}
             {needsVerification ? (
-              <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+              <div className={stylex.props(styles.s6f6244df).className || ''}>
                 <p>
                   {verificationSendTime && !verificationExpired
                     ? 'Email verification is pending. Click the link in your inbox to activate notification emails.'
@@ -264,7 +320,7 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
                       : 'Notification emails are paused until you verify this email address.'}
                 </p>
                 {canResendVerification ? (
-                  <div className="mt-2">
+                  <div className={stylex.props(styles.s33458c).className || ''}>
                     <Button
                       type="button"
                       size="sm"
@@ -286,10 +342,10 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
             ) : null}
             {isNotifyServerConnected && currentEmail && !isEditing ? (
               <>
-                <div className="rounded-md border p-3">
-                  <p className="text-sm font-medium">{currentEmail}</p>
+                <div className={stylex.props(styles.s67e3bb2b).className || ''}>
+                  <p className={stylex.props(styles.s9d4b128d).className || ''}>{currentEmail}</p>
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className={stylex.props(styles.sb87f7412).className || ''}>
                   <Button
                     type="button"
                     variant="outline"
@@ -320,12 +376,14 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
               </>
             ) : isNotifyServerConnected ? (
               <form
-                className="flex flex-col gap-3"
+                className={stylex.props(styles.sfbc6e28f).className || ''}
                 onSubmit={(e) => {
                   e.preventDefault()
                   if (!emailInput) return
                   setConfig.mutate(
-                    {email: emailInput},
+                    {
+                      email: emailInput,
+                    },
                     {
                       onSuccess: (result: any) => {
                         setIsOpen(false)
@@ -349,7 +407,7 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
                   onChange={(e) => setEmailInput(e.target.value)}
                   autoFocus
                 />
-                <div className="flex justify-end gap-2">
+                <div className={stylex.props(styles.sb87f7412).className || ''}>
                   {currentEmail ? (
                     <Button
                       type="button"
@@ -372,7 +430,7 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
                 </div>
               </form>
             ) : null}
-            <div className="flex justify-end">
+            <div className={stylex.props(styles.s9141e77).className || ''}>
               <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>
                 Close
               </Button>

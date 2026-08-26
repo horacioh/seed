@@ -1,10 +1,12 @@
 import {defineConfig} from 'vitest/config'
+import stylex from '@stylexjs/unplugin'
 import * as path from 'path'
 
 export default defineConfig({
   esbuild: {
     jsx: 'automatic',
   },
+  plugins: [stylex.vite()],
   test: {
     testTimeout: 10000, // 10 seconds
     setupFiles: ['fake-indexeddb/auto'],

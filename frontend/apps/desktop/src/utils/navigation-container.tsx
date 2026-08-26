@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {desktopUniversalClient} from '@/desktop-universal-client'
 import {ipc} from '@/ipc'
 import {useSelectedAccountContacts} from '@shm/shared/models/contacts'
@@ -23,9 +24,13 @@ import {ReactNode, useRef} from 'react'
 import {useAppContext} from '../app-context'
 import {encodeRouteToPath} from './route-encoding'
 import {AppWindowEvent} from './window-events'
-
+const styles = stylex.create({
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+})
 const [updateNavState, navState] = writeableStateStream(window.initNavState)
-
 const navigation = {
   dispatch(action: NavAction) {
     if (action.type === 'push' || action.type === 'replace' || action.type === 'backplace') {
@@ -43,18 +48,20 @@ const navigation = {
   state: navState,
   selectedIdentity: streamSelector<NavState, string | null>(navState, (state) => state.selectedIdentity || null),
 }
-
 navigation.state.subscribe(() => {
   const state = navigation.state.get()
   ipc.send('windowNavState', state)
 })
-
 window.appWindowEvents?.subscribe((event: AppWindowEvent) => {
   if (event.type === 'back') {
-    navigation.dispatch({type: 'pop'})
+    navigation.dispatch({
+      type: 'pop',
+    })
   }
   if (event.type === 'forward') {
-    navigation.dispatch({type: 'forward'})
+    navigation.dispatch({
+      type: 'forward',
+    })
   }
   if (event.type === 'selectedIdentityChanged') {
     // Update the navigation state with the new selected identity
@@ -67,30 +74,29 @@ window.appWindowEvents?.subscribe((event: AppWindowEvent) => {
     })
   }
 })
-
 function reportRouteLinkClick(route: NavRoute) {
   reportTelemetry(telemetryKeyForRoute(route), TelemetryStage.LinkClick)
 }
-
 export function NavigationContainer({children}: {children: ReactNode}) {
   const {externalOpen} = useAppContext()
-
   const gwUrl = useGatewayUrl().data || DEFAULT_GATEWAY_URL
-
   const experiments = useExperiments().data
-
   const contacts = useSelectedAccountContacts()
-
   const pushAfterActionRef = useRef<ReturnType<typeof usePushAfterAction>>()
-
   return (
     <UniversalAppProvider
       ipfsFileUrl={DAEMON_FILE_URL}
       openRoute={(route: NavRoute, replace?: boolean) => {
         if (replace) {
-          navigation.dispatch({type: 'replace', route})
+          navigation.dispatch({
+            type: 'replace',
+            route,
+          })
         } else {
-          navigation.dispatch({type: 'push', route})
+          navigation.dispatch({
+            type: 'push',
+            route,
+          })
         }
       }}
       experiments={experiments}
@@ -120,7 +126,10 @@ export function NavigationContainer({children}: {children: ReactNode}) {
               accessoryWidth: currentState.accessoryWidth,
             })
           } else {
-            navigation.dispatch({type: 'push', route})
+            navigation.dispatch({
+              type: 'push',
+              route,
+            })
           }
           return
         }
@@ -134,7 +143,10 @@ export function NavigationContainer({children}: {children: ReactNode}) {
       hmUrlHref={true}
       selectedIdentity={navigation.selectedIdentity}
       setSelectedIdentity={(keyId: string | null) => {
-        navigation.dispatch({type: 'selectedIdentity', value: keyId})
+        navigation.dispatch({
+          type: 'selectedIdentity',
+          value: keyId,
+        })
       }}
       universalClient={desktopUniversalClient}
       contacts={contacts.data}
@@ -143,16 +155,35 @@ export function NavigationContainer({children}: {children: ReactNode}) {
         window.ipc?.broadcast(event)
       }}
       onCopyReference={async (id: UnpackedHypermediaId) => {
-        const url = routeToUrl({key: 'document', id}, {hostname: gwUrl})
+        const url = routeToUrl(
+          {
+            key: 'document',
+            id,
+          },
+          {
+            hostname: gwUrl,
+          },
+        )
         if (!url) return
         await copyTextToClipboard(url)
-        pushAfterActionRef.current?.({id, trigger: 'copy', onlyPushToHost: gwUrl})
+        pushAfterActionRef.current?.({
+          id,
+          trigger: 'copy',
+          onlyPushToHost: gwUrl,
+        })
       }}
       onPushReference={(id: UnpackedHypermediaId) => {
-        pushAfterActionRef.current?.({id, trigger: 'copy', onlyPushToHost: gwUrl})
+        pushAfterActionRef.current?.({
+          id,
+          trigger: 'copy',
+          onlyPushToHost: gwUrl,
+        })
       }}
       onPushPublished={(id: UnpackedHypermediaId) => {
-        pushAfterActionRef.current?.({id, trigger: 'publish'})
+        pushAfterActionRef.current?.({
+          id,
+          trigger: 'publish',
+        })
       }}
     >
       <NavContextProvider value={navigation}>
@@ -163,7 +194,6 @@ export function NavigationContainer({children}: {children: ReactNode}) {
     </UniversalAppProvider>
   )
 }
-
 function PushAfterActionSetter({
   pushAfterActionRef,
 }: {
@@ -173,14 +203,13 @@ function PushAfterActionSetter({
   pushAfterActionRef.current = pushAfterAction
   return null
 }
-
 function DevTools() {
   const {data: experiments} = useExperiments()
   const route = useNavRoute()
   const routeDialog = useAppDialog(RouteDialog)
   return experiments?.developerTools ? (
     <>
-      <div className="select-none">
+      <div className={stylex.props(styles.sa145969).className || ''}>
         <ReactQueryDevtools />
       </div>
       <div
@@ -197,7 +226,14 @@ function DevTools() {
     </>
   ) : null
 }
-
 function RouteDialog({input}: {input: NavRoute}) {
-  return <code style={{whiteSpace: 'pre-wrap'}}>{JSON.stringify(input, null, 2)}</code>
+  return (
+    <code
+      style={{
+        whiteSpace: 'pre-wrap',
+      }}
+    >
+      {JSON.stringify(input, null, 2)}
+    </code>
+  )
 }

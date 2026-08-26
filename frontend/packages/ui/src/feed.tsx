@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMBlockNode, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useDeleteComment, useHackyAuthorsSubscriptions} from '@shm/shared/comments-service-provider'
 import {useDocumentActions} from '@shm/shared/document-actions-context'
@@ -39,22 +40,190 @@ import {Spinner} from './spinner'
 import {Tooltip} from './tooltip'
 import {useCopyHmLink} from './use-copy-hm-link'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s8d50829d: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  se295dcdf: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s8ebd66a8: {
+    margin: 'calc(0.25rem * 4)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s3566be66: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  s2ff5c3: {
+    height: 'calc(0.25rem * 20)',
+  },
+  sb61efeff: {
+    color: 'var(--muted-foreground)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    textAlign: 'center',
+  },
+  s76b0b3a9: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sc250396c: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s342f90d0: {
+    color: 'var(--foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s2011040e: {
+    marginInline: 'calc(0.25rem * 1)',
+    marginBottom: 'calc(0.25rem * 1)',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  },
+  s8eee23a7: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s61f21f46: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'calc(0.25rem * 1)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 0.5)',
+    verticalAlign: 'middle',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s2ad4933: {
+    marginLeft: 'calc(0.25rem * -4)',
+  },
+  see106aa0: {
+    marginLeft: 'calc(0.25rem * -3)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s4b944b9: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  se99caec9: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s7b2a91e8: {
+    position: 'relative',
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s34b4f5fe: {
+    flex: '1',
+    paddingBottom: 'calc(0.25rem * 6)',
+  },
+  s731a65c4: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s2ad4932: {
+    marginLeft: 'calc(0.25rem * -3)',
+  },
+})
 export type DraftVersionEntry = {
   docId: UnpackedHypermediaId
   draftId: string
   deps?: string[]
-  metadata?: {name?: string}
+  metadata?: {
+    name?: string
+  }
   onDiscardConfirm?: (draftId: string, send: (event: DocumentMachineEvent) => void) => void
 }
-
 export function shouldShowDraftVersionEntry(
   filterEventType: HMListEventsParams['filterEventType'] | undefined,
   draftVersionEntry: DraftVersionEntry | undefined,
 ) {
   return !!draftVersionEntry && !!filterEventType?.includes('Ref')
 }
-
 export function getDraftVersionInsertIndex(events: LoadedEvent[], draft: DraftVersionEntry | undefined) {
   if (!draft?.deps?.length) return 0
   const baseVersions = new Set(draft.deps)
@@ -66,7 +235,6 @@ export function getDraftVersionInsertIndex(events: LoadedEvent[], draft: DraftVe
 export function getLatestDocUpdateVersion(events: LoadedEvent[]) {
   return events.find((event) => event.type === 'doc-update')?.document.version ?? null
 }
-
 export function isSelectedDocUpdateVersion(
   eventVersion: string | undefined,
   routeVersion: string | null | undefined,
@@ -77,7 +245,6 @@ export function isSelectedDocUpdateVersion(
   if (routeVersion) return eventVersion === routeVersion
   return !!routeLatest && !!latestVersion && eventVersion === latestVersion
 }
-
 export function canShowRestoreVersionButton(input: {
   isSingleResource?: boolean
   selectedAccountUid?: string
@@ -112,7 +279,6 @@ export const RESTORE_VERSION_ACTION_BUTTON_CLASS =
 
 /** Shared classes for version-row action icons so restore/copy actions stay readable. */
 export const RESTORE_VERSION_ACTION_ICON_CLASS = 'size-4'
-
 export function Feed({
   filterResource,
   filterAuthors,
@@ -130,7 +296,6 @@ export function Feed({
 }) {
   const observerRef = useRef<IntersectionObserver>()
   const lastElementNodeRef = useRef<HTMLDivElement>(null)
-
   const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error, refetch} = useActivityFeed({
     filterResource,
     filterAuthors,
@@ -144,14 +309,12 @@ export function Feed({
       observerRef.current.disconnect()
       observerRef.current = undefined
     }
-
     const node = lastElementNodeRef.current
 
     // Early return if no node or still loading
     if (!node || isLoading) {
       return
     }
-
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
@@ -163,9 +326,7 @@ export function Feed({
         rootMargin: '100px',
       },
     )
-
     observerRef.current.observe(node)
-
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect()
@@ -210,45 +371,45 @@ export function Feed({
 
   // Subscribe to author accounts for discovery (desktop only, no-op on web)
   useHackyAuthorsSubscriptions(authorIds)
-
   const isSingleResource = filterResource && !filterResource.endsWith('*') ? true : false
   const shouldRenderDraftVersion = shouldShowDraftVersionEntry(filterEventType, draftVersionEntry)
   const draftInsertIndex = shouldRenderDraftVersion ? getDraftVersionInsertIndex(allEvents, draftVersionEntry) : -1
   const latestDocUpdateVersion = isSingleResource ? getLatestDocUpdateVersion(allEvents) : null
-
   if (error) {
     return (
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className={stylex.props(styles.s8d50829d).className || ''}>
         <p>Feed error. try again</p>
       </div>
     )
   }
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-3">
+      <div className={stylex.props(styles.se295dcdf).className || ''}>
         <Spinner />
       </div>
     )
   }
-
   if (error) {
     return (
-      <div className="m-4 flex flex-col items-center justify-center gap-2 p-3">
-        <CircleAlert className="text-muted-foreground size-7" />
-        <p className="text-muted-foreground text-sm">Error Loading Feed</p>
-        <Button size="sm" variant="default" onClick={() => refetch()} className="mt-2">
+      <div className={stylex.props(styles.s8ebd66a8).className || ''}>
+        <CircleAlert className={stylex.props(styles.s3566be66).className || ''} />
+        <p className={stylex.props(styles.sa56e915f).className || ''}>Error Loading Feed</p>
+        <Button
+          size="sm"
+          variant="default"
+          onClick={() => refetch()}
+          className={stylex.props(styles.s33458c).className || ''}
+        >
           retry
         </Button>
       </div>
     )
   }
-
   return (
     <SelectionContent>
       <div>
         {allEvents.map((e, index) => {
           const route = getEventRoute(e)
-
           if (e.type == 'comment' && e.replyingComment) {
             return (
               <Fragment key={`row-${e.type}-${e.id}-${e.time}`}>
@@ -269,7 +430,6 @@ export function Feed({
               </Fragment>
             )
           }
-
           return (
             <Fragment key={`row-${e.type}-${e.id}-${e.time}`}>
               {index === draftInsertIndex && draftVersionEntry ? (
@@ -292,16 +452,15 @@ export function Feed({
         {draftInsertIndex === allEvents.length && draftVersionEntry ? (
           <DraftVersionItem draft={draftVersionEntry} hasNewerPublishedVersion={draftInsertIndex > 0} />
         ) : null}
-        {!isLoading && <div className="h-20" ref={lastElementNodeRef} />}
+        {!isLoading && <div className={stylex.props(styles.s2ff5c3).className || ''} ref={lastElementNodeRef} />}
       </div>
-      {isFetchingNextPage && <div className="text-muted-foreground py-3 text-center">Loading more…</div>}
+      {isFetchingNextPage && <div className={stylex.props(styles.sb61efeff).className || ''}>Loading more…</div>}
       {!hasNextPage && allEvents.length > 0 && (
-        <div className="text-muted-foreground py-3 text-center">No more events</div>
+        <div className={stylex.props(styles.sb61efeff).className || ''}>No more events</div>
       )}
     </SelectionContent>
   )
 }
-
 function DraftVersionItem({
   draft,
   hasNewerPublishedVersion,
@@ -323,7 +482,6 @@ function DraftVersionItem({
     currentRoute.id.uid === draft.docId.uid &&
     currentRoute.id.version === null &&
     JSON.stringify(currentRoute.id.path ?? []) === JSON.stringify(draft.docId.path ?? [])
-
   return (
     <div
       className={cn(
@@ -333,11 +491,11 @@ function DraftVersionItem({
       {...draftLinkProps}
     >
       <div className="bg-muted flex size-[24px] shrink-0 items-center justify-center rounded-full">
-        <FilePen className="text-muted-foreground size-3.5" />
+        <FilePen className={stylex.props(styles.s76b0b3a9).className || ''} />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-foreground text-sm font-medium">Unpublished Changes</span>
+        <div className={stylex.props(styles.sc250396c).className || ''}>
+          <span className={stylex.props(styles.s342f90d0).className || ''}>Unpublished Changes</span>
           {hasNewerPublishedVersion ? (
             <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
               Newer version above
@@ -356,17 +514,18 @@ function DraftVersionItem({
             if (draft.onDiscardConfirm) {
               draft.onDiscardConfirm(draft.draftId, send)
             } else if (window.confirm('Discard draft changes?')) {
-              send({type: 'edit.discard'})
+              send({
+                type: 'edit.discard',
+              })
             }
           }}
         >
-          <X className="size-3.5" />
+          <X className={stylex.props(styles.s3269316e).className || ''} />
         </Button>
       </Tooltip>
     </div>
   )
 }
-
 function EventHeaderContent({
   event,
   targetDomain,
@@ -398,7 +557,7 @@ function EventHeaderContent({
     const options: MenuItemType[] = []
     if (event.comment && currentAccount && currentAccount == event.comment.author) {
       options.push({
-        icon: <Trash2 className="size-4" />,
+        icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
         label: 'Delete',
         onClick: () => {
           deleteCommentDialog.open({
@@ -413,7 +572,6 @@ function EventHeaderContent({
         key: 'delete',
       })
     }
-
     return (
       <>
         {deleteCommentDialog.content}
@@ -428,7 +586,7 @@ function EventHeaderContent({
             <Timestamp time={event.time} route={route} />
           </InlineDescriptor>
           {event.comment && (
-            <div className="flex items-center gap-2">
+            <div className={stylex.props(styles.s86ff3e4).className || ''}>
               <Tooltip content={tx('Copy Comment Link')}>
                 <Button
                   size="icon"
@@ -456,7 +614,7 @@ function EventHeaderContent({
                     })
                   }}
                 >
-                  <Link className="size-3" />
+                  <Link className={stylex.props(styles.sca3de967).className || ''} />
                 </Button>
               </Tooltip>
               {options.length > 0 && (
@@ -473,14 +631,13 @@ function EventHeaderContent({
       </>
     )
   }
-
   if (event.type == 'capability') {
     return (
       <InlineDescriptor>
         <AuthorNameLink author={event.author} /> <span>added</span>{' '}
         {event.delegates[0]?.id ? (
           <HMIcon
-            className="mx-1 mb-1 inline-block align-middle"
+            className={stylex.props(styles.s2011040e).className || ''}
             id={event.delegates[0]?.id}
             size={18}
             icon={event.delegates[0]?.metadata?.icon}
@@ -502,7 +659,6 @@ function EventHeaderContent({
       </InlineDescriptor>
     )
   }
-
   if (event.type == 'doc-update') {
     const docUpdateHeadCount = getVersionHeads(event.document.version).length
     const selectedAccountCanWriteDocument = !!documentActions.canWriteDocument?.(event.docId)
@@ -564,9 +720,8 @@ function EventHeaderContent({
         </AlertDialogContent>
       </AlertDialog>
     ) : null
-
     return (
-      <div className="flex w-full items-start justify-between gap-2">
+      <div className={stylex.props(styles.s8eee23a7).className || ''}>
         <InlineDescriptor>
           <AuthorNameLink author={event.author} />{' '}
           {!isSingleResource ? (
@@ -588,14 +743,14 @@ function EventHeaderContent({
           <Timestamp time={event.time} route={route} />
           {docUpdateHeadCount > 1 ? (
             <Tooltip content={`Merged ${docUpdateHeadCount} concurrent versions`}>
-              <span className="text-muted-foreground ml-1 inline-flex items-center gap-0.5 align-middle">
+              <span className={stylex.props(styles.s61f21f46).className || ''}>
                 <Merge size={12} strokeWidth={2} />
-                <span className="text-xs">{docUpdateHeadCount}</span>
+                <span className={stylex.props(styles.sab7cc79b).className || ''}>{docUpdateHeadCount}</span>
               </span>
             </Tooltip>
           ) : null}
         </InlineDescriptor>
-        <div className="flex items-center gap-1">
+        <div className={stylex.props(styles.s86ff3e3).className || ''}>
           {restoreButton}
           <Tooltip content={tx('Copy Link to Version')}>
             <Button
@@ -630,7 +785,6 @@ function EventHeaderContent({
       </div>
     )
   }
-
   if (event.type == 'contact') {
     const contactAction =
       event.contact.subscribe?.site && event.contact.subscribe?.profile
@@ -641,13 +795,12 @@ function EventHeaderContent({
             ? 'joined'
             : 'added'
     const contactName = event.contact.name?.trim() || null
-
     return (
       <InlineDescriptor>
         <AuthorNameLink author={event.author} /> <span>{contactAction}</span>{' '}
         {event.contact.subject?.id && event.contact.subject.metadata?.icon ? (
           <HMIcon
-            className="mx-1 mb-1 inline-block align-middle"
+            className={stylex.props(styles.s2011040e).className || ''}
             id={event.contact.subject.id}
             size={18}
             icon={event.contact.subject.metadata.icon}
@@ -668,7 +821,6 @@ function EventHeaderContent({
       </InlineDescriptor>
     )
   }
-
   if (event.type == 'citation') {
     return (
       <InlineDescriptor>
@@ -688,12 +840,9 @@ function EventHeaderContent({
       </InlineDescriptor>
     )
   }
-
   console.error('EventHeaderContent: We must have ifs for all the event types:', event)
-
   return null
 }
-
 function EventContent({
   event,
   size = 'md',
@@ -705,17 +854,16 @@ function EventContent({
 }) {
   if (event.type == 'comment') {
     return event.comment ? (
-      <div className="-ml-4">
+      <div className={stylex.props(styles.s2ad4933).className || ''}>
         <CommentContent comment={event.comment} size={size} />
       </div>
     ) : null
   }
-
   if (event.type == 'citation') {
     // Render comment content for comment citations
     if (event.citationType === 'c' && event.comment) {
       return (
-        <div className="-ml-4">
+        <div className={stylex.props(styles.s2ad4933).className || ''}>
           <CommentContent comment={event.comment} size={size} />
         </div>
       )
@@ -726,7 +874,7 @@ function EventContent({
       // If we have a blockRef, render the actual block content
       if (event.source.id.blockRef) {
         return (
-          <div className="-ml-3 flex flex-col gap-2">
+          <div className={stylex.props(styles.see106aa0).className || ''}>
             <CitationSourceBlock sourceId={event.source.id} />
           </div>
         )
@@ -734,26 +882,25 @@ function EventContent({
 
       // Otherwise, show source and target document info
       return (
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-xs">Source Document:</span>
-            <div className="text-sm">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+          <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+            <span className={stylex.props(styles.sa56e9200).className || ''}>Source Document:</span>
+            <div className={stylex.props(styles.sab7cc6fa).className || ''}>
               <ResourceToken id={event.source.id} metadata={event.source.metadata} />
             </div>
           </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-xs">Target Document:</span>
-            <div className="text-sm">
+          <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+            <span className={stylex.props(styles.sa56e9200).className || ''}>Target Document:</span>
+            <div className={stylex.props(styles.sab7cc6fa).className || ''}>
               <ResourceToken id={event.target.id} metadata={event.target.metadata} />
               {event.targetFragment && (
-                <span className="text-muted-foreground ml-1 text-xs">(Block: {event.targetFragment})</span>
+                <span className={stylex.props(styles.s4b944b9).className || ''}>(Block: {event.targetFragment})</span>
               )}
             </div>
           </div>
         </div>
       )
     }
-
     return null
   }
   if (event.type == 'capability') return null
@@ -775,12 +922,14 @@ function EventContent({
     return (
       <DocumentCard
         docId={versionedDocId}
-        entity={{id: versionedDocId, document: event.document}}
+        entity={{
+          id: versionedDocId,
+          document: event.document,
+        }}
         accountsMetadata={event.author ? ([event.author] as any) : []}
       />
     )
   }
-
   if (event.type == 'contact') {
     // TODO: show contact card?
     return null
@@ -793,7 +942,6 @@ function EventContent({
   }
   return null
 }
-
 function EventCommentWithReply({
   event,
   route,
@@ -811,7 +959,6 @@ function EventCommentWithReply({
 }) {
   const linkProps = useRouteLink(route)
   const tx = useTx()
-
   return (
     <div
       key={`${event.type}-${event.id}-${event.time}`}
@@ -821,11 +968,11 @@ function EventCommentWithReply({
       {/* replying comment */}
       <div
         className={cn(
-          'flex flex-col',
+          stylex.props(styles.s783f19f3).className || '',
           'before:border-border relative before:absolute before:top-[9px] before:left-[12px] before:h-[calc(100%-10px)] before:w-[16px] before:rounded-tl-lg before:border-t-1 before:border-l-1',
         )}
       >
-        <div className="flex items-start gap-2">
+        <div className={stylex.props(styles.se99caec9).className || ''}>
           <div className={cn('h-[18px] w-[24px]')} />
           <div className="size-[18px]">
             {event.replyParentAuthor?.id ? (
@@ -846,10 +993,10 @@ function EventCommentWithReply({
             </p>
           </div>
         </div>
-        <div className="relative flex gap-2">
+        <div className={stylex.props(styles.s7b2a91e8).className || ''}>
           <div className={cn('w-[50px]')} />
 
-          <div className="flex-1 pb-6">
+          <div className={stylex.props(styles.s34b4f5fe).className || ''}>
             <EventContent
               size={'sm'}
               event={{
@@ -880,16 +1027,16 @@ function EventCommentWithReply({
           latestDocUpdateVersion={latestDocUpdateVersion}
         />
       </div>
-      <div className="relative flex gap-2">
+      <div className={stylex.props(styles.s7b2a91e8).className || ''}>
         <div className={cn('w-[24px]')} />
-        <div className="flex flex-1 flex-col gap-3">
+        <div className={stylex.props(styles.s731a65c4).className || ''}>
           <EventContent size={size} event={event} />
-          <div className="-ml-3">
+          <div className={stylex.props(styles.s2ad4932).className || ''}>
             <Button
               size="xs"
               className="text-muted-foreground hover:text-muted-foreground active:text-muted-foreground"
             >
-              <ReplyArrow className="size-3" />
+              <ReplyArrow className={stylex.props(styles.sca3de967).className || ''} />
               {tx('Reply')}
               {event.replyCount > 0 ? ` (${event.replyCount})` : ''}
             </Button>
@@ -920,52 +1067,41 @@ function findContentBlock(content: HMBlockNode[], blockRef: string): HMBlockNode
 function CitationSourceBlock({sourceId}: {sourceId: UnpackedHypermediaId}) {
   const resource = useResource(sourceId)
   const Viewer = useReadOnlyViewer()
-
   if (resource.isLoading) {
-    return <div className="text-muted-foreground text-xs">Loading block…</div>
+    return <div className={stylex.props(styles.sa56e9200).className || ''}>Loading block…</div>
   }
-
   if (resource.error || !resource.data || !Viewer) {
     return null
   }
-
   const content =
     resource.data.type === 'document'
       ? resource.data.document?.content
       : resource.data.type === 'comment'
         ? resource.data.comment?.content
         : undefined
-
   if (!content || !sourceId.blockRef) {
     return null
   }
-
   const blockNode = findContentBlock(content, sourceId.blockRef)
-
   if (!blockNode) {
     return null
   }
-
   return <Viewer blocks={[blockNode]} resourceId={sourceId} textUnit={14} layoutUnit={16} />
 }
-
 export function getEventRoute(event: LoadedEvent): NavRoute | null {
   if (event.type == 'comment') {
     // Navigate to the full comments page with the comment focused in the main panel
     if (!event.target?.id || !event.comment) return null
-
     return {
       key: 'comments' as const,
       id: event.target.id,
       openComment: event.comment.id,
     }
   }
-
   if (event.type == 'doc-update') {
     // Navigate to the document at the version from the ref event
     // Reconstruct the ID properly using hmId to ensure the id field is the base ID
     if (!event.docId?.uid) return null
-
     const route: DocumentRoute = {
       key: 'document' as const,
       id: hmId(event.docId.uid, {
@@ -974,34 +1110,26 @@ export function getEventRoute(event: LoadedEvent): NavRoute | null {
         latest: false,
       }),
     }
-
     return route
   }
-
   if (event.type == 'capability') {
     // Navigate to the target document if available
     if (!event.target?.id) return null
-
     const route = {
       key: 'document' as const,
       id: event.target.id,
     }
-
     return route
   }
-
   if (event.type == 'contact') {
     // Navigate to the contact page
     if (!event.contact.id) return null
-
     const route = {
       key: 'contact' as const,
       id: event.contact.id,
     }
-
     return route
   }
-
   if (event.type == 'citation') {
     // Navigate to the target document (the document being cited)
     if (!event.source?.id) return null
@@ -1024,13 +1152,10 @@ export function getEventRoute(event: LoadedEvent): NavRoute | null {
         fragment: event.targetFragment,
       }),
     }
-
     return route
   }
-
   return null
 }
-
 function EventItem({
   event,
   route,
@@ -1056,7 +1181,6 @@ function EventItem({
   const isSelectedVersion =
     event.type === 'doc-update' &&
     isSelectedDocUpdateVersion(event.document.version, routeId?.version, routeId?.latest, latestVersion)
-
   const tx = useTx()
   return (
     <div
@@ -1066,7 +1190,7 @@ function EventItem({
       )}
       {...(route ? linkProps : {})}
     >
-      <div className="flex items-start gap-2">
+      <div className={stylex.props(styles.se99caec9).className || ''}>
         <div className="size-[24px]">
           {event.author?.id ? (
             <HMIcon
@@ -1085,17 +1209,17 @@ function EventItem({
         />
       </div>
       {isSingleResource && event.type == 'doc-update' ? null : (
-        <div className="relative flex gap-2">
+        <div className={stylex.props(styles.s7b2a91e8).className || ''}>
           <div className={cn('w-[24px]')} />
-          <div className="flex flex-1 flex-col gap-3">
+          <div className={stylex.props(styles.s731a65c4).className || ''}>
             <EventContent size={size} isSingleResource={isSingleResource} event={event} />
             {event.type == 'comment' || (event.type == 'citation' && event.comment) ? (
-              <div className="-ml-3">
+              <div className={stylex.props(styles.s2ad4932).className || ''}>
                 <Button
                   size="xs"
                   className="text-muted-foreground hover:text-muted-foreground active:text-muted-foreground"
                 >
-                  <ReplyArrow className="size-3" />
+                  <ReplyArrow className={stylex.props(styles.sca3de967).className || ''} />
                   {tx('Reply')}
                   {(event.type == 'comment' && event.replyCount > 0) ||
                   (event.type == 'citation' && event.replyCount !== undefined && event.replyCount > 0)

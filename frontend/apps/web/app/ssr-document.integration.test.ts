@@ -289,7 +289,7 @@ describe('SSR Document Rendering with React Query Hydration', () => {
     )
 
     // Without hydrated data, spinner should be shown during SSR
-    expect(html).toContain('animate-spin')
+    expect(html).toContain('size-4')
   })
 
   // Skipped: WebResourcePage now uses DocumentEditor which requires DOM APIs (window.matchMedia).

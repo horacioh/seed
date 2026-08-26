@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +17,11 @@ import {
  * (and on failure, so the error toast has context); the caller performs the
  * logout in `onLogOut` and closes the dialog on success.
  */
+const styles = stylex.create({
+  sb42feb5d: {
+    flex: '1',
+  },
+})
 export function LogoutVaultDialog({
   open,
   onOpenChange,
@@ -37,13 +43,13 @@ export function LogoutVaultDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="sm:justify-stretch">
-          <AlertDialogCancel size="lg" className="flex-1" disabled={busy}>
+          <AlertDialogCancel size="lg" className={stylex.props(styles.sb42feb5d).className || ''} disabled={busy}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             size="lg"
-            className="flex-1"
+            className={stylex.props(styles.sb42feb5d).className || ''}
             disabled={busy}
             onClick={(e) => {
               e.preventDefault()

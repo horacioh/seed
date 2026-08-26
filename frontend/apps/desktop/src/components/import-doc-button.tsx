@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext} from '@/app-context'
 import {domainResolver} from '@/grpc-client'
 import {hmBlockSchema} from '@/editor'
@@ -44,11 +45,44 @@ import {useForm} from 'react-hook-form'
 import {z} from 'zod'
 import {ImportedDocument, useImportConfirmDialog} from './import-doc-dialog'
 import {useWXRImportDialog} from './wxr-import-dialog'
-
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s4b4c6bf: {
+    borderColor: 'var(--border)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 export function useImportDialog() {
   return useAppDialog(ImportDialog)
 }
-
 export function ImportDialog({
   input,
   onClose,
@@ -68,72 +102,72 @@ export function ImportDialog({
       <DialogTitle>Import Content</DialogTitle>
       <DialogDescription>Import Markdown or LaTeX files, folders, or websites.</DialogDescription>
       <DialogClose />
-      <div className="flex flex-col gap-4">
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
         <Button
-          className="border-border border"
+          className={stylex.props(styles.s4b4c6bf).className || ''}
           variant="ghost"
           onClick={() => {
             onClose()
             input.onImportFile()
           }}
         >
-          <File className="size-3" />
+          <File className={stylex.props(styles.sca3de967).className || ''} />
           Import Markdown File
         </Button>
         <Button
-          className="border-border border"
+          className={stylex.props(styles.s4b4c6bf).className || ''}
           variant="ghost"
           onClick={() => {
             onClose()
             input.onImportDirectory()
           }}
         >
-          <Folder className="size-3" />
+          <Folder className={stylex.props(styles.sca3de967).className || ''} />
           Import Markdown Directory
         </Button>
         <Button
-          className="border-border border"
+          className={stylex.props(styles.s4b4c6bf).className || ''}
           variant="ghost"
           onClick={() => {
             onClose()
             input.onImportLatexFile()
           }}
         >
-          <File className="size-3" />
+          <File className={stylex.props(styles.sca3de967).className || ''} />
           Import LaTeX File
         </Button>
         <Button
-          className="border-border border"
+          className={stylex.props(styles.s4b4c6bf).className || ''}
           variant="ghost"
           onClick={() => {
             onClose()
             input.onImportLatexDirectory()
           }}
         >
-          <Folder className="size-3" />
+          <Folder className={stylex.props(styles.sca3de967).className || ''} />
           Import LaTeX Directory
         </Button>
         <Button
-          className="border-border border"
+          className={stylex.props(styles.s4b4c6bf).className || ''}
           variant="ghost"
           onClick={() => {
             onClose()
             input.onImportWebSite()
           }}
         >
-          <Globe className="size-3" />
+          <Globe className={stylex.props(styles.sca3de967).className || ''} />
           Import Web Site
         </Button>
         {input.onImportWordPress && (
           <Button
-            className="border-border border"
+            className={stylex.props(styles.s4b4c6bf).className || ''}
             variant="ghost"
             onClick={() => {
               onClose()
               input.onImportWordPress?.()
             }}
           >
-            <File className="size-3" />
+            <File className={stylex.props(styles.sca3de967).className || ''} />
             Import WordPress Export (WXR)
           </Button>
         )}
@@ -141,11 +175,9 @@ export function ImportDialog({
     </>
   )
 }
-
 export function ImportDropdownButton({id, button}: {id: UnpackedHypermediaId; button: ReactElement}) {
   const {importFile, importDirectory, importLatexFile, importLatexDirectory, importWebSite, importWordPress, content} =
     useImporting(id)
-
   return (
     <>
       <OptionsDropdown
@@ -155,37 +187,37 @@ export function ImportDropdownButton({id, button}: {id: UnpackedHypermediaId; bu
             key: 'file',
             label: 'Import Markdown File',
             onClick: () => importFile(),
-            icon: <FileInput className="size-4" />,
+            icon: <FileInput className={stylex.props(styles.sca3de968).className || ''} />,
           },
           {
             key: 'directory',
             label: 'Import Markdown Folder',
             onClick: () => importDirectory(),
-            icon: <FolderInput className="size-4" />,
+            icon: <FolderInput className={stylex.props(styles.sca3de968).className || ''} />,
           },
           {
             key: 'latex-file',
             label: 'Import LaTeX File',
             onClick: () => importLatexFile(),
-            icon: <FileInput className="size-4" />,
+            icon: <FileInput className={stylex.props(styles.sca3de968).className || ''} />,
           },
           {
             key: 'latex-directory',
             label: 'Import LaTeX Folder',
             onClick: () => importLatexDirectory(),
-            icon: <FolderInput className="size-4" />,
+            icon: <FolderInput className={stylex.props(styles.sca3de968).className || ''} />,
           },
           {
             key: 'website',
             label: 'Import Web Site',
             onClick: () => importWebSite(),
-            icon: <Globe className="size-4" />,
+            icon: <Globe className={stylex.props(styles.sca3de968).className || ''} />,
           },
           {
             key: 'wordpress',
             label: 'Import WordPress Export (WXR)',
             onClick: () => importWordPress(),
-            icon: <FileInput className="size-4" />,
+            icon: <FileInput className={stylex.props(styles.sca3de968).className || ''} />,
           },
         ]}
       />
@@ -194,7 +226,6 @@ export function ImportDropdownButton({id, button}: {id: UnpackedHypermediaId; bu
     </>
   )
 }
-
 export function useImporting(parentId: UnpackedHypermediaId) {
   const {openMarkdownDirectories, openMarkdownFiles, openLatexDirectories, openLatexFiles} = useAppContext()
   const accts = useMyAccountsWithWriteAccess(parentId)
@@ -214,18 +245,24 @@ export function useImporting(parentId: UnpackedHypermediaId) {
   })
 
   // Private documents require a site URL and must be at the home doc level
-  const siteHomeResource = useResource(hmId(parentId.uid), {subscribed: true})
+  const siteHomeResource = useResource(hmId(parentId.uid), {
+    subscribed: true,
+  })
   const siteUrl =
     siteHomeResource.data?.type === 'document' ? siteHomeResource.data.document?.metadata?.siteUrl : undefined
   const isHomeDoc = !parentId.path?.length
   const canCreatePrivateDoc = Boolean(siteUrl) && isHomeDoc
-
   const importDialog = useImportConfirmDialog()
-
   function startImport(
     importFunction: (id: string) => Promise<{
       documents: ImportedDocument[]
-      docMap: Map<string, {name: string; path: string}>
+      docMap: Map<
+        string,
+        {
+          name: string
+          path: string
+        }
+      >
     }>,
   ) {
     importFunction(parentId.id)
@@ -248,10 +285,15 @@ export function useImporting(parentId: UnpackedHypermediaId) {
         toast.error(`Import error: ${error.message || error}`)
       })
   }
-
   const handleConfirm = async (
     documents: ImportedDocument[],
-    docMap: Map<string, {name: string; path: string}>,
+    docMap: Map<
+      string,
+      {
+        name: string
+        path: string
+      }
+    >,
     visibility: HMResourceVisibility,
   ) => {
     const editor = new BlockNoteEditor<BlockSchema>({
@@ -305,15 +347,24 @@ export function useImporting(parentId: UnpackedHypermediaId) {
       },
     )
   }
-
   const webImporting = useWebImporting()
   const wxrImporting = useWXRImportDialog()
 
   // Wrapper to handle LaTeX file import
   function startLatexImport(
     importFunction: (id: string) => Promise<{
-      documents: {latexContent: string; title: string; directoryPath: string}[]
-      docMap: Map<string, {name: string; path: string}>
+      documents: {
+        latexContent: string
+        title: string
+        directoryPath: string
+      }[]
+      docMap: Map<
+        string,
+        {
+          name: string
+          path: string
+        }
+      >
     }>,
   ) {
     importFunction(parentId.id)
@@ -341,14 +392,19 @@ export function useImporting(parentId: UnpackedHypermediaId) {
         toast.error(`Import error: ${error.message || error}`)
       })
   }
-
   return {
     importFile: () => startImport(openMarkdownFiles),
     importDirectory: () => startImport(openMarkdownDirectories),
     importLatexFile: () => startLatexImport(openLatexFiles),
     importLatexDirectory: () => startLatexImport(openLatexDirectories),
-    importWebSite: () => webImporting.open({destinationId: parentId}),
-    importWordPress: () => wxrImporting.open({destinationId: parentId}),
+    importWebSite: () =>
+      webImporting.open({
+        destinationId: parentId,
+      }),
+    importWordPress: () =>
+      wxrImporting.open({
+        destinationId: parentId,
+      }),
     content: (
       <>
         {importDialog.content}
@@ -358,11 +414,9 @@ export function useImporting(parentId: UnpackedHypermediaId) {
     ),
   }
 }
-
 export function useWebImporting() {
   return useAppDialog(WebImportDialog)
 }
-
 function WebImportDialog({
   onClose,
   input,
@@ -378,7 +432,6 @@ function WebImportDialog({
   const startImport = useMutation({
     mutationFn: (input: {url: string}) => client.webImporting.importWebSite.mutate(input),
   })
-
   return (
     <>
       {importId && hostname ? (
@@ -389,17 +442,20 @@ function WebImportDialog({
           hostname={hostname}
         />
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className={stylex.props(styles.sfbc6e28f).className || ''}>
           <DialogTitle>Import Web Site</DialogTitle>
           <ImportURLForm
             defaultUrl={input.defaultUrl}
             onSubmit={(url) => {
               const hostname = new URL(url).host
               setHostname(hostname)
-              startImport.mutateAsync({url}).then(({importId}) => {
-                setImportId(importId)
-              })
-
+              startImport
+                .mutateAsync({
+                  url,
+                })
+                .then(({importId}) => {
+                  setImportId(importId)
+                })
               toast('Import Started.')
               console.log('url', url)
             }}
@@ -409,7 +465,6 @@ function WebImportDialog({
     </>
   )
 }
-
 function WebImportInProgress({
   id,
   onComplete,
@@ -438,10 +493,9 @@ function WebImportInProgress({
     }
   }, [selectedAccount, accounts.map((a) => a.data?.id.uid)])
   const result = status?.mode === 'ready' ? status.result : undefined
-
   if (result && !confirmImport.isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
         <DialogTitle>Ready to import from {hostname}</DialogTitle>
         <SizableText>{result.posts.length} posts ready for import</SizableText>
         {selectedAccount && (
@@ -456,7 +510,7 @@ function WebImportInProgress({
                   if (!id) return null
                   return (
                     <SelectItem key={id.uid} value={id.uid}>
-                      <div className="flex items-center gap-2">
+                      <div className={stylex.props(styles.s86ff3e4).className || ''}>
                         <HMIcon
                           size={24}
                           id={id}
@@ -500,7 +554,7 @@ function WebImportInProgress({
   } else if (status?.mode === 'importing' || status?.mode === 'scraping' || confirmImport.isLoading) {
     const scrapeStatus: ScrapeStatus | undefined = status?.mode === 'scraping' ? status : undefined
     return (
-      <div className="flex flex-col gap-4">
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
         <DialogTitle>Importing from {hostname}…</DialogTitle>
         {scrapeStatus?.visitedCount ? (
           <SizableText>
@@ -509,7 +563,7 @@ function WebImportInProgress({
           </SizableText>
         ) : null}
         {scrapeStatus ? (
-          <SizableText color="muted" size="sm" className="truncate">
+          <SizableText color="muted" size="sm" className={stylex.props(styles.s6e724d66).className || ''}>
             {scrapeStatus?.activeUrl}
           </SizableText>
         ) : null}
@@ -520,19 +574,18 @@ function WebImportInProgress({
     )
   } else if (status?.mode === 'error') {
     return (
-      <div className="flex flex-col gap-4">
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
         <DialogTitle>Error importing from {hostname}</DialogTitle>
         <SizableText color="destructive">Error: {status.error}</SizableText>
       </div>
     )
   }
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle color="$red10">Unexpected Importer Situation</DialogTitle>
     </div>
   )
 }
-
 const ImportURLSchema = z.object({
   url: z.string().url(),
 })
@@ -551,7 +604,7 @@ function ImportURLForm({onSubmit, defaultUrl}: {onSubmit: (url: string) => void;
   })
   return (
     <form onSubmit={handleSubmit(({url}) => onSubmit(url))}>
-      <div className="flex flex-col gap-4">
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
         <FormField name="url" label="Web URL" errors={errors} width={400}>
           <FormInput
             // disabled={isSendingEmail}
@@ -570,18 +623,27 @@ function ImportURLForm({onSubmit, defaultUrl}: {onSubmit: (url: string) => void;
     </form>
   )
 }
-
 const ImportDocumentsWithFeedback = (
   id: UnpackedHypermediaId,
   createDraft: any,
   signingAccount: HMResourceFetchResult | null | undefined,
   documents: ImportedDocument[],
-  docMap: Map<string, {name: string; path: string}>,
+  docMap: Map<
+    string,
+    {
+      name: string
+      path: string
+    }
+  >,
   editor: BlockNoteEditor,
   visibility: HMResourceVisibility = 'PUBLIC',
 ) => {
-  const pathCounter: {[key: string]: number} = {}
-  return new Promise<{draftIds: string[]}>(async (resolve, reject) => {
+  const pathCounter: {
+    [key: string]: number
+  } = {}
+  return new Promise<{
+    draftIds: string[]
+  }>(async (resolve, reject) => {
     const draftIds: string[] = []
     try {
       for (const {markdownContent, latexContent, title, directoryPath} of documents) {
@@ -589,7 +651,6 @@ const ImportDocumentsWithFeedback = (
         let icon: string | undefined
         let cover: string | undefined
         let blocks: any[]
-
         if (latexContent) {
           // Process LaTeX document
           const metadata = extractLatexMetadata(latexContent)
@@ -602,7 +663,6 @@ const ImportDocumentsWithFeedback = (
           // Process media and links in the markdown content
           markdown = await processMediaMarkdown(markdown, directoryPath)
           markdown = processLinkMarkdown(markdown, docMap)
-
           documentTitle = frontmatter.title || title
 
           // If no title in frontmatter, check for an h1 as the first non-empty line
@@ -611,7 +671,6 @@ const ImportDocumentsWithFeedback = (
 
             // Find the first non-empty line index
             const firstNonEmptyLineIndex = lines.findIndex((line) => line.trim() !== '')
-
             if (
               firstNonEmptyLineIndex !== -1 &&
               // @ts-ignore
@@ -626,10 +685,8 @@ const ImportDocumentsWithFeedback = (
               markdown = lines.join('\n')
             }
           }
-
           icon = frontmatter.icon
           cover = frontmatter.cover_image
-
           blocks = await MarkdownToBlocks(markdown, editor)
         } else {
           console.error('Document has no content:', title)
@@ -679,7 +736,6 @@ const ImportDocumentsWithFeedback = (
         const draftId = nanoid(10)
         const locationPath = id.path ? id.path : []
         const editPath = [...locationPath, `-${draftId}`]
-
         await createDraft.mutateAsync({
           id: draftId,
           locationUid: id.uid,
@@ -698,7 +754,9 @@ const ImportDocumentsWithFeedback = (
         })
         draftIds.push(draftId)
       }
-      resolve({draftIds})
+      resolve({
+        draftIds,
+      })
       // `Imported ${documents.length} documents.`)
 
       invalidateQueries([queryKeys.DRAFTS_LIST])

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {EditorBlock} from '@seed-hypermedia/client/editor-types'
 import {
   HMBlockNode,
@@ -22,7 +23,34 @@ import {DocumentListItem} from './document-list-item'
 import {Button} from './button'
 import {DraftBadge} from './draft-badge'
 import {SizableText} from './text'
-
+const styles = stylex.create({
+  sa15101ca: {
+    marginTop: 'calc(0.25rem * 8)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 16)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf2746014: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    overflow: 'hidden',
+  },
+  s62d3095e: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontFamily: 'var(--font-sans)',
+  },
+})
 function toHMBlockNodes(blocks: EditorBlock[] | HMBlockNode[]): HMBlockNode[] {
   const first = blocks[0]
   const isEditorFormat = first != null && 'type' in first && !('block' in first)
@@ -43,14 +71,14 @@ export function UnreferencedDocuments({
 }) {
   const canSeePrivate = useCanSeePrivateDocs(docId)
   const drafts = useDraftsForAccountSafe(docId.uid)
-
   const {unreferencedDocs, unreferencedDrafts} = useMemo(() => {
     const sourceContent = draftContent && draftContent.length > 0 ? toHMBlockNodes(draftContent) : content
-
     if (hasQueryBlockTargetingSelf(sourceContent, docId.uid, docId.path)) {
-      return {unreferencedDocs: [], unreferencedDrafts: []}
+      return {
+        unreferencedDocs: [],
+        unreferencedDrafts: [],
+      }
     }
-
     const allRefs = extractAllContentRefs(sourceContent)
     const referencedIds = new Set<string>()
     allRefs.forEach((ref) => {
@@ -59,11 +87,9 @@ export function UnreferencedDocuments({
       }
     })
     const referencedDraftIds = new Set(collectChildDraftIds(sourceContent))
-
     const unreferencedDocs = (directory ?? [])
       .filter((child) => canSeePrivate || child.visibility !== 'PRIVATE')
       .filter((child) => !referencedIds.has(child.id.id))
-
     const currentPath = docId.path ?? []
     const unreferencedDrafts = (drafts.data ?? [])
       .filter((draft) => draft.locationId?.uid === docId.uid)
@@ -71,15 +97,15 @@ export function UnreferencedDocuments({
       .filter((draft) => !draft.editId)
       .filter((draft) => canSeePrivate || draft.visibility !== 'PRIVATE')
       .filter((draft) => !referencedDraftIds.has(draft.id))
-
-    return {unreferencedDocs, unreferencedDrafts}
+    return {
+      unreferencedDocs,
+      unreferencedDrafts,
+    }
   }, [content, draftContent, directory, drafts.data, docId.uid, docId.path, canSeePrivate])
-
   if (unreferencedDocs.length === 0 && unreferencedDrafts.length === 0) return null
-
   return (
-    <div className="mt-8 border-t pt-4 pb-16">
-      <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sa15101ca).className || ''}>
+      <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         {unreferencedDocs.map((item) => (
           <DocumentListItem key={item.id.id} item={item} />
         ))}
@@ -90,18 +116,24 @@ export function UnreferencedDocuments({
     </div>
   )
 }
-
 function pathEquals(a: string[], b: string[]) {
   if (a.length !== b.length) return false
   return a.every((segment, index) => segment === b[index])
 }
-
 function UnreferencedDraftListItem({draft}: {draft: HMListedDraftWithLocation | HMListedDraft}) {
   const locationId = 'locationId' in draft ? draft.locationId : undefined
   const linkProps = useRouteLink(
     locationId
-      ? {key: 'document', id: hmId(locationId.uid, {path: [...(locationId.path ?? []), `-${draft.id}`]})}
-      : {key: 'draft', id: draft.id},
+      ? {
+          key: 'document',
+          id: hmId(locationId.uid, {
+            path: [...(locationId.path ?? []), `-${draft.id}`],
+          }),
+        }
+      : {
+          key: 'draft',
+          id: draft.id,
+        },
   )
   return (
     <Button
@@ -110,8 +142,8 @@ function UnreferencedDraftListItem({draft}: {draft: HMListedDraftWithLocation | 
       className="h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black"
     >
       <a {...linkProps}>
-        <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
-          <SizableText className="truncate text-left font-sans">
+        <div className={stylex.props(styles.sf2746014).className || ''}>
+          <SizableText className={stylex.props(styles.s62d3095e).className || ''}>
             {getMetadataName(draft.metadata as HMMetadata)}
           </SizableText>
           <DraftBadge />

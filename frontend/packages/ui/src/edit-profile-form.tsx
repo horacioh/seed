@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {useTxString} from '@shm/shared/translation'
 import {useEffect} from 'react'
@@ -8,14 +9,40 @@ import {Field} from './form-fields'
 import {FormError, FormInput} from './form-input'
 import {getDaemonFileUrl} from './get-file-url'
 import {SizableText} from './text'
-
+const styles = stylex.create({
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sd6fbdd99: {
+    position: 'absolute',
+    inset: 'calc(0.25rem * 0)',
+    zIndex: '10',
+    cursor: 'pointer',
+    opacity: '0%',
+  },
+  s2b57d061: {
+    position: 'absolute',
+    inset: 'calc(0.25rem * 0)',
+    height: '100%',
+    width: '100%',
+    objectFit: 'cover',
+  },
+  sb5bdb794: {
+    textAlign: 'center',
+    color: '#fff',
+  },
+})
 export const siteMetaSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
   icon: z.string().or(z.instanceof(Blob)).nullable(),
   description: z.string().optional(),
 })
 export type SiteMetaFields = z.infer<typeof siteMetaSchema>
-
 export function EditProfileForm({
   onSubmit,
   defaultValues,
@@ -38,12 +65,14 @@ export function EditProfileForm({
   })
   useEffect(() => {
     setTimeout(() => {
-      form.setFocus('name', {shouldSelect: true})
+      form.setFocus('name', {
+        shouldSelect: true,
+      })
     }, 300) // wait for animation
   }, [form.setFocus])
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <Field id="name" label={tx('Account Name')}>
           <FormInput control={form.control} name="name" placeholder={tx('My New Public Name')} />
           <FormError errors={form.formState.errors} name="name" />
@@ -52,7 +81,7 @@ export function EditProfileForm({
           <ImageField control={form.control} name="icon" label={tx('Profile Icon')} processImage={processImage} />
         </Field>
         <div>
-          <Button type="submit" variant="default" size="lg" className={`w-full`}>
+          <Button type="submit" variant="default" size="lg" className={stylex.props(styles.scdbaf625).className || ''}>
             {submitLabel || tx('Save')}
           </Button>
         </div>
@@ -60,7 +89,6 @@ export function EditProfileForm({
     </form>
   )
 }
-
 function ImageField<Fields extends FieldValues>({
   control,
   name,
@@ -72,7 +100,10 @@ function ImageField<Fields extends FieldValues>({
   label: string
   processImage?: (file: File) => Promise<Blob>
 }) {
-  const c = useController({control, name})
+  const c = useController({
+    control,
+    name,
+  })
   const tx = useTxString()
   const currentImgURL = c.field.value
     ? typeof c.field.value === 'string'
@@ -95,7 +126,7 @@ function ImageField<Fields extends FieldValues>({
             c.field.onChange(file)
           }
         }}
-        className="absolute inset-0 z-10 cursor-pointer opacity-0"
+        className={stylex.props(styles.sd6fbdd99).className || ''}
       />
       {!c.field.value && (
         <div className="pointer-events-none absolute inset-0 flex h-full w-full items-center justify-center bg-neutral-100 dark:bg-neutral-800">
@@ -107,11 +138,11 @@ function ImageField<Fields extends FieldValues>({
         </div>
       )}
       {c.field.value && (
-        <img src={currentImgURL || undefined} alt={label} className="absolute inset-0 h-full w-full object-cover" />
+        <img src={currentImgURL || undefined} alt={label} className={stylex.props(styles.s2b57d061).className || ''} />
       )}
       {c.field.value && (
         <div className="pointer-events-none absolute inset-0 flex h-full w-full items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-          <SizableText size="xs" className="text-center text-white">
+          <SizableText size="xs" className={stylex.props(styles.sb5bdb794).className || ''}>
             Edit {label}
           </SizableText>
         </div>

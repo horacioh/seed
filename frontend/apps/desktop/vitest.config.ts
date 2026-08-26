@@ -1,7 +1,9 @@
 import {resolve} from 'path'
 import {defineConfig} from 'vitest/config'
+import stylex from '@stylexjs/unplugin'
 
 export default defineConfig({
+  plugins: [stylex.vite()],
   test: {
     testTimeout: 10000, // 10 seconds
     setupFiles: ['./vitest.setup.ts'],

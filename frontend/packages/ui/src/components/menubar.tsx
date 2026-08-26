@@ -1,39 +1,77 @@
+import * as stylex from '@stylexjs/stylex'
 import * as MenubarPrimitive from '@radix-ui/react-menubar'
 import {CheckIcon, ChevronRightIcon, CircleIcon} from 'lucide-react'
 import * as React from 'react'
-
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  scca54036: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    left: 'calc(0.25rem * 2)',
+    display: 'flex',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s70543fa9: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+    fill: 'currentcolor',
+  },
+  s2b9c850d: {
+    backgroundColor: 'var(--border)',
+    marginInline: 'calc(0.25rem * -1)',
+    marginBlock: 'calc(0.25rem * 1)',
+    height: '1px',
+  },
+  s40833f27: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'auto',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    letterSpacing: '0.1em',
+  },
+  sd5d229cb: {
+    marginLeft: 'auto',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 function Menubar({className, ...props}: React.ComponentProps<typeof MenubarPrimitive.Root>) {
   return (
     <MenubarPrimitive.Root
       data-slot="menubar"
       className={cn(
         // 'bg-background flex h-9 items-center gap-1 rounded-md border p-1 shadow-xs',
-        'flex items-center gap-1',
+        stylex.props(styles.s86ff3e3).className || '',
         className,
       )}
       {...props}
     />
   )
 }
-
 function MenubarMenu({...props}: React.ComponentProps<typeof MenubarPrimitive.Menu>) {
   return <MenubarPrimitive.Menu data-slot="menubar-menu" {...props} />
 }
-
 function MenubarGroup({...props}: React.ComponentProps<typeof MenubarPrimitive.Group>) {
   return <MenubarPrimitive.Group data-slot="menubar-group" {...props} />
 }
-
 function MenubarPortal({...props}: React.ComponentProps<typeof MenubarPrimitive.Portal>) {
   return <MenubarPrimitive.Portal data-slot="menubar-portal" {...props} />
 }
-
 function MenubarRadioGroup({...props}: React.ComponentProps<typeof MenubarPrimitive.RadioGroup>) {
   return <MenubarPrimitive.RadioGroup data-slot="menubar-radio-group" {...props} />
 }
-
 function MenubarTrigger({className, ...props}: React.ComponentProps<typeof MenubarPrimitive.Trigger>) {
   return (
     <MenubarPrimitive.Trigger
@@ -46,7 +84,6 @@ function MenubarTrigger({className, ...props}: React.ComponentProps<typeof Menub
     />
   )
 }
-
 function MenubarContent({
   className,
   align = 'start',
@@ -70,7 +107,6 @@ function MenubarContent({
     </MenubarPortal>
   )
 }
-
 function MenubarItem({
   className,
   inset,
@@ -93,7 +129,6 @@ function MenubarItem({
     />
   )
 }
-
 function MenubarCheckboxItem({
   className,
   children,
@@ -110,16 +145,15 @@ function MenubarCheckboxItem({
       checked={checked}
       {...props}
     >
-      <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+      <span className={stylex.props(styles.scca54036).className || ''}>
         <MenubarPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={stylex.props(styles.sca3de968).className || ''} />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
     </MenubarPrimitive.CheckboxItem>
   )
 }
-
 function MenubarRadioItem({className, children, ...props}: React.ComponentProps<typeof MenubarPrimitive.RadioItem>) {
   return (
     <MenubarPrimitive.RadioItem
@@ -130,16 +164,15 @@ function MenubarRadioItem({className, children, ...props}: React.ComponentProps<
       )}
       {...props}
     >
-      <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+      <span className={stylex.props(styles.scca54036).className || ''}>
         <MenubarPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <CircleIcon className={stylex.props(styles.s70543fa9).className || ''} />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
     </MenubarPrimitive.RadioItem>
   )
 }
-
 function MenubarLabel({
   className,
   inset,
@@ -156,31 +189,27 @@ function MenubarLabel({
     />
   )
 }
-
 function MenubarSeparator({className, ...props}: React.ComponentProps<typeof MenubarPrimitive.Separator>) {
   return (
     <MenubarPrimitive.Separator
       data-slot="menubar-separator"
-      className={cn('bg-border -mx-1 my-1 h-px', className)}
+      className={cn(stylex.props(styles.s2b9c850d).className || '', className)}
       {...props}
     />
   )
 }
-
 function MenubarShortcut({className, ...props}: React.ComponentProps<'span'>) {
   return (
     <span
       data-slot="menubar-shortcut"
-      className={cn('text-muted-foreground ml-auto text-xs tracking-widest', className)}
+      className={cn(stylex.props(styles.s40833f27).className || '', className)}
       {...props}
     />
   )
 }
-
 function MenubarSub({...props}: React.ComponentProps<typeof MenubarPrimitive.Sub>) {
   return <MenubarPrimitive.Sub data-slot="menubar-sub" {...props} />
 }
-
 function MenubarSubTrigger({
   className,
   inset,
@@ -200,11 +229,10 @@ function MenubarSubTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className="ml-auto size-4" />
+      <ChevronRightIcon className={stylex.props(styles.sd5d229cb).className || ''} />
     </MenubarPrimitive.SubTrigger>
   )
 }
-
 function MenubarSubContent({className, ...props}: React.ComponentProps<typeof MenubarPrimitive.SubContent>) {
   return (
     <MenubarPrimitive.SubContent
@@ -217,7 +245,6 @@ function MenubarSubContent({className, ...props}: React.ComponentProps<typeof Me
     />
   )
 }
-
 export {
   Menubar,
   MenubarCheckboxItem,

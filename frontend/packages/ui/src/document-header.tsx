@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMDocument,
   HMMetadata,
@@ -22,9 +23,51 @@ import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s2d015205: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf4b0a39d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '700',
+  },
+  sd54a55b9: {
+    backgroundColor: 'var(--border)',
+    height: 'calc(0.25rem * 6)',
+    width: '1px',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s332783: {
+    marginLeft: 'calc(0.25rem * 1)',
+  },
+  s2b214c4f: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+  },
+  sdc925448: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+})
 export type AuthorPayload = HMMetadataPayload
-
 export type BreadcrumbEntry =
   | {
       id: UnpackedHypermediaId
@@ -39,8 +82,9 @@ export type BreadcrumbEntry =
       draftId?: string
       fallbackName?: string
     }
-  | {label: string}
-
+  | {
+      label: string
+    }
 export function DocumentHeader({
   docId,
   docMetadata,
@@ -79,7 +123,6 @@ export function DocumentHeader({
       return true
     })
   }, [authors])
-
   return (
     <Container
       className={cn('dark:bg-background relative w-full rounded-lg bg-white', hasCover ? 'pt-6' : 'pt-4 md:pt-15')}
@@ -109,7 +152,7 @@ export function DocumentHeader({
                   onRemoveIcon()
                 }}
               >
-                <X className="size-3.5" />
+                <X className={stylex.props(styles.s3269316e).className || ''} />
               </Button>
             ) : null}
           </div>
@@ -134,11 +177,11 @@ export function DocumentHeader({
         )}
         <div className="border-border flex flex-col gap-2 border-b pb-2 md:pb-4">
           {siteUrl ? <SiteURLButton siteUrl={siteUrl} /> : null}
-          <div className="flex flex-1 items-center justify-between gap-3">
+          <div className={stylex.props(styles.s2d015205).className || ''}>
             <div className="hidden flex-1 flex-wrap items-center gap-3 md:flex">
               {displayAuthors.length ? (
                 <>
-                  <p className="text-sm font-bold">
+                  <p className={stylex.props(styles.sf4b0a39d).className || ''}>
                     {displayAuthors.flatMap((a, index) => {
                       return [
                         <AuthorLink id={a.id} key={a.id.id} siteUid={docId?.uid} />,
@@ -156,7 +199,7 @@ export function DocumentHeader({
                       ]
                     })}
                   </p>
-                  <div className="bg-border h-6 w-px" />
+                  <div className={stylex.props(styles.sd54a55b9).className || ''} />
                 </>
               ) : null}
               {updateTime ? <DocumentDate metadata={docMetadata || undefined} updateTime={updateTime} /> : null}
@@ -181,7 +224,7 @@ export function DocumentHeader({
                 </>
               ) : null}
               {displayAuthors.length && updateTime ? (
-                <SizableText size="xs" className="shrink-0" aria-hidden="true">
+                <SizableText size="xs" className={stylex.props(styles.sf032ed6c).className || ''} aria-hidden="true">
                   ·
                 </SizableText>
               ) : null}
@@ -199,7 +242,9 @@ export function DocumentHeader({
 /** Renders a clickable author name with a spinner while the account is loading. */
 function AuthorLink({id, siteUid}: {id: UnpackedHypermediaId; siteUid?: string}) {
   const currentRoute = useNavRoute()
-  const account = useAccount(id.uid, {subscribe: true})
+  const account = useAccount(id.uid, {
+    subscribe: true,
+  })
   const resolvedName = account.data?.metadata?.name
   const linkProps = useRouteLink(getContextualProfileRoute(currentRoute, id, siteUid))
   return (
@@ -209,7 +254,7 @@ function AuthorLink({id, siteUid}: {id: UnpackedHypermediaId; siteUid?: string})
     >
       {resolvedName || abbreviateUid(id.uid)}
       {!resolvedName ? (
-        <span className="ml-1">
+        <span className={stylex.props(styles.s332783).className || ''}>
           <Spinner size="small" />
         </span>
       ) : null}
@@ -223,15 +268,13 @@ function AuthorLink({id, siteUid}: {id: UnpackedHypermediaId; siteUid?: string})
  */
 export function Breadcrumbs({breadcrumbs, className}: {breadcrumbs: BreadcrumbEntry[]; className?: string}) {
   if (breadcrumbs.length === 0) return null
-
   const [first, ...rest] = breadcrumbs
   const lastIndex = breadcrumbs.length - 1
-
   return (
     <nav aria-label="Breadcrumb" className={cn('text-muted-foreground flex min-w-0 items-center', className)}>
       <ol className="flex min-w-0 items-center gap-2">
         {first && 'id' in first ? (
-          <li className="flex shrink-0 items-center">
+          <li className={stylex.props(styles.s2b214c4f).className || ''}>
             <HomeBreadcrumb crumb={first} isCurrent={lastIndex === 0} />
           </li>
         ) : null}
@@ -241,7 +284,12 @@ export function Breadcrumbs({breadcrumbs, className}: {breadcrumbs: BreadcrumbEn
           const isCurrent = index === lastIndex
           return (
             <li key={key} className="flex min-w-0 items-center gap-2">
-              <SizableText aria-hidden="true" color="muted" size="xs" className="shrink-0">
+              <SizableText
+                aria-hidden="true"
+                color="muted"
+                size="xs"
+                className={stylex.props(styles.sf032ed6c).className || ''}
+              >
                 {'>'}
               </SizableText>
               {'id' in crumb ? (
@@ -261,32 +309,44 @@ export function Breadcrumbs({breadcrumbs, className}: {breadcrumbs: BreadcrumbEn
     </nav>
   )
 }
-
-type DocumentBreadcrumbEntry = Extract<BreadcrumbEntry, {id: any}>
-
+type DocumentBreadcrumbEntry = Extract<
+  BreadcrumbEntry,
+  {
+    id: any
+  }
+>
 function HomeBreadcrumb({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isCurrent: boolean}) {
-  const linkProps = useRouteLink({key: 'document', id: crumb.id})
+  const linkProps = useRouteLink({
+    key: 'document',
+    id: crumb.id,
+  })
   if (isCurrent) {
     return (
-      <span aria-current="page" className="text-muted-foreground flex items-center gap-1">
-        <Home className="size-3" />
+      <span aria-current="page" className={stylex.props(styles.sdc925448).className || ''}>
+        <Home className={stylex.props(styles.sca3de967).className || ''} />
       </span>
     )
   }
   return (
     <a {...linkProps} className="text-muted-foreground flex items-center gap-1 no-underline hover:underline">
-      <Home className="size-3" />
+      <Home className={stylex.props(styles.sca3de967).className || ''} />
     </a>
   )
 }
-
 function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isCurrent: boolean}) {
-  const route: NavRoute = crumb.draftId ? {key: 'draft', id: crumb.draftId} : {key: 'document', id: crumb.id}
+  const route: NavRoute = crumb.draftId
+    ? {
+        key: 'draft',
+        id: crumb.draftId,
+      }
+    : {
+        key: 'document',
+        id: crumb.id,
+      }
   const linkProps = useRouteLink(route)
   const title = crumb.metadata?.name
   const fallbackName = crumb.fallbackName || crumb.id.path?.at(-1) || crumb.id.uid.slice(0, 8)
   const displayName = title || fallbackName
-
   const renderText = (className: string, label = displayName) =>
     isCurrent ? (
       <span aria-current="page" className={className}>
@@ -297,7 +357,6 @@ function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
         {label}
       </a>
     )
-
   if (crumb.isLoading) {
     const content = (
       <>
@@ -319,7 +378,6 @@ function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
       </a>
     )
   }
-
   if (crumb.isTombstone) {
     return (
       <Tooltip content="This document has been deleted">
@@ -327,7 +385,6 @@ function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
       </Tooltip>
     )
   }
-
   if (crumb.isUnpublishedDraft) {
     return (
       <Tooltip content="This document is a draft and has not been published yet — its URL is private to you.">
@@ -335,7 +392,6 @@ function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
       </Tooltip>
     )
   }
-
   if (crumb.isNotFound) {
     return (
       <Tooltip content="Document not found on the network">
@@ -343,7 +399,6 @@ function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
       </Tooltip>
     )
   }
-
   if (crumb.isError) {
     return (
       <Tooltip content="Failed to load this document">
@@ -351,14 +406,11 @@ function BreadcrumbLink({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
       </Tooltip>
     )
   }
-
   if (!crumb.metadata?.name) {
     return renderText('text-muted-foreground min-w-0 truncate text-xs whitespace-nowrap')
   }
-
   return renderText('min-w-0 truncate overflow-hidden text-xs whitespace-nowrap', crumb.metadata.name)
 }
-
 function SiteURLButton({siteUrl, onSiteUrlClick}: {siteUrl: string; onSiteUrlClick?: (url: string) => void}) {
   return (
     <SizableText

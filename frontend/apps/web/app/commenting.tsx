@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useCreateAccount} from '@/auth'
 import {reportError} from '@/report-error'
 import {useNavigate as useRemixNavigate} from '@remix-run/react'
@@ -46,9 +47,33 @@ import {EmailNotificationsForm} from './email-notifications'
 import {hasPromptedEmailNotifications, setHasPromptedEmailNotifications, setPendingIntent} from './local-db'
 import {processPendingIntent} from './pending-intent'
 import {isPerfEnabled, markCommentSubmitEnd, markCommentSubmitStart, markEditorLoadEnd} from './web-perf-marks'
-
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s4a27d806: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    padding: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sb87f7413: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 type PublishCommentInput = Awaited<ReturnType<typeof createComment>>
-
 export type WebCommentingProps = {
   docId: UnpackedHypermediaId
   /** Comment ID from CommentEditorProps - used to resolve reply parent */
@@ -59,14 +84,16 @@ export type WebCommentingProps = {
   rootReplyCommentVersion?: string | null
   quotingBlockId?: string
   /** Codepoint range within the quoted block when commenting on a text fragment. */
-  quotingRange?: {start: number; end: number}
+  quotingRange?: {
+    start: number
+    end: number
+  }
   onSuccess?: (successData: {id: string; response: HMPublishBlobsOutput; commentPayload: PublishCommentInput}) => void
   /** Focus the editor on mount. */
   focusOnMount?: boolean
   /** @deprecated Use focusOnMount. Kept for older callers. */
   autoFocus?: boolean
 }
-
 export default function WebCommenting({
   docId,
   commentId,
@@ -81,7 +108,13 @@ export default function WebCommenting({
   autoFocus,
 }: WebCommentingProps) {
   const quoting = useMemo(
-    () => (quotingBlockId ? {blockId: quotingBlockId, range: quotingRange} : undefined),
+    () =>
+      quotingBlockId
+        ? {
+            blockId: quotingBlockId,
+            range: quotingRange,
+          }
+        : undefined,
     [quotingBlockId, quotingRange?.start, quotingRange?.end],
   )
   const tx = useTxString()
@@ -102,7 +135,6 @@ export default function WebCommenting({
       rootReplyCommentVersion: comment.threadRootVersion || comment.version,
     }
   }, [replyCommentIdProp, commentId, commentsService.data?.comments])
-
   const replyCommentId = replyCommentIdProp || resolvedReply?.replyCommentId
   const replyCommentVersion = replyCommentVersionProp || resolvedReply?.replyCommentVersion
   const rootReplyCommentVersion = rootReplyCommentVersionProp || resolvedReply?.rootReplyCommentVersion
@@ -145,28 +177,35 @@ export default function WebCommenting({
         .catch((err) => console.error('Failed to cleanup old draft media:', err))
     }
   }, [])
-
   const queryClient = useQueryClient()
   const route = useNavRoute()
   const navNavigate = useNavigate('replace')
-
-  type PostCommentVars = {commentPayload: PublishCommentInput; contentBlocks: HMBlockNode[]}
-
+  type PostCommentVars = {
+    commentPayload: PublishCommentInput
+    contentBlocks: HMBlockNode[]
+  }
   const postComment = useMutation({
     mutationFn: async ({commentPayload}: PostCommentVars) => {
       const commentBlobData = commentPayload.blobs[0]?.data
       if (!commentBlobData) throw new Error('No comment blob data')
       const commentId = await commentRecordIdFromBlob(commentBlobData)
       const response = await publish(commentPayload)
-      return {response, commentId, commentPayload}
+      return {
+        response,
+        commentId,
+        commentPayload,
+      }
     },
     onMutate: async ({commentPayload, contentBlocks}: PostCommentVars) => {
-      await queryClient.cancelQueries({queryKey: [queryKeys.DOCUMENT_COMMENTS, docId]})
-
+      await queryClient.cancelQueries({
+        queryKey: [queryKeys.DOCUMENT_COMMENTS, docId],
+      })
       const authorMetadata: HMMetadataPayload | null = myAccount.data
-        ? {id: myAccount.data.id, metadata: myAccount.data.metadata || null}
+        ? {
+            id: myAccount.data.id,
+            metadata: myAccount.data.metadata || null,
+          }
         : null
-
       const optimisticComment = await buildOptimisticComment({
         commentPayload,
         authorUid: userKeyPair!.id,
@@ -178,7 +217,6 @@ export default function WebCommenting({
         quoting,
         visibility: 'PUBLIC',
       })
-
       applyOptimisticComment(queryClient, docId, optimisticComment, authorMetadata, quoting)
       navigateToComment(navNavigate, route, optimisticComment.id)
     },
@@ -186,7 +224,11 @@ export default function WebCommenting({
       // Keep the optimistic comment visible — the publish can be retried later.
       // Do NOT roll back cache or navigation; do NOT invalidate queries (would crash offline).
       console.warn('Comment publish failed, keeping optimistic comment:', _err)
-      reportError(_err, {feature: 'web-comment', operation: 'publish', docId: docId.id})
+      reportError(_err, {
+        feature: 'web-comment',
+        operation: 'publish',
+        docId: docId.id,
+      })
     },
     onSuccess: ({response, commentId, commentPayload}) => {
       if (isPerfEnabled()) markCommentSubmitEnd()
@@ -199,19 +241,31 @@ export default function WebCommenting({
       // unmounts the discussions list. With refetchOnMount disabled on web, an
       // 'active'-only invalidation would leave that list rendering its stale
       // cache (without the new comment) when the user tabs back to it (#812).
-      invalidateQueries([queryKeys.DOCUMENT_ACTIVITY], {refetchType: 'all'})
-      invalidateQueries([queryKeys.DOCUMENT_DISCUSSION], {refetchType: 'all'})
-      invalidateQueries([queryKeys.DOCUMENT_COMMENTS], {refetchType: 'all'})
-      invalidateQueries([queryKeys.DOCUMENT_INTERACTION_SUMMARY], {refetchType: 'all'})
-      invalidateQueries([queryKeys.DOC_CITATIONS], {refetchType: 'all'})
-      invalidateQueries([queryKeys.BLOCK_DISCUSSIONS], {refetchType: 'all'})
-      invalidateQueries([queryKeys.ACTIVITY_FEED], {refetchType: 'all'})
+      invalidateQueries([queryKeys.DOCUMENT_ACTIVITY], {
+        refetchType: 'all',
+      })
+      invalidateQueries([queryKeys.DOCUMENT_DISCUSSION], {
+        refetchType: 'all',
+      })
+      invalidateQueries([queryKeys.DOCUMENT_COMMENTS], {
+        refetchType: 'all',
+      })
+      invalidateQueries([queryKeys.DOCUMENT_INTERACTION_SUMMARY], {
+        refetchType: 'all',
+      })
+      invalidateQueries([queryKeys.DOC_CITATIONS], {
+        refetchType: 'all',
+      })
+      invalidateQueries([queryKeys.BLOCK_DISCUSSIONS], {
+        refetchType: 'all',
+      })
+      invalidateQueries([queryKeys.ACTIVITY_FEED], {
+        refetchType: 'all',
+      })
     },
   })
-
   const docVersion = docId.version
   const remixNavigate = useRemixNavigate()
-
   const {
     content: createAccountContent,
     userKeyPair,
@@ -229,16 +283,16 @@ export default function WebCommenting({
         })
         .catch((e) => {
           console.error('Failed to process pending intent after account creation:', e)
-          reportError(e, {feature: 'web-comment', operation: 'process-pending-intent'})
+          reportError(e, {
+            feature: 'web-comment',
+            operation: 'process-pending-intent',
+          })
         })
     },
   })
-
   const myAccount = useAccount(userKeyPair?.id || undefined)
-
   const {content: emailNotificationsPromptContent, open: openEmailNotificationsPrompt} =
     useAppDialog(EmailNotificationsPrompt)
-
   function promptEmailNotifications() {
     console.log('🔔 promptEmailNotifications called', {
       NOTIFY_SERVICE_HOST,
@@ -257,19 +311,23 @@ export default function WebCommenting({
       openEmailNotificationsPrompt({})
     })
   }
-
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   const handleSubmit = useCallback(
     async (
       getContent: (
         prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-          blobs: {cid: string; data: Uint8Array}[]
+          blobs: {
+            cid: string
+            data: Uint8Array
+          }[]
           resultCIDs: string[]
         }>,
       ) => Promise<{
         blockNodes: HMBlockNode[]
-        blobs: {cid: string; data: Uint8Array}[]
+        blobs: {
+          cid: string
+          data: Uint8Array
+        }[]
       }>,
       _reset: () => void,
     ) => {
@@ -278,7 +336,6 @@ export default function WebCommenting({
       // Content changes are debounced in the editor; flush so latestBlocksRef
       // holds the final content before reading it below.
       submitHandleRef.current?.flush()
-
       if (!userKeyPair) {
         // Persist intent to IDB so it can be processed after account creation
         // (works for both local and vault flows).
@@ -307,7 +364,6 @@ export default function WebCommenting({
         createAccount()
         return
       }
-
       try {
         setIsSubmitting(true)
         if (isPerfEnabled()) markCommentSubmitStart()
@@ -332,7 +388,10 @@ export default function WebCommenting({
           },
           signer,
         )
-        await postComment.mutateAsync({commentPayload, contentBlocks: capturedBlocks})
+        await postComment.mutateAsync({
+          commentPayload,
+          contentBlocks: capturedBlocks,
+        })
         console.log('✅ Comment posted successfully, calling promptEmailNotifications')
         clearDraft()
         // Clean up associated media from IndexedDB after successful publish
@@ -374,7 +433,6 @@ export default function WebCommenting({
     }
     return undefined
   }, [userKeyPair])
-
   const publishButtonEventClass = userKeyPair
     ? 'plausible-event-name=Publish+Comment'
     : 'plausible-event-name=start-create-account'
@@ -411,11 +469,10 @@ export default function WebCommenting({
 
   // Don't render until draft is loaded or doc version is missing
   if (isDraftLoading || !docVersion) {
-    return !docVersion ? null : <div className="w-full">Loading…</div>
+    return !docVersion ? null : <div className={stylex.props(styles.scdbaf625).className || ''}>Loading…</div>
   }
-
   return (
-    <div className="w-full">
+    <div className={stylex.props(styles.scdbaf625).className || ''}>
       <CommentEditor
         key={`${draftId}-${editorGeneration}`}
         focusOnMount={focusOnMount ?? autoFocus}
@@ -451,20 +508,25 @@ export default function WebCommenting({
               content={tx(
                 'publish_comment_as',
                 ({name}: {name: string | undefined}) => (name ? `Publish Comment as ${name}` : 'Publish Comment'),
-                {name: myAccount.data?.metadata?.name},
+                {
+                  name: myAccount.data?.metadata?.name,
+                },
               )}
             >
               <button
                 disabled={isSubmitting || disabled}
                 className={cn(
-                  buttonVariants({size: 'icon', variant: 'default'}),
+                  buttonVariants({
+                    size: 'icon',
+                    variant: 'default',
+                  }),
                   publishButtonEventClass,
-                  'flex items-center justify-center rounded-sm p-2',
+                  stylex.props(styles.s4a27d806).className || '',
                   (isSubmitting || disabled) && 'cursor-not-allowed opacity-50',
                 )}
                 onClick={() => handleSubmit(getContent, reset)}
               >
-                <SendHorizontal className="size-4" />
+                <SendHorizontal className={stylex.props(styles.sca3de968).className || ''} />
               </button>
             </Tooltip>
           )
@@ -477,7 +539,6 @@ export default function WebCommenting({
     </div>
   )
 }
-
 async function prepareAttachments(binaries: Uint8Array[]) {
   return filesToIpfsBlobs(binaries)
 }
@@ -497,7 +558,6 @@ function generateUUID(): string {
     // RFC4122 v4 bits
     bytes[6] = (bytes[6]! & 0x0f) | 0x40
     bytes[8] = (bytes[8]! & 0x3f) | 0x80
-
     const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
     return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
   }
@@ -505,7 +565,6 @@ function generateUUID(): string {
   // Last resort fallback. Not cryptographically strong, but avoids hard failure
   return `fallback-${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`
 }
-
 async function handleFileAttachment(
   file: Blob,
   draftId?: string,
@@ -531,9 +590,11 @@ async function handleFileAttachment(
       const name = (file as File).name || `media-${Date.now()}`
       const mime = file.type || 'application/octet-stream'
       const size = file.size
-
-      await putDraftMedia(draftId, mediaId, file, {name, mime, size})
-
+      await putDraftMedia(draftId, mediaId, file, {
+        name,
+        mime,
+        size,
+      })
       return {
         displaySrc: URL.createObjectURL(file),
         mediaRef: {
@@ -548,7 +609,6 @@ async function handleFileAttachment(
       // Enhanced error logging to diagnose iOS Safari issues
       const errorName = error instanceof Error ? error.name : 'Unknown'
       const errorMsg = error instanceof Error ? error.message : String(error)
-
       console.warn(`IndexedDB storage failed (${errorName}), falling back to binary:`, errorMsg)
 
       // Log specific Safari issues
@@ -568,7 +628,6 @@ async function handleFileAttachment(
     fileBinary,
   }
 }
-
 async function importWebFile(
   url: string,
   draftId?: string,
@@ -579,17 +638,16 @@ async function importWebFile(
   size: number
 }> {
   try {
-    const res = await fetch(url, {method: 'GET', mode: 'cors'})
-
+    const res = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+    })
     if (!res.ok) {
       throw new Error(`Failed to fetch: ${res.status} ${res.statusText}`)
     }
-
     const contentType = res.headers.get('content-type') || 'application/octet-stream'
     const blob = await res.blob()
-
     const result = await handleFileAttachment(blob, draftId)
-
     return {
       displaySrc: result.displaySrc,
       fileBinary: result.fileBinary,
@@ -600,34 +658,42 @@ async function importWebFile(
     throw new Error(err?.message || 'Could not download file.')
   }
 }
-
 export function useOpenUrlWeb() {
   const {originHomeId} = useUniversalAppContext()
   const client = useUniversalClient()
   const queryClient = useQueryClient()
-
   return async (url?: string, newWindow?: boolean) => {
     if (!url) return
-
     const unpacked = unpackHmId(url)
-    const parsedRoute = hypermediaUrlToRoute(url) || (unpacked ? ({key: 'document', id: unpacked} as const) : null)
+    const parsedRoute =
+      hypermediaUrlToRoute(url) ||
+      (unpacked
+        ? ({
+            key: 'document',
+            id: unpacked,
+          } as const)
+        : null)
     const routeId =
       parsedRoute && typeof parsedRoute !== 'string' && 'id' in parsedRoute && typeof parsedRoute.id === 'object'
         ? parsedRoute.id
         : unpacked
     let newUrl = parsedRoute
-      ? routeToHref(parsedRoute, {originHomeId})
+      ? routeToHref(parsedRoute, {
+          originHomeId,
+        })
       : unpacked
-        ? idToUrl(unpacked, {originHomeId})
+        ? idToUrl(unpacked, {
+            originHomeId,
+          })
         : url
-
     if (!newUrl) {
       console.error('URL is empty', newUrl)
       return
     }
-
     if (routeId?.uid && parsedRoute) {
-      const fallbackHref = routeToHref(parsedRoute, {originHomeId})
+      const fallbackHref = routeToHref(parsedRoute, {
+        originHomeId,
+      })
       const explicitOrigin =
         unpacked?.hostname && unpacked?.scheme
           ? `${unpacked.scheme}://${unpacked.hostname}`
@@ -658,7 +724,6 @@ export function useOpenUrlWeb() {
       })
       newUrl = linkState.href || newUrl
     }
-
     if (newWindow) {
       window.open(newUrl, '_blank')
     } else {
@@ -666,7 +731,6 @@ export function useOpenUrlWeb() {
     }
   }
 }
-
 function EmailNotificationsPrompt({onClose}: {onClose: () => void}) {
   useEffect(() => {
     console.log('📧 EmailNotificationsPrompt mounted')
@@ -674,7 +738,6 @@ function EmailNotificationsPrompt({onClose}: {onClose: () => void}) {
   }, [])
   const [mode, setMode] = useState<'prompt' | 'form' | 'success'>('prompt')
   const [subscribedEmail, setSubscribedEmail] = useState<string | null>(null)
-
   if (mode === 'prompt') {
     return (
       <>
@@ -682,7 +745,7 @@ function EmailNotificationsPrompt({onClose}: {onClose: () => void}) {
         <SizableText>
           Do you want to receive an email when someone mentions your or replies to your comments?
         </SizableText>
-        <div className="flex justify-end gap-3">
+        <div className={stylex.props(styles.sb87f7413).className || ''}>
           <Button variant="ghost" onClick={() => onClose()}>
             No Thanks
           </Button>
@@ -730,23 +793,36 @@ export function WebInlineEditBox({comment, onSave, onCancel, isSaving}: InlineEd
     async (
       getContent: (
         prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-          blobs: {cid: string; data: Uint8Array}[]
+          blobs: {
+            cid: string
+            data: Uint8Array
+          }[]
           resultCIDs: string[]
         }>,
-      ) => Promise<{blockNodes: HMBlockNode[]; blobs: {cid: string; data: Uint8Array}[]}>,
+      ) => Promise<{
+        blockNodes: HMBlockNode[]
+        blobs: {
+          cid: string
+          data: Uint8Array
+        }[]
+      }>,
       reset: () => void,
     ) => {
       const {blockNodes, blobs} = await getContent(prepareAttachments)
       if (blobs.length) {
-        await client.publish({blobs: blobs.map((blob) => ({cid: blob.cid, data: blob.data}))})
+        await client.publish({
+          blobs: blobs.map((blob) => ({
+            cid: blob.cid,
+            data: blob.data,
+          })),
+        })
       }
       onSave(blockNodes)
     },
     [client, onSave],
   )
-
   return (
-    <div className="flex flex-col gap-2">
+    <div className={stylex.props(styles.sfbc6e28e).className || ''}>
       <CommentEditor
         focusOnMount
         isReplying={false}
@@ -759,7 +835,7 @@ export function WebInlineEditBox({comment, onSave, onCancel, isSaving}: InlineEd
         submitButton={({getContent, reset, disabled}) => (
           <>
             <Button variant="ghost" size="icon" onClick={onCancel} disabled={isSaving}>
-              <X className="size-4" />
+              <X className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
             <Tooltip content="Save edit">
               <Button
@@ -771,7 +847,7 @@ export function WebInlineEditBox({comment, onSave, onCancel, isSaving}: InlineEd
                 }}
                 disabled={isSaving || disabled}
               >
-                <Check className="size-4" />
+                <Check className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </Tooltip>
           </>

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Eye, EyeOff} from 'lucide-react'
 import {useState} from 'react'
 import {Button} from '../button'
@@ -8,21 +9,43 @@ import {Label} from './label'
  * Rates a password 0 (weak) / 1 (medium) / 2 (strong). Shared with the web vault
  * so the desktop and vault enforce the same minimum strength.
  */
+const styles = stylex.create({
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s65ec9ca: {
+    paddingRight: 'calc(0.25rem * 10)',
+  },
+  s3566be63: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sebad82b1: {
+    backgroundColor: 'var(--muted)',
+    marginTop: 'calc(0.25rem * 1)',
+    height: 'calc(0.25rem * 1)',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+})
 export function checkPasswordStrength(password: string): number {
   if (password.length < 8) return 0
-
   let score = 0
   if (password.length >= 12) score++
   if (password.length >= 16) score++
   if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++
   if (/\d/.test(password)) score++
   if (/[^a-zA-Z0-9]/.test(password)) score++
-
   if (score <= 1) return 0
   if (score <= 3) return 1
   return 2
 }
-
 const strengthConfig: Record<number, string> = {
   0: 'w-1/3 bg-destructive',
   1: 'w-2/3 bg-yellow-500',
@@ -52,16 +75,15 @@ export function PasswordInput({
 }) {
   const [showPassword, setShowPassword] = useState(false)
   const strength = showStrength ? checkPasswordStrength(value) : 0
-
   return (
-    <div className="flex flex-col gap-2">
+    <div className={stylex.props(styles.sfbc6e28e).className || ''}>
       <Label htmlFor={id}>{label}</Label>
-      <div className="relative">
+      <div className={stylex.props(styles.sdef3facc).className || ''}>
         <Input
           id={id}
           name={autoComplete === 'new-password' ? 'new-password' : 'password'}
           type={showPassword ? 'text' : 'password'}
-          className="pr-10"
+          className={stylex.props(styles.s65ec9ca).className || ''}
           placeholder="Enter password"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -79,14 +101,14 @@ export function PasswordInput({
           title={showPassword ? 'Hide password' : 'Show password'}
         >
           {showPassword ? (
-            <EyeOff className="text-muted-foreground size-4" />
+            <EyeOff className={stylex.props(styles.s3566be63).className || ''} />
           ) : (
-            <Eye className="text-muted-foreground size-4" />
+            <Eye className={stylex.props(styles.s3566be63).className || ''} />
           )}
         </Button>
       </div>
       {showStrength && value ? (
-        <div className="bg-muted mt-1 h-1 overflow-hidden rounded-sm">
+        <div className={stylex.props(styles.sebad82b1).className || ''}>
           <div className={`h-full transition-all duration-300 ${strengthConfig[strength]}`} />
         </div>
       ) : null}

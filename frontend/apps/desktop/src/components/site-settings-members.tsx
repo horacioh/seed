@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useSelectedAccountId} from '@/selected-account'
 import {client} from '@/trpc'
 import {useNavigate} from '@/utils/useNavigate'
@@ -16,22 +17,94 @@ import {toast} from '@shm/ui/toast'
 import {cn} from '@shm/ui/utils'
 import {useQuery} from '@tanstack/react-query'
 import {type ReactNode, useMemo, useState} from 'react'
-
+const styles = stylex.create({
+  s4c9e7ebc: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 10)',
+  },
+  s81b1ecbb: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  scd81614b: {
+    marginBottom: '-1px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '2px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  s617ed067: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(0.25rem * 1.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s34b570: {
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  s9c95321: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sb136bac9: {
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s65917ffb: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+})
 type MemberSubTab = 'members' | 'writers' | 'email-subscribers'
-
-const SUB_TABS: {key: MemberSubTab; label: string}[] = [
-  {key: 'members', label: 'Members'},
-  {key: 'writers', label: 'Writers'},
-  {key: 'email-subscribers', label: 'Email Subscribers'},
+const SUB_TABS: {
+  key: MemberSubTab
+  label: string
+}[] = [
+  {
+    key: 'members',
+    label: 'Members',
+  },
+  {
+    key: 'writers',
+    label: 'Writers',
+  },
+  {
+    key: 'email-subscribers',
+    label: 'Email Subscribers',
+  },
 ]
-
 function roleLabel(role: string): string {
   if (role === 'writer') return 'Writer'
   if (role === 'owner') return 'Owner'
   if (role === 'agent') return 'Device'
   return 'Member'
 }
-
 export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermediaId; activeTab?: SiteSettingsTab}) {
   const navigate = useNavigate('replace')
   const resource = useResource(siteId)
@@ -45,13 +118,19 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
   const subscribers = useQuery({
     queryKey: [queryKeys.SITE_EMAIL_SUBSCRIBERS, metadataSiteUrl ?? null, siteId.uid, signAs],
     queryFn: () =>
-      client.sites.getEmailSubscribers.query({siteUrl: metadataSiteUrl, accountUid: siteId.uid, signAs: signAs!}),
+      client.sites.getEmailSubscribers.query({
+        siteUrl: metadataSiteUrl,
+        accountUid: siteId.uid,
+        signAs: signAs!,
+      }),
     enabled: !!signAs && isSiteOwner && !!metadataSiteUrl,
     retry: false,
   })
-
   const {membersList, writersList} = useMemo(() => {
-    const owner: HMSiteMember = {account: hmId(siteId.uid), role: 'owner'}
+    const owner: HMSiteMember = {
+      account: hmId(siteId.uid),
+      role: 'owner',
+    }
     const seen = new Set<string>()
     const deduped = [owner, ...grantedMembers, ...members].filter((m) => {
       if (seen.has(m.account.uid)) return false
@@ -63,12 +142,10 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
       writersList: deduped.filter((m) => m.role === 'writer' || m.role === 'owner'),
     }
   }, [grantedMembers, members, siteId.uid])
-
   const subTab: MemberSubTab = activeTab === 'writers' || activeTab === 'email-subscribers' ? activeTab : 'members'
-
   if (resource.isInitialLoading || isOwnerLoading) {
     return (
-      <div className="flex justify-center py-10">
+      <div className={stylex.props(styles.s4c9e7ebc).className || ''}>
         <Spinner />
       </div>
     )
@@ -86,13 +163,11 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
       </>
     )
   }
-
   const counts: Record<MemberSubTab, number | undefined> = {
     members: membersList.length,
     writers: writersList.length,
     'email-subscribers': subscribers.data?.subscribers?.length,
   }
-
   return (
     <>
       <SizableText size="2xl" weight="bold">
@@ -100,16 +175,22 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
       </SizableText>
 
       {/* Sub-tab bar with counts */}
-      <div className="border-border flex gap-1 border-b">
+      <div className={stylex.props(styles.s81b1ecbb).className || ''}>
         {SUB_TABS.map((t) => {
           const count = counts[t.key]
           const active = subTab === t.key
           return (
             <button
               key={t.key}
-              onClick={() => navigate({key: 'site-settings', id: siteId, tab: t.key})}
+              onClick={() =>
+                navigate({
+                  key: 'site-settings',
+                  id: siteId,
+                  tab: t.key,
+                })
+              }
               className={cn(
-                '-mb-px flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm transition-colors',
+                stylex.props(styles.scd81614b).className || '',
                 active
                   ? 'border-brand text-brand-2 font-medium'
                   : 'text-muted-foreground hover:text-foreground border-transparent',
@@ -117,7 +198,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
             >
               {t.label}
               {count !== undefined ? (
-                <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-xs">{count}</span>
+                <span className={stylex.props(styles.s617ed067).className || ''}>{count}</span>
               ) : null}
             </button>
           )
@@ -129,7 +210,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
       )}
       {subTab === 'writers' && <WritersPane people={writersList} accounts={accounts} isLoading={isInitialLoading} />}
       {subTab === 'email-subscribers' && (
-        <div className="py-2">
+        <div className={stylex.props(styles.s34b56e).className || ''}>
           {metadataSiteUrl ? (
             <SiteEmailSubscribersList
               subscribers={subscribers.data?.subscribers}
@@ -137,7 +218,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
               errorMessage={subscribers.error instanceof Error ? subscribers.error.message : null}
             />
           ) : (
-            <SizableText color="muted" className="py-4">
+            <SizableText color="muted" className={stylex.props(styles.s34b570).className || ''}>
               This site doesn't have a notification service configured, so it can't collect email subscribers yet.
             </SizableText>
           )}
@@ -146,7 +227,6 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
     </>
   )
 }
-
 function MembersList({
   siteId,
   people,
@@ -161,12 +241,15 @@ function MembersList({
   const myCapability = useSelectedAccountCapability(siteId, 'owner')
   const addCapabilities = useAddCapabilities(siteId)
   const [promotingUid, setPromotingUid] = useState<string | null>(null)
-
   const promote = (accountUid: string) => {
     if (!myCapability) return
     setPromotingUid(accountUid)
     addCapabilities.mutate(
-      {myCapability, collaboratorAccountIds: [accountUid], role: 'WRITER'},
+      {
+        myCapability,
+        collaboratorAccountIds: [accountUid],
+        role: 'WRITER',
+      },
       {
         onSuccess: () => toast.success('Writer access granted'),
         onError: () => toast.error('Failed to grant writer access'),
@@ -174,12 +257,10 @@ function MembersList({
       },
     )
   }
-
   if (isLoading) return <ListSpinner />
   if (!people.length) return <EmptyMessage>No members yet.</EmptyMessage>
-
   return (
-    <div className="flex flex-col gap-1 py-2">
+    <div className={stylex.props(styles.s9c95321).className || ''}>
       {people.map((member) => (
         <MemberRow
           key={member.account.uid}
@@ -202,7 +283,6 @@ function MembersList({
     </div>
   )
 }
-
 function WritersPane({
   people,
   accounts,
@@ -215,44 +295,44 @@ function WritersPane({
   if (isLoading) return <ListSpinner />
   if (!people.length) return <EmptyMessage>No writers yet.</EmptyMessage>
   return (
-    <div className="flex flex-col gap-1 py-2">
+    <div className={stylex.props(styles.s9c95321).className || ''}>
       {people.map((member) => (
         <MemberRow key={member.account.uid} member={member} account={accounts[member.account.uid]} />
       ))}
     </div>
   )
 }
-
 function MemberRow({member, account, action}: {member: HMSiteMember; account?: HMMetadataPayload; action?: ReactNode}) {
   const metadata = account?.metadata
   const name = metadata?.name || `${member.account.uid.slice(0, 10)}…`
   return (
     <div className="group hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
       <HMIcon id={member.account} name={metadata?.name} icon={metadata?.icon} size={32} />
-      <SizableText size="sm" className={cn('flex-1 truncate', metadata?.name ? '' : 'text-muted-foreground')}>
+      <SizableText
+        size="sm"
+        className={cn(stylex.props(styles.sb136bac9).className || '', metadata?.name ? '' : 'text-muted-foreground')}
+      >
         {name}
       </SizableText>
       {action && member.role === 'member' ? (
         <div className="opacity-0 transition-opacity group-hover:opacity-100">{action}</div>
       ) : null}
-      <SizableText size="xs" color="muted" className="shrink-0">
+      <SizableText size="xs" color="muted" className={stylex.props(styles.sf032ed6c).className || ''}>
         {roleLabel(member.role)}
       </SizableText>
     </div>
   )
 }
-
 function ListSpinner() {
   return (
-    <div className="flex justify-center py-8">
+    <div className={stylex.props(styles.s65917ffb).className || ''}>
       <Spinner />
     </div>
   )
 }
-
 function EmptyMessage({children}: {children: ReactNode}) {
   return (
-    <SizableText color="muted" className="py-4">
+    <SizableText color="muted" className={stylex.props(styles.s34b570).className || ''}>
       {children}
     </SizableText>
   )

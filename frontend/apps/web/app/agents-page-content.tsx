@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useCreateAccount, useLocalKeyPair, useLocalKeyPairLoaded} from '@/auth'
 import {registerWebAgentsPlatform} from '@/web-agents-platform'
 import {useNavRoute} from '@shm/shared/utils/navigation'
@@ -11,12 +12,29 @@ import {SizableText} from '@shm/ui/text'
 
 // Register the web platform adapter before any agents UI renders. This module is only loaded from
 // the client-lazy agents chunk, so the registration never runs during SSR rendering of other pages.
+const styles = stylex.create({
+  s775a395b: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 24)',
+  },
+  s3b59bba: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 24)',
+  },
+})
 registerWebAgentsPlatform()
-
 function SignedOutNotice() {
   const {content, createAccount} = useCreateAccount({})
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-4 py-24">
+    <div className={stylex.props(styles.s775a395b).className || ''}>
       <SizableText size="lg" weight="bold">
         Agents
       </SizableText>
@@ -24,12 +42,19 @@ function SignedOutNotice() {
         Sign in to configure and chat with your agents. Your local web identity signs every agent action, so agents are
         only available once you are signed in.
       </SizableText>
-      <Button onClick={() => createAccount({source: 'login'})}>Sign in</Button>
+      <Button
+        onClick={() =>
+          createAccount({
+            source: 'login',
+          })
+        }
+      >
+        Sign in
+      </Button>
       {content}
     </div>
   )
 }
-
 function AgentsRouteSwitch() {
   const route = useNavRoute()
   switch (route.key) {
@@ -48,10 +73,9 @@ function AgentsRouteSwitch() {
 export default function WebAgentsContent() {
   const keyPairLoaded = useLocalKeyPairLoaded()
   const keyPair = useLocalKeyPair()
-
   if (!keyPairLoaded) {
     return (
-      <div className="flex flex-1 items-center justify-center py-24">
+      <div className={stylex.props(styles.s3b59bba).className || ''}>
         <Spinner />
       </div>
     )

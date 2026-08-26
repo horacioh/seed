@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMAccountsMetadata,
   HMDocumentInfo,
@@ -27,6 +28,72 @@ import {useScrollRestoration} from './use-scroll-restoration'
  * This is the first implementation of the panel-to-page pattern.
  * Can be used standalone (page) or wrapped in AccessoryLayout (panel).
  */
+const styles = stylex.create({
+  sf48c8a4f: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 8)',
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  s1170e5f9: {
+    position: 'relative',
+    width: '100%',
+  },
+  s3484a8: {
+    paddingLeft: 'calc(0.25rem * 9)',
+  },
+  sfe859e32: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 6)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  s34b572: {
+    paddingBlock: 'calc(0.25rem * 6)',
+  },
+  s5fc7c349: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 16)',
+  },
+  s77710dd6: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 16)',
+    height: 'calc(0.25rem * 16)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sf2746014: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    overflow: 'hidden',
+  },
+  s62d3095e: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontFamily: 'var(--font-sans)',
+  },
+})
 export function DirectoryPageContent({
   docId,
   canCreate,
@@ -46,41 +113,36 @@ export function DirectoryPageContent({
 }) {
   const route = useNavRoute()
   const [searchQuery, setSearchQuery] = useState('')
-
   const scrollRef = useScrollRestoration({
     scrollId: `directory-page-${docId.id}`,
     getStorageKey: () => getRouteKey(route),
     debug: false,
   })
-
   const {items, accountsMetadata, isInitialLoading} = useDirectoryDataWithActivity(docId)
 
   // Filter items based on search query
   const filteredItems = searchQuery
     ? items.filter((item) => item.metadata?.name?.toLowerCase().includes(searchQuery.toLowerCase()))
     : items
-
   if (isInitialLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center p-8">
-        <Spinner className="size-8" />
+      <div className={stylex.props(styles.sf48c8a4f).className || ''}>
+        <Spinner className={stylex.props(styles.sca3de96c).className || ''} />
       </div>
     )
   }
-
   const searchBox =
     showSearch && items.length > 0 ? (
-      <div className="relative w-full">
+      <div className={stylex.props(styles.s1170e5f9).className || ''}>
         <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
         <Input
           placeholder="Filter documents…"
           value={searchQuery}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-          className="pl-9"
+          className={stylex.props(styles.s3484a8).className || ''}
         />
       </div>
     ) : null
-
   return (
     <PageLayout
       title={showTitle ? 'Sub documents' : undefined}
@@ -93,10 +155,10 @@ export function DirectoryPageContent({
       contentMaxWidth={contentMaxWidth}
     >
       {/* Optional header slot (for create button, etc.) */}
-      {header && <div className="border-border border-b px-6 py-3">{header}</div>}
+      {header && <div className={stylex.props(styles.sfe859e32).className || ''}>{header}</div>}
 
       {/* Content */}
-      <div className="py-6" ref={scrollRef}>
+      <div className={stylex.props(styles.s34b572).className || ''} ref={scrollRef}>
         {items.length === 0 ? (
           <DirectoryEmpty canCreate={canCreate} />
         ) : filteredItems.length === 0 ? (
@@ -108,11 +170,10 @@ export function DirectoryPageContent({
     </PageLayout>
   )
 }
-
 function DirectoryNoResults({searchQuery}: {searchQuery: string}) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16">
-      <Search className="text-muted-foreground size-16" />
+    <div className={stylex.props(styles.s5fc7c349).className || ''}>
+      <Search className={stylex.props(styles.s77710dd6).className || ''} />
       <SizableText color="muted" weight="medium" size="xl">
         No results found
       </SizableText>
@@ -122,13 +183,11 @@ function DirectoryNoResults({searchQuery}: {searchQuery: string}) {
     </div>
   )
 }
-
 export type DirectoryItem = ReturnType<typeof getSiteNavDirectory>[number]
-
 export function DirectoryEmpty({canCreate}: {canCreate?: boolean}) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16">
-      <Folder className="text-muted-foreground size-16" />
+    <div className={stylex.props(styles.s5fc7c349).className || ''}>
+      <Folder className={stylex.props(styles.s77710dd6).className || ''} />
       <SizableText color="muted" weight="medium" size="xl">
         There are no documents here
       </SizableText>
@@ -147,15 +206,16 @@ export function useDirectoryData(docId: UnpackedHypermediaId) {
     mode: 'Children',
   })
   const canSeePrivate = useCanSeePrivateDocs(docId)
-
   const directoryItems = getSiteNavDirectory({
     id: docId,
     directory,
     drafts,
     includePrivate: canSeePrivate,
   })
-
-  return {directoryItems, isInitialLoading}
+  return {
+    directoryItems,
+    isInitialLoading,
+  }
 }
 
 /** Directory item with activity data */
@@ -177,10 +237,8 @@ function getActivityTime(item: DirectoryItemWithActivity): number {
   if (!item.isPublished) return item.sortTime?.getTime() || 0
   const activity = item.activitySummary
   if (!activity) return item.sortTime?.getTime() || 0
-
   const changeTime = normalizeDate(activity.latestChangeTime)?.getTime() || 0
   const commentTime = normalizeDate(activity.latestCommentTime)?.getTime() || 0
-
   return Math.max(changeTime, commentTime) || item.sortTime?.getTime() || 0
 }
 
@@ -190,7 +248,6 @@ export function useDirectoryDataWithActivity(docId: UnpackedHypermediaId) {
     mode: 'Children',
   })
   const canSeePrivate = useCanSeePrivateDocs(docId)
-
   const items = useMemo(() => {
     const draftsArray = Array.isArray(drafts) ? drafts : []
     const editIds = new Map<string, string>()
@@ -222,12 +279,10 @@ export function useDirectoryDataWithActivity(docId: UnpackedHypermediaId) {
         metadata: draft.metadata,
         sortTime: new Date(draft.lastUpdateTime),
       }))
-
     const allItems = [...publishedItems, ...unpublishedDraftItems]
 
     // Sort by activity time (most recent first)
     allItems.sort((a, b) => getActivityTime(b) - getActivityTime(a))
-
     return allItems
   }, [directory, drafts, docId.id, canSeePrivate])
 
@@ -241,9 +296,7 @@ export function useDirectoryDataWithActivity(docId: UnpackedHypermediaId) {
     })
     return Array.from(uids)
   }, [items])
-
   const accountsMetadata = useAccountsMetadata(authorUids)
-
   return {
     items,
     accountsMetadata: accountsMetadata.data,
@@ -261,7 +314,7 @@ export function DirectoryListViewWithActivity({
   accountsMetadata?: HMAccountsMetadata
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       {items.map((item) =>
         item.isPublished ? (
           <DirectoryDocumentTreeItem
@@ -277,20 +330,21 @@ export function DirectoryListViewWithActivity({
     </div>
   )
 }
-
 function DirectoryDocumentTreeItem({
   item,
   draftId,
   accountsMetadata,
 }: {
-  item: HMDocumentInfo & {draftId?: string; isPublished: true}
+  item: HMDocumentInfo & {
+    draftId?: string
+    isPublished: true
+  }
   draftId?: string
   accountsMetadata?: HMAccountsMetadata
 }) {
   const [expanded, setExpanded] = useState(false)
-
   return (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       <DocumentListItem
         item={item}
         draftId={draftId}
@@ -304,30 +358,28 @@ function DirectoryDocumentTreeItem({
     </div>
   )
 }
-
 function DirectoryDocumentChildren({docId}: {docId: UnpackedHypermediaId}) {
   const {items, accountsMetadata, isInitialLoading} = useDirectoryDataWithActivity(docId)
-
   if (isInitialLoading) {
     return (
       <div className="border-border/70 text-muted-foreground ml-5 flex items-center gap-2 border-l py-2 pl-5 text-xs">
-        <Spinner className="size-3.5" />
+        <Spinner className={stylex.props(styles.s3269316e).className || ''} />
         Loading children…
       </div>
     )
   }
-
   if (!items.length) return null
-
   return (
     <div className="border-border/70 ml-5 border-l pl-5">
       <DirectoryListViewWithActivity items={items} accountsMetadata={accountsMetadata} />
     </div>
   )
 }
-
 function DraftListItem({draftId, metadata}: {draftId: string; metadata: HMMetadata}) {
-  const linkProps = useRouteLink({key: 'draft', id: draftId})
+  const linkProps = useRouteLink({
+    key: 'draft',
+    id: draftId,
+  })
   return (
     <Button
       asChild
@@ -335,8 +387,10 @@ function DraftListItem({draftId, metadata}: {draftId: string; metadata: HMMetada
       className="h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black"
     >
       <a {...linkProps}>
-        <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
-          <SizableText className="truncate text-left font-sans">{getMetadataName(metadata)}</SizableText>
+        <div className={stylex.props(styles.sf2746014).className || ''}>
+          <SizableText className={stylex.props(styles.s62d3095e).className || ''}>
+            {getMetadataName(metadata)}
+          </SizableText>
           <DraftBadge />
         </div>
       </a>

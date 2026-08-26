@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Bell, Lock, LogOut, Mail, Shield} from 'lucide-react'
 import {useState} from 'react'
 import {Button} from '../button'
@@ -6,7 +7,13 @@ import {SettingsRow, SettingsSection} from '../settings-list'
 import {ChangeEmailDialog} from './change-email-dialog'
 import {NotificationServerDialog} from './notification-server-dialog'
 import {SetPasswordDialog} from './set-password-dialog'
-
+const styles = stylex.create({
+  sfbc6e292: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 6)',
+  },
+})
 export type VaultSecurityPasskey = {
   description: string
   /** Omit to hide the action button (e.g. passkeys aren't supported here). */
@@ -14,25 +21,23 @@ export type VaultSecurityPasskey = {
   onAction?: () => void
   busy?: boolean
 }
-
 export type VaultSecurityPassword = {
   isSet: boolean
   onSet: (password: string) => Promise<void>
 }
-
 export type VaultSecurityNotify = {
   /** The current override URL ('' means use the default). */
   url: string
   defaultUrl: string
   onSave: (url: string) => Promise<void>
 }
-
 export type VaultSecurityEmail = {
   address?: string
-  onStart: (newEmail: string) => Promise<{expireTimeMs?: number} | void>
+  onStart: (newEmail: string) => Promise<{
+    expireTimeMs?: number
+  } | void>
   onVerify: (code: string) => Promise<void>
 }
-
 export type VaultSecurityLogout = {
   /** Platform-specific explanation (desktop clears local keys; web just signs out). */
   description: string
@@ -65,9 +70,8 @@ export function VaultSecuritySettings({
   const [passwordOpen, setPasswordOpen] = useState(false)
   const [emailOpen, setEmailOpen] = useState(false)
   const [notifyOpen, setNotifyOpen] = useState(false)
-
   return (
-    <div className="flex flex-col gap-6">
+    <div className={stylex.props(styles.sfbc6e292).className || ''}>
       {email || logout ? (
         <SettingsSection label="ACCOUNT">
           {email ? (

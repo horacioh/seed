@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {AgentMemoryEntry, AgentMemoryFile} from './client'
 import {
   uploadFileToAgentServer,
@@ -33,6 +34,174 @@ import {
 import {useEffect, useMemo, useRef, useState} from 'react'
 
 /** Files above this size skip the inline preview fetch — pulling hundreds of MB stalls the UI. */
+const styles = stylex.create({
+  sa0238738: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb76e9daa: {
+    display: 'none',
+  },
+  sef1c143e: {
+    marginRight: 'calc(0.25rem * 2)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s7b06a24b: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--card)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 2)',
+  },
+  s1f027a3: {
+    marginBottom: 'calc(0.25rem * 1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sd934a9b1: {
+    color: 'var(--muted-foreground)',
+    flex: 'none',
+  },
+  s8b97c16b: {
+    backgroundColor: 'var(--muted)',
+    height: 'calc(0.25rem * 1.5)',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sa8c3280f: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--card)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 2)',
+  },
+  se295dce0: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  sf48c8a4d: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 6)',
+  },
+  sd231ed2c: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 6)',
+  },
+  s3566be67: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  sa41e8da5: {
+    marginRight: 'calc(0.25rem * 1)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  saa4f1d10: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s9cbc670f: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flex: 'none',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s8056ee4: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    width: 'calc(0.25rem * 14)',
+    height: 'calc(0.25rem * 14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+  sca3de96b: {
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  s91654f6f: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 0.5)',
+  },
+  s65e234f5: {
+    textAlign: 'center',
+  },
+  se15ec85a: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flex: 'none',
+  },
+  scbdf1fe2: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s2c60fcd5: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flex: 'none',
+  },
+  sa0238737: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+})
 const MAX_MEMORY_PREVIEW_BYTES = 32 * 1024 * 1024
 
 /**
@@ -74,7 +243,11 @@ export function AgentMemoryTab({
   const [webPath, setWebPath] = useState('')
   const [confirmDeletePath, setConfirmDeletePath] = useState<string | null>(null)
   /** In-flight local file upload shown as a progress bar; null when idle. */
-  const [uploadProgress, setUploadProgress] = useState<{name: string; sent: number; total: number} | null>(null)
+  const [uploadProgress, setUploadProgress] = useState<{
+    name: string
+    sent: number
+    total: number
+  } | null>(null)
   /** Where dragged files would land: '' = memory root, a path = that folder, null = no drag. */
   const [dropTarget, setDropTarget] = useState<string | null>(null)
   /** Last IPFS publish result per memory path, kept so the URL stays visible/copyable. */
@@ -92,7 +265,6 @@ export function AgentMemoryTab({
     agentId,
     selectedTooLarge ? undefined : selectedPath ?? undefined,
   )
-
   const entries = memory.data?.entries ?? []
   const fileCount = entries.filter((entry) => entry.type === 'file').length
   const visibleEntries = entries.filter((entry) => isPathVisible(entry.path, expandedDirs))
@@ -106,7 +278,6 @@ export function AgentMemoryTab({
       setDraftText(null)
     }
   }, [memory.data, selectedPath])
-
   function selectFile(path: string) {
     setSelectedPath(path)
     setDraftText(null)
@@ -114,7 +285,6 @@ export function AgentMemoryTab({
     revealPath(path)
     if (path !== openPath) onOpenPathChange?.(path)
   }
-
   function toggleDir(path: string) {
     setExpandedDirs((current) => {
       const next = new Set(current)
@@ -150,12 +320,15 @@ export function AgentMemoryTab({
       return next
     })
   }
-
   async function handleCreateFile() {
     const path = newFilePath.trim()
     if (!path) return
     try {
-      await writeFile.mutateAsync({agentId, path, content: ''})
+      await writeFile.mutateAsync({
+        agentId,
+        path,
+        content: '',
+      })
       setNewFilePath('')
       setAddPanel('none')
       selectFile(path.replace(/^\/+/, ''))
@@ -163,12 +336,15 @@ export function AgentMemoryTab({
       toast.error(error instanceof Error ? error.message : 'Could not create memory file')
     }
   }
-
   async function handleDownloadFromWeb() {
     const url = webUrl.trim()
     if (!url) return
     try {
-      const result = await downloadFromWeb.mutateAsync({agentId, url, path: webPath.trim() || undefined})
+      const result = await downloadFromWeb.mutateAsync({
+        agentId,
+        url,
+        path: webPath.trim() || undefined,
+      })
       setWebUrl('')
       setWebPath('')
       setAddPanel('none')
@@ -193,13 +369,25 @@ export function AgentMemoryTab({
         try {
           const bytes = new Uint8Array(await localFile.arrayBuffer())
           const path = dirPath ? `${dirPath}/${relativePath}` : relativePath
-          setUploadProgress({name: relativePath, sent: 0, total: bytes.byteLength})
+          setUploadProgress({
+            name: relativePath,
+            sent: 0,
+            total: bytes.byteLength,
+          })
           await uploadFileToAgentServer({
             serverUrl,
             accountUid,
-            target: {kind: 'memory', agentId, path},
+            target: {
+              kind: 'memory',
+              agentId,
+              path,
+            },
             data: bytes,
-            onProgress: (progress) => setUploadProgress({name: relativePath, ...progress}),
+            onProgress: (progress) =>
+              setUploadProgress({
+                name: relativePath,
+                ...progress,
+              }),
           })
           lastPath = path
           uploaded++
@@ -230,20 +418,25 @@ export function AgentMemoryTab({
       toast.error(error instanceof Error ? error.message : 'Could not read the dropped files')
     }
   }
-
   async function handleSave() {
     if (selectedPath === null || draftText === null) return
     try {
-      await writeFile.mutateAsync({agentId, path: selectedPath, content: draftText})
+      await writeFile.mutateAsync({
+        agentId,
+        path: selectedPath,
+        content: draftText,
+      })
       setDraftText(null)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Could not save memory file')
     }
   }
-
   async function handleDelete(path: string) {
     try {
-      await deleteFile.mutateAsync({agentId, path})
+      await deleteFile.mutateAsync({
+        agentId,
+        path,
+      })
       setConfirmDeletePath(null)
       if (selectedPath === path || selectedPath?.startsWith(`${path}/`)) {
         setSelectedPath(null)
@@ -253,22 +446,25 @@ export function AgentMemoryTab({
       toast.error(error instanceof Error ? error.message : 'Could not delete from memory')
     }
   }
-
   async function handlePublishToIpfs() {
     if (!selectedPath) return
     try {
-      const result = await uploadToIpfs.mutateAsync({agentId, path: selectedPath})
-      setIpfsUrls((current) => ({...current, [result.path]: result.url}))
+      const result = await uploadToIpfs.mutateAsync({
+        agentId,
+        path: selectedPath,
+      })
+      setIpfsUrls((current) => ({
+        ...current,
+        [result.path]: result.url,
+      }))
       await copyText(result.url)
       toast.success(`Published to IPFS — URL copied: ${result.url}`)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Could not upload to IPFS')
     }
   }
-
   const dirty = draftText !== null && draftText !== (file.data?.content ?? '')
   const selectedIpfsUrl = selectedPath ? ipfsUrls[selectedPath] : undefined
-
   return (
     <section className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
       <div className="flex flex-wrap items-start justify-between gap-2 sm:flex-nowrap sm:items-center">
@@ -283,16 +479,22 @@ export function AgentMemoryTab({
           </SizableText>
         </div>
         {!readOnly ? (
-          <div className="flex flex-none items-center gap-2">
+          <div className={stylex.props(styles.sa0238738).className || ''}>
             <input
               ref={uploadInputRef}
               type="file"
               multiple
-              className="hidden"
+              className={stylex.props(styles.sb76e9daa).className || ''}
               onChange={(event) => {
                 const localFiles = Array.from(event.currentTarget.files ?? [])
                 event.currentTarget.value = ''
-                if (localFiles.length) void handleUploadLocalFiles(localFiles.map((file) => ({path: file.name, file})))
+                if (localFiles.length)
+                  void handleUploadLocalFiles(
+                    localFiles.map((file) => ({
+                      path: file.name,
+                      file,
+                    })),
+                  )
               }}
             />
             <Button
@@ -302,7 +504,7 @@ export function AgentMemoryTab({
               onClick={() => uploadInputRef.current?.click()}
               disabled={writeFile.isLoading}
             >
-              <Upload className="mr-2 size-4" /> Add file
+              <Upload className={stylex.props(styles.sef1c143e).className || ''} /> Add file
             </Button>
             <Button
               variant="outline"
@@ -310,7 +512,7 @@ export function AgentMemoryTab({
               className="max-sm:min-h-10"
               onClick={() => setAddPanel((current) => (current === 'from-url' ? 'none' : 'from-url'))}
             >
-              <Globe className="mr-2 size-4" /> From URL
+              <Globe className={stylex.props(styles.sef1c143e).className || ''} /> From URL
             </Button>
             <Button
               variant="outline"
@@ -318,26 +520,28 @@ export function AgentMemoryTab({
               className="max-sm:min-h-10"
               onClick={() => setAddPanel((current) => (current === 'new-file' ? 'none' : 'new-file'))}
             >
-              <FilePlus className="mr-2 size-4" /> New file
+              <FilePlus className={stylex.props(styles.sef1c143e).className || ''} /> New file
             </Button>
           </div>
         ) : null}
       </div>
 
       {uploadProgress ? (
-        <div className="border-border bg-card rounded-lg border p-2">
-          <div className="mb-1 flex items-center justify-between gap-2 text-xs">
+        <div className={stylex.props(styles.s7b06a24b).className || ''}>
+          <div className={stylex.props(styles.s1f027a3).className || ''}>
             <span className="text-muted-foreground min-w-0 truncate">
               Uploading {uploadProgress.name}… {formatBytes(uploadProgress.sent)} of {formatBytes(uploadProgress.total)}
             </span>
-            <span className="text-muted-foreground flex-none">
+            <span className={stylex.props(styles.sd934a9b1).className || ''}>
               {Math.floor((uploadProgress.sent / Math.max(1, uploadProgress.total)) * 100)}%
             </span>
           </div>
-          <div className="bg-muted h-1.5 w-full overflow-hidden rounded-full">
+          <div className={stylex.props(styles.s8b97c16b).className || ''}>
             <div
               className="bg-primary h-full rounded-full transition-[width] duration-200"
-              style={{width: `${(uploadProgress.sent / Math.max(1, uploadProgress.total)) * 100}%`}}
+              style={{
+                width: `${(uploadProgress.sent / Math.max(1, uploadProgress.total)) * 100}%`,
+              }}
             />
           </div>
         </div>
@@ -345,7 +549,7 @@ export function AgentMemoryTab({
 
       {addPanel === 'new-file' ? (
         <form
-          className="border-border bg-card flex items-center gap-2 rounded-lg border p-2"
+          className={stylex.props(styles.sa8c3280f).className || ''}
           onSubmit={(event) => {
             event.preventDefault()
             void handleCreateFile()
@@ -369,7 +573,7 @@ export function AgentMemoryTab({
 
       {addPanel === 'from-url' ? (
         <form
-          className="border-border bg-card flex items-center gap-2 rounded-lg border p-2"
+          className={stylex.props(styles.sa8c3280f).className || ''}
           onSubmit={(event) => {
             event.preventDefault()
             void handleDownloadFromWeb()
@@ -421,15 +625,15 @@ export function AgentMemoryTab({
           }}
         >
           {memory.isLoading ? (
-            <div className="flex items-center justify-center p-4">
+            <div className={stylex.props(styles.se295dce0).className || ''}>
               <Spinner />
             </div>
           ) : memory.isError ? (
-            <SizableText size="sm" color="muted" className="p-2">
+            <SizableText size="sm" color="muted" className={stylex.props(styles.s1aa15).className || ''}>
               Could not load memory from the agent server.
             </SizableText>
           ) : entries.length === 0 ? (
-            <SizableText size="sm" color="muted" className="p-2">
+            <SizableText size="sm" color="muted" className={stylex.props(styles.s1aa15).className || ''}>
               No memory yet. The agent stores files here as it works, and you can add files for it to find — or drop
               files here.
             </SizableText>
@@ -476,14 +680,14 @@ export function AgentMemoryTab({
 
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           {selectedPath === null ? (
-            <div className="flex flex-1 items-center justify-center p-6">
+            <div className={stylex.props(styles.sf48c8a4d).className || ''}>
               <SizableText size="sm" color="muted">
                 Select a file to view and edit it.
               </SizableText>
             </div>
           ) : selectedTooLarge && selectedEntry ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 p-6">
-              <FileText className="text-muted-foreground size-8" />
+            <div className={stylex.props(styles.sd231ed2c).className || ''}>
+              <FileText className={stylex.props(styles.s3566be67).className || ''} />
               <SizableText size="sm" weight="bold" className="max-w-full truncate font-mono">
                 {selectedPath}
               </SizableText>
@@ -492,29 +696,34 @@ export function AgentMemoryTab({
                 {selectedEntry.mimeType ? ` · ${selectedEntry.mimeType}` : ''} — too large to preview here.
               </SizableText>
               {!readOnly ? (
-                <Button variant="outline" size="sm" onClick={() => setConfirmDeletePath(selectedPath)} className="mt-2">
-                  <Trash2 className="mr-1 size-3.5" /> Delete
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setConfirmDeletePath(selectedPath)}
+                  className={stylex.props(styles.s33458c).className || ''}
+                >
+                  <Trash2 className={stylex.props(styles.sa41e8da5).className || ''} /> Delete
                 </Button>
               ) : null}
             </div>
           ) : file.isLoading ? (
-            <div className="flex flex-1 items-center justify-center p-6">
+            <div className={stylex.props(styles.sf48c8a4d).className || ''}>
               <Spinner />
             </div>
           ) : file.isError ? (
-            <div className="flex flex-1 items-center justify-center p-6">
+            <div className={stylex.props(styles.sf48c8a4d).className || ''}>
               <SizableText size="sm" color="muted">
                 {file.error instanceof Error ? file.error.message : 'Could not read this memory file.'}
               </SizableText>
             </div>
           ) : file.data ? (
             <>
-              <div className="border-border flex items-center gap-2 border-b px-3 py-2">
-                <FileText className="text-muted-foreground size-4 flex-none" />
+              <div className={stylex.props(styles.saa4f1d10).className || ''}>
+                <FileText className={stylex.props(styles.s9cbc670f).className || ''} />
                 <SizableText size="sm" weight="bold" className="min-w-0 flex-1 truncate font-mono">
                   {selectedPath}
                 </SizableText>
-                <SizableText size="xs" color="muted" className="flex-none">
+                <SizableText size="xs" color="muted" className={stylex.props(styles.s948be48c).className || ''}>
                   {formatBytes(dirty ? new TextEncoder().encode(draftText ?? '').byteLength : file.data.size)}
                   {file.data.mimeType ? ` · ${file.data.mimeType}` : ''}
                   {file.data.updatedAt ? ` · ${formattedDateMedium(new Date(file.data.updatedAt))}` : ''}
@@ -524,19 +733,20 @@ export function AgentMemoryTab({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex-none"
+                      className={stylex.props(styles.s948be48c).className || ''}
                       onClick={() => setDraftText(null)}
                       disabled={writeFile.isLoading}
                     >
-                      <RotateCcw className="mr-1 size-3.5" /> Revert
+                      <RotateCcw className={stylex.props(styles.sa41e8da5).className || ''} /> Revert
                     </Button>
                     <Button
                       size="sm"
-                      className="flex-none"
+                      className={stylex.props(styles.s948be48c).className || ''}
                       onClick={() => void handleSave()}
                       disabled={writeFile.isLoading}
                     >
-                      <Save className="mr-1 size-3.5" /> {writeFile.isLoading ? 'Saving…' : 'Save'}
+                      <Save className={stylex.props(styles.sa41e8da5).className || ''} />{' '}
+                      {writeFile.isLoading ? 'Saving…' : 'Save'}
                     </Button>
                   </>
                 ) : null}
@@ -545,13 +755,13 @@ export function AgentMemoryTab({
                   menuItems={[
                     {
                       key: 'download',
-                      icon: <Download className="size-4" />,
+                      icon: <Download className={stylex.props(styles.sca3de968).className || ''} />,
                       label: 'Download',
                       onClick: () => file.data && saveFileToDisk(file.data),
                     },
                     {
                       key: 'publish-ipfs',
-                      icon: <UploadCloud className="size-4" />,
+                      icon: <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />,
                       label: uploadToIpfs.isLoading ? 'Publishing…' : 'Publish to IPFS',
                       disabled: readOnly || uploadToIpfs.isLoading,
                       onClick: () => void handlePublishToIpfs(),
@@ -561,7 +771,7 @@ export function AgentMemoryTab({
               </div>
               {selectedIpfsUrl ? (
                 <div className="border-border bg-muted/40 flex items-center gap-2 border-b px-3 py-1.5">
-                  <SizableText size="xs" color="muted" className="flex-none">
+                  <SizableText size="xs" color="muted" className={stylex.props(styles.s948be48c).className || ''}>
                     IPFS:
                   </SizableText>
                   <SizableText size="xs" className="min-w-0 flex-1 truncate font-mono">
@@ -570,11 +780,11 @@ export function AgentMemoryTab({
                   <Button
                     variant="ghost"
                     size="iconSm"
-                    className="flex-none"
+                    className={stylex.props(styles.s948be48c).className || ''}
                     aria-label="Copy IPFS URL"
                     onClick={() => void copyText(selectedIpfsUrl).then(() => toast.success('IPFS URL copied'))}
                   >
-                    <Copy className="size-3.5" />
+                    <Copy className={stylex.props(styles.s3269316e).className || ''} />
                   </Button>
                 </div>
               ) : null}
@@ -605,16 +815,21 @@ export function AgentMemoryTab({
 function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownload: () => void}) {
   const objectUrl = useMemo(() => {
     if (!file.data || !file.data.byteLength) return null
-    const blob = new Blob([new Uint8Array(file.data)], file.mimeType ? {type: file.mimeType} : undefined)
+    const blob = new Blob(
+      [new Uint8Array(file.data)],
+      file.mimeType
+        ? {
+            type: file.mimeType,
+          }
+        : undefined,
+    )
     return URL.createObjectURL(blob)
   }, [file])
-
   useEffect(() => {
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl)
     }
   }, [objectUrl])
-
   const kind = file.mimeType?.split('/')[0]
   if (objectUrl && kind === 'image') {
     return (
@@ -641,10 +856,10 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-6">
       <div className="border-border bg-muted/30 flex w-full max-w-sm flex-col items-center gap-3 rounded-xl border border-dashed p-8">
-        <div className="bg-muted text-muted-foreground flex size-14 items-center justify-center rounded-xl">
-          <FileText className="size-7" />
+        <div className={stylex.props(styles.s8056ee4).className || ''}>
+          <FileText className={stylex.props(styles.sca3de96b).className || ''} />
         </div>
-        <div className="flex flex-col items-center gap-0.5">
+        <div className={stylex.props(styles.s91654f6f).className || ''}>
           <SizableText size="sm" weight="bold" className="max-w-full truncate font-mono">
             {name}
           </SizableText>
@@ -655,15 +870,15 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
         </div>
         {objectUrl ? (
           <>
-            <SizableText size="xs" color="muted" className="text-center">
+            <SizableText size="xs" color="muted" className={stylex.props(styles.s65e234f5).className || ''}>
               This file type has no inline preview.
             </SizableText>
             <Button onClick={onDownload}>
-              <Download className="mr-2 size-4" /> Download
+              <Download className={stylex.props(styles.sef1c143e).className || ''} /> Download
             </Button>
           </>
         ) : (
-          <SizableText size="xs" color="muted" className="text-center">
+          <SizableText size="xs" color="muted" className={stylex.props(styles.s65e234f5).className || ''}>
             The file content could not be loaded for preview. If this agent server was recently updated, restart it and
             reopen the file.
           </SizableText>
@@ -672,7 +887,6 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
     </div>
   )
 }
-
 function MemoryEntryRow({
   entry,
   selected,
@@ -712,7 +926,9 @@ function MemoryEntryRow({
       className={`group flex items-center gap-1 rounded-md px-1 py-0.5 ${
         selected ? 'bg-primary/10' : dropTargeted ? 'bg-primary/15 ring-primary/50 ring-1' : 'hover:bg-muted/60'
       }`}
-      style={{paddingLeft: `${4 + depth * 14}px`}}
+      style={{
+        paddingLeft: `${4 + depth * 14}px`,
+      }}
       onDragOver={onDirDragOver}
       onDrop={onDirDrop}
     >
@@ -725,8 +941,8 @@ function MemoryEntryRow({
           aria-label={`${expanded ? 'Collapse' : 'Expand'} ${entry.path}`}
         >
           <ChevronRight className={`size-3 flex-none transition-transform ${expanded ? 'rotate-90' : ''}`} />
-          <Folder className="size-3.5 flex-none" />
-          <span className="truncate font-mono text-xs">{name}</span>
+          <Folder className={stylex.props(styles.se15ec85a).className || ''} />
+          <span className={stylex.props(styles.scbdf1fe2).className || ''}>{name}</span>
         </button>
       ) : (
         <button
@@ -734,13 +950,13 @@ function MemoryEntryRow({
           className="flex min-w-0 flex-1 items-center gap-1.5 py-0.5 text-left max-sm:min-h-10"
           onClick={onSelect}
         >
-          <FileText className="text-muted-foreground size-3.5 flex-none" />
-          <span className="truncate font-mono text-xs">{name}</span>
+          <FileText className={stylex.props(styles.s2c60fcd5).className || ''} />
+          <span className={stylex.props(styles.scbdf1fe2).className || ''}>{name}</span>
           <span className="text-muted-foreground/70 ml-auto flex-none pr-1 text-[10px]">{formatBytes(entry.size)}</span>
         </button>
       )}
       {confirmingDelete ? (
-        <span className="flex flex-none items-center gap-1">
+        <span className={stylex.props(styles.sa0238737).className || ''}>
           <Button variant="destructive" size="xs" onClick={onConfirmDelete} disabled={deleting}>
             {deleting ? 'Deleting…' : 'Delete'}
           </Button>
@@ -756,7 +972,7 @@ function MemoryEntryRow({
           className="flex-none opacity-0 group-hover:opacity-100"
           onClick={onRequestDelete}
         >
-          <Trash2 className="size-3.5" />
+          <Trash2 className={stylex.props(styles.s3269316e).className || ''} />
         </Button>
       ) : null}
     </div>
@@ -778,7 +994,10 @@ function hasDraggedFiles(event: React.DragEvent): boolean {
 }
 
 /** A local file to upload, with its memory-relative path (includes folder names for folder drops). */
-type DroppedFile = {path: string; file: File}
+type DroppedFile = {
+  path: string
+  file: File
+}
 
 /**
  * Collects the files carried by a drop, recursing into dropped folders so nested files keep
@@ -789,7 +1008,10 @@ async function collectDroppedFiles(dataTransfer: DataTransfer): Promise<DroppedF
   const entries = Array.from(dataTransfer.items).map((item) => item.webkitGetAsEntry?.() ?? null)
   if (!entries.some(Boolean)) {
     // No entries API (or a non-filesystem drag): fall back to the flat file list.
-    return Array.from(dataTransfer.files).map((file) => ({path: file.name, file}))
+    return Array.from(dataTransfer.files).map((file) => ({
+      path: file.name,
+      file,
+    }))
   }
   const collected: DroppedFile[] = []
   for (const entry of entries) {
@@ -797,12 +1019,14 @@ async function collectDroppedFiles(dataTransfer: DataTransfer): Promise<DroppedF
   }
   return collected
 }
-
 async function collectEntry(entry: FileSystemEntry, out: DroppedFile[]): Promise<void> {
   if (entry.isFile) {
     if (entry.name === '.DS_Store') return
     const file = await new Promise<File>((resolve, reject) => (entry as FileSystemFileEntry).file(resolve, reject))
-    out.push({path: entry.fullPath.replace(/^\/+/, ''), file})
+    out.push({
+      path: entry.fullPath.replace(/^\/+/, ''),
+      file,
+    })
   } else if (entry.isDirectory) {
     const reader = (entry as FileSystemDirectoryEntry).createReader()
     // readEntries returns results in batches (~100 in Chromium) until an empty batch.
@@ -818,7 +1042,14 @@ async function collectEntry(entry: FileSystemEntry, out: DroppedFile[]): Promise
 function saveFileToDisk(file: AgentMemoryFile) {
   const bytes =
     file.encoding === 'binary' ? file.data ?? new Uint8Array() : new TextEncoder().encode(file.content ?? '')
-  const blob = new Blob([new Uint8Array(bytes)], file.mimeType ? {type: file.mimeType} : undefined)
+  const blob = new Blob(
+    [new Uint8Array(bytes)],
+    file.mimeType
+      ? {
+          type: file.mimeType,
+        }
+      : undefined,
+  )
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
   anchor.href = url
@@ -828,7 +1059,6 @@ function saveFileToDisk(file: AgentMemoryFile) {
   anchor.remove()
   URL.revokeObjectURL(url)
 }
-
 async function copyText(text: string) {
   try {
     await navigator.clipboard.writeText(text)
@@ -836,7 +1066,6 @@ async function copyText(text: string) {
     // Clipboard access can fail outside a focused window; the URL stays visible for manual copy.
   }
 }
-
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`

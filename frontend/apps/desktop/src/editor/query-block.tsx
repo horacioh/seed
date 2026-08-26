@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {SearchInput} from '@/components/search-input'
 import {Block, BlockNoteEditor} from '@shm/editor/blocknote'
 import {MultipleNodeSelection} from '@shm/editor/blocknote/core/extensions/SideMenu/MultipleNodeSelection'
@@ -26,15 +27,63 @@ import {Fragment} from '@tiptap/pm/model'
 import {NodeSelection, TextSelection} from 'prosemirror-state'
 import {FocusEvent, Profiler, useCallback, useEffect, useMemo, useState} from 'react'
 import {HMBlockSchema} from './schema'
-
+const styles = stylex.create({
+  s533430e6: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s1addb860: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(0.25rem * -1)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  s9141e77: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  sb344561e: {
+    position: 'fixed',
+    inset: 'calc(0.25rem * 0)',
+    zIndex: '10',
+  },
+  sce47739f: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sf8eef924: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  sb344567b: {
+    position: 'fixed',
+    inset: 'calc(0.25rem * 0)',
+    zIndex: '40',
+  },
+})
 const defaultQueryIncludes = '[{"space":"","path":"","mode":"Children"}]'
 const defaultQuerySort = '[{"term":"UpdateTime","reverse":false}]'
-
 export const QueryBlock = createReactBlockSpec({
   type: 'query',
   propSchema: {
     style: {
-      values: ['Card', 'List', 'Table'], // TODO: convert HMEmbedView type to array items
+      values: ['Card', 'List', 'Table'],
+      // TODO: convert HMEmbedView type to array items
       default: 'Card',
     },
     columnCount: {
@@ -64,10 +113,8 @@ export const QueryBlock = createReactBlockSpec({
   },
   containsInlineContent: false,
   selectable: true,
-
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
-
   parseHTML: [
     {
       tag: 'div[data-content-type=query]',
@@ -78,24 +125,19 @@ export const QueryBlock = createReactBlockSpec({
     },
   ],
 })
-
 function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) {
   const client = useUniversalClient()
   const [selected, setSelected] = useState(false)
   const tiptapEditor = editor._tiptapEditor
-
   const queryIncludes: HMQueryBlockIncludes = useMemo(() => {
     return JSON.parse(block.props.queryIncludes || defaultQueryIncludes)
   }, [block.props.queryIncludes])
-
   const querySort = useMemo(() => {
     return JSON.parse(block.props.querySort || defaultQuerySort)
   }, [block.props.querySort])
-
   const banner = useMemo(() => {
     return Boolean(block.props.banner == 'true')
   }, [block.props.banner])
-
   const queryLimit = useMemo(() => {
     const parsed = parseInt(block.props.queryLimit || '', 10)
     return parsed > 0 ? parsed : undefined
@@ -112,22 +154,17 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
   }, [queryIncludes, querySort, queryLimit])
   const queryBlock = useQuery(queryQueryBlock(client, queryBlockInput))
   const sortedItems = queryBlock.data?.results ?? []
-
   useEditorSelectionChange(editor, updateSelection)
-
   const assign = useCallback(
     (props: Partial<EditorQueryBlock['props']>) => {
-      // @ts-ignore because we have literal string values here that should be ok.
-      editor.updateBlock(block.id, {props})
+      editor.updateBlock(block.id, {props} as any)
     },
     [editor, block.id],
   )
-
   function updateSelection() {
     const {view} = tiptapEditor
     const {selection} = view.state
     let isSelected = false
-
     if (selection instanceof NodeSelection) {
       // If the selection is a NodeSelection, check if this block is the selected node
       const selectedNode = view.state.doc.resolve(selection.from).parent
@@ -139,10 +176,8 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       const selectedNodes = getNodesInSelection(view)
       isSelected = selectedNodes.some((node) => node.attrs && node.attrs.id === block.id)
     }
-
     setSelected(isSelected)
   }
-
   const interactionSummaries = queryBlock.data?.interactionSummaries ?? {}
   const itemContributors = useMemo(() => {
     const contributors: Record<string, string[]> = {}
@@ -153,7 +188,6 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     })
     return contributors
   }, [sortedItems, interactionSummaries])
-
   const accountsMetadata = queryBlock.data?.accountsMetadata ?? {}
   const tableConfig = useMemo<HMQueryTableConfig | undefined>(() => {
     if (!block.props.tableConfig) return undefined
@@ -173,13 +207,11 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     data: queryBlock.data,
     error: queryBlock.error,
   })
-
   const handleBlurCapture = (e: FocusEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
       setIsFocusedWithin(false)
     }
   }
-
   return (
     <div
       // @ts-ignore
@@ -213,7 +245,11 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
             interactionSummaries={interactionSummaries}
             isDiscovering={queryBlock.isLoading}
             tableConfig={tableConfig}
-            onTableConfigChange={(config) => assign({tableConfig: JSON.stringify(config)})}
+            onTableConfigChange={(config) =>
+              assign({
+                tableConfig: JSON.stringify(config),
+              })
+            }
             onTableSortingChange={(sorting) => {
               const first = sorting[0]
               const terms: Record<string, HMQueryBlockSort[number]['term']> = {
@@ -223,7 +259,15 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
                 updated: 'UpdateTime',
               }
               const term = first ? terms[first.id] : undefined
-              if (term) assign({querySort: JSON.stringify([{term, reverse: first?.desc ?? false}])})
+              if (term)
+                assign({
+                  querySort: JSON.stringify([
+                    {
+                      term,
+                      reverse: first?.desc ?? false,
+                    },
+                  ]),
+                })
             }}
           />
         </Profiler>
@@ -231,7 +275,6 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     </div>
   )
 }
-
 function EmptyQueryBlock({queryIncludes}: {queryIncludes: string | undefined}) {
   const queryIncludesData = queryIncludes ? JSON.parse(queryIncludes) : null
   const queryIncludesFirst = queryIncludesData?.[0]
@@ -252,18 +295,15 @@ function EmptyQueryBlock({queryIncludes}: {queryIncludes: string | undefined}) {
     />
   )
 }
-
 function BlankQueryBlockMessage({message}: {message: string}) {
   return (
-    <div className="bg-muted flex items-center rounded-lg p-4">
-      <SizableText className="text-muted-foreground">{message}</SizableText>
+    <div className={stylex.props(styles.s533430e6).className || ''}>
+      <SizableText className={stylex.props(styles.sf2718385).className || ''}>{message}</SizableText>
     </div>
   )
 }
-
 type HMQueryBlockIncludes = HMBlockQuery['attributes']['query']['includes']
 type HMQueryBlockSort = NonNullable<HMBlockQuery['attributes']['query']['sort']>
-
 function QuerySettings({
   queryDocName = '',
   block,
@@ -284,7 +324,6 @@ function QuerySettings({
   // @ts-expect-error
   const popoverState = usePopoverState(block.props.defaultOpen === 'true')
   const [limit, setLimit] = useState(!!block.props.queryLimit)
-
   return (
     <>
       <div
@@ -310,7 +349,7 @@ function QuerySettings({
             className="hover:bg-background bg-white dark:bg-black"
             onClick={() => popoverState.onOpenChange(!popoverState.open)}
           >
-            <Pencil className="size-4" />
+            <Pencil className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </Tooltip>
 
@@ -380,7 +419,10 @@ function QuerySettings({
                 onValue={(value) => {
                   onValuesChange({
                     id: null,
-                    props: {...block.props, style: value as 'Card' | 'List' | 'Table'},
+                    props: {
+                      ...block.props,
+                      style: value as 'Card' | 'List' | 'Table',
+                    },
                   })
                 }}
                 label="View"
@@ -410,7 +452,6 @@ function QuerySettings({
                       term: value,
                     },
                   ]
-
                   onValuesChange({
                     id: null,
                     props: {
@@ -509,7 +550,6 @@ function QuerySettings({
                       reverse: value,
                     },
                   ]
-
                   onValuesChange({
                     id: null,
                     props: {
@@ -550,15 +590,15 @@ function QuerySettings({
                   placeholder="Item Count"
                 />
               ) : null}
-              <div className="border-border -mt-1 flex flex-col gap-2 border-t">
-                <div className="flex justify-end">
+              <div className={stylex.props(styles.s1addb860).className || ''}>
+                <div className={stylex.props(styles.s9141e77).className || ''}>
                   <Button
                     size="icon"
                     onClick={() => {
                       editor.removeBlocks([block.id])
                     }}
                   >
-                    <Trash className="size-4" />
+                    <Trash className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
                 </div>
               </div>
@@ -567,12 +607,14 @@ function QuerySettings({
         ) : null}
       </div>
       {popoverState.open ? (
-        <div className="fixed inset-0 z-10" onClick={() => popoverState.onOpenChange(false)} />
+        <div
+          className={stylex.props(styles.sb344561e).className || ''}
+          onClick={() => popoverState.onOpenChange(false)}
+        />
       ) : null}
     </>
   )
 }
-
 export function QuerySearch({
   selectedDocName = '',
   onSelect,
@@ -583,14 +625,13 @@ export function QuerySearch({
   allowWebURL?: boolean
 }) {
   const [showSearch, setShowSearch] = useState(false)
-
   return (
-    <div className="relative flex flex-col">
+    <div className={stylex.props(styles.sce47739f).className || ''}>
       <Button
         onClick={() => setShowSearch(true)}
         className="border-border hover:bg-input h-9 gap-2 overflow-hidden border"
       >
-        <Search className="size-4 shrink-0" />
+        <Search className={stylex.props(styles.sf8eef924).className || ''} />
         <SizableText
           family="default"
           className="max-w-full flex-1 truncate text-left"
@@ -603,7 +644,7 @@ export function QuerySearch({
       </Button>
       {showSearch ? (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowSearch(false)} />
+          <div className={stylex.props(styles.sb344567b).className || ''} onClick={() => setShowSearch(false)} />
           <div className="no-window-drag border-muted bg-background absolute -top-2 -left-2 z-40 h-[260px] min-h-[80%] w-[calc(100%+16px)] max-w-[800px] rounded-md border p-2 shadow-lg">
             <SearchInput
               onClose={() => setShowSearch(false)}

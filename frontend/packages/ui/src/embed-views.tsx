@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {HMResource} from '@seed-hypermedia/client/hm-types'
 import {
   BlockRange,
@@ -47,6 +48,90 @@ import {Tooltip} from './tooltip'
 import {cn} from './utils'
 
 /** Props shared by embed block renderers. */
+const styles = stylex.create({
+  sed20b12b: {
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s9444a077: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    overflowWrap: 'break-word',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s9c1aaf7b: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  se61ef476: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-sans)',
+  },
+  s34f4d0a0: {
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sed386a43: {
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+    flexShrink: '0',
+  },
+  s378d3d40: {
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    textDecorationLine: 'none',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sece8f809: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 'calc(0.25rem * 3)',
+    fontFamily: 'var(--font-sans)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sac428cea: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s734cb80b: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s9141e77: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+})
 type BlockContentProps<BlockType extends HMBlock = HMBlock> = {
   block: BlockType
   parentBlockId: string | null
@@ -75,15 +160,15 @@ export function ErrorBlock({
             toggleOpen((v) => !v)
           }}
         >
-          <SizableText color="destructive" className="font-sans text-sm">
+          <SizableText color="destructive" className={stylex.props(styles.sed20b12b).className || ''}>
             {message ? message : 'Error'}
           </SizableText>
-          <AlertCircle color="danger" className="size-3" />
+          <AlertCircle color="danger" className={stylex.props(styles.sca3de967).className || ''} />
           {children}
         </div>
         {open ? (
           <pre className="border-border rounded-md border bg-gray-100 p-2 dark:bg-gray-800">
-            <code className="font-mono text-xs wrap-break-word">{JSON.stringify(debugData, null, 4)}</code>
+            <code className={stylex.props(styles.s9444a077).className || ''}>{JSON.stringify(debugData, null, 4)}</code>
           </pre>
         ) : null}
       </div>
@@ -137,10 +222,17 @@ export function BlockEmbedCard({
   const documentRoute = useMemo(() => (id ? getEmbedDocumentRoute(id, currentRoute) : undefined), [id, currentRoute])
   const renderResourceStack = useRenderResourceStack()
   const parentDocumentId = [...renderResourceStack].reverse().find((resource) => resource.kind === 'document')?.id
-  const doc = useResource(id, {subscribed: true})
+  const doc = useResource(id, {
+    subscribed: true,
+  })
   // Check tombstone on latest version for version-pinned embeds.
   // Version-specific fetches skip the backend's tombstone check.
-  const latestCheckId = id?.version && !id?.latest ? hmId(id.uid, {path: id.path}) : undefined
+  const latestCheckId =
+    id?.version && !id?.latest
+      ? hmId(id.uid, {
+          path: id.path,
+        })
+      : undefined
   const latestCheck = useResource(latestCheckId)
   const document = doc.data?.type === 'document' ? doc.data.document : undefined
   const authors = useResources(document?.authors.map((uid: string) => hmId(uid)) || [])
@@ -151,7 +243,7 @@ export function BlockEmbedCard({
     latestCheck.isTombstone
   if (doc.isInitialLoading)
     return (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
@@ -162,9 +254,11 @@ export function BlockEmbedCard({
   if (doc.data?.type === 'not-found') {
     if (doc.isDiscovering) {
       return (
-        <div className="flex items-center justify-center gap-2 p-4">
-          <Spinner className="size-4" />
-          <SizableText className="text-muted-foreground font-sans">Looking for this content…</SizableText>
+        <div className={stylex.props(styles.s9c1aaf7b).className || ''}>
+          <Spinner className={stylex.props(styles.sca3de968).className || ''} />
+          <SizableText className={stylex.props(styles.se61ef476).className || ''}>
+            Looking for this content…
+          </SizableText>
         </div>
       )
     }
@@ -174,7 +268,6 @@ export function BlockEmbedCard({
     return <ErrorBlock message={doc.data.message} />
   }
   if (doc.isError || !doc.data) return <ErrorBlock message="Could not load embed" />
-
   const accountsMetadata = Object.fromEntries(
     authors
       .map((d: any) => d.data)
@@ -188,9 +281,7 @@ export function BlockEmbedCard({
       ])
       .filter(([_, metadata]) => !!metadata),
   )
-
   if (!id) return <ErrorBlock message="Invalid Embed URL" />
-
   const card = (
     <EmbedWrapper
       id={id}
@@ -211,16 +302,21 @@ export function BlockEmbedCard({
         navigate={openOnClick && !titleLinkOnly}
         titleLinkOnly={titleLinkOnly}
         hideInlineActions={hideInlineActions}
-        relocationOrigin={parentDocumentId ? {parentDocumentId, embedBlockId: block.id} : undefined}
+        relocationOrigin={
+          parentDocumentId
+            ? {
+                parentDocumentId,
+                embedBlockId: block.id,
+              }
+            : undefined
+        }
         showSummary
       />
     </EmbedWrapper>
   )
-
   if (isDeleted) {
     return <DeletedEmbedBanner>{card}</DeletedEmbedBanner>
   }
-
   return card
 }
 
@@ -237,7 +333,6 @@ export function BlockEmbedLink({
   const url = block.link
   const id = useMemo(() => unpackHmId(url) ?? undefined, [url])
   const isHm = !!id
-
   if (isHm && id) {
     return <HmLinkEmbed id={id} parentBlockId={parentBlockId} openOnClick={openOnClick} />
   }
@@ -257,7 +352,9 @@ function HmLinkEmbed({
   openOnClick: boolean
 }) {
   const currentRoute = useNavRoute()
-  const doc = useResource(id, {subscribed: true})
+  const doc = useResource(id, {
+    subscribed: true,
+  })
   const document = doc.data?.type === 'document' ? doc.data.document : undefined
   const title = getDocumentTitle(document) || abbreviateUid(id.uid)
   const renderStack = useRenderResourceStack()
@@ -268,7 +365,6 @@ function HmLinkEmbed({
   const documentRoute = useMemo(() => getEmbedDocumentRoute(id, currentRoute), [id, currentRoute])
   const titleLink = useRouteLink(openOnClick ? null : documentRoute)
   const titleIsLink = !openOnClick && !!titleLink.href
-
   return (
     <EmbedWrapper
       id={id}
@@ -282,7 +378,7 @@ function HmLinkEmbed({
         className={cn(
           'hover:bg-accent dark:hover:bg-accent flex w-full items-center gap-3 overflow-hidden rounded-lg',
           'bg-white shadow-md transition-colors duration-300 dark:bg-black',
-          'px-3 py-2',
+          stylex.props(styles.s34f4d0a0).className || '',
         )}
       >
         {/* Green icon placeholder, mirrors DocumentCard's no-cover variant. */}
@@ -337,11 +433,15 @@ function ExternalLinkEmbed({
   }
   const icon =
     faviconSrc && !faviconFailed ? (
-      <img src={faviconSrc} alt="" className="size-5 shrink-0" onError={() => setFaviconFailed(true)} />
+      <img
+        src={faviconSrc}
+        alt=""
+        className={stylex.props(styles.sed386a43).className || ''}
+        onError={() => setFaviconFailed(true)}
+      />
     ) : (
       <Globe className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
     )
-
   if (openOnClick) {
     // Published view - whole row navigates.
     return (
@@ -354,7 +454,7 @@ function ExternalLinkEmbed({
         className={cn(
           'hover:bg-accent dark:hover:bg-accent flex w-full items-center gap-3 overflow-hidden rounded-lg',
           'bg-white shadow-md transition-colors duration-300 dark:bg-black',
-          'px-3 py-2 no-underline',
+          stylex.props(styles.s378d3d40).className || '',
         )}
       >
         {icon}
@@ -373,7 +473,7 @@ function ExternalLinkEmbed({
       className={cn(
         'hover:bg-accent dark:hover:bg-accent flex w-full items-center gap-3 overflow-hidden rounded-lg',
         'bg-white shadow-md transition-colors duration-300 dark:bg-black',
-        'px-3 py-2',
+        stylex.props(styles.s34f4d0a0).className || '',
       )}
     >
       {icon}
@@ -395,7 +495,6 @@ function ExternalLinkEmbed({
     </div>
   )
 }
-
 function safeUrlHostname(url: string): string | null {
   try {
     return new URL(url).hostname || null
@@ -416,7 +515,6 @@ function CyclicEmbedBlock({entityLabel}: {entityLabel: 'document' | 'comment'}) 
     />
   )
 }
-
 export function BlockEmbedContent({
   block,
   depth,
@@ -447,31 +545,45 @@ export function BlockEmbedContent({
     // the pinned version, otherwise later edits to the source doc shift the
     // range and the highlight lands on different text. Force `latest:false`
     // whenever blockRange is present, even on legacy links that still carry `&l`.
-    return rawId && rawId.blockRange && rawId.version ? {...rawId, latest: false} : rawId
+    return rawId && rawId.blockRange && rawId.version
+      ? {
+          ...rawId,
+          latest: false,
+        }
+      : rawId
   }, [block.link])
-
-  const resource = useResource(id, {subscribed: true})
+  const resource = useResource(id, {
+    subscribed: true,
+  })
   // Check tombstone on latest version for version-pinned embeds.
   // Version-specific fetches skip the backend's tombstone check.
-  const latestCheckId = id?.version && !id?.latest ? hmId(id.uid, {path: id.path}) : null
+  const latestCheckId =
+    id?.version && !id?.latest
+      ? hmId(id.uid, {
+          path: id.path,
+        })
+      : null
   const latestCheck = useResource(latestCheckId)
   const document = resource.data?.type === 'document' ? resource.data.document : undefined
   const comment = resource.data?.type === 'comment' ? resource.data.comment : undefined
   const commentTargetResource = useResource(getCommentTargetId(comment))
-  const author = useAccount(comment?.author, {subscribe: true})
+  const author = useAccount(comment?.author, {
+    subscribe: true,
+  })
   const candidateKind = comment ? 'comment' : document ? 'document' : null
   const isCyclicEmbed = !!(
     id &&
     candidateKind &&
-    shouldBlockEmbeddedResource(renderResourceStack, {kind: candidateKind, id})
+    shouldBlockEmbeddedResource(renderResourceStack, {
+      kind: candidateKind,
+      id,
+    })
   )
-
   const isDeleted =
     resource.isTombstone ||
     resource.data?.type === 'tombstone' ||
     latestCheck.data?.type === 'tombstone' ||
     latestCheck.isTombstone
-
   if (!id) return <ErrorBlock message="Invalid embed link" />
   if (isCyclicEmbed) return <CyclicEmbedBlock entityLabel={candidateKind || 'document'} />
   // No content available at all — banner without toggle
@@ -482,8 +594,10 @@ export function BlockEmbedContent({
     if (resource.isDiscovering) {
       return (
         <div className="block-content border-border bg-muted/30 flex items-center gap-2 rounded-md border p-4">
-          <Spinner className="size-4" />
-          <SizableText className="text-muted-foreground font-sans">Looking for this content…</SizableText>
+          <Spinner className={stylex.props(styles.sca3de968).className || ''} />
+          <SizableText className={stylex.props(styles.se61ef476).className || ''}>
+            Looking for this content…
+          </SizableText>
         </div>
       )
     }
@@ -510,7 +624,6 @@ export function BlockEmbedContent({
     // Detect stale version for version-pinned comment embeds
     const latestComment = latestCheck.data?.type === 'comment' ? latestCheck.data.comment : undefined
     const isStaleCommentVersion = !!(latestComment && comment.version !== latestComment.version)
-
     const commentContent = (
       <BlockEmbedContentComment
         parentBlockId={parentBlockId}
@@ -531,7 +644,6 @@ export function BlockEmbedContent({
     }
     return commentContent
   }
-
   const embedContent = (
     <BlockEmbedContentDocument
       id={id}
@@ -550,11 +662,9 @@ export function BlockEmbedContent({
       renderDocumentContent={renderDocumentContent}
     />
   )
-
   if (isDeleted) {
     return <DeletedEmbedBanner>{embedContent}</DeletedEmbedBanner>
   }
-
   return embedContent
 }
 
@@ -563,36 +673,49 @@ export function BlockEmbedComments({
   parentBlockId,
   block,
   openOnClick = true,
-}: BlockContentProps<HMBlockEmbed> & {openOnClick?: boolean}) {
+}: BlockContentProps<HMBlockEmbed> & {
+  openOnClick?: boolean
+}) {
   const client = useUniversalClient()
   const id = unpackHmId(block.link)
   const renderResourceStack = useRenderResourceStack()
-
   const resource = useResource(id, {
     recursive: true,
     subscribed: true,
   })
   // Check tombstone on latest version for version-pinned embeds.
-  const latestCheckId = id?.version && !id?.latest ? hmId(id.uid, {path: id.path}) : null
+  const latestCheckId =
+    id?.version && !id?.latest
+      ? hmId(id.uid, {
+          path: id.path,
+        })
+      : null
   const latestCheck = useResource(latestCheckId)
-
   if (!id) {
     return <ErrorBlock message="Invalid embed link" />
   }
-  if (shouldBlockEmbeddedResource(renderResourceStack, {kind: 'document', id})) {
+  if (
+    shouldBlockEmbeddedResource(renderResourceStack, {
+      kind: 'document',
+      id,
+    })
+  ) {
     return <CyclicEmbedBlock entityLabel="document" />
   }
   // No content available at all — banner without toggle
   if (resource.data?.type === 'tombstone') {
     return <DeletedEmbedBanner />
   }
-
   const isDeleted = resource.isTombstone || latestCheck.data?.type === 'tombstone' || latestCheck.isTombstone
   const CommentEditor = client.CommentEditor
-
   const content = (
     <EmbedWrapper id={id} parentBlockId={parentBlockId} hideBorder openOnClick={openOnClick}>
-      <RenderResourceProvider resource={{kind: 'document', id}}>
+      <RenderResourceProvider
+        resource={{
+          kind: 'document',
+          id,
+        }}
+      >
         {CommentEditor ? (
           <div
             onClick={(e) => {
@@ -606,11 +729,9 @@ export function BlockEmbedComments({
       </RenderResourceProvider>
     </EmbedWrapper>
   )
-
   if (isDeleted) {
     return <DeletedEmbedBanner>{content}</DeletedEmbedBanner>
   }
-
   return content
 }
 
@@ -642,10 +763,8 @@ export function BlockEmbedContentComment({
   const currentRoute = useNavRoute()
   const targetDocId = getCommentTargetId(comment)
   const activePanel = getRoutePanel(currentRoute) as DocumentPanelRoute | null
-
   const route = useMemo(() => {
     if (!targetDocId) return undefined
-
     if (activePanel) {
       return {
         key: 'document' as const,
@@ -659,7 +778,6 @@ export function BlockEmbedContentComment({
       openComment: comment.id,
     }
   }, [targetDocId, activePanel, comment.id])
-
   return (
     <EmbedWrapper
       viewType={block.attributes?.view}
@@ -704,9 +822,9 @@ function CommentEmbedHeader({
   const authorName = author?.metadata?.name || abbreviateUid(comment.author) || '?'
   const authorIcon = author?.metadata?.icon
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-wrap justify-between p-3 font-sans">
-        <div className="flex items-center gap-2">
+    <div className={stylex.props(styles.s783f19f3).className || ''}>
+      <div className={stylex.props(styles.sece8f809).className || ''}>
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <HMIcon size={24} id={author?.id || hmId(comment.author)} name={authorName} icon={authorIcon} />
           <SizableText weight="bold">{authorName}</SizableText>
           {isAuthorLoading && !author?.metadata?.name ? <Spinner size="small" /> : null}
@@ -717,14 +835,14 @@ function CommentEmbedHeader({
             </>
           ) : null}
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className={stylex.props(styles.sac428cea).className || ''}>
           {comment.createTime ? (
             <SizableText size="sm" color="muted">
               {formattedDateMedium(comment.createTime)}
             </SizableText>
           ) : null}
           {JSON.stringify(comment.createTime) !== JSON.stringify(comment.updateTime) ? (
-            <SizableText size="xs" className="text-muted-foreground">
+            <SizableText size="xs" className={stylex.props(styles.sf2718385).className || ''}>
               (edited)
             </SizableText>
           ) : null}
@@ -779,15 +897,12 @@ function BlockEmbedContentDocument(props: {
     openOnClick,
   } = props
   const navigate = useNavigate()
-
   const blockRangeStart = props.blockRange && 'start' in props.blockRange ? props.blockRange.start : null
   const blockRangeEnd = props.blockRange && 'end' in props.blockRange ? props.blockRange.end : null
   const blockRangeExpanded = props.blockRange && 'expanded' in props.blockRange ? props.blockRange.expanded : false
-
   const embedData = useMemo(() => {
     const selectedBlock =
       props.blockRef && document?.content ? getBlockNodeById(document.content, props.blockRef) : null
-
     const embedBlocks = props.blockRef
       ? selectedBlock
         ? [
@@ -815,9 +930,13 @@ function BlockEmbedContentDocument(props: {
     }
     return res
   }, [props.blockRef, blockRangeStart, blockRangeEnd, blockRangeExpanded, document?.version])
-
   const embedOnBlockSelect = useCallback(
-    (blockId: string, opts?: BlockRange & {copyToClipboard?: boolean}): boolean => {
+    (
+      blockId: string,
+      opts?: BlockRange & {
+        copyToClipboard?: boolean
+      },
+    ): boolean => {
       if (!openOnClick) return false
       if (opts?.copyToClipboard) {
         toast.error('Error: not implemented')
@@ -834,7 +953,6 @@ function BlockEmbedContentDocument(props: {
     },
     [navigate, id],
   )
-
   let content: null | JSX.Element = <ErrorBlock message="Unknown error" />
   if (isLoading) {
     content = <Spinner />
@@ -862,7 +980,11 @@ function BlockEmbedContentDocument(props: {
           blockRef={props.blockRef}
           blockRange={props.blockRange ?? null}
           onCopyBlockLink={(bid) => {
-            embedOnBlockSelect(bid, {copyToClipboard: true, start: 0, end: 0})
+            embedOnBlockSelect(bid, {
+              copyToClipboard: true,
+              start: 0,
+              end: 0,
+            })
           }}
           showReferenced={showReferenced}
           onShowReferenced={onShowReferenced}
@@ -872,7 +994,7 @@ function BlockEmbedContentDocument(props: {
   } else if (props.blockRef) {
     return (
       <ErrorBlock message={`Block #${props.blockRef} was not found in this version`}>
-        <div className="flex gap-2 p-4">
+        <div className={stylex.props(styles.s734cb80b).className || ''}>
           {id.version ? (
             <Button
               variant="ghost"
@@ -891,7 +1013,10 @@ function BlockEmbedContentDocument(props: {
   }
   return (
     <EmbedWrapper
-      route={{key: 'document', id}}
+      route={{
+        key: 'document',
+        id,
+      }}
       viewType={viewType}
       depth={props.depth || 1}
       id={id}
@@ -928,7 +1053,6 @@ function EmbedContentFallback({
   onShowReferenced: (show: boolean) => void
 }) {
   const Viewer = useReadOnlyViewer()
-
   const blocks = useMemo(() => {
     if (!blockRef && document?.metadata?.name) {
       // Wrap content in a synthetic heading block (mirrors the old BlockNodeContent heading)
@@ -937,7 +1061,9 @@ function EmbedContentFallback({
           type: 'Heading',
           id: blockId,
           text: getDocumentTitle(document) || '',
-          attributes: {childrenType: 'Group'},
+          attributes: {
+            childrenType: 'Group',
+          },
           annotations: [],
         },
         children: embedBlocks,
@@ -946,7 +1072,6 @@ function EmbedContentFallback({
     }
     return embedBlocks
   }, [blockRef, document, blockId, embedBlocks])
-
   if (!Viewer) return null
 
   // Only forward a codepoint range — `{expanded: true}` should not highlight.
@@ -954,7 +1079,6 @@ function EmbedContentFallback({
     blockRange && 'start' in blockRange && 'end' in blockRange && typeof blockRange.start === 'number'
       ? blockRange
       : undefined
-
   return (
     <>
       <Viewer
@@ -965,7 +1089,7 @@ function EmbedContentFallback({
         blockRange={fragmentRange}
       />
       {showReferenced ? (
-        <div className="flex justify-end">
+        <div className={stylex.props(styles.s9141e77).className || ''}>
           <Tooltip content="The latest reference was not found. Click to try again.">
             <Button
               size="sm"
@@ -976,7 +1100,7 @@ function EmbedContentFallback({
                 onShowReferenced(false)
               }}
             >
-              <Undo2 className="size-3" />
+              <Undo2 className={stylex.props(styles.sca3de967).className || ''} />
               Back to Reference
             </Button>
           </Tooltip>

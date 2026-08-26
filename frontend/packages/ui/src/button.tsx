@@ -1,10 +1,14 @@
+import * as stylex from '@stylexjs/stylex'
 import {Slot} from '@radix-ui/react-slot'
 import {cva, type VariantProps} from 'class-variance-authority'
 import {Loader2} from 'lucide-react'
 import * as React from 'react'
-
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s3b858bae: {
+    animation: 'spin 1s linear infinite',
+  },
+})
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<'button'> &
@@ -14,12 +18,17 @@ export const Button = React.forwardRef<
     }
 >(({className, variant, size, asChild = false, loading = false, children, ...props}, ref) => {
   const Comp = asChild ? Slot : 'button'
-
   return (
     <Comp
       ref={ref}
       data-slot="button"
-      className={cn(buttonVariants({variant, size, className}))}
+      className={cn(
+        buttonVariants({
+          variant,
+          size,
+          className,
+        }),
+      )}
       disabled={loading || props.disabled}
       {...props}
     >
@@ -27,7 +36,7 @@ export const Button = React.forwardRef<
         children
       ) : (
         <>
-          {loading ? <Loader2 className="animate-spin" /> : null}
+          {loading ? <Loader2 className={stylex.props(styles.s3b858bae).className || ''} /> : null}
           {children}
         </>
       )}
@@ -35,21 +44,30 @@ export const Button = React.forwardRef<
   )
 })
 Button.displayName = 'Button'
-
 export function ButtonLink({
   className,
   variant,
   size,
   ...props
 }: React.ComponentProps<'a'> & VariantProps<typeof buttonVariants>) {
-  return <a data-slot="button-link" className={cn(buttonVariants({variant, size, className}))} {...props} />
+  return (
+    <a
+      data-slot="button-link"
+      className={cn(
+        buttonVariants({
+          variant,
+          size,
+          className,
+        }),
+      )}
+      {...props}
+    />
+  )
 }
-
 export type ButtonProps = React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }
-
 export const buttonVariants = cva(
   "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md font-sans text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
@@ -83,7 +101,6 @@ export const buttonVariants = cva(
         iconSm: 'h-6 min-w-6 rounded-md has-[>svg]:px-1',
       },
     },
-
     defaultVariants: {
       variant: 'ghost',
       size: 'default',

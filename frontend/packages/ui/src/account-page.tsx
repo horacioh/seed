@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMMetadataPayload} from '@seed-hypermedia/client/hm-types'
 import {hmId, hostnameStripProtocol, ProfileTab, useDomain, useFollowProfile, useRouteLink} from '@shm/shared'
 import {IS_DESKTOP} from '@shm/shared/constants'
@@ -16,18 +17,94 @@ import {Pencil} from './icons'
 import {MembershipContent} from './membership'
 import {PageLayout} from './page-layout'
 import {PageTabItem, PageTabs} from './page-tabs'
-
+const styles = stylex.create({
+  sb42feb5d: {
+    flex: '1',
+  },
+  s86ff3e6: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s2e6cd8a3: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '700',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sf465c2d8: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    wordBreak: 'break-all',
+    color: 'oklch(62.3% 0.214 259.815)',
+  },
+  sab7d789e: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    color: 'oklch(59.6% 0.145 163.225)',
+  },
+  s36c7f1: {
+    width: 'calc(0.25rem * 72)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s5b4541d: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    color: 'oklch(66.6% 0.179 58.318)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+})
 export type SiteAccountTab = 'profile' | 'membership' | 'followers' | 'following'
-
-const SITE_ACCOUNT_TABS: {label: string; value: SiteAccountTab; icon: LucideIcon}[] = [
-  {label: 'Activity', value: 'profile', icon: ActivityIcon},
-  {label: 'Site Membership', value: 'membership', icon: Users},
-  {label: 'Followers', value: 'followers', icon: UserCheck},
-  {label: 'Following', value: 'following', icon: Rss},
+const SITE_ACCOUNT_TABS: {
+  label: string
+  value: SiteAccountTab
+  icon: LucideIcon
+}[] = [
+  {
+    label: 'Activity',
+    value: 'profile',
+    icon: ActivityIcon,
+  },
+  {
+    label: 'Site Membership',
+    value: 'membership',
+    icon: Users,
+  },
+  {
+    label: 'Followers',
+    value: 'followers',
+    icon: UserCheck,
+  },
+  {
+    label: 'Following',
+    value: 'following',
+    icon: Rss,
+  },
 ]
-
 const DOMAIN_LINK_STALE_TIME_MS = 3 * 60 * 60 * 1000
-
 function getSiteHostname(siteUrl?: string | null): string | null {
   if (!siteUrl) return null
   try {
@@ -50,7 +127,6 @@ export function getAccountSiteLinkState(params: {
 }) {
   const hostname = getSiteHostname(params.siteUrl)
   const domainLabel = params.siteUrl ? hostnameStripProtocol(params.siteUrl) : 'Open Site'
-
   if (!params.hasSite) {
     return {
       kind: 'hidden' as const,
@@ -59,7 +135,6 @@ export function getAccountSiteLinkState(params: {
       hostname,
     }
   }
-
   if (!params.siteUrl) {
     return {
       kind: 'internal' as const,
@@ -68,7 +143,6 @@ export function getAccountSiteLinkState(params: {
       hostname,
     }
   }
-
   if (!hostname) {
     return {
       kind: 'internal' as const,
@@ -77,7 +151,6 @@ export function getAccountSiteLinkState(params: {
       hostname,
     }
   }
-
   if (
     !params.isDomainLoading &&
     params.accountUid &&
@@ -92,7 +165,6 @@ export function getAccountSiteLinkState(params: {
       verifiedMessage: `${domainLabel} is currently working for this profile account.`,
     }
   }
-
   if (params.isDomainLoading) {
     return {
       kind: 'internal' as const,
@@ -101,7 +173,6 @@ export function getAccountSiteLinkState(params: {
       hostname,
     }
   }
-
   return {
     kind: 'internal' as const,
     label: 'Open Site',
@@ -110,7 +181,6 @@ export function getAccountSiteLinkState(params: {
     warningMessage: `${domainLabel} is not resolving to this profile account.`,
   }
 }
-
 export function AccountPage({
   siteUid,
   accountUid,
@@ -141,15 +211,13 @@ export function AccountPage({
   const {isFollowing, isPending, isOwnAccount, followProfile, unfollowProfile} = useFollowProfile({
     profileUid: accountUid,
   })
-
   const handleFollowClick = onFollowClick ?? followProfile
-
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className={stylex.props(styles.sb42feb5d).className || ''}>
       <PageLayout contentMaxWidth={720}>
         <div className="space-y-6 py-8">
           <div className="m-4 flex-col space-y-6">
-            <div className="flex items-center gap-4">
+            <div className={stylex.props(styles.s86ff3e6).className || ''}>
               <HMIcon
                 id={hmId(accountUid)}
                 size={64}
@@ -157,13 +225,15 @@ export function AccountPage({
                 name={account.data?.metadata?.name}
               />
               <div className="min-w-0 flex-1 space-y-1">
-                <h1 className="truncate text-2xl font-bold">{account.data?.metadata?.name || accountUid}</h1>
+                <h1 className={stylex.props(styles.s2e6cd8a3).className || ''}>
+                  {account.data?.metadata?.name || accountUid}
+                </h1>
                 <SiteLink account={account.data} />
               </div>
-              <div className="flex items-center gap-2">
+              <div className={stylex.props(styles.s86ff3e4).className || ''}>
                 {isOwnAccount && onEditProfile && (
                   <Button variant="outline" onClick={onEditProfile}>
-                    <Pencil className="size-4" />
+                    <Pencil className={stylex.props(styles.sca3de968).className || ''} />
                     Edit
                   </Button>
                 )}
@@ -185,12 +255,13 @@ export function AccountPage({
     </ScrollArea>
   )
 }
-
 function SiteLink({account}: {account?: HMMetadataPayload | null}) {
   const homeId = account?.id?.uid ? hmId(account.id.uid) : null
   const siteUrl = account?.metadata?.siteUrl || null
   const hostname = getSiteHostname(siteUrl)
-  const homeDocument = useResource(homeId, {subscribed: true})
+  const homeDocument = useResource(homeId, {
+    subscribed: true,
+  })
   const homeDocData = homeDocument.data?.type === 'document' ? homeDocument.data.document : null
   const hasSite = !!siteUrl || !!homeDocData
   const domainInfo = useDomain(hostname, {
@@ -207,7 +278,12 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
     isDomainLoading: domainInfo.isLoading,
   })
   const internalLinkProps = useRouteLink(
-    homeId ? {key: 'document', id: homeId} : null,
+    homeId
+      ? {
+          key: 'document',
+          id: homeId,
+        }
+      : null,
     homeId
       ? {
           origin: siteUrl,
@@ -216,32 +292,29 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
       : undefined,
   )
   const externalLinkProps = useRouteLink(siteUrl)
-
   if (linkState.kind === 'hidden') return null
-
   const linkProps = linkState.kind === 'external' && !IS_DESKTOP ? externalLinkProps : internalLinkProps
-
   return (
-    <a className="flex items-center gap-1 break-all text-blue-500" {...linkProps}>
+    <a className={stylex.props(styles.sf465c2d8).className || ''} {...linkProps}>
       <span>{linkState.label}</span>
       {linkState.status === 'verified' && linkState.verifiedMessage ? (
         <HoverCard>
           <HoverCardTrigger asChild>
             <span
-              className="flex shrink-0 items-center text-emerald-600"
+              className={stylex.props(styles.sab7d789e).className || ''}
               aria-label="Domain verification details"
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
               }}
             >
-              <Check className="size-4" />
+              <Check className={stylex.props(styles.sca3de968).className || ''} />
             </span>
           </HoverCardTrigger>
-          <HoverCardContent align="start" className="w-72">
+          <HoverCardContent align="start" className={stylex.props(styles.s36c7f1).className || ''}>
             <div className="space-y-2 text-sm">
-              <div className="font-medium">{linkState.hostname}</div>
-              <div className="text-muted-foreground">{linkState.verifiedMessage}</div>
+              <div className={stylex.props(styles.s129e46b3).className || ''}>{linkState.hostname}</div>
+              <div className={stylex.props(styles.sf2718385).className || ''}>{linkState.verifiedMessage}</div>
             </div>
           </HoverCardContent>
         </HoverCard>
@@ -250,20 +323,20 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
         <HoverCard>
           <HoverCardTrigger asChild>
             <span
-              className="flex shrink-0 items-center text-amber-600"
+              className={stylex.props(styles.s5b4541d).className || ''}
               aria-label="Domain verification details"
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
               }}
             >
-              <AlertCircle className="size-4" />
+              <AlertCircle className={stylex.props(styles.sca3de968).className || ''} />
             </span>
           </HoverCardTrigger>
-          <HoverCardContent align="start" className="w-72">
+          <HoverCardContent align="start" className={stylex.props(styles.s36c7f1).className || ''}>
             <div className="space-y-2 text-sm">
-              <div className="font-medium">{linkState.hostname}</div>
-              <div className="text-muted-foreground">{linkState.warningMessage}</div>
+              <div className={stylex.props(styles.s129e46b3).className || ''}>{linkState.hostname}</div>
+              <div className={stylex.props(styles.sf2718385).className || ''}>{linkState.warningMessage}</div>
             </div>
           </HoverCardContent>
         </HoverCard>
@@ -271,15 +344,13 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
     </a>
   )
 }
-
 function ProfileContent({siteUid: _siteUid, accountUid}: {siteUid?: string | null; accountUid: string}) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <Feed filterAuthors={[accountUid]} filterResource={undefined} />
     </div>
   )
 }
-
 function AccountPageTabs({
   siteUid,
   accountUid,
@@ -306,6 +377,5 @@ function AccountPageTabs({
           tab: t.value,
         },
   }))
-
   return <PageTabs tabs={tabs} activeTab={tab} />
 }

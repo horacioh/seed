@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext} from '@/app-context'
 import {useCopyReferenceUrl} from '@/components/copy-reference-url'
 import {useGatewayUrl} from '@/models/gateway-settings'
@@ -10,7 +11,12 @@ import {Button, ButtonProps} from '@shm/ui/button'
 import {ExternalLink, Link} from '@shm/ui/icons'
 import {Tooltip} from '@shm/ui/tooltip'
 import React, {PropsWithChildren, ReactNode, useState} from 'react'
-
+const styles = stylex.create({
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+})
 export function useDocumentUrl({
   docId,
   isBlockFocused,
@@ -44,7 +50,6 @@ export function useDocumentUrl({
   if (!url) return null
   // Get document version for block links
   const docVersion = docEntity.data?.type === 'document' ? docEntity.data.document?.version : undefined
-
   return {
     url,
     label: siteHostname
@@ -71,7 +76,6 @@ export function useDocumentUrl({
     },
   }
 }
-
 export function CopyReferenceButton({
   children,
   docId,
@@ -95,19 +99,22 @@ export function CopyReferenceButton({
   }
 >) {
   const [shouldOpen, setShouldOpen] = useState(false)
-  const reference = useDocumentUrl({docId, isBlockFocused, latest})
+  const reference = useDocumentUrl({
+    docId,
+    isBlockFocused,
+    latest,
+  })
   const {externalOpen} = useAppContext()
   if (!reference) return null
   const CurrentIcon = shouldOpen ? openIcon : copyIcon
   const icon = (
     <CurrentIcon
-      className="size-3"
+      className={stylex.props(styles.sca3de967).className || ''}
       style={{
         opacity: shouldOpen ? 1 : showIconOnHover ? 0 : 1,
       }}
     />
   )
-
   return (
     <>
       <Tooltip content={shouldOpen ? `Open ${reference.label} Link in Web Browser` : `Copy ${reference.label} Link`}>

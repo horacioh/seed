@@ -1,10 +1,23 @@
+import * as stylex from '@stylexjs/stylex'
 import {ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react'
 import * as React from 'react'
 import {DayButton, DayPicker, getDefaultClassNames} from 'react-day-picker'
-
 import {Button, buttonVariants} from '../button'
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s2f49e065: {
+    display: 'flex',
+    width: 'var(--cell-size)',
+    height: 'var(--cell-size)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+})
 function Calendar({
   className,
   classNames,
@@ -18,7 +31,6 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>['variant']
 }) {
   const defaultClassNames = getDefaultClassNames()
-
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -30,7 +42,10 @@ function Calendar({
       )}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: (date) => date.toLocaleString('default', {month: 'short'}),
+        formatMonthDropdown: (date) =>
+          date.toLocaleString('default', {
+            month: 'short',
+          }),
         ...formatters,
       }}
       classNames={{
@@ -39,12 +54,16 @@ function Calendar({
         month: cn('flex flex-col w-full gap-4', defaultClassNames.month),
         nav: cn('flex items-center gap-1 w-full absolute top-0 inset-x-0 justify-between', defaultClassNames.nav),
         button_previous: cn(
-          buttonVariants({variant: buttonVariant}),
+          buttonVariants({
+            variant: buttonVariant,
+          }),
           'size-(--cell-size) aria-disabled:opacity-50 p-0 select-none',
           defaultClassNames.button_previous,
         ),
         button_next: cn(
-          buttonVariants({variant: buttonVariant}),
+          buttonVariants({
+            variant: buttonVariant,
+          }),
           'size-(--cell-size) aria-disabled:opacity-50 p-0 select-none',
           defaultClassNames.button_next,
         ),
@@ -99,20 +118,24 @@ function Calendar({
         },
         Chevron: ({className, orientation, ...props}) => {
           if (orientation === 'left') {
-            return <ChevronLeftIcon className={cn('size-4', className)} {...props} />
+            return (
+              <ChevronLeftIcon className={cn(stylex.props(styles.sca3de968).className || '', className)} {...props} />
+            )
           }
-
           if (orientation === 'right') {
-            return <ChevronRightIcon className={cn('size-4', className)} {...props} />
+            return (
+              <ChevronRightIcon className={cn(stylex.props(styles.sca3de968).className || '', className)} {...props} />
+            )
           }
-
-          return <ChevronDownIcon className={cn('size-4', className)} {...props} />
+          return (
+            <ChevronDownIcon className={cn(stylex.props(styles.sca3de968).className || '', className)} {...props} />
+          )
         },
         DayButton: CalendarDayButton,
         WeekNumber: ({children, ...props}) => {
           return (
             <td {...props}>
-              <div className="flex size-(--cell-size) items-center justify-center text-center">{children}</div>
+              <div className={stylex.props(styles.s2f49e065).className || ''}>{children}</div>
             </td>
           )
         },
@@ -122,15 +145,12 @@ function Calendar({
     />
   )
 }
-
 function CalendarDayButton({className, day, modifiers, ...props}: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames()
-
   const ref = React.useRef<HTMLButtonElement>(null)
   React.useEffect(() => {
     if (modifiers.focused) ref.current?.focus()
   }, [modifiers.focused])
-
   return (
     <Button
       ref={ref}
@@ -152,5 +172,4 @@ function CalendarDayButton({className, day, modifiers, ...props}: React.Componen
     />
   )
 }
-
 export {Calendar, CalendarDayButton}

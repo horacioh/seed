@@ -1,21 +1,61 @@
+import * as stylex from '@stylexjs/stylex'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import {CheckIcon, ChevronDownIcon, ChevronUpIcon} from 'lucide-react'
 import * as React from 'react'
-
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s1ed2b555: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    opacity: '50%',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s51ee0527: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s96cb041d: {
+    position: 'absolute',
+    right: 'calc(0.25rem * 2)',
+    display: 'flex',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s2fe88ac9: {
+    backgroundColor: 'var(--border)',
+    pointerEvents: 'none',
+    marginInline: 'calc(0.25rem * -1)',
+    marginBlock: 'calc(0.25rem * 1)',
+    height: '1px',
+  },
+  s4088a8ec: {
+    display: 'flex',
+    cursor: 'default',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+})
 function Select({...props}: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
-
 function SelectGroup({...props}: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
-
 function SelectValue({...props}: React.ComponentProps<typeof SelectPrimitive.Value>) {
   return <SelectPrimitive.Value data-slot="select-value" {...props} />
 }
-
 function SelectTrigger({
   className,
   size = 'default',
@@ -36,12 +76,11 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
+        <ChevronDownIcon className={stylex.props(styles.s1ed2b555).className || ''} />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
 }
-
 function SelectContent({
   className,
   children,
@@ -64,7 +103,7 @@ function SelectContent({
         <SelectScrollUpButton />
         <SelectPrimitive.Viewport
           className={cn(
-            'p-1',
+            stylex.props(styles.s1aa14).className || '',
             position === 'popper' &&
               'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1',
           )}
@@ -76,17 +115,15 @@ function SelectContent({
     </SelectPrimitive.Portal>
   )
 }
-
 function SelectLabel({className, ...props}: React.ComponentProps<typeof SelectPrimitive.Label>) {
   return (
     <SelectPrimitive.Label
       data-slot="select-label"
-      className={cn('text-muted-foreground px-2 py-1.5 text-xs', className)}
+      className={cn(stylex.props(styles.s51ee0527).className || '', className)}
       {...props}
     />
   )
 }
-
 function SelectItem({className, children, ...props}: React.ComponentProps<typeof SelectPrimitive.Item>) {
   return (
     <SelectPrimitive.Item
@@ -97,50 +134,46 @@ function SelectItem({className, children, ...props}: React.ComponentProps<typeof
       )}
       {...props}
     >
-      <span className="absolute right-2 flex size-3.5 items-center justify-center">
+      <span className={stylex.props(styles.s96cb041d).className || ''}>
         <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={stylex.props(styles.sca3de968).className || ''} />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   )
 }
-
 function SelectSeparator({className, ...props}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
   return (
     <SelectPrimitive.Separator
       data-slot="select-separator"
-      className={cn('bg-border pointer-events-none -mx-1 my-1 h-px', className)}
+      className={cn(stylex.props(styles.s2fe88ac9).className || '', className)}
       {...props}
     />
   )
 }
-
 function SelectScrollUpButton({className, ...props}: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
   return (
     <SelectPrimitive.ScrollUpButton
       data-slot="select-scroll-up-button"
-      className={cn('flex cursor-default items-center justify-center py-1', className)}
+      className={cn(stylex.props(styles.s4088a8ec).className || '', className)}
       {...props}
     >
-      <ChevronUpIcon className="size-4" />
+      <ChevronUpIcon className={stylex.props(styles.sca3de968).className || ''} />
     </SelectPrimitive.ScrollUpButton>
   )
 }
-
 function SelectScrollDownButton({className, ...props}: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
   return (
     <SelectPrimitive.ScrollDownButton
       data-slot="select-scroll-down-button"
-      className={cn('flex cursor-default items-center justify-center py-1', className)}
+      className={cn(stylex.props(styles.s4088a8ec).className || '', className)}
       {...props}
     >
-      <ChevronDownIcon className="size-4" />
+      <ChevronDownIcon className={stylex.props(styles.sca3de968).className || ''} />
     </SelectPrimitive.ScrollDownButton>
   )
 }
-
 export {
   Select,
   SelectContent,
@@ -155,7 +188,12 @@ export {
 }
 
 // Backward compatibility - wraps new components with old API
-export interface SelectDropdownProps<T extends {value: string; label: string}> {
+export interface SelectDropdownProps<
+  T extends {
+    value: string
+    label: string
+  },
+> {
   options: readonly T[]
   value?: string
   onValue?: (value: string) => void
@@ -164,22 +202,24 @@ export interface SelectDropdownProps<T extends {value: string; label: string}> {
   className?: string
   disabled?: boolean
 }
-
-export type SelectOptions = {value: string; label: string}
-
-export function SelectDropdown<T extends {value: string; label: string}>({
-  options,
-  value,
-  onValue,
-  width,
-  placeholder,
-  className,
-  disabled,
-  ...props
-}: SelectDropdownProps<T>) {
+export type SelectOptions = {
+  value: string
+  label: string
+}
+export function SelectDropdown<
+  T extends {
+    value: string
+    label: string
+  },
+>({options, value, onValue, width, placeholder, className, disabled, ...props}: SelectDropdownProps<T>) {
   return (
     <Select value={value} onValueChange={onValue} disabled={disabled} {...props}>
-      <SelectTrigger className={className} style={{width}}>
+      <SelectTrigger
+        className={className}
+        style={{
+          width,
+        }}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

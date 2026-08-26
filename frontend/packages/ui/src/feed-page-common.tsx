@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMDocument, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {hmId} from '@shm/shared'
 import {IS_DESKTOP} from '@shm/shared/constants'
@@ -13,25 +14,46 @@ import {CommentEditorProps, computeHeaderData, PageWrapper} from './resource-pag
 import {Separator} from './separator'
 import {Spinner} from './spinner'
 import {useMedia} from './use-media'
-
+const styles = stylex.create({
+  s22db9e54: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s6ac707c: {
+    position: 'relative',
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    paddingBottom: 'calc(0.25rem * 16)',
+  },
+  sca000771: {
+    position: 'relative',
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+})
 export interface FeedPageProps {
   docId: UnpackedHypermediaId
   CommentEditor?: React.ComponentType<CommentEditorProps>
   extraMenuItems?: MenuItemType[]
   rightActions?: React.ReactNode
 }
-
 export function FeedPage({docId, extraMenuItems, rightActions}: FeedPageProps) {
   const siteHomeId = hmId(docId.uid)
-  const siteHomeResource = useResource(siteHomeId, {subscribed: true})
-
+  const siteHomeResource = useResource(siteHomeId, {
+    subscribed: true,
+  })
   const siteHomeDocument: HMDocument | null =
     siteHomeResource.data?.type === 'document' ? siteHomeResource.data.document : null
-
   const headerData = computeHeaderData(siteHomeDocument)
-
   const targetDomain = siteHomeDocument?.metadata?.siteUrl || undefined
-
   if (siteHomeResource.isInitialLoading) {
     return (
       <PageWrapper
@@ -41,13 +63,12 @@ export function FeedPage({docId, extraMenuItems, rightActions}: FeedPageProps) {
         isMainFeedVisible
         rightActions={rightActions}
       >
-        <div className="flex flex-1 items-center justify-center">
+        <div className={stylex.props(styles.s22db9e54).className || ''}>
           <Spinner />
         </div>
       </PageWrapper>
     )
   }
-
   return (
     <PageWrapper
       siteHomeId={siteHomeId}
@@ -61,7 +82,6 @@ export function FeedPage({docId, extraMenuItems, rightActions}: FeedPageProps) {
     </PageWrapper>
   )
 }
-
 function FeedBody({
   siteHomeId,
   extraMenuItems,
@@ -72,27 +92,22 @@ function FeedBody({
   targetDomain?: string
 }) {
   const route = useNavRoute()
-
   const filterEventType = useMemo(() => {
     if (route.key === 'feed' && route.panel?.key === 'activity') {
       return (route.panel as any).filterEventType
     }
     return undefined
   }, [route])
-
   const {contentMaxWidth} = useDocumentLayout({
     contentWidth: undefined,
     showSidebars: false,
   })
-
   const media = useMedia()
   // In Electron (IS_DESKTOP), always use element scroll regardless of window width
   const isMobile = media.xs && !IS_DESKTOP
-
   const menuItems = extraMenuItems || []
   const actionButtons =
     menuItems.length > 0 ? <OptionsDropdown menuItems={menuItems} align="end" side="bottom" /> : null
-
   const feedContent = (
     <GeneralPageContainer contentMaxWidth={contentMaxWidth}>
       <GeneralPageHeader title="Activity Feed" />
@@ -105,10 +120,9 @@ function FeedBody({
       />
     </GeneralPageContainer>
   )
-
   if (isMobile) {
     return (
-      <div className="relative flex flex-1 flex-col pb-16">
+      <div className={stylex.props(styles.s6ac707c).className || ''}>
         {actionButtons ? (
           <div className="absolute top-2 right-2 z-40 flex items-center gap-1 rounded-sm transition-opacity md:top-4 md:right-4">
             {actionButtons}
@@ -118,15 +132,14 @@ function FeedBody({
       </div>
     )
   }
-
   return (
-    <div className="relative flex flex-1 flex-col overflow-hidden">
+    <div className={stylex.props(styles.sca000771).className || ''}>
       {actionButtons ? (
         <div className="absolute top-2 right-2 z-40 flex items-center gap-1 rounded-sm transition-opacity md:top-4 md:right-4">
           {actionButtons}
         </div>
       ) : null}
-      <ScrollArea className="h-full">{feedContent}</ScrollArea>
+      <ScrollArea className={stylex.props(styles.sb42244d4).className || ''}>{feedContent}</ScrollArea>
     </div>
   )
 }

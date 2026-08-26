@@ -24,7 +24,7 @@ import {ipc} from './ipc'
 import Main from './pages/main'
 import type {AppInfoType} from './preload'
 import './root.css'
-import './tailwind.css'
+import './stylex.css'
 
 import {AppWindowEvent} from '@/utils/window-events'
 import {ReadOnlyViewer} from '@shm/editor/readonly-viewer'

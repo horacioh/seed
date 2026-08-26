@@ -1,31 +1,60 @@
+import * as stylex from '@stylexjs/stylex'
 import {Download, X} from 'lucide-react'
 import {ChangeEvent, useCallback, useEffect, useRef, useState} from 'react'
 import {createPortal} from 'react-dom'
 import {Button} from './button'
 import {useImageUrl} from './get-file-url'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s7794e038: {
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s4dd0fc46: {
+    objectFit: 'contain',
+  },
+  s154041a5: {
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '200ms',
+  },
+  s88a3565a: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: '0',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+})
 interface DocumentCoverProps {
   cover?: string
   className?: string
   onRemove?: () => void
   onChangeCover?: (file: File) => Promise<void> | void
 }
-
 export function DocumentCover({cover, className, onRemove, onChangeCover}: DocumentCoverProps) {
   const imageUrl = useImageUrl()
   const replacementInputRef = useRef<HTMLInputElement | null>(null)
   const [modalState, setModalState] = useState<'closed' | 'opening' | 'open'>('closed')
   const [isChangingCover, setIsChangingCover] = useState(false)
-
   const handleDoubleClick = useCallback(() => {
     setModalState('opening')
   }, [])
-
   const handleClose = useCallback(() => {
     setModalState('closed')
   }, [])
-
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape' && modalState === 'open') {
@@ -34,18 +63,15 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
     },
     [modalState, handleClose],
   )
-
   const handleAnimationEnd = useCallback(() => {
     if (modalState === 'opening') {
       setModalState('open')
     }
   }, [modalState])
-
   const handleReplacementChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0]
       if (!file || !onChangeCover) return
-
       setIsChangingCover(true)
       try {
         await onChangeCover(file)
@@ -59,23 +85,19 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
     },
     [onChangeCover],
   )
-
   useEffect(() => {
     if (modalState !== 'closed') {
       document.addEventListener('keydown', handleKeyDown)
     } else {
       document.removeEventListener('keydown', handleKeyDown)
     }
-
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [modalState, handleKeyDown])
-
   if (!cover) return null
   const coverUrl = imageUrl(cover, 'XL')
   const hasCoverActions = !!onChangeCover || !!onRemove || !!coverUrl
-
   const maximizedContent = modalState !== 'closed' && (
     <div
       className={cn(
@@ -85,7 +107,7 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
       onClick={handleClose}
     >
       <div
-        className="relative flex size-full items-center justify-center"
+        className={stylex.props(styles.s7794e038).className || ''}
         onClick={(e) => {
           e.stopPropagation()
           handleClose()
@@ -94,7 +116,10 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
         <img
           alt="Document cover"
           src={imageUrl(cover, 'L')}
-          className={cn('object-contain', modalState === 'opening' ? 'animate-in zoom-in-50 duration-300' : '')}
+          className={cn(
+            stylex.props(styles.s4dd0fc46).className || '',
+            modalState === 'opening' ? 'animate-in zoom-in-50 duration-300' : '',
+          )}
           style={{
             maxWidth: '90vw',
             maxHeight: '90vh',
@@ -113,7 +138,6 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
       </div>
     </div>
   )
-
   return (
     <>
       <div
@@ -137,7 +161,7 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
             objectFit: 'cover',
             transition: 'transform 0.2s ease-out',
           }}
-          className="transition-transform duration-200"
+          className={stylex.props(styles.s154041a5).className || ''}
         />
         {hasCoverActions ? (
           <div
@@ -154,7 +178,7 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
                   type="file"
                   accept="image/*"
                   aria-label="Choose replacement cover image"
-                  className="sr-only"
+                  className={stylex.props(styles.s88a3565a).className || ''}
                   tabIndex={-1}
                   onChange={(event) => void handleReplacementChange(event)}
                 />
@@ -189,7 +213,7 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
                   rel="noreferrer"
                   onClick={(event) => event.stopPropagation()}
                 >
-                  <Download className="size-3.5" />
+                  <Download className={stylex.props(styles.s3269316e).className || ''} />
                 </a>
               </Button>
             ) : null}

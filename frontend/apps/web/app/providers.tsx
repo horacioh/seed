@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useLocation, useNavigate, useNavigation} from '@remix-run/react'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client'
 import {NavRoute, OptimizedImageSize, routeToHref, UniversalAppProvider} from '@shm/shared'
@@ -19,19 +20,26 @@ import {createContext, useContext, useEffect, useMemo, useState} from 'react'
 import {keyPairStore} from './auth'
 import {webUniversalClient} from './universal-client'
 import {isPerfEnabled, markNavEnd, markNavStart} from './web-perf-marks'
-
+const styles = stylex.create({
+  s14990dc4: {
+    position: 'fixed',
+    right: 'calc(0.25rem * 0)',
+    bottom: 'calc(0.25rem * 0)',
+    zIndex: '50',
+    height: 'auto',
+    width: '100%',
+  },
+})
 function getSelectedIdentity(): string | null {
   const kp = keyPairStore.get()
   if (!kp) return null
   return kp.delegatedAccountUid ?? kp.id
 }
-
 function getSigningIdentity(): string | null {
   const kp = keyPairStore.get()
   if (!kp) return null
   return kp.id
 }
-
 const selectedIdentity: StateStream<string | null> = {
   get: getSelectedIdentity,
   subscribe: (handler) => {
@@ -39,7 +47,6 @@ const selectedIdentity: StateStream<string | null> = {
     return keyPairStore.subscribe(wrapped)
   },
 }
-
 const signingIdentity: StateStream<string | null> = {
   get: getSigningIdentity,
   subscribe: (handler) => {
@@ -47,7 +54,6 @@ const signingIdentity: StateStream<string | null> = {
     return keyPairStore.subscribe(wrapped)
   },
 }
-
 function createQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -63,7 +69,6 @@ function createQueryClient() {
 
 // Browser singleton - only created once on client
 let browserQueryClient: QueryClient | null = null
-
 function getQueryClient() {
   // Server: always create new client for each request (avoid data leakage)
   if (typeof window === 'undefined') {
@@ -80,15 +85,12 @@ function getQueryClient() {
   }
   return browserQueryClient
 }
-
 type ThemeContextType = {
   theme: 'light' | 'dark'
   setTheme: (theme: 'light' | 'dark') => void
   toggleTheme: () => void
 }
-
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
-
 export const useTheme = () => {
   const context = useContext(ThemeContext)
   if (!context) {
@@ -96,7 +98,6 @@ export const useTheme = () => {
   }
   return context
 }
-
 function useClientReadOnlyViewer(): ReadOnlyViewerComponent | undefined {
   const [Component, setComponent] = useState<ReadOnlyViewerComponent | undefined>(undefined)
   useEffect(() => {
@@ -106,7 +107,6 @@ function useClientReadOnlyViewer(): ReadOnlyViewerComponent | undefined {
   }, [])
   return Component
 }
-
 export const Providers = (props: {children: any}) => {
   const [client] = useState(getQueryClient)
   const ReadOnlyViewer = useClientReadOnlyViewer()
@@ -118,12 +118,10 @@ export const Providers = (props: {children: any}) => {
     </ThemeProvider>
   )
 }
-
 function useNavigationLoading() {
   const navigation = useNavigation()
   const isNavigating = navigation.state === 'loading'
   const [showLoading, setShowLoading] = useState(false)
-
   useEffect(() => {
     if (!isNavigating) {
       if (isPerfEnabled()) markNavEnd()
@@ -133,16 +131,12 @@ function useNavigationLoading() {
     const timeout = setTimeout(() => setShowLoading(true), 400)
     return () => clearTimeout(timeout)
   }, [isNavigating])
-
   return showLoading
 }
-
 const NavigationLoadingContext = createContext(false)
-
 export function useIsNavigationLoading() {
   return useContext(NavigationLoadingContext)
 }
-
 function NavigationLoadingProvider({children}: {children: React.ReactNode}) {
   const showLoading = useNavigationLoading()
   return (
@@ -156,7 +150,6 @@ function NavigationLoadingProvider({children}: {children: React.ReactNode}) {
     </NavigationLoadingContext.Provider>
   )
 }
-
 export function NavigationLoadingContent({children, className}: {children: React.ReactNode; className?: string}) {
   const isLoading = useIsNavigationLoading()
   return (
@@ -169,7 +162,6 @@ export function NavigationLoadingContent({children, className}: {children: React
     </div>
   )
 }
-
 export function ThemeProvider({children}: {children: React.ReactNode}) {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     // Check system preference on initial load
@@ -198,35 +190,36 @@ export function ThemeProvider({children}: {children: React.ReactNode}) {
       const handleChange = (e: MediaQueryListEvent) => {
         setTheme(e.matches ? 'dark' : 'light')
       }
-
       mediaQuery.addEventListener('change', handleChange)
       return () => mediaQuery.removeEventListener('change', handleChange)
     }
   }, [])
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
   }
-
   return (
-    <ThemeContext.Provider value={{theme, setTheme, toggleTheme}}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+        toggleTheme,
+      }}
+    >
       <TooltipProvider>
         <NavigationLoadingProvider>{children}</NavigationLoadingProvider>
-        <div className="fixed right-0 bottom-0 z-50 h-auto w-full">
+        <div className={stylex.props(styles.s14990dc4).className || ''}>
           <Toaster theme={theme} />
         </div>
       </TooltipProvider>
     </ThemeContext.Provider>
   )
 }
-
 export function getOptimizedImageUrl(cid: string, size?: OptimizedImageSize) {
   let url = SEED_ASSET_HOST || ''
   url += `/hm/api/image/${cid}`
   if (size) url += `?size=${size}`
   return url
 }
-
 export function WebSiteProvider(props: {
   originHomeId: UnpackedHypermediaId
   children: React.ReactNode
@@ -243,7 +236,6 @@ export function WebSiteProvider(props: {
   if (props.dehydratedState) {
     hydrate(client, props.dehydratedState)
   }
-
   const languagePack = useMemo(() => {
     const language = props.prefersLanguages?.[0]
     if (language) {
@@ -261,7 +253,6 @@ export function WebSiteProvider(props: {
       lastAction: 'replace',
     }
     const [updateNavState, navState] = writeableStateStream(initialNav)
-
     return {
       dispatch(action: NavAction) {
         const prevState = navState.get()
@@ -275,7 +266,12 @@ export function WebSiteProvider(props: {
   }, [])
 
   // Track whether navigation was initiated by openRoute (vs browser back/forward)
-  const isInternalNav = useMemo(() => ({current: false}), [])
+  const isInternalNav = useMemo(
+    () => ({
+      current: false,
+    }),
+    [],
+  )
   const routerLocation = useLocation()
   const {pathname: routerPathname, search: routerSearch} = routerLocation
   const copyHmLink = useCopyHmLink()
@@ -290,10 +286,12 @@ export function WebSiteProvider(props: {
     }
     // Location changed externally (browser back/forward) — sync initialRoute
     if (props.initialRoute) {
-      navigation.dispatch({type: 'replace', route: props.initialRoute})
+      navigation.dispatch({
+        type: 'replace',
+        route: props.initialRoute,
+      })
     }
   }, [routerPathname, routerSearch])
-
   return (
     <UniversalAppProvider
       origin={props.origin}
@@ -305,13 +303,19 @@ export function WebSiteProvider(props: {
         if (!url) return
         const route = hypermediaUrlToRoute(url)
         if (route) {
-          const href = routeToHref(route, {originHomeId: props.originHomeId}) || undefined
+          const href =
+            routeToHref(route, {
+              originHomeId: props.originHomeId,
+            }) || undefined
           if (href !== undefined) {
             if (newWindow) {
               window.open(href, '_blank')
             } else {
               isInternalNav.current = true
-              navigation.dispatch({type: 'push', route})
+              navigation.dispatch({
+                type: 'push',
+                route,
+              })
               navigate(href)
             }
             return
@@ -330,9 +334,15 @@ export function WebSiteProvider(props: {
         if (isPerfEnabled()) markNavStart()
         // Update navigation state
         if (replace) {
-          navigation.dispatch({type: 'replace', route})
+          navigation.dispatch({
+            type: 'replace',
+            route,
+          })
         } else {
-          navigation.dispatch({type: 'push', route})
+          navigation.dispatch({
+            type: 'push',
+            route,
+          })
         }
 
         // Handle browser navigation
@@ -363,7 +373,10 @@ export function WebSiteProvider(props: {
         // Keep the link pointing at this deployment's origin (passed as the
         // gateway URL) so gateway-format links (/hm/<uid>/...) resolve here.
         await copyHmLink({
-          id: {...hmId, hostname: null},
+          id: {
+            ...hmId,
+            hostname: null,
+          },
           gatewayUrl: SITE_BASE_URL,
         })
       }}

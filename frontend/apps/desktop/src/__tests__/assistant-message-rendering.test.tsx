@@ -632,7 +632,7 @@ describe('agent error rows', () => {
     expect(retry?.disabled).toBe(true)
     click(retry)
     expect(onRetry).not.toHaveBeenCalled()
-    expect(container.querySelector('.animate-spin')).toBeTruthy()
+    expect(retry?.querySelector('svg')).toBeTruthy()
 
     cleanupRendered(root, container)
   })

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   describeAgentServer,
   prefetchAgentDetail,
@@ -25,6 +26,42 @@ import {ProviderSelect} from './provider-select'
  * what the destination can honor (reachability, a model provider for the agent), spells out what
  * moves and what stays, and then runs the copy-then-delete orchestration with live progress.
  */
+const styles = stylex.create({
+  s9141e77: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  s6a2edbb: {
+    width: 'fit-content',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb87f7412: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export function MoveAgentDialog({
   input,
   onClose,
@@ -52,7 +89,6 @@ export function MoveAgentDialog({
   const addProviderDialog = useAppDialog(AddModelProviderDialog)
   const moveAgent = useMoveAgent(input.selectedAccountId)
   const [progress, setProgress] = useState<string | null>(null)
-
   useEffect(() => {
     if (!targetServerUrl && targetUrls.length) setTargetServerUrl(targetUrls[0]!)
   }, [targetServerUrl, targetUrls])
@@ -61,13 +97,11 @@ export function MoveAgentDialog({
   useEffect(() => {
     setProviderOverride('')
   }, [targetServerUrl])
-
   const providerMatches = targetProviders.data?.some((provider) => provider.name === input.modelProvider) ?? false
   const effectiveProvider = providerMatches ? input.modelProvider : providerOverride
   const targetProviderType = targetProviders.data?.find((provider) => provider.name === effectiveProvider)?.type
   const targetUnreachable = !!targetServerUrl && targetHealth.isError
   const moving = moveAgent.isLoading
-
   async function handleMove() {
     if (!targetServerUrl) {
       toast.error('Choose a destination server')
@@ -89,21 +123,26 @@ export function MoveAgentDialog({
       await prefetchAgentDetail(targetServerUrl, input.selectedAccountId, result.newAgentId).catch(() => {})
       toast.success('Agent moved')
       onClose()
-      input.onMoved({serverUrl: targetServerUrl, agentId: result.newAgentId})
+      input.onMoved({
+        serverUrl: targetServerUrl,
+        agentId: result.newAgentId,
+      })
     } catch (error) {
       if (error instanceof MoveAgentSourceDeleteError) {
         // The copy landed; only the source cleanup failed. Follow the agent to its new home and
         // tell the user the original is still on the old server.
         toast.error(error.message)
         onClose()
-        input.onMoved({serverUrl: targetServerUrl, agentId: error.newAgentId})
+        input.onMoved({
+          serverUrl: targetServerUrl,
+          agentId: error.newAgentId,
+        })
         return
       }
       setProgress(null)
       toast.error(error instanceof Error ? error.message : 'Could not move agent')
     }
   }
-
   if (serverUrls.data && !targetUrls.length) {
     return (
       <div className="flex min-w-[420px] flex-col gap-4">
@@ -111,7 +150,7 @@ export function MoveAgentDialog({
         <DialogDescription>
           This is the only agent server configured. Add another server from the Agents page, then move the agent there.
         </DialogDescription>
-        <div className="flex justify-end">
+        <div className={stylex.props(styles.s9141e77).className || ''}>
           <Button variant="ghost" onClick={onClose}>
             Close
           </Button>
@@ -119,10 +158,9 @@ export function MoveAgentDialog({
       </div>
     )
   }
-
   return (
     <div className="flex min-w-[460px] flex-col gap-5">
-      <div className="flex flex-col gap-3">
+      <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Move “{input.agentName}” to another server</DialogTitle>
         <DialogDescription>
           The agent’s settings, system prompt, memory files, authored tools, and triggers move with it. Sessions and run
@@ -132,26 +170,29 @@ export function MoveAgentDialog({
         </DialogDescription>
       </div>
 
-      <label className="flex flex-col gap-1">
+      <label className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText size="sm" weight="bold">
           Destination server
         </SizableText>
         <SelectDropdown
-          options={targetUrls.map((url) => ({value: url, label: describeAgentServer(url, localServerUrl.data)}))}
+          options={targetUrls.map((url) => ({
+            value: url,
+            label: describeAgentServer(url, localServerUrl.data),
+          }))}
           value={targetServerUrl}
           onValue={setTargetServerUrl}
           placeholder="Select a server"
           disabled={moving}
         />
         {targetUnreachable ? (
-          <SizableText size="xs" className="text-destructive">
+          <SizableText size="xs" className={stylex.props(styles.s8a2570e2).className || ''}>
             Can’t reach this server right now.
           </SizableText>
         ) : null}
       </label>
 
       {targetServerUrl && !targetUnreachable && targetProviders.data && !providerMatches ? (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           <SizableText size="sm" weight="bold">
             Model provider
           </SizableText>
@@ -175,7 +216,7 @@ export function MoveAgentDialog({
           ) : (
             <Button
               variant="outline"
-              className="w-fit"
+              className={stylex.props(styles.s6a2edbb).className || ''}
               disabled={moving}
               onClick={() =>
                 addProviderDialog.open({
@@ -185,7 +226,7 @@ export function MoveAgentDialog({
                 })
               }
             >
-              <Plus className="size-4" />
+              <Plus className={stylex.props(styles.sca3de968).className || ''} />
               Add a provider on this server
             </Button>
           )}
@@ -193,7 +234,7 @@ export function MoveAgentDialog({
       ) : null}
 
       {moving && progress ? (
-        <div className="flex items-center gap-2">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <Spinner />
           <SizableText size="sm" color="muted">
             {progress}…
@@ -201,7 +242,7 @@ export function MoveAgentDialog({
         </div>
       ) : null}
 
-      <div className="flex justify-end gap-2">
+      <div className={stylex.props(styles.sb87f7412).className || ''}>
         <Button variant="ghost" onClick={onClose} disabled={moving}>
           Cancel
         </Button>
@@ -209,7 +250,7 @@ export function MoveAgentDialog({
           onClick={() => void handleMove()}
           disabled={moving || !targetServerUrl || targetUnreachable || !effectiveProvider}
         >
-          <ArrowRightLeft className="size-4" />
+          <ArrowRightLeft className={stylex.props(styles.sca3de968).className || ''} />
           Move agent
         </Button>
       </div>

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMBlockNode,
   HMCapability,
@@ -51,8 +52,48 @@ import {
 } from 'lucide-react'
 import {ReactNode, useCallback, useMemo} from 'react'
 import type {InspectTab} from '@shm/shared/routes'
-
-type InspectRouteType = Extract<ReturnType<typeof useNavRoute>, {key: 'inspect'}>
+const styles = stylex.create({
+  s91243feb: {
+    flex: '1',
+    overflowY: 'auto',
+  },
+  s7026dbcb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s8d50829d: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s1ab881a5: {
+    color: 'var(--destructive)',
+    paddingInline: 'calc(0.25rem * 1)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
+type InspectRouteType = Extract<
+  ReturnType<typeof useNavRoute>,
+  {
+    key: 'inspect'
+  }
+>
 type InspectorResourceData = Exclude<ReturnType<typeof useResource>['data'], null | undefined>
 
 /** Renders a dedicated raw-data inspector for documents and comments. */
@@ -61,7 +102,6 @@ export function InspectorPage({docId, pageFooter}: {docId: UnpackedHypermediaId;
   if (route.key !== 'inspect') {
     throw new Error(`InspectorPage requires an inspect route. Received ${route.key}.`)
   }
-
   const resource = useResource(docId, {
     subscribed: true,
     recursive: true,
@@ -95,49 +135,45 @@ export function InspectorPage({docId, pageFooter}: {docId: UnpackedHypermediaId;
       activeTabAction={openTarget ? <InspectorOpenButton label={openTarget.label} route={openTarget.route} /> : null}
     />
   )
-
   if (resource.isInitialLoading) {
     return (
       <div className="flex h-full max-h-full flex-col overflow-hidden bg-zinc-100">
-        <div className="flex-1 overflow-y-auto">
+        <div className={stylex.props(styles.s91243feb).className || ''}>
           <InspectorShell title={title} toolbar={toolbar}>
-            <div className="flex items-center justify-center py-8">
+            <div className={stylex.props(styles.s7026dbcb).className || ''}>
               <Spinner />
             </div>
           </InspectorShell>
         </div>
-        {pageFooter ? <div className="shrink-0">{pageFooter}</div> : null}
+        {pageFooter ? <div className={stylex.props(styles.sf032ed6c).className || ''}>{pageFooter}</div> : null}
       </div>
     )
   }
-
   if (resource.isDiscovering) {
     return (
       <div className="flex h-full max-h-full flex-col overflow-hidden bg-zinc-100">
-        <div className="flex-1 overflow-y-auto">
+        <div className={stylex.props(styles.s91243feb).className || ''}>
           <InspectorShell title={title} toolbar={toolbar}>
             <PageDiscovery />
           </InspectorShell>
         </div>
-        {pageFooter ? <div className="shrink-0">{pageFooter}</div> : null}
+        {pageFooter ? <div className={stylex.props(styles.sf032ed6c).className || ''}>{pageFooter}</div> : null}
       </div>
     )
   }
-
   return (
     <div className="flex h-full max-h-full flex-col overflow-hidden bg-zinc-100">
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
+      <div className={stylex.props(styles.s8d50829d).className || ''}>
+        <div className={stylex.props(styles.s91243feb).className || ''}>
           <InspectorShell title={title} toolbar={toolbar}>
             <InspectorContent docId={docId} route={route} resource={resourceData} inspectData={inspectData} />
           </InspectorShell>
         </div>
-        {pageFooter ? <div className="shrink-0">{pageFooter}</div> : null}
+        {pageFooter ? <div className={stylex.props(styles.sf032ed6c).className || ''}>{pageFooter}</div> : null}
       </div>
     </div>
   )
 }
-
 function InspectorContent({
   docId,
   route,
@@ -150,20 +186,16 @@ function InspectorContent({
   inspectData: ReturnType<typeof useInspectDatasets>
 }) {
   const inspectTab = route.inspectTab || 'document'
-
   const getRouteForUrl = useCallback((url: string) => {
     if (url.startsWith('ipfs://')) {
       return createInspectIpfsNavRoute(url.slice('ipfs://'.length))
     }
-
     const targetRoute = hypermediaUrlToRoute(url)
     return targetRoute ? createInspectNavRouteFromRoute(targetRoute) : null
   }, [])
-
   const inspectPayload = useMemo(() => {
     return getInspectPayload(docId, route, resource, inspectData)
   }, [docId, inspectData, resource, route])
-
   if (!resource) {
     return <PageNotFound />
   }
@@ -177,9 +209,8 @@ function InspectorContent({
     return <PagePrivate />
   }
   if (resource.type === 'error') {
-    return <div className="text-destructive px-1 py-3">{resource.message}</div>
+    return <div className={stylex.props(styles.s1ab881a5).className || ''}>{resource.message}</div>
   }
-
   const isLoading =
     (resource.type === 'document' && inspectTab === 'changes' && inspectData.changes.isLoading) ||
     (resource.type === 'document' && inspectTab === 'graph' && inspectData.changes.isLoading) ||
@@ -195,18 +226,19 @@ function InspectorContent({
       route.targetView === 'comments' &&
       !!route.targetOpenComment &&
       inspectData.commentsQuery.isLoading)
-
   const emptyMessage = getInspectEmptyMessage(resource, inspectTab, !!route.targetOpenComment)
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       {resource.type === 'redirect' ? (
         <DataViewer
-          data={{type: 'redirect', redirectTarget: resource.redirectTarget}}
+          data={{
+            type: 'redirect',
+            redirectTarget: resource.redirectTarget,
+          }}
           getRouteForUrl={getRouteForUrl}
         />
       ) : isLoading ? (
-        <div className="flex items-center justify-center py-8">
+        <div className={stylex.props(styles.s7026dbcb).className || ''}>
           <Spinner />
         </div>
       ) : resource.type === 'document' && inspectTab === 'graph' ? (
@@ -216,14 +248,13 @@ function InspectorContent({
           docId={docId}
         />
       ) : Array.isArray(inspectPayload) && inspectPayload.length === 0 ? (
-        <div className="text-muted-foreground text-sm">{emptyMessage}</div>
+        <div className={stylex.props(styles.sa56e915f).className || ''}>{emptyMessage}</div>
       ) : (
         <DataViewer data={inspectPayload} getRouteForUrl={getRouteForUrl} />
       )}
     </div>
   )
 }
-
 function InspectorOpenButton({
   label,
   route,
@@ -238,7 +269,6 @@ function InspectorOpenButton({
   accent?: boolean
 }) {
   const linkProps = useRouteLink(route)
-
   return (
     <Button
       asChild
@@ -256,7 +286,6 @@ function InspectorOpenButton({
     </Button>
   )
 }
-
 function getInspectorTitle(
   docId: UnpackedHypermediaId,
   route: InspectRouteType,
@@ -268,9 +297,12 @@ function getInspectorTitle(
   if (route.targetOpenComment) {
     return packHmId(commentIdToHmId(route.targetOpenComment))
   }
-  return packHmId({...docId, blockRef: null, blockRange: null})
+  return packHmId({
+    ...docId,
+    blockRef: null,
+    blockRange: null,
+  })
 }
-
 function useInspectDatasets(
   docId: UnpackedHypermediaId,
   route: InspectRouteType,
@@ -289,7 +321,6 @@ function useInspectDatasets(
     }
     return getReplyComments(commentsQuery.data?.comments, resourceComment.id)
   }, [commentsQuery.data?.comments, resourceComment])
-
   const citationsTargetId = useMemo(() => {
     if (resource?.type === 'comment') {
       return docId
@@ -299,7 +330,6 @@ function useInspectDatasets(
     }
     return docId
   }, [docId, resource?.type, route.targetOpenComment, route.targetView])
-
   return {
     authoredComments: useAuthoredComments(docId),
     capabilities: useCapabilities(docId),
@@ -315,7 +345,6 @@ function useInspectDatasets(
     contacts: useContactListOfSubject(docId.uid),
   }
 }
-
 function getInspectToolTabs(
   docId: UnpackedHypermediaId,
   route: InspectRouteType,
@@ -338,7 +367,6 @@ function getInspectToolTabs(
       icon: FileText,
     },
   ]
-
   if (resource?.type === 'document') {
     tabs.push({
       tab: 'changes',
@@ -355,7 +383,6 @@ function getInspectToolTabs(
       count: inspectData.changes.data?.changes?.length,
     })
   }
-
   if (isComment || route.targetOpenComment) {
     tabs.push({
       tab: 'versions',
@@ -365,7 +392,6 @@ function getInspectToolTabs(
       count: inspectData.commentVersions.data?.versions?.length,
     })
   }
-
   tabs.push(
     {
       tab: 'comments',
@@ -389,7 +415,6 @@ function getInspectToolTabs(
       count: inspectData.children.data?.length,
     },
   )
-
   if (isHomeDoc) {
     tabs.push({
       tab: 'authored-comments',
@@ -399,7 +424,6 @@ function getInspectToolTabs(
       count: inspectData.authoredComments.data?.comments?.length,
     })
   }
-
   tabs.push(
     {
       tab: 'contacts',
@@ -416,10 +440,8 @@ function getInspectToolTabs(
       count: inspectData.capabilities.data?.length,
     },
   )
-
   return tabs
 }
-
 function getInspectPayload(
   docId: UnpackedHypermediaId,
   route: InspectRouteType,
@@ -428,7 +450,6 @@ function getInspectPayload(
 ) {
   if (!resource) return null
   const inspectTab = route.inspectTab || 'document'
-
   if (resource.type === 'comment') {
     switch (inspectTab) {
       case 'versions':
@@ -449,7 +470,6 @@ function getInspectPayload(
         return prepareInspectCommentData(resource.comment as unknown as Record<string, any>)
     }
   }
-
   if (resource.type === 'document') {
     switch (inspectTab) {
       case 'changes':
@@ -478,14 +498,16 @@ function getInspectPayload(
           : prepareInspectDocumentData(resource.document, docId)
     }
   }
-
   if (resource.type === 'redirect') {
-    return {type: 'redirect', redirectTarget: resource.redirectTarget}
+    return {
+      type: 'redirect',
+      redirectTarget: resource.redirectTarget,
+    }
   }
-
-  return {type: resource.type}
+  return {
+    type: resource.type,
+  }
 }
-
 function getInspectEmptyMessage(
   resource: InspectorResourceData,
   inspectTab: InspectTab | 'document',
@@ -494,7 +516,6 @@ function getInspectEmptyMessage(
   if (resource.type === 'comment' && inspectTab === 'document') {
     return 'No comment data found.'
   }
-
   switch (inspectTab) {
     case 'changes':
       return 'No changes found.'
@@ -518,7 +539,6 @@ function getInspectEmptyMessage(
       return hasTargetComment ? 'No comment data found.' : 'No document data found.'
   }
 }
-
 function getInspectorOpenTarget(
   docId: UnpackedHypermediaId,
   route: InspectRouteType,
@@ -535,26 +555,43 @@ function getInspectorOpenTarget(
             openComment: resource.comment.id,
             panel: null,
           } as const)
-        : ({key: 'document', id: docId, panel: null} as const),
+        : ({
+            key: 'document',
+            id: docId,
+            panel: null,
+          } as const),
     }
   }
-
   const openRoute = createRouteFromInspectNavRoute(route, route.inspectTab)
-
   if (route.inspectTab === 'changes' || route.inspectTab === 'graph') {
-    return {label: 'Open Versions history', route: openRoute}
+    return {
+      label: 'Open Versions history',
+      route: openRoute,
+    }
   }
   if (route.inspectTab === 'citations') {
-    return {label: 'Open Document Citations', route: openRoute}
+    return {
+      label: 'Open Document Citations',
+      route: openRoute,
+    }
   }
   if (route.inspectTab === 'comments') {
-    return {label: route.targetOpenComment ? 'Open Comment' : 'Open Document Comments', route: openRoute}
+    return {
+      label: route.targetOpenComment ? 'Open Comment' : 'Open Document Comments',
+      route: openRoute,
+    }
   }
   if (route.inspectTab === 'versions') {
-    return {label: 'Open Comment', route: openRoute}
+    return {
+      label: 'Open Comment',
+      route: openRoute,
+    }
   }
   if (route.inspectTab === 'children') {
-    return {label: 'Open Sub documents', route: openRoute}
+    return {
+      label: 'Open Sub documents',
+      route: openRoute,
+    }
   }
   switch (route.targetView) {
     case 'activity':
@@ -566,30 +603,58 @@ function getInspectorOpenTarget(
         route: openRoute,
       }
     case 'comments':
-      return {label: route.targetOpenComment ? 'Open Comment' : 'Open Document Comments', route: openRoute}
+      return {
+        label: route.targetOpenComment ? 'Open Comment' : 'Open Document Comments',
+        route: openRoute,
+      }
     case 'directory':
-      return {label: 'Open Sub documents', route: openRoute}
+      return {
+        label: 'Open Sub documents',
+        route: openRoute,
+      }
     case 'collaborators':
-      return {label: 'Open People', route: openRoute}
+      return {
+        label: 'Open People',
+        route: openRoute,
+      }
     case 'feed':
-      return {label: 'Open Feed', route: openRoute}
+      return {
+        label: 'Open Feed',
+        route: openRoute,
+      }
     case 'profile':
-      return {label: 'Open Profile', route: openRoute}
+      return {
+        label: 'Open Profile',
+        route: openRoute,
+      }
     case 'membership':
-      return {label: 'Open Membership', route: openRoute}
+      return {
+        label: 'Open Membership',
+        route: openRoute,
+      }
     case 'followers':
-      return {label: 'Open Followers', route: openRoute}
+      return {
+        label: 'Open Followers',
+        route: openRoute,
+      }
     case 'following':
-      return {label: 'Open Following', route: openRoute}
+      return {
+        label: 'Open Following',
+        route: openRoute,
+      }
     default:
-      return {label: 'Open Document', route: openRoute}
+      return {
+        label: 'Open Document',
+        route: openRoute,
+      }
   }
 }
-
 function prepareInspectDocumentData(document: HMDocument, docId: UnpackedHypermediaId) {
   const {metadata, account, authors, genesis, version, content, ...rest} = document
-  const preparedData: Record<string, unknown> = {...metadata, ...rest}
-
+  const preparedData: Record<string, unknown> = {
+    ...metadata,
+    ...rest,
+  }
   if (account) {
     preparedData.account = `hm://${account}`
   }
@@ -598,7 +663,13 @@ function prepareInspectDocumentData(document: HMDocument, docId: UnpackedHyperme
   }
   if (version) {
     preparedData.version = version.split('.').map((changeCid) => `ipfs://${changeCid}`)
-    preparedData.exactDocumentVersion = packHmId({...docId, version, latest: null, blockRef: null, blockRange: null})
+    preparedData.exactDocumentVersion = packHmId({
+      ...docId,
+      version,
+      latest: null,
+      blockRef: null,
+      blockRange: null,
+    })
   }
   if (genesis) {
     preparedData.genesis = `ipfs://${genesis}`
@@ -606,16 +677,14 @@ function prepareInspectDocumentData(document: HMDocument, docId: UnpackedHyperme
   if (content) {
     preparedData.content = content.map(flattenInspectBlockNode)
   }
-
   return flattenSingleItemArrays(preparedData)
 }
-
 function prepareInspectCommentData(comment: Record<string, any> | null) {
   if (!comment) return null
-
   const {id, author, targetPath, targetAccount, targetVersion, ...rest} = comment
-  const preparedComment: Record<string, unknown> = {...rest}
-
+  const preparedComment: Record<string, unknown> = {
+    ...rest,
+  }
   if (id) {
     preparedComment.id = packHmId(commentIdToHmId(id, typeof rest.version === 'string' ? rest.version : undefined))
   }
@@ -630,16 +699,13 @@ function prepareInspectCommentData(comment: Record<string, any> | null) {
       }),
     )
   }
-
   return preparedComment
 }
-
 function prepareInspectCommentsData(comments: unknown[] | undefined) {
   return (comments || [])
     .map((comment) => prepareInspectCommentData((comment || null) as Record<string, any> | null))
     .filter((comment): comment is Record<string, unknown> => comment !== null)
 }
-
 function prepareInspectContactsData(contacts: HMContactRecord[] | undefined) {
   return (contacts || []).map((contact) => ({
     ...contact,
@@ -648,7 +714,6 @@ function prepareInspectContactsData(contacts: HMContactRecord[] | undefined) {
     signer: `hm://${contact.signer}`,
   }))
 }
-
 function prepareInspectCapabilitiesData(capabilities: HMCapability[] | undefined) {
   return (capabilities || []).map((capability) => {
     const {id, accountUid, grantId, ...rest} = capability
@@ -660,34 +725,37 @@ function prepareInspectCapabilitiesData(capabilities: HMCapability[] | undefined
     }
   })
 }
-
 function prepareInspectChangesData(changes: unknown[] | undefined, docId: UnpackedHypermediaId) {
   return (changes || []).map((change) => {
     const typedChange = (change || {}) as Record<string, any>
     const {id, author, deps, ...rest} = typedChange
-    const preparedChange: Record<string, unknown> = {...rest}
-
+    const preparedChange: Record<string, unknown> = {
+      ...rest,
+    }
     if (author) {
       preparedChange.author = `hm://${author}`
     }
     if (id) {
       preparedChange.id = `ipfs://${id}`
-      preparedChange.version = packHmId({...docId, version: id, latest: null, blockRef: null, blockRange: null})
+      preparedChange.version = packHmId({
+        ...docId,
+        version: id,
+        latest: null,
+        blockRef: null,
+        blockRange: null,
+      })
     }
     if (Array.isArray(deps)) {
       preparedChange.deps = deps.map((dep: string) => `ipfs://${dep}`)
     }
-
     return preparedChange
   })
 }
-
 function prepareInspectCitationsData(citations: unknown[] | undefined) {
   return (citations || []).map((citation) => {
     const typedCitation = (citation || {}) as Record<string, any>
     const {sourceBlob, ...rest} = typedCitation
     if (!sourceBlob) return rest
-
     const {cid, author, ...sourceRest} = sourceBlob
     return {
       ...rest,
@@ -699,7 +767,6 @@ function prepareInspectCitationsData(citations: unknown[] | undefined) {
     }
   })
 }
-
 function prepareInspectChildrenData(children: unknown[] | undefined) {
   return (children || []).map((child) => {
     const typedChild = (child || {}) as Record<string, any>
@@ -709,39 +776,35 @@ function prepareInspectChildrenData(children: unknown[] | undefined) {
     }
   })
 }
-
 function prepareInspectCommentVersionsData(versions: Record<string, any>[] | undefined) {
   return (versions || []).map((version) => {
-    const preparedVersion: Record<string, unknown> = {...version}
-
+    const preparedVersion: Record<string, unknown> = {
+      ...version,
+    }
     if (version.author) {
       preparedVersion.author = `hm://${version.author}`
     }
     if (version.id && version.version) {
       preparedVersion.exactVersion = packHmId(commentIdToHmId(version.id, version.version))
     }
-
     return preparedVersion
   })
 }
-
 function flattenInspectBlockNode(node: HMBlockNode) {
   const {block, children} = node
-  const preparedBlock: Record<string, unknown> = {...block}
-
+  const preparedBlock: Record<string, unknown> = {
+    ...block,
+  }
   if (children?.length) {
     preparedBlock.children = children.map(flattenInspectBlockNode)
   }
-
   return preparedBlock
 }
-
 function flattenSingleItemArrays(value: unknown): unknown {
   if (Array.isArray(value)) {
     const flattenedArray = value.map((item) => flattenSingleItemArrays(item))
     return flattenedArray.length === 1 ? flattenedArray[0] : flattenedArray
   }
-
   if (typeof value === 'object' && value !== null) {
     return Object.fromEntries(
       Object.entries(value).map(([key, itemValue]) => {
@@ -749,21 +812,16 @@ function flattenSingleItemArrays(value: unknown): unknown {
       }),
     )
   }
-
   return value
 }
-
 function getReplyComments(comments: HMComment[] | undefined, commentId: string | null | undefined): HMComment[] {
   if (!Array.isArray(comments) || !commentId) {
     return []
   }
-
   const descendantIds = new Set<string>()
   let foundNewReply = true
-
   while (foundNewReply) {
     foundNewReply = false
-
     comments.forEach((comment) => {
       if (!comment.replyParent || descendantIds.has(comment.id)) {
         return
@@ -774,6 +832,5 @@ function getReplyComments(comments: HMComment[] | undefined, commentId: string |
       }
     })
   }
-
   return comments.filter((comment) => descendantIds.has(comment.id))
 }

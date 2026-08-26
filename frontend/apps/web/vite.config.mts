@@ -1,7 +1,7 @@
 import {vitePlugin as remix} from '@remix-run/dev'
 // @ts-ignore
 import {sentryVitePlugin} from '@sentry/vite-plugin'
-import tailwindcss from '@tailwindcss/vite'
+import stylex from '@stylexjs/unplugin'
 
 import * as path from 'path'
 import {defineConfig} from 'vite'
@@ -102,7 +102,7 @@ export default defineConfig(({isSsrBuild}) => {
       //     return code;
       //   },
       // },
-      tailwindcss(),
+      stylex.vite(),
       // Add Sentry plugin for production builds
       process.env.NODE_ENV === 'production' &&
         process.env.SENTRY_AUTH_TOKEN &&

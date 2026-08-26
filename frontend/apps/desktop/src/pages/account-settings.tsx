@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext} from '@/app-context'
 import {useCreateAccountDialog} from '@/components/create-account'
 import {useDesktopAuthDialog} from '@/components/desktop-auth-dialog'
@@ -73,7 +74,41 @@ import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {Key, Vault} from 'lucide-react'
 import {useEffect, useRef, useState} from 'react'
-
+const styles = stylex.create({
+  s2c2347c6: {
+    display: 'flex',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 8)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s626516e5: {
+    justifyContent: 'flex-start',
+  },
+  sd3307753: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+  },
+  s952baee7: {
+    marginTop: 'auto',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    paddingTop: 'calc(0.25rem * 2)',
+  },
+  s443fda17: {
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '600',
+  },
+})
 export default function AccountSettingsPage() {
   const route = useNavRoute()
   const accountSettingsRoute = route.key === 'account-settings' ? route : undefined
@@ -93,14 +128,14 @@ export default function AccountSettingsPage() {
   // disappears immediately when switching to a local vault.
   const vaultStatus = useVaultStatus()
   const isRemoteConnected = vaultStatus.data?.connectionStatus === VaultConnectionStatus.CONNECTED
-  const vaultEmail = useVaultEmail({enabled: isRemoteConnected})
+  const vaultEmail = useVaultEmail({
+    enabled: isRemoteConnected,
+  })
   const {selectedIdentity, setSelectedIdentity} = useUniversalAppContext()
   const selectedIdentityValue = useStream(selectedIdentity)
-
   const isVaultSelected = accountSettingsRoute?.view === 'vault'
   const selectedUid = isVaultSelected ? null : accountSettingsRoute?.accountUid ?? null
   const activeTab: AccountSettingsTab = accountSettingsRoute?.tab ?? 'devices'
-
   const [pendingSelectUid, setPendingSelectUid] = useState<string | null>(null)
   const [importOpen, setImportOpen] = useState(false)
   const [importFilePath, setImportFilePath] = useState('')
@@ -108,7 +143,6 @@ export default function AccountSettingsPage() {
   // hovered account, independent of the account open in the detail pane.
   const [exportTargetUid, setExportTargetUid] = useState<string | null>(null)
   const [deleteTargetUid, setDeleteTargetUid] = useState<string | null>(null)
-
   useEffect(() => {
     if (!importOpen) setImportFilePath('')
   }, [importOpen])
@@ -127,7 +161,11 @@ export default function AccountSettingsPage() {
     if (selectedUid && accountIds.includes(selectedUid)) return
     const next = currentAccountUid && accountIds.includes(currentAccountUid) ? currentAccountUid : accountIds[0]
     if (next && next !== selectedUid) {
-      replace({key: 'account-settings', accountUid: next, tab: accountSettingsRoute?.tab})
+      replace({
+        key: 'account-settings',
+        accountUid: next,
+        tab: accountSettingsRoute?.tab,
+      })
     }
   }, [
     isVaultSelected,
@@ -148,11 +186,13 @@ export default function AccountSettingsPage() {
     uid,
     data: accountQueries[index]?.data ?? null,
   }))
-
   function selectAccount(uid: string) {
-    replace({key: 'account-settings', accountUid: uid, tab: accountSettingsRoute?.tab})
+    replace({
+      key: 'account-settings',
+      accountUid: uid,
+      tab: accountSettingsRoute?.tab,
+    })
   }
-
   return (
     <PanelContainer>
       <AccountSettingsLayout
@@ -168,7 +208,10 @@ export default function AccountSettingsPage() {
             />
           ),
           menu: {
-            onEditProfile: () => editProfileDialog.open({accountUid: option.uid}),
+            onEditProfile: () =>
+              editProfileDialog.open({
+                accountUid: option.uid,
+              }),
             onCopyId: () => {
               copyTextToClipboard(option.uid)
               toast.success('Account ID copied to clipboard')
@@ -180,7 +223,12 @@ export default function AccountSettingsPage() {
         selectedAccountId={selectedUid}
         isVaultSelected={isVaultSelected}
         vaultEmail={isRemoteConnected ? vaultEmail.data?.trim() || undefined : undefined}
-        onSelectVault={() => replace({key: 'account-settings', view: 'vault'})}
+        onSelectVault={() =>
+          replace({
+            key: 'account-settings',
+            view: 'vault',
+          })
+        }
         onSelectAccount={selectAccount}
         onAddAccount={() => createAccountDialog.open({})}
         onImportKey={() => setImportOpen(true)}
@@ -190,7 +238,7 @@ export default function AccountSettingsPage() {
         ) : selectedUid ? (
           <AccountSettingsDetail accountUid={selectedUid} tab={activeTab} />
         ) : (
-          <div className="flex h-full items-center justify-center p-8">
+          <div className={stylex.props(styles.s2c2347c6).className || ''}>
             <SizableText color="muted">No accounts yet. Add one to get started.</SizableText>
           </div>
         )}
@@ -202,12 +250,12 @@ export default function AccountSettingsPage() {
         onOpenChange={setImportOpen}
         hasFile={!!importFilePath}
         renderFileField={({clearError}) => (
-          <div className="flex flex-col gap-2">
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <Label>Key File</Label>
             <Button
               type="button"
               variant="outline"
-              className="justify-start"
+              className={stylex.props(styles.s626516e5).className || ''}
               onClick={async () => {
                 try {
                   const selectedPath = await pickKeyImportFile()
@@ -221,18 +269,23 @@ export default function AccountSettingsPage() {
             >
               {importFilePath ? 'Change file' : 'Choose file'}
             </Button>
-            {importFilePath ? (
-              <p className="text-muted-foreground font-mono text-sm break-all">{importFilePath}</p>
-            ) : null}
+            {importFilePath ? <p className={stylex.props(styles.sd3307753).className || ''}>{importFilePath}</p> : null}
           </div>
         )}
         onImport={async (password) => {
           const normalizedPath = normalizeImportKeyFilePath(importFilePath)
           const validationError = getImportKeyFilePathError(normalizedPath)
           if (validationError) throw new Error(validationError)
-          const imported = await importKey.mutateAsync({filePath: normalizedPath, password})
+          const imported = await importKey.mutateAsync({
+            filePath: normalizedPath,
+            password,
+          })
           setPendingSelectUid(imported.publicKey)
-          replace({key: 'account-settings', accountUid: imported.publicKey, tab: accountSettingsRoute?.tab})
+          replace({
+            key: 'account-settings',
+            accountUid: imported.publicKey,
+            tab: accountSettingsRoute?.tab,
+          })
           toast.success('Account imported')
         }}
       />
@@ -266,7 +319,9 @@ export default function AccountSettingsPage() {
           if (!deleteTargetUid) return
           const targetUid = deleteTargetUid
           deleteKey
-            .mutateAsync({accountId: targetUid})
+            .mutateAsync({
+              accountId: targetUid,
+            })
             .then(() => {
               if (selectedIdentityValue === targetUid) setSelectedIdentity?.(null)
               toast.success('Account deleted')
@@ -302,25 +357,26 @@ function VaultSettings() {
   const authDialog = useDesktopAuthDialog()
   const openUrl = useOpenUrl()
   const {setSelectedIdentity} = useUniversalAppContext()
-
   const data = vaultStatus.data
   const isRemoteBackend = data?.backendMode === VaultBackendMode.REMOTE
   const isConnected = data?.connectionStatus === VaultConnectionStatus.CONNECTED
   const syncStatus = data?.syncStatus
-  const vaultEmail = useVaultEmail({enabled: isConnected})
-  const passwordStatus = useVaultPasswordStatus({enabled: isConnected})
+  const vaultEmail = useVaultEmail({
+    enabled: isConnected,
+  })
+  const passwordStatus = useVaultPasswordStatus({
+    enabled: isConnected,
+  })
   const setMasterPassword = useSetVaultMasterPassword()
   const notifyServer = useVaultNotificationServer()
   const setNotifyServer = useSetVaultNotificationServer()
   const changeEmailStart = useChangeVaultEmailStart()
   const changeEmailVerify = useChangeVaultEmailVerify()
   const emailBinding = useRef('')
-
   const notifyDefault = NOTIFY_SERVICE_HOST || 'https://notify.seed.hyper.media'
   const notifyOverride = notifyServer.data || ''
   const remoteVaultUrl = data?.remoteVaultUrl || ''
   const passkeyManageUrl = remoteVaultUrl ? `${remoteVaultUrl.replace(/\/+$/, '')}/settings` : ''
-
   const [selectedMode, setSelectedMode] = useState<'local' | 'remote'>('local')
   const [logoutOpen, setLogoutOpen] = useState(false)
   const [switchLocalOpen, setSwitchLocalOpen] = useState(false)
@@ -330,17 +386,16 @@ function VaultSettings() {
     url: notifyOverride,
     defaultUrl: notifyDefault,
     onSave: async (url: string) => {
-      await setNotifyServer.mutateAsync({url})
+      await setNotifyServer.mutateAsync({
+        url,
+      })
       toast.success('Notify server URL saved')
     },
   }
-
   useEffect(() => {
     setSelectedMode(isRemoteBackend ? 'remote' : 'local')
   }, [isRemoteBackend])
-
   const isPending = disconnectVault.isPending || logout.isLoading
-
   function openConnectDialog() {
     // Open the normal login/register workflow (same as "Sign in" / "Create my
     // identity" from the account dropdown). From there the user can sign in,
@@ -354,7 +409,6 @@ function VaultSettings() {
       },
     })
   }
-
   async function handleDisconnect() {
     try {
       await disconnectVault.mutateAsync()
@@ -365,7 +419,6 @@ function VaultSettings() {
       setSelectedMode('remote')
     }
   }
-
   function handleModeChange(nextMode: 'local' | 'remote') {
     if (nextMode === 'remote') {
       // Don't flip the mode optimistically — the user is still local until the
@@ -382,7 +435,6 @@ function VaultSettings() {
     }
     setSelectedMode('local')
   }
-
   function handleLogout() {
     logout.mutate(undefined, {
       onSuccess: () => {
@@ -396,9 +448,7 @@ function VaultSettings() {
       },
     })
   }
-
   const remoteVaultHost = remoteVaultUrl ? new URL(remoteVaultUrl).host : null
-
   return (
     <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-6 p-6">
       <SizableText size="2xl" weight="bold">
@@ -426,8 +476,14 @@ function VaultSettings() {
                   onChange={handleModeChange}
                   disabled={isPending}
                   options={[
-                    {value: 'local', label: 'Local'},
-                    {value: 'remote', label: 'Remote'},
+                    {
+                      value: 'local',
+                      label: 'Local',
+                    },
+                    {
+                      value: 'remote',
+                      label: 'Remote',
+                    },
                   ]}
                 />
               }
@@ -454,12 +510,19 @@ function VaultSettings() {
               email={{
                 address: vaultEmail.data,
                 onStart: async (newEmail) => {
-                  const result = await changeEmailStart.mutateAsync({newEmail})
+                  const result = await changeEmailStart.mutateAsync({
+                    newEmail,
+                  })
                   emailBinding.current = result.binding
-                  return {expireTimeMs: result.expireTimeMs}
+                  return {
+                    expireTimeMs: result.expireTimeMs,
+                  }
                 },
                 onVerify: async (code) => {
-                  const updated = await changeEmailVerify.mutateAsync({code, binding: emailBinding.current})
+                  const updated = await changeEmailVerify.mutateAsync({
+                    code,
+                    binding: emailBinding.current,
+                  })
                   toast.success(`Email changed to ${updated}`)
                 },
               }}
@@ -476,7 +539,9 @@ function VaultSettings() {
               password={{
                 isSet: !!passwordStatus.data,
                 onSet: async (password) => {
-                  await setMasterPassword.mutateAsync({password})
+                  await setMasterPassword.mutateAsync({
+                    password,
+                  })
                   toast.success(passwordStatus.data ? 'Password changed' : 'Password set')
                 },
               }}
@@ -488,7 +553,7 @@ function VaultSettings() {
           )}
 
           {isConnected && (syncStatus?.lastSyncTime || syncStatus?.lastSyncError) ? (
-            <div className="mt-auto flex justify-end pt-2">
+            <div className={stylex.props(styles.s952baee7).className || ''}>
               <SizableText size="xs" color={syncStatus?.lastSyncError ? 'destructive' : 'muted'}>
                 {syncStatus?.lastSyncError
                   ? `Sync error: ${syncStatus.lastSyncError}`
@@ -527,7 +592,6 @@ function VaultSettings() {
     </div>
   )
 }
-
 function AccountSettingsDetail({accountUid, tab}: {accountUid: string; tab: AccountSettingsTab}) {
   const replace = useNavigate('replace')
   const navigate = useNavigate()
@@ -535,10 +599,21 @@ function AccountSettingsDetail({accountUid, tab}: {accountUid: string; tab: Acco
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
       <AccountSettingsHeader
         activeTab={tab}
-        onTabChange={(nextTab) => replace({key: 'account-settings', accountUid, tab: nextTab})}
-        onOpenProfile={() => navigate({key: 'profile', id: hmId(accountUid)})}
+        onTabChange={(nextTab) =>
+          replace({
+            key: 'account-settings',
+            accountUid,
+            tab: nextTab,
+          })
+        }
+        onOpenProfile={() =>
+          navigate({
+            key: 'profile',
+            id: hmId(accountUid),
+          })
+        }
       />
-      <h2 className="text-2xl font-semibold">{ACCOUNT_SETTINGS_TAB_LABELS[tab]}</h2>
+      <h2 className={stylex.props(styles.s443fda17).className || ''}>{ACCOUNT_SETTINGS_TAB_LABELS[tab]}</h2>
       {tab === 'notifications' ? <NotificationsTab accountUid={accountUid} /> : null}
       {tab === 'devices' ? <DevicesTab accountUid={accountUid} /> : null}
     </div>
@@ -561,7 +636,9 @@ function NotificationsTab({accountUid}: {accountUid: string}) {
   // host is known.
   const notifyServiceHost = useNotifyServiceHost()
   const hostResolved = Boolean(notifyServiceHost)
-  const {data: config, isLoading} = useNotificationConfig(notifyServiceHost, accountUid, {enabled: hostResolved})
+  const {data: config, isLoading} = useNotificationConfig(notifyServiceHost, accountUid, {
+    enabled: hostResolved,
+  })
   const setConfig = useSetNotificationConfig(notifyServiceHost, accountUid)
   const removeConfig = useRemoveNotificationConfig(notifyServiceHost, accountUid)
   const resendVerification = useResendNotificationConfigVerification(notifyServiceHost, accountUid)
@@ -570,8 +647,9 @@ function NotificationsTab({accountUid}: {accountUid: string}) {
   // enter the address instead.
   const vaultStatus = useVaultStatus()
   const isRemoteConnected = vaultStatus.data?.connectionStatus === VaultConnectionStatus.CONNECTED
-  const vaultEmail = useVaultEmail({enabled: isRemoteConnected})
-
+  const vaultEmail = useVaultEmail({
+    enabled: isRemoteConnected,
+  })
   const currentEmail = config?.email ?? null
   const isVerified = Boolean(config?.verifiedTime)
   const verificationSendTime = config?.verificationSendTime ?? null
@@ -579,14 +657,12 @@ function NotificationsTab({accountUid}: {accountUid: string}) {
   const isNotifyServerConnected = config?.isNotifyServerConnected !== false
   const needsVerification = Boolean(currentEmail && !isVerified)
   const canResendVerification = needsVerification && (verificationExpired || !verificationSendTime)
-
   const verificationMessage =
     verificationSendTime && !verificationExpired
       ? 'Email verification is pending. Click the link in your inbox to activate notification emails.'
       : verificationExpired
         ? 'Your verification link expired. Request a new verification email.'
         : 'Notification emails are paused until you verify this email address.'
-
   return (
     <NotificationEmailSettings
       isNotifyServerConnected={isNotifyServerConnected}
@@ -601,7 +677,9 @@ function NotificationsTab({accountUid}: {accountUid: string}) {
       resending={resendVerification.isLoading}
       onSetEmail={(email) =>
         setConfig.mutate(
-          {email},
+          {
+            email,
+          },
           {
             onSuccess: (result: any) => {
               if (result?.verifiedTime) {
@@ -614,7 +692,9 @@ function NotificationsTab({accountUid}: {accountUid: string}) {
         )
       }
       onRemoveEmail={() =>
-        removeConfig.mutate(undefined, {onSuccess: () => toast.success('Notification email removed')})
+        removeConfig.mutate(undefined, {
+          onSuccess: () => toast.success('Notification email removed'),
+        })
       }
       onResendVerification={
         canResendVerification
@@ -627,7 +707,6 @@ function NotificationsTab({accountUid}: {accountUid: string}) {
     />
   )
 }
-
 const DELEGATED_ROLE_LABELS: Partial<Record<HMRole, string>> = {
   agent: 'Agent / session key',
   writer: 'Writer',
@@ -645,7 +724,6 @@ function DevicesTab({accountUid}: {accountUid: string}) {
   const delegatedKeys = (capabilities.data || []).filter(
     (cap) => cap.id !== '_owner' && cap.role !== 'owner' && cap.role !== 'none',
   )
-
   if (capabilities.isLoading && !capabilities.data) {
     return (
       <div className="flex min-h-[200px] items-center justify-center">
@@ -653,7 +731,6 @@ function DevicesTab({accountUid}: {accountUid: string}) {
       </div>
     )
   }
-
   return (
     <DelegatedKeysList
       items={delegatedKeys.map((cap) => ({

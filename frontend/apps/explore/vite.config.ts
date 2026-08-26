@@ -1,3 +1,4 @@
+import stylex from '@stylexjs/unplugin'
 import react from '@vitejs/plugin-react'
 import {defineConfig} from 'vite'
 
@@ -5,7 +6,7 @@ const workspacePath = (path: string) => new URL(path, import.meta.url).pathname
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [stylex.vite(), react()],
   define: {
     'process.env': {},
   },

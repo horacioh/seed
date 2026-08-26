@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useLocalKeyPair} from '@/auth'
 import {createSpaceHomeDraft} from '@/document-edit/web-create-space-draft'
 import {makeWebFileUpload} from '@/document-edit/web-image-upload'
@@ -14,6 +15,32 @@ import {useQuery} from '@tanstack/react-query'
 import {useCallback, useMemo, useState} from 'react'
 
 /** Whether the account already has a published home document. */
+const styles = stylex.create({
+  s88a3565a: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: '0',
+  },
+  s741da2b: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 3)',
+    padding: 'calc(0.25rem * 6)',
+    textAlign: 'center',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
 export function useHasExistingSpace(accountUid: string | null | undefined) {
   const client = useUniversalClient()
   return useQuery({
@@ -22,7 +49,14 @@ export function useHasExistingSpace(accountUid: string | null | undefined) {
     queryFn: async () => {
       if (!accountUid) return false
       try {
-        const res = (await client.request('Resource', hmId(accountUid, {path: []}))) as {type?: string}
+        const res = (await client.request(
+          'Resource',
+          hmId(accountUid, {
+            path: [],
+          }),
+        )) as {
+          type?: string
+        }
         return res?.type === 'document'
       } catch {
         return false
@@ -39,12 +73,16 @@ export function useCreateSpaceDialog() {
   const content = (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogSideContent>
-        <DialogTitle className="sr-only">Create a space</DialogTitle>
+        <DialogTitle className={stylex.props(styles.s88a3565a).className || ''}>Create a space</DialogTitle>
         {isOpen ? <CreateSpaceFlow onClose={close} /> : null}
       </DialogSideContent>
     </Dialog>
   )
-  return {open, close, content}
+  return {
+    open,
+    close,
+    content,
+  }
 }
 
 /**
@@ -59,7 +97,6 @@ function CreateSpaceFlow({onClose}: {onClose: () => void}) {
   const accountUid = userKeyPair?.delegatedAccountUid ?? userKeyPair?.id ?? null
   const [busy, setBusy] = useState(false)
   const fileUpload = useMemo(() => makeWebFileUpload(client), [client])
-
   async function handleComplete(state: CreateSpaceFormState) {
     setBusy(true)
     try {
@@ -68,7 +105,11 @@ function CreateSpaceFlow({onClose}: {onClose: () => void}) {
         state.logo ? fileUpload(state.logo) : Promise.resolve(undefined),
         state.favicon ? fileUpload(state.favicon) : Promise.resolve(undefined),
       ])
-      const metadata = createSpaceMetadata(state, {coverCid, logoCid, faviconCid})
+      const metadata = createSpaceMetadata(state, {
+        coverCid,
+        logoCid,
+        faviconCid,
+      })
       const {webPath} = await createSpaceHomeDraft(metadata, accountUid)
       navigate(webPath)
       onClose()
@@ -77,16 +118,14 @@ function CreateSpaceFlow({onClose}: {onClose: () => void}) {
       setBusy(false)
     }
   }
-
   if (busy) return <CenteredStatus title="Setting up your space…" />
   return <CreateSpaceForm onComplete={handleComplete} onClose={onClose} />
 }
-
 function CenteredStatus({title}: {title: string}) {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
+    <div className={stylex.props(styles.s741da2b).className || ''}>
       <Spinner />
-      <SizableText size="sm" className="text-muted-foreground">
+      <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         {title}
       </SizableText>
     </div>

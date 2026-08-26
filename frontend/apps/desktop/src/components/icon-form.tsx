@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {fileUpload} from '@/utils/file-upload'
 import {UIAvatar} from '@shm/ui/avatar'
 import {Button} from '@shm/ui/button'
@@ -5,7 +6,20 @@ import {SizableText} from '@shm/ui/text'
 import {Tooltip} from '@shm/ui/tooltip'
 import {X} from 'lucide-react'
 import {ChangeEvent} from 'react'
-
+const styles = stylex.create({
+  s87ddcc81: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  sb5bdb794: {
+    textAlign: 'center',
+    color: '#fff',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+})
 export function IconForm({
   url,
   label,
@@ -45,13 +59,12 @@ export function IconForm({
         event.target.value = ''
       })
   }
-
   const iconImage = <UIAvatar label={label} id={id} url={url} size={size} />
   if (!onIconUpload) return iconImage
   return (
     <div className="group flex w-auto items-end gap-2 self-start" data-group="icon">
       <div
-        className="relative overflow-hidden"
+        className={stylex.props(styles.s87ddcc81).className || ''}
         style={{
           marginTop,
           width: size,
@@ -77,18 +90,22 @@ export function IconForm({
         {emptyLabel && !url ? (
           <div
             className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-100 group-hover:opacity-0"
-            style={{zIndex: 5}}
+            style={{
+              zIndex: 5,
+            }}
           >
-            <SizableText size="xs" className="text-center text-white">
+            <SizableText size="xs" className={stylex.props(styles.sb5bdb794).className || ''}>
               {emptyLabel}
             </SizableText>
           </div>
         ) : null}
         <div
           className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-0 group-hover:opacity-100"
-          style={{zIndex: 5}}
+          style={{
+            zIndex: 5,
+          }}
         >
-          <SizableText size="xs" className="text-center text-white">
+          <SizableText size="xs" className={stylex.props(styles.sb5bdb794).className || ''}>
             {url ? 'UPDATE' : emptyLabel || 'ADD ICON'}
           </SizableText>
         </div>
@@ -100,14 +117,16 @@ export function IconForm({
             className="opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
             variant="destructive"
             size="sm"
-            style={{zIndex: 5}}
+            style={{
+              zIndex: 5,
+            }}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               onRemoveIcon()
             }}
           >
-            <X className="size-3" />
+            <X className={stylex.props(styles.sca3de967).className || ''} />
           </Button>
         </Tooltip>
       ) : null}

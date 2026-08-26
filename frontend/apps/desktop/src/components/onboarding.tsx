@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {grpcClient} from '@/grpc-client'
 import {desktopUniversalClient} from '@/desktop-universal-client'
 import {
@@ -63,36 +64,172 @@ import {
   FullLogoIcon,
   PublishIcon,
 } from './onboarding-icons'
-
+const styles = stylex.create({
+  s28ee3cbb: {
+    display: 'flex',
+    width: '100%',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 6)',
+    paddingInline: 'calc(0.25rem * 0)',
+  },
+  sefb6846e: {
+    display: 'flex',
+    flex: '1',
+    justifyContent: 'center',
+  },
+  s208ecacf: {
+    display: 'flex',
+    height: 'calc(0.25rem * 20)',
+    justifyContent: 'flex-start',
+  },
+  scbf57ab1: {
+    color: 'var(--secondary-foreground)',
+    textAlign: 'center',
+  },
+  s236e44da: {
+    color: 'var(--muted-foreground)',
+    textAlign: 'center',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s6667179e: {
+    display: 'flex',
+    cursor: 'pointer',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sd3210856: {
+    marginTop: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s21fb93a9: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s8c7183dc: {
+    color: 'var(--secondary-foreground)',
+  },
+  s5d77118: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s6384a814: {
+    fontFamily: 'var(--font-mono)',
+    wordBreak: 'break-all',
+  },
+  s188ef301: {
+    marginTop: 'auto',
+    display: 'flex',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s21fb93ab: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  se658ac15: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sea4b85de: {
+    width: 'calc(0.25rem * 13)',
+    height: 'calc(0.25rem * 13)',
+    flexShrink: '0',
+  },
+  s486e68e8: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  sa8ecfe2d: {
+    color: 'var(--secondary-foreground)',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+  sa37b3229: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s930eca2c: {
+    marginBottom: 'calc(0.25rem * 6)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+  },
+})
 interface OnboardingProps {
   onComplete: () => void
   modal?: boolean
 }
-
 interface ProfileFormData {
   name: string
   icon?: ImageData
 }
-
 export const [dispatchEditPopover, editPopoverEvents] = eventStream<boolean>()
 export const [dispatchOnboardingDialog, onboardingDialogEvents] = eventStream<boolean>()
-
 export function OnboardingDialog() {
   const [open, setOpen] = useState(false)
-
   useEffect(() => {
     return onboardingDialogEvents.subscribe((open) => {
       setOpen(open)
     })
   }, [])
-
   const handleOpenChange = (val: boolean) => {
     dispatchOnboardingDialog(val)
     setOpen(val)
   }
-
   if (!open) return null
-
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogPortal>
@@ -113,7 +250,6 @@ export function OnboardingDialog() {
     </Dialog>
   )
 }
-
 export function Onboarding({onComplete, modal = false}: OnboardingProps) {
   // Get the global state
   const globalState = getOnboardingState()
@@ -148,7 +284,10 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
       if (account) {
         // Ensure the account is selected when onboarding was previously completed
         setSelectedIdentity?.(account.uid)
-        navigate({key: 'document', id: account})
+        navigate({
+          key: 'document',
+          id: account,
+        })
       }
       onComplete()
     }
@@ -167,58 +306,61 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     console.log('🔄 Initializing onboarding with state:', localState)
     return localState.currentStep
   })
-
   const handleSkip = useCallback(() => {
     console.group('🚀 Skipping Onboarding')
     const beforeState = modal ? localState : getOnboardingState()
     console.log('Before state:', beforeState)
-
     if (modal) {
-      setLocalState((prev) => ({...prev, hasSkippedOnboarding: true}))
+      setLocalState((prev) => ({
+        ...prev,
+        hasSkippedOnboarding: true,
+      }))
     } else {
       setHasSkippedOnboarding(true)
       // Clean up form data but keep the skipped flag
       cleanupOnboardingFormData()
     }
-
     const afterState = modal ? localState : getOnboardingState()
     console.log('After state:', afterState)
     console.groupEnd()
-
     onComplete()
   }, [modal, localState, onComplete])
-
   const completeOnboarding = useCallback(
     (nextAccount?: UnpackedHypermediaId) => {
       console.log('Completing onboarding')
       if (modal) {
-        setLocalState((prev) => ({...prev, hasCompletedOnboarding: true}))
+        setLocalState((prev) => ({
+          ...prev,
+          hasCompletedOnboarding: true,
+        }))
       } else {
         setHasCompletedOnboarding(true)
         cleanupOnboardingFormData()
       }
-
       const resolvedAccount = nextAccount ?? account
       if (resolvedAccount) {
         setSelectedIdentity?.(resolvedAccount.uid)
-        navigate({key: 'document', id: resolvedAccount})
+        navigate({
+          key: 'document',
+          id: resolvedAccount,
+        })
       }
-
       onComplete()
     },
     [account, modal, navigate, onComplete, setSelectedIdentity],
   )
-
   const handleNext = useCallback(() => {
     console.group('🚀 Next Step in Onboarding')
     const beforeState = modal ? localState : getOnboardingState()
     console.log('Before - Local step:', currentStep)
     console.log('Before - Store state:', beforeState)
-
     if (currentStep === 'welcome') {
       console.log('Moving from welcome to profile')
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'profile'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'profile',
+        }))
       } else {
         setOnboardingStep('profile')
       }
@@ -227,7 +369,10 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
       const nextStep = shouldConfigureVault ? 'vault' : 'recovery'
       console.log(`Moving from profile to ${nextStep}`)
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: nextStep}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: nextStep,
+        }))
       } else {
         setOnboardingStep(nextStep)
       }
@@ -235,7 +380,10 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     } else if (currentStep === 'vault') {
       console.log('Moving from vault to create account')
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'recovery'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'recovery',
+        }))
       } else {
         setOnboardingStep('recovery')
       }
@@ -243,7 +391,10 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     } else if (currentStep === 'recovery') {
       console.log('Moving from create account to ready')
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'ready'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'ready',
+        }))
       } else {
         setOnboardingStep('ready')
       }
@@ -251,7 +402,10 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     } else if (currentStep === 'existing') {
       console.log('Moving from restore from phrase to ready')
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'ready'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'ready',
+        }))
       } else {
         setOnboardingStep('ready')
       }
@@ -259,7 +413,10 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     } else if (currentStep === 'import') {
       console.log('Moving from import to ready')
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'ready'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'ready',
+        }))
       } else {
         setOnboardingStep('ready')
       }
@@ -270,86 +427,99 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
       }
       completeOnboarding()
     }
-
     const afterState = modal ? localState : getOnboardingState()
     console.log('After - Store state:', afterState)
     console.groupEnd()
   }, [currentStep, modal, localState, completeOnboarding, globalState.initialAccountIdCount, shouldConfigureVault])
-
   const handleRestoreFromRecoveryPhrase = useCallback(() => {
     if (modal) {
-      setLocalState((prev) => ({...prev, currentStep: 'existing'}))
+      setLocalState((prev) => ({
+        ...prev,
+        currentStep: 'existing',
+      }))
     } else {
       setOnboardingStep('existing')
     }
     setCurrentStep('existing')
   }, [modal])
-
   const handleImportKeyFile = useCallback(() => {
     if (modal) {
-      setLocalState((prev) => ({...prev, currentStep: 'import'}))
+      setLocalState((prev) => ({
+        ...prev,
+        currentStep: 'import',
+      }))
     } else {
       setOnboardingStep('import')
     }
     setCurrentStep('import')
   }, [modal])
-
   const handlePrev = useCallback(() => {
     console.group('🚀 Previous Step in Onboarding')
     const beforeState = modal ? localState : getOnboardingState()
     console.log('Before - Local step:', currentStep)
     console.log('Before - Store state:', beforeState)
-
     if (currentStep === 'recovery') {
       const prevStep = shouldConfigureVault ? 'vault' : 'profile'
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: prevStep}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: prevStep,
+        }))
       } else {
         setOnboardingStep(prevStep)
       }
       setCurrentStep(prevStep)
     } else if (currentStep === 'vault') {
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'profile'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'profile',
+        }))
       } else {
         setOnboardingStep('profile')
       }
       setCurrentStep('profile')
     } else if (currentStep === 'profile') {
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'welcome'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'welcome',
+        }))
       } else {
         setOnboardingStep('welcome')
       }
       setCurrentStep('welcome')
     } else if (currentStep === 'existing') {
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'vault'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'vault',
+        }))
       } else {
         setOnboardingStep('vault')
       }
       setCurrentStep('vault')
     } else if (currentStep === 'import') {
       if (modal) {
-        setLocalState((prev) => ({...prev, currentStep: 'vault'}))
+        setLocalState((prev) => ({
+          ...prev,
+          currentStep: 'vault',
+        }))
       } else {
         setOnboardingStep('vault')
       }
       setCurrentStep('vault')
     }
-
     const afterState = modal ? localState : getOnboardingState()
     console.log('After - Store state:', afterState)
     console.groupEnd()
   }, [currentStep, modal, localState, shouldConfigureVault])
-
   async function handleSubscription(id: UnpackedHypermediaId) {
     console.log('[Onboarding] Starting subscription for account:', {
       uid: id.uid,
       path: '/',
       recursive: true,
     })
-
     try {
       await grpcClient.subscriptions.subscribe({
         account: id.uid,
@@ -365,7 +535,6 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
       })
     }
   }
-
   return (
     <div className={cn('bg-background window-drag flex flex-1 flex-col', !modal && 'size-full')}>
       {currentStep === 'welcome' && <WelcomeStep onNext={handleNext} />}
@@ -433,41 +602,40 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     </div>
   )
 }
-
 function WelcomeStep({onNext}: {onNext: () => void}) {
   return (
     <StepWrapper>
       <FullLogoIcon />
       <StepTitle>WELCOME TO THE OPEN WEB</StepTitle>
-      <div className="flex w-full flex-1 items-center gap-6 px-0">
+      <div className={stylex.props(styles.s28ee3cbb).className || ''}>
         <div className="flex w-[200px] flex-1 flex-col items-center justify-start gap-4 rounded-lg p-2">
-          <div className="flex flex-1 justify-center">
+          <div className={stylex.props(styles.sefb6846e).className || ''}>
             <CollabIcon />
           </div>
-          <div className="flex h-20 justify-start">
-            <Text size="lg" className="text-secondary-foreground text-center">
+          <div className={stylex.props(styles.s208ecacf).className || ''}>
+            <Text size="lg" className={stylex.props(styles.scbf57ab1).className || ''}>
               Collaborate With Your Peers
             </Text>
           </div>
         </div>
 
         <div className="flex w-[200px] flex-1 flex-col items-center justify-start gap-4 rounded-lg p-2">
-          <div className="flex flex-1 justify-center">
+          <div className={stylex.props(styles.sefb6846e).className || ''}>
             <PublishIcon />
           </div>
-          <div className="flex h-20 justify-start">
-            <Text size="lg" className="text-secondary-foreground text-center">
+          <div className={stylex.props(styles.s208ecacf).className || ''}>
+            <Text size="lg" className={stylex.props(styles.scbf57ab1).className || ''}>
               Publish To The Web
             </Text>
           </div>
         </div>
 
         <div className="flex w-[200px] flex-1 flex-col items-center justify-start gap-4 rounded-lg p-2">
-          <div className="flex flex-1 justify-center">
+          <div className={stylex.props(styles.sefb6846e).className || ''}>
             <ArchiveIcon />
           </div>
-          <div className="flex h-20 justify-start">
-            <Text size="lg" className="text-secondary-foreground text-center">
+          <div className={stylex.props(styles.s208ecacf).className || ''}>
+            <Text size="lg" className={stylex.props(styles.scbf57ab1).className || ''}>
               Archive Content, Available Offline
             </Text>
           </div>
@@ -488,9 +656,9 @@ function WelcomeStep({onNext}: {onNext: () => void}) {
             backgroundColor: '$brand11',
             borderColor: 'transparent',
           }}
-        >
+         >
           Getting Started Guides
-        </Button> */}
+         </Button> */}
         <Button variant="default" onClick={onNext} id="welcome-next">
           NEXT
         </Button>
@@ -498,7 +666,6 @@ function WelcomeStep({onNext}: {onNext: () => void}) {
     </StepWrapper>
   )
 }
-
 function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () => void; onPrev: () => void}) {
   // Initialize form data from store
   const [formData, setFormData] = useState<ProfileFormData>(() => {
@@ -508,7 +675,6 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
       icon: state.formData.icon,
     }
   })
-
   const handleImageUpload = async (file: File) => {
     try {
       const imageData = await fileToImageData(file)
@@ -527,7 +693,6 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
       }
     }
   }
-
   const handleImageRemove = () => {
     const newData = {
       ...formData,
@@ -536,13 +701,14 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
     setFormData(newData)
     setOnboardingFormData(newData)
   }
-
   const updateFormData = (updates: Partial<ProfileFormData>) => {
-    const newData = {...formData, ...updates}
+    const newData = {
+      ...formData,
+      ...updates,
+    }
     setFormData(newData)
     setOnboardingFormData(newData)
   }
-
   useEffect(() => {
     return () => {
       setFormData({
@@ -551,11 +717,10 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
       })
     }
   }, [])
-
   return (
     <StepWrapper onPrev={onPrev}>
       <StepTitle>CREATE YOUR SITE</StepTitle>
-      <Text size="lg" className="text-muted-foreground text-center">
+      <Text size="lg" className={stylex.props(styles.s236e44da).className || ''}>
         Your site is more than just a collection of pages, it's a reflection of who you are or what your brand stands
         for. Whether it's personal, professional, or creative, this is your space to shine.
       </Text>
@@ -568,21 +733,23 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
         className="no-window-drag flex w-full max-w-[400px] flex-1 flex-col gap-4 pt-4"
       >
         <div className="no-window-drag flex w-full flex-1 flex-col gap-4 pt-4">
-          <div className="flex flex-col">
+          <div className={stylex.props(styles.s783f19f3).className || ''}>
             <Label htmlFor="account-name">Account Name</Label>
             <Input
               id="account-name"
               value={formData.name}
               onChange={(e) => {
                 const text = e.target.value
-                updateFormData({name: text})
+                updateFormData({
+                  name: text,
+                })
               }}
               placeholder="Enter your account name"
             />
           </div>
 
           <div className="flex min-h-[100px] w-full max-w-[100px] min-w-[100px] flex-none flex-col gap-2">
-            <Text size="sm" className="text-muted-foreground">
+            <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               Site Icon
             </Text>
             <ImageForm
@@ -616,15 +783,12 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
     </StepWrapper>
   )
 }
-
 function modeFromBackend(backendMode: VaultBackendMode | undefined): 'local' | 'remote' {
   return backendMode === VaultBackendMode.REMOTE ? 'remote' : 'local'
 }
-
 function statusFromConnection(connectionStatus: VaultConnectionStatus | undefined): 'connected' | 'disconnected' {
   return connectionStatus === VaultConnectionStatus.CONNECTED ? 'connected' : 'disconnected'
 }
-
 function VaultStep({
   initialAccountIdCount,
   onNext,
@@ -653,21 +817,17 @@ function VaultStep({
         : false,
   })
   const hasResolvedRemoteAccounts = useRef(false)
-
   useEffect(() => {
     setSelectedMode(modeFromBackend(vaultStatus.data?.backendMode))
   }, [vaultStatus.data?.backendMode])
-
   useEffect(() => {
     if (vaultStatus.data?.remoteVaultUrl) {
       setRemoteVaultURL(vaultStatus.data.remoteVaultUrl)
     }
   }, [vaultStatus.data?.remoteVaultUrl])
-
   const connectionState = statusFromConnection(vaultStatus.data?.connectionStatus)
   const isPending = startVaultConnection.isPending || disconnectVault.isPending
   const canContinue = selectedMode === 'local' || connectionState === 'connected'
-
   useEffect(() => {
     if (selectedMode !== 'remote' || connectionState !== 'connected') {
       hasResolvedRemoteAccounts.current = false
@@ -676,16 +836,13 @@ function VaultStep({
     if (initialAccountIdCount !== 0 || hasResolvedRemoteAccounts.current) {
       return
     }
-
     const syncedKeys = listKeys.data ?? []
     if (syncedKeys.length === 0) {
       return
     }
-
     hasResolvedRemoteAccounts.current = true
     onRemoteAccountsReady(syncedKeys[0].accountId, syncedKeys.length)
   }, [connectionState, initialAccountIdCount, listKeys.data, onRemoteAccountsReady, selectedMode])
-
   const handleDisconnect = async () => {
     try {
       await disconnectVault.mutateAsync()
@@ -697,13 +854,11 @@ function VaultStep({
       return false
     }
   }
-
   const handleModeChange = async (nextMode: 'local' | 'remote') => {
     setSelectedMode(nextMode)
     if (nextMode === 'remote') {
       return
     }
-
     const daemonMode = modeFromBackend(vaultStatus.data?.backendMode)
     if (daemonMode === 'remote' || connectionState === 'connected') {
       const disconnected = await handleDisconnect()
@@ -712,7 +867,6 @@ function VaultStep({
       }
     }
   }
-
   const handleStartConnection = async () => {
     let normalizedVaultURL = ''
     try {
@@ -721,7 +875,6 @@ function VaultStep({
       toast.error(error instanceof Error ? error.message : 'Invalid vault URL')
       return
     }
-
     try {
       const vaultConnect = await startVaultConnection.mutateAsync({
         vaultUrl: normalizedVaultURL,
@@ -734,7 +887,6 @@ function VaultStep({
       toast.error('Failed to start vault connection: ' + (error instanceof Error ? error.message : String(error)))
     }
   }
-
   return (
     <StepWrapper onPrev={onPrev}>
       <StepTitle>CHOOSE YOUR VAULT</StepTitle>
@@ -745,7 +897,7 @@ function VaultStep({
 
       <div className="flex w-full max-w-[520px] flex-1 flex-col gap-4 pt-4">
         <div className="border-border bg-background/70 flex flex-col gap-3 rounded-lg border p-4">
-          <label className="flex cursor-pointer items-start gap-3">
+          <label className={stylex.props(styles.s6667179e).className || ''}>
             <input
               type="radio"
               name="vault-mode"
@@ -753,14 +905,14 @@ function VaultStep({
               onChange={() => handleModeChange('local')}
               disabled={isPending}
             />
-            <div className="flex flex-col gap-1">
+            <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <Text size="lg">Local only</Text>
-              <Text size="sm" className="text-muted-foreground">
+              <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
                 Keep your encrypted vault on this device only.
               </Text>
             </div>
           </label>
-          <label className="flex cursor-pointer items-start gap-3">
+          <label className={stylex.props(styles.s6667179e).className || ''}>
             <input
               type="radio"
               name="vault-mode"
@@ -768,9 +920,9 @@ function VaultStep({
               onChange={() => handleModeChange('remote')}
               disabled={isPending}
             />
-            <div className="flex flex-col gap-1">
+            <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <Text size="lg">Remote sync</Text>
-              <Text size="sm" className="text-muted-foreground">
+              <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
                 Keep the same encrypted vault here and sync a remote copy for multi-device continuity.
               </Text>
             </div>
@@ -779,7 +931,7 @@ function VaultStep({
 
         {selectedMode === 'remote' ? (
           <div className="border-border bg-background/70 flex flex-col gap-4 rounded-lg border p-4">
-            <div className="flex flex-col gap-2">
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               <Label htmlFor="onboarding-vault-url">Remote Vault URL</Label>
               <Input
                 id="onboarding-vault-url"
@@ -789,10 +941,10 @@ function VaultStep({
                 disabled={isPending}
               />
             </div>
-            <Text size="sm" className="text-muted-foreground">
+            <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               Open the Vault Connect to sign in and connect this device before continuing.
             </Text>
-            <div className="flex flex-wrap items-center gap-2">
+            <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
               <Button onClick={handleStartConnection} disabled={isPending || !remoteVaultURL.trim()}>
                 {connectionState === 'connected' ? 'Reconnect in Browser' : 'Connect in Browser'}
               </Button>
@@ -809,24 +961,24 @@ function VaultStep({
               </Text>
             </div>
             {vaultStatus.data?.syncStatus?.lastSyncError ? (
-              <Text size="sm" className="text-destructive">
+              <Text size="sm" className={stylex.props(styles.s8a2570e2).className || ''}>
                 {vaultStatus.data.syncStatus.lastSyncError}
               </Text>
             ) : null}
           </div>
         ) : (
           <div className="border-border bg-background/70 rounded-lg border p-4">
-            <Text size="sm" className="text-muted-foreground">
+            <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               You can add remote sync later from Settings.
             </Text>
           </div>
         )}
 
-        <div className="mt-auto flex flex-col items-center gap-3">
+        <div className={stylex.props(styles.sd3210856).className || ''}>
           <Button variant="default" onClick={onNext} disabled={!canContinue}>
             CREATE NEW ACCOUNT
           </Button>
-          <div className="flex flex-col items-center gap-1">
+          <div className={stylex.props(styles.s21fb93a9).className || ''}>
             <Button type="button" size="sm" variant="link" onClick={onUseRecoveryPhrase} disabled={!canContinue}>
               Restore from Recovery Phrase
             </Button>
@@ -839,7 +991,6 @@ function VaultStep({
     </StepWrapper>
   )
 }
-
 function ImportKeyStep({
   onNext,
   onPrev,
@@ -854,12 +1005,10 @@ function ImportKeyStep({
   const [filePath, setFilePath] = useState('')
   const [password, setPassword] = useState('')
   const [submitError, setSubmitError] = useState<string | null>(null)
-
   const handleChooseFile = async () => {
     try {
       const selectedPath = await pickKeyImportFile()
       if (!selectedPath) return
-
       setFilePath(selectedPath)
       setSubmitError(null)
     } catch (error) {
@@ -867,20 +1016,15 @@ function ImportKeyStep({
       toast.error('Failed to open file picker')
     }
   }
-
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
-
     const normalizedPath = normalizeImportKeyFilePath(filePath)
     const validationError = getImportKeyFilePathError(normalizedPath)
-
     setFilePath(normalizedPath)
-
     if (validationError) {
       setSubmitError(validationError)
       return
     }
-
     try {
       const importedAccount = await importKey.mutateAsync({
         filePath: normalizedPath,
@@ -896,30 +1040,29 @@ function ImportKeyStep({
       toast.error('Failed to import key: ' + message)
     }
   }
-
   return (
     <StepWrapper onPrev={onPrev}>
       <StepTitle>IMPORT KEY FILE</StepTitle>
-      <Text size="lg" className="text-muted-foreground text-center">
+      <Text size="lg" className={stylex.props(styles.s236e44da).className || ''}>
         Choose an exported `.hmkey.json` file. Seed passes the selected file path (and optional password) to the daemon,
         which reads the key file directly from disk.
       </Text>
 
       <form onSubmit={handleSubmit} className="flex w-full max-w-[420px] flex-1 flex-col gap-4 pt-4">
         <div className="border-border bg-background/70 flex flex-col gap-2 rounded-lg border p-4">
-          <Text size="sm" className="text-secondary-foreground">
+          <Text size="sm" className={stylex.props(styles.s8c7183dc).className || ''}>
             Leave password empty for plaintext exports. Enter a password only if the key file was exported with
             encryption.
           </Text>
         </div>
 
         {filePath ? (
-          <div className="flex flex-col gap-2">
-            <Text size="sm" className="text-muted-foreground">
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+            <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               Selected File
             </Text>
-            <div className="border-border bg-background rounded-md border px-3 py-2">
-              <Text size="sm" className="font-mono break-all">
+            <div className={stylex.props(styles.s5d77118).className || ''}>
+              <Text size="sm" className={stylex.props(styles.s6384a814).className || ''}>
                 {filePath}
               </Text>
             </div>
@@ -927,12 +1070,12 @@ function ImportKeyStep({
         ) : null}
 
         {submitError ? (
-          <Text size="sm" className="text-destructive">
+          <Text size="sm" className={stylex.props(styles.s8a2570e2).className || ''}>
             {submitError}
           </Text>
         ) : null}
 
-        <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <Label htmlFor="import-key-password">Password (optional)</Label>
           <Input
             id="import-key-password"
@@ -944,11 +1087,21 @@ function ImportKeyStep({
           />
         </div>
 
-        <div className="mt-auto flex gap-4">
-          <Button type="button" variant="outline" className="flex-1" onClick={handleChooseFile}>
+        <div className={stylex.props(styles.s188ef301).className || ''}>
+          <Button
+            type="button"
+            variant="outline"
+            className={stylex.props(styles.sb42feb5d).className || ''}
+            onClick={handleChooseFile}
+          >
             Choose File
           </Button>
-          <Button type="submit" variant="default" className="flex-1" disabled={importKey.isPending}>
+          <Button
+            type="submit"
+            variant="default"
+            className={stylex.props(styles.sb42feb5d).className || ''}
+            disabled={importKey.isPending}
+          >
             {importKey.isPending ? 'IMPORTING…' : 'IMPORT KEY'}
           </Button>
         </div>
@@ -956,7 +1109,6 @@ function ImportKeyStep({
     </StepWrapper>
   )
 }
-
 function RestoreFromPhraseStep({
   onNext,
   onPrev,
@@ -973,14 +1125,11 @@ function RestoreFromPhraseStep({
       client.secureStorage.write.mutate(input),
   })
   const [shouldSaveWords, setShouldSaveWords] = useState(true)
-
   const mnemonic = useMemo(() => {
     return extractWords(secretWords)
   }, [secretWords])
-
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
-
     try {
       // Validate mnemonic
       const validation = isWordsValid(secretWords)
@@ -997,7 +1146,6 @@ function RestoreFromPhraseStep({
         if (!secretWords.trim()) {
           throw new Error('Mnemonics not found')
         }
-
         createdAccount = await register.mutateAsync({
           mnemonic,
         })
@@ -1014,9 +1162,11 @@ function RestoreFromPhraseStep({
         console.group('💾 Saving Mnemonics')
         console.log('Saving to key:', createdAccount.publicKey)
         console.log('Should save words:', shouldSaveWords)
-
         if (shouldSaveWords) {
-          saveWords.mutate({key: createdAccount.publicKey, value: secretWords})
+          saveWords.mutate({
+            key: createdAccount.publicKey,
+            value: secretWords,
+          })
           console.log('✅ Mnemonics saved')
         } else {
           console.log('⏭️ Skipping mnemonic save as per user preference')
@@ -1027,7 +1177,6 @@ function RestoreFromPhraseStep({
         toast.error('Failed to save mnemonics: ' + (error as Error).message)
         return
       }
-
       onAccountCreate(hmId(createdAccount.accountId))
       onNext()
     } catch (error) {
@@ -1035,18 +1184,17 @@ function RestoreFromPhraseStep({
       toast.error('Failed to setup account: ' + (error as Error).message)
     }
   }
-
   return (
     <StepWrapper onPrev={onPrev}>
       <StepTitle>ADD EXISTING KEY</StepTitle>
-      <Text size="lg" className="text-muted-foreground text-center">
+      <Text size="lg" className={stylex.props(styles.s236e44da).className || ''}>
         Add the keys to your existing site.
       </Text>
 
       <form onSubmit={handleSubmit} className="flex w-full max-w-[400px] flex-1 flex-col gap-4 pt-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Text size="sm" className="text-muted-foreground">
+        <div className={stylex.props(styles.sfbc6e290).className || ''}>
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+            <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               Secret Recovery Phrase
             </Text>
             <Textarea
@@ -1066,7 +1214,7 @@ function RestoreFromPhraseStep({
             Store the Secret Recovery Phrase securely on this device.
           </CheckboxField>
         </div>
-        <div className="flex-1" />
+        <div className={stylex.props(styles.sb42feb5d).className || ''} />
         <div className="no-window-drag mt-8 flex items-center justify-center gap-4">
           <Button type="submit" variant="default" disabled={!secretWords.trim()}>
             NEXT
@@ -1076,7 +1224,6 @@ function RestoreFromPhraseStep({
     </StepWrapper>
   )
 }
-
 function CreateAccountStep({
   onNext,
   onPrev,
@@ -1099,14 +1246,12 @@ function CreateAccountStep({
       icon: state.formData.icon,
     }
   })
-
   async function handleSubmit() {
     try {
       setIsSubmitting(true)
       setSubmitError(null)
       console.group('📝 Starting Profile Submission')
       console.log('Current form data:', formData)
-
       let icon = ''
       try {
         console.group('🖼️ Processing Images')
@@ -1123,7 +1268,6 @@ function CreateAccountStep({
         console.error('❌ Failed to upload images:', error)
         throw new Error('Failed to upload images: ' + (error as Error).message)
       }
-
       let createdAccount
       try {
         console.group('👤 Creating Account')
@@ -1136,7 +1280,6 @@ function CreateAccountStep({
             }
             generatedMnemonicRef.current = [...mnemonicResponse.mnemonic]
           }
-
           createdAccount = await register.mutateAsync({
             mnemonic: generatedMnemonicRef.current,
           })
@@ -1148,7 +1291,6 @@ function CreateAccountStep({
         console.error('❌ Failed to create account:', error)
         throw new Error('Failed to create account: ' + (error as Error).message)
       }
-
       try {
         console.group('📝 Creating Profile')
         await grpcClient.documents.updateProfile({
@@ -1159,7 +1301,6 @@ function CreateAccountStep({
           },
           signingKeyName: createdAccount.publicKey,
         })
-
         const id = hmId(createdAccount.accountId)
         invalidateQueries([queryKeys.ACCOUNT, id.uid])
         invalidateQueries([queryKeys.LIST_ROOT_DOCUMENTS])
@@ -1169,7 +1310,6 @@ function CreateAccountStep({
         console.error('❌ Failed to create profile:', error)
         throw new Error('Failed to create profile: ' + (error as Error).message)
       }
-
       cleanupOnboardingFormData()
       onAccountCreate(hmId(createdAccount.accountId))
       await postAccountCreateAction(
@@ -1193,18 +1333,16 @@ function CreateAccountStep({
       setIsSubmitting(false)
     }
   }
-
   useEffect(() => {
     if (hasStarted.current) return
     hasStarted.current = true
     handleSubmit()
   }, [])
-
   return (
     <StepWrapper onPrev={isSubmitting ? undefined : onPrev}>
       <StepTitle>CREATING YOUR SITE</StepTitle>
       <div className="no-window-drag flex w-full max-w-[420px] flex-1 flex-col items-center justify-center gap-4 text-center">
-        <Text size="xl" className="text-muted-foreground">
+        <Text size="xl" className={stylex.props(styles.sf2718385).className || ''}>
           Seed is creating your account and storing it in this device&apos;s encrypted local vault.
         </Text>
         <Text size="sm" className="text-muted-foreground max-w-[360px]">
@@ -1212,18 +1350,18 @@ function CreateAccountStep({
         </Text>
 
         {isSubmitting ? (
-          <div className="flex flex-col items-center gap-3">
+          <div className={stylex.props(styles.s21fb93ab).className || ''}>
             <Spinner />
-            <Text size="sm" className="text-muted-foreground">
+            <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               This should only take a moment.
             </Text>
           </div>
         ) : submitError ? (
           <>
-            <Text size="sm" className="text-destructive">
+            <Text size="sm" className={stylex.props(styles.s8a2570e2).className || ''}>
               {submitError}
             </Text>
-            <div className="flex gap-3">
+            <div className={stylex.props(styles.se658ac15).className || ''}>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -1239,10 +1377,8 @@ function CreateAccountStep({
     </StepWrapper>
   )
 }
-
 function ReadyStep({onComplete}: {onComplete: () => void}) {
   const openUrl = useOpenUrl()
-
   return (
     <StepWrapper>
       <StepTitle>READY TO GO</StepTitle>
@@ -1251,35 +1387,35 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
           className="flex h-auto items-center gap-4 rounded-md bg-blue-200 p-4 transition-colors hover:bg-blue-300"
           onClick={() => openUrl('https://discord.gg/7Y7DrhQZFs')}
         >
-          <DiscordIcon className="size-13 shrink-0" />
-          <div className="flex flex-1 flex-col">
-            <SizableText weight="light" className="text-secondary-foreground">
+          <DiscordIcon className={stylex.props(styles.sea4b85de).className || ''} />
+          <div className={stylex.props(styles.s486e68e8).className || ''}>
+            <SizableText weight="light" className={stylex.props(styles.s8c7183dc).className || ''}>
               Join our Discord
             </SizableText>
-            <SizableText size="sm" className="text-muted-foreground">
+            <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               Here you will be able to get support and send feedback.
             </SizableText>
           </div>
         </div>
         <div className="bg-brand-8/20 dark:bg-brand-6/20 flex h-auto items-center gap-4 rounded-md p-4 transition-colors">
-          <ContentIcon className="size-13 shrink-0" />
-          <div className="flex flex-1 flex-col">
-            <SizableText weight="light" className="text-secondary-foreground">
+          <ContentIcon className={stylex.props(styles.sea4b85de).className || ''} />
+          <div className={stylex.props(styles.s486e68e8).className || ''}>
+            <SizableText weight="light" className={stylex.props(styles.s8c7183dc).className || ''}>
               All Content is Public
             </SizableText>
-            <SizableText size="sm" className="text-muted-foreground">
+            <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               all content created using Seed Hypermedia is public by default, meaning it can be accessed and shared by
               others within the network
             </SizableText>
           </div>
         </div>
         <div className="bg-brand-8/20 dark:bg-brand-6/20 flex h-auto items-center gap-4 rounded-md p-4 transition-colors">
-          <AnalyticsIcon className="size-13 shrink-0" />
-          <div className="flex flex-1 flex-col">
-            <SizableText weight="light" className="text-secondary-foreground">
+          <AnalyticsIcon className={stylex.props(styles.sea4b85de).className || ''} />
+          <div className={stylex.props(styles.s486e68e8).className || ''}>
+            <SizableText weight="light" className={stylex.props(styles.s8c7183dc).className || ''}>
               Analytics
             </SizableText>
-            <SizableText size="sm" className="text-muted-foreground">
+            <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               We collect anonymous analytics to improve your experience and enhance the platform.
             </SizableText>
           </div>
@@ -1291,29 +1427,35 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
     </StepWrapper>
   )
 }
-
 export function OnboardingDebugBox() {
   const [state, setState] = useState<OnboardingState>(getOnboardingState())
-
   useEffect(() => {
     // Update state every second to see changes
     const interval = setInterval(() => {
       setState(getOnboardingState())
     }, 1000)
-
     return () => clearInterval(interval)
   }, [])
-
   if (IS_PROD_DESKTOP) return null
-
   return (
     <div className="bg-background border-border no-window-drag absolute top-4 right-4 z-40 max-h-[300px] w-[300px] rounded-lg border p-2 opacity-80 shadow-lg">
       <ScrollArea>
-        <div className="p-3">
-          <Text size="md" style={{fontFamily: 'monospace'}}>
+        <div className={stylex.props(styles.s1aa16).className || ''}>
+          <Text
+            size="md"
+            style={{
+              fontFamily: 'monospace',
+            }}
+          >
             Debug: Onboarding State
           </Text>
-          <Text size="sm" style={{fontFamily: 'monospace'}} className="text-muted-foreground">
+          <Text
+            size="sm"
+            style={{
+              fontFamily: 'monospace',
+            }}
+            className={stylex.props(styles.sf2718385).className || ''}
+          >
             {JSON.stringify(state, null, 2)}
           </Text>
         </div>
@@ -1321,7 +1463,6 @@ export function OnboardingDebugBox() {
     </div>
   )
 }
-
 function StepTitle({children}: {children: React.ReactNode}) {
   return (
     <Text size="4xl" className="no-window-drag text-primary text-center">
@@ -1329,7 +1470,6 @@ function StepTitle({children}: {children: React.ReactNode}) {
     </Text>
   )
 }
-
 function StepWrapper({children, onPrev}: {children: React.ReactNode; onPrev?: () => void}) {
   return (
     <>
@@ -1338,7 +1478,7 @@ function StepWrapper({children, onPrev}: {children: React.ReactNode; onPrev?: ()
           {onPrev ? (
             <div className="no-window-drag absolute top-10 left-15 z-40">
               <Button size="icon" onClick={onPrev}>
-                <ArrowLeft className="text-secondary-foreground size-5" />
+                <ArrowLeft className={stylex.props(styles.sa8ecfe2d).className || ''} />
               </Button>
             </div>
           ) : null}
@@ -1348,10 +1488,8 @@ function StepWrapper({children, onPrev}: {children: React.ReactNode; onPrev?: ()
     </>
   )
 }
-
 function OnboardingProgress({currentStep, showVaultStep}: {currentStep: OnboardingStep; showVaultStep: boolean}) {
   const showExistingStep = currentStep === 'existing' || currentStep === 'import'
-
   return (
     <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform gap-2 pt-4">
       <OnboardingProgressStep active={currentStep === 'welcome'} />
@@ -1366,11 +1504,9 @@ function OnboardingProgress({currentStep, showVaultStep}: {currentStep: Onboardi
     </div>
   )
 }
-
 function OnboardingProgressStep({active}: {active: boolean}) {
-  return <div className={cn('size-2 rounded-full', active ? 'bg-primary' : 'bg-gray-300')} />
+  return <div className={cn(stylex.props(styles.sa37b3229).className || '', active ? 'bg-primary' : 'bg-gray-300')} />
 }
-
 async function fileToImageData(file: File): Promise<ImageData> {
   // Validate the file first
   validateImage(file)
@@ -1390,7 +1526,6 @@ async function fileToImageData(file: File): Promise<ImageData> {
     reader.readAsDataURL(file)
   })
 }
-
 function base64ToFile(imageData: ImageData): File {
   // Convert base64 to blob
   // @ts-ignore
@@ -1400,10 +1535,14 @@ function base64ToFile(imageData: ImageData): File {
   for (let i = 0; i < byteString.length; i++) {
     ia[i] = byteString.charCodeAt(i)
   }
-  const blob = new Blob([ab], {type: imageData.type})
+  const blob = new Blob([ab], {
+    type: imageData.type,
+  })
 
   // Create File from blob
-  return new File([blob], imageData.name, {type: imageData.type})
+  return new File([blob], imageData.name, {
+    type: imageData.type,
+  })
 }
 
 // gift, general, police, ticket, slogan, outdoor, health, hockey, wool, taste, dignity, yard
@@ -1415,9 +1554,7 @@ export function ResetOnboardingButton() {
     resetOnboardingState()
     toast.success('Onboarding state reset! Refresh to see changes.')
   }
-
   if (IS_PROD_DESKTOP) return null
-
   return (
     <div className="no-window-drag absolute right-2.5 bottom-2.5 z-40 flex gap-2">
       <Button size="sm" onClick={() => dispatchEditPopover(true)}>
@@ -1429,21 +1566,19 @@ export function ResetOnboardingButton() {
     </div>
   )
 }
-
 export function CreateAccountBanner() {
   const [show, setShow] = useState(() => {
     const obState = getOnboardingState()
     return !obState.hasCompletedOnboarding && !obState.hasSkippedOnboarding && obState.initialAccountIdCount === 0
   })
   if (!show) return null
-
   return (
-    <div className="mb-6 flex flex-col gap-4 rounded-lg p-4 shadow-lg">
+    <div className={stylex.props(styles.s930eca2c).className || ''}>
       <SizableText size="2xl" weight="bold">
         Let's Get Started!
       </SizableText>
       <SizableText>Create an account to get started. It's free and takes less than a minute.</SizableText>
-      <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <Button
           variant="default"
           onClick={() => {
@@ -1454,7 +1589,7 @@ export function CreateAccountBanner() {
         </Button>
         {/* <Button size="#3" chromeless hoverStyle={{bg: '$color44}}>
           I already have a Site
-        </Button> */}
+         </Button> */}
       </div>
     </div>
   )

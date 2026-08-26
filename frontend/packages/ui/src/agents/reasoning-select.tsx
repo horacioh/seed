@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   isReasoningLevel,
   modelReasoningSupport,
@@ -8,7 +9,36 @@ import {
 } from '@seed-hypermedia/agents-protocol'
 import {Tooltip} from '@shm/ui/tooltip'
 import {Brain} from 'lucide-react'
-
+const styles = stylex.create({
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sbbe27b4f: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf9dfefc3: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s9db229ae: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+})
 const OFF_VALUE = '__off__'
 
 /**
@@ -37,10 +67,10 @@ export function ReasoningSlider({
   const index = value && support.levels.includes(value) ? steps.indexOf(value) : 0
   const current = steps[index]
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-muted-foreground flex items-center gap-1 text-xs">
-          <Brain className="size-3" />
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <div className={stylex.props(styles.sbbe27b4f).className || ''}>
+        <span className={stylex.props(styles.sf9dfefc3).className || ''}>
+          <Brain className={stylex.props(styles.sca3de967).className || ''} />
           Reasoning
         </span>
         <Tooltip
@@ -52,7 +82,9 @@ export function ReasoningSlider({
                 : 'The model answers directly without extra reasoning.'
           }
         >
-          <span className="text-xs font-medium">{current ? REASONING_LEVEL_LABELS[current] : offLabel}</span>
+          <span className={stylex.props(styles.s9db229ae).className || ''}>
+            {current ? REASONING_LEVEL_LABELS[current] : offLabel}
+          </span>
         </Tooltip>
       </div>
       <input

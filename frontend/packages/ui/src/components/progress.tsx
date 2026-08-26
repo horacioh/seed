@@ -1,8 +1,18 @@
+import * as stylex from '@stylexjs/stylex'
 import * as ProgressPrimitive from '@radix-ui/react-progress'
 import * as React from 'react'
-
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  s151ddbb7: {
+    backgroundColor: 'var(--primary)',
+    height: '100%',
+    width: '100%',
+    flex: '1',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+})
 function Progress({className, value, ...props}: React.ComponentProps<typeof ProgressPrimitive.Root>) {
   return (
     <ProgressPrimitive.Root
@@ -12,11 +22,12 @@ function Progress({className, value, ...props}: React.ComponentProps<typeof Prog
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="bg-primary h-full w-full flex-1 transition-all"
-        style={{transform: `translateX(-${100 - (value || 0)}%)`}}
+        className={stylex.props(styles.s151ddbb7).className || ''}
+        style={{
+          transform: `translateX(-${100 - (value || 0)}%)`,
+        }}
       />
     </ProgressPrimitive.Root>
   )
 }
-
 export {Progress}

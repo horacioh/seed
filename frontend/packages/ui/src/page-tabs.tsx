@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {NavRoute, useRouteLink} from '@shm/shared'
 import {LucideIcon} from 'lucide-react'
 import {cloneElement, isValidElement, ReactNode} from 'react'
@@ -8,6 +9,28 @@ import {cn} from './utils'
 /**
  * Tab item definition for PageTabs.
  */
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s61644a76: {
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-xs)',
+  },
+  sbd905992: {
+    flex: '1',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
 export interface PageTabItem {
   /** Unique key for the tab (used for matching active state) */
   key: string
@@ -72,28 +95,27 @@ export function PageTab({
   ...props
 }: PageTabProps) {
   const linkProps = useRouteLink(route)
-
   const linkContent = (
     <>
-      {Icon && <Icon className="size-4" />}
+      {Icon && <Icon className={stylex.props(styles.sca3de968).className || ''} />}
       {label && showLabel ? <span className="hidden truncate text-sm md:block">{label}</span> : null}
-      {count ? <span className="text-sm">{count}</span> : null}
+      {count ? <span className={stylex.props(styles.sab7cc6fa).className || ''}>{count}</span> : null}
     </>
   )
-
   if (active && trailingAction) {
     const nestedAction = isValidElement(trailingAction)
-      ? cloneElement(trailingAction as React.ReactElement<{nested?: boolean}>, {nested: true})
+      ? cloneElement(
+          trailingAction as React.ReactElement<{
+            nested?: boolean
+          }>,
+          {
+            nested: true,
+          },
+        )
       : trailingAction
     return (
       <Tooltip content="">
-        <div
-          className={cn(
-            'bg-accent text-accent-foreground inline-flex items-center rounded-full shadow-xs',
-            bg,
-            className,
-          )}
-        >
+        <div className={cn(stylex.props(styles.s61644a76).className || '', bg, className)}>
           <a
             {...linkProps}
             data-tab={route.key}
@@ -106,10 +128,9 @@ export function PageTab({
       </Tooltip>
     )
   }
-
   const btn = (
     <Button
-      className={cn('flex-1 rounded-full', bg, className)}
+      className={cn(stylex.props(styles.sbd905992).className || '', bg, className)}
       asChild
       variant={active ? 'accent' : 'ghost'}
       {...props}

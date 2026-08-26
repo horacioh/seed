@@ -57,6 +57,7 @@
     "@seed-hypermedia/agents-protocol": "file:../../../agents/protocol",
     "@seed-hypermedia/client": "workspace:*",
     "@shm/shared": "workspace:*",
+    "@stylexjs/stylex": "^0.19.0",
     "@tailwindcss/typography": "^0.5.15",
     "@tailwindcss/vite": "^4.1.8",
     "@tanstack/react-query": "^4.36.1",

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useComments} from '@/models/comments'
 import {useContactList} from '@/models/contacts'
 import {useSubscribedDocuments} from '@/models/library'
@@ -51,9 +52,107 @@ import React, {memo} from 'react'
 import {CreateDocumentButton} from './create-doc-button'
 import {isSiteDocumentsActiveRoute} from './sidebar-active'
 import {GenericSidebarContainer} from './sidebar-base'
-
+const styles = stylex.create({
+  s7813486c: {
+    gap: 'calc(0.25rem * 0)',
+    padding: 'calc(0.25rem * 0)',
+  },
+  s333fa1ab: {
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBottom: 'calc(0.25rem * 3)',
+  },
+  s236d7cfe: {
+    height: 'calc(0.25rem * 2)',
+    width: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(69.6% 0.17 162.48)',
+  },
+  s34b570: {
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s33458e: {
+    marginTop: 'calc(0.25rem * 4)',
+  },
+  sd48792d9: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  s5ed5f997: {
+    display: 'flex',
+    height: 'calc(0.25rem * 5)',
+    width: 'calc(0.25rem * 4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s1b73804e: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 3)',
+    textAlign: 'center',
+    fontSize: '0.75rem',
+    lineHeight: '1.625',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sc3a8ad31: {
+    marginTop: 'calc(0.25rem * 0.5)',
+    flexShrink: '0',
+    alignSelf: 'center',
+  },
+  sa2f29310: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s80a876f3: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '700',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  sa9faf02c: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '700',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+})
 export const AppSidebar = memo(MainAppSidebar)
-
 export function MainAppSidebar() {
   const route = useNavRoute()
   const navigate = useNavigate()
@@ -74,32 +173,36 @@ export function MainAppSidebar() {
   return (
     <GenericSidebarContainer
       footer={({isVisible}) => (
-        <SidebarFooterLayout className="gap-0 p-0">
-          <SidebarMenu className="px-2 pb-3">
+        <SidebarFooterLayout className={stylex.props(styles.s7813486c).className || ''}>
+          <SidebarMenu className={stylex.props(styles.s333fa1ab).className || ''}>
             {shouldShowOnboarding ? (
               <SidebarMenuItem>
                 <SmallListItem
                   onClick={() => {
-                    navigate({key: 'onboarding'})
+                    navigate({
+                      key: 'onboarding',
+                    })
                   }}
                   title="Get Started with Seed"
                   bold
                   className="min-h-12 w-full border border-dashed border-neutral-400 bg-transparent py-2 hover:border-neutral-600 hover:bg-transparent dark:border-neutral-600 dark:hover:border-neutral-400 dark:hover:bg-transparent"
-                  icon={<span className="h-2 w-2 rounded-full bg-emerald-500" />}
+                  icon={<span className={stylex.props(styles.s236d7cfe).className || ''} />}
                   rightHover={[]}
                 />
               </SidebarMenuItem>
             ) : null}
           </SidebarMenu>
           <SidebarSeparator />
-          <SidebarMenu className="py-4">
+          <SidebarMenu className={stylex.props(styles.s34b570).className || ''}>
             <SidebarMenuItem>
               <SmallListItem
                 active={route.key == 'agents'}
                 onClick={() => {
-                  navigate({key: 'agents'})
+                  navigate({
+                    key: 'agents',
+                  })
                 }}
-                icon={<Bot className="size-4" />}
+                icon={<Bot className={stylex.props(styles.sca3de968).className || ''} />}
                 title="Agents"
                 bold
               />
@@ -114,7 +217,7 @@ export function MainAppSidebar() {
                 title="Contacts"
                 bold
               />
-            </SidebarMenuItem> */}
+             </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarFooterLayout>
       )}
@@ -130,7 +233,6 @@ export function MainAppSidebar() {
     </GenericSidebarContainer>
   )
 }
-
 function SidebarSection({
   title,
   children,
@@ -143,8 +245,8 @@ function SidebarSection({
   const [collapsed, setCollapsed] = React.useState(false)
   let Icon = collapsed ? ChevronRight : ChevronDown
   return (
-    <SidebarGroup className="mt-4">
-      <div className="flex items-center justify-between px-2">
+    <SidebarGroup className={stylex.props(styles.s33458e).className || ''}>
+      <div className={stylex.props(styles.sd48792d9).className || ''}>
         <SidebarGroupLabel
           className="group/header hover:bg-border flex w-full cursor-pointer items-center gap-1 rounded-lg px-2 tracking-normal normal-case"
           onClick={() => {
@@ -159,11 +261,11 @@ function SidebarSection({
           >
             {title}
           </SizableText>
-          <div className="flex h-5 w-4 items-center justify-center">
+          <div className={stylex.props(styles.s5ed5f997).className || ''}>
             <Icon size={14} />
           </div>
         </SidebarGroupLabel>
-        {accessory ? <div className="flex">{accessory}</div> : null}
+        {accessory ? <div className={stylex.props(styles.s2ffff9).className || ''}>{accessory}</div> : null}
       </div>
       {collapsed ? null : (
         <SidebarGroupContent>
@@ -173,22 +275,21 @@ function SidebarSection({
     </SidebarGroup>
   )
 }
-
 function SubscriptionsSection() {
   const selectedAccountId = useSelectedAccountId()
   const contacts = useSelectedAccountContacts()
   // accountList is already sorted by activity from backend (default sort)
   const accountList = useContactList()
-
   const defaultJoinedSiteContact: HMContactRecord = {
     id: `default-joined-site:${defaultJoinedSiteUid}`,
     subject: defaultJoinedSiteUid,
     name: '',
     account: '',
     signer: '',
-    subscribe: {site: true},
+    subscribe: {
+      site: true,
+    },
   }
-
   React.useEffect(() => {
     if (selectedAccountId) return
     grpcClient.subscriptions
@@ -226,7 +327,9 @@ function SubscriptionsSection() {
 
   // Fetch site resources for all joined sites to ensure metadata is available
   const siteIds = siteSubscribed?.map((contact) => hmId(contact.subject)) || []
-  const siteResources = useResources(siteIds, {subscribed: true})
+  const siteResources = useResources(siteIds, {
+    subscribed: true,
+  })
 
   // Sort by activity using the backend's account order (already sorted by activity desc)
   const accounts = accountList.data?.accounts || []
@@ -239,9 +342,7 @@ function SubscriptionsSection() {
     if (indexB === -1) return -1
     return indexA - indexB
   })
-
   const route = useNavRoute()
-
   const accountsMetadata = accountList.data?.accountsMetadata
 
   // Fetch document-level activity
@@ -253,7 +354,6 @@ function SubscriptionsSection() {
     .filter((id): id is string => !!id && id.length > 0)
     .map((id) => hmId(id))
   const comments = useComments(commentIds)
-
   return (
     <SidebarSection title="Joined Sites">
       {sortedContacts.length ? (
@@ -269,7 +369,10 @@ function SubscriptionsSection() {
           // Build metadata: prefer contact name, then site resource, then account metadata
           const name = contact.name || siteMeta?.name || accountMeta?.metadata?.name || account?.metadata?.name
           const icon = siteMeta?.icon || accountMeta?.metadata?.icon || account?.metadata?.icon
-          const metadata: HMMetadata = {name, icon}
+          const metadata: HMMetadata = {
+            name,
+            icon,
+          }
 
           // Skip if no name and still loading, except for the pre-account default site.
           if (!name && siteResource?.isLoading && selectedAccountId) return null
@@ -277,10 +380,8 @@ function SubscriptionsSection() {
 
           // Get activity data
           const docData = subscribedDocs.data?.get(id.id)
-
           let activitySummary: HMActivitySummary | undefined
           let latestComment: HMComment | undefined
-
           if (account?.activitySummary) {
             activitySummary = account.activitySummary as HMActivitySummary
             latestComment = activitySummary?.latestCommentId
@@ -290,7 +391,6 @@ function SubscriptionsSection() {
             activitySummary = docData?.activitySummary
             latestComment = docData?.latestComment ?? undefined
           }
-
           const isUnread = activitySummary?.isUnread ?? false
           return (
             <SidebarMenuItem key={id.id}>
@@ -310,9 +410,7 @@ function SubscriptionsSection() {
         })
       ) : (
         <SidebarMenuItem>
-          <div className="text-muted-foreground flex items-center justify-center px-4 pb-3 text-center text-xs leading-relaxed select-none">
-            Click "Join" on a site to get started.
-          </div>
+          <div className={stylex.props(styles.s1b73804e).className || ''}>Click "Join" on a site to get started.</div>
         </SidebarMenuItem>
       )}
     </SidebarSection>
@@ -341,9 +439,14 @@ function JoinedSiteListItem({
   accountsMetadata?: HMAccountsMetadata
   canLeave?: boolean
 }) {
-  const linkProps = useRouteLink({key: 'document', id})
+  const linkProps = useRouteLink({
+    key: 'document',
+    id,
+  })
   const navigate = useNavigate()
-  const {leaveSite, isPending} = useLeaveSite({siteUid: contact.subject})
+  const {leaveSite, isPending} = useLeaveSite({
+    siteUid: contact.subject,
+  })
   return (
     <>
       <SidebarMenuButton
@@ -355,9 +458,15 @@ function JoinedSiteListItem({
         )}
         onClick={linkProps.onClick}
       >
-        <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} className="mt-0.5 shrink-0 self-center" />
+        <HMIcon
+          id={id}
+          name={metadata?.name}
+          icon={metadata?.icon}
+          size={20}
+          className={stylex.props(styles.sc3a8ad31).className || ''}
+        />
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <span className={cn('truncate text-left text-sm select-none', isUnread && 'font-bold')}>
+          <span className={cn(stylex.props(styles.sa2f29310).className || '', isUnread && 'font-bold')}>
             {metadata?.name || 'Untitled'}
           </span>
           {activitySummary && (
@@ -374,22 +483,26 @@ function JoinedSiteListItem({
         align="start"
         button={
           <SidebarMenuAction aria-label="Joined site options" onClick={(e) => e.stopPropagation()}>
-            <MoreHorizontal className="size-4" />
+            <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
           </SidebarMenuAction>
         }
         menuItems={[
           {
             key: 'all-documents',
             label: 'All Documents',
-            icon: <LayoutList className="size-4" />,
-            onClick: () => navigate({key: 'all-documents', id}),
+            icon: <LayoutList className={stylex.props(styles.sca3de968).className || ''} />,
+            onClick: () =>
+              navigate({
+                key: 'all-documents',
+                id,
+              }),
           },
           ...(canLeave
             ? [
                 {
                   key: 'leave',
                   label: 'Leave Site',
-                  icon: <CircleOff className="size-4" />,
+                  icon: <CircleOff className={stylex.props(styles.sca3de968).className || ''} />,
                   variant: 'destructive' as const,
                   disabled: isPending,
                   onClick: () => leaveSite(),
@@ -427,7 +540,9 @@ function FollowingSection() {
 
   // Fetch profile resources for all followed contacts to ensure metadata is available
   const profileIds = profileSubscribed?.map((contact) => hmId(contact.subject)) || []
-  const profileResources = useResources(profileIds, {subscribed: true})
+  const profileResources = useResources(profileIds, {
+    subscribed: true,
+  })
 
   // Sort by activity using the backend's account order
   const accounts = accountList.data?.accounts || []
@@ -439,12 +554,9 @@ function FollowingSection() {
     if (indexB === -1) return -1
     return indexA - indexB
   })
-
   const route = useNavRoute()
   const accountsMetadata = accountList.data?.accountsMetadata
-
   if (!sortedContacts.length) return null
-
   return (
     <SidebarSection title="Following">
       {sortedContacts.map((contact) => {
@@ -459,12 +571,14 @@ function FollowingSection() {
         // Priority: contact name > profile resource metadata > accountMeta > account metadata
         const name = contact.name || profileMeta?.name || accountMeta?.metadata?.name || account?.metadata?.name
         const icon = profileMeta?.icon || accountMeta?.metadata?.icon || account?.metadata?.icon
-        const metadata: HMMetadata = {name, icon}
+        const metadata: HMMetadata = {
+          name,
+          icon,
+        }
 
         // Skip if no name and still loading
         if (!name && profileResource?.isLoading) return null
         if (!name) return null
-
         return (
           <SidebarMenuItem key={id.id}>
             <FollowingListItem
@@ -492,14 +606,25 @@ function FollowingListItem({
   metadata: HMMetadata
   active: boolean
 }) {
-  const linkProps = useRouteLink({key: 'profile', id})
-  const {unfollowProfile, isPending} = useFollowProfile({profileUid: contact.subject})
+  const linkProps = useRouteLink({
+    key: 'profile',
+    id,
+  })
+  const {unfollowProfile, isPending} = useFollowProfile({
+    profileUid: contact.subject,
+  })
   return (
     <>
       <SidebarMenuButton isActive={active} className="min-h-10 items-center pr-8" onClick={linkProps.onClick}>
-        <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} className="shrink-0" />
+        <HMIcon
+          id={id}
+          name={metadata?.name}
+          icon={metadata?.icon}
+          size={20}
+          className={stylex.props(styles.sf032ed6c).className || ''}
+        />
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <span className="truncate text-left text-sm font-bold select-none">{metadata?.name || 'Untitled'}</span>
+          <span className={stylex.props(styles.s80a876f3).className || ''}>{metadata?.name || 'Untitled'}</span>
         </div>
       </SidebarMenuButton>
       <OptionsDropdown
@@ -507,14 +632,14 @@ function FollowingListItem({
         align="start"
         button={
           <SidebarMenuAction aria-label="Following options" onClick={(e) => e.stopPropagation()}>
-            <MoreHorizontal className="size-4" />
+            <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
           </SidebarMenuAction>
         }
         menuItems={[
           {
             key: 'unfollow',
             label: 'Unfollow',
-            icon: <CircleOff className="size-4" />,
+            icon: <CircleOff className={stylex.props(styles.sca3de968).className || ''} />,
             variant: 'destructive',
             disabled: isPending,
             onClick: () => unfollowProfile(),
@@ -524,7 +649,6 @@ function FollowingListItem({
     </>
   )
 }
-
 function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
   const siteId = selectedAccountId ? hmId(selectedAccountId) : undefined
   const resource = useResource(siteId)
@@ -533,7 +657,6 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
   const route = useNavRoute()
   const active = siteId ? isSiteDocumentsActiveRoute(route, siteId) : false
   const createSpaceDialog = useCreateSpaceDialog()
-
   if (!selectedAccountId) return null
 
   // Account has a home document — show the existing site section
@@ -541,22 +664,27 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
     const {document} = resource.data
     return (
       <SidebarSection title="My Site">
-        <div className="relative">
+        <div className={stylex.props(styles.sdef3facc).className || ''}>
           <div
             className={cn(
               'border-border hover:bg-sidebar-accent my-2 flex cursor-pointer items-center gap-2 rounded-lg border p-2 pr-8',
               active && 'border-accent bg-accent text-accent-foreground hover:bg-accent/90',
             )}
-            onClick={() => navigate({key: 'document', id: hmId(selectedAccountId)})}
+            onClick={() =>
+              navigate({
+                key: 'document',
+                id: hmId(selectedAccountId),
+              })
+            }
           >
             <UIAvatar
               id={selectedAccountId}
               label={document.metadata.name}
               size={40}
               url={document.metadata.icon ? imageUrl(document.metadata.icon) : ''}
-              className="shrink-0"
+              className={stylex.props(styles.sf032ed6c).className || ''}
             />
-            <span className="truncate text-sm font-bold select-none">{document.metadata.name}</span>
+            <span className={stylex.props(styles.sa9faf02c).className || ''}>{document.metadata.name}</span>
           </div>
           <OptionsDropdown
             side="right"
@@ -567,21 +695,29 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
                 className="absolute top-1/2 right-2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
                 onClick={(e) => e.stopPropagation()}
               >
-                <MoreHorizontal className="size-4" />
+                <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
               </button>
             }
             menuItems={[
               {
                 key: 'all-documents',
                 label: 'All Documents',
-                icon: <LayoutList className="size-4" />,
-                onClick: () => navigate({key: 'all-documents', id: hmId(selectedAccountId)}),
+                icon: <LayoutList className={stylex.props(styles.sca3de968).className || ''} />,
+                onClick: () =>
+                  navigate({
+                    key: 'all-documents',
+                    id: hmId(selectedAccountId),
+                  }),
               },
               {
                 key: 'site-settings',
                 label: 'Site settings',
-                icon: <Settings className="size-4" />,
-                onClick: () => navigate({key: 'site-settings', id: hmId(selectedAccountId)}),
+                icon: <Settings className={stylex.props(styles.sca3de968).className || ''} />,
+                onClick: () =>
+                  navigate({
+                    key: 'site-settings',
+                    id: hmId(selectedAccountId),
+                  }),
               },
             ]}
           />
@@ -593,11 +729,14 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
   // Account has no home document — show a CTA to create one.
   // Don't show CTA while still loading/discovering.
   if (resource.isInitialLoading || resource.isDiscovering) return null
-
   return (
     <SidebarSection title="My Site">
       <Tooltip content="Create your site to publish documents and share your profile.">
-        <Button className="w-full" variant="default" onClick={() => createSpaceDialog.open()}>
+        <Button
+          className={stylex.props(styles.scdbaf625).className || ''}
+          variant="default"
+          onClick={() => createSpaceDialog.open()}
+        >
           Create my Site
         </Button>
       </Tooltip>

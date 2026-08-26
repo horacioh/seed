@@ -1,9 +1,37 @@
+import * as stylex from '@stylexjs/stylex'
 import {ChevronLeft} from 'lucide-react'
 import {HTMLAttributes} from 'react'
 import {Button} from './button'
 import {ScrollArea} from './components/scroll-area'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s9999e1a5: {
+    color: 'var(--muted-foreground)',
+    margin: 'calc(0.25rem * 2)',
+    flex: '1',
+    justifyContent: 'flex-start',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 2)',
+  },
+  sd6dded7f: {
+    display: 'flex',
+    height: '100%',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s898dc4cb: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export function SelectionBackButton({
   onClick,
   label,
@@ -17,7 +45,7 @@ export function SelectionBackButton({
     <Button
       variant="ghost"
       size="sm"
-      className={cn('text-muted-foreground m-2 flex-1 justify-start rounded-lg p-2', className)}
+      className={cn(stylex.props(styles.s9999e1a5).className || '', className)}
       onClick={onClick}
       {...props}
     >
@@ -26,16 +54,14 @@ export function SelectionBackButton({
     </Button>
   )
 }
-
 export function PanelContent({children, header}: {children: React.ReactNode; header?: React.ReactNode}) {
   return (
-    <div className="flex h-full flex-1 flex-col overflow-hidden">
-      {header ? <div className="border-border border-b p-4">{header}</div> : null}
+    <div className={stylex.props(styles.sd6dded7f).className || ''}>
+      {header ? <div className={stylex.props(styles.s898dc4cb).className || ''}>{header}</div> : null}
       <ScrollArea className="">{children}</ScrollArea>
     </div>
   )
 }
-
 export function SelectionContent({
   children,
   ...props
@@ -45,10 +71,9 @@ export function SelectionContent({
   header?: React.ReactNode
   bottomPadding?: number | string
 }) {
-  const content = <div className={cn('flex flex-col gap-2')}>{children}</div>
-
+  const content = <div className={cn(stylex.props(styles.sfbc6e28e).className || '')}>{children}</div>
   return (
-    <div className="flex h-full flex-1 flex-col overflow-hidden" {...props}>
+    <div className={stylex.props(styles.sd6dded7f).className || ''} {...props}>
       {content}
     </div>
   )

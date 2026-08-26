@@ -1,15 +1,84 @@
+import * as stylex from '@stylexjs/stylex'
 import React from 'react'
 import {Button} from './button'
 import {Text} from './text'
 import {toast} from './toast'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sfbc6e293: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 7)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sbe9e10ab: {
+    backgroundColor: 'var(--destructive)',
+    color: 'var(--destructive-foreground)',
+    display: 'flex',
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    fontSize: '1rem',
+    lineHeight: '1',
+    fontWeight: '700',
+  },
+  s7ca58426: {
+    color: 'var(--muted-foreground)',
+    fontSize: '1rem',
+    lineHeight: 'calc(0.25rem * 7)',
+  },
+  s87791731: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sebff7442: {
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+    fontWeight: '600',
+  },
+  s8245ef4d: {
+    display: 'flex',
+    flexShrink: '0',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s59c17cd3: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  s2627021c: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 export type DeleteDocumentDialogItem = {
   key: string
   title: string
   path?: string[] | null
 }
-
 export type DeleteDocumentDialogProps = {
   document: DeleteDocumentDialogItem
   childDocuments?: DeleteDocumentDialogItem[]
@@ -39,13 +108,11 @@ export function DeleteDocumentDialog({
   const documentLabel = deletedDocumentCount === 1 ? 'document' : 'documents'
   const hasChildren = childDocuments.length > 0
   const childDocumentLabel = childDocuments.length === 1 ? 'document' : 'documents'
-
   async function handleConfirm() {
     if (!canDelete) {
       toast.error(cannotDeleteReason)
       return
     }
-
     const deletePromise = Promise.resolve(onConfirm())
     setIsDeleting(true)
     toast.promise(deletePromise, {
@@ -61,7 +128,6 @@ export function DeleteDocumentDialog({
           : `Failed to delete ${documentLabel}: ${message}`
       },
     })
-
     try {
       await deletePromise
       onClose?.()
@@ -72,19 +138,16 @@ export function DeleteDocumentDialog({
       setIsDeleting(false)
     }
   }
-
   return (
-    <div className={cn('flex flex-col gap-7', className)}>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3">
+    <div className={cn(stylex.props(styles.sfbc6e293).className || '', className)}>
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
+        <div className={stylex.props(styles.s86ff3e5).className || ''}>
           <span className="bg-destructive/15 flex size-8 shrink-0 items-center justify-center rounded-full">
-            <span className="bg-destructive text-destructive-foreground flex size-6 items-center justify-center rounded-full text-base leading-none font-bold">
-              !
-            </span>
+            <span className={stylex.props(styles.sbe9e10ab).className || ''}>!</span>
           </span>
           <Text className="min-w-0 text-2xl leading-tight font-semibold">Delete &quot;{document.title}&quot;?</Text>
         </div>
-        <Text className="text-muted-foreground text-base leading-7">
+        <Text className={stylex.props(styles.s7ca58426).className || ''}>
           This permanently removes the document and all its content. Links pointing to it from other documents will
           break.
         </Text>
@@ -95,8 +158,8 @@ export function DeleteDocumentDialog({
           className="border-destructive/20 bg-destructive/[0.03] overflow-hidden rounded-lg border"
           data-testid="delete-document-child-section"
         >
-          <div className="flex items-center justify-between gap-4 px-4 py-3">
-            <Text className="text-base font-semibold">
+          <div className={stylex.props(styles.s87791731).className || ''}>
+            <Text className={stylex.props(styles.sebff7442).className || ''}>
               {childDocuments.length} {childDocumentLabel} will also be deleted
             </Text>
             <button
@@ -125,7 +188,7 @@ export function DeleteDocumentDialog({
         </div>
       ) : null}
 
-      <div className="flex shrink-0 justify-end gap-3" data-testid="delete-document-footer">
+      <div className={stylex.props(styles.s8245ef4d).className || ''} data-testid="delete-document-footer">
         <Button onClick={onClose} variant="outline" disabled={isDeleting}>
           Cancel
         </Button>
@@ -136,12 +199,11 @@ export function DeleteDocumentDialog({
     </div>
   )
 }
-
 function DeletionListItem({item}: {item: DeleteDocumentDialogItem}) {
   return (
     <div className="flex min-w-0 flex-col gap-1 py-3" data-testid="delete-document-child-item">
-      <Text className="truncate text-sm font-medium">{item.title}</Text>
-      <Text className="text-muted-foreground truncate text-xs">{item.path?.join('/') || 'Unknown path'}</Text>
+      <Text className={stylex.props(styles.s59c17cd3).className || ''}>{item.title}</Text>
+      <Text className={stylex.props(styles.s2627021c).className || ''}>{item.path?.join('/') || 'Unknown path'}</Text>
     </div>
   )
 }

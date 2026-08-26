@@ -1,8 +1,32 @@
+import * as stylex from '@stylexjs/stylex'
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
 import * as React from 'react'
 import {forwardRef} from 'react'
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  s7d2ace5d: {
+    position: 'relative',
+    height: '100%',
+    overflow: 'hidden',
+  },
+  sdd09b949: {
+    display: 'flex',
+    touchAction: 'none',
+    padding: '1px',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s6f86d42a: {
+    backgroundColor: 'var(--border)',
+    position: 'relative',
+    flex: '1',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
 function ScrollAreaImpl(
   {
     className,
@@ -22,7 +46,6 @@ function ScrollAreaImpl(
   if (scrollId === 'main-document-scroll') {
     console.log('Main document ScrollArea rendering, onScroll:', !!onScroll)
   }
-
   const handleViewportRef = React.useCallback(
     (node: HTMLDivElement | null) => {
       if (!node) return
@@ -45,21 +68,23 @@ function ScrollAreaImpl(
 
         // Try both the viewport and its first child
         if (onScroll && viewport) {
-          viewport.addEventListener('scroll', handleScroll, {passive: true})
+          viewport.addEventListener('scroll', handleScroll, {
+            passive: true,
+          })
         }
-
         if (onScroll && firstChild) {
-          firstChild.addEventListener('scroll', handleScroll, {passive: true})
+          firstChild.addEventListener('scroll', handleScroll, {
+            passive: true,
+          })
         }
       }, 100)
     },
     [onScroll, fillViewportContent],
   )
-
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
-      className={cn('relative h-full overflow-hidden', className)}
+      className={cn(stylex.props(styles.s7d2ace5d).className || '', className)}
       ref={ref}
       {...props}
     >
@@ -83,9 +108,7 @@ function ScrollAreaImpl(
     </ScrollAreaPrimitive.Root>
   )
 }
-
 const ScrollArea = forwardRef(ScrollAreaImpl)
-
 function ScrollBar({
   className,
   orientation = 'vertical',
@@ -96,7 +119,7 @@ function ScrollBar({
       data-slot="scroll-area-scrollbar"
       orientation={orientation}
       className={cn(
-        'flex touch-none p-px transition-colors select-none',
+        stylex.props(styles.sdd09b949).className || '',
         orientation === 'vertical' && 'h-full w-2.5 border-l border-l-transparent',
         orientation === 'horizontal' && 'h-2.5 flex-col border-t border-t-transparent',
         className,
@@ -105,10 +128,9 @@ function ScrollBar({
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot="scroll-area-thumb"
-        className="bg-border relative flex-1 rounded-full"
+        className={stylex.props(styles.s6f86d42a).className || ''}
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   )
 }
-
 export {ScrollArea, ScrollBar}

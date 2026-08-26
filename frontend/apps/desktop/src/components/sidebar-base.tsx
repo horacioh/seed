@@ -1,9 +1,33 @@
+import * as stylex from '@stylexjs/stylex'
 import {useSidebarContext} from '@/sidebar-context'
 import {useStream} from '@shm/shared/use-stream'
 import useMedia from '@shm/ui/use-media'
 import {ReactNode, useEffect, useLayoutEffect, useRef} from 'react'
 import {ImperativePanelHandle, Panel, PanelResizeHandle} from 'react-resizable-panels'
-
+const styles = stylex.create({
+  sb42244d4: {
+    height: '100%',
+  },
+  s7dccb563: {
+    position: 'relative',
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '200ms',
+  },
+  s99a54a32: {
+    flex: '1',
+    overflowY: 'auto',
+    paddingBottom: 'calc(0.25rem * 8)',
+  },
+  sc0957513: {
+    width: '100%',
+    alignItems: 'flex-end',
+  },
+})
 export function GenericSidebarContainer({
   children,
   footer,
@@ -13,7 +37,6 @@ export function GenericSidebarContainer({
 }) {
   const ctx = useSidebarContext()
   const isLocked = useStream(ctx.isLocked)
-
   const sidebarWidth = useStream(ctx.sidebarWidth)
   const ref = useRef<ImperativePanelHandle>(null)
   const panelContentRef = useRef<HTMLDivElement>(null)
@@ -27,10 +50,8 @@ export function GenericSidebarContainer({
   useEffect(() => {
     const isOpening = prevIsLocked.current === false && isLocked === true
     const isInitialMount = prevIsLocked.current === undefined && isLocked === true
-
     const panel = ref.current
     if (!panel) return
-
     const safeResize = (pct: number) => {
       try {
         panel.resize(pct)
@@ -52,14 +73,12 @@ export function GenericSidebarContainer({
         console.log('[250px constraint] Panel operation failed (panel not ready yet):', error)
       }
     }
-
     if (isLocked && (isOpening || isInitialMount)) {
       // Use requestAnimationFrame to ensure layout is complete before measuring
       requestAnimationFrame(() => {
         const containerWidth = window.innerWidth
         const storedPercent = sidebarWidth || 15
         const pixelValue = (storedPercent / 100) * containerWidth
-
         if (pixelValue < 250) {
           const newPercent = Math.min(30, (250 / containerWidth) * 100)
           // console.log('[250px constraint] Adjusting to:', newPercent)
@@ -74,7 +93,6 @@ export function GenericSidebarContainer({
     } else if (!isLocked) {
       safeCollapse()
     }
-
     prevIsLocked.current = isLocked
   }, [isLocked, sidebarWidth, ctx])
 
@@ -95,34 +113,27 @@ export function GenericSidebarContainer({
     }
     prevMediaGtSm.current = media.gtSm
   }, [media.gtSm])
-
   useLayoutEffect(() => {
     const element = panelContentRef.current
     if (!element) return
-
     const updateSidebarWidthPx = () => {
       if (!isLocked) return
       const width = element.getBoundingClientRect().width
       if (width > 0) ctx.onSidebarWidthPxChange(width)
     }
-
     updateSidebarWidthPx()
-
     if (typeof ResizeObserver === 'undefined') {
       window.addEventListener('resize', updateSidebarWidthPx)
       return () => {
         window.removeEventListener('resize', updateSidebarWidthPx)
       }
     }
-
     const resizeObserver = new ResizeObserver(updateSidebarWidthPx)
     resizeObserver.observe(element)
-
     return () => {
       resizeObserver.disconnect()
     }
   }, [ctx, isLocked])
-
   return (
     <>
       <Panel
@@ -133,17 +144,20 @@ export function GenericSidebarContainer({
         collapsible
         id="sidebar"
         order={1}
-        className="h-full"
+        className={stylex.props(styles.sb42244d4).className || ''}
         onResize={(size) => {
           ctx.onSidebarResize(size)
         }}
       >
-        <div
-          ref={panelContentRef}
-          className="relative flex h-full w-full flex-col transition-all duration-200 ease-in-out"
-        >
-          <div className="flex-1 overflow-y-auto pb-8">{children}</div>
-          {footer ? <div className="w-full items-end">{footer({isVisible: isLocked})}</div> : null}
+        <div ref={panelContentRef} className={stylex.props(styles.s7dccb563).className || ''}>
+          <div className={stylex.props(styles.s99a54a32).className || ''}>{children}</div>
+          {footer ? (
+            <div className={stylex.props(styles.sc0957513).className || ''}>
+              {footer({
+                isVisible: isLocked,
+              })}
+            </div>
+          ) : null}
         </div>
       </Panel>
       {isLocked ? <PanelResizeHandle className="panel-resize-handle" /> : null}

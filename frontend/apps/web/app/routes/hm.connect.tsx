@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {loadSiteHeaderData, SiteHeaderPayload} from '@/loaders'
 import {defaultSiteIcon} from '@/meta'
 import {PageFooter} from '@/page-footer'
@@ -17,9 +18,22 @@ import {cn} from '@shm/ui/utils'
 import {ArrowUpRight} from 'lucide-react'
 import {base58btc} from 'multiformats/bases/base58'
 import {useEffect, useState} from 'react'
-
+const styles = stylex.create({
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s1888ae71: {
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(63.7% 0.237 25.331)',
+    backgroundColor: 'oklch(93.6% 0.032 17.717)',
+    padding: 'calc(0.25rem * 4)',
+  },
+})
 type ConnectPagePayload = SiteHeaderPayload
-
 export const meta: MetaFunction = ({data}) => {
   const {homeMetadata} = unwrap<ConnectPagePayload>(data)
   const meta: MetaDescriptor[] = []
@@ -35,7 +49,6 @@ export const meta: MetaFunction = ({data}) => {
   })
   return meta
 }
-
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const parsedRequest = parseRequest(request)
   const authToken = await getDaemonAuthToken(request)
@@ -44,7 +57,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return wrapJSON(headerData satisfies ConnectPagePayload)
   })
 }
-
 export default function ConnectPage() {
   const {originHomeId, siteHost, origin, homeMetadata, dehydratedState} = unwrap<ConnectPagePayload>(useLoaderData())
   if (!originHomeId) {
@@ -61,7 +73,7 @@ export default function ConnectPage() {
           origin={origin}
         />
         <NavigationLoadingContent className="flex w-full max-w-lg flex-1 flex-col gap-3 px-0 pt-[var(--site-header-h)] sm:pt-0">
-          <div className="px-4">
+          <div className={stylex.props(styles.s34b1af).className || ''}>
             <HMConnectPage />
           </div>
         </NavigationLoadingContent>
@@ -70,18 +82,15 @@ export default function ConnectPage() {
     </WebSiteProvider>
   )
 }
-
 const ConnectionPageContainer = ({className, ...props}: any) => (
   <div className={cn('dark:bg-dark flex flex-col items-center gap-5 rounded-sm bg-white p-4', className)} {...props} />
 )
-
 export function HMConnectPage() {
   const [error, setError] = useState<string | null>(null)
   const [connectionInfo, setConnectionInfo] = useState<null | {
     encoded: string
     decoded: HMPeerConnectionRequest
   }>()
-
   useEffect(() => {
     const fragment = window.location.hash.substring(1)
     try {
@@ -98,17 +107,15 @@ export function HMConnectPage() {
       setError((e as Error).message)
     }
   }, [])
-
   if (error) {
     return (
       <ConnectionPageContainer>
-        <div className="flex flex-col rounded-sm border border-red-500 bg-red-100 p-4">
+        <div className={stylex.props(styles.s1888ae71).className || ''}>
           <p>{error}</p>
         </div>
       </ConnectionPageContainer>
     )
   }
-
   return (
     <ConnectionPageContainer>
       <h2>Connect to Seed Hypermedia Peer</h2>
