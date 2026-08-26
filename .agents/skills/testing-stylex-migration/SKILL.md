@@ -35,12 +35,17 @@ inputs, account settings tabs, the editor chrome, or the main shell.
    - `http://localhost:3456/hm/register`
    - `http://localhost:3456/hm/create-site`
    - `http://localhost:3456/hm/download` (error boundary)
-5. Dark mode is toggled by the `dark` class on `document.documentElement`. In
+5. Use Playwright `page.fill('#space-name', '...')` to reliably interact with
+   the React-controlled `Space name` input.
+6. Watch the browser console for hydration errors and `Failed to load resource`
+   404s; the latter are usually a missing favicon/static asset, not a route
+   failure. Inspect network `response` events to confirm.
+7. Dark mode is toggled by the `dark` class on `document.documentElement`. In
    VMs without a working GNOME color-scheme setting, use the browser console:
    ```js
    document.documentElement.classList.add('dark')
    ```
-6. The Chrome address bar may not accept typed URLs in this environment. Use
+8. The Chrome address bar may not accept typed URLs in this environment. Use
    the browser console to navigate:
    ```js
    window.location.href = 'http://localhost:3456/hm/register'
@@ -83,8 +88,17 @@ inputs, account settings tabs, the editor chrome, or the main shell.
      module has a bundler/hydration error, the settings window will show a
      "Failed to fetch dynamically imported module" error and account settings
      tabs cannot be reached without an identity.
+   - If the Vite renderer dev server binds to `127.0.0.1`, Electron can fail to
+     resolve `localhost` for IPv6; ensure `host: '::'` is set in
+     `frontend/apps/desktop/vite.renderer.config.mts`.
+   - Sync-options radio groups (`On publish`, `On copy`) may not respond to clicks
+     in a fixture-only setup; the `Appearance` theme radio is the best way to
+     verify dark mode toggling.
 5. Use `wmctrl -l` to discover open desktop windows (welcome, settings, etc.)
    and `wmctrl -i -a <WID>` to focus them for screenshots.
+6. The settings window may open as a modal overlay inside the main window
+   (`Seed -> Preferences` or `Ctrl+,`); account settings are reached from the
+   top-right account profile dropdown or from `Identity Settings` in the sidebar.
 
 ## Devin Secrets Needed
 
@@ -104,6 +118,8 @@ through the `.envrc`/`mise` setup.
       headings and body text.
 - [ ] `/hm/register` and `/hm/create-site` render styled cards, inputs and
       buttons.
+- [ ] `/hm/create-site` Step 2 `ImageForm` labels are not duplicated and sizes
+      are clearly separated.
 - [ ] Web dark mode changes background and text color.
 - [ ] Desktop loading/onboarding window renders without a white/empty screen.
 - [ ] Desktop main window shows a styled sidebar, title bar and welcome cards.

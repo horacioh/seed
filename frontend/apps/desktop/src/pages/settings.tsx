@@ -1515,7 +1515,11 @@ function PushSettingRow({
   }
 }) {
   const id = useId()
-  const currentValue = hookResult.data || 'always'
+  const serverValue = hookResult.data || 'always'
+  const [optimisticValue, setOptimisticValue] = useState(serverValue)
+  useEffect(() => {
+    setOptimisticValue(serverValue)
+  }, [serverValue])
   if (hookResult.isLoading)
     return <SettingsRow label={label} description={description} right={<Spinner size="small" />} />
   return (
@@ -1524,11 +1528,15 @@ function PushSettingRow({
       description={description}
       right={
         <RadioGroup
-          value={currentValue}
-          onValueChange={(value) => {
+          value={optimisticValue}
+          onValueChange={(value: string) => {
             const validValue: 'always' | 'never' = value === 'never' ? 'never' : 'always'
+            const previousValue = optimisticValue
+            if (validValue === previousValue) return
+            setOptimisticValue(validValue)
             setMutation.mutate(validValue, {
               onError: (error: unknown) => {
+                setOptimisticValue(previousValue)
                 toast.error('Failed to update setting.')
                 reportError(error, {
                   feature: 'settings',

@@ -41,7 +41,12 @@ export default defineConfig(({command, mode}) => {
     publicDir: 'assets',
     assetsInclude: ['**/*.png'],
     plugins: [
-      stylex.vite(),
+      // Make StyleX append all generated atomic CSS to the renderer's global
+      // `index-*.css` asset. Without this the unplugin may inject it into an
+      // arbitrary code-split CSS chunk that other pages never load.
+      stylex.vite({
+        cssInjectionTarget: (fileName: string) => /(^|\/)index-[A-Za-z0-9_.-]+\.css$/.test(fileName),
+      }),
       tsConfigPaths({
         root: '../../',
       }),
