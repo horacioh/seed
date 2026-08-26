@@ -1,5 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
-import {json, LinksFunction, LoaderFunctionArgs} from '@remix-run/node'
+import {json, LoaderFunctionArgs} from '@remix-run/node'
 import {isRouteErrorResponse, Links, Meta, Outlet, Scripts, useRouteLoaderData, useRouteError} from '@remix-run/react'
 import * as Sentry from '@sentry/remix'
 import {captureRemixErrorBoundaryError, withSentry} from '@sentry/remix'
@@ -19,11 +19,10 @@ import {SizableText} from '@shm/ui/text'
 // editor's hashed CSS-module classes, which must be styled before the lazy
 // editor chunk loads (see @shm/editor/ssr-render).
 import '@shm/editor/editor-styles'
-import sonnerStyles from 'sonner/dist/styles.css?url'
 import {Providers} from './providers'
-import slashMenuStyles from './slash-menu.css?url'
-import globalStyles from './styles.css?url'
-import localStylexStyles from './stylex.css?url'
+import './styles.css'
+import './stylex.css'
+import './slash-menu.css'
 const styles = stylex.create({
   sceaed122: {
     display: 'flex',
@@ -40,26 +39,6 @@ const styles = stylex.create({
     paddingBlock: 'calc(0.25rem * 12)',
   },
 })
-export const links: LinksFunction = () => {
-  return [
-    {
-      rel: 'stylesheet',
-      href: globalStyles,
-    },
-    {
-      rel: 'stylesheet',
-      href: localStylexStyles,
-    },
-    {
-      rel: 'stylesheet',
-      href: sonnerStyles,
-    },
-    {
-      rel: 'stylesheet',
-      href: slashMenuStyles,
-    },
-  ]
-}
 
 // enable statistics when SEED_ENABLE_STATISTICS is "true" or "1" at build-time
 
