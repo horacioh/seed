@@ -2255,7 +2255,7 @@ function CommitOnBlurInput({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedText])
   return (
-    <div className={[stylex.props(styles.sdef3facc).className || '', className].filter(Boolean).join(' ')}>
+    <div className={stylex.props(styles.sdef3facc).className || ''}>
       <Input
         value={text}
         placeholder={placeholder}

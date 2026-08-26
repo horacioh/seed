@@ -11,6 +11,7 @@ describe('server instrumentation', () => {
     const result = spawnSync(
       process.execPath,
       [
+        '--no-warnings',
         '--input-type=module',
         '-e',
         `import(${JSON.stringify(
@@ -34,6 +35,7 @@ describe('server instrumentation', () => {
     const result = spawnSync(
       process.execPath,
       [
+        '--no-warnings',
         '--input-type=module',
         '-e',
         [

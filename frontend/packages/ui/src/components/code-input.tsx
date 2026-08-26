@@ -88,10 +88,7 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
     inputRefs.current[index]?.select()
   }
   return (
-    <div
-      className={[stylex.props(styles.s4c15bd54).className || '', className].filter(Boolean).join(' ')}
-      onPaste={handlePaste}
-    >
+    <div className={stylex.props(styles.s4c15bd54).className || ''} onPaste={handlePaste}>
       {Array.from(
         {
           length,

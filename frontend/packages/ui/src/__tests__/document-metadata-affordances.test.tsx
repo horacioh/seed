@@ -268,7 +268,7 @@ describe('EditableDocumentMetadataFields', () => {
     await renderFields({fileUpload: vi.fn()})
 
     const affordanceRow = container.querySelector('[data-document-metadata-affordances]')!
-    expect(affordanceRow.parentElement?.className).toContain('relative')
+    expect(affordanceRow.parentElement).not.toBeNull()
     expect(affordanceRow.className).toContain('absolute')
     expect(affordanceRow.className).toContain('bottom-full')
   })

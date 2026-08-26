@@ -17,7 +17,7 @@ const styles = stylex.create({
 })
 export function PanelContainer({className, children, ...props}: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={[stylex.props(styles.s284c2f1).className || '', className].filter(Boolean).join(' ')}>
+    <div className={stylex.props(styles.s284c2f1).className || ''}>
       <div
         className={cn('bg-panel sm:border-border h-full overflow-hidden sm:rounded-md sm:border', className)}
         {...props}

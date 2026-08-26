@@ -71,21 +71,21 @@ describe('QueryBlockContent loading state', () => {
     renderQueryBlock('List')
 
     expect(container.textContent).toContain('Searching for documents…')
-    expect(container.querySelector('.animate-spin')).toBeTruthy()
+    expect(container.querySelector('[aria-label="Loading"]')).toBeTruthy()
   })
 
   it('shows a spinner while a card query block is loading', () => {
     renderQueryBlock('Card')
 
     expect(container.textContent).toContain('Searching for documents…')
-    expect(container.querySelector('.animate-spin')).toBeTruthy()
+    expect(container.querySelector('[aria-label="Loading"]')).toBeTruthy()
   })
 
   it('shows a spinner while a table query block is loading', () => {
     renderQueryBlock('Table')
 
     expect(container.textContent).toContain('Searching for documents…')
-    expect(container.querySelector('.animate-spin')).toBeTruthy()
+    expect(container.querySelector('[aria-label="Loading"]')).toBeTruthy()
   })
 })
 

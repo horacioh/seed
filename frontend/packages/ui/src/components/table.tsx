@@ -22,7 +22,7 @@ const styles = stylex.create({
 })
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({className, ...props}, ref) => (
-    <div className={[stylex.props(styles.sd7102eb3).className || '', className].filter(Boolean).join(' ')}>
+    <div className={stylex.props(styles.sd7102eb3).className || ''}>
       <table ref={ref} className={cn(stylex.props(styles.sc29c0527).className || '', className)} {...props} />
     </div>
   ),

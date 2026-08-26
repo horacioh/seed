@@ -46,6 +46,8 @@ export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
           ...props.style,
         }}
         {...props}
+        role={props.role ?? 'img'}
+        aria-label={props['aria-label'] ?? 'Loading'}
       />
     )
   },

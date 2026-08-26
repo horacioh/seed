@@ -52,7 +52,7 @@ export function MembersFacepile({members, siteId, description, className}: Membe
           return (
             <div
               key={uid}
-              className={[stylex.props(styles.s36b147d4).className || '', className].filter(Boolean).join(' ')}
+              className={stylex.props(styles.s36b147d4).className || ''}
               style={{
                 zIndex: MAX_AVATARS - idx,
               }}

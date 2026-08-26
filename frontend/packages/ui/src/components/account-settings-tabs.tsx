@@ -68,7 +68,7 @@ export function AccountSettingsTabs({
           <Button
             key={tab.key}
             variant={active ? 'accent' : 'ghost'}
-            className={[stylex.props(styles.s775755af).className || '', className].filter(Boolean).join(' ')}
+            className={stylex.props(styles.s775755af).className || ''}
             onClick={() => onTabChange(tab.key)}
           >
             <Icon className={stylex.props(styles.sca3de968).className || ''} />

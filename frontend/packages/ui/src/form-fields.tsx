@@ -130,7 +130,7 @@ export function SelectField({
   )
   if (label) {
     return (
-      <div className={[stylex.props(styles.s592e123c).className || '', className].filter(Boolean).join(' ')}>
+      <div className={stylex.props(styles.s592e123c).className || ''}>
         <Label htmlFor={id} size="sm" className={stylex.props(styles.sf2718385).className || ''}>
           {label}
         </Label>

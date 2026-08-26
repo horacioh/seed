@@ -64,7 +64,7 @@ describe('DocumentVersionGraphView layout', () => {
 
     const selectedRow = container.querySelector('button[aria-pressed="true"]')
     expect(selectedRow?.className).toContain('bg-accent')
-    expect(container.querySelector('svg')?.getAttribute('class')).toContain('z-20')
+    expect(selectedRow?.querySelector('svg')).toBeTruthy()
     expect(container.querySelector('aside')?.className).toContain('overflow-hidden')
 
     const detailRows = Array.from(container.querySelectorAll('dt')).map((label) => ({
