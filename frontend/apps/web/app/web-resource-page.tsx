@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMDocument, HMExistingDraft, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {QuerySearchInputProvider} from '@shm/editor/query-search-context'
 import {hmId, useJoinSite, useUniversalAppContext, useUniversalClient} from '@shm/shared'
@@ -71,7 +72,17 @@ import {WebDocumentPrefetch} from './web-document-prefetch'
 import {WebHeaderActions, WebSitePageShell, useWebCreateDocumentMenuItem, useWebMenuItems} from './web-utils'
 
 /** Lazy-loaded inline comment editor — avoids pulling the full editor bundle eagerly. */
-const LazyWebInlineEditor = lazy(() => import('./commenting').then((mod) => ({default: mod.WebInlineEditBox})))
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
+const LazyWebInlineEditor = lazy(() =>
+  import('./commenting').then((mod) => ({
+    default: mod.WebInlineEditBox,
+  })),
+)
 
 /** Renders the inline editor for web comment editing, lazy-loaded. */
 function renderWebInlineEditor(props: InlineEditCommentProps) {
@@ -81,10 +92,8 @@ function renderWebInlineEditor(props: InlineEditCommentProps) {
     </Suspense>
   )
 }
-
 function WebDraftExternalModificationListener() {
   const actorRef = useDocumentMachineRef()
-
   useEffect(() => {
     return subscribeWebDraftExternallyModified(async (event) => {
       const context = selectContext(actorRef.getSnapshot())
@@ -103,10 +112,8 @@ function WebDraftExternalModificationListener() {
       })
     })
   }, [actorRef])
-
   return null
 }
-
 export interface WebResourcePageProps {
   docId: UnpackedHypermediaId
   CommentEditor?: React.ComponentType<CommentEditorProps>
@@ -129,7 +136,6 @@ function useClientDocumentEditor(): React.ComponentType<DocumentContentProps> | 
   }, [])
   return Component
 }
-
 export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResourcePageProps) {
   const DocumentContentComponent = useClientDocumentEditor()
   const {origin, originHomeId} = useUniversalAppContext()
@@ -140,7 +146,12 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
   const editProfileDialog = useAppDialog(EditProfileDialog)
   const vaultSuccessContent = useVaultSuccessDialog()
   const universalClient = useUniversalClient()
-  const linkExtensionOptions = useMemo(() => ({universalClient}), [universalClient])
+  const linkExtensionOptions = useMemo(
+    () => ({
+      universalClient,
+    }),
+    [universalClient],
+  )
   const {canEdit, signingAccountId, capability, capabilitiesLoading} = useWebCanEdit(docId)
   const {createAccount, content: createAccountContent} = useCreateAccount()
   const keyPairLoaded = useLocalKeyPairLoaded()
@@ -167,7 +178,10 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
   const onPublishSuccess = useCallback(
     (newDocument?: {account?: string; path?: string | null; metadata?: HMDocument['metadata']}) => {
       const publishedTitle =
-        getDocumentTitle({metadata: newDocument?.metadata ?? {}, path: newDocument?.path ?? ''}) || 'Document'
+        getDocumentTitle({
+          metadata: newDocument?.metadata ?? {},
+          path: newDocument?.path ?? '',
+        }) || 'Document'
       toast.success(`${publishedTitle} Published.`)
       const currentRoute = routeRef.current
       if (currentRoute.key === 'document') {
@@ -178,14 +192,20 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
             latest: true,
           })
           if (currentId && publishedId.id !== currentId.id) {
-            replaceRouteRef.current({...currentRoute, id: publishedId} as any)
+            replaceRouteRef.current({
+              ...currentRoute,
+              id: publishedId,
+            } as any)
             return
           }
         }
         if (currentId?.version) {
           replaceRouteRef.current({
             ...currentRoute,
-            id: {...currentId, version: null},
+            id: {
+              ...currentId,
+              version: null,
+            },
           } as any)
         }
       } else if (currentRoute.key === 'site-profile') {
@@ -193,14 +213,16 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
         if (currentId?.version) {
           replaceRouteRef.current({
             ...currentRoute,
-            id: {...currentId, version: null},
+            id: {
+              ...currentId,
+              version: null,
+            },
           } as any)
         }
       }
     },
     [],
   )
-
   const placeholderDraftId = useMemo(() => getWebDraftShellId(docId.path), [docId.path])
 
   // Load any local IDB draft for this doc. Placeholder draft URLs must load by
@@ -239,7 +261,6 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       ? loadedDraftData
       : null
   const isDraftStale = false
-
   const isPendingSpace = isPendingSpaceUid(docId.uid)
   // A create space home draft.
   const isSpaceHomeDraft = isSpaceHomeDraftId(placeholderDraftId)
@@ -267,16 +288,16 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       onPublishSuccess,
     })
   }, [docId.id, universalClient, editorAccessor, effectiveCapabilityCid, onPublishSuccess])
-
   useEffect(() => {
     if (typeof window === 'undefined') return
-    startWebDocumentCardCleanupCoordinator({client: universalClient})
+    startWebDocumentCardCleanupCoordinator({
+      client: universalClient,
+    })
   }, [universalClient])
 
   // Mirror of the draftQuery `enabled` gate below — a draft could still be
   // loading whenever this is true.
   const draftQueryEnabled = typeof window !== 'undefined' && !!signingAccountId && (canEdit || !!placeholderDraftId)
-
   const existingDraft: HMExistingDraft | false | undefined = useMemo(() => {
     // CRITICAL: returning `false` here declares "no draft exists", which latches
     // the document machine's `draft.resolved` to the no-draft branch (it only
@@ -293,7 +314,10 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
     if (draftQuery.isLoading) return undefined
     const d = draftData
     if (!d || isDraftStale) return false
-    return {id: d.draftId, metadata: d.metadata as HMExistingDraft['metadata']}
+    return {
+      id: d.draftId,
+      metadata: d.metadata as HMExistingDraft['metadata'],
+    }
   }, [
     keyPairLoaded,
     signingAccountId,
@@ -333,7 +357,10 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
   // Profile edit callback - only for non-delegated own profile
   const onEditProfile = useMemo(() => {
     if (!isOwnProfile || isDelegated || !profileAccountUid) return undefined
-    return () => editProfileDialog.open({accountUid: profileAccountUid})
+    return () =>
+      editProfileDialog.open({
+        accountUid: profileAccountUid,
+      })
   }, [isOwnProfile, isDelegated, profileAccountUid, editProfileDialog])
 
   // "Create a space" side panel, opened from the profile header.
@@ -361,12 +388,14 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       processPendingIntent(originHomeId ?? undefined)
     },
   })
-
   const onFollowClick = useMemo(() => {
     if (userKeyPair) return undefined
     if (!isSiteProfile || !profileAccountUid) return undefined
     return async () => {
-      await setPendingIntent({type: 'follow', profileUid: profileAccountUid})
+      await setPendingIntent({
+        type: 'follow',
+        profileUid: profileAccountUid,
+      })
       openFollowAccountDialog()
     }
   }, [userKeyPair, isSiteProfile, profileAccountUid, openFollowAccountDialog])
@@ -382,7 +411,9 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
         preloadCommenting()
       }
     }
-    document.addEventListener('mouseover', handler, {passive: true})
+    document.addEventListener('mouseover', handler, {
+      passive: true,
+    })
     return () => document.removeEventListener('mouseover', handler)
   }, [])
 
@@ -397,11 +428,17 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
         }),
       onDiscardConfirm: (discardDraftId: string, send) => {
         if (window.confirm('Discard draft changes?')) {
-          send({type: 'edit.discard'})
+          send({
+            type: 'edit.discard',
+          })
           const parentId = getDraftPlaceholderParentId(docId, discardDraftId) ?? getDraftReturnParentId(discardDraftId)
           if (parentId) {
             replaceRoute({
-              ...(route.key === 'document' ? route : {key: 'document'}),
+              ...(route.key === 'document'
+                ? route
+                : {
+                    key: 'document',
+                  }),
               id: parentId,
             } as any)
           }
@@ -423,13 +460,18 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       onPublishIntercept: () => {
         const isSpaceDraft = isSpaceHomeDraft || isPendingSpace
         if (!isSpaceDraft || !placeholderDraftId) return false
-        void setPendingIntent({type: 'publish-draft', draftId: placeholderDraftId}).then(() => {
+        void setPendingIntent({
+          type: 'publish-draft',
+          draftId: placeholderDraftId,
+        }).then(() => {
           if (userKeyPair) {
             void processPendingIntent(originHomeId ?? undefined).then((result) => {
               if (result.type === 'publish-draft') window.location.assign(result.spaceUrl)
             })
           } else {
-            createAccount({source: 'join'})
+            createAccount({
+              source: 'join',
+            })
           }
         })
         return true
@@ -449,16 +491,13 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       createAccount,
     ],
   )
-
   const showPublishToolbar = route.key === 'document' || route.key === 'metadata'
-
   const editingFloatingActions =
     effectiveCanEdit && showPublishToolbar
       ? ({menuItems}: {menuItems: any[]}) => (
           <EditingDocToolsRight docId={docId} existingMenuItems={menuItems} {...webToolbarCallbacks} />
         )
       : undefined
-
   const siteUid = docId.uid
   const currentResource = useResource(useLocalDraftShell ? undefined : docId)
   const currentDocument = currentResource.data?.type === 'document' ? currentResource.data.document : undefined
@@ -470,7 +509,9 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
     canCreateChildren: canCreateChildDocs,
     capabilityCid: effectiveCapabilityCid,
   })
-  const webMenuItems = useWebMenuItems(docId, {includeInspect: false})
+  const webMenuItems = useWebMenuItems(docId, {
+    includeInspect: false,
+  })
   const deleteCapabilityId = capability && capability.id !== '_owner' ? capability.id : undefined
   const deleteDialog = useWebDeleteDocumentDialog({
     signingAccountId: signingAccountId ?? undefined,
@@ -485,14 +526,21 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
   })
   const onDeleteDocument = useCallback(
     (id: UnpackedHypermediaId, onSuccess?: () => void) => {
-      deleteDialog.open({id, onSuccess})
+      deleteDialog.open({
+        id,
+        onSuccess,
+      })
     },
     [deleteDialog],
   )
   const onMoveDocument = useMemo(() => {
     if (!signingAccountId) return undefined
     return (id: UnpackedHypermediaId, origin?: DocumentCardActionOrigin) =>
-      destinationDialog.open({id, mode: 'move', origin})
+      destinationDialog.open({
+        id,
+        mode: 'move',
+        origin,
+      })
   }, [destinationDialog, signingAccountId])
   const canWriteDocument = useCallback(
     (id: UnpackedHypermediaId) =>
@@ -506,18 +554,28 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
     return {
       key: 'move',
       label: 'Move',
-      icon: <FileInput className="size-4" />,
+      icon: <FileInput className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => {
         const draftMoveId = draftData?.draftId || placeholderDraftId
         if (draftMoveId) {
-          const fallbackParent = docId.path?.length ? hmId(docId.uid, {path: docId.path.slice(0, -1)}) : undefined
+          const fallbackParent = docId.path?.length
+            ? hmId(docId.uid, {
+                path: docId.path.slice(0, -1),
+              })
+            : undefined
           destinationDialog.open({
             id: docId,
             mode: 'move',
             origin: draftData?.locationUid
-              ? {parentDocumentId: hmId(draftData.locationUid, {path: draftData.locationPath ?? []})}
+              ? {
+                  parentDocumentId: hmId(draftData.locationUid, {
+                    path: draftData.locationPath ?? [],
+                  }),
+                }
               : fallbackParent
-                ? {parentDocumentId: fallbackParent}
+                ? {
+                    parentDocumentId: fallbackParent,
+                  }
                 : undefined,
             draft: {
               draftId: draftMoveId,
@@ -527,7 +585,10 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
           })
           return
         }
-        destinationDialog.open({id: docId, mode: 'move'})
+        destinationDialog.open({
+          id: docId,
+          mode: 'move',
+        })
       },
     }
   }, [destinationDialog, docId, draftData, effectiveCanEdit, isHomeTarget, placeholderDraftId, signingAccountId])
@@ -536,13 +597,15 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
     return {
       key: 'delete',
       label: 'Delete Document',
-      icon: <Trash className="size-4" />,
+      icon: <Trash className={stylex.props(styles.sca3de968).className || ''} />,
       variant: 'destructive',
       onClick: () => {
         onDeleteDocument(docId, () => {
           replaceRoute({
             key: 'document',
-            id: hmId(docId.uid, {path: docId.path?.slice(0, -1)}),
+            id: hmId(docId.uid, {
+              path: docId.path?.slice(0, -1),
+            }),
           } as any)
         })
       },
@@ -554,7 +617,9 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
   )
 
   // Inline subscribe box for non-members
-  const {isJoined} = useJoinSite({siteUid})
+  const {isJoined} = useJoinSite({
+    siteUid,
+  })
   const siteResource = useResource(docId.path?.length ? undefined : docId)
   const siteMetadata = siteResource.data?.type === 'document' ? siteResource.data.document?.metadata : undefined
   // Only offer to subscribe on a published doc — not while previewing an
@@ -570,14 +635,12 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       />
     )
   }, [showSubscribeBox, siteUid, siteMetadata])
-
   const {onReplyClick, onReplyCountClick} = useCommentNavigation({
     docId,
     route,
     navigate,
     replaceRoute,
   })
-
   const onRestoreDocumentVersion = useCallback(
     async (id: UnpackedHypermediaId, selectedVersion: HMDocument) => {
       if (!effectiveCanEdit || !signingAccountId || !canWriteDocument(id)) {
@@ -588,7 +651,6 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
         toast.error('Restore is not available in this client')
         return
       }
-
       try {
         await restoreWebDocumentVersion(
           {
@@ -612,10 +674,8 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
     },
     [canWriteDocument, effectiveCanEdit, effectiveCapabilityCid, route, signingAccountId, universalClient],
   )
-
   const [lastCreatedDraftId, setLastCreatedDraftId] = useState<string | null>(null)
   const canCreateInlineDraft = !useLocalDraftShell && canCreateChildDocs
-
   return (
     <WebSitePageShell siteUid={docId.uid}>
       <CommentsProvider

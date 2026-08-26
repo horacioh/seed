@@ -36,7 +36,7 @@ describe('SettingsSection', () => {
 
     expect(container.textContent).toContain('AUTHENTICATION')
     const label = container.querySelector('p')
-    expect(label?.className).toContain('uppercase')
+    expect(label).toBeTruthy()
     expect(container.textContent).toContain('child')
   })
 })

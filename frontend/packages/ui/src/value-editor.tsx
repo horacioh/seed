@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   ArrowDown,
   ArrowUp,
@@ -41,6 +42,195 @@ import {cn} from './utils'
  * document metadata editor (attribute-publish constraints) and the raw
  * DAG-CBOR blob editor (full CBOR data model).
  */
+const styles = stylex.create({
+  sbe3dc205: {
+    opacity: '0%',
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sd9892e6f: {
+    position: 'absolute',
+    top: 'calc(0.25rem * 1)',
+    right: 'calc(0.25rem * 0)',
+  },
+  s3f7cceb1: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+  },
+  s26a52803: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flexShrink: '0',
+  },
+  s9266db7b: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sc2828cd4: {
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sc65eac41: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s35b75e9a: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+  },
+  sc65eaba0: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s9ca3cd06: {
+    position: 'relative',
+    flex: '1',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  scbdf1fe2: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sfc2d1d6a: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sf2ad57de: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flexShrink: '0',
+  },
+  s9266dc1c: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s1fa2d8e5: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sb76e9daa: {
+    display: 'none',
+  },
+  sb868a5b7: {
+    marginTop: 'calc(0.25rem * 1.5)',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf8eef924: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  s34a2a8: {
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s11c1d25d: {
+    color: 'var(--destructive)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s12583799: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s1047710f: {
+    color: 'var(--muted-foreground)',
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s2a02911b: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sfbc6e291: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 5)',
+  },
+})
 export type ValueEditorRules = {
   /** Allow list values and the List add-type. */
   lists: boolean
@@ -56,20 +246,21 @@ export type ValueEditorRules = {
   /** Allow IPLD kinds in DAG-JSON form: links `{"/": cid}` and bytes `{"/": {bytes}}`. */
   ipld: boolean
 }
-
 export type AttributeSuggestionKind = 'text' | 'number' | 'toggle' | 'object'
-
 export type AttributeNameSuggestion = {
   name: string
-  kinds: {kind: AttributeSuggestionKind}[]
+  kinds: {
+    kind: AttributeSuggestionKind
+  }[]
   description?: string
 }
-
 export type AttributeValueSuggestion = {
   value: string | number
 }
-
-export type AttributeAutocompletePage<T> = {items: T[]; nextPageToken?: string}
+export type AttributeAutocompletePage<T> = {
+  items: T[]
+  nextPageToken?: string
+}
 
 /** Platform adapter for metadata name/value autocomplete. */
 export type AttributeAutocomplete = {
@@ -87,7 +278,6 @@ export type AttributeAutocomplete = {
     signal?: AbortSignal
   }) => Promise<AttributeAutocompletePage<AttributeValueSuggestion>>
 }
-
 const AttributeAutocompleteContext = createContext<AttributeAutocomplete | undefined>(undefined)
 
 /** Makes platform-provided attribute autocomplete available to the recursive editor. */
@@ -123,11 +313,9 @@ export const CBOR_VALUE_RULES: ValueEditorRules = {
 function isEditableContainer(value: unknown): boolean {
   return (Array.isArray(value) || isPlainObject(value)) && !isDagJsonLink(value) && !isDagJsonBytes(value)
 }
-
 export function isPlainObject(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value)
 }
-
 const utf8 = new TextEncoder()
 
 /**
@@ -145,14 +333,24 @@ export function dagCborKeyCompare(a: string, b: string): number {
 }
 
 /** Entries of an object in canonical DAG-CBOR key order. */
-export function canonicalEntries(value: Record<string, unknown>, opts?: {hideNull?: boolean}): [string, unknown][] {
+export function canonicalEntries(
+  value: Record<string, unknown>,
+  opts?: {
+    hideNull?: boolean
+  },
+): [string, unknown][] {
   return Object.entries(value)
     .filter(([, v]) => v !== undefined && (!opts?.hideNull || v !== null))
     .sort(([a], [b]) => dagCborKeyCompare(a, b))
 }
 
 /** Rebuild a value with all nested object keys in canonical order (for JSON display). */
-export function toCanonicalOrder(value: unknown, opts?: {hideNull?: boolean}): unknown {
+export function toCanonicalOrder(
+  value: unknown,
+  opts?: {
+    hideNull?: boolean
+  },
+): unknown {
   if (Array.isArray(value)) return value.map((item) => toCanonicalOrder(item, opts))
   if (isPlainObject(value)) {
     return Object.fromEntries(canonicalEntries(value, opts).map(([k, v]) => [k, toCanonicalOrder(v, opts)]))
@@ -220,28 +418,36 @@ export function useValueHistory<T>(current: T) {
   currentRef.current = current
   const undoStack = useRef<T[]>([])
   const redoStack = useRef<T[]>([])
-
   const record = useCallback(() => {
     undoStack.current.push(currentRef.current)
     if (undoStack.current.length > HISTORY_LIMIT) undoStack.current.shift()
     redoStack.current = []
   }, [])
-
-  const undo = useCallback((): {value: T} | null => {
+  const undo = useCallback((): {
+    value: T
+  } | null => {
     if (undoStack.current.length === 0) return null
     const value = undoStack.current.pop()!
     redoStack.current.push(currentRef.current)
-    return {value}
+    return {
+      value,
+    }
   }, [])
-
-  const redo = useCallback((): {value: T} | null => {
+  const redo = useCallback((): {
+    value: T
+  } | null => {
     if (redoStack.current.length === 0) return null
     const value = redoStack.current.pop()!
     undoStack.current.push(currentRef.current)
-    return {value}
+    return {
+      value,
+    }
   }, [])
-
-  return {record, undo, redo}
+  return {
+    record,
+    undo,
+    redo,
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -249,18 +455,15 @@ export function useValueHistory<T>(current: T) {
 // ---------------------------------------------------------------------------
 
 export type ValuePath = (string | number)[]
-
 function pathId(path: ValuePath): string {
   return JSON.stringify(path)
 }
-
 type SelectionHandlers = {
   getValue: () => unknown
   setValue: (value: unknown) => void
   remove?: () => void
   rules: ValueEditorRules
 }
-
 export type ContextMenuAction = {
   key: string
   label: string
@@ -278,7 +481,6 @@ type RowInfo = {
   setCollapsed: (collapsed: boolean) => void
   getMenuActions: () => ContextMenuAction[]
 }
-
 type NavDirection = 'up' | 'down' | 'left' | 'right' | 'home' | 'end'
 
 /**
@@ -298,7 +500,13 @@ type SelectionActions = {
   navigate: (id: string, direction: NavDirection) => void
   /** Enter/Space on a row: toggle a container, else focus its first editor. */
   activate: (id: string) => void
-  openContextMenu: (position: {x: number; y: number}, actions: ContextMenuAction[]) => void
+  openContextMenu: (
+    position: {
+      x: number
+      y: number
+    },
+    actions: ContextMenuAction[],
+  ) => void
 }
 
 /** Reactive tree state; changes here re-render rows (highlight, roving tab-stop). */
@@ -315,10 +523,11 @@ type SelectionState = {
   /** Opens a blank blob editor (a new IPFS object) in its own window. */
   onCreateBlob?: () => void
 }
-
 const SelectionActionsContext = createContext<SelectionActions | null>(null)
-const SelectionStateContext = createContext<SelectionState>({selectedId: null, tabbableId: null})
-
+const SelectionStateContext = createContext<SelectionState>({
+  selectedId: null,
+  tabbableId: null,
+})
 function isEditableTarget(target: EventTarget | null): boolean {
   return target instanceof HTMLElement && !!target.closest('input,textarea,select,[contenteditable="true"]')
 }
@@ -327,11 +536,24 @@ function isEditableTarget(target: EventTarget | null): boolean {
 function domOrderedRows(
   registry: Map<string, RowInfo>,
   elements: Map<string, HTMLElement>,
-): {id: string; info: RowInfo; element: HTMLElement}[] {
-  const rows: {id: string; info: RowInfo; element: HTMLElement}[] = []
+): {
+  id: string
+  info: RowInfo
+  element: HTMLElement
+}[] {
+  const rows: {
+    id: string
+    info: RowInfo
+    element: HTMLElement
+  }[] = []
   registry.forEach((info, id) => {
     const element = elements.get(id)
-    if (element?.isConnected) rows.push({id, info, element})
+    if (element?.isConnected)
+      rows.push({
+        id,
+        info,
+        element,
+      })
   })
   rows.sort((a, b) => (a.element.compareDocumentPosition(b.element) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1))
   return rows
@@ -343,7 +565,12 @@ function isDescendantPath(child: ValuePath, parent: ValuePath): boolean {
 }
 
 /** Parse and validate clipboard-ish text for pasting. Non-JSON pastes as a string. */
-function parsePastedText(text: string, rules: ValueEditorRules): {value: unknown} | null {
+function parsePastedText(
+  text: string,
+  rules: ValueEditorRules,
+): {
+  value: unknown
+} | null {
   let parsed: unknown
   try {
     parsed = JSON.parse(text)
@@ -361,14 +588,14 @@ function parsePastedText(text: string, rules: ValueEditorRules): {value: unknown
     toast.error(`Cannot paste: ${problem}`)
     return null
   }
-  return {value: parsed}
+  return {
+    value: parsed,
+  }
 }
-
 function copyValueToClipboard(value: unknown) {
   navigator.clipboard.writeText(JSON.stringify(toCanonicalOrder(value), null, 2))
   toast.success('Copied value')
 }
-
 async function pasteFromClipboard(handlers: SelectionHandlers) {
   let text: string
   try {
@@ -416,17 +643,19 @@ export function ValueEditorProvider({
   const [selectedId, setSelectedId] = useState<string | null>(null)
   // The single tab-stop; defaults to the first row so Tab can enter the tree.
   const [tabbableId, setTabbableId] = useState<string | null>(null)
-  const [menu, setMenu] = useState<{x: number; y: number; actions: ContextMenuAction[]} | null>(null)
+  const [menu, setMenu] = useState<{
+    x: number
+    y: number
+    actions: ContextMenuAction[]
+  } | null>(null)
   const registry = useRef(new Map<string, RowInfo>())
   const elements = useRef(new Map<string, HTMLElement>())
-
   const selectedIdRef = useRef(selectedId)
   selectedIdRef.current = selectedId
   const undoRef = useRef(onUndo)
   undoRef.current = onUndo
   const redoRef = useRef(onRedo)
   redoRef.current = onRedo
-
   const select = useCallback((id: string) => {
     setSelectedId(id)
     setTabbableId(id)
@@ -510,19 +739,28 @@ export function ValueEditorProvider({
       if (element) elements.current.set(id, element)
       else elements.current.delete(id)
     },
-    openContextMenu: (position, menuActions) => setMenu({...position, actions: menuActions}),
+    openContextMenu: (position, menuActions) =>
+      setMenu({
+        ...position,
+        actions: menuActions,
+      }),
   }).current
   const state = useMemo<SelectionState>(
-    () => ({selectedId, tabbableId, openUrl, fileUpload, openFile, onCreateBlob}),
+    () => ({
+      selectedId,
+      tabbableId,
+      openUrl,
+      fileUpload,
+      openFile,
+      onCreateBlob,
+    }),
     [selectedId, tabbableId, openUrl, fileUpload, openFile, onCreateBlob],
   )
-
   useEffect(() => {
     const getSelectedHandlers = () => {
       const id = selectedIdRef.current
       return id ? registry.current.get(id)?.handlers : undefined
     }
-
     const onCopy = (e: ClipboardEvent) => {
       if (isEditableTarget(e.target)) return
       // Don't hijack copying of regular text selections.
@@ -532,7 +770,6 @@ export function ValueEditorProvider({
       e.preventDefault()
       e.clipboardData?.setData('text/plain', JSON.stringify(toCanonicalOrder(handlers.getValue()), null, 2))
     }
-
     const onPaste = (e: ClipboardEvent) => {
       if (isEditableTarget(e.target)) return
       const handlers = getSelectedHandlers()
@@ -543,7 +780,6 @@ export function ValueEditorProvider({
       const result = parsePastedText(text, handlers.rules)
       if (result) handlers.setValue(result.value)
     }
-
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
         // Inputs keep their native text undo.
@@ -568,7 +804,6 @@ export function ValueEditorProvider({
         }
       }
     }
-
     document.addEventListener('copy', onCopy)
     document.addEventListener('paste', onPaste)
     document.addEventListener('keydown', onKeyDown)
@@ -578,7 +813,6 @@ export function ValueEditorProvider({
       document.removeEventListener('keydown', onKeyDown)
     }
   }, [])
-
   return (
     <SelectionActionsContext.Provider value={actions}>
       <SelectionStateContext.Provider value={state}>
@@ -626,7 +860,6 @@ export function ValueEditorProvider({
     </SelectionActionsContext.Provider>
   )
 }
-
 const ARROW_DIRECTIONS: Record<string, NavDirection> = {
   ArrowDown: 'down',
   ArrowUp: 'up',
@@ -677,18 +910,23 @@ function useRowSelection(
     },
     [actions, id],
   )
-
   if (!actions) {
-    return {isSelected: false, rowProps: {} as Record<string, never>}
+    return {
+      isSelected: false,
+      rowProps: {} as Record<string, never>,
+    }
   }
   const ctx = actions
-
   const rowProps = {
     ref: setRef,
     role: 'treeitem' as const,
     tabIndex: isTabbable ? 0 : -1,
     'aria-selected': isSelected,
-    ...(row.isContainer ? {'aria-expanded': !row.collapsed} : {}),
+    ...(row.isContainer
+      ? {
+          'aria-expanded': !row.collapsed,
+        }
+      : {}),
     onFocus: (e: React.FocusEvent) => {
       // Selection follows focus — whether the row itself or any editor inside
       // it is focused (so tabbing between fields moves the highlight too). The
@@ -720,13 +958,20 @@ function useRowSelection(
       e.preventDefault()
       e.stopPropagation()
       ctx.focusRow(id)
-      ctx.openContextMenu({x: e.clientX, y: e.clientY}, row.getMenuActions())
+      ctx.openContextMenu(
+        {
+          x: e.clientX,
+          y: e.clientY,
+        },
+        row.getMenuActions(),
+      )
     },
   }
-
-  return {isSelected: !!isSelected, rowProps}
+  return {
+    isSelected: !!isSelected,
+    rowProps,
+  }
 }
-
 const ROW_CLASS = '-mx-1 rounded-md px-1 py-0.5 transition-colors'
 const ROW_SELECTED_CLASS = 'bg-accent/70 ring-border ring-1'
 
@@ -758,13 +1003,13 @@ function RowActionsMenu({
           aria-label={label}
           className={cn(
             'text-muted-foreground bg-background/85 shadow-xs backdrop-blur-[2px]',
-            'opacity-0 transition-opacity',
+            stylex.props(styles.sbe3dc205).className || '',
             open && 'opacity-100',
             className,
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <MoreHorizontal className="size-4" />
+          <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
@@ -782,7 +1027,6 @@ function RowActionsMenu({
     </DropdownMenu>
   )
 }
-
 function CollapseToggle({collapsed, onToggle}: {collapsed: boolean; onToggle: () => void}) {
   return (
     <button
@@ -792,7 +1036,11 @@ function CollapseToggle({collapsed, onToggle}: {collapsed: boolean; onToggle: ()
       className="text-muted-foreground hover:text-foreground flex size-4 shrink-0 items-center justify-center"
       onClick={onToggle}
     >
-      {collapsed ? <ChevronRight className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+      {collapsed ? (
+        <ChevronRight className={stylex.props(styles.s3269316e).className || ''} />
+      ) : (
+        <ChevronDown className={stylex.props(styles.s3269316e).className || ''} />
+      )}
     </button>
   )
 }
@@ -814,7 +1062,9 @@ function compactValuePreview(value: unknown, rules: ValueEditorRules): string {
     return `[${value.map((item) => compactValuePreview(item, rules)).join(' ')}]`
   }
   if (isPlainObject(value)) {
-    const entries = canonicalEntries(value, {hideNull: rules.hideNullEntries})
+    const entries = canonicalEntries(value, {
+      hideNull: rules.hideNullEntries,
+    })
     return entries.map(([key, child]) => `${key}: ${compactValuePreview(child, rules)}`).join('   ')
   }
   return String(value)
@@ -853,13 +1103,13 @@ function baseMenuActions({
     {
       key: 'copy',
       label: 'Copy',
-      icon: <Copy className="size-4" />,
+      icon: <Copy className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => copyValueToClipboard(value),
     },
     {
       key: 'paste',
       label: 'Paste',
-      icon: <ClipboardPaste className="size-4" />,
+      icon: <ClipboardPaste className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => void pasteFromClipboard(handlers),
     },
   ]
@@ -867,7 +1117,11 @@ function baseMenuActions({
     actions.push({
       key: 'collapse',
       label: collapsed ? 'Expand' : 'Collapse',
-      icon: collapsed ? <ChevronsUpDown className="size-4" /> : <ChevronsDownUp className="size-4" />,
+      icon: collapsed ? (
+        <ChevronsUpDown className={stylex.props(styles.sca3de968).className || ''} />
+      ) : (
+        <ChevronsDownUp className={stylex.props(styles.sca3de968).className || ''} />
+      ),
       onClick: () => setCollapsed(!collapsed),
     })
   }
@@ -911,16 +1165,27 @@ export function FieldRow({
   const [collapsed, setCollapsed] = useState(false)
   const [editing, setEditing] = useState(false)
   const {onCreateBlob} = useContext(SelectionStateContext)
-  const handlers: SelectionHandlers = {getValue: () => value, setValue: onValue, remove: onRemove, rules}
+  const handlers: SelectionHandlers = {
+    getValue: () => value,
+    setValue: onValue,
+    remove: onRemove,
+    rules,
+  }
   const getMenuActions = () => [
-    ...baseMenuActions({value, handlers, isContainer, collapsed, setCollapsed}),
+    ...baseMenuActions({
+      value,
+      handlers,
+      isContainer,
+      collapsed,
+      setCollapsed,
+    }),
     // Text fields can spawn a new IPFS object (blob) to reference here.
     ...(typeof value === 'string' && onCreateBlob
       ? [
           {
             key: 'new-blob',
             label: 'New blob…',
-            icon: <FilePlus className="size-4" />,
+            icon: <FilePlus className={stylex.props(styles.sca3de968).className || ''} />,
             onClick: onCreateBlob,
           },
         ]
@@ -928,13 +1193,13 @@ export function FieldRow({
     {
       key: 'edit',
       label: 'Edit field',
-      icon: <Pencil className="size-4" />,
+      icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => setEditing(true),
     },
     {
       key: 'remove',
       label: `Remove ${fieldKey}`,
-      icon: <X className="size-4" />,
+      icon: <X className={stylex.props(styles.sca3de968).className || ''} />,
       destructive: true,
       onClick: onRemove,
     },
@@ -947,7 +1212,6 @@ export function FieldRow({
     setCollapsed,
     getMenuActions,
   })
-
   return (
     <div
       {...rowProps}
@@ -961,8 +1225,8 @@ export function FieldRow({
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         {/* Field name first so names align regardless of type; the collapse
             chevron sits after the name for containers. */}
-        <div className="flex items-center gap-1">
-          <span className={cn(FIELD_LABEL_CLASS, 'truncate')} title={fieldKey}>
+        <div className={stylex.props(styles.s86ff3e3).className || ''}>
+          <span className={cn(FIELD_LABEL_CLASS, stylex.props(styles.s6e724d66).className || '')} title={fieldKey}>
             {fieldKey}
           </span>
           {isContainer && <CollapseToggle collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />}
@@ -976,7 +1240,7 @@ export function FieldRow({
         </div>
       </div>
       {/* Floating so nested rows keep their full width. */}
-      <div className="absolute top-1 right-0">
+      <div className={stylex.props(styles.sd9892e6f).className || ''}>
         <RowActionsMenu
           label={`Actions for ${fieldKey}`}
           getActions={getMenuActions}
@@ -1031,8 +1295,8 @@ export function ValueDisplay({value, rules = CBOR_VALUE_RULES}: {value: unknown;
   }
   if (isDagJsonLink(value)) {
     return (
-      <span className="flex items-center gap-1 font-mono text-sm break-all">
-        <Link2 className="text-muted-foreground size-3.5 shrink-0" />
+      <span className={stylex.props(styles.s3f7cceb1).className || ''}>
+        <Link2 className={stylex.props(styles.s26a52803).className || ''} />
         {value['/']}
       </span>
     )
@@ -1045,18 +1309,18 @@ export function ValueDisplay({value, rules = CBOR_VALUE_RULES}: {value: unknown;
       // fall through to invalid display
     }
     return (
-      <span className="font-mono text-sm">
+      <span className={stylex.props(styles.s9266db7b).className || ''}>
         {size === null ? 'Invalid base64 data' : `${formatByteSize(size)} binary`}
       </span>
     )
   }
   if (Array.isArray(value)) {
-    if (value.length === 0) return <p className="text-muted-foreground text-sm">Empty list</p>
+    if (value.length === 0) return <p className={stylex.props(styles.sa56e915f).className || ''}>Empty list</p>
     return (
       <div className={NESTED_GROUP_CLASS}>
         {value.map((item, index) => (
-          <div key={index} className="flex items-baseline gap-2">
-            <span className="text-muted-foreground font-mono text-xs">{index + 1}.</span>
+          <div key={index} className={stylex.props(styles.sc2828cd4).className || ''}>
+            <span className={stylex.props(styles.sc65eac41).className || ''}>{index + 1}.</span>
             <ValueDisplay value={item} rules={rules} />
           </div>
         ))}
@@ -1064,12 +1328,14 @@ export function ValueDisplay({value, rules = CBOR_VALUE_RULES}: {value: unknown;
     )
   }
   if (isPlainObject(value)) {
-    const entries = canonicalEntries(value, {hideNull: rules.hideNullEntries})
-    if (entries.length === 0) return <p className="text-muted-foreground text-sm">No fields</p>
+    const entries = canonicalEntries(value, {
+      hideNull: rules.hideNullEntries,
+    })
+    if (entries.length === 0) return <p className={stylex.props(styles.sa56e915f).className || ''}>No fields</p>
     return (
       <div className={NESTED_GROUP_CLASS}>
         {entries.map(([key, child]) => (
-          <div key={key} className="flex flex-col gap-1">
+          <div key={key} className={stylex.props(styles.sfbc6e28d).className || ''}>
             <span className={FIELD_LABEL_CLASS}>{key}</span>
             <ValueDisplay value={child} rules={rules} />
           </div>
@@ -1077,8 +1343,8 @@ export function ValueDisplay({value, rules = CBOR_VALUE_RULES}: {value: unknown;
       </div>
     )
   }
-  if (value === '') return <span className="text-muted-foreground text-sm">(empty)</span>
-  return <span className="font-mono text-sm break-words whitespace-pre-wrap">{String(value)}</span>
+  if (value === '') return <span className={stylex.props(styles.sa56e915f).className || ''}>(empty)</span>
+  return <span className={stylex.props(styles.s35b75e9a).className || ''}>{String(value)}</span>
 }
 
 /** Recursive type-aware editor for one value. */
@@ -1114,7 +1380,7 @@ export function ValueEditor({
   if (isPlainObject(value)) {
     return <ObjectEditor value={value} onValue={onValue} rules={rules} path={path} />
   }
-  return <span className="text-muted-foreground font-mono text-sm">{String(value)}</span>
+  return <span className={stylex.props(styles.sc65eaba0).className || ''}>{String(value)}</span>
 }
 
 /** Extract a bare CID from a raw CID, an `ipfs://` URL, or a gateway `/ipfs/` URL. */
@@ -1155,7 +1421,6 @@ function StringLeafEditor({
   const [uploading, setUploading] = useState(false)
   const canDrop = !!fileUpload && !uploading
   const cid = findIpfsUrlCid(value)
-
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
@@ -1171,11 +1436,10 @@ function StringLeafEditor({
       setUploading(false)
     }
   }
-
   return (
     <div
       className={cn(
-        'relative flex-1 rounded-md',
+        stylex.props(styles.s9ca3cd06).className || '',
         dragOver && canDrop && 'ring-primary bg-primary/5 ring-2 outline-none',
       )}
       onDragOver={
@@ -1214,7 +1478,9 @@ function StringLeafEditor({
             if (rules.ipld && isIpfsUrlText(text)) {
               const linkCid = linkCidFromText(text)
               if (linkCid) {
-                onValue({'/': linkCid})
+                onValue({
+                  '/': linkCid,
+                })
                 return
               }
             }
@@ -1224,8 +1490,8 @@ function StringLeafEditor({
       )}
       {uploading && (
         <div className="bg-background/70 absolute inset-0 flex items-center justify-center gap-2 rounded-md">
-          <Spinner className="size-4" />
-          <span className="text-muted-foreground text-xs">Uploading…</span>
+          <Spinner className={stylex.props(styles.sca3de968).className || ''} />
+          <span className={stylex.props(styles.sa56e9200).className || ''}>Uploading…</span>
         </div>
       )}
     </div>
@@ -1252,7 +1518,7 @@ function IpfsFileTag({
   const short = cid.length > 18 ? `${cid.slice(0, 9)}…${cid.slice(-6)}` : cid
   const Icon = variant === 'link' ? Link2 : FileText
   return (
-    <div className="flex items-center gap-1">
+    <div className={stylex.props(styles.s86ff3e3).className || ''}>
       <Tooltip content={onOpen ? `Open ipfs://${cid}` : `ipfs://${cid}`}>
         <button
           type="button"
@@ -1263,9 +1529,9 @@ function IpfsFileTag({
             onOpen && 'hover:bg-muted cursor-pointer',
           )}
         >
-          <Icon className="text-muted-foreground size-3.5 shrink-0" />
-          <span className="truncate font-mono text-xs">{short}</span>
-          {onOpen && <ExternalLink className="text-muted-foreground size-3 shrink-0" />}
+          <Icon className={stylex.props(styles.s26a52803).className || ''} />
+          <span className={stylex.props(styles.scbdf1fe2).className || ''}>{short}</span>
+          {onOpen && <ExternalLink className={stylex.props(styles.sfc2d1d6a).className || ''} />}
         </button>
       </Tooltip>
       {onClear && (
@@ -1274,10 +1540,10 @@ function IpfsFileTag({
             variant="ghost"
             size="iconSm"
             aria-label={variant === 'link' ? 'Clear link' : 'Remove file reference'}
-            className="text-muted-foreground"
+            className={stylex.props(styles.sf2718385).className || ''}
             onClick={onClear}
           >
-            <X className="size-3.5" />
+            <X className={stylex.props(styles.s3269316e).className || ''} />
           </Button>
         </Tooltip>
       )}
@@ -1290,26 +1556,48 @@ function IpfsFileTag({
  * `ipfs://` string reference); an empty/invalid link shows an input to enter a
  * CID or IPFS URL.
  */
-function LinkValueEditor({value, onValue}: {value: {'/': string}; onValue: (value: unknown) => void}) {
+function LinkValueEditor({
+  value,
+  onValue,
+}: {
+  value: {
+    '/': string
+  }
+  onValue: (value: unknown) => void
+}) {
   const {openUrl, openFile} = useContext(SelectionStateContext)
   const cid = value['/']
   const isValid = !!parseCidString(cid)
   // Prefer openFile (opens the linked blob in its own window); fall back to openUrl.
   const onOpen = openFile ?? (openUrl ? (c: string) => openUrl(`ipfs://${c}`) : undefined)
-
   if (isValid) {
-    return <IpfsFileTag cid={cid} variant="link" onOpen={onOpen} onClear={() => onValue({'/': ''})} />
+    return (
+      <IpfsFileTag
+        cid={cid}
+        variant="link"
+        onOpen={onOpen}
+        onClear={() =>
+          onValue({
+            '/': '',
+          })
+        }
+      />
+    )
   }
-
   return (
-    <div className="flex items-center gap-1">
+    <div className={stylex.props(styles.s86ff3e3).className || ''}>
       <Tooltip content="IPLD link — a native reference to another IPFS blob">
-        <Link2 className={cn('size-3.5 shrink-0', cid ? 'text-destructive' : 'text-muted-foreground')} />
+        <Link2
+          className={cn(
+            stylex.props(styles.sf2ad57de).className || '',
+            cid ? 'text-destructive' : 'text-muted-foreground',
+          )}
+        />
       </Tooltip>
       <CommitOnBlurInput
         key={cid}
         initialValue={cid}
-        className="font-mono text-xs"
+        className={stylex.props(styles.s9266dc1c).className || ''}
         placeholder="CID or ipfs:// URL"
         // Accept a bare CID, an ipfs:// URL, or a gateway /ipfs/ URL.
         normalize={linkCidFromText}
@@ -1319,7 +1607,9 @@ function LinkValueEditor({value, onValue}: {value: {'/': string}; onValue: (valu
             toast.error('Not a valid CID or IPFS URL')
             return
           }
-          onValue({'/': next})
+          onValue({
+            '/': next,
+          })
         }}
       />
     </div>
@@ -1327,7 +1617,17 @@ function LinkValueEditor({value, onValue}: {value: {'/': string}; onValue: (valu
 }
 
 /** IPLD bytes (`{"/": {bytes}}`): size readout with download and replace-from-file. */
-function BytesValueEditor({value, onValue}: {value: {'/': {bytes: string}}; onValue: (value: unknown) => void}) {
+function BytesValueEditor({
+  value,
+  onValue,
+}: {
+  value: {
+    '/': {
+      bytes: string
+    }
+  }
+  onValue: (value: unknown) => void
+}) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const b64 = value['/'].bytes
   const size = useMemo(() => {
@@ -1337,20 +1637,22 @@ function BytesValueEditor({value, onValue}: {value: {'/': {bytes: string}}; onVa
       return null
     }
   }, [b64])
-
   const download = () => {
     const bytes = base64ToBytes(b64)
-    const url = URL.createObjectURL(new Blob([bytes as BlobPart], {type: 'application/octet-stream'}))
+    const url = URL.createObjectURL(
+      new Blob([bytes as BlobPart], {
+        type: 'application/octet-stream',
+      }),
+    )
     const anchor = document.createElement('a')
     anchor.href = url
     anchor.download = 'bytes.bin'
     anchor.click()
     URL.revokeObjectURL(url)
   }
-
   return (
-    <div className="flex flex-wrap items-center gap-1">
-      <span className={cn('font-mono text-sm', size === null && 'text-destructive')}>
+    <div className={stylex.props(styles.s1fa2d8e5).className || ''}>
+      <span className={cn(stylex.props(styles.s9266db7b).className || '', size === null && 'text-destructive')}>
         {size === null ? 'Invalid base64 data' : `${formatByteSize(size)} binary`}
       </span>
       {size !== null && size > 0 && (
@@ -1359,10 +1661,10 @@ function BytesValueEditor({value, onValue}: {value: {'/': {bytes: string}}; onVa
             variant="ghost"
             size="iconSm"
             aria-label="Download binary data"
-            className="text-muted-foreground"
+            className={stylex.props(styles.sf2718385).className || ''}
             onClick={download}
           >
-            <Download className="size-3.5" />
+            <Download className={stylex.props(styles.s3269316e).className || ''} />
           </Button>
         </Tooltip>
       )}
@@ -1371,23 +1673,29 @@ function BytesValueEditor({value, onValue}: {value: {'/': {bytes: string}}; onVa
           variant="ghost"
           size="iconSm"
           aria-label="Replace with file"
-          className="text-muted-foreground"
+          className={stylex.props(styles.sf2718385).className || ''}
           onClick={() => fileInputRef.current?.click()}
         >
-          <FileUp className="size-3.5" />
+          <FileUp className={stylex.props(styles.s3269316e).className || ''} />
         </Button>
       </Tooltip>
       <input
         ref={fileInputRef}
         type="file"
-        className="hidden"
+        className={stylex.props(styles.sb76e9daa).className || ''}
         onChange={(e) => {
           const file = e.target.files?.[0]
           e.target.value = ''
           if (!file) return
           file
             .arrayBuffer()
-            .then((buffer) => onValue({'/': {bytes: bytesToBase64(new Uint8Array(buffer))}}))
+            .then((buffer) =>
+              onValue({
+                '/': {
+                  bytes: bytesToBase64(new Uint8Array(buffer)),
+                },
+              }),
+            )
             .catch(() => toast.error('Failed to read file'))
         }}
       />
@@ -1410,12 +1718,19 @@ export function ObjectEditor({
   rules: ValueEditorRules
   path?: ValuePath
 }) {
-  const entries = canonicalEntries(value, {hideNull: rules.hideNullEntries})
+  const entries = canonicalEntries(value, {
+    hideNull: rules.hideNullEntries,
+  })
   const removeKey = (key: string) => {
     if (rules.removeKeys === 'tombstone') {
-      onValue({...value, [key]: null})
+      onValue({
+        ...value,
+        [key]: null,
+      })
     } else {
-      const next = {...value}
+      const next = {
+        ...value,
+      }
       delete next[key]
       onValue(next)
     }
@@ -1425,13 +1740,22 @@ export function ObjectEditor({
   // the new key to the (already coerced) value.
   const editField = (key: string, newKey: string, newValue: unknown) => {
     if (newKey === key) {
-      onValue({...value, [key]: newValue})
+      onValue({
+        ...value,
+        [key]: newValue,
+      })
       return
     }
     if (rules.removeKeys === 'tombstone') {
-      onValue({...value, [key]: null, [newKey]: newValue})
+      onValue({
+        ...value,
+        [key]: null,
+        [newKey]: newValue,
+      })
     } else {
-      const next = {...value}
+      const next = {
+        ...value,
+      }
       delete next[key]
       next[newKey] = newValue
       onValue(next)
@@ -1439,14 +1763,19 @@ export function ObjectEditor({
   }
   return (
     <div className={NESTED_OBJECT_CLASS}>
-      {entries.length === 0 && <p className="text-muted-foreground text-sm">No fields</p>}
+      {entries.length === 0 && <p className={stylex.props(styles.sa56e915f).className || ''}>No fields</p>}
       {entries.map(([key, child]) => (
         <FieldRow
           key={key}
           fieldKey={key}
           value={child}
           siblingKeys={entries.map(([k]) => k).filter((k) => k !== key)}
-          onValue={(newChild) => onValue({...value, [key]: newChild})}
+          onValue={(newChild) =>
+            onValue({
+              ...value,
+              [key]: newChild,
+            })
+          }
           onEditField={(newKey, newValue) => editField(key, newKey, newValue)}
           onRemove={() => removeKey(key)}
           rules={rules}
@@ -1458,7 +1787,12 @@ export function ObjectEditor({
         rules={rules}
         path={path.filter((segment): segment is string => typeof segment === 'string')}
         existingKeys={entries.map(([key]) => key)}
-        onAdd={(key, newChild) => onValue({...value, [key]: newChild})}
+        onAdd={(key, newChild) =>
+          onValue({
+            ...value,
+            [key]: newChild,
+          })
+        }
       />
     </div>
   )
@@ -1478,7 +1812,6 @@ export function ListEditor({
 }) {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
-
   const move = (from: number, to: number) => {
     if (from === to) return
     const next = [...value]
@@ -1492,7 +1825,7 @@ export function ListEditor({
   }
   return (
     <div className={NESTED_GROUP_CLASS}>
-      {value.length === 0 && <p className="text-muted-foreground text-sm">Empty list</p>}
+      {value.length === 0 && <p className={stylex.props(styles.sa56e915f).className || ''}>Empty list</p>}
       {value.map((item, index) => (
         <ListItemRow
           key={index}
@@ -1527,7 +1860,6 @@ export function ListEditor({
     </div>
   )
 }
-
 type ListItemDrag = {
   isDragging: boolean
   isDragOver: boolean
@@ -1537,7 +1869,6 @@ type ListItemDrag = {
   onDrop: () => void
   onDragEnd: () => void
 }
-
 function ListItemRow({
   item,
   index,
@@ -1564,19 +1895,30 @@ function ListItemRow({
   const isContainer = isEditableContainer(item)
   const [collapsed, setCollapsed] = useState(false)
   const [editing, setEditing] = useState(false)
-  const handlers: SelectionHandlers = {getValue: () => item, setValue: onItem, remove: onRemove, rules}
+  const handlers: SelectionHandlers = {
+    getValue: () => item,
+    setValue: onItem,
+    remove: onRemove,
+    rules,
+  }
   const getMenuActions = () => [
-    ...baseMenuActions({value: item, handlers, isContainer, collapsed, setCollapsed}),
+    ...baseMenuActions({
+      value: item,
+      handlers,
+      isContainer,
+      collapsed,
+      setCollapsed,
+    }),
     {
       key: 'edit-type',
       label: 'Edit type',
-      icon: <Pencil className="size-4" />,
+      icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => setEditing(true),
     },
     {
       key: 'duplicate',
       label: 'Duplicate',
-      icon: <CopyPlus className="size-4" />,
+      icon: <CopyPlus className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: onDuplicate,
     },
     ...(index > 0
@@ -1584,7 +1926,7 @@ function ListItemRow({
           {
             key: 'move-up',
             label: 'Move up',
-            icon: <ArrowUp className="size-4" />,
+            icon: <ArrowUp className={stylex.props(styles.sca3de968).className || ''} />,
             onClick: () => onMove(index, index - 1),
           },
         ]
@@ -1594,7 +1936,7 @@ function ListItemRow({
           {
             key: 'move-down',
             label: 'Move down',
-            icon: <ArrowDown className="size-4" />,
+            icon: <ArrowDown className={stylex.props(styles.sca3de968).className || ''} />,
             onClick: () => onMove(index, index + 1),
           },
         ]
@@ -1602,7 +1944,7 @@ function ListItemRow({
     {
       key: 'remove',
       label: 'Remove item',
-      icon: <X className="size-4" />,
+      icon: <X className={stylex.props(styles.sca3de968).className || ''} />,
       destructive: true,
       onClick: onRemove,
     },
@@ -1615,7 +1957,6 @@ function ListItemRow({
     setCollapsed,
     getMenuActions,
   })
-
   return (
     <div
       {...rowProps}
@@ -1638,7 +1979,7 @@ function ListItemRow({
         drag.isDragOver && 'ring-primary/50 bg-accent/40 ring-2',
       )}
     >
-      <div className="mt-1.5 flex shrink-0 items-center gap-1">
+      <div className={stylex.props(styles.sb868a5b7).className || ''}>
         <span
           draggable
           aria-label="Drag to reorder"
@@ -1654,18 +1995,18 @@ function ListItemRow({
           }}
           onDragEnd={drag.onDragEnd}
         >
-          <GripVertical className="size-3.5" />
+          <GripVertical className={stylex.props(styles.s3269316e).className || ''} />
         </span>
         {isContainer ? (
           <CollapseToggle collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
         ) : (
-          <span className="size-4 shrink-0" />
+          <span className={stylex.props(styles.sf8eef924).className || ''} />
         )}
-        <span className="text-muted-foreground font-mono text-xs">{index + 1}.</span>
+        <span className={stylex.props(styles.sc65eac41).className || ''}>{index + 1}.</span>
       </div>
       <div className="min-w-0 flex-1">
         {isContainer && collapsed ? (
-          <div className="pt-1">
+          <div className={stylex.props(styles.s34a2a8).className || ''}>
             <CollapsedSummary value={item} rules={rules} onExpand={() => setCollapsed(false)} />
           </div>
         ) : (
@@ -1673,7 +2014,7 @@ function ListItemRow({
         )}
       </div>
       {/* Floating so nested rows keep their full width. */}
-      <div className="absolute top-1 right-0">
+      <div className={stylex.props(styles.sd9892e6f).className || ''}>
         <RowActionsMenu
           label={`Actions for item ${index + 1}`}
           getActions={getMenuActions}
@@ -1721,7 +2062,13 @@ function NumberInput({
   const stringPath = (path ?? []).filter((segment): segment is string => typeof segment === 'string')
   const valueLoader = useCallback(
     (pageToken: string | undefined, signal?: AbortSignal) =>
-      autocomplete!.listValues({path: stringPath, kind: 'number', prefix: debouncedText, pageToken, signal}),
+      autocomplete!.listValues({
+        path: stringPath,
+        kind: 'number',
+        prefix: debouncedText,
+        pageToken,
+        signal,
+      }),
     [autocomplete, debouncedText, JSON.stringify(stringPath)],
   )
   const suggestions = usePagedSuggestions(
@@ -1743,8 +2090,8 @@ function NumberInput({
     setError(null)
   }, [initial])
   return (
-    <div className="flex flex-col gap-1">
-      <div className="relative">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <div className={stylex.props(styles.sdef3facc).className || ''}>
         <Input
           value={text}
           inputMode="numeric"
@@ -1828,14 +2175,13 @@ function NumberInput({
           />
         )}
       </div>
-      {error && <p className="text-destructive text-xs">{error}</p>}
+      {error && <p className={stylex.props(styles.s11c1d25d).className || ''}>{error}</p>}
     </div>
   )
 }
 
 /** Text input that stages its value on blur or Enter, resets on Escape. */
 const AUTOSAVE_DEBOUNCE_MS = 600
-
 function CommitOnBlurInput({
   initialValue,
   placeholder,
@@ -1908,9 +2254,8 @@ function CommitOnBlurInput({
     if (debouncedText !== initialValue) commit(debouncedText)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedText])
-
   return (
-    <div className="relative">
+    <div className={stylex.props(styles.sdef3facc).className || ''}>
       <Input
         value={text}
         placeholder={placeholder}
@@ -2009,9 +2354,7 @@ function CommitOnBlurInput({
     </div>
   )
 }
-
 export type NewFieldType = 'text' | 'number' | 'toggle' | 'object' | 'list' | 'null' | 'link' | 'bytes'
-
 const FIELD_TYPE_LABEL: Record<NewFieldType, string> = {
   text: 'Text',
   number: 'Number',
@@ -2060,9 +2403,15 @@ function defaultValueForType(type: NewFieldType): unknown {
     case 'null':
       return null
     case 'link':
-      return {'/': ''}
+      return {
+        '/': '',
+      }
     case 'bytes':
-      return {'/': {bytes: ''}}
+      return {
+        '/': {
+          bytes: '',
+        },
+      }
   }
 }
 
@@ -2096,9 +2445,14 @@ export function coerceFieldValue(value: unknown, toType: NewFieldType, rules: Va
     case 'link':
       if (typeof value === 'string') {
         const cid = value.trim().replace(/^ipfs:\/\//, '')
-        if (parseCidString(cid)) return {'/': cid}
+        if (parseCidString(cid))
+          return {
+            '/': cid,
+          }
       }
-      return {'/': ''}
+      return {
+        '/': '',
+      }
     case 'object':
     case 'list':
     case 'bytes':
@@ -2106,7 +2460,6 @@ export function coerceFieldValue(value: unknown, toType: NewFieldType, rules: Va
       return defaultValueForType(toType)
   }
 }
-
 function usePagedSuggestions<T>(
   enabled: boolean,
   requestKey: string,
@@ -2122,28 +2475,32 @@ function usePagedSuggestions<T>(
   const requestVersionRef = useRef(0)
   loadRef.current = load
   isVisibleRef.current = isVisible
-
   const loadUntilVisible = useCallback(async (pageToken: string | undefined, signal: AbortSignal) => {
     const pageTokens = new Set<string>()
     const visibleItems: T[] = []
     let nextToken = pageToken
-
     while (true) {
       if (signal.aborted) throw new DOMException('Aborted', 'AbortError')
       if (nextToken !== undefined) {
-        if (pageTokens.has(nextToken)) return {items: visibleItems, nextPageToken: undefined}
+        if (pageTokens.has(nextToken))
+          return {
+            items: visibleItems,
+            nextPageToken: undefined,
+          }
         pageTokens.add(nextToken)
       }
       const page = await loadRef.current(nextToken, signal)
       if (signal.aborted) throw new DOMException('Aborted', 'AbortError')
       visibleItems.push(...page.items.filter((item) => isVisibleRef.current(item)))
       if (visibleItems.length > 0 || !page.nextPageToken) {
-        return {items: visibleItems, nextPageToken: page.nextPageToken || undefined}
+        return {
+          items: visibleItems,
+          nextPageToken: page.nextPageToken || undefined,
+        }
       }
       nextToken = page.nextPageToken
     }
   }, [])
-
   useEffect(() => {
     controllerRef.current?.abort()
     const requestVersion = ++requestVersionRef.current
@@ -2176,7 +2533,6 @@ function usePagedSuggestions<T>(
       controller.abort()
     }
   }, [enabled, loadUntilVisible, requestKey])
-
   const loadMore = useCallback(() => {
     if (!enabled || loading || !nextPageToken) return
     controllerRef.current?.abort()
@@ -2199,10 +2555,14 @@ function usePagedSuggestions<T>(
         if (!controller.signal.aborted && requestVersion === requestVersionRef.current) setLoading(false)
       })
   }, [enabled, loading, loadUntilVisible, nextPageToken])
-
-  return {items, nextPageToken, loading, loadMore, requestKey}
+  return {
+    items,
+    nextPageToken,
+    loading,
+    loadMore,
+    requestKey,
+  }
 }
-
 function SuggestionPopover<T>({
   id,
   items,
@@ -2251,17 +2611,17 @@ function SuggestionPopover<T>({
           onClick={() => onSelect(item)}
         >
           <span className="min-w-0">
-            <span className="block truncate">{getLabel(item)}</span>
+            <span className={stylex.props(styles.s12583799).className || ''}>{getLabel(item)}</span>
             {getDescription?.(item) ? (
-              <span className="text-muted-foreground block truncate text-xs">{getDescription(item)}</span>
+              <span className={stylex.props(styles.s1047710f).className || ''}>{getDescription(item)}</span>
             ) : null}
           </span>
           {getMeta && <span className="text-muted-foreground shrink-0 text-[11px]">{getMeta(item)}</span>}
         </button>
       ))}
       {loading && (
-        <div className="text-muted-foreground flex items-center justify-center gap-2 px-2 py-2 text-xs">
-          <Spinner className="size-3" /> Loading suggestions…
+        <div className={stylex.props(styles.s2a02911b).className || ''}>
+          <Spinner className={stylex.props(styles.sca3de967).className || ''} /> Loading suggestions…
         </div>
       )}
     </div>
@@ -2306,7 +2666,12 @@ function FieldDialog({
   const debouncedName = useDebounce(name, 200)
   const nameLoader = useCallback(
     (pageToken: string | undefined, signal?: AbortSignal) =>
-      autocomplete!.listNames({parentPath, prefix: debouncedName, pageToken, signal}),
+      autocomplete!.listNames({
+        parentPath,
+        prefix: debouncedName,
+        pageToken,
+        signal,
+      }),
     [autocomplete, debouncedName, JSON.stringify(parentPath)],
   )
   const nameSuggestions = usePagedSuggestions(
@@ -2330,9 +2695,7 @@ function FieldDialog({
     setType(initialType)
     setError(null)
   }, [open])
-
   const options = fieldTypeOptions(rules)
-
   const chooseSuggestion = (suggestion: AttributeNameSuggestion) => {
     setName(suggestion.name)
     const inferred = suggestion.kinds[0]?.kind
@@ -2340,7 +2703,6 @@ function FieldDialog({
     setSuggestionsOpen(false)
     setError(null)
   }
-
   const submit = () => {
     if (itemMode) {
       onSubmit('', type)
@@ -2368,7 +2730,6 @@ function FieldDialog({
     onSubmit(trimmed, type)
     onOpenChange(false)
   }
-
   const title = itemMode
     ? mode === 'add'
       ? 'Add item'
@@ -2376,7 +2737,6 @@ function FieldDialog({
     : mode === 'add'
       ? 'Add field'
       : 'Edit field'
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -2390,13 +2750,13 @@ function FieldDialog({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-5">
+        <div className={stylex.props(styles.sfbc6e291).className || ''}>
           {!itemMode && (
-            <div className="flex flex-col gap-1">
-              <label htmlFor="field-dialog-name" className="text-muted-foreground text-xs">
+            <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+              <label htmlFor="field-dialog-name" className={stylex.props(styles.sa56e9200).className || ''}>
                 Field name
               </label>
-              <div className="relative">
+              <div className={stylex.props(styles.sdef3facc).className || ''}>
                 <Input
                   id="field-dialog-name"
                   role="combobox"
@@ -2465,8 +2825,8 @@ function FieldDialog({
               </div>
             </div>
           )}
-          <div className="flex flex-col gap-1">
-            <label className="text-muted-foreground text-xs">Type</label>
+          <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+            <label className={stylex.props(styles.sa56e9200).className || ''}>Type</label>
             <Select value={type} onValueChange={(v) => setType(v as NewFieldType)}>
               <SelectTrigger>
                 <SelectValue />
@@ -2480,14 +2840,14 @@ function FieldDialog({
               </SelectContent>
             </Select>
           </div>
-          {error && <p className="text-destructive text-xs">{error}</p>}
+          {error && <p className={stylex.props(styles.s11c1d25d).className || ''}>{error}</p>}
         </div>
         <DialogFooter className={!itemMode ? 'mt-auto' : undefined}>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button size="sm" onClick={submit}>
-            <Check className="size-4" />
+            <Check className={stylex.props(styles.sca3de968).className || ''} />
             {mode === 'add' ? 'Add' : 'Save'}
           </Button>
         </DialogFooter>
@@ -2517,13 +2877,12 @@ export function AddFieldForm({
   onAdd: (key: string, value: unknown) => void
 }) {
   const [open, setOpen] = useState(false)
-
   return (
     <div>
       <Button
         variant="ghost"
         size="sm"
-        className={cn('text-muted-foreground', compact && 'h-6 px-1 text-xs')}
+        className={cn(stylex.props(styles.sf2718385).className || '', compact && 'h-6 px-1 text-xs')}
         onClick={() => setOpen(true)}
       >
         <Plus className={compact ? 'size-3' : 'size-4'} />

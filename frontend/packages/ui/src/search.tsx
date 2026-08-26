@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {
   getDocumentTitle,
@@ -17,7 +18,6 @@ import {Search} from './icons'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {usePopoverState} from './use-popover-state'
-
 import {IS_WEB} from '@shm/shared/constants'
 import {useDebounce} from '@shm/shared/utils/use-debounce'
 import {useIsomorphicLayoutEffect} from '@shm/shared/utils/use-isomorphic-layout-effect'
@@ -27,7 +27,147 @@ import {HMIcon} from './hm-icon'
 import {Separator} from './separator'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sca36b5d1: {
+    color: 'var(--muted-foreground)',
+    padding: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+  },
+  s2c26492e: {
+    color: 'var(--destructive)',
+    padding: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+  },
+  sd3f5e2f6: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s2145d5b1: {
+    position: 'relative',
+    zIndex: '20',
+    width: '100%',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(0.25rem * 2)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s92d3c495: {
+    width: '100%',
+    flex: '1',
+    paddingRight: 'calc(0.25rem * 8)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s62783270: {
+    height: 'calc(0.25rem * 8)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'transparent',
+    padding: 'calc(0.25rem * 0)',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+  sf2aded09: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    alignSelf: 'stretch',
+    padding: 'calc(0.25rem * 2)',
+  },
+  s39d68924: {
+    height: 'calc(0.25rem * 8)',
+    flex: '1',
+    paddingRight: 'calc(0.25rem * 8)',
+    paddingLeft: 'calc(0.25rem * 8)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sc95934cc: {
+    display: 'flex',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+    flex: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sf8247e22: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '1',
+    height: 'calc(0.25rem * 5)',
+    width: '100%',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontFamily: 'var(--font-sans)',
+    fontWeight: '500',
+  },
+  s7f32d374: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '1',
+    flex: 'none',
+    textAlign: 'left',
+    fontFamily: 'var(--font-sans)',
+    color: 'oklch(70.7% 0.022 261.325)',
+  },
+  s558ede3b: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '1',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-sans)',
+    color: 'oklch(70.7% 0.022 261.325)',
+  },
+  s24363b51: {
+    flex: 'none',
+    whiteSpace: 'nowrap',
+    color: 'oklch(70.7% 0.022 261.325)',
+  },
+  se978af5d: {
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sd9440047: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s97941fa1: {
+    width: '100%',
+    paddingInline: 'calc(0.25rem * 1)',
+    paddingRight: 'calc(0.25rem * 8)',
+    paddingLeft: 'calc(0.25rem * 8)',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+})
 const SEARCH_DEBOUNCE_MS = 250
 
 // Runs two parallel keyword searches and merges them:
@@ -73,7 +213,6 @@ function useSiteSearch(searchValue: string, siteHomeId: UnpackedHypermediaId | n
     isError: primary.isError || profiles.isError,
   }
 }
-
 function toSearchResults(entities: ReturnType<typeof useSiteSearch>['entities']): SearchResult[] {
   return entities.map((item) => {
     const title = item.title || item.id.uid
@@ -90,7 +229,6 @@ function toSearchResults(entities: ReturnType<typeof useSiteSearch>['entities'])
     } as SearchResult
   })
 }
-
 function SearchStatusMessage({
   query,
   isLoading,
@@ -103,25 +241,24 @@ function SearchStatusMessage({
   hasResults: boolean
 }) {
   if (!query) {
-    return <div className="text-muted-foreground p-4 text-center">Type to search documents</div>
+    return <div className={stylex.props(styles.sca36b5d1).className || ''}>Type to search documents</div>
   }
   if (isError) {
-    return <div className="text-destructive p-4 text-center">Search failed</div>
+    return <div className={stylex.props(styles.s2c26492e).className || ''}>Search failed</div>
   }
   if (isLoading) {
     return (
-      <div className="text-muted-foreground flex items-center justify-center gap-2 p-4">
-        <Spinner className="size-4" />
+      <div className={stylex.props(styles.sd3f5e2f6).className || ''}>
+        <Spinner className={stylex.props(styles.sca3de968).className || ''} />
         <span>Searching…</span>
       </div>
     )
   }
   if (!hasResults) {
-    return <div className="text-muted-foreground p-4 text-center">No results found</div>
+    return <div className={stylex.props(styles.sca36b5d1).className || ''}>No results found</div>
   }
   return null
 }
-
 export function MobileSearch({
   siteHomeId,
   onSelect,
@@ -140,17 +277,15 @@ export function MobileSearch({
   const isLoading = isDebouncing || searchResults.isFetching
   const resultEntities = isDebouncing ? [] : searchResults.entities
   const searchItems: SearchResult[] = toSearchResults(resultEntities)
-
   useEffect(() => {
     onSearchActiveChange?.(isSearchActive)
     return () => onSearchActiveChange?.(false)
   }, [isSearchActive, onSearchActiveChange])
-
   return (
-    <div className="relative z-20 w-full gap-2 rounded-md p-2">
-      <div className="relative">
+    <div className={stylex.props(styles.s2145d5b1).className || ''}>
+      <div className={stylex.props(styles.sdef3facc).className || ''}>
         <Input
-          className="w-full flex-1 pr-8"
+          className={stylex.props(styles.s92d3c495).className || ''}
           value={searchValue}
           onChange={(e) => {
             setSearchValue(e.target.value)
@@ -164,7 +299,7 @@ export function MobileSearch({
       {isSearchActive ? (
         <div className="bg-background absolute inset-x-2 top-[calc(100%+8px)] z-20 max-h-[65dvh] overflow-hidden rounded-md border shadow-sm">
           <ScrollArea className="max-h-[65dvh]">
-            <div className="py-2">
+            <div className={stylex.props(styles.s34b56e).className || ''}>
               {searchItems.length > 0 ? (
                 searchItems.map((item: SearchResult) => {
                   return (
@@ -195,7 +330,6 @@ export function MobileSearch({
     </div>
   )
 }
-
 export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | null}) {
   const popoverState = usePopoverState()
   const [searchValue, setSearchValue] = useState('')
@@ -225,25 +359,20 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
         return
       }
-
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
         popoverState.onOpenChange(true)
       }
     }
-
     window.addEventListener('keydown', handleKeyDown)
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [popoverState])
-
   const searchItems: SearchResult[] = toSearchResults(resultEntities)
-
   useEffect(() => {
     if (focusedIndex >= searchItems.length) setFocusedIndex(0)
   }, [focusedIndex, searchItems])
-
   return (
     <div className="hidden flex-col sm:flex">
       <Popover
@@ -258,24 +387,24 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
               variant="ghost"
               size="icon"
               className={cn(
-                'h-8 rounded-full border-1 border-transparent p-0',
+                stylex.props(styles.s62783270).className || '',
                 popoverState.open && 'dark:bg-muted bg-black/5',
               )}
             >
-              <Search className="size-4" />
+              <Search className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
           </PopoverTrigger>
         </Tooltip>
-        <PopoverContent align="end" side="bottom" className="p-0">
+        <PopoverContent align="end" side="bottom" className={stylex.props(styles.s1aa13).className || ''}>
           <div className="flex h-[calc(100vh-100px)] max-h-[600px] flex-col">
-            <div className="relative flex items-center gap-2 self-stretch p-2">
+            <div className={stylex.props(styles.sf2aded09).className || ''}>
               <Search className="absolute top-1/2 left-4 z-30 size-4 -translate-y-1/2" />
               {isLoading ? (
                 <Spinner className="text-muted-foreground absolute top-1/2 right-4 z-30 size-4 -translate-y-1/2" />
               ) : null}
               <Input
                 value={searchValue}
-                className="h-8 flex-1 pr-8 pl-8"
+                className={stylex.props(styles.s39d68924).className || ''}
                 onChange={(e) => {
                   setSearchValue(e.target.value)
                 }}
@@ -284,34 +413,26 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
                     e.preventDefault()
                     popoverState.onOpenChange(false)
                   }
-
                   if (e.key === 'Enter') {
                     e.preventDefault()
-
                     if (!universalAppContext || isLoading) {
                       return
                     }
-
                     const selectedEntity = resultEntities[focusedIndex]
-
                     if (!selectedEntity) {
                       return
                     }
-
                     universalAppContext.openRoute?.({
                       key: 'document',
                       id: selectedEntity.id,
                     })
-
                     popoverState.onOpenChange(false)
                   }
-
                   if (e.key === 'ArrowUp') {
                     e.preventDefault()
                     if (!searchItems.length) return
                     setFocusedIndex((prev) => (prev - 1 + searchItems.length) % searchItems.length)
                   }
-
                   if (e.key === 'ArrowDown') {
                     e.preventDefault()
                     if (!searchItems.length) return
@@ -322,7 +443,7 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
             </div>
             <div className="min-h-0 w-full max-w-2xl flex-1">
               <ScrollArea>
-                <div className="flex flex-col">
+                <div className={stylex.props(styles.s783f19f3).className || ''}>
                   {searchItems.length > 0 ? (
                     searchItems.map((item: SearchResult, index: number) => {
                       return (
@@ -336,7 +457,6 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
                                       if (container) {
                                         const containerRect = container.getBoundingClientRect()
                                         const elementRect = el.getBoundingClientRect()
-
                                         if (elementRect.bottom > containerRect.bottom) {
                                           container.scrollTop += elementRect.bottom - containerRect.bottom
                                         } else if (elementRect.top < containerRect.top) {
@@ -378,7 +498,6 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
     </div>
   )
 }
-
 export function SearchResultItem({
   item,
   siteHomeId,
@@ -397,15 +516,14 @@ export function SearchResultItem({
   const collapsedPath = useCollapsedPath(item.path ?? [], elm)
   const routeKey = item.key.split(':comments/')[0] || item.key
   const unpackedId = unpackHmId(routeKey)
-
   useIsomorphicLayoutEffect(() => {
     if (selected) {
-      elm.current?.scrollIntoView({block: 'nearest'})
+      elm.current?.scrollIntoView({
+        block: 'nearest',
+      })
     }
   }, [selected])
-
   const navigateProps = useRouteLinkHref(routeKey)
-
   const selectProps = item.onSelect
     ? {
         onClick: () => {
@@ -420,7 +538,6 @@ export function SearchResultItem({
           navigateProps?.onClick?.(e)
         },
       }
-
   return (
     <Button
       {...props}
@@ -436,21 +553,21 @@ export function SearchResultItem({
     >
       {/* Icon column (only takes space if present) */}
       {item.icon && (
-        <div className="flex size-5 flex-none items-center justify-center">
+        <div className={stylex.props(styles.sc95934cc).className || ''}>
           {unpackedId ? <HMIcon id={unpackedId} icon={item.icon} /> : null}
         </div>
       )}
 
       {/* Main (title/details) column */}
       <div className="flex min-w-0 flex-1 flex-col justify-start gap-1">
-        <SizableText className="line-clamp-1 h-5 w-full truncate text-left font-sans font-medium">
+        <SizableText className={stylex.props(styles.sf8247e22).className || ''}>
           {!!item.path && unpackedId?.blockRef
             ? item.path[item.path?.length - 1]
             : highlightSearchMatch(item.title, item.searchQuery)}
         </SizableText>
 
         {unpackedId?.blockRef && (
-          <SizableText size="xs" weight="light" className="line-clamp-1 flex-none text-left font-sans text-gray-400">
+          <SizableText size="xs" weight="light" className={stylex.props(styles.s7f32d374).className || ''}>
             ...{highlightSearchMatch(item.title, item.searchQuery)}...
           </SizableText>
         )}
@@ -459,7 +576,7 @@ export function SearchResultItem({
           <div className="flex min-w-0 items-center gap-2 overflow-hidden">
             <div className="flex min-w-0 flex-1 items-center">
               {!!item.path && (
-                <SizableText size="xs" weight="light" className="line-clamp-1 truncate font-sans text-gray-400">
+                <SizableText size="xs" weight="light" className={stylex.props(styles.s558ede3b).className || ''}>
                   {collapsedPath.join(' / ')}
                 </SizableText>
               )}
@@ -468,7 +585,7 @@ export function SearchResultItem({
             {/* Type column */}
             <Tooltip content={item.versionTime || 'No timestamp available'}>
               <SizableText
-                className="flex-none whitespace-nowrap text-gray-400"
+                className={stylex.props(styles.s24363b51).className || ''}
                 size="xs"
                 weight="light"
                 color={unpackedId?.latest ? 'success' : 'default'}
@@ -482,7 +599,6 @@ export function SearchResultItem({
     </Button>
   )
 }
-
 export type SearchResultItem = {
   key: string
   title: string
@@ -493,7 +609,6 @@ export type SearchResultItem = {
   onFocus: () => void
   onMouseEnter: () => void
 }
-
 export function RecentSearchResultItem({
   item,
   selected,
@@ -513,12 +628,10 @@ export function RecentSearchResultItem({
   if (item.id) {
     const doc = homeEntity.data?.type === 'document' ? homeEntity.data.document : undefined
     const homeTitle = getDocumentTitle(doc)
-
     if (homeTitle && homeTitle !== item.title) {
       path = [homeTitle, ...path]
     }
   }
-
   return (
     <SearchResultItem
       {...props}
@@ -530,7 +643,6 @@ export function RecentSearchResultItem({
     />
   )
 }
-
 export function highlightSearchMatch(text: string, highlight: string = '') {
   if (!highlight) return text
   const parts = text.split(new RegExp(`(${escapeRegExp(highlight)})`, 'gi'))
@@ -552,7 +664,6 @@ export function highlightSearchMatch(text: string, highlight: string = '') {
     </>
   )
 }
-
 export function SearchInput({
   children,
   inputProps,
@@ -576,8 +687,8 @@ export function SearchInput({
   loading?: boolean
 }>) {
   return (
-    <div className="flex h-full w-full flex-col gap-2">
-      <div className="relative flex items-center gap-2 rounded-md">
+    <div className={stylex.props(styles.se978af5d).className || ''}>
+      <div className={stylex.props(styles.sd9440047).className || ''}>
         <Search className="absolute top-1/2 left-2.5 z-3 size-4 -translate-y-1/2" />
         {loading ? (
           <Spinner className="absolute top-1/2 right-7 z-3 size-4 -translate-y-1/2 text-black/50 dark:text-white/50" />
@@ -585,24 +696,21 @@ export function SearchInput({
         <Input
           autoFocus={true}
           placeholder="Search Hypermedia documents"
-          className="w-full px-1 pr-8 pl-8"
+          className={stylex.props(styles.s97941fa1).className || ''}
           {...inputProps}
           onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Escape') {
               e.preventDefault()
               onEscape?.()
             }
-
             if (e.nativeEvent.key === 'Enter') {
               e.preventDefault()
               onEnter?.()
             }
-
             if (e.nativeEvent.key === 'ArrowUp') {
               e.preventDefault()
               onArrowUp?.()
             }
-
             if (e.nativeEvent.key === 'ArrowDown') {
               e.preventDefault()
               onArrowDown?.()
@@ -611,7 +719,7 @@ export function SearchInput({
         />
       </div>
       <div className="max-h-[200px] min-h-0 flex-1 overflow-hidden">
-        <ScrollArea className="h-full">{children}</ScrollArea>
+        <ScrollArea className={stylex.props(styles.sb42244d4).className || ''}>{children}</ScrollArea>
       </div>
     </div>
   )
@@ -619,7 +727,6 @@ export function SearchInput({
 function escapeRegExp(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
-
 function normalizePath(path: string[]): string[] {
   return path.map((segment) => {
     const [first, ...rest] = segment.split('-')
@@ -627,7 +734,6 @@ function normalizePath(path: string[]): string[] {
     return [first.charAt(0).toUpperCase() + first.slice(1), ...rest].join(' ')
   })
 }
-
 export function useCollapsedPath(
   path: string[],
   containerRef: React.RefObject<HTMLElement>,
@@ -635,20 +741,17 @@ export function useCollapsedPath(
   maxWidth = 200, // fallback width if ref not ready
 ) {
   const [collapsedPath, setCollapsedPath] = useState<string[]>(path)
-
   useEffect(() => {
     if (!containerRef.current || path.length <= 3) {
       setCollapsedPath(path)
       return
     }
-
     const containerWidth = containerRef.current.offsetWidth || maxWidth
     const spacer = 10
     const charWidth = fontSize * 0.6 // approx width of each character
 
     // Estimate full breadcrumb width
     const fullWidth = path.reduce((acc, item) => acc + item.length * charWidth + spacer, 0)
-
     if (fullWidth <= containerWidth) {
       setCollapsedPath(path)
     } else {
@@ -656,6 +759,5 @@ export function useCollapsedPath(
       setCollapsedPath([path[0], '…', path[path.length - 1]])
     }
   }, [path, containerRef])
-
   return collapsedPath
 }

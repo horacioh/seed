@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {zodResolver} from '@hookform/resolvers/zod'
 import {useTxString} from '@shm/shared/translation'
 import {useEffect} from 'react'
@@ -8,15 +9,36 @@ import {FormCheckbox, FormInput} from './form-input'
 import {FormField} from './forms'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
-
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s33548e: {
+    marginInline: 'calc(0.25rem * 0)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s915983e3: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s6f33f519: {
+    color: 'oklch(63.7% 0.237 25.331)',
+  },
+})
 const emailNotificationsSchema = z.object({
   email: z.string().email(),
   notifyOwnedDocChange: z.boolean(),
   notifySiteDiscussions: z.boolean(),
 })
-
 export type UIEmailNotificationsFormSchema = z.infer<typeof emailNotificationsSchema>
-
 export function UIEmailNotificationsForm({
   onClose,
   onComplete,
@@ -51,11 +73,16 @@ export function UIEmailNotificationsForm({
     setFocus('email')
   }, [setFocus])
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <FormField name="email" label={tx('Notification Email')} errors={errors} className="mx-0">
+    <form onSubmit={handleSubmit(onSubmit)} className={stylex.props(styles.sfbc6e290).className || ''}>
+      <FormField
+        name="email"
+        label={tx('Notification Email')}
+        errors={errors}
+        className={stylex.props(styles.s33548e).className || ''}
+      >
         <FormInput name="email" control={control} placeholder="me@example.com" />
       </FormField>
-      <div className="flex flex-col gap-3">
+      <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <SizableText>{tx('Notify me when')}:</SizableText>
         <FormCheckbox name="notifyOwnedDocChange" label={tx('Someone changes a document I own')} control={control} />
         <FormCheckbox
@@ -65,7 +92,7 @@ export function UIEmailNotificationsForm({
         />
       </div>
       <EmptyNotifWarning control={control} />
-      <div className="flex items-center justify-end gap-3">
+      <div className={stylex.props(styles.s915983e3).className || ''}>
         <Spinner hide={!isPending} />
         <Button
           variant="ghost"
@@ -86,7 +113,6 @@ export function UIEmailNotificationsForm({
     </form>
   )
 }
-
 function EmptyNotifWarning({control}: {control: Control<z.infer<typeof emailNotificationsSchema>>}) {
   const tx = useTxString()
   const {field: notifyOwnedDocChangeField} = useController({
@@ -98,9 +124,12 @@ function EmptyNotifWarning({control}: {control: Control<z.infer<typeof emailNoti
     name: 'notifySiteDiscussions',
   })
   if (notifyOwnedDocChangeField.value || notifySiteDiscussions.value) return null
-  return <SizableText className="text-red-500">{tx('You will not receive any notifications.')}</SizableText>
+  return (
+    <SizableText className={stylex.props(styles.s6f33f519).className || ''}>
+      {tx('You will not receive any notifications.')}
+    </SizableText>
+  )
 }
-
 export function EmailNotificationsSuccess({email, onClose}: {email?: string | null; onClose: () => void}) {
   return (
     <>

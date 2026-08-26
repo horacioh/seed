@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMExistingDraft, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {
   activityFilterToSlug,
@@ -26,7 +27,25 @@ import {
 import {cloneElement, isValidElement, useRef, useState} from 'react'
 import {PageTab} from './page-tabs'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sfb5e9ae0: {
+    display: 'flex',
+    width: '100%',
+    flexShrink: '0',
+  },
+  sb162303e: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+  },
+  s3015688d: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 export function DocumentTools({
   id,
   activeTab,
@@ -74,27 +93,21 @@ export function DocumentTools({
   const containerRef = useRef<HTMLDivElement>(null)
   const measureRef = useRef<HTMLDivElement>(null)
   const [showLabels, setShowLabels] = useState(true)
-
   useIsomorphicLayoutEffect(() => {
     if (!containerRef.current || !measureRef.current) return
-
     const updateLabelVisibility = () => {
       if (!containerRef.current || !measureRef.current) return
-
       const containerWidth = containerRef.current.offsetWidth
       const measuredWidth = measureRef.current.offsetWidth
 
       // Add some padding for safety
       setShowLabels(measuredWidth + 20 <= containerWidth)
     }
-
     updateLabelVisibility()
-
     const resizeObserver = new ResizeObserver(() => {
       updateLabelVisibility()
     })
     resizeObserver.observe(containerRef.current)
-
     return () => {
       resizeObserver.disconnect()
     }
@@ -106,8 +119,11 @@ export function DocumentTools({
   const panelFor = (): any => currentPanel || undefined
 
   // Strip blockRef/blockRange for non-content tabs
-  const idWithoutBlock = {...id, blockRef: null, blockRange: null}
-
+  const idWithoutBlock = {
+    ...id,
+    blockRef: null,
+    blockRange: null,
+  }
   const documentRoute: NavRoute = {
     key: 'document',
     // Link the Content tab to the latest content at the base path — never pin
@@ -116,7 +132,11 @@ export function DocumentTools({
     // has no `?v=`. Without stripping it, switching to Content would jump to
     // `/path?v=<resolved>`, pinning the reader to a snapshot and desyncing from
     // later edits. The sibling view tabs already render version-independent hrefs.
-    id: {...id, version: null, latest: true},
+    id: {
+      ...id,
+      version: null,
+      latest: true,
+    },
     panel: panelFor(),
   }
   const inspectActivityPanelParam =
@@ -232,7 +252,11 @@ export function DocumentTools({
             icon: Users,
             active: activeTab == 'collaborators',
             count: collabsCount,
-            route: {key: 'collaborators', id: idWithoutBlock, panel: panelFor()},
+            route: {
+              key: 'collaborators',
+              id: idWithoutBlock,
+              panel: panelFor(),
+            },
           },
           {
             label: 'Comments',
@@ -240,7 +264,11 @@ export function DocumentTools({
             icon: MessageSquare,
             active: activeTab == 'comments',
             count: commentsCount,
-            route: {key: 'comments', id: idWithoutBlock, panel: panelFor()},
+            route: {
+              key: 'comments',
+              id: idWithoutBlock,
+              panel: panelFor(),
+            },
           },
           {
             label: 'Citations',
@@ -266,7 +294,11 @@ export function DocumentTools({
                   icon: Info,
                   active: activeTab === 'metadata',
                   count: metadataCount,
-                  route: {key: 'metadata', id: idWithoutBlock, panel: panelFor()} as NavRoute,
+                  route: {
+                    key: 'metadata',
+                    id: idWithoutBlock,
+                    panel: panelFor(),
+                  } as NavRoute,
                 },
               ]
             : []),
@@ -275,7 +307,14 @@ export function DocumentTools({
   const standaloneAction =
     !hasActive && activeTabAction
       ? isValidElement(activeTabAction)
-        ? cloneElement(activeTabAction as React.ReactElement<{accent?: boolean}>, {accent: true})
+        ? cloneElement(
+            activeTabAction as React.ReactElement<{
+              accent?: boolean
+            }>,
+            {
+              accent: true,
+            },
+          )
         : activeTabAction
       : null
   const tabButtons = (
@@ -319,16 +358,14 @@ export function DocumentTools({
       {standaloneAction}
     </>
   )
-
   if (layoutProps) {
     const {wrapperProps, sidebarProps, mainContentProps, showSidebars} = layoutProps
-
     if (showSidebars) {
       return (
-        <div className="flex w-full shrink-0">
+        <div className={stylex.props(styles.sfb5e9ae0).className || ''}>
           <div
             {...wrapperProps}
-            className={cn(wrapperProps.className, 'flex flex-1 items-center')}
+            className={cn(wrapperProps.className, stylex.props(styles.sb162303e).className || '')}
             style={wrapperProps.style}
           >
             <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto !p-0')} />
@@ -347,8 +384,8 @@ export function DocumentTools({
 
     // No sidebars: keep the tab row aligned with the centered document header.
     return (
-      <div className="flex w-full shrink-0">
-        <div style={wrapperProps.style} className="mx-auto flex w-full items-center justify-center">
+      <div className={stylex.props(styles.sfb5e9ae0).className || ''}>
+        <div style={wrapperProps.style} className={stylex.props(styles.s3015688d).className || ''}>
           <div
             {...mainContentProps}
             ref={containerRef}
@@ -360,9 +397,8 @@ export function DocumentTools({
       </div>
     )
   }
-
   return (
-    <div className="flex w-full shrink-0">
+    <div className={stylex.props(styles.sfb5e9ae0).className || ''}>
       <div ref={containerRef} className="flex min-w-0 flex-1 items-center gap-2 p-1 md:gap-4 md:p-2">
         {tabButtons}
       </div>

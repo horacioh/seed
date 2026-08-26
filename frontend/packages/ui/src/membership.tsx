@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMContactRecord} from '@seed-hypermedia/client/hm-types'
 import {hmId, useRouteLink} from '@shm/shared'
 import {useContactListOfAccount} from '@shm/shared/models/contacts'
@@ -7,6 +8,23 @@ import {Spinner} from './spinner'
 import {SizableText} from './text'
 
 /** Shows sites/accounts that this account has membership in (all contacts). */
+const styles = stylex.create({
+  s65917ffb: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  s65430849: {
+    paddingBlock: 'calc(0.25rem * 8)',
+    textAlign: 'center',
+  },
+  sb7e2bc2: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+})
 export function MembershipContent({accountUid}: {accountUid: string}) {
   const contacts = useContactListOfAccount(accountUid)
   const siteSubscribed = contacts.data?.filter((contact) => contact.subscribe?.site)
@@ -16,20 +34,20 @@ export function MembershipContent({accountUid}: {accountUid: string}) {
   )
   if (contacts.isLoading) {
     return (
-      <div className="flex justify-center py-8">
+      <div className={stylex.props(styles.s65917ffb).className || ''}>
         <Spinner />
       </div>
     )
   }
   if (!uniqueSiteSubscribed?.length) {
     return (
-      <div className="py-8 text-center">
+      <div className={stylex.props(styles.s65430849).className || ''}>
         <SizableText color="muted">No spaces joined yet</SizableText>
       </div>
     )
   }
   return (
-    <div className="flex flex-col gap-2 py-4">
+    <div className={stylex.props(styles.sb7e2bc2).className || ''}>
       {uniqueSiteSubscribed?.map((contact) => {
         return <MembershipItem key={contact.subject} contact={contact} />
       })}
@@ -39,12 +57,13 @@ export function MembershipContent({accountUid}: {accountUid: string}) {
 
 /** Single item showing a site/account membership. */
 function MembershipItem({contact}: {contact: HMContactRecord}) {
-  const subject = useAccount(contact.subject, {subscribe: true})
+  const subject = useAccount(contact.subject, {
+    subscribe: true,
+  })
   const linkProps = useRouteLink({
     key: 'document',
     id: hmId(contact.subject),
   })
-
   const name = contact.name || subject.data?.metadata?.name
   const icon = subject.data?.metadata?.icon
   return (

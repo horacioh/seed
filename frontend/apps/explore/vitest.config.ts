@@ -1,8 +1,10 @@
+import stylex from '@stylexjs/unplugin'
 import {defineConfig} from 'vitest/config'
 
 const workspacePath = (path: string) => new URL(path, import.meta.url).pathname
 
 export default defineConfig({
+  plugins: [stylex.vite()],
   define: {
     'process.env': {},
   },

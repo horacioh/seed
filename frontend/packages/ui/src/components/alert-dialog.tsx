@@ -1,22 +1,30 @@
+import * as stylex from '@stylexjs/stylex'
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import * as React from 'react'
-
 import type {VariantProps} from 'class-variance-authority'
 import {buttonVariants} from '../button'
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  saf49316c: {
+    fontSize: '1.125rem',
+    lineHeight: 'calc(1.75 / 1.125)',
+    fontWeight: '600',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 function AlertDialog({...props}: React.ComponentProps<typeof AlertDialogPrimitive.Root>) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
 }
-
 function AlertDialogTrigger({...props}: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) {
   return <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
 }
-
 function AlertDialogPortal({...props}: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) {
   return <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
 }
-
 function AlertDialogOverlay({className, ...props}: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) {
   return (
     <AlertDialogPrimitive.Overlay
@@ -29,7 +37,6 @@ function AlertDialogOverlay({className, ...props}: React.ComponentProps<typeof A
     />
   )
 }
-
 function AlertDialogContent({
   className,
   children,
@@ -51,7 +58,6 @@ function AlertDialogContent({
     </AlertDialogPortal>
   )
 }
-
 function AlertDialogHeader({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -61,7 +67,6 @@ function AlertDialogHeader({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function AlertDialogFooter({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -71,27 +76,24 @@ function AlertDialogFooter({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function AlertDialogTitle({className, ...props}: React.ComponentProps<typeof AlertDialogPrimitive.Title>) {
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
-      className={cn('text-lg font-semibold', className)}
+      className={cn(stylex.props(styles.saf49316c).className || '', className)}
       {...props}
     />
   )
 }
-
 function AlertDialogDescription({className, ...props}: React.ComponentProps<typeof AlertDialogPrimitive.Description>) {
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
-      className={cn('text-muted-foreground text-sm', className)}
+      className={cn(stylex.props(styles.sa56e915f).className || '', className)}
       {...props}
     />
   )
 }
-
 function AlertDialogAction({
   className,
   variant,
@@ -103,12 +105,21 @@ function AlertDialogAction({
   // stylesheet order pick the winner (red button, wrong text color).
   return (
     <AlertDialogPrimitive.Action
-      className={props.asChild ? className : cn(buttonVariants({variant, size, className}))}
+      className={
+        props.asChild
+          ? className
+          : cn(
+              buttonVariants({
+                variant,
+                size,
+                className,
+              }),
+            )
+      }
       {...props}
     />
   )
 }
-
 function AlertDialogCancel({
   className,
   variant,
@@ -117,12 +128,21 @@ function AlertDialogCancel({
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> & VariantProps<typeof buttonVariants>) {
   return (
     <AlertDialogPrimitive.Cancel
-      className={props.asChild ? className : cn(buttonVariants({variant: variant ?? 'outline', size, className}))}
+      className={
+        props.asChild
+          ? className
+          : cn(
+              buttonVariants({
+                variant: variant ?? 'outline',
+                size,
+                className,
+              }),
+            )
+      }
       {...props}
     />
   )
 }
-
 export {
   AlertDialog,
   AlertDialogAction,

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {agentAccessCanChat, agentAccessCanWrite} from './access'
 import {type AgentRunActivity, type AgentSessionTriggerContext} from './client'
 import {AgentRunStatusBar, useRunStartedAt} from './agent-run-status'
@@ -63,6 +64,107 @@ import {getTriggerActivityRoute, summarizeTriggerSource, TriggerContextView} fro
  * to drive. A parked parent leaves this page silent for minutes, so the banner is what makes that
  * legible rather than looking like a stalled chat.
  */
+const styles = stylex.create({
+  s6a3cf028: {
+    display: 'flex',
+    flex: 'none',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 3)',
+  },
+  se6c9d13: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flex: 'none',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf57902f3: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s12583799: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s6ebbda8: {
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s26068628: {
+    borderColor: 'var(--border)',
+    flex: 'none',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  sa0238738: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sb56b7abc: {
+    pointerEvents: 'none',
+    position: 'sticky',
+    bottom: 'calc(0.25rem * 2)',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  s87cca2a6: {
+    backgroundColor: 'var(--muted)',
+    borderColor: 'var(--border)',
+    color: 'var(--foreground)',
+    pointerEvents: 'auto',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1.5)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+  },
+  s2b00eca2: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s25987914: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s49ebd2b1: {
+    backgroundColor: 'var(--muted)',
+    marginRight: 'calc(0.25rem * 6)',
+    overflow: 'auto',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 function SubSessionHeader({
   parentTitle,
   isDriven,
@@ -73,14 +175,14 @@ function SubSessionHeader({
   onOpenParent: () => void
 }) {
   return (
-    <div className="flex flex-none flex-col gap-2 pt-3">
+    <div className={stylex.props(styles.s6a3cf028).className || ''}>
       <button
         type="button"
         className="bg-muted hover:bg-muted/70 text-muted-foreground hover:text-foreground flex max-w-full items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-xs"
         onClick={onOpenParent}
         title="Open the parent session"
       >
-        <CornerLeftUp className="size-3 flex-none" />
+        <CornerLeftUp className={stylex.props(styles.se6c9d13).className || ''} />
         <span className="min-w-0 truncate">{parentTitle || 'Parent session'}</span>
       </button>
       {isDriven ? (
@@ -91,7 +193,6 @@ function SubSessionHeader({
     </div>
   )
 }
-
 function TriggerContextPopover({
   context,
   onOpenTrigger,
@@ -103,15 +204,15 @@ function TriggerContextPopover({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" aria-label={`Started by trigger: ${context.triggerName}`}>
-          <Info className="size-4" />
+          <Info className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="!w-[min(92vw,44rem)]">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className={stylex.props(styles.sfbc6e28f).className || ''}>
+          <div className={stylex.props(styles.sf57902f3).className || ''}>
             <div className="min-w-0">
               <SizableText weight="bold">Started by trigger</SizableText>
-              <SizableText size="sm" color="muted" className="block truncate">
+              <SizableText size="sm" color="muted" className={stylex.props(styles.s12583799).className || ''}>
                 {context.triggerName} · {context.activitySummary}
               </SizableText>
             </div>
@@ -128,7 +229,7 @@ function TriggerContextPopover({
             {context.error ? <TriggerDetail label="Error" value={context.error} /> : null}
           </div>
           <div className="grid gap-3 md:grid-cols-2">
-            <div className="flex flex-col gap-1">
+            <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Trigger prompt
               </SizableText>
@@ -136,7 +237,7 @@ function TriggerContextPopover({
                 {context.prompt}
               </pre>
             </div>
-            <div className="flex flex-col gap-1">
+            <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Activity context passed to session
               </SizableText>
@@ -150,7 +251,6 @@ function TriggerContextPopover({
     </Popover>
   )
 }
-
 function TriggerDetail({label, value, mono}: {label: string; value: string; mono?: boolean}) {
   return (
     <div className="min-w-0">
@@ -163,7 +263,6 @@ function TriggerDetail({label, value, mono}: {label: string; value: string; mono
     </div>
   )
 }
-
 function AgentSessionPage({
   sessionId,
   routeServerUrl,
@@ -184,7 +283,9 @@ function AgentSessionPage({
   const messageSession = useMessageAgentSession(serverUrl, selectedAccountId)
   const stopSession = useStopAgentSession(serverUrl, selectedAccountId)
   const updateSession = useUpdateAgentSession(serverUrl, selectedAccountId)
-  const deleteSessionDialog = useAppDialog(DeleteAgentSessionDialog, {isAlert: true})
+  const deleteSessionDialog = useAppDialog(DeleteAgentSessionDialog, {
+    isAlert: true,
+  })
   const systemPromptDialog = useAppDialog(SystemPromptDialog)
   const lastSeq = session.data?.events.filter((event) => event.seq !== Number.MAX_SAFE_INTEGER).at(-1)?.seq
   const liveState = useAgentWebSocketSubscription(serverUrl, selectedAccountId, `sessions/${sessionId}`, lastSeq)
@@ -237,7 +338,9 @@ function AgentSessionPage({
   // to tell "still being driven by the parent" from "finished, yours to continue". That run is a
   // child in the parent's tree, so it is reachable by id (SessionInfo.runId), not by ListRuns.
   const parentSessionId = session.data?.session.parentSessionId
-  const parentSession = useAgentSession(serverUrl, selectedAccountId, parentSessionId, {poll: false})
+  const parentSession = useAgentSession(serverUrl, selectedAccountId, parentSessionId, {
+    poll: false,
+  })
   const ownRun = useRun(serverUrl, selectedAccountId, parentSessionId ? session.data?.session.runId : undefined)
   const hasLiveRun = !!ownRun.data && !TERMINAL_RUN_STATUSES.has(ownRun.data.status)
   const isDrivenByParent = !!parentSessionId && (isAgentStreaming || hasLiveRun)
@@ -245,7 +348,6 @@ function AgentSessionPage({
     () => (session.data?.triggerContext ? getTriggerActivityRoute(session.data.triggerContext) : null),
     [session.data?.triggerContext],
   )
-
   useEffect(() => {
     if (!partialAssistantText) return
     console.info('[agents/ui] rendering streaming assistant partial', {
@@ -253,16 +355,13 @@ function AgentSessionPage({
       partialLength: partialAssistantText.length,
     })
   }, [partialAssistantText, sessionId])
-
   useEffect(() => {
     setTitleDraft(persistedTitle)
     setTitleSaveState('idle')
   }, [loadedSessionId])
-
   useEffect(() => {
     if (titleSaveState === 'idle') setTitleDraft(persistedTitle)
   }, [persistedTitle, titleSaveState])
-
   useEffect(() => {
     if (!loadedSessionId) return
     const saveId = titleSaveIdRef.current + 1
@@ -275,7 +374,10 @@ function AgentSessionPage({
     const timer = setTimeout(() => {
       setTitleSaveState('saving')
       void updateSession
-        .mutateAsync({sessionId: loadedSessionId, title})
+        .mutateAsync({
+          sessionId: loadedSessionId,
+          title,
+        })
         .then(() => {
           if (titleSaveIdRef.current !== saveId) return
           setTitleSaveState('saved')
@@ -291,17 +393,19 @@ function AgentSessionPage({
     }, 600)
     return () => clearTimeout(timer)
   }, [loadedSessionId, persistedTitle, titleDraft])
-
   useEffect(() => {
     autoScroll.resetToBottom()
   }, [sessionId])
-
   useEffect(() => {
     const eventId = getSharedEventIdFromHash(window.location.hash)
     if (!eventId || !chatRows.some((row) => row.key === eventId)) return
-    requestAnimationFrame(() => document.getElementById(`event-${eventId}`)?.scrollIntoView({block: 'center'}))
+    requestAnimationFrame(
+      () =>
+        document.getElementById(`event-${eventId}`)?.scrollIntoView({
+          block: 'center',
+        }),
+    )
   }, [chatRows])
-
   function openDeleteSessionDialog() {
     if (!session.data) return
     const currentSession = session.data.session
@@ -310,20 +414,31 @@ function AgentSessionPage({
       selectedAccountId: selectedAccountId ?? null,
       sessionId: currentSession.id,
       sessionTitle: currentSession.title || 'Untitled session',
-      onDeleted: () => navigate({key: 'agent', agentId: currentSession.agentId, serverUrl}),
+      onDeleted: () =>
+        navigate({
+          key: 'agent',
+          agentId: currentSession.agentId,
+          serverUrl,
+        }),
     })
   }
-
   const doSendAgentMessage = useCallback(
     async (message: AgentSessionDraftMessage | AgentSessionDraftMessage[]) => {
       try {
         let messages = Array.isArray(message) ? message : [message]
         const textLength = messages.map((message) => message.text).join('\n').length
-        console.info('[agents/ui] sending session message', {serverUrl, sessionId, textLength})
+        console.info('[agents/ui] sending session message', {
+          serverUrl,
+          sessionId,
+          textLength,
+        })
         // The stamped drafts carry the clientMessageIds the optimistic rows were keyed with, so the
         // server's echo replaces those rows instead of rendering beside them.
         if (selectedAccountId) messages = addOptimisticSessionMessage(serverUrl, selectedAccountId, sessionId, messages)
-        const result = await messageSession.mutateAsync({sessionId, message: messages})
+        const result = await messageSession.mutateAsync({
+          sessionId,
+          message: messages,
+        })
         if (result._ !== 'MessageSessionResponse') throw new Error('Unexpected message response')
       } catch (error) {
         toast.error(error instanceof Error ? error.message : 'Could not send message')
@@ -331,17 +446,14 @@ function AgentSessionPage({
     },
     [messageSession, selectedAccountId, serverUrl, sessionId],
   )
-
   async function handleSendMessage(message: AgentSessionDraftMessage) {
     await doSendAgentMessage(message)
   }
-
   const handleRetrySession = useCallback(() => {
     retrySession.mutate(sessionId, {
       onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not retry this turn'),
     })
   }, [retrySession, sessionId])
-
   async function handleStopSession() {
     try {
       const result = await stopSession.mutateAsync(sessionId)
@@ -350,10 +462,9 @@ function AgentSessionPage({
       toast.error(error instanceof Error ? error.message : 'Could not stop agent response')
     }
   }
-
   return (
-    <PanelContainer className="flex flex-col overflow-hidden">
-      <div className="border-border flex-none border-b">
+    <PanelContainer className={stylex.props(styles.s6ebbda8).className || ''}>
+      <div className={stylex.props(styles.s26068628).className || ''}>
         <Container className="max-w-4xl gap-4 pt-4 pb-4">
           <AgentHeader
             agent={agent.data?.agent}
@@ -364,9 +475,24 @@ function AgentSessionPage({
             triggersCount={triggers.data?.length}
             breadcrumbItems={[
               ...(agentId
-                ? [{label: 'Sessions', route: {key: 'agent' as const, agentId, serverUrl}}]
-                : [{label: 'Sessions'}]),
-              {label: titleDraft || persistedTitle},
+                ? [
+                    {
+                      label: 'Sessions',
+                      route: {
+                        key: 'agent' as const,
+                        agentId,
+                        serverUrl,
+                      },
+                    },
+                  ]
+                : [
+                    {
+                      label: 'Sessions',
+                    },
+                  ]),
+              {
+                label: titleDraft || persistedTitle,
+              },
             ]}
           />
         </Container>
@@ -380,7 +506,17 @@ function AgentSessionPage({
         backLabel="Back to agent sessions"
         onBack={() => {
           const agentId = session.data?.session.agentId
-          navigate(agentId ? {key: 'agent', agentId, serverUrl} : {key: 'agents'})
+          navigate(
+            agentId
+              ? {
+                  key: 'agent',
+                  agentId,
+                  serverUrl,
+                }
+              : {
+                  key: 'agents',
+                },
+          )
         }}
         actions={
           <>
@@ -406,14 +542,14 @@ function AgentSessionPage({
               }
               disabled={!session.data}
             >
-              <ScrollText className="size-4" />
+              <ScrollText className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
             <OptionsDropdown
               align="end"
               menuItems={[
                 {
                   key: 'copy-session-url',
-                  icon: <Link2 className="size-4" />,
+                  icon: <Link2 className={stylex.props(styles.sca3de968).className || ''} />,
                   label: 'Copy session URL',
                   disabled: !agentId,
                   onClick: () => {
@@ -427,7 +563,7 @@ function AgentSessionPage({
                   ? [
                       {
                         key: 'delete-session',
-                        icon: <Trash2 className="size-4" />,
+                        icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
                         label: 'Delete session',
                         variant: 'destructive' as const,
                         onClick: openDeleteSessionDialog,
@@ -440,7 +576,7 @@ function AgentSessionPage({
         }
       >
         {session.data?.triggerContext ? (
-          <div className="flex flex-none items-center gap-2">
+          <div className={stylex.props(styles.sa0238738).className || ''}>
             <TriggerContextPopover
               context={session.data.triggerContext}
               onOpenTrigger={() =>
@@ -462,7 +598,7 @@ function AgentSessionPage({
               }}
               disabled={!triggerActivityRoute}
             >
-              <ExternalLink className="size-4" />
+              <ExternalLink className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
           </div>
         ) : null}
@@ -470,7 +606,7 @@ function AgentSessionPage({
       <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col pr-1 pl-4">
         {session.isLoading ? <SizableText color="muted">Loading session…</SizableText> : null}
         {session.isError ? (
-          <SizableText className="text-destructive">
+          <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
             {session.error instanceof Error ? session.error.message : 'Could not load session'}
           </SizableText>
         ) : null}
@@ -513,7 +649,12 @@ function AgentSessionPage({
                       onRetry={row.key === retryableRowKey ? handleRetrySession : undefined}
                       retryPending={retrySession.isPending}
                       onOpenSession={(childSessionId, childAgentId) =>
-                        navigate({key: 'agent-session', agentId: childAgentId, sessionId: childSessionId, serverUrl})
+                        navigate({
+                          key: 'agent-session',
+                          agentId: childAgentId,
+                          sessionId: childSessionId,
+                          serverUrl,
+                        })
                       }
                     />
                   </div>
@@ -524,13 +665,13 @@ function AgentSessionPage({
                   <AgentRunStatusBar startedAt={runStartedAt} activity={liveState.activity} usage={liveState.usage} />
                 ) : null}
                 {autoScroll.showScrollButton ? (
-                  <div className="pointer-events-none sticky bottom-2 flex justify-center">
+                  <div className={stylex.props(styles.sb56b7abc).className || ''}>
                     <button
                       onClick={autoScroll.scrollToBottom}
-                      className="bg-muted border-border text-foreground pointer-events-auto rounded-full border p-1.5 shadow-lg"
+                      className={stylex.props(styles.s87cca2a6).className || ''}
                       aria-label="Scroll to latest message"
                     >
-                      <ArrowDown className="size-4" />
+                      <ArrowDown className={stylex.props(styles.sca3de968).className || ''} />
                     </button>
                   </div>
                 ) : null}
@@ -544,7 +685,12 @@ function AgentSessionPage({
               frozenRunIds={frozenRuns}
               readOnly={!canWrite}
               onOpenSession={(childSessionId, childAgentId) =>
-                navigate({key: 'agent-session', agentId: childAgentId, sessionId: childSessionId, serverUrl})
+                navigate({
+                  key: 'agent-session',
+                  agentId: childAgentId,
+                  sessionId: childSessionId,
+                  serverUrl,
+                })
               }
             />
             <AgentRichMessageComposer
@@ -573,8 +719,15 @@ function AgentSessionPage({
     </PanelContainer>
   )
 }
-
-function SystemPromptDialog({input}: {input: {prompt: string; updatedAt?: number}; onClose: () => void}) {
+function SystemPromptDialog({
+  input,
+}: {
+  input: {
+    prompt: string
+    updatedAt?: number
+  }
+  onClose: () => void
+}) {
   return (
     <div className="flex max-w-[min(92vw,42rem)] min-w-[min(92vw,42rem)] flex-col gap-4">
       <div>
@@ -590,7 +743,6 @@ function SystemPromptDialog({input}: {input: {prompt: string; updatedAt?: number
     </div>
   )
 }
-
 function DeleteAgentSessionDialog({
   input,
   onClose,
@@ -605,7 +757,6 @@ function DeleteAgentSessionDialog({
   onClose: () => void
 }) {
   const deleteSession = useDeleteAgentSession(input.serverUrl, input.selectedAccountId)
-
   async function handleDelete(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
     try {
@@ -618,9 +769,8 @@ function DeleteAgentSessionDialog({
       toast.error(error instanceof Error ? error.message : 'Could not delete session')
     }
   }
-
   return (
-    <div className="flex flex-col gap-4 rounded-lg p-4">
+    <div className={stylex.props(styles.s2b00eca2).className || ''}>
       <AlertDialogTitle>Delete session?</AlertDialogTitle>
       <AlertDialogDescription>
         This will permanently delete “{input.sessionTitle}” and its messages from the agent server. This action cannot
@@ -638,7 +788,7 @@ function DeleteAgentSessionDialog({
             onClick={(event) => void handleDelete(event)}
             disabled={deleteSession.isLoading}
           >
-            <Trash2 className="size-4" />
+            <Trash2 className={stylex.props(styles.sca3de968).className || ''} />
             Delete session
           </Button>
         </AlertDialogAction>
@@ -646,13 +796,18 @@ function DeleteAgentSessionDialog({
     </div>
   )
 }
-
 const PartialAssistantRow = React.memo(function PartialAssistantRow({text}: {text: string}) {
-  const parts = useMemo<ChatMessagePart[]>(() => [{type: 'text', text}], [text])
-
+  const parts = useMemo<ChatMessagePart[]>(
+    () => [
+      {
+        type: 'text',
+        text,
+      },
+    ],
+    [text],
+  )
   return <AssistantMessageParts parts={parts} isStreaming />
 })
-
 const AgentSessionChatRow = React.memo(function AgentSessionChatRow({
   row,
   serverUrl,
@@ -678,7 +833,7 @@ const AgentSessionChatRow = React.memo(function AgentSessionChatRow({
       // First message of a triggered session: render the human prompt (if any) and a friendly
       // trigger card instead of the raw <trigger_context> text that is sent to the model.
       return (
-        <div className="flex flex-col gap-1.5">
+        <div className={stylex.props(styles.s25987914).className || ''}>
           {row.message.content?.trim() || row.message.blocks?.length ? (
             <ChatMessageBubble
               message={row.message}
@@ -707,11 +862,9 @@ const AgentSessionChatRow = React.memo(function AgentSessionChatRow({
       />
     )
   }
-
   if (row.kind === 'error') {
     return <AgentErrorRow message={row.message} onRetry={onRetry} retryPending={retryPending} />
   }
-
   if (row.kind === 'run-record') {
     // The pinned card's afterlife: the same card, frozen at the moment the run completed.
     return (
@@ -724,14 +877,10 @@ const AgentSessionChatRow = React.memo(function AgentSessionChatRow({
       />
     )
   }
-
   return (
-    <pre className="bg-muted mr-6 overflow-auto rounded-lg px-3 py-2 text-xs">
-      {JSON.stringify(row.event.event, null, 2)}
-    </pre>
+    <pre className={stylex.props(styles.s49ebd2b1).className || ''}>{JSON.stringify(row.event.event, null, 2)}</pre>
   )
 })
-
 export default function AgentSessionRoutePage() {
   const route = useNavRoute()
   // Keep every account this account's agents can author as synced locally, so they are

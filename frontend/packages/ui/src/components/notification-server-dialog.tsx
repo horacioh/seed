@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useEffect, useState, type FormEvent} from 'react'
 import {Button} from '../button'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from './dialog'
@@ -12,6 +13,36 @@ import {Label} from './label'
  * settings), so the UX stays identical. An empty value falls back to the
  * server default.
  */
+const styles = stylex.create({
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sfa692657: {
+    color: 'var(--foreground)',
+    fontFamily: 'var(--font-mono)',
+    wordBreak: 'break-all',
+  },
+  s11c1d1bc: {
+    color: 'var(--destructive)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 export function NotificationServerDialog({
   open,
   onOpenChange,
@@ -31,17 +62,14 @@ export function NotificationServerDialog({
   const [value, setValue] = useState(currentUrl)
   const [error, setError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
-
   useEffect(() => {
     if (!open) return
     setValue(currentUrl)
     setError(null)
     setIsSaving(false)
   }, [open, currentUrl])
-
   const hasChanges = value.trim() !== currentUrl.trim()
   const effectiveUrl = currentUrl.trim() || defaultUrl
-
   async function handleSubmit(e?: FormEvent) {
     e?.preventDefault()
     const trimmed = value.trim()
@@ -65,18 +93,17 @@ export function NotificationServerDialog({
       setIsSaving(false)
     }
   }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[440px]">
         <DialogHeader>
           <DialogTitle>Change Notify Server URL</DialogTitle>
           <DialogDescription>
-            Current URL: <span className="font-medium">{effectiveUrl}</span>
+            Current URL: <span className={stylex.props(styles.s129e46b3).className || ''}>{effectiveUrl}</span>
           </DialogDescription>
         </DialogHeader>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-2">
+        <form className={stylex.props(styles.sfbc6e290).className || ''} onSubmit={handleSubmit}>
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <Label htmlFor="notify-server-url">Notify Server URL</Label>
             <Input
               id="notify-server-url"
@@ -87,11 +114,11 @@ export function NotificationServerDialog({
               disabled={isSaving}
               autoFocus
             />
-            <p className="text-muted-foreground text-xs">
-              Server default: <span className="text-foreground font-mono break-all">{defaultUrl}</span>
+            <p className={stylex.props(styles.sa56e9200).className || ''}>
+              Server default: <span className={stylex.props(styles.sfa692657).className || ''}>{defaultUrl}</span>
             </p>
           </div>
-          {error ? <p className="text-destructive text-sm">{error}</p> : null}
+          {error ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{error}</p> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

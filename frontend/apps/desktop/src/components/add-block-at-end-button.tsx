@@ -1,8 +1,14 @@
+import * as stylex from '@stylexjs/stylex'
 import {getBlockInfoFromPos, slashMenuPluginKey} from '@shm/editor/blocknote/core'
 import type {HyperMediaEditor} from '@shm/editor/types'
 import {Button} from '@shm/ui/button'
 import {Plus} from 'lucide-react'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export function AddBlockAtEndButton({editor}: {editor: HyperMediaEditor}) {
   return (
     <Button
@@ -17,11 +23,10 @@ export function AddBlockAtEndButton({editor}: {editor: HyperMediaEditor}) {
       title="Add a block"
       aria-label="Add a block at the end of the document"
     >
-      <Plus className="size-4" />
+      <Plus className={stylex.props(styles.sca3de968).className || ''} />
     </Button>
   )
 }
-
 function addBlockAtEnd(editor: HyperMediaEditor) {
   const ttEditor = editor._tiptapEditor
   const view = ttEditor.view
@@ -57,9 +62,7 @@ function addBlockAtEnd(editor: HyperMediaEditor) {
   // doc.content.size - 2 resolves inside the last blockChildren, near the last blockNode.
   const lastBlockPos = currentDoc.content.size - 2
   const blockInfo = getBlockInfoFromPos(currentState, lastBlockPos)
-
   const {blockContent: contentNode, block} = blockInfo
-
   if (contentNode.node.textContent.length !== 0) {
     // Last block has content — create a new empty paragraph block after it
     const newBlockInsertionPos = block.afterPos

@@ -1,8 +1,25 @@
+import * as stylex from '@stylexjs/stylex'
 import * as jdenticon from 'jdenticon'
 import {memo, useEffect, useRef} from 'react'
 import {SizableText} from './text'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s606bb034: {
+    position: 'relative',
+    zIndex: '1',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  sa4dc7226: {
+    display: 'block',
+    textAlign: 'center',
+    color: '#000',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+})
 jdenticon.configure({
   hues: [151],
   lightness: {
@@ -24,7 +41,6 @@ jdenticon.configure({
  */
 const Identicon = memo((props: {value: string; size: number}) => {
   const icon = useRef(null)
-
   useEffect(() => {
     if (!icon.current) return
     try {
@@ -34,28 +50,33 @@ const Identicon = memo((props: {value: string; size: number}) => {
       // environments where it throws "not supported on Node.js".
     }
   }, [props.value, props.size])
-
   return <svg data-jdenticon-value={props.value} height={props.size} width={props.size} ref={icon} {...props} />
 })
-
 export type UIAvatarProps = {
   size?: number
   label?: string
   onPress?: () => void
   className?: string
 } & (
-  | {url: string; id: string} // At least url or id must be provided, but both are fine too.
-  | {url?: string; id: string}
-  | {url: string; id?: string}
+  | {
+      url: string
+      id: string
+    } // At least url or id must be provided, but both are fine too.
+  | {
+      url?: string
+      id: string
+    }
+  | {
+      url: string
+      id?: string
+    }
 )
-
 export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvatarProps) {
   let text = label ? label[0] : id ? id[0] : '?'
-
   return (
     <div
       className={cn(
-        'relative z-1 flex items-center justify-center overflow-hidden',
+        stylex.props(styles.s606bb034).className || '',
         onPress && 'cursor-pointer',
         !url && 'ring-px ring-border ring',
         className,
@@ -77,7 +98,7 @@ export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvat
       ) : (
         <SizableText
           weight="semibold"
-          className="block text-center text-black select-none"
+          className={stylex.props(styles.sa4dc7226).className || ''}
           style={{
             fontSize: size * 0.55,
             width: size / 2,
@@ -91,7 +112,6 @@ export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvat
     </div>
   )
 }
-
 export function getRandomColor(id: string) {
   let hash = 0
   for (let i = 0; i < id.length; i++) {

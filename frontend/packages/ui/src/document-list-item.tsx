@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMAccountsMetadata,
   HMActivitySummary,
@@ -38,9 +39,86 @@ import {PrivateBadge} from './private-badge'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
-
-export type DocumentListItemData = HMDocumentInfo | (HMLibraryDocument & {breadcrumbs?: HMBreadcrumb[]})
-
+const styles = stylex.create({
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sca14bda0: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    flexShrink: '0',
+  },
+  sc2ca51c7: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  s8d50829d: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  sd734d49a: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf2746014: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    overflow: 'hidden',
+  },
+  s62d3095e: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontFamily: 'var(--font-sans)',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s55ac44a1: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    fill: 'currentcolor',
+  },
+  s33458b: {
+    marginTop: 'calc(0.25rem * 1)',
+  },
+  se658ac13: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s21188150: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s76b0b3a9: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+})
+export type DocumentListItemData =
+  | HMDocumentInfo
+  | (HMLibraryDocument & {
+      breadcrumbs?: HMBreadcrumb[]
+    })
 interface DocumentListItemProps {
   item: DocumentListItemData
   accountsMetadata?: HMAccountsMetadata
@@ -61,7 +139,6 @@ interface DocumentListItemProps {
     isLoading?: boolean
   }
 }
-
 export function DocumentListItem({
   item,
   className,
@@ -81,8 +158,12 @@ export function DocumentListItem({
   const actions = useDocumentActions()
   const draft = actions.getDraft?.(id)
   const draftId = draftIdProp ?? draft?.id
-
-  const metadata = draft?.metadata ? {...item.metadata, ...draft.metadata} : item.metadata
+  const metadata = draft?.metadata
+    ? {
+        ...item.metadata,
+        ...draft.metadata,
+      }
+    : item.metadata
   const visibility = 'visibility' in item ? item.visibility : undefined
   const isPrivate = visibility === 'PRIVATE'
   const headCount = getVersionHeads('version' in item ? item.version : undefined).length
@@ -92,47 +173,56 @@ export function DocumentListItem({
     latestComment !== undefined ? latestComment : 'latestComment' in item ? item.latestComment : null
   const itemBreadcrumbs = breadcrumbs !== undefined ? breadcrumbs : 'breadcrumbs' in item ? item.breadcrumbs : null
   const computedIsRead = isRead !== undefined ? isRead : !itemActivitySummary?.isUnread
-
-  const route = draftIdProp ? {key: 'draft' as const, id: draftIdProp} : {key: 'document' as const, id}
+  const route = draftIdProp
+    ? {
+        key: 'draft' as const,
+        id: draftIdProp,
+      }
+    : {
+        key: 'document' as const,
+        id,
+      }
   const linkProps = useRouteLink(route)
-
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Stop propagation to prevent parent handlers (like EmbedWrapper) from firing.
     e.stopPropagation()
-
     if (onClick) {
       onClick(id)
     } else if (linkProps?.onClick) {
       linkProps.onClick(e)
     }
   }
-
   const highlighter = useHighlighter()
   const {onCopyReference, onPushReference, origin, experiments} = useUniversalAppContext()
   const navigate = useNavigate()
-
-  const summaryId = useMemo(() => hmId(id.uid, {path: id.path}), [id.uid, id.path])
-  const interactionSummaryData = useInteractionSummary(summaryId, {enabled: !interactionSummary})
+  const summaryId = useMemo(
+    () =>
+      hmId(id.uid, {
+        path: id.path,
+      }),
+    [id.uid, id.path],
+  )
+  const interactionSummaryData = useInteractionSummary(summaryId, {
+    enabled: !interactionSummary,
+  })
   const commentCount = interactionSummary?.comments ?? interactionSummaryData.data?.comments ?? 0
   const childCount =
     (interactionSummary && 'children' in interactionSummary ? interactionSummary.children : undefined) ??
     interactionSummaryData.data?.children ??
     0
   const canExpand = !!expandable && (childCount > 0 || expandable.expanded || expandable.isLoading)
-
   const bookmarked = actions.isBookmarked?.(id) ?? false
   const isOwner = actions.selectedAccountUid === id.uid
   const hasPath = !!id.path?.length
   const selectedAccountCanWriteSource = isOwner || !!actions.canWriteDocument?.(id)
   const doc = 'document' in item ? (item as any).document : undefined
-
   const menuItems = useMemo(() => {
     const items: MenuItemType[] = []
     if (actions.onEditDocument && isOwner) {
       items.push({
         key: 'edit',
         label: draftId ? 'Resume Editing' : 'Edit',
-        icon: <Pencil className="size-3.5" />,
+        icon: <Pencil className={stylex.props(styles.s3269316e).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onEditDocument!(id, draftId)
@@ -143,7 +233,7 @@ export function DocumentListItem({
       items.push({
         key: 'duplicate',
         label: 'Duplicate Document',
-        icon: <Copy className="size-3.5" />,
+        icon: <Copy className={stylex.props(styles.s3269316e).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onDuplicateDocument!(id)
@@ -169,8 +259,12 @@ export function DocumentListItem({
         createCopyLinkMenuItem({
           advanced: experiments?.advancedCopyLinkOptions,
           iconClassName: 'size-3.5',
-          canonical: {copy: copyCanonical},
-          gateway: {copy: copyGateway},
+          canonical: {
+            copy: copyCanonical,
+          },
+          gateway: {
+            copy: copyGateway,
+          },
           hypermedia: {
             copy: () => copyUrlToClipboardWithFeedback(hmIdToURL(id), 'Hypermedia'),
           },
@@ -188,7 +282,7 @@ export function DocumentListItem({
       items.push({
         key: 'move',
         label: 'Move Document',
-        icon: <Forward className="size-3.5" />,
+        icon: <Forward className={stylex.props(styles.s3269316e).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onMoveDocument!(id)
@@ -197,12 +291,15 @@ export function DocumentListItem({
     }
     if (
       actions.onRepublishDocument &&
-      canShowRepublishDocumentAction({id, selectedAccountUid: actions.selectedAccountUid})
+      canShowRepublishDocumentAction({
+        id,
+        selectedAccountUid: actions.selectedAccountUid,
+      })
     ) {
       items.push({
         key: 'republish',
         label: 'Republish',
-        icon: <GitFork className="size-3.5" />,
+        icon: <GitFork className={stylex.props(styles.s3269316e).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onRepublishDocument!(id)
@@ -213,7 +310,7 @@ export function DocumentListItem({
       items.push({
         key: 'export',
         label: 'Export',
-        icon: <Download className="size-3.5" />,
+        icon: <Download className={stylex.props(styles.s3269316e).className || ''} />,
         onClick: (e) => {
           e?.stopPropagation()
           actions.onExportDocument!(doc)
@@ -224,7 +321,7 @@ export function DocumentListItem({
       items.push({
         key: 'delete',
         label: 'Delete Document',
-        icon: <Trash className="size-3.5" />,
+        icon: <Trash className={stylex.props(styles.s3269316e).className || ''} />,
         variant: 'destructive' as const,
         onClick: (e) => {
           e?.stopPropagation()
@@ -252,9 +349,7 @@ export function DocumentListItem({
     origin,
     experiments?.advancedCopyLinkOptions,
   ])
-
   const hasActions = !!actions.onBookmarkToggle || commentCount > 0 || menuItems.length > 0
-
   return (
     <Button
       asChild
@@ -266,7 +361,7 @@ export function DocumentListItem({
       )}
     >
       <a data-resourceid={id.id} {...linkProps} onClick={handleClick}>
-        {indent && <div className="size-8 shrink-0" />}
+        {indent && <div className={stylex.props(styles.sca14bda0).className || ''} />}
         {expandable && (
           <button
             type="button"
@@ -284,18 +379,21 @@ export function DocumentListItem({
             }}
           >
             <ChevronRight
-              className={cn('size-4 transition-transform duration-150', expandable.expanded && 'rotate-90')}
+              className={cn(stylex.props(styles.sc2ca51c7).className || '', expandable.expanded && 'rotate-90')}
             />
           </button>
         )}
         <HMIcon size={28} id={id} name={metadata?.name} icon={metadata?.icon} />
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className={stylex.props(styles.s8d50829d).className || ''}>
           {itemBreadcrumbs && itemBreadcrumbs.length > 1 && (
             <DocumentListItemBreadcrumbs breadcrumbs={itemBreadcrumbs} />
           )}
-          <div className="flex flex-1 items-center gap-3">
-            <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
-              <SizableText className={cn('truncate text-left font-sans')} weight={computedIsRead ? undefined : 'bold'}>
+          <div className={stylex.props(styles.sd734d49a).className || ''}>
+            <div className={stylex.props(styles.sf2746014).className || ''}>
+              <SizableText
+                className={cn(stylex.props(styles.s62d3095e).className || '')}
+                weight={computedIsRead ? undefined : 'bold'}
+              >
                 {getMetadataName(metadata)}
               </SizableText>
               {!!draftId && <DraftBadge />}
@@ -304,12 +402,12 @@ export function DocumentListItem({
             </div>
             {commentCount > 0 && !hasActions && <DocumentListItemCommentCount count={commentCount} />}
             {!itemActivitySummary && 'updateTime' in item && (
-              <SizableText size="xs" color="muted" className="font-sans">
+              <SizableText size="xs" color="muted" className={stylex.props(styles.sa1762f51).className || ''}>
                 {formattedDate(item.updateTime)}
               </SizableText>
             )}
             {hasActions && (
-              <div className="flex items-center gap-1">
+              <div className={stylex.props(styles.s86ff3e3).className || ''}>
                 {actions.onBookmarkToggle && (
                   <Tooltip content={bookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks'}>
                     <Button
@@ -322,7 +420,11 @@ export function DocumentListItem({
                         actions.onBookmarkToggle!(id)
                       }}
                     >
-                      {bookmarked ? <Bookmark className="size-3.5 fill-current" /> : <Bookmark className="size-3.5" />}
+                      {bookmarked ? (
+                        <Bookmark className={stylex.props(styles.s55ac44a1).className || ''} />
+                      ) : (
+                        <Bookmark className={stylex.props(styles.s3269316e).className || ''} />
+                      )}
                     </Button>
                   </Tooltip>
                 )}
@@ -335,11 +437,14 @@ export function DocumentListItem({
                       onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
-                        navigate({key: 'comments', id})
+                        navigate({
+                          key: 'comments',
+                          id,
+                        })
                       }}
                     >
-                      <MessageSquare className="size-3.5" />
-                      <SizableText size="xs" className="font-sans">
+                      <MessageSquare className={stylex.props(styles.s3269316e).className || ''} />
+                      <SizableText size="xs" className={stylex.props(styles.sa1762f51).className || ''}>
                         {commentCount}
                       </SizableText>
                     </Button>
@@ -357,7 +462,7 @@ export function DocumentListItem({
             />
           )}
           {contributorUids && contributorUids.length > 0 && accountsMetadata && (
-            <div className="mt-1">
+            <div className={stylex.props(styles.s33458b).className || ''}>
               <FacePile accounts={contributorUids} accountsMetadata={accountsMetadata} />
             </div>
           )}
@@ -366,12 +471,11 @@ export function DocumentListItem({
     </Button>
   )
 }
-
 function DocumentListItemBreadcrumbs({breadcrumbs}: {breadcrumbs: HMBreadcrumb[]}) {
   const displayCrumbs = breadcrumbs.slice(1).filter((crumb) => !!crumb.name)
   if (!displayCrumbs.length) return null
   return (
-    <div className="flex gap-1">
+    <div className={stylex.props(styles.se658ac13).className || ''}>
       {displayCrumbs.map((breadcrumb, idx) => (
         <Fragment key={breadcrumb.path}>
           <Button
@@ -385,19 +489,18 @@ function DocumentListItemBreadcrumbs({breadcrumbs}: {breadcrumbs: HMBreadcrumb[]
             {breadcrumb.name}
           </Button>
           {idx === displayCrumbs.length - 1 ? null : (
-            <SizableText className="text-muted-foreground font-sans text-sm">/</SizableText>
+            <SizableText className={stylex.props(styles.s21188150).className || ''}>/</SizableText>
           )}
         </Fragment>
       ))}
     </div>
   )
 }
-
 function DocumentListItemCommentCount({count}: {count: number}) {
   if (!count) return null
   return (
-    <div className="flex items-center gap-1">
-      <MessageSquare className="text-muted-foreground size-3.5" />
+    <div className={stylex.props(styles.s86ff3e3).className || ''}>
+      <MessageSquare className={stylex.props(styles.s76b0b3a9).className || ''} />
       <SizableText className="text-muted-foreground font-sans text-[10px]">{count}</SizableText>
     </div>
   )

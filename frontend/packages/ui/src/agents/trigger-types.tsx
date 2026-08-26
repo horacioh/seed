@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {type AgentSessionTriggerContext, type AgentTriggerSource} from './client'
 import {useNavigate} from './navigation'
 import {AccountSearchInput, type SearchResult} from '@shm/ui/collaborators-page'
@@ -22,35 +23,183 @@ import React, {useMemo, useState} from 'react'
  * stay in sync. The session UI renders {@link TriggerContextView} instead of the raw `<trigger_context>`
  * block that is sent to the model.
  */
-
-export const TRIGGER_TYPE_OPTIONS: {value: AgentTriggerSource['type']; label: string}[] = [
-  {value: 'document-comment', label: 'Comment in a document'},
-  {value: 'user-mention', label: 'User mention'},
-  {value: 'site-update', label: 'Space update'},
-  {value: 'schedule', label: 'Schedule'},
+const styles = stylex.create({
+  sd1c4c9a2: {
+    display: 'grid',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s56a6d2ee: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s731a65c2: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  se80bcbd2: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s853f1ce0: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s41184b39: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  scf771367: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+  },
+  s8bf4c15d: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flexShrink: '0',
+    opacity: '70%',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s2a511dff: {
+    flexShrink: '0',
+    fontWeight: '500',
+  },
+  s641fc4c4: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    columnGap: 'calc(0.25rem * 3)',
+    rowGap: 'calc(0.25rem * 0.5)',
+  },
+  sa75e0209: {
+    color: 'var(--destructive)',
+    marginTop: 'calc(0.25rem * 1)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sc0781492: {
+    marginTop: 'calc(0.25rem * 1.5)',
+  },
+})
+export const TRIGGER_TYPE_OPTIONS: {
+  value: AgentTriggerSource['type']
+  label: string
+}[] = [
+  {
+    value: 'document-comment',
+    label: 'Comment in a document',
+  },
+  {
+    value: 'user-mention',
+    label: 'User mention',
+  },
+  {
+    value: 'site-update',
+    label: 'Space update',
+  },
+  {
+    value: 'schedule',
+    label: 'Schedule',
+  },
 ]
-
 const SCHEDULE_MODE_OPTIONS = [
-  {value: 'interval', label: 'Every interval'},
-  {value: 'weekly', label: 'Days of week'},
-  {value: 'once', label: 'One time'},
+  {
+    value: 'interval',
+    label: 'Every interval',
+  },
+  {
+    value: 'weekly',
+    label: 'Days of week',
+  },
+  {
+    value: 'once',
+    label: 'One time',
+  },
 ] as const
-
 const SCHEDULE_UNIT_OPTIONS = [
-  {value: 'minutes', label: 'Minutes'},
-  {value: 'hours', label: 'Hours'},
+  {
+    value: 'minutes',
+    label: 'Minutes',
+  },
+  {
+    value: 'hours',
+    label: 'Hours',
+  },
 ] as const
-
 export function defaultSourceForType(type: AgentTriggerSource['type']): AgentTriggerSource {
-  if (type === 'user-mention') return {type, mentionedAccounts: []}
-  if (type === 'site-update') return {type, resourcePrefix: '', eventTypes: ['doc-update', 'comment']}
-  if (type === 'schedule') return {type, schedule: {kind: 'interval', every: 1, unit: 'hours'}}
-  return {type: 'document-comment', resource: ''}
+  if (type === 'user-mention')
+    return {
+      type,
+      mentionedAccounts: [],
+    }
+  if (type === 'site-update')
+    return {
+      type,
+      resourcePrefix: '',
+      eventTypes: ['doc-update', 'comment'],
+    }
+  if (type === 'schedule')
+    return {
+      type,
+      schedule: {
+        kind: 'interval',
+        every: 1,
+        unit: 'hours',
+      },
+    }
+  return {
+    type: 'document-comment',
+    resource: '',
+  }
 }
 
 /** Reads the mentioned account list, tolerating legacy triggers that stored a single `mentionedAccount`. */
-export function mentionedAccountsOf(source: Extract<AgentTriggerSource, {type: 'user-mention'}>): string[] {
-  const legacy = (source as {mentionedAccount?: string}).mentionedAccount
+export function mentionedAccountsOf(
+  source: Extract<
+    AgentTriggerSource,
+    {
+      type: 'user-mention'
+    }
+  >,
+): string[] {
+  const legacy = (
+    source as {
+      mentionedAccount?: string
+    }
+  ).mentionedAccount
   return source.mentionedAccounts ?? (legacy ? [legacy] : [])
 }
 
@@ -93,9 +242,9 @@ export function TriggerSourceFields({
   trailing?: React.ReactNode
 }) {
   return (
-    <div className="grid gap-3">
-      <div className="flex items-end justify-between gap-3">
-        <label className="flex flex-1 flex-col gap-1">
+    <div className={stylex.props(styles.sd1c4c9a2).className || ''}>
+      <div className={stylex.props(styles.s56a6d2ee).className || ''}>
+        <label className={stylex.props(styles.s731a65c2).className || ''}>
           <SizableText size="sm" weight="bold">
             Trigger Session on:
           </SizableText>
@@ -112,26 +261,41 @@ export function TriggerSourceFields({
           <DocumentAutocompleteField
             label="Document"
             value={source.resource}
-            onChange={(value) => onChange({...source, resource: value})}
+            onChange={(value) =>
+              onChange({
+                ...source,
+                resource: value,
+              })
+            }
             placeholder="Search documents or enter hm:// URL"
           />
-          <label className="flex flex-col gap-1">
+          <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Author filter
             </SizableText>
             <Input
               value={source.author || ''}
-              onChange={(event) => onChange({...source, author: event.target.value || undefined})}
+              onChange={(event) =>
+                onChange({
+                  ...source,
+                  author: event.target.value || undefined,
+                })
+              }
               placeholder="optional account ID"
             />
           </label>
         </div>
       ) : null}
       {source.type === 'user-mention' ? (
-        <div className="grid gap-3">
+        <div className={stylex.props(styles.sd1c4c9a2).className || ''}>
           <MentionedAccountsField
             accounts={mentionedAccountsOf(source)}
-            onChange={(accounts) => onChange({...source, mentionedAccounts: accounts})}
+            onChange={(accounts) =>
+              onChange({
+                ...source,
+                mentionedAccounts: accounts,
+              })
+            }
           />
         </div>
       ) : null}
@@ -140,11 +304,16 @@ export function TriggerSourceFields({
           <AccountAutocompleteField
             label="Resource/space prefix"
             value={source.resourcePrefix}
-            onChange={(value) => onChange({...source, resourcePrefix: value})}
+            onChange={(value) =>
+              onChange({
+                ...source,
+                resourcePrefix: value,
+              })
+            }
             placeholder="Search space/account or enter hm:// prefix"
             valueFormat="hm-url"
           />
-          <label className="flex flex-col gap-1">
+          <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Event types
             </SizableText>
@@ -168,21 +337,35 @@ export function TriggerSourceFields({
     </div>
   )
 }
-
 function ScheduleTriggerFields({
   source,
   onChange,
 }: {
-  source: Extract<AgentTriggerSource, {type: 'schedule'}>
+  source: Extract<
+    AgentTriggerSource,
+    {
+      type: 'schedule'
+    }
+  >
   onChange: (source: AgentTriggerSource) => void
 }) {
   const schedule = source.schedule
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-  const setSchedule = (next: Extract<AgentTriggerSource, {type: 'schedule'}>['schedule']) =>
-    onChange({type: 'schedule', schedule: next})
+  const setSchedule = (
+    next: Extract<
+      AgentTriggerSource,
+      {
+        type: 'schedule'
+      }
+    >['schedule'],
+  ) =>
+    onChange({
+      type: 'schedule',
+      schedule: next,
+    })
   return (
-    <div className="grid gap-3">
-      <label className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sd1c4c9a2).className || ''}>
+      <label className={stylex.props(styles.sfbc6e28d).className || ''}>
         <SizableText size="sm" weight="bold">
           Schedule mode
         </SizableText>
@@ -190,15 +373,31 @@ function ScheduleTriggerFields({
           options={SCHEDULE_MODE_OPTIONS}
           value={schedule.kind}
           onValue={(kind) => {
-            if (kind === 'weekly') setSchedule({kind, daysOfWeek: [1, 2, 3, 4, 5], timeOfDay: '09:00', timezone})
-            else if (kind === 'once') setSchedule({kind, runAt: Date.now() + 60 * 60 * 1000, timezone})
-            else setSchedule({kind: 'interval', every: 1, unit: 'hours'})
+            if (kind === 'weekly')
+              setSchedule({
+                kind,
+                daysOfWeek: [1, 2, 3, 4, 5],
+                timeOfDay: '09:00',
+                timezone,
+              })
+            else if (kind === 'once')
+              setSchedule({
+                kind,
+                runAt: Date.now() + 60 * 60 * 1000,
+                timezone,
+              })
+            else
+              setSchedule({
+                kind: 'interval',
+                every: 1,
+                unit: 'hours',
+              })
           }}
         />
       </label>
       {schedule.kind === 'interval' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <label className="flex flex-col gap-1">
+          <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Every
             </SizableText>
@@ -206,24 +405,34 @@ function ScheduleTriggerFields({
               type="number"
               min={1}
               value={schedule.every}
-              onChange={(event) => setSchedule({...schedule, every: Number(event.target.value) || 1})}
+              onChange={(event) =>
+                setSchedule({
+                  ...schedule,
+                  every: Number(event.target.value) || 1,
+                })
+              }
             />
           </label>
-          <label className="flex flex-col gap-1">
+          <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Unit
             </SizableText>
             <SelectDropdown
               options={SCHEDULE_UNIT_OPTIONS}
               value={schedule.unit}
-              onValue={(value) => setSchedule({...schedule, unit: value as 'minutes' | 'hours'})}
+              onValue={(value) =>
+                setSchedule({
+                  ...schedule,
+                  unit: value as 'minutes' | 'hours',
+                })
+              }
             />
           </label>
         </div>
       ) : null}
       {schedule.kind === 'weekly' ? (
-        <div className="grid gap-3">
-          <div className="flex flex-wrap gap-2">
+        <div className={stylex.props(styles.sd1c4c9a2).className || ''}>
+          <div className={stylex.props(styles.se80bcbd2).className || ''}>
             {[
               ['Mon', 1],
               ['Tue', 2],
@@ -233,7 +442,7 @@ function ScheduleTriggerFields({
               ['Sat', 6],
               ['Sun', 0],
             ].map(([day, dayIndex]) => (
-              <label key={day} className="border-border flex items-center gap-2 rounded-md border px-3 py-2 text-sm">
+              <label key={day} className={stylex.props(styles.s853f1ce0).className || ''}>
                 <input
                   type="checkbox"
                   checked={schedule.daysOfWeek.includes(dayIndex as number)}
@@ -242,7 +451,10 @@ function ScheduleTriggerFields({
                     const daysOfWeek = event.target.checked
                       ? [...schedule.daysOfWeek, dayNumber].sort()
                       : schedule.daysOfWeek.filter((item) => item !== dayNumber)
-                    setSchedule({...schedule, daysOfWeek})
+                    setSchedule({
+                      ...schedule,
+                      daysOfWeek,
+                    })
                   }}
                 />
                 {day}
@@ -250,23 +462,33 @@ function ScheduleTriggerFields({
             ))}
           </div>
           <div className="grid gap-3 md:grid-cols-2">
-            <label className="flex flex-col gap-1">
+            <label className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Time of day
               </SizableText>
               <Input
                 type="time"
                 value={schedule.timeOfDay}
-                onChange={(event) => setSchedule({...schedule, timeOfDay: event.target.value})}
+                onChange={(event) =>
+                  setSchedule({
+                    ...schedule,
+                    timeOfDay: event.target.value,
+                  })
+                }
               />
             </label>
-            <label className="flex flex-col gap-1">
+            <label className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Timezone
               </SizableText>
               <Input
                 value={schedule.timezone}
-                onChange={(event) => setSchedule({...schedule, timezone: event.target.value})}
+                onChange={(event) =>
+                  setSchedule({
+                    ...schedule,
+                    timezone: event.target.value,
+                  })
+                }
               />
             </label>
           </div>
@@ -274,23 +496,34 @@ function ScheduleTriggerFields({
       ) : null}
       {schedule.kind === 'once' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <label className="flex flex-col gap-1">
+          <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Date and time
             </SizableText>
             <Input
               type="datetime-local"
               value={dateTimeLocalValue(schedule.runAt)}
-              onChange={(event) => setSchedule({...schedule, runAt: new Date(event.target.value).getTime(), timezone})}
+              onChange={(event) =>
+                setSchedule({
+                  ...schedule,
+                  runAt: new Date(event.target.value).getTime(),
+                  timezone,
+                })
+              }
             />
           </label>
-          <label className="flex flex-col gap-1">
+          <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Timezone
             </SizableText>
             <Input
               value={schedule.timezone || timezone}
-              onChange={(event) => setSchedule({...schedule, timezone: event.target.value})}
+              onChange={(event) =>
+                setSchedule({
+                  ...schedule,
+                  timezone: event.target.value,
+                })
+              }
             />
           </label>
         </div>
@@ -298,7 +531,6 @@ function ScheduleTriggerFields({
     </div>
   )
 }
-
 function DocumentAutocompleteField({
   label,
   value,
@@ -319,9 +551,8 @@ function DocumentAutocompleteField({
     () => (search.data?.entities || []).filter((item) => item.type === 'document').slice(0, 8),
     [search.data?.entities],
   )
-
   return (
-    <label className="relative flex flex-col gap-1">
+    <label className={stylex.props(styles.s41184b39).className || ''}>
       <SizableText size="sm" weight="bold">
         {label}
       </SizableText>
@@ -347,10 +578,10 @@ function DocumentAutocompleteField({
                   setFocused(false)
                 }}
               >
-                <SizableText size="sm" weight="bold" className="truncate">
+                <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
                   {document.title || nextValue}
                 </SizableText>
-                <SizableText size="xs" color="muted" className="truncate font-mono">
+                <SizableText size="xs" color="muted" className={stylex.props(styles.scf771367).className || ''}>
                   {nextValue}
                 </SizableText>
               </button>
@@ -361,7 +592,6 @@ function DocumentAutocompleteField({
     </label>
   )
 }
-
 function AccountAutocompleteField({
   label,
   value,
@@ -384,9 +614,8 @@ function AccountAutocompleteField({
     () => (search.data?.entities || []).filter((item) => item.type === 'contact' || !item.id.path?.length).slice(0, 8),
     [search.data?.entities],
   )
-
   return (
-    <label className="relative flex flex-col gap-1">
+    <label className={stylex.props(styles.s41184b39).className || ''}>
       <SizableText size="sm" weight="bold">
         {label}
       </SizableText>
@@ -412,10 +641,10 @@ function AccountAutocompleteField({
                   setFocused(false)
                 }}
               >
-                <SizableText size="sm" weight="bold" className="truncate">
+                <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
                   {account.title || account.id.uid}
                 </SizableText>
-                <SizableText size="xs" color="muted" className="truncate font-mono">
+                <SizableText size="xs" color="muted" className={stylex.props(styles.scf771367).className || ''}>
                   {nextValue}
                 </SizableText>
               </button>
@@ -426,16 +655,20 @@ function AccountAutocompleteField({
     </label>
   )
 }
-
 function MentionedAccountsField({accounts, onChange}: {accounts: string[]; onChange: (accounts: string[]) => void}) {
   const accountsKey = accounts.join('|')
   const values = useMemo<SearchResult[]>(
-    () => accounts.map((uid) => ({id: hmId(uid), label: abbreviateUid(uid), unresolved: true})),
+    () =>
+      accounts.map((uid) => ({
+        id: hmId(uid),
+        label: abbreviateUid(uid),
+        unresolved: true,
+      })),
     // accountsKey captures the contents of `accounts` for memoization
     [accountsKey],
   )
   return (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       <SizableText size="sm" weight="bold">
         Mentioned accounts
       </SizableText>
@@ -450,14 +683,12 @@ function MentionedAccountsField({accounts, onChange}: {accounts: string[]; onCha
     </div>
   )
 }
-
 function dateTimeLocalValue(ms: number): string {
   if (!Number.isFinite(ms)) return ''
   const date = new Date(ms)
   const offsetMs = date.getTimezoneOffset() * 60 * 1000
   return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16)
 }
-
 function dayName(day: number): string {
   return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day] || String(day)
 }
@@ -481,26 +712,47 @@ export function getTriggerActivityRoute(context: AgentSessionTriggerContext): Na
     const resource = stringField(blob, 'resource')
     const resourceId = resource ? unpackHmId(resource) : null
     if (blobType === 'Comment' && resourceId) {
-      return {key: 'comments', id: resourceId, openComment: stringField(blob, 'blobId') || stringField(blob, 'blob_id')}
+      return {
+        key: 'comments',
+        id: resourceId,
+        openComment: stringField(blob, 'blobId') || stringField(blob, 'blob_id'),
+      }
     }
     if ((blobType === 'Ref' || blobType === 'Change') && resourceId) {
-      return {key: 'document', id: resourceId}
+      return {
+        key: 'document',
+        id: resourceId,
+      }
     }
   }
 
   // Last resort: fall back to the configured trigger source location.
   if (context.source.type === 'document-comment') {
     const id = unpackHmId(context.source.resource)
-    return id ? {key: 'comments', id} : null
+    return id
+      ? {
+          key: 'comments',
+          id,
+        }
+      : null
   }
   if (context.source.type === 'site-update') {
     const id = unpackHmId(context.source.resourcePrefix)
-    return id ? {key: 'activity', id} : null
+    return id
+      ? {
+          key: 'activity',
+          id,
+        }
+      : null
   }
   return null
 }
-
-const TRIGGER_TYPE_ICONS: Record<AgentTriggerSource['type'], React.ComponentType<{className?: string}>> = {
+const TRIGGER_TYPE_ICONS: Record<
+  AgentTriggerSource['type'],
+  React.ComponentType<{
+    className?: string
+  }>
+> = {
   'document-comment': MessageSquare,
   'user-mention': AtSign,
   'site-update': FileText,
@@ -528,19 +780,24 @@ export function TriggerContextView({
   const Icon = TRIGGER_TYPE_ICONS[context.source.type]
   const activityRoute = useMemo(() => getTriggerActivityRoute(context), [context])
   const triggerRoute: NavRoute | null = agentId
-    ? {key: 'agent', agentId, serverUrl, tab: 'triggers', triggerId: context.triggerId}
+    ? {
+        key: 'agent',
+        agentId,
+        serverUrl,
+        tab: 'triggers',
+        triggerId: context.triggerId,
+      }
     : null
-
   return (
     <div className="bg-muted/40 mr-6 ml-6 rounded-lg border px-3 py-2 text-xs">
       <div className="flex min-w-0 flex-wrap items-center gap-x-1.5">
-        <Icon className="size-3.5 shrink-0 opacity-70" />
-        <span className="shrink-0">Triggered by</span>
+        <Icon className={stylex.props(styles.s8bf4c15d).className || ''} />
+        <span className={stylex.props(styles.sf032ed6c).className || ''}>Triggered by</span>
         <ContextLink
           route={triggerRoute}
           onNavigate={navigate}
           title="Open this trigger"
-          className="shrink-0 font-medium"
+          className={stylex.props(styles.s2a511dff).className || ''}
         >
           {context.triggerName}
         </ContextLink>
@@ -553,12 +810,12 @@ export function TriggerContextView({
           {context.activitySummary}
         </ContextLink>
       </div>
-      <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+      <div className={stylex.props(styles.s641fc4c4).className || ''}>
         <span>{summarizeTriggerSource(context.source)}</span>
         <span>Fired {formattedDateMedium(new Date(context.firedAt))}</span>
         {context.status && context.status !== 'fired' ? <span>Status: {context.status}</span> : null}
       </div>
-      {context.error ? <div className="text-destructive mt-1">{context.error}</div> : null}
+      {context.error ? <div className={stylex.props(styles.sa75e0209).className || ''}>{context.error}</div> : null}
       <TriggerDisclosure label="Activity details">
         <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
           {JSON.stringify(context.activity, null, 2)}
@@ -613,20 +870,22 @@ function TriggerDisclosure({label, children}: {label: string; children: React.Re
         onClick={() => setOpen((current) => !current)}
         className="text-muted-foreground hover:text-foreground mt-1.5 flex items-center gap-1"
       >
-        {open ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />}
+        {open ? (
+          <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
+        ) : (
+          <ChevronRight className={stylex.props(styles.sca3de967).className || ''} />
+        )}
         {label}
       </button>
-      {open ? <div className="mt-1.5">{children}</div> : null}
+      {open ? <div className={stylex.props(styles.sc0781492).className || ''}>{children}</div> : null}
     </>
   )
 }
-
 function recordField(value: unknown, key: string): Record<string, unknown> | null {
   if (!value || typeof value !== 'object') return null
   const field = (value as Record<string, unknown>)[key]
   return field && typeof field === 'object' ? (field as Record<string, unknown>) : null
 }
-
 function stringField(value: Record<string, unknown>, key: string): string | undefined {
   const field = value[key]
   return typeof field === 'string' && field ? field : undefined

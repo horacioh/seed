@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMDocument,
   HMMetadata,
@@ -14,7 +15,6 @@ import {DraftBadge} from './draft-badge'
 import {ChevronDown, Close, Menu} from './icons'
 import {SmallListItem} from './list-item'
 import {useResponsiveItems} from './use-responsive-items'
-
 import {IS_DESKTOP} from '@shm/shared/constants'
 import {useIsomorphicLayoutEffect} from '@shm/shared/utils/use-isomorphic-layout-effect'
 import {Activity, FolderTree, Lock} from 'lucide-react'
@@ -29,8 +29,113 @@ import useMedia from './use-media'
 import {cn} from './utils'
 
 // Stable width estimator functions
+const styles = stylex.create({
+  sc7ecd223: {
+    display: 'flex',
+    flex: '1',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  sb35341fb: {
+    flex: '1',
+    overflow: 'hidden',
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s46a21c11: {
+    backgroundColor: 'var(--background)',
+    position: 'absolute',
+    inset: 'calc(0.25rem * 0)',
+    zIndex: '10',
+  },
+  sfbb21049: {
+    position: 'relative',
+    zIndex: '0',
+  },
+  s1a423295: {
+    marginTop: 'calc(0.25rem * 2.5)',
+    marginBottom: 'calc(0.25rem * 4)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  s5710adc3: {
+    marginTop: 'calc(0.25rem * 2.5)',
+    marginBottom: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s592e123c: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s13e3a3c9: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  scab4b440: {
+    cursor: 'pointer',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    paddingInline: 'calc(0.25rem * 1)',
+    fontWeight: '700',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s66a6ca52: {
+    position: 'relative',
+    display: 'none',
+    width: '100%',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 5)',
+    overflow: 'hidden',
+    padding: 'calc(0.25rem * 0)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s62783270: {
+    height: 'calc(0.25rem * 8)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'transparent',
+    padding: 'calc(0.25rem * 0)',
+  },
+  sb0609b94: {
+    display: 'flex',
+    flex: '0',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s2ff5c3: {
+    height: 'calc(0.25rem * 20)',
+  },
+})
 const getNavItemWidth = () => 150
-
 export function SiteHeader({
   siteHomeId,
   docId,
@@ -79,7 +184,6 @@ export function SiteHeader({
 }) {
   const [isMobileMenuOpen, _setIsMobileMenuOpen] = useState(false)
   const [isMobileSearchActive, setIsMobileSearchActive] = useState(false)
-
   function setIsMobileMenuOpen(isOpen: boolean) {
     _setIsMobileMenuOpen(isOpen)
     onShowMobileMenu?.(isOpen)
@@ -92,8 +196,14 @@ export function SiteHeader({
   const homeDraftOverride = useIsHomeDraftOverride()
   const isHomeView = homeDraftOverride ?? !!(docId && !docId.path?.length)
   const homeDoc = isHomeView
-    ? {document, id: docId} // On home page — document IS the home doc
-    : {document: siteHomeDocument ?? undefined, id: siteHomeId} // Non-home: use site home (may be undefined while loading)
+    ? {
+        document,
+        id: docId,
+      } // On home page — document IS the home doc
+    : {
+        document: siteHomeDocument ?? undefined,
+        id: siteHomeId,
+      } // Non-home: use site home (may be undefined while loading)
   const headerSearch = (
     <>
       {onOpenFileBrowser ? (
@@ -127,13 +237,10 @@ export function SiteHeader({
       ) : null}
     </>
   )
-
   const headerRef = useRef<HTMLDivElement>(null)
-
   useIsomorphicLayoutEffect(() => {
     const updateHeaderHeight = () => {
       const headerHeight = headerRef.current?.offsetHeight || 60
-
       window.document.documentElement.style.setProperty('--site-header-h', `${headerHeight}px`)
       window.document.documentElement.style.setProperty('--site-header-live-h', `${headerHeight}px`)
     }
@@ -154,7 +261,6 @@ export function SiteHeader({
       window.document.documentElement.style.removeProperty('--site-header-live-h')
     }
   }, [headerRef.current])
-
   if (!homeDoc) return null
   const headerHomeId = homeDoc.id
   if (!headerHomeId) return null
@@ -178,7 +284,7 @@ export function SiteHeader({
           'flex-start': !isCenterLayout,
         })}
       >
-        <div className="flex flex-1 justify-center overflow-hidden">
+        <div className={stylex.props(styles.sc7ecd223).className || ''}>
           <SiteLogo id={headerHomeId} metadata={draftMetadata || homeDoc.document?.metadata} />
         </div>
         {routeType != 'draft' && isCenterLayout ? (
@@ -190,7 +296,7 @@ export function SiteHeader({
       </div>
 
       <div
-        className={cn('flex-1 overflow-hidden px-2', {
+        className={cn(stylex.props(styles.sb35341fb).className || '', {
           flex: !isCenterLayout,
         })}
       >
@@ -205,7 +311,7 @@ export function SiteHeader({
         />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className={stylex.props(styles.s86ff3e4).className || ''}>
         {!isCenterLayout && headerSearch}
         {!isCenterLayout && rightActions}
       </div>
@@ -227,12 +333,12 @@ export function SiteHeader({
             )}
 
             <div className="relative min-h-0 flex-1">
-              {isMobileSearchActive ? <div className="bg-background absolute inset-0 z-10" /> : null}
+              {isMobileSearchActive ? <div className={stylex.props(styles.s46a21c11).className || ''} /> : null}
 
-              <div className="relative z-0">
+              <div className={stylex.props(styles.sfbb21049).className || ''}>
                 {/* Always show the same navigation items as the desktop header */}
                 {items && items.length > 0 && (
-                  <div className="mt-2.5 mb-4 flex flex-col gap-2 px-1">
+                  <div className={stylex.props(styles.s1a423295).className || ''}>
                     <NavItems
                       items={items}
                       onClick={() => {
@@ -262,7 +368,7 @@ export function SiteHeader({
                 {docId && document && (
                   <>
                     <Separator />
-                    <div className="mt-2.5 mb-4 px-1">
+                    <div className={stylex.props(styles.s5710adc3).className || ''}>
                       <MobileMenuOutline
                         onActivateBlock={(blockId) => {
                           setIsMobileMenuOpen(false)
@@ -283,7 +389,6 @@ export function SiteHeader({
     </header>
   )
 }
-
 function NavItems({items, onClick}: {items?: DocNavigationItem[] | null; onClick?: () => void}) {
   return items
     ? items.map((doc) => {
@@ -305,13 +410,12 @@ function NavItems({items, onClick}: {items?: DocNavigationItem[] | null; onClick
       })
     : null
 }
-
 function MobileWebLinkItem({item, onClick}: {item: DocNavigationItem; onClick?: () => void}) {
-  const {linkProps} = useValidatedWebRouteLink(item.webUrl || null, {onClick})
-
+  const {linkProps} = useValidatedWebRouteLink(item.webUrl || null, {
+    onClick,
+  })
   return <SmallListItem bold title={getMetadataName(item.metadata)} {...linkProps} />
 }
-
 function MobileMenuOutline({
   onActivateBlock,
   document,
@@ -324,23 +428,24 @@ function MobileMenuOutline({
   embeds?: HMResourceFetchResult[]
 }) {
   const outline = useNodesOutline(document, docId, embeds)
-
   return (
     <DocumentOutline onActivateBlock={onActivateBlock} outline={outline} id={docId} activeBlockId={docId.blockRef} />
   )
 }
-
 function MobileFeedLink({siteHomeId, onClick}: {siteHomeId: UnpackedHypermediaId; onClick?: () => void}) {
   const feedLinkProps = useRouteLink({
     key: 'feed',
-    id: {...siteHomeId, latest: true, version: null},
+    id: {
+      ...siteHomeId,
+      latest: true,
+      version: null,
+    },
   })
-
   return (
     <SmallListItem
       bold
       title="Activity Feed"
-      icon={<Activity className="size-4" />}
+      icon={<Activity className={stylex.props(styles.sca3de968).className || ''} />}
       {...feedLinkProps}
       onClick={(e) => {
         feedLinkProps.onClick?.(e)
@@ -349,7 +454,6 @@ function MobileFeedLink({siteHomeId, onClick}: {siteHomeId: UnpackedHypermediaId
     />
   )
 }
-
 function OverflowMenuItem({
   item,
 }: {
@@ -364,21 +468,32 @@ function OverflowMenuItem({
 }) {
   const {linkProps} = useValidatedWebRouteLink(
     item.draftId
-      ? {key: 'draft', id: item.draftId}
+      ? {
+          key: 'draft',
+          id: item.draftId,
+        }
       : item.id
-        ? {key: 'document', id: {...item.id, latest: true, version: null}}
+        ? {
+            key: 'document',
+            id: {
+              ...item.id,
+              latest: true,
+              version: null,
+            },
+          }
         : item.webUrl || '',
   )
   return (
     <DropdownMenuItem {...linkProps}>
-      <div className="flex w-full items-center justify-between gap-2">
+      <div className={stylex.props(styles.s592e123c).className || ''}>
         <span>{getMetadataName(item.metadata)}</span>
-        {item.visibility === 'PRIVATE' ? <Lock size={12} className="text-muted-foreground" /> : null}
+        {item.visibility === 'PRIVATE' ? (
+          <Lock size={12} className={stylex.props(styles.sf2718385).className || ''} />
+        ) : null}
       </div>
     </DropdownMenuItem>
   )
 }
-
 function HeaderLinkItem({
   id,
   metadata,
@@ -405,15 +520,19 @@ function HeaderLinkItem({
       : id
         ? {
             key: 'document',
-            id: {...id, latest: true, version: null},
+            id: {
+              ...id,
+              latest: true,
+              version: null,
+            },
           }
         : webUrl || null,
   )
   return (
-    <div className={cn('flex items-center gap-1 px-1')} {...highlighter(id)}>
+    <div className={cn(stylex.props(styles.s13e3a3c9).className || '')} {...highlighter(id)}>
       <a
         className={cn(
-          'cursor-pointer truncate px-1 font-bold transition-colors select-none',
+          stylex.props(styles.scab4b440).className || '',
           active ? 'text-foreground' : 'text-muted-foreground',
           'hover:text-foreground',
         )}
@@ -421,12 +540,11 @@ function HeaderLinkItem({
       >
         {getMetadataName(metadata)}
       </a>
-      {visibility === 'PRIVATE' ? <Lock size={12} className="text-muted-foreground" /> : null}
+      {visibility === 'PRIVATE' ? <Lock size={12} className={stylex.props(styles.sf2718385).className || ''} /> : null}
       {draftId ? <DraftBadge /> : null}
     </div>
   )
 }
-
 export function SiteHeaderMenu({
   items,
   docId,
@@ -455,7 +573,6 @@ export function SiteHeaderMenu({
   // Determine active key based on current docId
   const activeKey = useMemo(() => {
     if (!docId || !items?.length) return undefined
-
     const activeItem = items.find(
       (item) =>
         !!item.id &&
@@ -464,10 +581,8 @@ export function SiteHeaderMenu({
         !!item.id?.path &&
         docId.path.join('/').startsWith(item.id.path.join('/')),
     )
-
     return activeItem?.key
   }, [docId, items])
-
   const {containerRef, itemRefs, visibleItems, overflowItems} = useResponsiveItems({
     items: items || [],
     activeKey,
@@ -475,17 +590,19 @@ export function SiteHeaderMenu({
     reservedWidth,
     gapWidth: 20,
   })
-
   const feedLinkProps = useRouteLink({
     key: 'feed',
-    id: {...siteHomeId, latest: true, version: null},
+    id: {
+      ...siteHomeId,
+      latest: true,
+      version: null,
+    },
   })
-
   return (
     <div
       ref={containerRef}
       className={cn(
-        'relative hidden w-full flex-1 items-center gap-5 overflow-hidden p-0',
+        stylex.props(styles.s66a6ca52).className || '',
         'md:flex md:py-2 md:pr-0 md:pl-2',
         isCenterLayout ? 'justify-center' : 'justify-end',
       )}
@@ -554,8 +671,8 @@ export function SiteHeaderMenu({
         <Tooltip content="More Menu items">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="ghost" className="rounded-full">
-                <ChevronDown className="size-4" />
+              <Button size="sm" variant="ghost" className={stylex.props(styles.s775755af).className || ''}>
+                <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-h-[300px] w-50 overflow-y-scroll" side="bottom" align="end">
@@ -572,7 +689,7 @@ export function SiteHeaderMenu({
           variant="ghost"
           size="icon"
           className={cn(
-            'h-8 rounded-full border-1 border-transparent p-0',
+            stylex.props(styles.s62783270).className || '',
             isMainFeedVisible && 'dark:bg-muted bg-black/5',
           )}
         >
@@ -583,14 +700,13 @@ export function SiteHeaderMenu({
             }}
             {...feedLinkProps}
           >
-            <Activity className="size-4" />
+            <Activity className={stylex.props(styles.sca3de968).className || ''} />
           </a>
         </Button>
       </Tooltip>
     </div>
   )
 }
-
 export function MobileMenu({
   renderContent,
   open,
@@ -607,26 +723,23 @@ export function MobileMenu({
         open ? 'translate-x-0' : 'translate-x-full',
       )}
     >
-      <div className="flex flex-0 items-center justify-end p-4">
+      <div className={stylex.props(styles.sb0609b94).className || ''}>
         <Button variant="ghost" size="icon" onClick={onClose}>
-          <Close className="size-4" />
+          <Close className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       </div>
       <ScrollArea className="mobile-menu flex-1">
         {open ? renderContent() : null}
-        <div className="h-20"></div>
+        <div className={stylex.props(styles.s2ff5c3).className || ''}></div>
       </ScrollArea>
     </div>
   )
 }
-
 export type AutoHideSiteHeaderClassName = 'translate-y-0' | '-translate-y-full'
-
 export function useAutoHideSiteHeader(scrollContainerRef?: React.RefObject<HTMLElement>) {
   const media = useMedia()
   const prevScrollPos = useRef(0)
   const [isHidden, setIsHidden] = useState(false)
-
   useEffect(() => {
     const handleScroll = () => {
       let currentScrollPos: number
@@ -642,7 +755,6 @@ export function useAutoHideSiteHeader(scrollContainerRef?: React.RefObject<HTMLE
         // Desktop without container ref - skip
         return
       }
-
       const threshold = 10 // Prevent flickering on small movements
 
       // Only update if scroll difference is significant
@@ -656,7 +768,6 @@ export function useAutoHideSiteHeader(scrollContainerRef?: React.RefObject<HTMLE
       } else {
         setIsHidden(false)
       }
-
       prevScrollPos.current = currentScrollPos
     }
 
@@ -664,13 +775,17 @@ export function useAutoHideSiteHeader(scrollContainerRef?: React.RefObject<HTMLE
     if (media.gtSm && scrollContainerRef?.current) {
       // Desktop: listen to custom container
       const container = scrollContainerRef.current
-      container.addEventListener('scroll', handleScroll, {passive: true})
+      container.addEventListener('scroll', handleScroll, {
+        passive: true,
+      })
       return () => {
         container.removeEventListener('scroll', handleScroll)
       }
     } else if (!media.gtSm) {
       // Mobile: listen to window
-      window.addEventListener('scroll', handleScroll, {passive: true})
+      window.addEventListener('scroll', handleScroll, {
+        passive: true,
+      })
       return () => {
         window.removeEventListener('scroll', handleScroll)
       }
@@ -678,7 +793,6 @@ export function useAutoHideSiteHeader(scrollContainerRef?: React.RefObject<HTMLE
     // Desktop without scroll ref - no cleanup needed
     return undefined
   }, [media.gtSm, scrollContainerRef])
-
   return {
     hideSiteHeaderClassName: isHidden ? '-translate-y-full' : ('translate-y-0' as AutoHideSiteHeaderClassName),
     hideMobileBarClassName: isHidden ? 'opacity-40' : '',

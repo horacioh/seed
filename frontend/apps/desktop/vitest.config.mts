@@ -1,7 +1,12 @@
-import {resolve} from 'path'
+import {resolve, dirname} from 'path'
 import {defineConfig} from 'vitest/config'
+import {fileURLToPath} from 'node:url'
+import stylex from '@stylexjs/unplugin'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  plugins: [stylex.vite()],
   test: {
     testTimeout: 10000, // 10 seconds
     setupFiles: ['./vitest.setup.ts'],

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {AlertDialogDescription, AlertDialogTitle} from '@radix-ui/react-alert-dialog'
 import {
   BlockRange,
@@ -21,7 +22,6 @@ import {
   useRouteLink,
   useUniversalAppContext,
 } from '@shm/shared'
-
 import {HMListDiscussionsOutput} from '@seed-hypermedia/client/hm-types'
 import {
   useCommentsServiceContext,
@@ -57,7 +57,198 @@ import {Tooltip} from './tooltip'
 import {useAppDialog} from './universal-dialog'
 import {useCopyHmLink} from './use-copy-hm-link'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sad7857bb: {
+    backgroundColor: 'var(--border)',
+    position: 'absolute',
+    width: '1px',
+  },
+  s5de8cc86: {
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingRight: 'calc(0.25rem * 4)',
+    paddingLeft: 'calc(0.25rem * 3)',
+  },
+  scd65e4a1: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  se295dce0: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  saa9e18d4: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s7026dbc7: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  s333fddbc: {
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingRight: 'calc(0.25rem * 4)',
+  },
+  sd6ede4bd: {
+    marginTop: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 2)',
+  },
+  s193c542f: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s3811bb5f: {
+    position: 'absolute',
+    top: 'calc(0.25rem * 0)',
+    left: 'calc(0.25rem * 0)',
+    zIndex: '2',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'transparent',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '200ms',
+  },
+  sca3de969: {
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+  s413c077e: {
+    backgroundColor: 'var(--border)',
+    height: '100%',
+    width: '1px',
+  },
+  sda0311b5: {
+    display: 'flex',
+    width: '100%',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sb96da299: {
+    display: 'inline',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sd5589519: {
+    marginLeft: 'calc(0.25rem * -1)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  s8694781e: {
+    position: 'relative',
+    display: 'flex',
+    gap: 'calc(0.25rem * 1)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 2)',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '200ms',
+  },
+  s91eacb54: {
+    flexShrink: '0',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s86442bb7: {
+    fontSize: '1.25rem',
+    lineHeight: 'calc(1.75 / 1.25)',
+    fontWeight: '700',
+  },
+  sf6cf9d64: {
+    width: 'calc(0.25rem * 72)',
+    padding: 'calc(0.25rem * 0)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sf9671454: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  s3e28d4cf: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s318ac90b: {
+    paddingInline: 'calc(0.25rem * 1)',
+    paddingBottom: 'calc(0.25rem * 2)',
+  },
+  s9994dffa: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  se2c17d64: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  sfcb32917: {
+    width: 'calc(0.25rem * 25)',
+    height: 'calc(0.25rem * 25)',
+    color: 'oklch(92.8% 0.006 264.531)',
+  },
+})
 export function CommentDiscussions({
   targetId,
   isEntirelyHighlighted = false,
@@ -83,7 +274,6 @@ export function CommentDiscussions({
 
   // Fetch all comments for the document
   const commentsService = useDocumentComments(targetId)
-
   const parentThread = useCommentParents(commentsService.data?.comments, commentId ?? '')
   const commentGroupReplies = useCommentGroups(commentsService.data?.comments, commentId)
 
@@ -104,12 +294,11 @@ export function CommentDiscussions({
     }
     return Array.from(authors)
   }, [parentThread?.thread, commentGroupReplies.data])
-
   useHackyAuthorsSubscriptions(allAuthorIds)
-
   const {showDeletedContent} = useCommentsServiceContext()
-
-  const commentResource = useResource(commentId ? commentIdToHmId(commentId) : null, {subscribed: true})
+  const commentResource = useResource(commentId ? commentIdToHmId(commentId) : null, {
+    subscribed: true,
+  })
 
   // Find the actual focused comment
   const focusedComment = useMemo(() => {
@@ -118,7 +307,6 @@ export function CommentDiscussions({
     if (commentResource.data?.type === 'comment') return commentResource.data.comment
     return null
   }, [commentsService.data?.comments, commentId, commentResource.data])
-
   const isDeletedComment = !focusedComment && commentResource.data?.type === 'tombstone'
 
   // On desktop, fetch version history for deleted comments so we can show their content
@@ -144,36 +332,34 @@ export function CommentDiscussions({
     const timer = setTimeout(() => {
       setShowParents(true)
     }, 100)
-
     return () => clearTimeout(timer)
   }, [parentThread?.thread, showParents, commentId]) // Added commentId as dependency
 
   useLayoutEffect(() => {
     if (!showParents) return
-
-    focusedCommentRef.current?.scrollIntoView({behavior: 'instant', block: 'start'})
+    focusedCommentRef.current?.scrollIntoView({
+      behavior: 'instant',
+      block: 'start',
+    })
   }, [showParents, commentId])
-
   const commentEditorSlot = commentEditor ? (
     <div className="relative max-h-1/2 py-4">
       <div
-        className="bg-border absolute w-px"
+        className={stylex.props(styles.sad7857bb).className || ''}
         style={{
           height: isEntirelyHighlighted ? 40 : 56,
           top: isEntirelyHighlighted ? -16 : -32,
           left: 26,
         }}
       />
-      <div className="px-2 pr-4 pl-3">{commentEditor}</div>
+      <div className={stylex.props(styles.s5de8cc86).className || ''}>{commentEditor}</div>
     </div>
   ) : null
-
   if (!commentId) return null
-
   if (commentsService.error) {
     return (
       <SelectionContent>
-        <div className="flex flex-col items-center gap-2 p-4">
+        <div className={stylex.props(styles.scd65e4a1).className || ''}>
           <SizableText color="muted" size="sm">
             Failed to load comment thread
           </SizableText>
@@ -182,45 +368,41 @@ export function CommentDiscussions({
       </SelectionContent>
     )
   }
-
   if (commentsService.isLoading && !commentsService.data) {
     return (
       <SelectionContent>
-        <div className="flex items-center justify-center p-4">
+        <div className={stylex.props(styles.se295dce0).className || ''}>
           <Spinner />
         </div>
         {commentEditorSlot}
       </SelectionContent>
     )
   }
-
   if (showDeletedPreview) {
     return (
       <SelectionContent>
-        <div className="p-2">
+        <div className={stylex.props(styles.s1aa15).className || ''}>
           <DeletedCommentPreview comment={deletedLastVersion!} />
         </div>
         {commentEditorSlot}
       </SelectionContent>
     )
   }
-
   if (showDeletedPreviewLoading || isFocusedCommentLoading) {
     return (
       <SelectionContent>
-        <div className="flex items-center justify-center p-4">
+        <div className={stylex.props(styles.se295dce0).className || ''}>
           <Spinner />
         </div>
         {commentEditorSlot}
       </SelectionContent>
     )
   }
-
   if (!focusedComment && commentsService.data) {
     if (isFocusedCommentDeleted) {
       return (
         <SelectionContent>
-          <div className="flex flex-col items-center gap-2 p-4">
+          <div className={stylex.props(styles.scd65e4a1).className || ''}>
             <SizableText color="muted" size="sm">
               This comment was deleted.
             </SizableText>
@@ -231,7 +413,7 @@ export function CommentDiscussions({
     }
     return (
       <SelectionContent>
-        <div className="flex flex-col items-center gap-2 p-4">
+        <div className={stylex.props(styles.scd65e4a1).className || ''}>
           <SizableText color="muted" size="sm">
             This comment could not be found.
           </SizableText>
@@ -243,14 +425,19 @@ export function CommentDiscussions({
 
   // Check if there are actual parent comments (more than just the focused comment itself)
   const hasParents = parentThread?.thread && parentThread.thread.length > 1
-
   return (
     <SelectionContent>
       {/* Render parent thread above focused comment when ready */}
       {hasParents && showParents && (
         <div ref={parentsRef}>
           {parentThread.thread.slice(0, -1).map((comment, index, list) => (
-            <div key={comment.id} className={cn('p-2', index != list.length - 1 && 'border-border border-b')}>
+            <div
+              key={comment.id}
+              className={cn(
+                stylex.props(styles.s1aa15).className || '',
+                index != list.length - 1 && 'border-border border-b',
+              )}
+            >
               <Comment
                 comment={comment}
                 authorId={comment.author}
@@ -266,7 +453,7 @@ export function CommentDiscussions({
 
       {/* Render the focused comment */}
       {focusedComment && (
-        <div ref={focusedCommentRef} className={cn('p-2')}>
+        <div ref={focusedCommentRef} className={cn(stylex.props(styles.s1aa15).className || '')}>
           <Comment
             comment={focusedComment}
             authorId={focusedComment.author}
@@ -285,7 +472,7 @@ export function CommentDiscussions({
       {commentGroupReplies.data?.length > 0
         ? commentGroupReplies.data.map((cg) => {
             return (
-              <div key={cg.id} className={cn('p-2')}>
+              <div key={cg.id} className={cn(stylex.props(styles.s1aa15).className || '')}>
                 <CommentGroup
                   key={cg.id}
                   commentGroup={cg}
@@ -299,7 +486,6 @@ export function CommentDiscussions({
     </SelectionContent>
   )
 }
-
 export const Discussions = memo(function Discussions({
   targetId,
   commentId,
@@ -330,20 +516,18 @@ export const Discussions = memo(function Discussions({
     }
     return Array.from(authors)
   }, [discussionsService.data?.discussions, discussionsService.data?.citingDiscussions])
-
   useHackyAuthorsSubscriptions(allAuthorIds)
-
   let panelContent = null
   if (discussionsService.isLoading && !discussionsService.data) {
     panelContent = (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
   } else if (discussionsService.error) {
     panelContent = (
-      <div className="flex flex-col items-center gap-2 p-4">
-        <SizableText color="muted" size="sm" className="font-sans">
+      <div className={stylex.props(styles.scd65e4a1).className || ''}>
+        <SizableText color="muted" size="sm" className={stylex.props(styles.sa1762f51).className || ''}>
           Failed to load discussions
         </SizableText>
       </div>
@@ -356,7 +540,7 @@ export const Discussions = memo(function Discussions({
         <>
           {discussionsService.data.discussions?.map((cg) => {
             return (
-              <div key={cg.id} className={cn('border-border border-b')}>
+              <div key={cg.id} className={cn(stylex.props(styles.saa9e18d4).className || '')}>
                 <LazyCommentGroup>
                   <CommentGroup
                     commentGroup={cg}
@@ -370,7 +554,7 @@ export const Discussions = memo(function Discussions({
           })}
           {discussionsService.data.citingDiscussions?.map((cg) => {
             return (
-              <div key={cg.id} className={cn('border-border border-b')}>
+              <div key={cg.id} className={cn(stylex.props(styles.saa9e18d4).className || '')}>
                 <LazyCommentGroup>
                   <CommentGroup
                     commentGroup={cg}
@@ -387,10 +571,8 @@ export const Discussions = memo(function Discussions({
         <NoComments />
       )
   }
-
   return <SelectionContent>{panelContent}</SelectionContent>
 })
-
 export function BlockDiscussions({
   targetId,
   commentEditor,
@@ -416,35 +598,30 @@ export function BlockDiscussions({
     }
     return Array.from(authors)
   }, [commentsService.data?.comments])
-
   useHackyAuthorsSubscriptions(allAuthorIds)
-
   let quotedContent = null
   let panelContent = null
-
   if (!targetId) return null
-
   if (targetId.blockRef && doc.data?.type == 'document' && doc.data.document) {
     quotedContent = (
       <QuotedDocBlock docId={targetId} blockId={targetId.blockRef} doc={doc.data.document} blockRange={blockRange} />
     )
   } else if (doc.isInitialLoading) {
     quotedContent = (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
   }
-
   if (commentsService.isLoading && !commentsService.data) {
     panelContent = (
-      <div className="flex items-center justify-center py-4">
+      <div className={stylex.props(styles.s7026dbc7).className || ''}>
         <Spinner />
       </div>
     )
   } else if (commentsService.error) {
     panelContent = (
-      <div className="flex flex-col items-center gap-2 p-4">
+      <div className={stylex.props(styles.scd65e4a1).className || ''}>
         <SizableText color="muted" size="sm">
           Failed to load block discussions
         </SizableText>
@@ -455,7 +632,7 @@ export function BlockDiscussions({
       <>
         {commentsService.data.comments.map((comment) => {
           return (
-            <div key={comment.id} className={cn('p-2')}>
+            <div key={comment.id} className={cn(stylex.props(styles.s1aa15).className || '')}>
               <Comment
                 isFirst
                 isLast
@@ -471,12 +648,11 @@ export function BlockDiscussions({
       </>
     )
   }
-
   return (
     <SelectionContent>
       {quotedContent}
-      <div className="px-2 pr-4">{commentEditor}</div>
-      <div className="mt-2 pt-2">{panelContent}</div>
+      <div className={stylex.props(styles.s333fddbc).className || ''}>{commentEditor}</div>
+      <div className={stylex.props(styles.sd6ede4bd).className || ''}>{panelContent}</div>
     </SelectionContent>
   )
 }
@@ -493,7 +669,6 @@ function LazyCommentGroup({children}: {children: ReactNode}) {
   const ref = useRef<HTMLDivElement>(null)
   const [isNearViewport, setIsNearViewport] = useState(false)
   const heightRef = useRef(LAZY_COMMENT_PLACEHOLDER_HEIGHT)
-
   useEffect(() => {
     const el = ref.current
     if (!el) return
@@ -510,19 +685,28 @@ function LazyCommentGroup({children}: {children: ReactNode}) {
           setIsNearViewport(false)
         }
       },
-      {rootMargin: '600px'},
+      {
+        rootMargin: '600px',
+      },
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
-
   return (
-    <div ref={ref} style={isNearViewport ? undefined : {minHeight: heightRef.current}}>
+    <div
+      ref={ref}
+      style={
+        isNearViewport
+          ? undefined
+          : {
+              minHeight: heightRef.current,
+            }
+      }
+    >
       {isNearViewport ? children : null}
     </div>
   )
 }
-
 export const CommentGroup = memo(function CommentGroup({
   commentGroup,
   authors,
@@ -538,9 +722,8 @@ export const CommentGroup = memo(function CommentGroup({
 }) {
   const lastComment = commentGroup.comments.at(-1)
   const firstComment = commentGroup.comments[0]
-
   return (
-    <div className="relative flex flex-col gap-2 p-2">
+    <div className={stylex.props(styles.s193c542f).className || ''}>
       {/* {commentGroup.comments.length > 1 && (
         <div
           className="absolute w-px bg-border"
@@ -550,7 +733,7 @@ export const CommentGroup = memo(function CommentGroup({
             left: avatarSize + avatarSize / 2 - 1,
           }}
         />
-      )} */}
+       )} */}
 
       {commentGroup.comments.map((comment) => {
         const isLastCommentInGroup = !!lastComment && comment === lastComment
@@ -575,7 +758,6 @@ export const CommentGroup = memo(function CommentGroup({
     </div>
   )
 })
-
 export const Comment = memo(function Comment({
   comment,
   isFirst = true,
@@ -611,21 +793,27 @@ export const Comment = memo(function Comment({
   const [isEditing, setIsEditing] = useState(false)
   const [viewingVersion, setViewingVersion] = useState<HMComment | null>(null)
   const commentsContext = useCommentsServiceContext()
-  const {data: replyCount} = useCommentReplyCount({id: comment.id})
+  const {data: replyCount} = useCommentReplyCount({
+    id: comment.id,
+  })
   const isAuthor = useIsCurrentUser(comment.author)
   const deleteCommentMutation = useDeleteComment()
   const updateCommentMutation = useUpdateComment()
   const deleteCommentDialog = useDeleteCommentDialog()
   const currentRoute = useNavRoute()
-
   const authorHmId = comment.author || authorId ? hmId(authorId || comment.author) : null
   const docId = getCommentTargetId(comment)
   const authorLink = useRouteLink(getContextualProfileRoute(currentRoute, authorHmId, docId?.uid))
   const copyHmLink = useCopyHmLink()
   const {origin: appOrigin} = useUniversalAppContext()
-
-  const externalTargetLink = useRouteLink(externalTarget ? {key: 'document', id: externalTarget.id} : null)
-
+  const externalTargetLink = useRouteLink(
+    externalTarget
+      ? {
+          key: 'document',
+          id: externalTarget.id,
+        }
+      : null,
+  )
   useEffect(() => {
     if (defaultExpandReplies !== showReplies) {
       setShowReplies(defaultExpandReplies)
@@ -658,11 +846,10 @@ export const Comment = memo(function Comment({
       setViewingVersion(version)
     }
   }
-
   const options: MenuItemType[] = []
   if (isAuthor) {
     options.push({
-      icon: <Pencil className="size-4" />,
+      icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
       label: 'Edit',
       onClick: () => setIsEditing(true),
       key: 'edit',
@@ -670,7 +857,7 @@ export const Comment = memo(function Comment({
   }
   if (isAuthor) {
     options.push({
-      icon: <Trash2 className="size-4" />,
+      icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
       label: 'Delete',
       onClick: () => {
         deleteCommentDialog.open({
@@ -681,16 +868,28 @@ export const Comment = memo(function Comment({
             const isFocusedComment =
               (currentRoute.key === 'comments' && currentRoute.openComment === comment.id) ||
               (routePanel?.key === 'comments' && routePanel.openComment === comment.id)
-
             deleteCommentMutation.mutate(
-              {comment, signingAccountId: comment.author},
+              {
+                comment,
+                signingAccountId: comment.author,
+              },
               {
                 onSuccess: () => {
                   if (!isFocusedComment) return
                   if (currentRoute.key === 'comments' && currentRoute.openComment) {
-                    navigate({...currentRoute, openComment: undefined, openCommentVersion: undefined})
+                    navigate({
+                      ...currentRoute,
+                      openComment: undefined,
+                      openCommentVersion: undefined,
+                    })
                   } else if ('panel' in currentRoute && routePanel?.key === 'comments' && routePanel.openComment) {
-                    navigate({...currentRoute, panel: {...routePanel, openComment: undefined}} as NavRoute)
+                    navigate({
+                      ...currentRoute,
+                      panel: {
+                        ...routePanel,
+                        openComment: undefined,
+                      },
+                    } as NavRoute)
                   }
                 },
               },
@@ -711,7 +910,7 @@ export const Comment = memo(function Comment({
             {isFirst ? null : <div className="bg-border absolute top-[-40px] left-1/2 h-[40px] w-px" />}
             <div
               className={cn(
-                'absolute top-0 left-0 z-2 size-5 rounded-full bg-transparent transition-all duration-200 ease-in-out',
+                stylex.props(styles.s3811bb5f).className || '',
                 isEntirelyHighlighted
                   ? 'outline-secondary hover:outline-secondary'
                   : 'dark:outline-background dark:hover:outline-background outline-white hover:outline-white',
@@ -719,18 +918,20 @@ export const Comment = memo(function Comment({
               {...authorLink}
             />
             {authorHmId && (
-              <div className="size-5">
+              <div className={stylex.props(styles.sca3de969).className || ''}>
                 <HMIcon id={authorHmId} name={authorMetadata?.name} icon={authorMetadata?.icon} size={20} />
               </div>
             )}
-            {!isLast || (highlight && selection?.blockId) ? <div className="bg-border h-full w-px" /> : null}
+            {!isLast || (highlight && selection?.blockId) ? (
+              <div className={stylex.props(styles.s413c077e).className || ''} />
+            ) : null}
           </div>
         )}
 
-        <div className="flex w-full flex-1 flex-col gap-1">
+        <div className={stylex.props(styles.sda0311b5).className || ''}>
           <div className="group flex items-center justify-between gap-2 overflow-hidden pr-2">
             {heading ? (
-              <div className="inline">{heading}</div>
+              <div className={stylex.props(styles.sb96da299).className || ''}>{heading}</div>
             ) : (
               <InlineDescriptor>
                 {authorHmId ? (
@@ -761,7 +962,7 @@ export const Comment = memo(function Comment({
                 ) : null}
               </InlineDescriptor>
             )}
-            <div className="flex items-center gap-2">
+            <div className={stylex.props(styles.s86ff3e4).className || ''}>
               {!isEditing && (
                 <Tooltip content={tx('Copy Comment Link')}>
                   <Button
@@ -788,7 +989,7 @@ export const Comment = memo(function Comment({
                       })
                     }}
                   >
-                    <Link className="size-3" />
+                    <Link className={stylex.props(styles.sca3de967).className || ''} />
                   </Button>
                 </Tooltip>
               )}
@@ -810,8 +1011,14 @@ export const Comment = memo(function Comment({
               onCancel={() => setIsEditing(false)}
               onSave={(newContent) => {
                 updateCommentMutation.mutate(
-                  {comment, newContent, signingAccountId: comment.author},
-                  {onSuccess: () => setIsEditing(false)},
+                  {
+                    comment,
+                    newContent,
+                    signingAccountId: comment.author,
+                  },
+                  {
+                    onSuccess: () => setIsEditing(false),
+                  },
                 )
               }}
               isSaving={updateCommentMutation.isPending}
@@ -823,7 +1030,7 @@ export const Comment = memo(function Comment({
           )}
 
           {!isEntirelyHighlighted && !isEditing && (
-            <div className={cn('-ml-1 flex items-center gap-2 py-1', !heading && 'mb-2')}>
+            <div className={cn(stylex.props(styles.sd5589519).className || '', !heading && 'mb-2')}>
               {enableReplies || commentsContext.onReplyClick ? (
                 <Button
                   variant="ghost"
@@ -840,7 +1047,7 @@ export const Comment = memo(function Comment({
                     }
                   }}
                 >
-                  <ReplyArrow className="size-3" />
+                  <ReplyArrow className={stylex.props(styles.sca3de967).className || ''} />
                   {tx('Reply')}
                   {replyCount && replyCount > 0 ? ` (${replyCount})` : ''}
                 </Button>
@@ -852,7 +1059,6 @@ export const Comment = memo(function Comment({
     </>
   )
 })
-
 export function CommentContent({
   comment,
   size,
@@ -881,7 +1087,6 @@ export function CommentContent({
   const siteUrl = targetHomeDoc?.metadata?.siteUrl as string | undefined
   const textUnit = size === 'sm' ? 12 : 14
   const layoutUnit = size === 'sm' ? 14 : 16
-
   const copyHmLink = useCopyHmLink()
   const {origin: appOrigin} = useUniversalAppContext()
   const copyBlockUrl = useCallback(
@@ -905,15 +1110,15 @@ export function CommentContent({
     },
     [targetDocId, currentRoute, comment.id, siteUrl, copyHmLink, appOrigin],
   )
-
   const onCopyBlockLink = useCallback((blockId: string) => copyBlockUrl(blockId), [copyBlockUrl])
-
   const onCopyFragmentLink = useCallback(
     (blockId: string, rangeStart: number, rangeEnd: number) =>
-      copyBlockUrl(blockId, {start: rangeStart, end: rangeEnd}),
+      copyBlockUrl(blockId, {
+        start: rangeStart,
+        end: rangeEnd,
+      }),
     [copyBlockUrl],
   )
-
   const focusedId = {
     ...(resourceId || commentIdToHmId(comment.id, comment.version)),
     blockRef: selection?.blockId || null,
@@ -921,9 +1126,7 @@ export function CommentContent({
   }
   const zoomedBlock = zoomBlockRef ? getBlockNodeById(comment.content, zoomBlockRef) : null
   const zoomedContent = zoomedBlock ? [zoomedBlock] : comment.content
-
   if (!Viewer) return null
-
   return (
     <Viewer
       blocks={zoomedContent}
@@ -937,7 +1140,6 @@ export function CommentContent({
     />
   )
 }
-
 function CommentDate({comment}: {comment: HMComment}) {
   const targetId = getCommentTargetId(comment)
   // Same destination as "Copy Comment Link": the target document's comments
@@ -946,13 +1148,14 @@ function CommentDate({comment}: {comment: HMComment}) {
   const destRoute: NavRoute | null = targetId
     ? {
         key: 'comments',
-        id: hmId(targetId.uid, {path: targetId.path}),
+        id: hmId(targetId.uid, {
+          path: targetId.path,
+        }),
         openComment: comment.id,
       }
     : null
   return <Timestamp time={comment.createTime} route={destRoute} />
 }
-
 export function QuotedDocBlock({
   docId,
   blockId,
@@ -973,18 +1176,20 @@ export function QuotedDocBlock({
   // Only forward a codepoint range — `{expanded: true}` blockRange variants
   // should not trigger fragment highlighting.
   const fragmentRange = blockRange && 'start' in blockRange ? blockRange : undefined
-
   return (
     <div className="bg-brand-50 dark:bg-brand-950 rounded-lg">
-      <div className="relative flex gap-1 rounded-lg p-2 transition-all duration-200 ease-in-out">
-        <div className="flex-shrink-0 py-1.5">
+      <div className={stylex.props(styles.s8694781e).className || ''}>
+        <div className={stylex.props(styles.s91eacb54).className || ''}>
           <BlockQuote size={23} />
         </div>
         <div className="min-w-0 flex-1">
           {blockContent && Viewer && (
             <Viewer
               blocks={[blockContent]}
-              resourceId={{...docId, blockRef: blockId}}
+              resourceId={{
+                ...docId,
+                blockRef: blockId,
+              }}
               focusBlockId={fragmentRange ? blockId : undefined}
               blockRange={fragmentRange}
             />
@@ -994,15 +1199,23 @@ export function QuotedDocBlock({
     </div>
   )
 }
-
 export function useDeleteCommentDialog() {
-  return useAppDialog(DeleteCommentDialog, {isAlert: true})
+  return useAppDialog(DeleteCommentDialog, {
+    isAlert: true,
+  })
 }
-
-function DeleteCommentDialog({input, onClose}: {input: {onConfirm: () => void}; onClose: () => void}) {
+function DeleteCommentDialog({
+  input,
+  onClose,
+}: {
+  input: {
+    onConfirm: () => void
+  }
+  onClose: () => void
+}) {
   return (
     <>
-      <AlertDialogTitle className="text-xl font-bold">Really Delete?</AlertDialogTitle>
+      <AlertDialogTitle className={stylex.props(styles.s86442bb7).className || ''}>Really Delete?</AlertDialogTitle>
       <AlertDialogDescription>
         You will publicly delete this comment, although other peers may have already archived it.
       </AlertDialogDescription>
@@ -1028,13 +1241,12 @@ function EditedIndicator({
   onSelectVersion: (version: HMComment | null) => void
 }) {
   const [open, setOpen] = useState(false)
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button className="text-muted-foreground ml-1 cursor-pointer text-[11px] hover:underline">(edited)</button>
       </PopoverTrigger>
-      <PopoverContent side="bottom" align="start" className="w-72 p-0">
+      <PopoverContent side="bottom" align="start" className={stylex.props(styles.sf6cf9d64).className || ''}>
         {open ? (
           <CommentVersionList
             commentId={commentId}
@@ -1052,31 +1264,27 @@ function EditedIndicator({
 /** Popover list of comment versions. Clicking a version triggers onSelect (null for the current version). */
 function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect: (version: HMComment | null) => void}) {
   const {data, isLoading, error} = useCommentVersions(commentId)
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-4">
+      <div className={stylex.props(styles.se295dce0).className || ''}>
         <Spinner />
       </div>
     )
   }
-
   if (error || !data?.versions?.length) {
     return (
-      <div className="p-4">
+      <div className={stylex.props(styles.s1aa17).className || ''}>
         <SizableText size="sm" color="muted">
           Could not load edit history
         </SizableText>
       </div>
     )
   }
-
   const editCount = data.versions.length - 1
-
   return (
-    <div className="flex flex-col">
-      <div className="border-border border-b px-3 py-2">
-        <SizableText size="sm" className="font-semibold">
+    <div className={stylex.props(styles.s783f19f3).className || ''}>
+      <div className={stylex.props(styles.sf9671454).className || ''}>
+        <SizableText size="sm" className={stylex.props(styles.s62c182b1).className || ''}>
           Edited {editCount} {editCount === 1 ? 'time' : 'times'}
         </SizableText>
       </div>
@@ -1091,7 +1299,7 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
                 className="hover:bg-accent border-border flex w-full items-center justify-between border-b px-3 py-2 text-left last:border-b-0"
                 onClick={() => onSelect(null)}
               >
-                <div className="flex items-center gap-2">
+                <div className={stylex.props(styles.s86ff3e4).className || ''}>
                   <SizableText size="xs">Version {versionNumber}</SizableText>
                   <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-[10px] leading-none font-medium">
                     current
@@ -1125,13 +1333,13 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
 function DeletedCommentPreview({comment}: {comment: HMComment}) {
   return (
     <div className="rounded-md border border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950">
-      <div className="flex items-center px-3 py-1.5">
+      <div className={stylex.props(styles.s3e28d4cf).className || ''}>
         <SizableText size="xs" className="font-sans text-red-800 dark:text-red-200">
           This comment was deleted
           {comment.updateTime ? ` · ${formattedDateShort(comment.updateTime)}` : ''}
         </SizableText>
       </div>
-      <div className="px-1 pb-2">
+      <div className={stylex.props(styles.s318ac90b).className || ''}>
         <CommentContent
           comment={comment}
           size="sm"
@@ -1147,7 +1355,7 @@ function DeletedCommentPreview({comment}: {comment: HMComment}) {
 function VersionPreview({version, onDismiss}: {version: HMComment; onDismiss: () => void}) {
   return (
     <div className="rounded-md border border-yellow-300 bg-yellow-50 dark:border-yellow-700 dark:bg-yellow-950">
-      <div className="flex items-center justify-between px-3 py-1.5">
+      <div className={stylex.props(styles.s9994dffa).className || ''}>
         <SizableText size="xs" className="font-sans text-yellow-800 dark:text-yellow-200">
           Viewing previous version {version.updateTime ? `\u00b7 ${formattedDateShort(version.updateTime)}` : ''}
         </SizableText>
@@ -1157,10 +1365,10 @@ function VersionPreview({version, onDismiss}: {version: HMComment; onDismiss: ()
           className="size-6 text-yellow-800 hover:bg-yellow-200 dark:text-yellow-200 dark:hover:bg-yellow-900"
           onClick={onDismiss}
         >
-          <X className="size-3.5" />
+          <X className={stylex.props(styles.s3269316e).className || ''} />
         </Button>
       </div>
-      <div className="px-1 pb-2">
+      <div className={stylex.props(styles.s318ac90b).className || ''}>
         <CommentContent
           comment={version}
           size="sm"
@@ -1185,12 +1393,11 @@ function InlineCommentEditor({
   isSaving: boolean
 }) {
   const {renderInlineEditor} = useCommentsServiceContext()
-
   if (!renderInlineEditor) {
     // Fallback: show cancel button if no editor renderer is provided
     return (
-      <div className="flex flex-col gap-2">
-        <SizableText size="sm" color="muted" className="font-sans">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+        <SizableText size="sm" color="muted" className={stylex.props(styles.sa1762f51).className || ''}>
           Inline editing is not available.
         </SizableText>
         <Button variant="ghost" size="xs" onClick={onCancel}>
@@ -1199,16 +1406,19 @@ function InlineCommentEditor({
       </div>
     )
   }
-
-  return renderInlineEditor({comment, onSave, onCancel, isSaving})
+  return renderInlineEditor({
+    comment,
+    onSave,
+    onCancel,
+    isSaving,
+  })
 }
-
 function NoComments({}: {}) {
   const tx = useTxString()
   return (
-    <div className="flex flex-col items-center gap-4 py-4">
-      <MessageSquare className="size-25 text-gray-200" size={48} />
-      <SizableText size="md" className="font-sans">
+    <div className={stylex.props(styles.se2c17d64).className || ''}>
+      <MessageSquare className={stylex.props(styles.sfcb32917).className || ''} size={48} />
+      <SizableText size="md" className={stylex.props(styles.sa1762f51).className || ''}>
         {tx('No comments here, yet!')}
       </SizableText>
     </div>

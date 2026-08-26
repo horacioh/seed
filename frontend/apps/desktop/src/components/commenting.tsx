@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {reportError} from '@/errors'
 import {domainResolver} from '@/grpc-client'
 import {useCommentDraft} from '@/models/comments'
@@ -34,7 +35,17 @@ import {useMutation} from '@tanstack/react-query'
 import {Check, SendHorizonal, X} from 'lucide-react'
 import React, {memo, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {useContactSubscribeIntent, useDesktopAccountIntent} from './desktop-intents'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export function useCommentGroupAuthors(commentGroups: HMCommentGroup[]): HMListDiscussionsOutput['authors'] {
   const commentGroupAuthors = new Set<string>()
   commentGroups.forEach((commentGroup) => {
@@ -51,14 +62,16 @@ export function useCommentGroupAuthors(commentGroups: HMCommentGroup[]): HMListD
       .filter(([k, v]) => !!v),
   )
 }
-
 export const CommentBox = memo(CommentBoxImpl)
 function CommentBoxImpl(props: {
   docId: UnpackedHypermediaId
   backgroundColor?: string
   quotingBlockId?: string
   /** Codepoint range within the quoted block; absent ⇒ whole-block quote. */
-  quotingRange?: {start: number; end: number}
+  quotingRange?: {
+    start: number
+    end: number
+  }
   commentId?: string
   isReplying?: boolean
   /** Focus the editor on mount (renamed from `autoFocus` to satisfy a11y rules). */
@@ -71,10 +84,15 @@ function CommentBoxImpl(props: {
 }) {
   const {docId, quotingBlockId, quotingRange, commentId, isReplying, focusOnMount, context} = props
   const quoting = useMemo(
-    () => (quotingBlockId ? {blockId: quotingBlockId, range: quotingRange} : undefined),
+    () =>
+      quotingBlockId
+        ? {
+            blockId: quotingBlockId,
+            range: quotingRange,
+          }
+        : undefined,
     [quotingBlockId, quotingRange?.start, quotingRange?.end],
   )
-
   const account = useSelectedAccount()
   const selectedAccountId = useSelectedAccountId()
   const targetEntity = useResource(docId)
@@ -101,15 +119,19 @@ function CommentBoxImpl(props: {
   // Use route-provided version data first, fall back to resolved values from comments service
   const finalReplyVersion = props.replyCommentVersion || resolvedReply?.replyCommentVersion
   const finalRootVersion = props.rootReplyCommentVersion || resolvedReply?.rootReplyCommentVersion
-
   const draft = useCommentDraft(
-    quotingBlockId ? {...docId, blockRef: quotingBlockId, blockRange: quotingRange ?? null} : docId,
+    quotingBlockId
+      ? {
+          ...docId,
+          blockRef: quotingBlockId,
+          blockRange: quotingRange ?? null,
+        }
+      : docId,
     commentId,
     quotingBlockId,
     quotingRange,
     context,
   )
-
   const [isSubmitting, setIsSubmitting] = useState(false)
   const isDeletingDraft = useRef(false)
   const saveTimeoutRef = useRef<NodeJS.Timeout>()
@@ -117,7 +139,6 @@ function CommentBoxImpl(props: {
   const latestBlocksRef = useRef<HMBlockNode[] | null>(null)
   const submitHandleRef = useRef<CommentEditorSubmitHandle | null>(null)
   const flushPendingDraftSaveRef = useRef<() => void>(() => {})
-
   const commentDraftQueryKey = [
     queryKeys.COMMENT_DRAFT,
     docId.id,
@@ -158,7 +179,9 @@ function CommentBoxImpl(props: {
     onMutate: async () => {
       isDeletingDraft.current = true
       clearTimeout(saveTimeoutRef.current)
-      await queryClient.cancelQueries({queryKey: commentDraftQueryKey})
+      await queryClient.cancelQueries({
+        queryKey: commentDraftQueryKey,
+      })
       queryClient.setQueryData(commentDraftQueryKey, null)
     },
     onSuccess: () => {
@@ -177,8 +200,10 @@ function CommentBoxImpl(props: {
   })
 
   // Publish comment mutation
-  type PublishCommentVars = {commentPayload: HMPublishBlobsInput; contentBlocks: HMBlockNode[]}
-
+  type PublishCommentVars = {
+    commentPayload: HMPublishBlobsInput
+    contentBlocks: HMBlockNode[]
+  }
   const publishComment = useMutation({
     mutationFn: async ({commentPayload}: PublishCommentVars) => {
       const response = await publish(commentPayload)
@@ -186,13 +211,16 @@ function CommentBoxImpl(props: {
       return response
     },
     onMutate: async ({commentPayload, contentBlocks}: PublishCommentVars) => {
-      await queryClient.cancelQueries({queryKey: [queryKeys.DOCUMENT_COMMENTS, docId]})
-
+      await queryClient.cancelQueries({
+        queryKey: [queryKeys.DOCUMENT_COMMENTS, docId],
+      })
       const targetDoc = targetEntity.data?.type === 'document' ? targetEntity.data.document : undefined
       const authorMetadata: HMMetadataPayload | null = account
-        ? {id: account.id, metadata: account.metadata || null}
+        ? {
+            id: account.id,
+            metadata: account.metadata || null,
+          }
         : null
-
       const optimisticComment = await buildOptimisticComment({
         commentPayload,
         authorUid: account!.id.uid,
@@ -204,7 +232,6 @@ function CommentBoxImpl(props: {
         quoting,
         visibility: targetDoc?.visibility === 'PRIVATE' ? 'PRIVATE' : 'PUBLIC',
       })
-
       applyOptimisticComment(queryClient, docId, optimisticComment, authorMetadata, quoting)
       navigateToComment(navigate, route, optimisticComment.id)
     },
@@ -223,24 +250,23 @@ function CommentBoxImpl(props: {
       setIsSubmitting(false)
       isDeletingDraft.current = true
       clearTimeout(saveTimeoutRef.current)
-
       removeDraft.mutate()
-
       invalidateQueries([queryKeys.DOCUMENT_DISCUSSION, docId.uid, ...(docId.path || [])])
       invalidateQueries([queryKeys.LIBRARY])
       invalidateQueries([queryKeys.SITE_LIBRARY, docId.uid])
       invalidateQueries([queryKeys.LIST_ACCOUNTS])
       invalidateQueries([queryKeys.DOC_CITATIONS])
       invalidateQueries([queryKeys.SEARCH])
-
       invalidateQueries([queryKeys.DOCUMENT_ACTIVITY])
       invalidateQueries([queryKeys.DOCUMENT_DISCUSSION])
       invalidateQueries([queryKeys.DOCUMENT_COMMENTS])
       invalidateQueries([queryKeys.DOCUMENT_INTERACTION_SUMMARY])
       invalidateQueries([queryKeys.BLOCK_DISCUSSIONS])
       invalidateQueries([queryKeys.ACTIVITY_FEED])
-
-      pushAfterAction({id: docId, trigger: 'publish'})
+      pushAfterAction({
+        id: docId,
+        trigger: 'publish',
+      })
     },
   })
 
@@ -251,7 +277,10 @@ function CommentBoxImpl(props: {
       if (panel.autoFocus) {
         setTimeout(() => {
           const {autoFocus: _, ...restPanel} = panel
-          navigate({...route, panel: restPanel})
+          navigate({
+            ...route,
+            panel: restPanel,
+          })
         }, 150)
       }
     }
@@ -261,30 +290,24 @@ function CommentBoxImpl(props: {
   const saveDraftBlocks = useCallback(
     (blocks: HMBlockNode[]) => {
       if (isDeletingDraft.current) return
-
       const hasContent = blocks.some(hasBlockContent)
-
       if (!hasContent) {
         if (draft.data) {
           removeDraft.mutate()
         }
         return
       }
-
       writeDraft.mutate(blocks)
     },
     [draft.data, writeDraft, removeDraft],
   )
-
   const flushPendingDraftSave = useCallback(() => {
     if (!pendingBlocksRef.current) return
-
     const blocks = pendingBlocksRef.current
     pendingBlocksRef.current = null
     clearTimeout(saveTimeoutRef.current)
     saveDraftBlocks(blocks)
   }, [saveDraftBlocks])
-
   flushPendingDraftSaveRef.current = flushPendingDraftSave
 
   // Clean up save timeout on unmount, but persist the pending draft first.
@@ -293,11 +316,9 @@ function CommentBoxImpl(props: {
       flushPendingDraftSaveRef.current()
     }
   }, [])
-
   const handleContentChange = useCallback(
     (blocks: HMBlockNode[]) => {
       if (isDeletingDraft.current) return
-
       latestBlocksRef.current = blocks
       pendingBlocksRef.current = blocks
       clearTimeout(saveTimeoutRef.current)
@@ -307,7 +328,6 @@ function CommentBoxImpl(props: {
     },
     [flushPendingDraftSave],
   )
-
   const publishStoredComment = useCallback(
     async (accountUid: string, contentBlocks: HMBlockNode[], reset: () => void) => {
       if (!getSigner) throw new Error('getSigner not available')
@@ -317,7 +337,11 @@ function CommentBoxImpl(props: {
         const signer = getSigner(accountUid)
         const joinedSite = accountUid !== docId.uid
         if (joinedSite) {
-          await subscribeContact({accountUid, subjectUid: docId.uid, subscribe: 'site'})
+          await subscribeContact({
+            accountUid,
+            subjectUid: docId.uid,
+            subscribe: 'site',
+          })
         }
         const commentPayload = await createComment(
           {
@@ -341,12 +365,19 @@ function CommentBoxImpl(props: {
         invalidateQueries([queryKeys.DOCUMENT_INTERACTION_SUMMARY])
         invalidateQueries([queryKeys.BLOCK_DISCUSSIONS])
         navigateToComment(navigate, route, recordId)
-        pushAfterAction({id: docId, trigger: 'publish'})
+        pushAfterAction({
+          id: docId,
+          trigger: 'publish',
+        })
         reset()
         toast.success(joinedSite ? 'Joined space and posted comment' : 'Comment posted')
       } catch (err) {
         console.error('Failed to submit pending comment:', err)
-        reportError(err, {feature: 'comment', operation: 'submit-pending', docId: docId.id})
+        reportError(err, {
+          feature: 'comment',
+          operation: 'submit-pending',
+          docId: docId.id,
+        })
         toast.error('Failed to post comment')
       } finally {
         setIsSubmitting(false)
@@ -373,12 +404,18 @@ function CommentBoxImpl(props: {
     async (
       getContent: (
         prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-          blobs: {cid: string; data: Uint8Array}[]
+          blobs: {
+            cid: string
+            data: Uint8Array
+          }[]
           resultCIDs: string[]
         }>,
       ) => Promise<{
         blockNodes: HMBlockNode[]
-        blobs: {cid: string; data: Uint8Array}[]
+        blobs: {
+          cid: string
+          data: Uint8Array
+        }[]
       }>,
       reset: () => void,
     ) => {
@@ -387,16 +424,13 @@ function CommentBoxImpl(props: {
       // Content changes are debounced in the editor; flush so latestBlocksRef
       // holds the final content before reading it below.
       submitHandleRef.current?.flush()
-
       if (!account) {
         const contentBlocks = latestBlocksRef.current || draft.data?.blocks || []
         if (!contentBlocks.some(hasBlockContent)) return
         accountIntent.requireAccount((accountUid) => publishStoredComment(accountUid, contentBlocks, reset))
         return
       }
-
       setIsSubmitting(true)
-
       try {
         if (!getSigner) throw new Error('getSigner not available')
         const targetDoc = targetEntity.data?.type === 'document' ? targetEntity.data.document : undefined
@@ -410,7 +444,6 @@ function CommentBoxImpl(props: {
           capturedBlocks = result.blockNodes
           return result
         }
-
         const commentPayload = await createComment(
           {
             getContent: wrappedGetContent,
@@ -423,13 +456,13 @@ function CommentBoxImpl(props: {
           },
           signer,
         )
-
-        await publishComment.mutateAsync({commentPayload, contentBlocks: capturedBlocks})
-
+        await publishComment.mutateAsync({
+          commentPayload,
+          contentBlocks: capturedBlocks,
+        })
         writeRecentSigner.mutateAsync(account.id.uid).then(() => {
           invalidateQueries([queryKeys.RECENT_SIGNERS])
         })
-
         reset()
       } catch (err) {
         setIsSubmitting(false)
@@ -473,9 +506,7 @@ function CommentBoxImpl(props: {
       displaySrc: '',
     }
   }, [])
-
   if (draft.isInitialLoading) return null
-
   return (
     <>
       <CommentEditor
@@ -510,7 +541,7 @@ function CommentBoxImpl(props: {
               }}
               disabled={isSubmitting || disabled}
             >
-              <SendHorizonal className="size-4" />
+              <SendHorizonal className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
           </Tooltip>
         )}
@@ -519,7 +550,6 @@ function CommentBoxImpl(props: {
     </>
   )
 }
-
 export function triggerCommentDraftFocus(docId: string, commentId?: string) {
   const focusKey = `${docId}-${commentId}`
   const subscribers = focusSubscribers.get(focusKey)
@@ -527,7 +557,6 @@ export function triggerCommentDraftFocus(docId: string, commentId?: string) {
     subscribers.forEach((fn) => fn())
   }
 }
-
 const focusSubscribers = new Map<string, Set<() => void>>()
 
 /** Renders a CommentEditor pre-filled with the comment's content for inline editing. */
@@ -541,32 +570,44 @@ function InlineEditBox({comment, onSave, onCancel, isSaving}: InlineEditCommentP
   const selectedAccountId = useSelectedAccountId()
   const universalClient = useUniversalClient()
   const contentRef = useRef<HMBlockNode[]>(comment.content)
-
   const handleFileAttachment = useCallback(async (file: File) => {
     const props = await handleDragMedia(file)
     if (!props) throw new Error('Failed to handle file')
     // Return ipfs url for desktop
-    return {url: props.url, displaySrc: ''}
+    return {
+      url: props.url,
+      displaySrc: '',
+    }
   }, [])
-
   const handleSubmit = useCallback(
     async (
       getContent: (
         prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-          blobs: {cid: string; data: Uint8Array}[]
+          blobs: {
+            cid: string
+            data: Uint8Array
+          }[]
           resultCIDs: string[]
         }>,
-      ) => Promise<{blockNodes: HMBlockNode[]; blobs: {cid: string; data: Uint8Array}[]}>,
+      ) => Promise<{
+        blockNodes: HMBlockNode[]
+        blobs: {
+          cid: string
+          data: Uint8Array
+        }[]
+      }>,
       reset: () => void,
     ) => {
-      const {blockNodes} = await getContent(async (binaries) => ({blobs: [], resultCIDs: []}))
+      const {blockNodes} = await getContent(async (binaries) => ({
+        blobs: [],
+        resultCIDs: [],
+      }))
       onSave(blockNodes)
     },
     [onSave],
   )
-
   return (
-    <div className="flex flex-col gap-2">
+    <div className={stylex.props(styles.sfbc6e28e).className || ''}>
       <CommentEditor
         focusOnMount
         isReplying={false}
@@ -575,12 +616,19 @@ function InlineEditBox({comment, onSave, onCancel, isSaving}: InlineEditCommentP
         handleFileAttachment={handleFileAttachment}
         universalClient={universalClient}
         domainResolver={domainResolver}
-        account={account ? {id: account.id, metadata: account.metadata} : undefined}
+        account={
+          account
+            ? {
+                id: account.id,
+                metadata: account.metadata,
+              }
+            : undefined
+        }
         perspectiveAccountUid={selectedAccountId}
         submitButton={({getContent, reset, disabled}) => (
           <>
             <Button variant="ghost" size="icon" onClick={onCancel} disabled={isSaving}>
-              <X className="size-4" />
+              <X className={stylex.props(styles.sca3de968).className || ''} />
             </Button>
             <Tooltip content="Save edit">
               <Button
@@ -592,7 +640,7 @@ function InlineEditBox({comment, onSave, onCancel, isSaving}: InlineEditCommentP
                 }}
                 disabled={isSaving || disabled}
               >
-                <Check className="size-4" />
+                <Check className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </Tooltip>
           </>

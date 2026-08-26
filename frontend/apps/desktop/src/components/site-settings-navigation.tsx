@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMDocURLInput} from '@/components/edit-navigation-popover'
 import {useUpdateHomeDocument} from '@/models/site'
 import {combine} from '@atlaskit/pragmatic-drag-and-drop/combine'
@@ -23,9 +24,121 @@ import {nanoid} from 'nanoid'
 import {useEffect, useMemo, useRef, useState} from 'react'
 
 // UI values for the header-layout select.
+const styles = stylex.create({
+  s4c9e7ebc: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 10)',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s196dae7f: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 10)',
+  },
+  se3309843: {
+    height: 'calc(0.25rem * 9)',
+    width: 'calc(0.25rem * 56)',
+  },
+  s4d733c9b: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    height: 'calc(0.25rem * 9)',
+    width: 'calc(0.25rem * 72)',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 4)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  sac428cea: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s76b0b3a9: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s380d63c9: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  sb9bd3a30: {
+    fontStyle: 'italic',
+  },
+  sd2daac47: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+    overflow: 'hidden',
+  },
+  s10514f6b: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: 'calc(0.25rem * 0)',
+    left: 'calc(0.25rem * 0)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+    opacity: '0%',
+  },
+  sf8e652db: {
+    whiteSpace: 'nowrap',
+  },
+  s13358127: {
+    flexShrink: '0',
+    whiteSpace: 'nowrap',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb136bac9: {
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+})
 const HEADER_LAYOUTS = [
-  {value: 'horizontal', label: 'Horizontal', stored: '' as const},
-  {value: 'center', label: 'Center', stored: 'Center' as const},
+  {
+    value: 'horizontal',
+    label: 'Horizontal',
+    stored: '' as const,
+  },
+  {
+    value: 'center',
+    label: 'Center',
+    stored: 'Center' as const,
+  },
 ]
 
 // Order aware equality for nav items (id/text/link).
@@ -51,23 +164,20 @@ function readPublishedNav(document: HMDocument): HMNavigationItem[] {
       .filter((item): item is HMNavigationItem => item !== null) ?? []
   )
 }
-
 export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
   const resource = useResource(siteId)
   const document = resource.data?.type === 'document' ? resource.data.document : undefined
   const {isSiteOwner, isLoading: isOwnerLoading} = useIsSiteOwner(siteId.uid)
   const updateHome = useUpdateHomeDocument(siteId.uid)
-
   const [navItems, setNavItems] = useState<HMNavigationItem[] | null>(null)
   const [headerLayout, setHeaderLayout] = useState<string | null>(null)
   const [showActivity, setShowActivity] = useState<boolean | null>(null)
   // Dialog: null = closed; {} = new item; {id} = editing existing.
   const [dialogItem, setDialogItem] = useState<HMNavigationItem | null>(null)
   const [dialogIsNew, setDialogIsNew] = useState(false)
-
   if (resource.isInitialLoading || isOwnerLoading) {
     return (
-      <div className="flex justify-center py-10">
+      <div className={stylex.props(styles.s4c9e7ebc).className || ''}>
         <Spinner />
       </div>
     )
@@ -85,7 +195,6 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       </>
     )
   }
-
   const metadata = document.metadata
   const publishedNav = readPublishedNav(document)
   const navValue = navItems ?? publishedNav
@@ -102,11 +211,14 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
     (headerLayout !== null && headerLayout !== currentLayout) ||
     (showActivity !== null && showActivity !== currentShowActivity)
   const canSave = isDirty && !updateHome.isPending
-
   const setNav = (items: HMNavigationItem[]) => setNavItems(items)
-
   const openNewDialog = () => {
-    setDialogItem({id: nanoid(), type: 'Link', text: '', link: ''})
+    setDialogItem({
+      id: nanoid(),
+      type: 'Link',
+      text: '',
+      link: '',
+    })
     setDialogIsNew(true)
   }
   const openEditDialog = (item: HMNavigationItem) => {
@@ -119,25 +231,29 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
     setDialogItem(null)
   }
   const removeItem = (id: string) => setNav(navValue.filter((i) => i.id !== id))
-
   async function handleSave() {
     try {
       const stored = HEADER_LAYOUTS.find((l) => l.value === layoutValue)?.stored ?? ''
       const nextMetadata: HMMetadata = {
         ...metadata,
         showActivity: showActivityValue,
-        theme: {...metadata.theme, headerLayout: stored},
+        theme: {
+          ...metadata.theme,
+          headerLayout: stored,
+        },
       }
-      await updateHome.mutateAsync({metadata: nextMetadata, navigation: navItems ?? undefined})
+      await updateHome.mutateAsync({
+        metadata: nextMetadata,
+        navigation: navItems ?? undefined,
+      })
       toast.success('Navigation updated')
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to update navigation')
     }
   }
-
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className={stylex.props(styles.s78289774).className || ''}>
         <SizableText size="2xl" weight="bold">
           Navigation
         </SizableText>
@@ -147,7 +263,7 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       </div>
 
       {/* Header preview */}
-      <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <SizableText weight="medium">Space header preview</SizableText>
         <HeaderPreview
           siteId={siteId}
@@ -159,7 +275,7 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       </div>
 
       {/* Nav item list */}
-      <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <SizableText weight="medium">Create the navigation items shown in the top bar</SizableText>
         <NavItemList
           items={navValue}
@@ -174,18 +290,18 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
             className="border-primary dark:border-primary text-primary hover:text-primary hover:bg-primary/10 bg-transparent"
             onClick={openNewDialog}
           >
-            <Plus className="size-4" />
+            <Plus className={stylex.props(styles.sca3de968).className || ''} />
             Add navigation item
           </Button>
         </div>
       </div>
 
       {/* Layout and options */}
-      <div className="flex flex-wrap gap-10">
-        <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.s196dae7f).className || ''}>
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <SizableText weight="medium">Header layout</SizableText>
           <Select value={layoutValue} onValueChange={setHeaderLayout}>
-            <SelectTrigger className="h-9 w-56">
+            <SelectTrigger className={stylex.props(styles.se3309843).className || ''}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -197,13 +313,13 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <SizableText weight="medium">Options</SizableText>
-          <div className="bg-muted flex h-9 w-72 items-center justify-between gap-4 rounded-md px-4">
-            <div className="flex items-center gap-1.5">
+          <div className={stylex.props(styles.s4d733c9b).className || ''}>
+            <div className={stylex.props(styles.sac428cea).className || ''}>
               <SizableText>Show activity tabs</SizableText>
               <Tooltip content="Show the People, Comments, and Citations tabs on your space's pages.">
-                <HelpCircle className="text-muted-foreground size-3.5" />
+                <HelpCircle className={stylex.props(styles.s76b0b3a9).className || ''} />
               </Tooltip>
             </div>
             <Switch checked={showActivityValue} onCheckedChange={setShowActivity} />
@@ -239,7 +355,16 @@ function HeaderPreview({
   items: HMNavigationItem[]
   isCenter: boolean
 }) {
-  const labelItems = useMemo(() => items.filter((i) => i.text.trim()).map((i) => ({key: i.id, text: i.text})), [items])
+  const labelItems = useMemo(
+    () =>
+      items
+        .filter((i) => i.text.trim())
+        .map((i) => ({
+          key: i.id,
+          text: i.text,
+        })),
+    [items],
+  )
   // Overflow items collapse into a caret dropdown instead of wrapping, mirroring
   // the real site header.
   const {containerRef, itemRefs, visibleItems, overflowItems} = useResponsiveItems({
@@ -247,13 +372,18 @@ function HeaderPreview({
     gapWidth: 16,
     reservedWidth: 36,
   })
-
-  const iconEl = <HMIcon id={siteId} name={name} icon={icon} size={40} className="shrink-0" />
-
+  const iconEl = (
+    <HMIcon id={siteId} name={name} icon={icon} size={40} className={stylex.props(styles.sf032ed6c).className || ''} />
+  )
   const navRow =
     labelItems.length === 0 ? (
-      <div className={cn('flex items-center', isCenter ? 'justify-center' : 'flex-1 justify-end')}>
-        <SizableText color="muted" className="italic">
+      <div
+        className={cn(
+          stylex.props(styles.s380d63c9).className || '',
+          isCenter ? 'justify-center' : 'flex-1 justify-end',
+        )}
+      >
+        <SizableText color="muted" className={stylex.props(styles.sb9bd3a30).className || ''}>
           No navigations items added yet
         </SizableText>
       </div>
@@ -261,12 +391,12 @@ function HeaderPreview({
       <div
         ref={containerRef}
         className={cn(
-          'relative flex items-center gap-4 overflow-hidden',
+          stylex.props(styles.sd2daac47).className || '',
           isCenter ? 'w-full justify-center' : 'flex-1 justify-end',
         )}
       >
         {/* Hidden measurement container (measures each item's natural width) */}
-        <div className="pointer-events-none absolute top-0 left-0 flex items-center gap-4 opacity-0">
+        <div className={stylex.props(styles.s10514f6b).className || ''}>
           {labelItems.map((item) => (
             <div
               key={`measure-${item.key}`}
@@ -275,14 +405,19 @@ function HeaderPreview({
                 else itemRefs.current.delete(item.key)
               }}
             >
-              <SizableText weight="medium" className="whitespace-nowrap">
+              <SizableText weight="medium" className={stylex.props(styles.sf8e652db).className || ''}>
                 {item.text}
               </SizableText>
             </div>
           ))}
         </div>
         {visibleItems.map((item) => (
-          <SizableText key={item.key} weight="medium" color="muted" className="shrink-0 whitespace-nowrap">
+          <SizableText
+            key={item.key}
+            weight="medium"
+            color="muted"
+            className={stylex.props(styles.s13358127).className || ''}
+          >
             {item.text}
           </SizableText>
         ))}
@@ -293,24 +428,23 @@ function HeaderPreview({
             ariaLabel="More navigation items"
             button={
               <button className="text-muted-foreground hover:text-foreground flex size-6 shrink-0 items-center justify-center rounded-full">
-                <ChevronDown className="size-4" />
+                <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
               </button>
             }
             menuItems={overflowItems.map((item) => ({
               key: item.key,
               label: item.text,
-              icon: <span className="size-4" />,
+              icon: <span className={stylex.props(styles.sca3de968).className || ''} />,
               onClick: () => {},
             }))}
           />
         ) : null}
       </div>
     )
-
   if (isCenter) {
     return (
       <div className="border-border bg-muted/30 flex flex-col items-center gap-3 rounded-md border p-4">
-        <div className="flex items-center gap-2">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           {iconEl}
           {name ? <SizableText weight="bold">{name}</SizableText> : null}
         </div>
@@ -326,7 +460,6 @@ function HeaderPreview({
     </div>
   )
 }
-
 function NavItemList({
   items,
   onReorder,
@@ -342,7 +475,6 @@ function NavItemList({
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [draggingOverId, setDraggingOverId] = useState<string | null>(null)
-
   useEffect(() => {
     return monitorForElements({
       onDrag: ({location}) => setDraggingOverId((location.current.dropTargets[0]?.data.id as string) ?? null),
@@ -360,7 +492,6 @@ function NavItemList({
       },
     })
   }, [items, onReorder])
-
   if (!items.length) {
     return (
       <button
@@ -368,14 +499,13 @@ function NavItemList({
         onClick={onAdd}
         className="border-border text-muted-foreground flex w-full items-center gap-2 rounded-md border border-dashed px-4 py-5 transition-colors hover:border-neutral-400 dark:hover:border-neutral-500"
       >
-        <Plus className="size-4" />
+        <Plus className={stylex.props(styles.sca3de968).className || ''} />
         <SizableText color="muted">Add navigation item</SizableText>
       </button>
     )
   }
-
   return (
-    <div ref={containerRef} className="flex flex-col gap-2">
+    <div ref={containerRef} className={stylex.props(styles.sfbc6e28e).className || ''}>
       {items.map((item) => (
         <NavItemRow
           key={item.id}
@@ -388,7 +518,6 @@ function NavItemList({
     </div>
   )
 }
-
 function NavItemRow({
   item,
   isDraggingOver,
@@ -402,15 +531,24 @@ function NavItemRow({
 }) {
   const rowRef = useRef<HTMLDivElement>(null)
   const handleRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     if (!rowRef.current || !handleRef.current) return
     return combine(
-      draggable({element: rowRef.current, dragHandle: handleRef.current, getInitialData: () => ({id: item.id})}),
-      dropTargetForElements({element: rowRef.current, getData: () => ({id: item.id})}),
+      draggable({
+        element: rowRef.current,
+        dragHandle: handleRef.current,
+        getInitialData: () => ({
+          id: item.id,
+        }),
+      }),
+      dropTargetForElements({
+        element: rowRef.current,
+        getData: () => ({
+          id: item.id,
+        }),
+      }),
     )
   }, [item.id])
-
   return (
     <div
       ref={rowRef}
@@ -422,20 +560,30 @@ function NavItemRow({
       <div
         ref={handleRef}
         className="text-muted-foreground hover:text-foreground cursor-grab p-1 active:cursor-grabbing"
-        style={{userSelect: 'none', WebkitUserSelect: 'none'}}
+        style={{
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+        }}
       >
-        <EllipsisVertical className="size-4" />
+        <EllipsisVertical className={stylex.props(styles.sca3de968).className || ''} />
       </div>
-      <SizableText className={cn('flex-1 truncate', !item.text.trim() && 'text-muted-foreground')}>
+      <SizableText
+        className={cn(stylex.props(styles.sb136bac9).className || '', !item.text.trim() && 'text-muted-foreground')}
+      >
         {item.text || 'Untitled item'}
       </SizableText>
       <OptionsDropdown
         menuItems={[
-          {key: 'edit', label: 'Edit', icon: <Pencil className="size-4" />, onClick: onEdit},
+          {
+            key: 'edit',
+            label: 'Edit',
+            icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
+            onClick: onEdit,
+          },
           {
             key: 'remove',
             label: 'Remove',
-            icon: <Trash className="size-4" />,
+            icon: <Trash className={stylex.props(styles.sca3de968).className || ''} />,
             variant: 'destructive' as const,
             onClick: onRemove,
           },
@@ -444,7 +592,6 @@ function NavItemRow({
     </div>
   )
 }
-
 function NavItemDialog({
   item,
   isNew,
@@ -463,21 +610,20 @@ function NavItemDialog({
   const [text, setText] = useState(item.text)
   const [link, setLink] = useState(item.link)
   const canAdd = text.trim().length > 0 && link.trim().length > 0
-
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{isNew ? 'Create navigation item' : 'Edit navigation item'}</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e290).className || ''}>
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <SizableText size="sm" weight="medium">
               Item name (shown in the top bar)
             </SizableText>
             <Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Add name" />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <SizableText size="sm" weight="medium">
               Link
             </SizableText>
@@ -496,9 +642,15 @@ function NavItemDialog({
         <DialogFooter>
           <Button
             variant="default"
-            className="w-full"
+            className={stylex.props(styles.scdbaf625).className || ''}
             disabled={!canAdd}
-            onClick={() => onSubmit({...item, text: text.trim(), link: link.trim()})}
+            onClick={() =>
+              onSubmit({
+                ...item,
+                text: text.trim(),
+                link: link.trim(),
+              })
+            }
           >
             {isNew ? 'Add item' : 'Save item'}
           </Button>

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HelpCircle, MoreHorizontal} from 'lucide-react'
 import {useRef, useState} from 'react'
 import {ButtonProps, buttonVariants} from './button'
@@ -16,7 +17,34 @@ import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sa0cf170f: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'auto',
+    display: 'inline-flex',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+})
 const TOOLTIP_MAX_WIDTH = 320
 const TOOLTIP_VIEWPORT_PADDING = 16
 
@@ -38,13 +66,13 @@ function MenuItemHelpIcon({content}: {content: string}) {
         ref={ref}
         onMouseEnter={measure}
         onFocus={measure}
-        className="text-muted-foreground ml-auto inline-flex"
+        className={stylex.props(styles.sa0cf170f).className || ''}
         onClick={(e) => {
           e.stopPropagation()
           e.preventDefault()
         }}
       >
-        <HelpCircle className="size-3.5" />
+        <HelpCircle className={stylex.props(styles.s3269316e).className || ''} />
       </span>
     </Tooltip>
   )
@@ -62,20 +90,21 @@ export type MenuItemType = {
   tooltip?: string
   disabled?: boolean
 }
-
 function orderMenuItems(menuItems: (MenuItemType | null)[]) {
   const presentItems = menuItems.filter((item): item is MenuItemType => item != null)
   const nonDestructive = presentItems.filter((item) => item.variant !== 'destructive')
   const destructive = presentItems.filter((item) => item.variant === 'destructive')
   const firstDestructiveIndex = nonDestructive.length > 0 && destructive.length > 0 ? nonDestructive.length : -1
-  return {ordered: [...nonDestructive, ...destructive], firstDestructiveIndex}
+  return {
+    ordered: [...nonDestructive, ...destructive],
+    firstDestructiveIndex,
+  }
 }
-
 function MenuItemLabel({item}: {item: MenuItemType}) {
   return item.subLabel ? (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       <SizableText>{item.label}</SizableText>
-      <SizableText size="sm" className="text-muted-foreground text-xs">
+      <SizableText size="sm" className={stylex.props(styles.sa56e9200).className || ''}>
         {item.subLabel}
       </SizableText>
     </div>
@@ -83,7 +112,6 @@ function MenuItemLabel({item}: {item: MenuItemType}) {
     <SizableText>{item.label}</SizableText>
   )
 }
-
 function renderMenuItem(item: MenuItemType, close: () => void) {
   if (item.children) {
     return (
@@ -113,7 +141,6 @@ function renderMenuItem(item: MenuItemType, close: () => void) {
       </DropdownMenuSub>
     )
   }
-
   return (
     <DropdownMenuItem
       variant={item.variant}
@@ -162,7 +189,6 @@ export function OptionsDropdown({
   const popoverState = usePopoverState()
   const {ordered, firstDestructiveIndex} = orderMenuItems(menuItems)
   const close = () => popoverState.onOpenChange(false)
-
   return (
     <div
       className={cn(
@@ -180,18 +206,25 @@ export function OptionsDropdown({
         ) : (
           <DropdownMenuTrigger
             aria-label={ariaLabel}
-            className={cn(buttonVariants({variant: 'outline', size}), 'no-window-drag', triggerClassName)}
+            className={cn(
+              buttonVariants({
+                variant: 'outline',
+                size,
+              }),
+              'no-window-drag',
+              triggerClassName,
+            )}
           >
-            <MoreHorizontal className="size-3.5" />
+            <MoreHorizontal className={stylex.props(styles.s3269316e).className || ''} />
           </DropdownMenuTrigger>
         )}
         <DropdownMenuContent
-          className={cn('p-1', contentClassName)}
+          className={cn(stylex.props(styles.s1aa14).className || '', contentClassName)}
           side={side}
           align={align}
           onCloseAutoFocus={onCloseAutoFocus}
         >
-          <div className="flex flex-col">
+          <div className={stylex.props(styles.s783f19f3).className || ''}>
             {ordered.map((item, index) => (
               <div key={item.key}>
                 {index === firstDestructiveIndex ? (

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {loadSiteHeaderData, SiteHeaderPayload} from '@/loaders'
 import {defaultSiteIcon} from '@/meta'
 import {PageFooter} from '@/page-footer'
@@ -16,9 +17,12 @@ import {WebHeaderActions} from '@/web-utils'
 import {Suspense} from 'react'
 import {GeneralPageSurface} from '@shm/ui/general-page'
 import {Spinner} from '@shm/ui/spinner'
-
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+})
 type NotificationsPagePayload = SiteHeaderPayload
-
 export const meta: MetaFunction = ({data}) => {
   const {homeMetadata} = unwrap<NotificationsPagePayload>(data)
   const meta: MetaDescriptor[] = []
@@ -29,10 +33,11 @@ export const meta: MetaFunction = ({data}) => {
     href: homeIcon || defaultSiteIcon,
     type: 'image/png',
   })
-  meta.push({title: 'Notifications'})
+  meta.push({
+    title: 'Notifications',
+  })
   return meta
 }
-
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const parsedRequest = parseRequest(request)
   const authToken = await getDaemonAuthToken(request)
@@ -41,7 +46,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return wrapJSON(headerData satisfies NotificationsPagePayload)
   })
 }
-
 export default function NotificationsRoute() {
   const {originHomeId, siteHost, origin, homeMetadata, dehydratedState} =
     unwrap<NotificationsPagePayload>(useLoaderData())
@@ -66,7 +70,7 @@ export default function NotificationsRoute() {
             </Suspense>
           </ClientOnly>
         </NavigationLoadingContent>
-        <PageFooter className="w-full" />
+        <PageFooter className={stylex.props(styles.scdbaf625).className || ''} />
       </GeneralPageSurface>
     </WebSiteProvider>
   )

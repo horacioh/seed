@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   BlockHoverActionsPositioner,
   BlockNoteView,
@@ -24,7 +25,14 @@ import {useSelectedAccountId} from '@/selected-account'
 import {useUniversalAppContext} from '@shm/shared'
 import {useMemo, useState} from 'react'
 import {AddBlockAtEndButton} from './add-block-at-end-button'
-
+const styles = stylex.create({
+  s7470bbe2: {
+    display: 'inline-block',
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
 export function HyperMediaEditorView({
   editor,
   comment,
@@ -64,9 +72,11 @@ export function HyperMediaEditorView({
   // Memoize the fragment actions so the context value is stable.
   const fragmentActionsValue = useMemo<FragmentActions | null>(() => {
     if (!hasPublishedVersion || !onCopyFragmentLink || !onComment) return null
-    return {onCopyFragmentLink, onComment}
+    return {
+      onCopyFragmentLink,
+      onComment,
+    }
   }, [hasPublishedVersion, onCopyFragmentLink, onComment])
-
   return (
     <FragmentActionsContext.Provider value={fragmentActionsValue}>
       <BlockNoteView editor={editor} className={comment ? 'hm-prose is-comment' : 'hm-prose draft-editor'}>
@@ -123,7 +133,6 @@ export function HyperMediaEditorView({
 function EditorEditableToggle({editor, onToggle}: {editor: HyperMediaEditor; onToggle: (editable: boolean) => void}) {
   const experiments = useUniversalAppContext().experiments
   if (!experiments?.developerTools) return null
-
   const editable = editor.isEditable
   return (
     <button
@@ -131,7 +140,12 @@ function EditorEditableToggle({editor, onToggle}: {editor: HyperMediaEditor; onT
       className="fixed bottom-3 left-3 z-[9999] flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-900 px-3 py-1.5 font-mono text-xs text-neutral-100 shadow-lg transition-colors hover:bg-neutral-800 dark:border-neutral-600 dark:bg-neutral-800 dark:hover:bg-neutral-700"
       title="Toggle editor editable state (debug)"
     >
-      <span className="inline-block size-2 rounded-full" style={{backgroundColor: editable ? '#22c55e' : '#ef4444'}} />
+      <span
+        className={stylex.props(styles.s7470bbe2).className || ''}
+        style={{
+          backgroundColor: editable ? '#22c55e' : '#ef4444',
+        }}
+      />
       {editable ? 'editable' : 'readOnly'}
     </button>
   )

@@ -73,6 +73,6 @@ body {
   right: 0;
   height: 40px;
   z-index: 1000;
-  background: var(--color-secondary);
-  background: linear-gradient(0deg, var(--color-secondary) 5%, var(--color-secondary) 100%);
+  background: var(--secondary);
+  background: linear-gradient(0deg, var(--secondary) 5%, var(--secondary) 100%);
 }

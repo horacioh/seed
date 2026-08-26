@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import './blocks-content.css'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {getRoutePanel, type DocumentPanelRoute, type DocumentRoute, type NavRoute} from '@shm/shared'
@@ -8,25 +9,36 @@ import {HTMLAttributes, MouseEvent, PropsWithChildren, useMemo} from 'react'
 import {blockStyles} from './blocks-content-utils'
 import {useHighlighter} from './highlight-context'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s77fea5a8: {
+    margin: 'calc(0.25rem * 0)',
+    borderRadius: '0',
+  },
+})
 function isInteractiveEmbedClickTarget(event: MouseEvent<HTMLElement>) {
   const target = event.target as HTMLElement | null
   if (!target?.closest) return false
-
   const embedEl = target.closest('[data-content-type="embed"]')
   const interactiveEl = target.closest(
     'a[href], .link[href], button, input, textarea, select, [role="button"], [data-embed-interactive]',
   )
-
   return !!interactiveEl && interactiveEl !== embedEl
 }
 
 /** Builds a document route for an embed while retaining the currently active panel. */
 export function getEmbedDocumentRoute(id: UnpackedHypermediaId, currentRoute: NavRoute): DocumentRoute {
   const panel = getRoutePanel(currentRoute) as DocumentPanelRoute | null
-  return panel ? {key: 'document', id, panel} : {key: 'document', id}
+  return panel
+    ? {
+        key: 'document',
+        id,
+        panel,
+      }
+    : {
+        key: 'document',
+        id,
+      }
 }
-
 export function EmbedWrapper({
   id,
   parentBlockId,
@@ -61,11 +73,9 @@ export function EmbedWrapper({
     }
     return route
   }, [route, currentRoute])
-
   const linkProps = useRouteLink(openOnClick && effectiveRoute ? effectiveRoute : null)
   const {onClick: routeOnClick, tag: _routeTag, ...linkAttributes} = linkProps
   const Wrapper = openOnClick && effectiveRoute ? 'a' : 'div'
-
   if (!id) return null
   return (
     <Wrapper
@@ -74,7 +84,7 @@ export function EmbedWrapper({
         'block-embed hm-prose flex flex-col',
         blockStyles,
         !hideBorder && 'border-l-primary border-l-3',
-        'm-0 rounded-none',
+        stylex.props(styles.s77fea5a8).className || '',
         openOnClick && effectiveRoute && 'cursor-pointer text-inherit no-underline',
       )}
       data-is-range={isRange ? 'true' : undefined}
@@ -90,7 +100,6 @@ export function EmbedWrapper({
         openOnClick && effectiveRoute
           ? (e) => {
               if (isInteractiveEmbedClickTarget(e)) return
-
               const selection = window.getSelection()
               const hasSelection = selection && selection.toString().length > 0
               if (hasSelection) {

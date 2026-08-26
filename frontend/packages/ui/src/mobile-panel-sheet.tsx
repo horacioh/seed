@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useCallback, useEffect, useId, useRef, useState} from 'react'
 import type {PointerEvent as ReactPointerEvent, ReactNode} from 'react'
 import {createPortal} from 'react-dom'
@@ -5,7 +6,35 @@ import {Button} from './button'
 import {Close} from './icons'
 import {Text} from './text'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sd7a601ea: {
+    display: 'flex',
+    flexShrink: '0',
+    justifyContent: 'center',
+    paddingTop: 'calc(0.25rem * 2)',
+  },
+  s1142a765: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    textAlign: 'left',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export interface MobilePanelSheetProps {
   /** Whether the panel is open */
   isOpen: boolean
@@ -16,14 +45,12 @@ export interface MobilePanelSheetProps {
   /** Panel content */
   children: ReactNode
 }
-
 export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanelSheetProps) {
   const titleId = useId()
   const [isVisible, setIsVisible] = useState(false)
   const [dragY, setDragY] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const dragStartY = useRef(0)
-
   useEffect(() => {
     if (!isOpen) {
       setIsVisible(false)
@@ -31,7 +58,6 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
       setIsDragging(false)
       return
     }
-
     const frame = requestAnimationFrame(() => setIsVisible(true))
     return () => cancelAnimationFrame(frame)
   }, [isOpen])
@@ -70,19 +96,16 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
     },
     [onClose],
   )
-
   useEffect(() => {
     if (!isOpen) return
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, handleKeyDown])
-
   const handleDragStart = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
     dragStartY.current = event.clientY
     setIsDragging(true)
     event.currentTarget.setPointerCapture?.(event.pointerId)
   }, [])
-
   const handleDragMove = useCallback(
     (event: ReactPointerEvent<HTMLButtonElement>) => {
       if (!isDragging) return
@@ -91,7 +114,6 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
     },
     [isDragging],
   )
-
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return
     setIsDragging(false)
@@ -120,14 +142,16 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
         aria-labelledby={titleId}
         data-slot="mobile-panel-sheet"
         onClick={(event) => event.stopPropagation()}
-        style={{transform: isOpen && isVisible ? `translateY(${dragY}px)` : 'translateY(2rem)'}}
+        style={{
+          transform: isOpen && isVisible ? `translateY(${dragY}px)` : 'translateY(2rem)',
+        }}
         className={cn(
           'bg-background border-border flex h-[90dvh] max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-3xl border-t shadow-[0_-20px_60px_rgba(0,0,0,0.22)]',
           'will-change-transform motion-reduce:transition-none',
           isDragging ? 'transition-none' : 'transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
         )}
       >
-        <div className="flex shrink-0 justify-center pt-2">
+        <div className={stylex.props(styles.sd7a601ea).className || ''}>
           <button
             type="button"
             aria-label="Drag panel"
@@ -144,13 +168,19 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
         </div>
 
         {/* Header */}
-        <div className="border-border flex shrink-0 items-center border-b px-4 py-2 text-left">
-          <Text id={titleId} weight="semibold" className="flex-1">
+        <div className={stylex.props(styles.s1142a765).className || ''}>
+          <Text id={titleId} weight="semibold" className={stylex.props(styles.sb42feb5d).className || ''}>
             {title}
           </Text>
 
-          <Button aria-label="Close panel" variant="ghost" size="icon" onClick={onClose} className="shrink-0">
-            <Close className="size-4" />
+          <Button
+            aria-label="Close panel"
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className={stylex.props(styles.sf032ed6c).className || ''}
+          >
+            <Close className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </div>
 

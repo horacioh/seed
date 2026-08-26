@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMAccountsMetadata,
   HMBlockImage,
@@ -11,12 +12,28 @@ import {DocumentCard} from './newspaper'
 import {cn} from './utils'
 
 /** CSS class string for standard block content width. */
+const styles = stylex.create({
+  s730eff20: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s7aa9cc9: {
+    marginInline: 'calc(0.25rem * -3)',
+    marginTop: 'calc(0.25rem * 2)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+})
 export const blockStyles = 'w-full flex-1 self-center'
 
 /** Recursively finds a block node by ID in a tree of block nodes. */
 export function getBlockNodeById(blocks: Array<HMBlockNode>, blockId: string): HMBlockNode | null {
   if (!blockId) return null
-
   let res: HMBlockNode | undefined
   blocks.find((bn) => {
     if (bn.block?.id == blockId) {
@@ -82,7 +99,6 @@ export function resolveGalleryNavigation(
   if (direction === 'prev') return currentIndex > 0 ? currentIndex - 1 : null
   return currentIndex < images.length - 1 ? currentIndex + 1 : null
 }
-
 const SWIPE_THRESHOLD = 50 // px — must exceed, not equal
 
 /** Determines swipe direction from horizontal delta, or null if below threshold. */
@@ -126,11 +142,11 @@ export function DocumentCardGrid({
   const hasPrependItems = prependItems && prependItems.length > 0
   const hasItems = items?.length > 0
   return (
-    <div className="flex w-full flex-col">
+    <div className={stylex.props(styles.s730eff20).className || ''}>
       {bannerContent ? (
-        <div className="flex">{bannerContent}</div>
+        <div className={stylex.props(styles.s2ffff9).className || ''}>{bannerContent}</div>
       ) : firstItem ? (
-        <div className="flex">
+        <div className={stylex.props(styles.s2ffff9).className || ''}>
           <DocumentCard
             banner
             entity={null}
@@ -149,7 +165,7 @@ export function DocumentCardGrid({
         </div>
       ) : null}
       {hasPrependItems || hasItems ? (
-        <div className="-mx-3 mt-2 flex flex-wrap justify-center">
+        <div className={stylex.props(styles.s7aa9cc9).className || ''}>
           {prependItems?.map((item, i) => (
             <div className={cn(columnClasses, 'flex min-w-0 p-3')} key={`prepend-${i}`}>
               {item}

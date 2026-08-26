@@ -18,13 +18,14 @@ import ReactDOM from 'react-dom/client'
 import {ErrorBoundary} from 'react-error-boundary'
 import {AppErrorContent, RootAppError} from './components/app-error'
 import {DebugDialogs} from './components/debug-dialogs'
+import {OnboardingDialog} from './components/onboarding'
 import type {GoDaemonState} from './daemon'
 import {grpcClient} from './grpc-client'
 import {ipc} from './ipc'
 import Main from './pages/main'
 import type {AppInfoType} from './preload'
 import './root.css'
-import './tailwind.css'
+import './stylex.css'
 
 import {AppWindowEvent} from '@/utils/window-events'
 import {ReadOnlyViewer} from '@shm/editor/readonly-viewer'
@@ -289,6 +290,7 @@ function MainApp({}: {}) {
   const mainContent = (
     <>
       <Main />
+      <OnboardingDialog />
       {!IS_PROD_DESKTOP && false && <DebugDialogs />}
     </>
   )

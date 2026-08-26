@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useUpdateHomeDocument} from '@/models/site'
 import {useNavigate} from '@/utils/useNavigate'
 import type {HMMetadata, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
@@ -45,6 +46,68 @@ import {useState} from 'react'
  * here. The published order carries exactly one meaning, the default (the agent a new visitor opens
  * on), so that is all the list offers: a button to promote an agent, not a way to arrange them.
  */
+const styles = stylex.create({
+  s4c9e7ebc: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 10)',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  s34f4d0a2: {
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  s9cbc670f: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flex: 'none',
+  },
+  s55881eac: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2.5)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  s43c497cf: {
+    color: 'var(--destructive)',
+    display: 'block',
+  },
+  se17bbf7f: {
+    height: 'calc(0.25rem * 8)',
+    width: 'calc(0.25rem * 40)',
+  },
+})
 export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
   const resource = useResource(siteId)
   const document = resource.data?.type === 'document' ? resource.data.document : undefined
@@ -58,13 +121,11 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
   const localServerUrl = useLocalAgentServerUrl()
   const openServerSettings = (getAgentsPlatform().useOpenServerSettings ?? (() => null))()
   const navigate = useNavigate()
-
   const [serverDraft, setServerDraft] = useState<string | null>(null)
   const [idsDraft, setIdsDraft] = useState<string[] | null>(null)
   // Remounts the add-an-agent dropdown after each pick, so it returns to its prompt. It is an
   // action, not a value: a Select left holding the agent it just published would read as a setting.
   const [addKey, setAddKey] = useState(0)
-
   const metadata = document?.metadata
   const publishedServer = safeServerUrl(typeof metadata?.agentServerUrl === 'string' ? metadata.agentServerUrl : '')
   const publishedIds = parseSpaceAgentIds(metadata?.spaceAgents)
@@ -77,10 +138,9 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
   const serverAgents = agentList.data ?? []
   const setPublicRead = useSetAgentPublicRead(serverValue || undefined, accountUid)
   const setPublicChat = useSetAgentPublicChat(serverValue || undefined, accountUid)
-
   if (resource.isInitialLoading || isOwnerLoading) {
     return (
-      <div className="flex justify-center py-10">
+      <div className={stylex.props(styles.s4c9e7ebc).className || ''}>
         <Spinner />
       </div>
     )
@@ -98,7 +158,6 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       </>
     )
   }
-
   const isDirty = serverValue !== (publishedServer ?? '') || !sameOrder(idsValue, publishedIds)
   const canSave = isDirty && !updateHome.isPending
   const isLocal = !!serverValue && isLocalAgentServer(serverValue, localServerUrl.data)
@@ -114,7 +173,6 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       ...(knownServers.data ?? []).filter((serverUrl) => !isLocalAgentServer(serverUrl, localServerUrl.data)),
     ]),
   )
-
   const publishedRows = idsValue.map((agentId) => ({
     agentId,
     agent: serverAgents.find((agent) => agent.id === agentId),
@@ -122,7 +180,6 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
   const unpublished = serverAgents.filter((agent) => !idsValue.includes(agent.id))
   const addableAgents = unpublished.filter(canPublishAgent)
   const privateCount = unpublished.length - addableAgents.length
-
   function chooseServer(next: string) {
     const serverUrl = next === NO_SERVER ? '' : next
     setServerDraft(serverUrl)
@@ -130,7 +187,6 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
     // servers empties the list — and switching back before saving restores what was published.
     setIdsDraft(serverUrl === (publishedServer ?? '') ? null : [])
   }
-
   async function handleSave() {
     try {
       const nextMetadata: HMMetadata = {
@@ -138,7 +194,9 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
         agentServerUrl: serverValue || undefined,
         spaceAgents: spaceAgentsMetadata(idsValue),
       }
-      await updateHome.mutateAsync({metadata: nextMetadata})
+      await updateHome.mutateAsync({
+        metadata: nextMetadata,
+      })
       toast.success('Space agents updated')
       setServerDraft(null)
       setIdsDraft(null)
@@ -146,24 +204,32 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       toast.error(error instanceof Error ? error.message : 'Failed to update space agents')
     }
   }
-
   async function setAccess(agent: AgentInfo, access: AgentAccess) {
     try {
       if (access === 'private') {
         // Turning public read off clears public chat on the server, so this one call is enough.
-        await setPublicRead.mutateAsync({agentId: agent.id, publicRead: false})
+        await setPublicRead.mutateAsync({
+          agentId: agent.id,
+          publicRead: false,
+        })
       } else {
-        if (!agent.publicRead) await setPublicRead.mutateAsync({agentId: agent.id, publicRead: true})
-        await setPublicChat.mutateAsync({agentId: agent.id, publicChat: access === 'chat'})
+        if (!agent.publicRead)
+          await setPublicRead.mutateAsync({
+            agentId: agent.id,
+            publicRead: true,
+          })
+        await setPublicChat.mutateAsync({
+          agentId: agent.id,
+          publicChat: access === 'chat',
+        })
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to change who can reach this agent')
     }
   }
-
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className={stylex.props(styles.s78289774).className || ''}>
         <SizableText size="2xl" weight="bold">
           Agents
         </SizableText>
@@ -172,9 +238,9 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
         </Button>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <SizableText weight="medium">Agents server</SizableText>
-        <div className="flex items-center gap-2">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <Select value={serverValue || NO_SERVER} onValueChange={chooseServer}>
             <SelectTrigger className="h-9 max-w-md">
               <SelectValue />
@@ -191,7 +257,7 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
           {openServerSettings ? (
             <Tooltip content="Add or remove agent servers">
               <Button variant="outline" size="sm" onClick={openServerSettings}>
-                <Settings className="size-4" />
+                <Settings className={stylex.props(styles.sca3de968).className || ''} />
                 Manage servers
               </Button>
             </Tooltip>
@@ -203,7 +269,7 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
         {isLocal ? (
           // Not offered by the dropdown, but a space that already advertises it needs to be told why
           // that is broken rather than left to wonder where its readers' agents went.
-          <SizableText size="xs" className="text-destructive">
+          <SizableText size="xs" className={stylex.props(styles.s8a2570e2).className || ''}>
             Local Agents runs only on this computer, so visitors to your space cannot reach it. Choose a server they
             can.
           </SizableText>
@@ -213,7 +279,7 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
       {/* Nothing to publish to until a server is chosen: the ids in this list name agents on one
           particular server, so without one the list would be a set of addresses to nowhere. */}
       {serverValue ? (
-        <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <SizableText weight="medium">Published agents</SizableText>
           <SizableText size="xs" color="muted">
             These appear in the agents panel for everyone visiting this space. The default is the one a new visitor
@@ -228,7 +294,16 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
                 key={agentId}
                 agent={agent}
                 isDefault={index === 0}
-                onOpen={agent ? () => navigate({key: 'agent', agentId, serverUrl: serverValue}) : undefined}
+                onOpen={
+                  agent
+                    ? () =>
+                        navigate({
+                          key: 'agent',
+                          agentId,
+                          serverUrl: serverValue,
+                        })
+                    : undefined
+                }
                 onMakeDefault={index === 0 ? undefined : () => setIdsDraft(makeSpaceAgentDefault(idsValue, agentId))}
                 onRemove={() => setIdsDraft(idsValue.filter((id) => id !== agentId))}
                 onAccessChange={agent ? (access) => setAccess(agent, access) : undefined}
@@ -236,14 +311,14 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
               />
             ))}
             {!publishedRows.length ? (
-              <div className="px-3 py-4">
+              <div className={stylex.props(styles.s34f4d0a2).className || ''}>
                 <SizableText size="xs" color="muted">
                   No agents published yet — visitors to this space find nothing to chat with.
                 </SizableText>
               </div>
             ) : null}
             <div className="bg-muted/30 flex items-center gap-2 px-3 py-2">
-              <Plus className="text-muted-foreground size-4 flex-none" />
+              <Plus className={stylex.props(styles.s9cbc670f).className || ''} />
               <AddAgentControl
                 key={addKey}
                 agents={addableAgents}
@@ -270,7 +345,6 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
 
 /** Sentinel for the "no agents server" choice: a Select item cannot carry an empty value. */
 const NO_SERVER = 'none'
-
 function PublishedAgentRow({
   agent,
   isDefault,
@@ -301,14 +375,14 @@ function PublishedAgentRow({
           onOpen()
         }
       }}
-      className={cn('flex items-center gap-3 px-3 py-2.5', onOpen && 'hover:bg-muted/50 cursor-pointer')}
+      className={cn(stylex.props(styles.s55881eac).className || '', onOpen && 'hover:bg-muted/50 cursor-pointer')}
     >
       <div className="bg-primary/10 text-primary flex size-9 flex-none items-center justify-center rounded-lg">
-        <Bot className="size-4" />
+        <Bot className={stylex.props(styles.sca3de968).className || ''} />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <SizableText weight="bold" className="truncate">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
+          <SizableText weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
             {agent ? agent.definition.name : 'Unavailable agent'}
           </SizableText>
           {isDefault ? (
@@ -318,17 +392,17 @@ function PublishedAgentRow({
           ) : null}
         </div>
         {!agent ? (
-          <SizableText size="xs" color="muted" className="block">
+          <SizableText size="xs" color="muted" className={stylex.props(styles.s597c48d).className || ''}>
             Not on this server, or not visible to you
           </SizableText>
         ) : !agent.publicRead ? (
-          <SizableText size="xs" className="text-destructive block">
+          <SizableText size="xs" className={stylex.props(styles.s43c497cf).className || ''}>
             Private — readers of this space cannot see it
           </SizableText>
         ) : null}
       </div>
       {/* The row opens the agent; its controls act on the space, so they must not also navigate. */}
-      <div className="flex items-center gap-2" onClick={(event) => event.stopPropagation()}>
+      <div className={stylex.props(styles.s86ff3e4).className || ''} onClick={(event) => event.stopPropagation()}>
         {onMakeDefault ? (
           <Tooltip content="Open the agents panel on this agent for new visitors">
             <Button variant="outline" size="sm" onClick={onMakeDefault}>
@@ -341,7 +415,7 @@ function PublishedAgentRow({
         ) : null}
         <Tooltip content="Remove from this space">
           <Button variant="ghost" size="sm" aria-label="Remove from this space" onClick={onRemove}>
-            <X className="size-4" />
+            <X className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </Tooltip>
       </div>
@@ -356,13 +430,17 @@ function AddAgentControl({
   onAdd,
 }: {
   agents: AgentInfo[]
-  agentList: {isInitialLoading: boolean; isError: boolean; error: unknown}
+  agentList: {
+    isInitialLoading: boolean
+    isError: boolean
+    error: unknown
+  }
   onAdd: (agent: AgentInfo) => void
 }) {
   if (agentList.isInitialLoading) return <Spinner />
   if (agentList.isError) {
     return (
-      <SizableText size="xs" className="text-destructive">
+      <SizableText size="xs" className={stylex.props(styles.s8a2570e2).className || ''}>
         {agentList.error instanceof Error ? agentList.error.message : 'Could not reach the agents server'}
       </SizableText>
     )
@@ -390,18 +468,32 @@ function AddAgentControl({
 
 /** Who, besides the agent's own collaborators, may reach it. */
 type AgentAccess = 'private' | 'read' | 'chat'
-
-const ACCESS_OPTIONS: {value: AgentAccess; label: string; hint: string}[] = [
-  {value: 'private', label: 'Private', hint: 'Only collaborators. Readers of this space see nothing.'},
-  {value: 'read', label: 'Anyone can view', hint: 'Visitors see the agent but cannot start a chat.'},
-  {value: 'chat', label: 'Anyone can chat', hint: 'Visitors can open the panel and start chatting.'},
+const ACCESS_OPTIONS: {
+  value: AgentAccess
+  label: string
+  hint: string
+}[] = [
+  {
+    value: 'private',
+    label: 'Private',
+    hint: 'Only collaborators. Readers of this space see nothing.',
+  },
+  {
+    value: 'read',
+    label: 'Anyone can view',
+    hint: 'Visitors see the agent but cannot start a chat.',
+  },
+  {
+    value: 'chat',
+    label: 'Anyone can chat',
+    hint: 'Visitors can open the panel and start chatting.',
+  },
 ]
 
 /** An absent role comes from the owner's own listing, so it counts as ownership. */
 function isAgentOwner(agent: AgentInfo): boolean {
   return agent.accessRole === undefined || agent.accessRole === 'owner'
 }
-
 function agentAccess(agent: AgentInfo): AgentAccess {
   if (!agent.publicRead) return 'private'
   return agent.publicChat ? 'chat' : 'read'
@@ -432,7 +524,7 @@ function AccessSelect({
     <Tooltip content={ACCESS_OPTIONS.find((option) => option.value === access)?.hint ?? ''}>
       <div>
         <Select value={access} onValueChange={(value) => onChange(value as AgentAccess)} disabled={disabled}>
-          <SelectTrigger className="h-8 w-40" size="sm">
+          <SelectTrigger className={stylex.props(styles.se17bbf7f).className || ''} size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -457,7 +549,6 @@ function safeServerUrl(value: string): string | null {
     return null
   }
 }
-
 function sameOrder(a: string[], b: string[]): boolean {
   return a.length === b.length && a.every((value, index) => value === b[index])
 }

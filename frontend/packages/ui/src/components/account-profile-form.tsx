@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Plus} from 'lucide-react'
 import {useEffect, useState, type FormEvent} from 'react'
 import {Button} from '../button'
@@ -5,9 +6,82 @@ import {SizableText} from '../text'
 import {Input} from './input'
 import {Label} from './label'
 import {Textarea} from './textarea'
-
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s11c1d1bc: {
+    color: 'var(--destructive)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s5d7ceece: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  s3566be64: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+  s6c60c43d: {
+    position: 'absolute',
+    inset: 'calc(0.25rem * 0)',
+    cursor: 'pointer',
+    opacity: '0%',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s2d68c57c: {
+    textAlign: 'right',
+  },
+  s9075a4c8: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 4)',
+  },
+  se99caeca: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s2c288d62: {
+    marginTop: 'calc(0.25rem * 0.5)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+    borderRadius: '0.25rem',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sb17bd927: {
+    marginTop: 'calc(0.25rem * 2)',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 3)',
+  },
+})
 const MAX_AVATAR_BYTES = 1024 * 1024
-
 export type AccountProfileFormValues = {
   name: string
   description?: string
@@ -71,14 +145,12 @@ export function AccountProfileForm({
     setImageFile(undefined)
     setPreviewUrl(initialImageUrl)
   }, [initialName, initialDescription, initialImageUrl])
-
   useEffect(() => {
     if (!imageFile) return
     const objectUrl = URL.createObjectURL(imageFile)
     setPreviewUrl(objectUrl)
     return () => URL.revokeObjectURL(objectUrl)
   }, [imageFile])
-
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     event.target.value = ''
@@ -92,7 +164,6 @@ export function AccountProfileForm({
     setAvatarError('')
     setImageFile(file)
   }
-
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     const trimmedName = name.trim()
@@ -108,13 +179,12 @@ export function AccountProfileForm({
       imageFile,
     })
   }
-
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-4">
-        {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      <div className={stylex.props(styles.sfbc6e290).className || ''}>
+        {error ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{error}</p> : null}
 
-        <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <Label htmlFor="account-profile-name">Name</Label>
           <Input
             id="account-profile-name"
@@ -127,16 +197,16 @@ export function AccountProfileForm({
             autoFocus
             disabled={loading}
           />
-          {nameError ? <p className="text-destructive text-sm">{nameError}</p> : null}
+          {nameError ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{nameError}</p> : null}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-3">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+          <div className={stylex.props(styles.s86ff3e5).className || ''}>
             <div className="bg-muted focus-within:ring-primary relative flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded focus-within:ring-2 focus-within:ring-offset-2">
               {previewUrl ? (
-                <img src={previewUrl} className="size-full object-cover" alt="" />
+                <img src={previewUrl} className={stylex.props(styles.s5d7ceece).className || ''} alt="" />
               ) : (
-                <Plus className="text-muted-foreground size-5" />
+                <Plus className={stylex.props(styles.s3566be64).className || ''} />
               )}
               <input
                 id="account-profile-image"
@@ -144,18 +214,18 @@ export function AccountProfileForm({
                 accept="image/*"
                 onChange={handleImageChange}
                 disabled={loading}
-                className="absolute inset-0 cursor-pointer opacity-0"
+                className={stylex.props(styles.s6c60c43d).className || ''}
               />
             </div>
-            <span className="text-muted-foreground text-sm">
+            <span className={stylex.props(styles.sa56e915f).className || ''}>
               {previewUrl ? 'Change photo (optional)' : 'Add a photo (optional)'}
             </span>
           </div>
-          {avatarError ? <p className="text-destructive text-sm">{avatarError}</p> : null}
+          {avatarError ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{avatarError}</p> : null}
         </div>
 
         {showDescription ? (
-          <div className="flex flex-col gap-2">
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <Label htmlFor="account-profile-description">Description (optional)</Label>
             <Textarea
               id="account-profile-description"
@@ -165,24 +235,24 @@ export function AccountProfileForm({
               className="min-h-[80px] resize-none"
               disabled={loading}
             />
-            <SizableText size="xs" color="muted" className="text-right">
+            <SizableText size="xs" color="muted" className={stylex.props(styles.s2d68c57c).className || ''}>
               {description.length}/512
             </SizableText>
           </div>
         ) : null}
 
         {notificationOption ? (
-          <div className="rounded-lg border p-4">
-            <div className="flex items-start gap-3">
+          <div className={stylex.props(styles.s9075a4c8).className || ''}>
+            <div className={stylex.props(styles.se99caeca).className || ''}>
               <input
                 id="account-profile-notification-email"
                 type="checkbox"
                 checked={notificationOption.checked}
                 onChange={(event) => notificationOption.onCheckedChange(event.target.checked)}
                 disabled={loading}
-                className="mt-0.5 size-4 shrink-0 rounded"
+                className={stylex.props(styles.s2c288d62).className || ''}
               />
-              <div className="flex flex-col gap-1">
+              <div className={stylex.props(styles.sfbc6e28d).className || ''}>
                 <Label htmlFor="account-profile-notification-email">{notificationOption.label}</Label>
                 <SizableText size="sm" color="muted">
                   {notificationOption.description}
@@ -192,7 +262,7 @@ export function AccountProfileForm({
           </div>
         ) : null}
 
-        <div className="mt-2 flex justify-end gap-3">
+        <div className={stylex.props(styles.sb17bd927).className || ''}>
           {onCancel ? (
             <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
               Cancel

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {bookmarkUrlFromRoute} from '@shm/shared/utils/entity-id-url'
 import {useNavRoute} from '@shm/shared/utils/navigation'
@@ -9,7 +10,22 @@ import {cn} from '@shm/ui/utils'
 import {Bookmark} from 'lucide-react'
 import {ComponentProps} from 'react'
 import {useBookmark} from '../models/bookmarks'
-
+const styles = stylex.create({
+  s55ac44a1: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    fill: 'currentcolor',
+  },
+  s9594946f: {
+    backgroundColor: 'transparent',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000',
+  },
+  s8c293c0c: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    stroke: '#fff',
+  },
+})
 function RemoveBookmarkButton({
   onClick,
   active,
@@ -29,12 +45,11 @@ function RemoveBookmarkButton({
         onClick={onClick}
         className={cn('no-window-drag', active && 'bg-transparent shadow-none', className)}
       >
-        <Bookmark className="size-3.5 fill-current" />
+        <Bookmark className={stylex.props(styles.s55ac44a1).className || ''} />
       </Button>
     </Tooltip>
   )
 }
-
 export function BookmarkButton({
   id,
   hideUntilItemHover,
@@ -73,7 +88,7 @@ export function BookmarkButton({
         className={cn(
           'no-window-drag',
           hideUntilItemHover && 'opacity-0 group-hover:opacity-100',
-          'bg-transparent shadow-none',
+          stylex.props(styles.s9594946f).className || '',
           className,
         )}
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -86,13 +101,12 @@ export function BookmarkButton({
     </Tooltip>
   )
 }
-
 export function useBookmarkMenuItem(url: string | null) {
   const bookmark = useBookmark(url)
   return {
     key: 'toggleBookmark',
     label: bookmark.isBookmarked ? 'Remove from Bookmarks' : 'Add to Bookmarks',
-    icon: <Star className="size-4 stroke-white" />,
+    icon: <Star className={stylex.props(styles.s8c293c0c).className || ''} />,
     onClick: () => {
       bookmark.isBookmarked ? bookmark.removeBookmark() : bookmark.addBookmark()
     },

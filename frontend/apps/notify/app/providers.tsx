@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useNavigate} from '@remix-run/react'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {NavRoute, OptimizedImageSize, routeToHref, UniversalAppProvider} from '@shm/shared'
@@ -12,18 +13,24 @@ import {registerQueryClient} from '@shm/shared/models/query-client'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {createContext, useContext, useEffect, useMemo, useState} from 'react'
 import {notifyUniversalClient} from './universal-client'
-
+const styles = stylex.create({
+  s14990dc4: {
+    position: 'fixed',
+    right: 'calc(0.25rem * 0)',
+    bottom: 'calc(0.25rem * 0)',
+    zIndex: '50',
+    height: 'auto',
+    width: '100%',
+  },
+})
 const queryClient = new QueryClient()
 registerQueryClient(queryClient)
-
 type ThemeContextType = {
   theme: 'light' | 'dark'
   setTheme: (theme: 'light' | 'dark') => void
   toggleTheme: () => void
 }
-
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
-
 export const useTheme = () => {
   const context = useContext(ThemeContext)
   if (!context) {
@@ -31,7 +38,6 @@ export const useTheme = () => {
   }
   return context
 }
-
 export const Providers = (props: {children: any}) => {
   return (
     <ThemeProvider>
@@ -41,7 +47,6 @@ export const Providers = (props: {children: any}) => {
     </ThemeProvider>
   )
 }
-
 export function ThemeProvider({children}: {children: React.ReactNode}) {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     // Check system preference on initial load
@@ -70,35 +75,36 @@ export function ThemeProvider({children}: {children: React.ReactNode}) {
       const handleChange = (e: MediaQueryListEvent) => {
         setTheme(e.matches ? 'dark' : 'light')
       }
-
       mediaQuery.addEventListener('change', handleChange)
       return () => mediaQuery.removeEventListener('change', handleChange)
     }
   }, [])
-
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
   }
-
   return (
-    <ThemeContext.Provider value={{theme, setTheme, toggleTheme}}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+        toggleTheme,
+      }}
+    >
       <TooltipProvider>
         {children}
-        <div className="fixed right-0 bottom-0 z-50 h-auto w-full">
+        <div className={stylex.props(styles.s14990dc4).className || ''}>
           <Toaster theme={theme} />
         </div>
       </TooltipProvider>
     </ThemeContext.Provider>
   )
 }
-
 export function getOptimizedImageUrl(cid: string, size?: OptimizedImageSize) {
   let url = SEED_ASSET_HOST || ''
   url += `/hm/api/image/${cid}`
   if (size) url += `?size=${size}`
   return url
 }
-
 export function WebSiteProvider(props: {
   originHomeId?: UnpackedHypermediaId // empty in the notify web app
   children: React.ReactNode
@@ -124,7 +130,6 @@ export function WebSiteProvider(props: {
       lastAction: 'replace',
     }
     const [updateNavState, navState] = writeableStateStream(initialNav)
-
     return {
       dispatch(action: NavAction) {
         const prevState = navState.get()
@@ -136,7 +141,6 @@ export function WebSiteProvider(props: {
       state: navState,
     }
   }, [])
-
   return (
     <UniversalAppProvider
       origin={props.origin}
@@ -151,9 +155,15 @@ export function WebSiteProvider(props: {
       openRoute={(route: NavRoute, replace?: boolean) => {
         // Update navigation state
         if (replace) {
-          navigation.dispatch({type: 'replace', route})
+          navigation.dispatch({
+            type: 'replace',
+            route,
+          })
         } else {
-          navigation.dispatch({type: 'push', route})
+          navigation.dispatch({
+            type: 'push',
+            route,
+          })
         }
 
         // Handle browser navigation

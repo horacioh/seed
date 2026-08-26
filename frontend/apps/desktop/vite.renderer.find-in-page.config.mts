@@ -1,5 +1,4 @@
 import {sentryVitePlugin} from '@sentry/vite-plugin'
-import tailwindcss from '@tailwindcss/vite'
 
 import path from 'path'
 import {defineConfig} from 'vite'
@@ -22,7 +21,6 @@ export default defineConfig(({command, mode}) => {
       tsConfigPaths({
         root: '../../',
       }),
-      tailwindcss(),
     ],
     resolve: {
       extensions,

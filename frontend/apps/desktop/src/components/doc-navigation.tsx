@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {roleCanWrite, useSelectedAccountCapability} from '@/models/access-control'
 import {useCreateDraft, useDocumentEmbeds, useListSite} from '@/models/documents'
 import {useNavigate} from '@/utils/useNavigate'
@@ -8,12 +9,20 @@ import {Add} from '@shm/ui/icons'
 import {SmallListItem} from '@shm/ui/list-item'
 import {DocNavigationWrapper, DocumentOutline, useNodesOutline} from '@shm/ui/navigation'
 import {ReactNode} from 'react'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export function DocNavigation({showCollapsed}: {showCollapsed: boolean}) {
   const route = useNavRoute()
   if (route.key !== 'document') throw new Error('DocNavigation only supports document route')
   const {id} = route
-  const entity = useResource(id, {subscribed: true, recursive: true}) // recursive subscriptions to make sure children get loaded
+  const entity = useResource(id, {
+    subscribed: true,
+    recursive: true,
+  }) // recursive subscriptions to make sure children get loaded
   const navigate = useNavigate('replace')
   const document =
     // @ts-ignore
@@ -24,15 +33,18 @@ export function DocNavigation({showCollapsed}: {showCollapsed: boolean}) {
   })
   const capability = useSelectedAccountCapability(id)
   const siteList = useListSite(id)
-  const siteListQuery = siteList?.data ? {in: id, results: siteList.data} : null
-
+  const siteListQuery = siteList?.data
+    ? {
+        in: id,
+        results: siteList.data,
+      }
+    : null
   const embeds = useDocumentEmbeds(document)
-
   let createDirItem: null | ((opts: {indented: number}) => ReactNode) = null
   if (roleCanWrite(capability?.role)) {
     createDirItem = ({indented}) => (
       <SmallListItem
-        icon={<Add className="size-4" />}
+        icon={<Add className={stylex.props(styles.sca3de968).className || ''} />}
         title="Create"
         onClick={() => createDraft()}
         indented={indented}
@@ -40,7 +52,6 @@ export function DocNavigation({showCollapsed}: {showCollapsed: boolean}) {
     )
   }
   const outline = useNodesOutline(document, id, embeds)
-
   if (!document || !siteListQuery || !outline.length) return null
 
   // if (outline.length <= 1) return null
@@ -51,11 +62,17 @@ export function DocNavigation({showCollapsed}: {showCollapsed: boolean}) {
         onActivateBlock={(blockId) => {
           navigate({
             key: 'document',
-            id: hmId(id.uid, {blockRef: blockId, path: id.path}),
+            id: hmId(id.uid, {
+              blockRef: blockId,
+              path: id.path,
+            }),
           })
           const targetElement = window.document.getElementById(blockId)
           if (targetElement) {
-            targetElement.scrollIntoView({behavior: 'smooth', block: 'start'})
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            })
           } else {
             console.error('Element not found:', blockId)
           }

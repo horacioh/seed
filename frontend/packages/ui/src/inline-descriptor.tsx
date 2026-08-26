@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMContactItem, HMMetadata, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {abbreviateUid, AnyTimestamp, formattedDateShort, hmId, NavRoute, normalizeDate, useRouteLink} from '@shm/shared'
 import {useDocumentActions} from '@shm/shared/document-actions-context'
@@ -5,25 +6,30 @@ import {useAccount, useResource} from '@shm/shared/models/entity'
 import {useNavRoute} from '@shm/shared/utils/navigation'
 import {Spinner} from './spinner'
 import {Tooltip} from './tooltip'
-
+const styles = stylex.create({
+  s21188150: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s332783: {
+    marginLeft: 'calc(0.25rem * 1)',
+  },
+})
 function formatUTC(date: Date) {
   const pad = (n: number) => String(n).padStart(2, '0')
-
   const year = date.getUTCFullYear()
   const month = pad(date.getUTCMonth() + 1) // Months are 0-based.
   const day = pad(date.getUTCDate())
   const hours = pad(date.getUTCHours())
   const minutes = pad(date.getUTCMinutes())
-
   return `${year}-${month}-${day} ${hours}:${minutes} (UTC)`
 }
-
 export function Timestamp({time, route}: {time: AnyTimestamp; route?: NavRoute | null}) {
   const linkProps = useRouteLink(route ?? null)
   const date = time ? normalizeDate(time) : null
-
   if (!time || !date) return null
-
   return (
     <Tooltip side="top" delay={400} content={formatUTC(date)}>
       <a {...linkProps} className="ml-1 flex-none font-sans text-[11px] hover:underline">
@@ -32,14 +38,11 @@ export function Timestamp({time, route}: {time: AnyTimestamp; route?: NavRoute |
     </Tooltip>
   )
 }
-
 export function InlineDescriptor({children}: {children: React.ReactNode}) {
-  return <p className="text-muted-foreground font-sans text-sm">{children}</p>
+  return <p className={stylex.props(styles.s21188150).className || ''}>{children}</p>
 }
-
 function getSiteContextUid(route: NavRoute | null): string | null {
   if (!route) return null
-
   switch (route.key) {
     case 'document':
     case 'feed':
@@ -64,12 +67,13 @@ export function getContextualProfileRoute(
   siteUid?: string | null,
 ): NavRoute | null {
   if (!accountId) return null
-
   const effectiveSiteUid = siteUid || getSiteContextUid(currentRoute)
   if (!effectiveSiteUid) {
-    return {key: 'profile', id: accountId}
+    return {
+      key: 'profile',
+      id: accountId,
+    }
   }
-
   return {
     key: 'site-profile',
     id: hmId(effectiveSiteUid),
@@ -84,7 +88,9 @@ export function AuthorNameLink({author, siteUid}: {author: HMContactItem | null;
   // Use the account query to get fresh cache data and distinguish loading from settled.
   // When useHackyAuthorsSubscriptions discovers the account, this query gets invalidated
   // and re-renders with the resolved name.
-  const account = useAccount(author?.id?.uid, {subscribe: true})
+  const account = useAccount(author?.id?.uid, {
+    subscribe: true,
+  })
   const resolvedName = account.data?.metadata?.name || author?.metadata?.name
   const authorName = resolvedName || abbreviateUid(author?.id?.uid)
   const linkProps = useRouteLink(getContextualProfileRoute(currentRoute, author?.id || null, siteUid))
@@ -95,14 +101,13 @@ export function AuthorNameLink({author, siteUid}: {author: HMContactItem | null;
     >
       {authorName}
       {!resolvedName ? (
-        <span className="ml-1">
+        <span className={stylex.props(styles.s332783).className || ''}>
           <Spinner size="small" />
         </span>
       ) : null}
     </a>
   )
 }
-
 export function DocumentNameLink({
   metadata,
   id,
@@ -112,10 +117,15 @@ export function DocumentNameLink({
   id: UnpackedHypermediaId
   fallback?: string
 }) {
-  const linkProps = useRouteLink({key: 'document', id})
+  const linkProps = useRouteLink({
+    key: 'document',
+    id,
+  })
   const actions = useDocumentActions()
   const draft = actions.getDraft?.(id)
-  const resource = useResource(id, {subscribed: true})
+  const resource = useResource(id, {
+    subscribed: true,
+  })
   const liveMetadata = resource.data?.type === 'document' ? resource.data.document.metadata : undefined
   const name = draft?.metadata?.name ?? liveMetadata?.name ?? metadata?.name
   return (

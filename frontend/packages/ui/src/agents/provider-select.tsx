@@ -1,7 +1,18 @@
+import * as stylex from '@stylexjs/stylex'
 import type {ModelProviderInfo, ModelProviderType} from './client'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@shm/ui/select-dropdown'
 import {ProviderIcon} from './provider-icons'
-
+const styles = stylex.create({
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 const ADD_PROVIDER_VALUE = '__add_provider__'
 
 /**
@@ -40,8 +51,11 @@ export function ProviderSelect({
         {hasValueOption ? null : <SelectItem value={value}>{value}</SelectItem>}
         {(providers || []).map((provider) => (
           <SelectItem key={provider.id} value={provider.name}>
-            <span className="flex items-center gap-2">
-              <ProviderIcon type={provider.type as ModelProviderType} className="size-4" />
+            <span className={stylex.props(styles.s86ff3e4).className || ''}>
+              <ProviderIcon
+                type={provider.type as ModelProviderType}
+                className={stylex.props(styles.sca3de968).className || ''}
+              />
               {provider.name} ({provider.type})
             </span>
           </SelectItem>

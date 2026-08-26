@@ -1,9 +1,14 @@
+import * as stylex from '@stylexjs/stylex'
 import {BlockRange, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {hmId} from '@shm/shared'
 import {ReactNode} from 'react'
 import {BlockDiscussions, CommentDiscussions, Discussions} from './comments'
 import {PageLayout} from './page-layout'
-
+const styles = stylex.create({
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+})
 export interface DiscussionsPageContentProps {
   docId: UnpackedHypermediaId
   openComment?: string
@@ -42,7 +47,6 @@ export function DiscussionsPageContent({
 }: DiscussionsPageContentProps) {
   // Determine which view to show
   let content: ReactNode
-
   if (targetBlockId) {
     const targetId = hmId(docId.uid, {
       ...docId,
@@ -64,7 +68,14 @@ export function DiscussionsPageContent({
         targetId={docId}
         targetDomain={targetDomain}
         isEntirelyHighlighted={!blockId}
-        selection={blockId ? {blockId, blockRange: blockRange || undefined} : undefined}
+        selection={
+          blockId
+            ? {
+                blockId,
+                blockRange: blockRange || undefined,
+              }
+            : undefined
+        }
       />
     )
   } else {
@@ -75,9 +86,8 @@ export function DiscussionsPageContent({
       </>
     )
   }
-
   return (
-    <div className="p-4">
+    <div className={stylex.props(styles.s1aa17).className || ''}>
       <PageLayout title={showTitle ? 'Discussions' : undefined} contentMaxWidth={contentMaxWidth}>
         {content}
       </PageLayout>

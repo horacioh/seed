@@ -3,7 +3,7 @@ import {defineConfig} from 'vite'
 
 const extensions = ['.web.tsx', '.tsx', '.web.ts', '.ts', '.web.jsx', '.jsx', '.web.js', '.js', '.css', '.json', '.mjs']
 
-// Minimal config for loading window - no tsConfigPaths, no tailwind, no sentry
+// Minimal config for loading window - no tsConfigPaths, no sentry
 export default defineConfig(() => ({
   build: {
     sourcemap: !(process.platform === 'win32' && process.env.CI),
@@ -13,13 +13,7 @@ export default defineConfig(() => ({
       },
     },
   },
-  plugins: [
-    // tsConfigPaths({
-    //   root: '../../',
-    // }),
-    react(),
-    // tailwindcss(),
-  ],
+  plugins: [react()],
   resolve: {
     extensions,
   },

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {DraftStatus, draftStatus} from '@/draft-status'
 import {reportError} from '@/errors'
 import {draftEditId, draftLocationId} from '@/models/drafts'
@@ -43,7 +44,79 @@ import {
   usePublishResource,
   usePushResource,
 } from '../models/documents'
-
+const styles = stylex.create({
+  s36c80e: {
+    width: 'calc(0.25rem * 80)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s9d4b128d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s8e245ec4: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s11c1d25d: {
+    color: 'var(--destructive)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s396b6e9f: {
+    backgroundColor: 'var(--destructive)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    color: '#fff',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sa3871be7: {
+    height: 'auto',
+    padding: 'calc(0.25rem * 0)',
+  },
+})
 export default function PublishDraftButton() {
   const route = useNavRoute()
   const navigate = useNavigate('replace')
@@ -52,8 +125,11 @@ export default function PublishDraftButton() {
   const draftId = draftRoute.id
   const draft = useDraft(draftId)
   const pushOnPublish = usePushOnPublish()
-  const editId = draftRoute.editUid ? hmId(draftRoute.editUid, {path: draftRoute.editPath}) : draftEditId(draft.data)
-
+  const editId = draftRoute.editUid
+    ? hmId(draftRoute.editUid, {
+        path: draftRoute.editPath,
+      })
+    : draftEditId(draft.data)
   const deleteDraft = useMutation({
     mutationFn: (draftId: string) => client.drafts.delete.mutate(draftId),
     onSuccess: () => {
@@ -69,7 +145,6 @@ export default function PublishDraftButton() {
         }
       : undefined,
   )
-
   const signingAccount = useSelectedAccount()
   const broadcastWindowEvent = useBroadcastWindowEvent()
   const signingAccountId = signingAccount?.id.uid
@@ -115,13 +190,22 @@ export default function PublishDraftButton() {
     if (!destLocation) return null
     // Parent path is everything except the last segment
     const parentPath = destLocation.path?.slice(0, -1) || []
-    return hmId(destLocation.uid, {path: parentPath})
+    return hmId(destLocation.uid, {
+      path: parentPath,
+    })
   }, [isFirstPublish, editableLocation])
 
   // Fetch parent document resource
   const {data: parentResource, refetch: refetchParentResource} = useResource(
-    parentId ? hmId(parentId.uid, {path: parentId.path, latest: true}) : undefined,
-    {staleTime: 0}, // Always fetch fresh data
+    parentId
+      ? hmId(parentId.uid, {
+          path: parentId.path,
+          latest: true,
+        })
+      : undefined,
+    {
+      staleTime: 0,
+    }, // Always fetch fresh data
   )
   const parentDocument = parentResource?.type === 'document' ? parentResource.document : null
 
@@ -145,9 +229,7 @@ export default function PublishDraftButton() {
       setParentPublishInfo(null)
       return
     }
-
     const willAddLink = shouldAutoLinkParent(!!isPrivate, parentDocument, editableLocation, parentId)
-
     setParentPublishInfo({
       parentId,
       parentDocument,
@@ -167,7 +249,6 @@ export default function PublishDraftButton() {
   useEffect(() => {
     if (!isFirstPublish) return
     if (!signingAccountId) return
-
     const docName = draft.data?.metadata.name || ''
     const locationUid = defaultLocationId?.uid
 
@@ -175,15 +256,21 @@ export default function PublishDraftButton() {
     if (initializedWith.current?.name === docName && initializedWith.current?.locationUid === locationUid) {
       return
     }
-
-    initializedWith.current = {name: docName, locationUid}
+    initializedWith.current = {
+      name: docName,
+      locationUid,
+    }
 
     // Inline first-publish: replace the placeholder `-${draftId}` segment
     // with a slugified title via `computeInlineDraftPublishPath`. Falls back
     // to `untitled-${draftId}` so two untitled drafts don't collide.
     if (isInlineFirstPublish && editId) {
       const inlinePath = computeInlineDraftPublishPath(editId.path ?? [], docName, draftId)
-      setEditableLocation(hmId(editId.uid, {path: inlinePath}))
+      setEditableLocation(
+        hmId(editId.uid, {
+          path: inlinePath,
+        }),
+      )
       return
     }
 
@@ -208,9 +295,14 @@ export default function PublishDraftButton() {
 
   // Use editable location for first publish, otherwise use editId
   const locationId = isFirstPublish ? editableLocation : editId
-
   const gatewayUrl = useGatewayUrl()
-  const {data: siteResource} = useResource(locationId ? hmId(locationId.uid, {latest: true}) : undefined)
+  const {data: siteResource} = useResource(
+    locationId
+      ? hmId(locationId.uid, {
+          latest: true,
+        })
+      : undefined,
+  )
   const siteDocument = siteResource?.type === 'document' ? siteResource.document : undefined
 
   // Compute parent URL (site root or parent path)
@@ -229,7 +321,6 @@ export default function PublishDraftButton() {
       hostname: gatewayUrl.data,
     })
   }, [locationId, gatewayUrl.data, siteDocument?.metadata?.siteUrl])
-
   const documentUrl = useMemo(() => {
     if (!locationId || !gatewayUrl.data) return null
     const siteUrl = siteDocument?.metadata?.siteUrl
@@ -253,11 +344,9 @@ export default function PublishDraftButton() {
   // user-facing feedback are handled (toasted) inside handlePublish / mutations.
   async function handlePublishPress() {
     if (!draftId) throw new Error('No Draft ID?!')
-
     if (!draft.data) {
       throw new Error('Draft not loaded')
     }
-
     async function handlePublish(destinationId: UnpackedHypermediaId, accountId: string) {
       if (!draft.data) {
         toast.error('Draft not loaded')
@@ -270,7 +359,6 @@ export default function PublishDraftButton() {
         destinationId,
         accountId,
       })
-
       const resultPath = entityQueryPathToHmIdPath(res.path)
       const childResultId = hmId(res.account, {
         path: resultPath,
@@ -283,7 +371,6 @@ export default function PublishDraftButton() {
       // Step 2: Handle parent auto-link BEFORE anything else
       let parentResultDoc: HMDocument | null = null
       const shouldAddLinkToParent = parentPublishInfo?.willAddLink
-
       if (shouldAddLinkToParent && accountId) {
         try {
           const navigateToParent = () => {
@@ -295,7 +382,6 @@ export default function PublishDraftButton() {
               }),
             })
           }
-
           if (parentPublishInfo.hasDraft && parentPublishInfo.draftId) {
             // Add to draft - no push needed for parent
             await addLinkToParentDraft(parentPublishInfo.draftId, childResultId)
@@ -371,7 +457,6 @@ export default function PublishDraftButton() {
             })
           })
         }
-
         toast.promise(childPushPromise, {
           loading: <PublishedToast pushStatus={pushStatus} status="loading" />,
           success: <PublishedToast pushStatus={pushStatus} status="success" />,
@@ -379,9 +464,7 @@ export default function PublishDraftButton() {
         })
       }
     }
-
     setPublishError(null)
-
     if (editId && signingAccountId && !isInlineFirstPublish) {
       // Editing an existing document — keep the existing path as-is.
       await handlePublish(editId, signingAccountId).catch((err) => {
@@ -428,7 +511,6 @@ export default function PublishDraftButton() {
       refetchParentDraft()
     }
   })
-
   return (
     <>
       <SaveIndicatorStatus />
@@ -442,18 +524,18 @@ export default function PublishDraftButton() {
         </Tooltip>
         <PopoverContent
           align="end"
-          className="w-80"
+          className={stylex.props(styles.s36c80e).className || ''}
           onOpenAutoFocus={(e) => {
             e.preventDefault()
             ;(e.currentTarget as HTMLElement)?.focus()
           }}
         >
-          <div className="flex flex-col gap-3">
+          <div className={stylex.props(styles.sfbc6e28f).className || ''}>
             {/* URL row */}
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Your document will be available at</p>
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+              <p className={stylex.props(styles.s9d4b128d).className || ''}>Your document will be available at</p>
               {documentUrl ? (
-                <div className="flex items-center gap-2">
+                <div className={stylex.props(styles.s86ff3e4).className || ''}>
                   <span
                     className="text-muted-foreground min-w-0 flex-1 text-xs"
                     style={{
@@ -470,7 +552,7 @@ export default function PublishDraftButton() {
                     <Button
                       size="iconSm"
                       variant="ghost"
-                      className="shrink-0"
+                      className={stylex.props(styles.sf032ed6c).className || ''}
                       onClick={() => {
                         copyTextToClipboard(documentUrl).then(() => {
                           toast.success('Copied document URL')
@@ -482,15 +564,15 @@ export default function PublishDraftButton() {
                   </Tooltip>
                 </div>
               ) : (
-                <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                  <Spinner className="size-3" />
+                <div className={stylex.props(styles.s8e245ec4).className || ''}>
+                  <Spinner className={stylex.props(styles.sca3de967).className || ''} />
                   <span>Loading…</span>
                 </div>
               )}
               {/* Permalink editor - first publish only */}
               {isFirstPublish && editableLocation && (
-                <div className="flex flex-col gap-1">
-                  <p className="text-muted-foreground text-xs">Edit your permalink</p>
+                <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+                  <p className={stylex.props(styles.sa56e9200).className || ''}>Edit your permalink</p>
                   <Input
                     value={`/${editablePath}`}
                     disabled={!!isPrivate}
@@ -499,7 +581,11 @@ export default function PublishDraftButton() {
                       if (!editableLocation) return
                       const raw = e.target.value.replace(/^\//, '')
                       const newPath = [...(editableLocation.path?.slice(0, -1) || []), pathNameify(raw)]
-                      setEditableLocation(hmId(editableLocation.uid, {path: newPath}))
+                      setEditableLocation(
+                        hmId(editableLocation.uid, {
+                          path: newPath,
+                        }),
+                      )
                       setPublishError(null)
                     }}
                     onKeyDown={(e) => {
@@ -514,16 +600,18 @@ export default function PublishDraftButton() {
                     }`}
                   />
                   {isPrivate ? (
-                    <p className="text-muted-foreground text-xs">Private document paths are generated automatically.</p>
+                    <p className={stylex.props(styles.sa56e9200).className || ''}>
+                      Private document paths are generated automatically.
+                    </p>
                   ) : null}
-                  {publishError && <p className="text-destructive text-xs">{publishError}</p>}
+                  {publishError && <p className={stylex.props(styles.s11c1d25d).className || ''}>{publishError}</p>}
                 </div>
               )}
             </div>
 
             <Separator className="bg-black/10 dark:bg-white/10" />
 
-            <div className="flex flex-col gap-1">
+            <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <Button size="sm" variant="brand" onClick={handlePublishPress}>
                 Publish: Make it live now
               </Button>
@@ -541,7 +629,6 @@ export default function PublishDraftButton() {
 /** Dark pill shown next to the publish button while autosave is saving / just saved / errored. */
 function SaveIndicatorStatus() {
   const [status, setStatus] = useState('idle' as DraftStatus)
-
   useEffect(() => {
     return draftStatus.subscribe((current) => {
       if (current == 'saved') {
@@ -552,36 +639,41 @@ function SaveIndicatorStatus() {
       setStatus(current)
     })
   }, [])
-
   if (status === 'idle') return null
-
   if (status === 'error') {
     return (
       <Tooltip content="An error occurred while trying to save the latest changes.">
-        <div className="bg-destructive flex items-center gap-1.5 rounded-full px-3 py-1 text-white">
+        <div className={stylex.props(styles.s396b6e9f).className || ''}>
           <AlertCircle size={12} />
-          <span className="text-xs">Error</span>
+          <span className={stylex.props(styles.sab7cc79b).className || ''}>Error</span>
         </div>
       </Tooltip>
     )
   }
-
   const label = status === 'saving' ? 'Saving…' : 'Saved'
-  const icon = status === 'saving' ? <Spinner className="size-3" /> : <Check size={12} color="currentColor" />
-
+  const icon =
+    status === 'saving' ? (
+      <Spinner className={stylex.props(styles.sca3de967).className || ''} />
+    ) : (
+      <Check size={12} color="currentColor" />
+    )
   return (
     <div className="flex items-center gap-1.5 rounded-full bg-neutral-800 px-3 py-1 text-white dark:bg-neutral-700">
       {icon}
-      <span className="text-xs">{label}</span>
+      <span className={stylex.props(styles.sab7cc79b).className || ''}>{label}</span>
     </div>
   )
 }
-
 function ParentUpdateToast({message, onViewParent}: {message: string; onViewParent: () => void}) {
   return (
-    <div className="flex items-center gap-2">
+    <div className={stylex.props(styles.s86ff3e4).className || ''}>
       <span>{message}</span>
-      <Button size="xs" variant="link" className="h-auto p-0" onClick={onViewParent}>
+      <Button
+        size="xs"
+        variant="link"
+        className={stylex.props(styles.sa3871be7).className || ''}
+        onClick={onViewParent}
+      >
         View parent
       </Button>
     </div>

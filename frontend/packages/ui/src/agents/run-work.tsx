@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 /**
  * The elegant account of a run's work, shared by every surface that shows one: the pinned card,
  * the finished run-record row, and the expanded delegate bubble. The primary content is the
@@ -13,33 +14,64 @@ import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popove
 import type {ChatToolPart} from './chat-parts'
 import {Bot, Check, ChevronDown, ChevronRight, CircleDashed, Clock3, Loader2, Minus, Workflow, X} from 'lucide-react'
 import React, {useMemo, useState} from 'react'
-
+const styles = stylex.create({
+  se6c9d13: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flex: 'none',
+  },
+  s7987ea52: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+    flex: 'none',
+  },
+  s7d7b44e: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flex: 'none',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s3484a3: {
+    paddingLeft: 'calc(0.25rem * 4)',
+  },
+  s54eab7db: {
+    opacity: '70%',
+  },
+})
 export const TERMINAL_RUN_STATUSES = new Set<RunStatus>(['succeeded', 'failed', 'canceled'])
-
 export const isTerminalRun = (status: RunStatus) => TERMINAL_RUN_STATUSES.has(status)
-
-type RunTimer = {startedAt: number; wakeAt: number}
+type RunTimer = {
+  startedAt: number
+  wakeAt: number
+}
 
 /** Finds the durable timer currently parking a run, including when the page loaded mid-wait. */
 function activeRunTimer(run: RunInfo, journal: RunJournalEntryInfo[]): RunTimer | undefined {
   if (run.wait?.reason !== 'timer' || !run.wait.wakeAt) return undefined
   const timer = [...journal].reverse().find((entry) => {
     if (entry.runId !== run.id) return false
-    const payload = entry.entry as {kind?: string; wakeAt?: number}
+    const payload = entry.entry as {
+      kind?: string
+      wakeAt?: number
+    }
     return payload.kind === 'timer' && payload.wakeAt === run.wait?.wakeAt
   })
-  return {startedAt: timer?.createdAt ?? run.updatedAt, wakeAt: run.wait.wakeAt}
+  return {
+    startedAt: timer?.createdAt ?? run.updatedAt,
+    wakeAt: run.wait.wakeAt,
+  }
 }
-
 function TimerProgress({run, timer, wide = false}: {run: RunInfo; timer: RunTimer; wide?: boolean}) {
   const [now, setNow] = useState(() => Date.now())
-
   React.useEffect(() => {
     setNow(Date.now())
     const interval = setInterval(() => setNow(Date.now()), 1_000)
     return () => clearInterval(interval)
   }, [timer.startedAt, timer.wakeAt])
-
   const duration = Math.max(1, timer.wakeAt - timer.startedAt)
   const remaining = Math.max(0, timer.wakeAt - now)
   const elapsedFraction = Math.min(1, Math.max(0, (now - timer.startedAt) / duration))
@@ -53,8 +85,10 @@ function TimerProgress({run, timer, wide = false}: {run: RunInfo; timer: RunTime
       : hours > 0
         ? `${hours}h ${String(minutes).padStart(2, '0')}m left`
         : `${minutes}:${String(seconds).padStart(2, '0')} left`
-  const wakeLabel = new Date(timer.wakeAt).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})
-
+  const wakeLabel = new Date(timer.wakeAt).toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
   return (
     <div
       role="timer"
@@ -65,12 +99,14 @@ function TimerProgress({run, timer, wide = false}: {run: RunInfo; timer: RunTime
         wide ? 'w-full' : 'flex-none'
       }`}
     >
-      <Clock3 className="size-3 flex-none" />
+      <Clock3 className={stylex.props(styles.se6c9d13).className || ''} />
       <span className="flex-none text-[10px] font-medium tabular-nums">{remainingLabel}</span>
       <span className={`bg-primary/15 h-1 overflow-hidden rounded-full ${wide ? 'min-w-12 flex-1' : 'w-10'}`}>
         <span
           className="bg-primary block h-full rounded-full transition-[width] duration-1000 motion-reduce:transition-none"
-          style={{width: `${elapsedFraction * 100}%`}}
+          style={{
+            width: `${elapsedFraction * 100}%`,
+          }}
         />
       </span>
       {wide ? <span className="text-muted-foreground flex-none text-[10px]">until {wakeLabel}</span> : null}
@@ -114,10 +150,12 @@ export function useRunTreeView(
   rootRunId: string | undefined,
   seed: RunInfo | undefined,
   live: boolean,
-): {runsById: Record<string, RunInfo>; liveState: AgentRunTreeLiveState} {
+): {
+  runsById: Record<string, RunInfo>
+  liveState: AgentRunTreeLiveState
+} {
   const tree = useRunTree(serverUrl, accountUid, live ? rootRunId : undefined)
   const liveState = useAgentRunTreeSubscription(serverUrl, accountUid, live ? rootRunId : undefined)
-
   const runsById = useMemo(() => {
     const merged: Record<string, RunInfo> = {}
     for (const run of tree.data || []) merged[run.id] = run
@@ -125,8 +163,10 @@ export function useRunTreeView(
     for (const run of Object.values(liveState.runs)) merged[run.id] = run
     return merged
   }, [tree.data, liveState.runs, seed])
-
-  return {runsById, liveState}
+  return {
+    runsById,
+    liveState,
+  }
 }
 
 /** Every run spawned under `focusRunId`, at any depth, oldest first. */
@@ -152,14 +192,27 @@ export function descendantsOf(runsById: Record<string, RunInfo>, focusRunId: str
  * row the chat renders, saying what the work WAS, with the tool name as the secondary fact.
  */
 export function journalToolParts(journal: RunJournalEntryInfo[]): ChatToolPart[] {
-  const resultsBySeq = new Map<string, {status?: string; output?: unknown; error?: {code?: string; message?: string}}>()
+  const resultsBySeq = new Map<
+    string,
+    {
+      status?: string
+      output?: unknown
+      error?: {
+        code?: string
+        message?: string
+      }
+    }
+  >()
   for (const entry of journal) {
     const payload = entry.entry as {
       kind?: string
       callSeq?: number
       status?: string
       output?: unknown
-      error?: {code?: string; message?: string}
+      error?: {
+        code?: string
+        message?: string
+      }
     }
     if (payload.kind === 'result' && payload.callSeq !== undefined) {
       resultsBySeq.set(`${entry.runId}:${payload.callSeq}`, payload)
@@ -187,17 +240,26 @@ export function journalToolParts(journal: RunJournalEntryInfo[]): ChatToolPart[]
         string,
         unknown
       >,
-      ...(payload.description ? {summaryOverride: payload.description} : {}),
+      ...(payload.description
+        ? {
+            summaryOverride: payload.description,
+          }
+        : {}),
       ...(result
         ? failed
-          ? {isError: true, result: result.error?.message ?? 'failed'}
-          : {rawOutput: result.output, result: safeStringify(result.output)}
+          ? {
+              isError: true,
+              result: result.error?.message ?? 'failed',
+            }
+          : {
+              rawOutput: result.output,
+              result: safeStringify(result.output),
+            }
         : {}),
     })
   }
   return parts
 }
-
 function safeStringify(value: unknown): string {
   try {
     return JSON.stringify(value) ?? ''
@@ -205,7 +267,6 @@ function safeStringify(value: unknown): string {
     return String(value)
   }
 }
-
 const STEP_ICONS = {
   pending: CircleDashed,
   running: Loader2,
@@ -213,7 +274,6 @@ const STEP_ICONS = {
   failed: X,
   skipped: Minus,
 }
-
 const STEP_CLASSES = {
   pending: 'text-muted-foreground',
   running: 'text-primary',
@@ -221,12 +281,10 @@ const STEP_CLASSES = {
   failed: 'text-destructive',
   skipped: 'text-muted-foreground line-through',
 }
-
 type StepStatus = keyof typeof STEP_ICONS
 
 /** How much of the plan's own account of itself to still believe (see run-card for the story). */
 export type PlanSettle = 'live' | 'run-finished' | 'idle'
-
 export function displayStepStatus(status: StepStatus, settle: PlanSettle): StepStatus {
   if (settle === 'live') return status
   if (settle === 'idle') return status === 'running' ? 'pending' : status
@@ -266,8 +324,11 @@ function ChildRunPresence({
   return (
     <>
       {/* A stale "still running" child under a finished parent gets the quiet dot, never the pulse. */}
-      <SessionStatusDot status={status === 'streaming' && !live ? 'idle' : status} className="size-2 flex-none" />
-      <KindIcon className="text-muted-foreground size-3 flex-none" />
+      <SessionStatusDot
+        status={status === 'streaming' && !live ? 'idle' : status}
+        className={stylex.props(styles.s7987ea52).className || ''}
+      />
+      <KindIcon className={stylex.props(styles.s7d7b44e).className || ''} />
       {timer ? <TimerProgress run={run} timer={timer} /> : null}
       {live && activityDetail ? (
         <span className="text-muted-foreground min-w-0 flex-1 truncate text-[10px]">{activityDetail}</span>
@@ -419,7 +480,7 @@ function CancelRunButton({run, onCancel, pending}: {run: RunInfo; onCancel: () =
       disabled={pending}
       onClick={onCancel}
     >
-      <X className="size-3" />
+      <X className={stylex.props(styles.sca3de967).className || ''} />
     </button>
   )
 }
@@ -614,10 +675,13 @@ export function RunWorkHierarchy({
 }) {
   const isTerminal = isTerminalRun(run.status)
   const settle: PlanSettle = isTerminal ? 'run-finished' : 'live'
-
   const {childrenByStep, unattachedChildren} = useMemo(() => {
     const byStep = new Map<string, RunInfo[]>()
-    if (!plan?.steps.length) return {childrenByStep: byStep, unattachedChildren: childRuns}
+    if (!plan?.steps.length)
+      return {
+        childrenByStep: byStep,
+        unattachedChildren: childRuns,
+      }
     // Keyed by step id: the agent rewrites step labels between turns, so a child stamped with a
     // label stops matching the step it was spawned under. Ids are stable across those rewrites.
     // Labels and titles remain as fallbacks for runs stamped before planStepId existed.
@@ -637,14 +701,15 @@ export function RunWorkHierarchy({
       }
       byStep.set(stepId, [...(byStep.get(stepId) ?? []), child])
     }
-    return {childrenByStep: byStep, unattachedChildren: loose}
+    return {
+      childrenByStep: byStep,
+      unattachedChildren: loose,
+    }
   }, [plan, childRuns])
-
   const toolParts = useMemo(() => {
     const own = new Set([run.id, ...childRuns.map((child) => child.id)])
     return journalToolParts(journal.filter((entry) => own.has(entry.runId)))
   }, [journal, run.id, childRuns])
-
   const timerFor = (child: RunInfo): RunTimer | undefined => activeRunTimer(child, journal)
 
   // The journaled call a failed run's terminal error points at (`error.callSeq`), so its error
@@ -671,14 +736,12 @@ export function RunWorkHierarchy({
       cancelPending={cancelPending}
     />
   )
-
   const [toolsOpen, setToolsOpen] = useState<boolean | undefined>(undefined)
   const showTools = toolsOpen ?? toolParts.length <= OPEN_TOOL_CALLS_LIMIT
   const hasWork = !!(plan?.steps.length || unattachedChildren.length || (toolParts.length && renderToolPart))
 
   // Nothing to say yet — and an empty flex column would still take vertical space in the card.
   if (!hasWork) return null
-
   return (
     <div className="flex min-w-0 flex-col gap-1">
       {plan?.steps.length || unattachedChildren.length ? (
@@ -713,7 +776,7 @@ export function RunWorkHierarchy({
                 cancelPending={cancelPending}
               />,
               ...peers.map((child) => (
-                <div key={child.id} className="pl-4">
+                <div key={child.id} className={stylex.props(styles.s3484a3).className || ''}>
                   {childRow(child)}
                 </div>
               )),
@@ -733,9 +796,13 @@ export function RunWorkHierarchy({
             className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
             onClick={() => setToolsOpen(!showTools)}
           >
-            {showTools ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}
+            {showTools ? (
+              <ChevronDown className={stylex.props(styles.se6c9d13).className || ''} />
+            ) : (
+              <ChevronRight className={stylex.props(styles.se6c9d13).className || ''} />
+            )}
             Tool calls
-            <span className="opacity-70">{toolParts.length}</span>
+            <span className={stylex.props(styles.s54eab7db).className || ''}>{toolParts.length}</span>
           </button>
           {showTools ? (
             <div className="min-w-0 [&_.mr-6]:mr-0">

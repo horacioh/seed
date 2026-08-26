@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {PanelSelectionOptions} from '@shm/shared'
 import {useIsomorphicLayoutEffect} from '@shm/shared/utils/use-isomorphic-layout-effect'
 import {X} from 'lucide-react'
@@ -13,12 +14,54 @@ import {Button} from './button'
 import {FeedFilters} from './feed-filters'
 import {Text} from './text'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s9be30442: {
+    display: 'flex',
+    height: '100%',
+    flex: '1',
+  },
+  se783b313: {
+    position: 'relative',
+    height: '100%',
+    borderRadius: 'var(--radius)',
+  },
+  s7c401f0b: {
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+  },
+  se5d80f67: {
+    height: '100%',
+    borderRadius: 'var(--radius)',
+  },
+  sfcd0c593: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 5)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sbbe27b4f: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s77707b12: {
+    flex: '1',
+    overflow: 'hidden',
+  },
+})
 const DEFAULT_PANEL_PX = 440
 const MAX_OPEN_PERCENT = 30
 const MAX_PANEL_PERCENT = 50
 const MIN_PANEL_PERCENT = 20
-
 export interface PanelLayoutProps {
   children: React.ReactNode
   panelContent: React.ReactNode | null
@@ -40,7 +83,6 @@ export interface PanelLayoutProps {
   /** Callback when panel width changes */
   onPanelWidthChange?: (width: number) => void
 }
-
 function getPanelTitle(panelKey: PanelSelectionOptions | null): string {
   switch (panelKey) {
     case 'activity':
@@ -59,7 +101,6 @@ function getPanelTitle(panelKey: PanelSelectionOptions | null): string {
       return ''
   }
 }
-
 export function PanelLayout({
   children,
   panelContent,
@@ -80,7 +121,6 @@ export function PanelLayout({
   // Always open panel at DEFAULT_PANEL_PX, capped at MAX_PANEL_PERCENT
   useIsomorphicLayoutEffect(() => {
     const isOpening = prevPanelKey.current === null && panelKey !== null
-
     if (isOpening) {
       const container = containerRef.current
       if (container) {
@@ -95,23 +135,22 @@ export function PanelLayout({
         }
       }
     }
-
     prevPanelKey.current = panelKey
   }, [panelKey, onPanelWidthChange])
-
   const title = isVersionsPanel ? 'Versions history' : getPanelTitle(panelKey)
-
   return (
-    <div ref={containerRef} className="flex h-full flex-1">
+    <div ref={containerRef} className={stylex.props(styles.s9be30442).className || ''}>
       <PanelGroup
         direction="horizontal"
         ref={panelsRef}
-        style={{flex: 1}}
+        style={{
+          flex: 1,
+        }}
         autoSaveId="resource-panel"
         storage={widthStorage}
       >
         <Panel id="main" minSize={100 - MAX_PANEL_PERCENT}>
-          <div className="relative h-full rounded-lg">{children}</div>
+          <div className={stylex.props(styles.se783b313).className || ''}>{children}</div>
         </Panel>
 
         {panelKey !== null && (
@@ -124,24 +163,24 @@ export function PanelLayout({
               minSize={MIN_PANEL_PERCENT}
               defaultSize={panelWidth || MIN_PANEL_PERCENT}
               onResize={onPanelWidthChange}
-              className="border-l"
+              className={stylex.props(styles.s7c401f0b).className || ''}
             >
-              <div className="h-full rounded-lg">
+              <div className={stylex.props(styles.se5d80f67).className || ''}>
                 <div className={cn('dark:bg-background flex h-full flex-col bg-white')}>
-                  <div className="border-border border-b px-5 py-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <Text weight="semibold" size="lg" className="flex-1">
+                  <div className={stylex.props(styles.sfcd0c593).className || ''}>
+                    <div className={stylex.props(styles.sbbe27b4f).className || ''}>
+                      <Text weight="semibold" size="lg" className={stylex.props(styles.sb42feb5d).className || ''}>
                         {title}
                       </Text>
                       <Button size="icon" onClick={onPanelClose}>
-                        <X className="size-4" />
+                        <X className={stylex.props(styles.sca3de968).className || ''} />
                       </Button>
                     </div>
                     {panelKey === 'activity' && !isVersionsPanel && onFilterChange && (
                       <FeedFilters filterEventType={filterEventType} onFilterChange={onFilterChange} />
                     )}
                   </div>
-                  <div className="flex-1 overflow-hidden">{panelContent}</div>
+                  <div className={stylex.props(styles.s77707b12).className || ''}>{panelContent}</div>
                 </div>
               </div>
             </Panel>

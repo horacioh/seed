@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {IS_DESKTOP} from '@shm/shared/constants'
 import {FolderTree, PanelLeft, X} from 'lucide-react'
@@ -10,6 +11,39 @@ import {Tooltip} from './tooltip'
 import {useMedia} from './use-media'
 
 /** Collapse state of the inline file browser, shared with the page chrome below it. */
+const styles = stylex.create({
+  s3e9812dd: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    height: 'calc(0.25rem * 12)',
+    flexShrink: '0',
+    alignItems: 'center',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s80bea9bf: {
+    position: 'fixed',
+    inset: 'calc(0.25rem * 0)',
+    zIndex: '50',
+    display: 'flex',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  s2627021c: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export interface SiteFileBrowserControls {
   collapsed: boolean
   setCollapsed: (collapsed: boolean) => void
@@ -19,7 +53,6 @@ export interface SiteFileBrowserControls {
    */
   claimRevealButton: () => () => void
 }
-
 const SiteFileBrowserContext = createContext<SiteFileBrowserControls | null>(null)
 
 /** Returns the inline file browser controls, or null outside a site layout (Electron, embeds). */
@@ -80,11 +113,9 @@ export function SiteFileBrowserLayout({
     }),
     [collapsed],
   )
-
   useEffect(() => {
     setIsClient(true)
   }, [])
-
   useEffect(() => {
     if (!mobileOpen) return
     const previousOverflow = document.documentElement.style.overflow
@@ -98,7 +129,6 @@ export function SiteFileBrowserLayout({
       document.removeEventListener('keydown', closeOnEscape)
     }
   }, [mobileOpen, onMobileOpenChange])
-
   useEffect(() => {
     if (isMobile || !desktopContainerRef.current) return
     const updateConstraints = () => {
@@ -115,12 +145,11 @@ export function SiteFileBrowserLayout({
     observer.observe(desktopContainerRef.current)
     return () => observer.disconnect()
   }, [isMobile])
-
   if (!isClient) {
     return (
       <div className="flex min-h-0 flex-1">
         <aside className="border-border dark:bg-background hidden h-full w-72 shrink-0 flex-col border-r bg-white md:flex">
-          <div className="border-border flex h-12 shrink-0 items-center border-b px-3">
+          <div className={stylex.props(styles.s3e9812dd).className || ''}>
             <p className="min-w-0 flex-1 truncate text-sm font-semibold">Documents</p>
           </div>
           <div className="min-h-0 flex-1 p-3">
@@ -138,19 +167,23 @@ export function SiteFileBrowserLayout({
       </div>
     )
   }
-
   if (isMobile) {
     return (
       <>
         <div className="min-h-0 flex-1">{children}</div>
         {mobileOpen
           ? createPortal(
-              <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true" aria-label="File browser">
+              <div
+                className={stylex.props(styles.s80bea9bf).className || ''}
+                role="dialog"
+                aria-modal="true"
+                aria-label="File browser"
+              >
                 <aside className="dark:bg-background motion-safe:animate-in motion-safe:slide-in-from-left flex h-dvh w-[80dvw] max-w-[80dvw] shrink-0 flex-col bg-white shadow-2xl motion-safe:duration-200 motion-safe:ease-out">
                   <div className="border-border flex shrink-0 items-center border-b px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold">Files</p>
-                      <p className="text-muted-foreground truncate text-xs">{siteName}</p>
+                      <p className={stylex.props(styles.s62c182b1).className || ''}>Files</p>
+                      <p className={stylex.props(styles.s2627021c).className || ''}>{siteName}</p>
                     </div>
                     <Button
                       variant="ghost"
@@ -158,7 +191,7 @@ export function SiteFileBrowserLayout({
                       aria-label="Close file browser"
                       onClick={() => onMobileOpenChange(false)}
                     >
-                      <X className="size-4" />
+                      <X className={stylex.props(styles.sca3de968).className || ''} />
                     </Button>
                   </div>
                   <div className="min-h-0 flex-1 pb-[env(safe-area-inset-bottom)]">{browser}</div>
@@ -176,7 +209,6 @@ export function SiteFileBrowserLayout({
       </>
     )
   }
-
   return (
     <SiteFileBrowserContext.Provider value={controls}>
       <div ref={desktopContainerRef} className="flex min-h-0 flex-1">
@@ -192,7 +224,7 @@ export function SiteFileBrowserLayout({
                 maxSize={40}
               >
                 <aside className="border-border dark:bg-background flex h-full flex-col border-r bg-white">
-                  <div className="border-border flex h-12 shrink-0 items-center border-b px-3">
+                  <div className={stylex.props(styles.s3e9812dd).className || ''}>
                     <p className="min-w-0 flex-1 truncate text-sm font-semibold">Documents</p>
                     <Tooltip content="Hide file explorer">
                       <Button
@@ -201,7 +233,7 @@ export function SiteFileBrowserLayout({
                         aria-label="Collapse file browser"
                         onClick={() => setCollapsed(true)}
                       >
-                        <PanelLeft className="size-4" />
+                        <PanelLeft className={stylex.props(styles.sca3de968).className || ''} />
                       </Button>
                     </Tooltip>
                   </div>
@@ -222,7 +254,7 @@ export function SiteFileBrowserLayout({
                       aria-label="Open file browser"
                       onClick={() => setCollapsed(false)}
                     >
-                      <FolderTree className="size-4" />
+                      <FolderTree className={stylex.props(styles.sca3de968).className || ''} />
                     </Button>
                   </Tooltip>
                 </div>

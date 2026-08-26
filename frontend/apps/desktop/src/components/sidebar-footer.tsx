@@ -1,10 +1,10 @@
+import * as stylex from '@stylexjs/stylex'
 import {useMyAccountIds} from '@/models/daemon'
 import {useNavigate} from '@/utils/useNavigate'
 import {hmId, useUniversalAppContext} from '@shm/shared'
 import {useStream} from '@shm/shared/use-stream'
 import {Button} from '@shm/ui/button'
 import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
-
 import {useAccounts} from '@shm/shared/models/entity'
 import {ScrollArea} from '@shm/ui/components/scroll-area'
 import {useHighlighter} from '@shm/ui/highlight-context'
@@ -14,13 +14,47 @@ import {cn} from '@shm/ui/utils'
 import {Plus, Settings} from 'lucide-react'
 import {useEffect, useState} from 'react'
 import {dispatchOnboardingDialog} from './onboarding'
-
+const styles = stylex.create({
+  sc5dbf391: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+  },
+  s51378f89: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sb832f4b7: {
+    height: '100%',
+    flex: '1',
+    overflowY: 'auto',
+  },
+  sf2548bf6: {
+    flex: '1',
+    borderStyle: 'none',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: boolean}) {
   const {selectedIdentity, setSelectedIdentity} = useUniversalAppContext()
   const selectedIdentityValue = useStream(selectedIdentity)
   const myAccounts = useMyAccountIds()
   const accountQueries = useAccounts(myAccounts.data || [])
-
   const accountOptions = myAccounts.data
     ?.map((uid, index) => {
       const accountData = accountQueries[index]?.data
@@ -28,35 +62,29 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
       return accountData
     })
     .filter((d) => !!d)
-
   useEffect(() => {
     if (!setSelectedIdentity || !myAccounts.data) return
-
     if (myAccounts.data.length === 0) {
       if (selectedIdentityValue) setSelectedIdentity(null)
       return
     }
-
     const isSelectedAccountInvalid = !myAccounts.data.some((option) => option === selectedIdentityValue)
     const firstValidAccount = myAccounts.data[0]
-
     if (firstValidAccount && (!selectedIdentityValue || isSelectedAccountInvalid)) {
       setSelectedIdentity(firstValidAccount)
     }
   }, [setSelectedIdentity, selectedIdentityValue, myAccounts.data])
   const selectedAccountData = accountQueries.find((q) => q.data?.id?.uid === selectedIdentityValue)?.data
   const [isOpen, setIsOpen] = useState(false)
-
   useEffect(() => {
     if (typeof isSidebarVisible == 'boolean' && isOpen && !isSidebarVisible) {
       setIsOpen(false)
     }
   }, [isSidebarVisible])
   const highlighter = useHighlighter()
-
   if (!selectedIdentityValue) {
     return (
-      <div className="flex w-full flex-row items-center justify-between gap-3 rounded-sm bg-white p-1 shadow-sm">
+      <div className={stylex.props(styles.sc5dbf391).className || ''}>
         <CreateAccountButton />
         <AppSettingsButton />
       </div>
@@ -80,7 +108,7 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
               />
             ) : null}
 
-            <p className="truncate text-sm select-none">
+            <p className={stylex.props(styles.s51378f89).className || ''}>
               {selectedAccountData?.metadata?.name || `?${selectedIdentityValue?.slice(-8) || 'Unknown'}`}
             </p>
           </>
@@ -90,7 +118,7 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
           className="z-[51] flex h-full max-h-[500px] flex-col items-stretch gap-2 p-2"
           align="end"
         >
-          <ScrollArea className="h-full flex-1 overflow-y-auto">
+          <ScrollArea className={stylex.props(styles.sb832f4b7).className || ''}>
             {accountOptions?.map((option) =>
               option ? (
                 <div
@@ -118,22 +146,20 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
     </div>
   )
 }
-
 function CreateAccountButton({className}: {className?: string}) {
   return (
     <Button
       variant="default"
-      className={cn('flex-1 border-none', className)}
+      className={cn(stylex.props(styles.sf2548bf6).className || '', className)}
       onClick={() => {
         dispatchOnboardingDialog(true)
       }}
     >
-      <Plus className="size-4" />
+      <Plus className={stylex.props(styles.sca3de968).className || ''} />
       Create Account
     </Button>
   )
 }
-
 function AppSettingsButton() {
   const navigate = useNavigate()
   return (
@@ -143,15 +169,16 @@ function AppSettingsButton() {
         className="hover:bg-muted active:bg-muted shrink-none flex size-8 items-center justify-center rounded-md"
         onClick={(e) => {
           e.preventDefault()
-          navigate({key: 'settings'})
+          navigate({
+            key: 'settings',
+          })
         }}
       >
-        <Settings className="size-4" />
+        <Settings className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
     </Tooltip>
   )
 }
-
 export const useIsWindowFocused = ({onFocus, onBlur}: {onFocus?: () => void; onBlur?: () => void}): boolean => {
   const [isFocused, setIsFocused] = useState(document.hasFocus())
   useEffect(() => {

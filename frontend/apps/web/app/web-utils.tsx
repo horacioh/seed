@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {HMResourceVisibility, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {
   createInspectNavRouteFromRoute,
@@ -60,8 +61,137 @@ import {createWebDocumentDraft, createWebDocumentDraftFromMarkdownFile} from './
 import {getVaultAccountSettingsUrl} from './vault-links'
 import {useCreateSpaceDialog, useHasExistingSpace} from './web-create-space-dialog'
 import {useWebNotificationInbox, useWebNotificationReadState} from './web-notifications'
-
-export function useWebMenuItems(docId: UnpackedHypermediaId, options?: {includeInspect?: boolean}): MenuItemType[] {
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sb76e9daa: {
+    display: 'none',
+  },
+  s72c9931d: {
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    cursor: 'pointer',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(70.7% 0.022 261.325)',
+  },
+  sbb6a26b2: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: 'oklch(70.7% 0.022 261.325)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de969: {
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s69a761ef: {
+    backgroundColor: 'var(--border)',
+    marginInline: 'calc(0.25rem * 4)',
+    height: '1px',
+  },
+  s40a3db72: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 2)',
+    paddingBottom: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  se53a44a3: {
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s3566be63: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s4113cfca: {
+    display: 'flex',
+    cursor: 'pointer',
+    borderRadius: 'calc(infinity * 1px)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+  },
+  s8fc7e6c6: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  s59c17cd3: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  sf0fd1379: {
+    backgroundColor: 'var(--border)',
+    height: '1px',
+  },
+  s8c5e3586: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sdda8cd7: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 1)',
+    paddingBottom: 'calc(0.25rem * 0.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sb136bac9: {
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s76b0b3a9: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s24831944: {
+    position: 'relative',
+    height: 'calc(0.25rem * 8)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'transparent',
+    padding: 'calc(0.25rem * 0)',
+  },
+})
+export function useWebMenuItems(
+  docId: UnpackedHypermediaId,
+  options?: {
+    includeInspect?: boolean
+  },
+): MenuItemType[] {
   const route = useNavRoute()
   const navigate = useNavigate()
   const {onCopyReference, onPushReference, origin, originHomeId, experiments} = useUniversalAppContext()
@@ -75,7 +205,6 @@ export function useWebMenuItems(docId: UnpackedHypermediaId, options?: {includeI
     return wrappedRoute?.key === 'inspect' ? wrappedRoute : null
   }, [includeInspect, route])
   const allDocumentsId = originHomeId ? hmId(originHomeId.uid) : hmId(docId.uid)
-
   return useMemo(
     () => [
       createCopyLinkMenuItem({
@@ -87,7 +216,10 @@ export function useWebMenuItems(docId: UnpackedHypermediaId, options?: {includeI
         },
         gateway: {
           copy: async () => {
-            const url = routeToUrl(route, {hostname: origin ?? DEFAULT_GATEWAY_URL, originHomeId})
+            const url = routeToUrl(route, {
+              hostname: origin ?? DEFAULT_GATEWAY_URL,
+              originHomeId,
+            })
             if (url) await copyUrlToClipboardWithFeedback(url, 'Gateway')
             onPushReference?.(docId)
           },
@@ -99,7 +231,7 @@ export function useWebMenuItems(docId: UnpackedHypermediaId, options?: {includeI
       {
         key: 'versions',
         label: 'Versions history',
-        icon: <History className="size-4" />,
+        icon: <History className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: () => {
           navigate({
             key: 'document',
@@ -111,22 +243,36 @@ export function useWebMenuItems(docId: UnpackedHypermediaId, options?: {includeI
       {
         key: 'directory',
         label: 'Sub documents',
-        icon: <Layers className="size-4" />,
-        onClick: () => navigate({key: 'directory', id: docId}),
+        icon: <Layers className={stylex.props(styles.sca3de968).className || ''} />,
+        onClick: () =>
+          navigate({
+            key: 'directory',
+            id: docId,
+          }),
       },
       {
         key: 'all-documents',
         label: 'All Documents',
-        icon: <LayoutList className="size-4" />,
-        onClick: () => navigate({key: 'all-documents', id: allDocumentsId}),
+        icon: <LayoutList className={stylex.props(styles.sca3de968).className || ''} />,
+        onClick: () =>
+          navigate({
+            key: 'all-documents',
+            id: allDocumentsId,
+          }),
       },
-      ...(isSiteOwner ? [createEmailSubscribersMenuItem({navigate})] : []),
+      ...(isSiteOwner
+        ? [
+            createEmailSubscribersMenuItem({
+              navigate,
+            }),
+          ]
+        : []),
       ...(inspectRoute
         ? [
             {
               key: 'inspect',
               label: 'Inspect Document',
-              icon: <Search className="size-4" />,
+              icon: <Search className={stylex.props(styles.sca3de968).className || ''} />,
               onClick: () => {
                 navigate(inspectRoute)
               },
@@ -169,7 +315,6 @@ export function useWebCreateDocumentMenuItem({
 } {
   const navigate = useNavigate()
   const importInputRef = useRef<HTMLInputElement>(null)
-
   const createDraft = useCallback(
     (visibility?: HMResourceVisibility) => {
       if (!signingAccountId) return
@@ -189,36 +334,34 @@ export function useWebCreateDocumentMenuItem({
     },
     [capabilityCid, locationId, navigate, signingAccountId],
   )
-
   const menuItem = useMemo<MenuItemType | null>(() => {
     if (!canCreate || !canCreateChildren || !signingAccountId) return null
     return {
       key: 'new',
       label: 'New',
-      icon: <Add className="size-4" />,
+      icon: <Add className={stylex.props(styles.sca3de968).className || ''} />,
       children: [
         {
           key: 'new-document',
           label: 'New Document',
-          icon: <FilePlus2 className="size-4" />,
+          icon: <FilePlus2 className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: () => createDraft('PUBLIC'),
         },
         {
           key: 'new-private-document',
           label: 'New Private Document',
-          icon: <Lock className="size-4" />,
+          icon: <Lock className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: () => createDraft('PRIVATE'),
         },
         {
           key: 'import',
           label: 'Import Markdown File',
-          icon: <ImportIcon className="size-4" />,
+          icon: <ImportIcon className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: () => importInputRef.current?.click(),
         },
       ],
     }
   }, [canCreate, canCreateChildren, createDraft, signingAccountId])
-
   return {
     menuItem,
     content:
@@ -227,7 +370,7 @@ export function useWebCreateDocumentMenuItem({
           ref={importInputRef}
           type="file"
           accept=".md,.markdown,text/markdown,text/plain"
-          className="hidden"
+          className={stylex.props(styles.sb76e9daa).className || ''}
           onChange={(event) => {
             const file = event.currentTarget.files?.[0]
             event.currentTarget.value = ''
@@ -251,14 +394,10 @@ export function useWebCreateDocumentMenuItem({
       ) : null,
   }
 }
-
 function PlaceholderAvatar({onClick}: {onClick: () => void}) {
   return (
-    <button
-      onClick={onClick}
-      className="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400"
-    >
-      <User className="size-4 text-gray-400" />
+    <button onClick={onClick} className={stylex.props(styles.s72c9931d).className || ''}>
+      <User className={stylex.props(styles.sbb6a26b2).className || ''} />
     </button>
   )
 }
@@ -279,31 +418,33 @@ function useSiteAgentServerUrl(siteUid: string): string | null {
   const raw = home.data?.type === 'document' ? home.data.document?.metadata?.agentServerUrl : undefined
   return typeof raw === 'string' && raw ? raw : null
 }
-
 export function WebHeaderActions({siteUid}: {siteUid: string}) {
   const keyPair = useLocalKeyPair()
   const accountId = keyPair?.delegatedAccountUid ?? keyPair?.id
   const {content: createAccountContent, createAccount} = useCreateAccount({})
-  const {isJoined, joinSite} = useJoinSite({siteUid})
-  const logoutDialog = useAppDialog(LogoutDialog, {showCloseButton: false})
+  const {isJoined, joinSite} = useJoinSite({
+    siteUid,
+  })
+  const logoutDialog = useAppDialog(LogoutDialog, {
+    showCloseButton: false,
+  })
   const {open: openCreateSpaceDialog, content: createSpaceDialogContent} = useCreateSpaceDialog()
   const {data: hasExistingSpace} = useHasExistingSpace(accountId)
   const canCreateSpace = !hasExistingSpace
-
   const myAccount = useAccount(accountId || undefined, {
     retry: 3,
     retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
     refetchOnWindowFocus: false,
   })
-
   const account = useMemo(() => {
     if (!myAccount.data?.id) return null
     return {
-      id: hmId(myAccount.data.id.uid, {latest: true}),
+      id: hmId(myAccount.data.id.uid, {
+        latest: true,
+      }),
       metadata: myAccount.data.metadata ?? undefined,
     }
   }, [myAccount.data])
-
   const navigate = useNavigate()
   const vaultAccountSettingsUrl = getVaultAccountSettingsUrl({
     vaultUrl: keyPair?.vaultUrl,
@@ -322,21 +463,37 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
   if (!keyPair) {
     return (
       <>
-        <div className="flex items-center gap-2">
-          <PlaceholderAvatar onClick={() => createAccount({source: 'login'})} />
-          <JoinButton onClick={() => createAccount({source: 'join'})} />
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
+          <PlaceholderAvatar
+            onClick={() =>
+              createAccount({
+                source: 'login',
+              })
+            }
+          />
+          <JoinButton
+            onClick={() =>
+              createAccount({
+                source: 'join',
+              })
+            }
+          />
         </div>
         {createAccountContent}
       </>
     )
   }
-
   const joinButton = !isJoined ? <JoinButton onClick={() => joinSite()} /> : null
 
   // Show the avatar and bell when logged in.
   const avatarIcon = (
     <HMIcon
-      id={account?.id ?? hmId(accountId!, {latest: true})}
+      id={
+        account?.id ??
+        hmId(accountId!, {
+          latest: true,
+        })
+      }
       name={account?.metadata?.name}
       icon={account?.metadata?.icon}
       size={32}
@@ -350,24 +507,34 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
     : account?.metadata?.name || 'My space'
   const goToMySite = () => {
     if (mySiteUrl) window.open(mySiteUrl, '_blank', 'noopener,noreferrer')
-    else if (accountId) navigate({key: 'document', id: hmId(accountId, {latest: true})})
+    else if (accountId)
+      navigate({
+        key: 'document',
+        id: hmId(accountId, {
+          latest: true,
+        }),
+      })
   }
-
   const menuItems = (
     <>
       <button
         className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
         onClick={() => {
           if (accountId) {
-            navigate({key: 'profile', id: hmId(accountId, {latest: true})})
+            navigate({
+              key: 'profile',
+              id: hmId(accountId, {
+                latest: true,
+              }),
+            })
           }
           setMobileMenuOpen(false)
         }}
       >
-        <User className="size-5" />
-        <span className="text-sm">My Profile</span>
+        <User className={stylex.props(styles.sca3de969).className || ''} />
+        <span className={stylex.props(styles.sab7cc6fa).className || ''}>My Profile</span>
       </button>
-      <div className="bg-border mx-4 h-px" />
+      <div className={stylex.props(styles.s69a761ef).className || ''} />
       <button
         className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left disabled:opacity-50"
         onClick={() => {
@@ -378,12 +545,12 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
         }}
         disabled={!vaultAccountSettingsUrl}
       >
-        <UserCog className="size-5" />
-        <span className="text-sm">Manage account</span>
+        <UserCog className={stylex.props(styles.sca3de969).className || ''} />
+        <span className={stylex.props(styles.sab7cc6fa).className || ''}>Manage account</span>
       </button>
       {hasSiteAgents ? (
         <>
-          <div className="bg-border mx-4 h-px" />
+          <div className={stylex.props(styles.s69a761ef).className || ''} />
           <button
             className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
             onClick={() => {
@@ -391,12 +558,14 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
               assistantPanel.toggle()
             }}
           >
-            <Bot className="size-5" />
-            <span className="text-sm">{assistantPanel.isOpen ? 'Close Agents' : 'Agents'}</span>
+            <Bot className={stylex.props(styles.sca3de969).className || ''} />
+            <span className={stylex.props(styles.sab7cc6fa).className || ''}>
+              {assistantPanel.isOpen ? 'Close Agents' : 'Agents'}
+            </span>
           </button>
         </>
       ) : null}
-      <div className="bg-border mx-4 h-px" />
+      <div className={stylex.props(styles.s69a761ef).className || ''} />
       {canCreateSpace ? (
         <button
           className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left text-green-600 dark:text-green-500"
@@ -405,12 +574,12 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
             openCreateSpaceDialog()
           }}
         >
-          <Plus className="size-5" />
-          <span className="text-sm">Create my space</span>
+          <Plus className={stylex.props(styles.sca3de969).className || ''} />
+          <span className={stylex.props(styles.sab7cc6fa).className || ''}>Create my space</span>
         </button>
       ) : (
         <>
-          <div className="text-muted-foreground px-4 pt-2 pb-1 text-xs">My space</div>
+          <div className={stylex.props(styles.s40a3db72).className || ''}>My space</div>
           <button
             className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
             onClick={() => {
@@ -418,13 +587,13 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
               goToMySite()
             }}
           >
-            <Globe className="size-5" />
-            <span className="flex-1 truncate text-sm">{mySiteLabel}</span>
-            {mySiteUrl ? <ExternalLink className="text-muted-foreground size-4" /> : null}
+            <Globe className={stylex.props(styles.sca3de969).className || ''} />
+            <span className={stylex.props(styles.se53a44a3).className || ''}>{mySiteLabel}</span>
+            {mySiteUrl ? <ExternalLink className={stylex.props(styles.s3566be63).className || ''} /> : null}
           </button>
         </>
       )}
-      <div className="bg-border mx-4 h-px" />
+      <div className={stylex.props(styles.s69a761ef).className || ''} />
       <button
         className="text-destructive hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
         onClick={() => {
@@ -432,55 +601,61 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
           logoutDialog.open({})
         }}
       >
-        <LogOut className="size-5" />
-        <span className="text-sm">Log out</span>
+        <LogOut className={stylex.props(styles.sca3de969).className || ''} />
+        <span className={stylex.props(styles.sab7cc6fa).className || ''}>Log out</span>
       </button>
     </>
   )
-
   return (
     <>
       {isMobile ? (
-        <div className="flex items-center gap-2">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           {keyPair.notifyServerUrl ? <NotifsButton /> : null}
-          <button className="flex cursor-pointer rounded-full shadow-lg" onClick={() => setMobileMenuOpen(true)}>
+          <button className={stylex.props(styles.s4113cfca).className || ''} onClick={() => setMobileMenuOpen(true)}>
             {avatarIcon}
           </button>
           {joinButton}
           <MobilePanelSheet isOpen={mobileMenuOpen} title="" onClose={() => setMobileMenuOpen(false)}>
-            <div className="flex items-center gap-3 px-4 py-4">
+            <div className={stylex.props(styles.s8fc7e6c6).className || ''}>
               {avatarIcon}
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{account?.metadata?.name || 'Account'}</p>
+                <p className={stylex.props(styles.s59c17cd3).className || ''}>{account?.metadata?.name || 'Account'}</p>
               </div>
             </div>
-            <div className="bg-border h-px" />
+            <div className={stylex.props(styles.sf0fd1379).className || ''} />
             {menuItems}
           </MobilePanelSheet>
         </div>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           {keyPair.notifyServerUrl ? <NotifsButton /> : null}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex cursor-pointer rounded-full shadow-lg">{avatarIcon}</button>
+              <button className={stylex.props(styles.s4113cfca).className || ''}>{avatarIcon}</button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="bottom" align="end" className="min-w-[200px]">
-              <div className="flex items-center gap-3 px-2 py-2">
+              <div className={stylex.props(styles.s8c5e3586).className || ''}>
                 {avatarIcon}
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{account?.metadata?.name || 'Account'}</p>
+                  <p className={stylex.props(styles.s59c17cd3).className || ''}>
+                    {account?.metadata?.name || 'Account'}
+                  </p>
                 </div>
               </div>
               <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
               <DropdownMenuItem
                 onClick={() => {
                   if (accountId) {
-                    navigate({key: 'profile', id: hmId(accountId, {latest: true})})
+                    navigate({
+                      key: 'profile',
+                      id: hmId(accountId, {
+                        latest: true,
+                      }),
+                    })
                   }
                 }}
               >
-                <User className="size-4" />
+                <User className={stylex.props(styles.sca3de968).className || ''} />
                 My Profile
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -491,14 +666,14 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
                 }}
                 disabled={!vaultAccountSettingsUrl}
               >
-                <UserCog className="size-4" />
+                <UserCog className={stylex.props(styles.sca3de968).className || ''} />
                 Manage account
               </DropdownMenuItem>
               {hasSiteAgents ? (
                 <>
                   <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
                   <DropdownMenuItem onClick={assistantPanel.toggle}>
-                    <Bot className="size-4" />
+                    <Bot className={stylex.props(styles.sca3de968).className || ''} />
                     {assistantPanel.isOpen ? 'Close Agents' : 'Agents'}
                   </DropdownMenuItem>
                 </>
@@ -514,17 +689,17 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
                 </DropdownMenuItem>
               ) : (
                 <>
-                  <div className="text-muted-foreground px-2 pt-1 pb-0.5 text-xs">My space</div>
+                  <div className={stylex.props(styles.sdda8cd7).className || ''}>My space</div>
                   <DropdownMenuItem onClick={goToMySite}>
-                    <Globe className="size-4" />
-                    <span className="flex-1 truncate">{mySiteLabel}</span>
-                    {mySiteUrl ? <ExternalLink className="text-muted-foreground size-3.5" /> : null}
+                    <Globe className={stylex.props(styles.sca3de968).className || ''} />
+                    <span className={stylex.props(styles.sb136bac9).className || ''}>{mySiteLabel}</span>
+                    {mySiteUrl ? <ExternalLink className={stylex.props(styles.s76b0b3a9).className || ''} /> : null}
                   </DropdownMenuItem>
                 </>
               )}
               <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
               <DropdownMenuItem variant="destructive" onClick={() => logoutDialog.open({})}>
-                <LogOut className="size-4" />
+                <LogOut className={stylex.props(styles.sca3de968).className || ''} />
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -545,7 +720,6 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
 export function WebSitePageShell({children, siteUid}: {children?: ReactNode; siteUid: string}) {
   const {origin, originHomeId} = useUniversalAppContext()
   const shouldShowHostBanner = origin && originHomeId && siteUid !== originHomeId.uid
-
   return (
     <>
       {shouldShowHostBanner ? <HypermediaHostBanner origin={origin} /> : null}
@@ -553,17 +727,18 @@ export function WebSitePageShell({children, siteUid}: {children?: ReactNode; sit
     </>
   )
 }
-
 function NotifsButton() {
   const storedView = typeof window !== 'undefined' ? localStorage.getItem('seed-notifications-view') : null
-  const linkProps = useRouteLink({key: 'notifications', view: storedView === 'unread' ? 'unread' : undefined})
+  const linkProps = useRouteLink({
+    key: 'notifications',
+    view: storedView === 'unread' ? 'unread' : undefined,
+  })
   const route = useNavRoute()
   const isActive = route.key === 'notifications'
   const {originHomeId} = useUniversalAppContext()
   const siteUid = originHomeId?.uid
   const inbox = useWebNotificationInbox(siteUid)
   const readState = useWebNotificationReadState(siteUid)
-
   const unreadCount = useMemo(() => {
     const notifications = inbox.data?.notifications ?? []
     if (!notifications.length || !readState.data) return 0
@@ -576,20 +751,16 @@ function NotifsButton() {
         }),
     ).length
   }, [inbox.data, readState.data])
-
   return (
     <Tooltip content="Notifications" asChild>
       <ButtonLink
-        className={cn(
-          'relative h-8 rounded-full border-1 border-transparent p-0',
-          isActive && 'dark:bg-muted bg-black/5',
-        )}
+        className={cn(stylex.props(styles.s24831944).className || '', isActive && 'dark:bg-muted bg-black/5')}
         variant="ghost"
         size="icon"
         aria-current={isActive ? 'page' : undefined}
         {...linkProps}
       >
-        <Bell className="size-4" />
+        <Bell className={stylex.props(styles.sca3de968).className || ''} />
         {unreadCount > 0 ? (
           <span className="flex h-5 min-w-5 items-center justify-center rounded-lg bg-red-500 px-1 text-[12px] font-bold text-white">
             {unreadCount > 99 ? '99+' : unreadCount}

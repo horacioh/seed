@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useDaemonInfo} from '@/models/daemon'
 import {grpcClient} from '@/grpc-client'
 import {ConnectionStatus} from '@shm/shared/client/grpc-types'
@@ -17,13 +18,48 @@ import {Route} from 'lucide-react'
 import React from 'react'
 import {HMPeerInfo, useDomainsByPeerId, usePeers} from '../models/networking'
 import {AddConnectionDialog} from './contacts-prompt'
-
+const styles = stylex.create({
+  s9141e77: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sd24e1c2c: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 4)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s77710df4: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 25)',
+    height: 'calc(0.25rem * 25)',
+  },
+  sb9cfe110: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 const EMPTY_DOMAINS: string[] = []
-
 export function useNetworkDialog() {
   return useAppDialog<true>(NetworkDialog)
 }
-
 export function NetworkDialog() {
   const peers = usePeers(false, {
     refetchInterval: 5_000,
@@ -33,13 +69,12 @@ export function NetworkDialog() {
   })
   const {data: deviceInfo} = useDaemonInfo()
   const connectDialog = useAppDialog(AddConnectionDialog)
-
   return (
     <>
       <DialogTitle>Network Connections</DialogTitle>
-      <div className="flex justify-end">
+      <div className={stylex.props(styles.s9141e77).className || ''}>
         <Button onClick={() => connectDialog.open(true)} size="sm">
-          <Route className="size-3" />
+          <Route className={stylex.props(styles.sca3de967).className || ''} />
           Add Connection
         </Button>
       </div>
@@ -55,8 +90,8 @@ export function NetworkDialog() {
               />
             ))
           ) : (
-            <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
-              <NoConnection className="text-muted-foreground size-25" />
+            <div className={stylex.props(styles.sd24e1c2c).className || ''}>
+              <NoConnection className={stylex.props(styles.s77710df4).className || ''} />
               <SizableText color="muted" weight="medium" size="xl">
                 there are no active connections
               </SizableText>
@@ -68,14 +103,12 @@ export function NetworkDialog() {
     </>
   )
 }
-
 function getProtocolMessage(peer: HMPeerInfo, myProtocol: string) {
   if (!peer.protocol || peer.protocol === myProtocol) {
     return ''
   }
   return ` (Protocol: ${peer.protocol})`
 }
-
 const PeerRow = React.memo(function PeerRow({
   peer,
   myProtocol,
@@ -110,7 +143,9 @@ const PeerRow = React.memo(function PeerRow({
     <div className="group flex min-h-8 flex-1 items-center justify-between p-2">
       <div className="flex min-w-0 items-center gap-2">
         <Tooltip content={getPeerStatus(connectionStatus) + getProtocolMessage(peer, myProtocol)}>
-          <div className={cn('size-3 rounded-md', getPeerStatusIndicator(peer, myProtocol))} />
+          <div
+            className={cn(stylex.props(styles.sb9cfe110).className || '', getPeerStatusIndicator(peer, myProtocol))}
+          />
         </Tooltip>
         <div className="flex min-w-0 items-center gap-2">
           <Tooltip content="Copy Peer ID">
@@ -156,7 +191,7 @@ const PeerRow = React.memo(function PeerRow({
           >
             {label}
           </ButtonText>
-        </XStack> */}
+         </XStack> */}
         {isConnected && (
           <SizableText size="xs" color="muted" className="opacity-0 group-hover/item:opacity-100">
             Connected
@@ -184,7 +219,7 @@ const PeerRow = React.memo(function PeerRow({
             // },
             {
               key: 'copyAddress',
-              icon: <Copy className="size-4" />,
+              icon: <Copy className={stylex.props(styles.sca3de968).className || ''} />,
               label: 'Copy Addresses',
               // Fetch addresses on demand via the per-peer endpoint.
               // The peers-list response no longer carries the multiaddr
@@ -193,7 +228,9 @@ const PeerRow = React.memo(function PeerRow({
               // gossip-only peers.
               onClick: async () => {
                 try {
-                  const info = await grpcClient.networking.getPeerInfo({deviceId: id})
+                  const info = await grpcClient.networking.getPeerInfo({
+                    deviceId: id,
+                  })
                   if (info?.addrs?.length) {
                     copyTextToClipboard(info.addrs.join(','))
                     toast.success('Copied Peer Addresses')
@@ -212,7 +249,6 @@ const PeerRow = React.memo(function PeerRow({
     </div>
   )
 })
-
 function getPeerStatus(status: ConnectionStatus) {
   if (status === ConnectionStatus.CONNECTED) return 'Connected'
   if (status === ConnectionStatus.CAN_CONNECT) return 'Can Connect'
@@ -220,7 +256,6 @@ function getPeerStatus(status: ConnectionStatus) {
   if (status === ConnectionStatus.LIMITED) return 'Limited'
   return 'Unknown'
 }
-
 function getPeerStatusIndicator(peer: HMPeerInfo, myProtocol: string): string {
   if (peer.connectionStatus === ConnectionStatus.CONNECTED) {
     if (peer.protocol && peer.protocol !== myProtocol) return 'bg-yellow-500'
@@ -231,17 +266,21 @@ function getPeerStatusIndicator(peer: HMPeerInfo, myProtocol: string): string {
   if (peer.connectionStatus === ConnectionStatus.CANNOT_CONNECT)
     return 'bg-transparent border border-dotted border-red-500'
   if (peer.connectionStatus === ConnectionStatus.LIMITED) return 'bg-transparent border border-dashed border-green-500'
-
   return 'bg-muted-foreground'
 }
-
 function IndicationStatus({color}: {color: string}) {
-  return <div className="size-3 rounded-md" style={{backgroundColor: color}} />
+  return (
+    <div
+      className={stylex.props(styles.sb9cfe110).className || ''}
+      style={{
+        backgroundColor: color,
+      }}
+    />
+  )
 }
-
 function IndicationTag({label, status}: {label: string; status: null | 0 | 1 | 2}) {
   let statusDot = (
-    <div className="flex items-center justify-center">
+    <div className={stylex.props(styles.s9a378369).className || ''}>
       <Spinner />
     </div>
   )

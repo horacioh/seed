@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   HMDocument,
   HMDocumentInfo,
@@ -21,7 +22,39 @@ import {PrivateBadge} from './private-badge'
 import {useMedia} from './use-media'
 import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s86ff3e3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s5f8260f0: {
+    display: 'flex',
+    width: 'calc(0.25rem * 5)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s2aed43c2: {
+    zIndex: '50',
+    padding: 'calc(0.25rem * 1)',
+  },
+  s44d93df3: {
+    MsOverflowStyle: 'none',
+    scrollbarWidth: 'none',
+    height: '100%',
+    overflow: 'auto',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+})
 export function DocumentSmallListItem({
   metadata,
   id,
@@ -39,25 +72,33 @@ export function DocumentSmallListItem({
   isPublished?: boolean
   visibility?: HMResourceVisibility
 }) {
-  const route: NavRoute | undefined = draftId ? {key: 'draft', id: draftId} : id && {key: 'document', id}
+  const route: NavRoute | undefined = draftId
+    ? {
+        key: 'draft',
+        id: draftId,
+      }
+    : id && {
+        key: 'document',
+        id,
+      }
   if (!route) {
     throw new Error('No route for DocumentSmallListItem. Must provide either id or draftId')
   }
-  const linkProps = useRouteLink(route, {onClick: onClick})
+  const linkProps = useRouteLink(route, {
+    onClick: onClick,
+  })
   const color = isPublished === false ? '$color11' : undefined
   const highlight = useHighlighter()
   const isPrivate = visibility === 'PRIVATE'
   const icon = id ? <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} /> : null
-
   const headCount = getVersionHeads(id?.version).length
   const accessory =
     isPrivate || headCount > 1 ? (
-      <div className="flex items-center gap-1">
+      <div className={stylex.props(styles.s86ff3e3).className || ''}>
         {isPrivate && <PrivateBadge size="sm" />}
         {headCount > 1 && <MergedBadge count={headCount} size="sm" />}
       </div>
     ) : null
-
   return (
     <SmallListItem
       multiline
@@ -74,7 +115,6 @@ export function DocumentSmallListItem({
     />
   )
 }
-
 export type DocNavigationItem = {
   key: string
   metadata: HMMetadata
@@ -92,7 +132,6 @@ export function isValidSiteHeaderItem(item: DocNavigationItem): boolean {
   const hasDestination = !!item.id || !!item.webUrl?.trim() || !!item.draftId
   return hasLabel && hasDestination
 }
-
 export function getSiteNavDirectory({
   id,
   directory,
@@ -150,7 +189,6 @@ export function getSiteNavDirectory({
   const directoryItems: DocNavigationItem[] = [...publishedItems, ...unpublishedDraftItems]
   return directoryItems
 }
-
 export function useNodesOutline(
   document: HMDocument | null | undefined,
   id: UnpackedHypermediaId,
@@ -161,7 +199,6 @@ export function useNodesOutline(
     [document?.content, id, embeddedDocs],
   )
 }
-
 export function DocumentOutline({
   outline,
   indented,
@@ -192,7 +229,6 @@ export function DocumentOutline({
     />
   ))
 }
-
 export function DraftOutline({
   id,
   onActivateBlock,
@@ -218,7 +254,6 @@ export function DraftOutline({
     />
   ))
 }
-
 function OutlineNode({
   node,
   indented = 0,
@@ -243,7 +278,9 @@ function OutlineNode({
           id: {
             ...docId,
             blockRef: node.id,
-            blockRange: {expanded: true},
+            blockRange: {
+              expanded: true,
+            },
           },
         }
       : {
@@ -259,7 +296,9 @@ function OutlineNode({
             scheme: null,
           },
         },
-    {replace: true},
+    {
+      replace: true,
+    },
   )
   const outlineProps = docId ? routeLinkResult : undefined
   return (
@@ -298,7 +337,6 @@ function OutlineNode({
     </>
   )
 }
-
 export function DocNavigationWrapper({
   children,
   showCollapsed,
@@ -315,13 +353,11 @@ export function DocNavigationWrapper({
       popoverState.onOpenChange(false)
     }
   }, [media.gtSm])
-
   const limitedOutline = outline?.length > 7 ? outline.slice(0, 7) : outline
-
   return showCollapsed ? (
-    <div className="flex items-center justify-center">
+    <div className={stylex.props(styles.s9a378369).className || ''}>
       <HoverCard openDelay={100}>
-        <HoverCardTrigger className="flex w-5 flex-col gap-3">
+        <HoverCardTrigger className={stylex.props(styles.s5f8260f0).className || ''}>
           {limitedOutline?.length
             ? limitedOutline.map((node) => <CollapsedOutlineNode key={node.id} node={node} />)
             : null}
@@ -330,8 +366,10 @@ export function DocNavigationWrapper({
           side="right"
           align="start"
           sideOffset={12}
-          collisionPadding={{bottom: 24}}
-          className="z-50 p-1"
+          collisionPadding={{
+            bottom: 24,
+          }}
+          className={stylex.props(styles.s2aed43c2).className || ''}
         >
           <div className="h-full max-h-[80vh] w-full overflow-auto">{children}</div>
         </HoverCardContent>
@@ -339,14 +377,13 @@ export function DocNavigationWrapper({
     </div>
   ) : (
     <div
-      className="hide-scrollbar h-full overflow-auto"
+      className={stylex.props(styles.s44d93df3).className || ''}
       // paddingVertical="$4"
     >
       {children}
     </div>
   )
 }
-
 function CollapsedOutlineNode({node, level = 1}: {node: NodeOutline; level?: number}) {
   const nodes =
     !node.children?.length || node.children.length < 2
@@ -358,7 +395,7 @@ function CollapsedOutlineNode({node, level = 1}: {node: NodeOutline; level?: num
     <>
       <div key={node.id} className="bg-muted-foreground/40 h-0.5 w-full rounded-full" />
       {nodes ? (
-        <div className={cn('flex flex-col gap-3', level < 3 && 'pl-[3px]')}>
+        <div className={cn(stylex.props(styles.sfbc6e28f).className || '', level < 3 && 'pl-[3px]')}>
           {nodes.map((child) => (
             <CollapsedOutlineNode key={child.id} node={child} level={level + 1} />
           ))}

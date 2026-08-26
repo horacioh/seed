@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {DocumentPanelRoute} from '@shm/shared'
 import {useNavigate} from '@shm/shared/utils/navigation'
@@ -5,7 +6,12 @@ import {SquareChevronRight} from 'lucide-react'
 import {Button} from './button'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export function OpenInPanelButton({
   id,
   panelRoute,
@@ -20,7 +26,6 @@ export function OpenInPanelButton({
   accent?: boolean
 }) {
   const replace = useNavigate('replace')
-
   return (
     <Tooltip content="Open in right panel">
       <Button
@@ -37,7 +42,7 @@ export function OpenInPanelButton({
           })
         }}
       >
-        <SquareChevronRight className="size-4" />
+        <SquareChevronRight className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
     </Tooltip>
   )

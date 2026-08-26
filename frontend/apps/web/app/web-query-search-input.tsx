@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {SearchResult} from '@seed-hypermedia/client/editor-types'
 import type {QuerySearchInputProps} from '@shm/editor/query-search-context'
 import {SearchType} from '@shm/shared/client/.generated/entities/v1alpha/entities_pb'
@@ -10,7 +11,22 @@ import {SearchInput as SearchInputUI, SearchResultItem} from '@shm/ui/search'
 import {Separator} from '@shm/ui/separator'
 import {SizableText} from '@shm/ui/text'
 import {Fragment, useCallback, useEffect, useMemo, useState} from 'react'
-
+const styles = stylex.create({
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sca36b5d1: {
+    color: 'var(--muted-foreground)',
+    padding: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+  },
+  s2c26492e: {
+    color: 'var(--destructive)',
+    padding: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+  },
+})
 const WEB_QUERY_SEARCH_DEBOUNCE_MS = 250
 
 /** Search input used by query blocks on the web app to choose their source document. */
@@ -29,7 +45,6 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
     pageSize: 30,
     iriFilter: originHomeId?.uid ? `hm://${originHomeId.uid}*` : undefined,
   })
-
   const directHmIdItem = useMemo<SearchResult | null>(() => {
     const id = unpackHmId(debouncedSearch)
     if (!id) return null
@@ -40,14 +55,16 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
       path: id.path ?? [],
       searchQuery: debouncedSearch,
       onSelect: () => {
-        onSelect({id, route: appRouteOfId(id)})
+        onSelect({
+          id,
+          route: appRouteOfId(id),
+        })
         onClose?.()
       },
       onFocus: () => setFocusedIndex(0),
       onMouseEnter: () => setFocusedIndex(0),
     }
   }, [debouncedSearch, onClose, onSelect])
-
   const webUrlItem = useMemo<SearchResult | null>(() => {
     if (!allowWebURL) return null
     if (!debouncedSearch.startsWith('http://') && !debouncedSearch.startsWith('https://')) return null
@@ -58,14 +75,15 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
       path: [],
       searchQuery: debouncedSearch,
       onSelect: () => {
-        onSelect({webUrl: debouncedSearch})
+        onSelect({
+          webUrl: debouncedSearch,
+        })
         onClose?.()
       },
       onFocus: () => setFocusedIndex(0),
       onMouseEnter: () => setFocusedIndex(0),
     }
   }, [allowWebURL, debouncedSearch, onClose, onSelect])
-
   const documentItems = useMemo<SearchResult[]>(() => {
     return (searchResults.data?.entities ?? [])
       .filter((item) => item.type !== 'comment')
@@ -78,27 +96,26 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
         searchQuery: item.searchQuery,
         versionTime: item.versionTime || '',
         onSelect: () => {
-          onSelect({id: item.id, route: appRouteOfId(item.id)})
+          onSelect({
+            id: item.id,
+            route: appRouteOfId(item.id),
+          })
           onClose?.()
         },
         onFocus: () => setFocusedIndex(index + (directHmIdItem || webUrlItem ? 1 : 0)),
         onMouseEnter: () => setFocusedIndex(index + (directHmIdItem || webUrlItem ? 1 : 0)),
       }))
   }, [directHmIdItem, onClose, onSelect, searchResults.data?.entities, webUrlItem])
-
   const items = useMemo(() => {
     return [directHmIdItem ?? webUrlItem, ...documentItems].filter(Boolean) as SearchResult[]
   }, [directHmIdItem, documentItems, webUrlItem])
-
   useEffect(() => {
     if (focusedIndex >= items.length) setFocusedIndex(0)
   }, [focusedIndex, items.length])
-
   const selectFocusedItem = useCallback(() => {
     const item = items[focusedIndex]
     item?.onSelect?.()
   }, [focusedIndex, items])
-
   const isLoading = isDebouncing || searchResults.isFetching
   const statusMessage = getSearchStatusMessage({
     query: trimmedSearch,
@@ -106,7 +123,6 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
     isError: searchResults.isError,
     hasResults: items.length > 0,
   })
-
   return (
     <SearchInputUI
       searchResults={items}
@@ -128,7 +144,7 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
         setFocusedIndex((prev) => (prev + 1) % items.length)
       }}
     >
-      <div className="flex flex-col">
+      <div className={stylex.props(styles.s783f19f3).className || ''}>
         {items.length > 0
           ? items.map((item, index) => (
               <Fragment key={item.key}>
@@ -141,7 +157,6 @@ export function WebQuerySearchInput({onClose, onSelect, allowWebURL}: QuerySearc
     </SearchInputUI>
   )
 }
-
 function getSearchStatusMessage({
   query,
   isLoading,
@@ -154,10 +169,13 @@ function getSearchStatusMessage({
   hasResults: boolean
 }) {
   if (!query)
-    return <SizableText className="text-muted-foreground p-4 text-center">Type to search documents</SizableText>
-  if (isError) return <SizableText className="text-destructive p-4 text-center">Search failed</SizableText>
-  if (isLoading) return <SizableText className="text-muted-foreground p-4 text-center">Searching…</SizableText>
+    return (
+      <SizableText className={stylex.props(styles.sca36b5d1).className || ''}>Type to search documents</SizableText>
+    )
+  if (isError)
+    return <SizableText className={stylex.props(styles.s2c26492e).className || ''}>Search failed</SizableText>
+  if (isLoading) return <SizableText className={stylex.props(styles.sca36b5d1).className || ''}>Searching…</SizableText>
   if (!hasResults)
-    return <SizableText className="text-muted-foreground p-4 text-center">No documents found</SizableText>
+    return <SizableText className={stylex.props(styles.sca36b5d1).className || ''}>No documents found</SizableText>
   return null
 }

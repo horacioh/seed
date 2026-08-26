@@ -1,8 +1,20 @@
+import * as stylex from '@stylexjs/stylex'
 import {ReactNode, forwardRef, useEffect, useRef, useState} from 'react'
 import {Virtuoso, VirtuosoHandle} from 'react-virtuoso'
-
+const styles = stylex.create({
+  s9e66fe1a: {
+    display: 'flex',
+    height: '100%',
+    flex: '1',
+    flexDirection: 'column',
+    alignSelf: 'stretch',
+  },
+  s78630139: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+})
 export type ListHandle = VirtuosoHandle
-
 export const List = forwardRef(function ListComponent<Item>(
   {
     items,
@@ -24,10 +36,8 @@ export const List = forwardRef(function ListComponent<Item>(
   const [containerWidth, setContainerWidth] = useState(0)
   const [containerHeight, setContainerHeight] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     if (!containerRef.current) return
-
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const {width, height} = entry.contentRect
@@ -35,13 +45,11 @@ export const List = forwardRef(function ListComponent<Item>(
         setContainerHeight(height)
       }
     })
-
     resizeObserver.observe(containerRef.current)
     return () => resizeObserver.disconnect()
   }, [])
-
   return (
-    <div ref={containerRef} className="flex h-full flex-1 flex-col self-stretch">
+    <div ref={containerRef} className={stylex.props(styles.s9e66fe1a).className || ''}>
       <Virtuoso
         ref={ref}
         fixedItemHeight={fixedItemHeight}
@@ -60,7 +68,14 @@ export const List = forwardRef(function ListComponent<Item>(
         }}
         components={{
           Header: () => header || null,
-          Footer: () => footer || <div style={{height: 30}} />,
+          Footer: () =>
+            footer || (
+              <div
+                style={{
+                  height: 30,
+                }}
+              />
+            ),
         }}
         className="main-scroll-wrapper"
         totalCount={items?.length || 0}
@@ -69,13 +84,16 @@ export const List = forwardRef(function ListComponent<Item>(
           if (!item) return null
           return (
             <div
-              className="flex justify-center"
+              className={stylex.props(styles.s78630139).className || ''}
               style={{
                 width: containerWidth,
                 height: fixedItemHeight || undefined,
               }}
             >
-              {renderItem({item, containerWidth})}
+              {renderItem({
+                item,
+                containerWidth,
+              })}
             </div>
           )
         }}

@@ -1,12 +1,34 @@
+import * as stylex from '@stylexjs/stylex'
 import type {HMMetadata} from '@seed-hypermedia/client/hm-types'
 import {FileText, ImagePlus, Plus, Smile} from 'lucide-react'
 import {ChangeEvent, useCallback, useEffect, useRef, useState} from 'react'
 import {Button} from './button'
 import {MenuItemType, OptionsDropdown} from './options-dropdown'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s88a3565a: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: '0',
+  },
+  s41184b3a: {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 type MetadataAffordanceKey = 'icon' | 'cover'
-
 export type DocumentMetadataAffordanceButtonsProps = {
   metadata?: Pick<HMMetadata, 'icon' | 'cover' | 'summary'> | null
   visible: boolean
@@ -21,7 +43,6 @@ export type DocumentMetadataAffordanceButtonsProps = {
   alwaysVisibleOnMobile?: boolean
   mobileOnly?: boolean
 }
-
 export type EditableDocumentMetadataFieldsProps = {
   name: string
   summary: string
@@ -38,7 +59,6 @@ export type EditableDocumentMetadataFieldsProps = {
   summaryRequested: boolean
   onSummaryRequestedChange: (requested: boolean) => void
 }
-
 export type HomeDocumentMetadataAffordanceBarProps = {
   metadata?: Pick<HMMetadata, 'icon' | 'cover' | 'summary'> | null
   onMetadata: (values: Partial<HMMetadata>) => void
@@ -46,7 +66,6 @@ export type HomeDocumentMetadataAffordanceBarProps = {
   fileUpload?: (file: File) => Promise<string>
   className?: string
 }
-
 function toIpfsUrl(cidOrUrl: string) {
   return cidOrUrl.startsWith('ipfs://') ? cidOrUrl : `ipfs://${cidOrUrl}`
 }
@@ -81,17 +100,17 @@ export function DocumentMetadataAffordanceButtons({
     : 'pointer-events-none opacity-0'
   const rowIsAccessible = visible || alwaysVisibleOnMobile
   const tabIndex = rowIsAccessible ? undefined : -1
-
   async function handleFileChange(field: MetadataAffordanceKey, event: ChangeEvent<HTMLInputElement>) {
     event.stopPropagation()
     const file = event.target.files?.[0]
     if (!file || !fileUpload) return
-
     setUploading(field)
     try {
       const cid = await fileUpload(file)
       onBeforeMetadataChange?.()
-      onMetadata({[field]: toIpfsUrl(cid)} as Partial<HMMetadata>)
+      onMetadata({
+        [field]: toIpfsUrl(cid),
+      } as Partial<HMMetadata>)
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error)
       console.error(`Failed to upload document ${field}: ${message}`, error)
@@ -100,18 +119,16 @@ export function DocumentMetadataAffordanceButtons({
       event.target.value = ''
     }
   }
-
   if (!showIconButton && !showSummaryButton && !showCoverButton) {
     return null
   }
-
   if (mobileOnly) {
     const menuItems: (MenuItemType | null)[] = [
       showIconButton
         ? {
             key: 'icon',
             label: 'Add icon',
-            icon: <Smile className="size-3.5" />,
+            icon: <Smile className={stylex.props(styles.s3269316e).className || ''} />,
             onClick: () => iconInputRef.current?.click(),
           }
         : null,
@@ -119,7 +136,7 @@ export function DocumentMetadataAffordanceButtons({
         ? {
             key: 'summary',
             label: 'Add Summary',
-            icon: <FileText className="size-3.5" />,
+            icon: <FileText className={stylex.props(styles.s3269316e).className || ''} />,
             onClick: () => {
               summaryMenuRequestedRef.current = true
               onBeforeMetadataChange?.()
@@ -130,12 +147,11 @@ export function DocumentMetadataAffordanceButtons({
         ? {
             key: 'cover',
             label: 'Add cover image',
-            icon: <ImagePlus className="size-3.5" />,
+            icon: <ImagePlus className={stylex.props(styles.s3269316e).className || ''} />,
             onClick: () => coverInputRef.current?.click(),
           }
         : null,
     ]
-
     return (
       <div className="md:hidden">
         {showIconButton ? (
@@ -144,7 +160,7 @@ export function DocumentMetadataAffordanceButtons({
             type="file"
             accept="image/*"
             aria-label="Choose document icon"
-            className="sr-only"
+            className={stylex.props(styles.s88a3565a).className || ''}
             tabIndex={-1}
             onChange={(event) => void handleFileChange('icon', event)}
           />
@@ -155,7 +171,7 @@ export function DocumentMetadataAffordanceButtons({
             type="file"
             accept="image/*"
             aria-label="Choose document cover image"
-            className="sr-only"
+            className={stylex.props(styles.s88a3565a).className || ''}
             tabIndex={-1}
             onChange={(event) => void handleFileChange('cover', event)}
           />
@@ -172,7 +188,7 @@ export function DocumentMetadataAffordanceButtons({
               className="text-muted-foreground hover:text-foreground h-7 shrink-0 rounded-full px-2 text-xs font-medium opacity-80 hover:bg-black/5 hover:opacity-100 active:scale-[0.98] dark:hover:bg-white/10"
               aria-label="Add document metadata"
             >
-              <Plus className="size-3.5" />
+              <Plus className={stylex.props(styles.s3269316e).className || ''} />
               <span>Add</span>
             </Button>
           }
@@ -187,7 +203,6 @@ export function DocumentMetadataAffordanceButtons({
       </div>
     )
   }
-
   return (
     <div
       data-document-metadata-affordances
@@ -205,13 +220,13 @@ export function DocumentMetadataAffordanceButtons({
             type="file"
             accept="image/*"
             aria-label="Choose document icon"
-            className="sr-only"
+            className={stylex.props(styles.s88a3565a).className || ''}
             tabIndex={-1}
             onChange={(event) => void handleFileChange('icon', event)}
           />
           <MetadataHintButton
             aria-label="Add document icon"
-            icon={<Smile className="size-3.5" />}
+            icon={<Smile className={stylex.props(styles.s3269316e).className || ''} />}
             loading={uploading === 'icon'}
             tabIndex={tabIndex}
             onClick={() => iconInputRef.current?.click()}
@@ -223,7 +238,7 @@ export function DocumentMetadataAffordanceButtons({
       {showSummaryButton ? (
         <MetadataHintButton
           aria-label="Add document summary"
-          icon={<FileText className="size-3.5" />}
+          icon={<FileText className={stylex.props(styles.s3269316e).className || ''} />}
           tabIndex={tabIndex}
           onClick={() => {
             onBeforeMetadataChange?.()
@@ -240,13 +255,13 @@ export function DocumentMetadataAffordanceButtons({
             type="file"
             accept="image/*"
             aria-label="Choose document cover image"
-            className="sr-only"
+            className={stylex.props(styles.s88a3565a).className || ''}
             tabIndex={-1}
             onChange={(event) => void handleFileChange('cover', event)}
           />
           <MetadataHintButton
             aria-label="Add document cover image"
-            icon={<ImagePlus className="size-3.5" />}
+            icon={<ImagePlus className={stylex.props(styles.s3269316e).className || ''} />}
             loading={uploading === 'cover'}
             tabIndex={tabIndex}
             onClick={() => coverInputRef.current?.click()}
@@ -283,67 +298,60 @@ export function EditableDocumentMetadataFields({
   const summaryText = summary ?? ''
   const showSummaryInput = !!summaryText || summaryRequested || summaryFocused
   const showAffordances = hovered || summaryRequested
-
   const reflowTextareas = useCallback(() => {
     const resize = () => {
       if (titleRef.current) resizeTextarea(titleRef.current)
       if (summaryRef.current) resizeTextarea(summaryRef.current)
     }
-
     resize()
     requestAnimationFrame(resize)
-    ;(document as Document & {fonts?: FontFaceSet}).fonts?.ready.then(resize).catch(() => {})
+    ;(
+      document as Document & {
+        fonts?: FontFaceSet
+      }
+    ).fonts?.ready
+      .then(resize)
+      .catch(() => {})
   }, [])
-
   useEffect(() => {
     if (titleRef.current) resizeTextarea(titleRef.current)
   }, [name])
-
   useEffect(() => {
     const resizeTextareas = () => {
       if (titleRef.current) resizeTextarea(titleRef.current)
       if (summaryRef.current) resizeTextarea(summaryRef.current)
     }
-
     resizeTextareas()
     window.addEventListener('resize', resizeTextareas)
     return () => window.removeEventListener('resize', resizeTextareas)
   }, [])
-
   useEffect(() => {
     if (focusTitleOnMount) titleRef.current?.focus()
   }, [focusTitleOnMount])
-
   useEffect(() => {
     if (summaryRef.current) resizeTextarea(summaryRef.current)
   }, [summaryText, showSummaryInput])
-
   useEffect(() => {
     reflowTextareas()
     window.addEventListener('resize', reflowTextareas)
-
     const container = titleRef.current?.parentElement
     const observer = container && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(reflowTextareas) : null
     observer?.observe(container!)
-
     return () => {
       window.removeEventListener('resize', reflowTextareas)
       observer?.disconnect()
     }
   }, [reflowTextareas])
-
   useEffect(() => {
     if (!summaryRequested) return
     summaryRef.current?.focus()
   }, [summaryRequested])
-
   function requestSummary() {
     onSummaryRequestedChange(true)
   }
-
   return (
     <div
-      className={cn('relative flex flex-col gap-2', className)}
+      className={cn(stylex.props(styles.s41184b3a).className || '', className)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -371,7 +379,9 @@ export function EditableDocumentMetadataFields({
         onFocus={onBeginEdit}
         onInput={(event) => {
           resizeTextarea(event.currentTarget)
-          onMetadata({name: event.currentTarget.value})
+          onMetadata({
+            name: event.currentTarget.value,
+          })
         }}
         onKeyDown={(event) => {
           if (event.key === 'Escape') {
@@ -403,7 +413,9 @@ export function EditableDocumentMetadataFields({
           onInput={(event) => {
             const nextSummary = event.currentTarget.value.replace(/\n/g, '')
             resizeTextarea(event.currentTarget)
-            onMetadata({summary: nextSummary})
+            onMetadata({
+              summary: nextSummary,
+            })
           }}
           onBlur={(event) => {
             const relatedTarget = event.relatedTarget
@@ -443,7 +455,6 @@ export function HomeDocumentMetadataAffordanceBar({
   className,
 }: HomeDocumentMetadataAffordanceBarProps) {
   const showAffordances = true
-
   return (
     <div data-home-document-metadata-affordances className={cn('flex flex-col gap-2 px-4 pt-5 sm:px-6', className)}>
       <DocumentMetadataAffordanceButtons
@@ -458,12 +469,14 @@ export function HomeDocumentMetadataAffordanceBar({
     </div>
   )
 }
-
 function MetadataHintButton({
   children,
   icon,
   ...props
-}: React.ComponentProps<'button'> & {icon: React.ReactNode; loading?: boolean}) {
+}: React.ComponentProps<'button'> & {
+  icon: React.ReactNode
+  loading?: boolean
+}) {
   return (
     <Button
       type="button"
@@ -477,7 +490,6 @@ function MetadataHintButton({
     </Button>
   )
 }
-
 function resizeTextarea(el: HTMLTextAreaElement) {
   el.style.height = 'auto'
   el.style.height = `${el.scrollHeight}px`

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   BlockRange,
   countCustomMetadataFields,
@@ -146,18 +147,172 @@ import {useCopyHmLink} from './use-copy-hm-link'
 import {useMedia} from './use-media'
 import {cn} from './utils'
 import {AttributeAutocomplete, AttributeAutocompleteProvider} from './value-editor'
-
+const styles = stylex.create({
+  s250c01f2: {
+    pointerEvents: 'none',
+    position: 'fixed',
+    zIndex: '50',
+    width: '1px',
+    height: '1px',
+  },
+  sf8684703: {
+    width: 'calc(0.25rem * 80)',
+    padding: 'calc(0.25rem * 2)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sc530ae33: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  s1f44aeca: {
+    backgroundColor: 'var(--muted)',
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+    flexShrink: '0',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s2627021c: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s652b76a1: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '2',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s51be82d0: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 0.5)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  s59c17cd3: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  s22db9e54: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sf48c8a4f: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 8)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  scf6a5dba: {
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s34a2ab: {
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+  s1167bbe0: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s385e81dd: {
+    paddingInline: 'calc(0.25rem * 5)',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s4ea16215: {
+    marginTop: 'auto',
+  },
+  s6ac7095: {
+    position: 'relative',
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    paddingBottom: 'calc(0.25rem * 20)',
+  },
+  sca000771: {
+    position: 'relative',
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s3484a3: {
+    paddingLeft: 'calc(0.25rem * 4)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sab1db009: {
+    position: 'sticky',
+    top: 'calc(0.25rem * 4)',
+    marginTop: 'calc(0.25rem * 4)',
+  },
+  s36a99680: {
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 8)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+})
 const LazyDocumentMachineDebugDrawer = lazy(() =>
-  import('@shm/shared/models/document-machine-debug-drawer').then((m) => ({default: m.DocumentMachineDebugDrawer})),
+  import('@shm/shared/models/document-machine-debug-drawer').then((m) => ({
+    default: m.DocumentMachineDebugDrawer,
+  })),
 )
-
 function sourceTypeKind(sourceType?: string): CitationFragmentHighlight['sourceType'] {
   const normalized = sourceType?.toLowerCase() ?? ''
   if (normalized.startsWith('doc/') || normalized === 'ref') return 'document'
   if (normalized.startsWith('comment/') || normalized === 'comment') return 'comment'
   return 'unknown'
 }
-
 function sourceCommentId(source?: string): string | null {
   if (!source) return null
   if (source.startsWith('hm://')) return source.slice('hm://'.length)
@@ -165,25 +320,25 @@ function sourceCommentId(source?: string): string | null {
   if (!unpacked) return source || null
   return [unpacked.uid, ...(unpacked.path ?? [])].join('/')
 }
-
 function normalizeCitationFragmentHighlights(citations: HMRawCitation[] | undefined): CitationFragmentHighlight[] {
   return (citations ?? []).flatMap((citation, index) => {
     const fragment = parseFragment(citation.targetFragment ?? null)
     if (!fragment?.blockId || fragment.start == null || fragment.end == null || fragment.end <= fragment.start) {
       return []
     }
-
     const kind = sourceTypeKind(citation.sourceType)
     const sourceId = unpackHmId(citation.source) ?? null
     const sourceDocumentId =
       kind === 'comment' ? unpackHmId(citation.sourceDocument || citation.source) ?? sourceId : sourceId
     const sourceBlockId = citation.sourceContext?.trim() || null
-
     return [
       {
         id: `${citation.source || 'unknown'}:${citation.targetFragment || ''}:${citation.sourceContext || ''}:${index}`,
         targetBlockId: fragment.blockId,
-        targetRange: {start: fragment.start, end: fragment.end},
+        targetRange: {
+          start: fragment.start,
+          end: fragment.end,
+        },
         sourceType: kind,
         sourceId:
           kind === 'document' && sourceId
@@ -191,7 +346,11 @@ function normalizeCitationFragmentHighlights(citations: HMRawCitation[] | undefi
                 ...sourceId,
                 version: citation.sourceBlob?.cid || sourceId.version || null,
                 blockRef: sourceBlockId,
-                blockRange: sourceBlockId ? {expanded: true} : null,
+                blockRange: sourceBlockId
+                  ? {
+                      expanded: true,
+                    }
+                  : null,
               }
             : sourceId,
         sourceDocumentId,
@@ -204,13 +363,11 @@ function normalizeCitationFragmentHighlights(citations: HMRawCitation[] | undefi
     ]
   })
 }
-
 function blockNodeText(node: HMBlockNode): string {
   const ownText = node.block ? getBlockText(node.block) : ''
   const childText = (node.children ?? []).map(blockNodeText).join(' ')
   return `${ownText} ${childText}`.trim()
 }
-
 function commentPreviewText(comment: HMComment | undefined): string {
   if (!comment) return 'Loading comment…'
   const text = comment.content.map(blockNodeText).join(' ').replace(/\s+/g, ' ').trim()
@@ -218,13 +375,11 @@ function commentPreviewText(comment: HMComment | undefined): string {
   if (text.length <= 50) return text
   return `${text.slice(0, 50).trimEnd()}…`
 }
-
 function documentCitationTitle(citation: CitationFragmentHighlight, resource?: ReturnType<typeof useResource>['data']) {
   if (resource?.type === 'document')
     return resource.document?.metadata?.name || citation.sourceId?.path?.join('/') || 'Untitled document'
   return citation.sourceId?.path?.join('/') || citation.sourceId?.uid || 'Document citation'
 }
-
 function CitationFragmentPopover({
   click,
   onClose,
@@ -240,7 +395,9 @@ function CitationFragmentPopover({
   )
   const documentResources = useResources(
     documentCitations.map((citation) => citation.sourceId),
-    {enabled: documentCitations.length > 0},
+    {
+      enabled: documentCitations.length > 0,
+    },
   )
   const sourceDocumentIds = Array.from(
     new Map(
@@ -254,7 +411,9 @@ function CitationFragmentPopover({
     queryFn: async () => {
       const entries = await Promise.all(
         sourceDocumentIds.map(async (id) => {
-          const result = await universalClient.request('ListComments', {targetId: id})
+          const result = await universalClient.request('ListComments', {
+            targetId: id,
+          })
           return [id.id, result] as const
         }),
       )
@@ -270,19 +429,21 @@ function CitationFragmentPopover({
   const documentResourceByCitation = new Map(
     documentCitations.map((citation, index) => [citation.id, documentResources[index]?.data]),
   )
-
   return (
     <Popover open onOpenChange={(open) => !open && onClose()}>
       <PopoverAnchor asChild>
         <span
-          className="pointer-events-none fixed z-50 size-px"
-          style={{left: click.clientX, top: click.clientY}}
+          className={stylex.props(styles.s250c01f2).className || ''}
+          style={{
+            left: click.clientX,
+            top: click.clientY,
+          }}
           aria-hidden="true"
         />
       </PopoverAnchor>
-      <PopoverContent align="start" side="bottom" className="w-80 p-2">
-        <div className="flex flex-col gap-1">
-          <div className="text-muted-foreground px-2 py-1 text-xs font-medium">
+      <PopoverContent align="start" side="bottom" className={stylex.props(styles.sf8684703).className || ''}>
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+          <div className={stylex.props(styles.sc530ae33).className || ''}>
             Cited {click.citations.length === 1 ? 'here' : `${click.citations.length} times here`}
           </div>
           {click.citations.map((citation) => {
@@ -309,24 +470,28 @@ function CitationFragmentPopover({
                         size={24}
                       />
                     ) : (
-                      <div className="bg-muted size-6 shrink-0 rounded-full" />
+                      <div className={stylex.props(styles.s1f44aeca).className || ''} />
                     )}
                     <div className="min-w-0 flex-1">
-                      <div className="text-muted-foreground truncate text-xs">
+                      <div className={stylex.props(styles.s2627021c).className || ''}>
                         {author?.metadata?.name || authorUid || 'Comment'}
                       </div>
-                      <div className="line-clamp-2 text-sm">{commentPreviewText(comment)}</div>
+                      <div className={stylex.props(styles.s652b76a1).className || ''}>
+                        {commentPreviewText(comment)}
+                      </div>
                     </div>
                   </>
                 ) : (
                   <>
-                    <Quote className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                    <Quote className={stylex.props(styles.s51be82d0).className || ''} />
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium">
+                      <div className={stylex.props(styles.s59c17cd3).className || ''}>
                         {documentCitationTitle(citation, documentResourceByCitation.get(citation.id))}
                       </div>
                       {citation.sourceBlockId ? (
-                        <div className="text-muted-foreground truncate text-xs">Block {citation.sourceBlockId}</div>
+                        <div className={stylex.props(styles.s2627021c).className || ''}>
+                          Block {citation.sourceBlockId}
+                        </div>
                       ) : null}
                     </div>
                   </>
@@ -380,7 +545,6 @@ export function getOldVersionEditBlockedToastOptions(docId: UnpackedHypermediaId
 /** Returns the current route pointed at the latest document version while preserving route UI state. */
 export function getLatestRouteForCurrentDocumentRoute(route: NavRoute): NavRoute {
   if (!('id' in route) || typeof route.id !== 'object' || route.id === null) return route
-
   return {
     ...route,
     id: {
@@ -390,7 +554,6 @@ export function getLatestRouteForCurrentDocumentRoute(route: NavRoute): NavRoute
     },
   } as NavRoute
 }
-
 export type ActiveView =
   | 'content'
   | 'activity'
@@ -406,10 +569,19 @@ export type ActiveView =
 export function getCommentsPanelTarget(
   docId: UnpackedHypermediaId,
   panelRoute: DocumentPanelRoute | null,
-): {docId: UnpackedHypermediaId; openComment?: string} {
+): {
+  docId: UnpackedHypermediaId
+  openComment?: string
+} {
   return panelRoute?.key === 'comments'
-    ? {docId: panelRoute.id ?? docId, openComment: panelRoute.openComment}
-    : {docId, openComment: undefined}
+    ? {
+        docId: panelRoute.id ?? docId,
+        openComment: panelRoute.openComment,
+      }
+    : {
+        docId,
+        openComment: undefined,
+      }
 }
 
 /** Selects the action controls shown for document content. */
@@ -431,11 +603,16 @@ export function getDocumentContentAction({
   allMenuItems: MenuItemType[]
 }) {
   if (activeView !== 'content' && activeView !== 'metadata') return null
-  if (editingFloatingActions) return editingFloatingActions({menuItems: allMenuItems})
-  if (!isEditing && hasDraft && draftActions) return draftActions({menuItems: allMenuItems})
+  if (editingFloatingActions)
+    return editingFloatingActions({
+      menuItems: allMenuItems,
+    })
+  if (!isEditing && hasDraft && draftActions)
+    return draftActions({
+      menuItems: allMenuItems,
+    })
   return actionButtons
 }
-
 type CommentDraftTarget = {
   docId: string
   commentId?: string
@@ -467,8 +644,12 @@ export function getRenderedDocumentId(
 export function getDocumentMachineKey(renderedDocId: UnpackedHypermediaId): string {
   return renderedDocId.id
 }
-
-function extractQuotingRange(blockRange?: BlockRange | null): {start: number; end: number} | undefined {
+function extractQuotingRange(blockRange?: BlockRange | null):
+  | {
+      start: number
+      end: number
+    }
+  | undefined {
   if (!blockRange) return undefined
   if (
     'start' in blockRange &&
@@ -476,11 +657,13 @@ function extractQuotingRange(blockRange?: BlockRange | null): {start: number; en
     typeof blockRange.start === 'number' &&
     typeof blockRange.end === 'number'
   ) {
-    return {start: blockRange.start, end: blockRange.end}
+    return {
+      start: blockRange.start,
+      end: blockRange.end,
+    }
   }
   return undefined
 }
-
 function getCommentEditorRouteKey(params?: {
   openComment?: string
   targetBlockId?: string
@@ -491,10 +674,13 @@ function getCommentEditorRouteKey(params?: {
     ':',
   )
 }
-
 function getCommentDraftTarget(
   docId: UnpackedHypermediaId,
-  params?: {openComment?: string; targetBlockId?: string; blockRange?: BlockRange | null},
+  params?: {
+    openComment?: string
+    targetBlockId?: string
+    blockRange?: BlockRange | null
+  },
 ): CommentDraftTarget {
   const range = extractQuotingRange(params?.blockRange ?? null)
   return {
@@ -505,7 +691,6 @@ function getCommentDraftTarget(
     quotingRangeEnd: range?.end,
   }
 }
-
 function areSameCommentDraftTarget(a: CommentDraftTarget, b: CommentDraftTarget) {
   return (
     a.docId === b.docId &&
@@ -515,7 +700,6 @@ function areSameCommentDraftTarget(a: CommentDraftTarget, b: CommentDraftTarget)
     a.quotingRangeEnd === b.quotingRangeEnd
   )
 }
-
 export function shouldSuppressMainCommentEditor({
   docId,
   activeView,
@@ -524,11 +708,14 @@ export function shouldSuppressMainCommentEditor({
 }: {
   docId: UnpackedHypermediaId
   activeView: ActiveView
-  discussionsParams?: {openComment?: string; targetBlockId?: string; blockRange?: BlockRange | null}
+  discussionsParams?: {
+    openComment?: string
+    targetBlockId?: string
+    blockRange?: BlockRange | null
+  }
   panelRoute: DocumentPanelRoute | null
 }) {
   if (activeView !== 'comments' || panelRoute?.key !== 'comments') return false
-
   return areSameCommentDraftTarget(
     getCommentDraftTarget(docId, discussionsParams),
     getCommentDraftTarget(panelRoute.id, {
@@ -538,7 +725,6 @@ export function shouldSuppressMainCommentEditor({
     }),
   )
 }
-
 export function shouldUseDraftForRenderedDocument({
   docId,
   existingDraft,
@@ -586,7 +772,10 @@ export function hasUnpublishedDraftForResourceState({
   reservedDraftId?: string | null
   resourceFetchId: UnpackedHypermediaId | null
   resourceIsDiscovering: boolean
-  resourceData?: {type?: string; message?: string} | null
+  resourceData?: {
+    type?: string
+    message?: string
+  } | null
 }) {
   const hasVirtualDraft = !!reservedDraftId && !existingDraft
   return (
@@ -598,7 +787,6 @@ export function hasUnpublishedDraftForResourceState({
       (resourceData.type === 'error' && !resourceData.message?.toLowerCase?.().includes('permission')))
   )
 }
-
 export function getEffectiveCanEdit({
   canEdit,
   resourceFetchId,
@@ -612,7 +800,6 @@ export function getEffectiveCanEdit({
 }) {
   return canEdit || (resourceFetchId === null && (!!existingDraft || !!reservedDraftId))
 }
-
 export function getDocumentSyncIsPlaceholderData({
   resourceFetchId,
   hasUnpublishedDraft,
@@ -634,9 +821,12 @@ export function getCitationsTargetId({
   documentVersion?: string | null
 }) {
   if (!documentVersion || isPendingSpaceUid(docId.uid)) return null
-  return {...docId, blockRef: null, blockRange: null}
+  return {
+    ...docId,
+    blockRef: null,
+    blockRange: null,
+  }
 }
-
 export function getCommentReplyPanelRoute({
   docId,
   comment,
@@ -645,7 +835,12 @@ export function getCommentReplyPanelRoute({
   docId: UnpackedHypermediaId
   comment: HMComment
   isReplying?: boolean
-}): Extract<DocumentPanelRoute, {key: 'comments'}> {
+}): Extract<
+  DocumentPanelRoute,
+  {
+    key: 'comments'
+  }
+> {
   const targetRoute = isRouteEqualToCommentTarget({
     id: docId,
     comment,
@@ -657,7 +852,6 @@ export function getCommentReplyPanelRoute({
         rootReplyCommentVersion: comment.threadRootVersion || comment.version,
       }
     : {}
-
   return {
     key: 'comments',
     id: targetRoute || docId,
@@ -665,7 +859,6 @@ export function getCommentReplyPanelRoute({
     ...replyVersionData,
   }
 }
-
 function getActiveView(routeKey: string): ActiveView {
   switch (routeKey) {
     case 'activity':
@@ -688,12 +881,14 @@ function getActiveView(routeKey: string): ActiveView {
       return 'content'
   }
 }
-
 export interface CommentEditorProps {
   docId: UnpackedHypermediaId
   quotingBlockId?: string
   /** Codepoint range within the quoted block. Absent ⇒ whole-block quote. */
-  quotingRange?: {start: number; end: number}
+  quotingRange?: {
+    start: number
+    end: number
+  }
   commentId?: string
   isReplying?: boolean
   /** Focus the editor on mount. Renamed from `autoFocus` to avoid `jsx-a11y/no-autofocus`; focus driven imperatively. */
@@ -703,7 +898,6 @@ export interface CommentEditorProps {
   /** CID version of the thread root comment. */
   rootReplyCommentVersion?: string
 }
-
 export interface ResourcePageProps {
   docId: UnpackedHypermediaId
   /** Resource ID to fetch for published content. Pass null for local-only draft routes that must not hit the backend. */
@@ -738,7 +932,6 @@ export interface ResourcePageProps {
   pageFooter?: ReactNode
   /** Starts loading a document route before navigation when the platform supports it. */
   onPrefetchDocument?: (id: UnpackedHypermediaId) => void
-
   floatingButtons?: ReactNode
   /** Inline child draft cards rendered after document content */
   inlineCards?: ReactNode
@@ -805,7 +998,6 @@ function getPanelTitle(panelKey: string | null): string {
       return 'Panel'
   }
 }
-
 export function ResourcePage({
   docId,
   resourceId,
@@ -854,7 +1046,6 @@ export function ResourcePage({
   const media = useMedia()
   const [liveNavigationItems, setLiveNavigationItems] = useState<DocNavigationItem[] | undefined>()
   const [editNavPanePortalElement, setEditNavPanePortalElement] = useState<HTMLDivElement | null>(null)
-
   const handleResourceRedirect = useCallback(
     ({isDeleted, redirectTarget}: {isDeleted: boolean; redirectTarget: UnpackedHypermediaId | null}) => {
       if (isDeleted || !redirectTarget) return
@@ -868,7 +1059,6 @@ export function ResourcePage({
     },
     [docId, replaceRoute, route],
   )
-
   const resourceFetchId = resourceId === undefined ? docId : resourceId
   const resource = useResource(resourceFetchId, {
     subscribed: true,
@@ -897,13 +1087,18 @@ export function ResourcePage({
   }
 
   // docId.uid determines the site header — for site-profile, docId IS the site context
-  const siteHomeId = hmId(docId.uid, {latest: true})
-  const siteHomeResource = useResource(siteHomeId, {subscribed: true})
-  const latestDocumentResource = useResource(resourceFetchId ? latestId(resourceFetchId) : null, {subscribed: true})
+  const siteHomeId = hmId(docId.uid, {
+    latest: true,
+  })
+  const siteHomeResource = useResource(siteHomeId, {
+    subscribed: true,
+  })
+  const latestDocumentResource = useResource(resourceFetchId ? latestId(resourceFetchId) : null, {
+    subscribed: true,
+  })
   const latestDocumentVersion =
     latestDocumentResource.data?.type === 'document' ? latestDocumentResource.data.document.version : null
   const isLatest = useIsLatest(resourceFetchId, resource)
-
   const siteHomeDocument = siteHomeResource.data?.type === 'document' ? siteHomeResource.data.document : null
 
   // Compute header data
@@ -928,10 +1123,19 @@ export function ResourcePage({
       const msg = resource.data.message ?? 'Refresh failed'
       // Permission errors are persistent, not transient — leave to the regular branch.
       if (msg.toLowerCase().includes('permission')) return null
-      return {kind: 'refetch-error', message: msg}
+      return {
+        kind: 'refetch-error',
+        message: msg,
+      }
     }
-    if (resource.isDiscovering) return {kind: 'discovering'}
-    if (resource.data?.type === 'not-found') return {kind: 'not-found-transient'}
+    if (resource.isDiscovering)
+      return {
+        kind: 'discovering',
+      }
+    if (resource.data?.type === 'not-found')
+      return {
+        kind: 'not-found-transient',
+      }
     return null
   })()
 
@@ -949,7 +1153,15 @@ export function ResourcePage({
         onPrefetchDocument={onPrefetchDocument}
       >
         <DocumentTopBar
-          breadcrumbs={[{id: siteHomeId, metadata: siteHomeDocument?.metadata ?? {}}, {label: 'Profile'}]}
+          breadcrumbs={[
+            {
+              id: siteHomeId,
+              metadata: siteHomeDocument?.metadata ?? {},
+            },
+            {
+              label: 'Profile',
+            },
+          ]}
           isMobile={media.xs && !IS_DESKTOP}
         />
         <SiteProfileContent
@@ -964,7 +1176,6 @@ export function ResourcePage({
       </PageWrapper>
     )
   }
-
   if (resourceFetchId === null && existingDraft === undefined && !reservedDraftId) {
     return (
       <PageWrapper
@@ -974,7 +1185,7 @@ export function ResourcePage({
         rightActions={rightActions}
         onPrefetchDocument={onPrefetchDocument}
       >
-        <div className="flex flex-1 items-center justify-center">
+        <div className={stylex.props(styles.s22db9e54).className || ''}>
           <Spinner />
         </div>
         {pageFooter}
@@ -1004,7 +1215,7 @@ export function ResourcePage({
         rightActions={rightActions}
         onPrefetchDocument={onPrefetchDocument}
       >
-        <div className="flex flex-1 items-center justify-center">
+        <div className={stylex.props(styles.s22db9e54).className || ''}>
           <Spinner />
         </div>
         {pageFooter}
@@ -1088,8 +1299,8 @@ export function ResourcePage({
         rightActions={rightActions}
         onPrefetchDocument={onPrefetchDocument}
       >
-        <div className="flex flex-1 items-center justify-center p-8">
-          <div className="text-destructive">{resource.data.message}</div>
+        <div className={stylex.props(styles.sf48c8a4f).className || ''}>
+          <div className={stylex.props(styles.s8a2570e2).className || ''}>{resource.data.message}</div>
         </div>
         {pageFooter}
       </PageWrapper>
@@ -1122,7 +1333,7 @@ export function ResourcePage({
           rightActions={rightActions}
           onPrefetchDocument={onPrefetchDocument}
         >
-          <div className="flex flex-1 items-center justify-center">
+          <div className={stylex.props(styles.s22db9e54).className || ''}>
             <Spinner />
           </div>
           {pageFooter}
@@ -1145,7 +1356,13 @@ export function ResourcePage({
     }
     const targetDocument = targetResource.data.document
     return (
-      <DocumentMachineProvider input={{documentId: targetDocId, canEdit: false}} inspect={inspect}>
+      <DocumentMachineProvider
+        input={{
+          documentId: targetDocId,
+          canEdit: false,
+        }}
+        inspect={inspect}
+      >
         <PageWrapper
           siteHomeId={siteHomeId}
           docId={targetDocId}
@@ -1213,8 +1430,12 @@ export function ResourcePage({
       </PageWrapper>
     )
   }
-
-  const effectiveCanEdit = getEffectiveCanEdit({canEdit, resourceFetchId, existingDraft, reservedDraftId})
+  const effectiveCanEdit = getEffectiveCanEdit({
+    canEdit,
+    resourceFetchId,
+    existingDraft,
+    reservedDraftId,
+  })
   const draftVersionEntry = existingDraft
     ? {
         docId: renderedDocId,
@@ -1224,7 +1445,6 @@ export function ResourcePage({
         onDiscardConfirm: draftVersionOnDiscardConfirm,
       }
     : undefined
-
   return (
     <PageWrapper
       siteHomeId={siteHomeId}
@@ -1325,7 +1545,6 @@ export interface HeaderData {
   isCenterLayout: boolean
   siteHomeDocument: HMDocument | null
 }
-
 export function computeHeaderData(siteHomeDocument: HMDocument | null): HeaderData {
   // Top navigation is manual-only for now. If the home document has no
   // explicit `navigation` detached block, the header stays empty rather than
@@ -1341,18 +1560,18 @@ export function computeHeaderData(siteHomeDocument: HMDocument | null): HeaderDa
             isPublished: true,
             isDraft: false,
             key: linkBlock.id,
-            metadata: {name: linkBlock.text || ''},
+            metadata: {
+              name: linkBlock.text || '',
+            },
             id: id || undefined,
             webUrl: id ? undefined : linkBlock.link,
           } as DocNavigationItem
         })
         .filter((item): item is DocNavigationItem => item !== null && isValidSiteHeaderItem(item)) ?? []
     : []
-
   const isCenterLayout =
     siteHomeDocument?.metadata?.theme?.headerLayout === 'Center' ||
     siteHomeDocument?.metadata?.layout === 'Seed/Experimental/Newspaper'
-
   return {
     items: homeNavigationItems,
     homeNavigationItems,
@@ -1361,7 +1580,6 @@ export function computeHeaderData(siteHomeDocument: HMDocument | null): HeaderDa
     siteHomeDocument,
   }
 }
-
 function getLiveHeaderNavigationItems(
   machineNav: ReturnType<typeof useDocumentNavigationOptional>,
 ): DocNavigationItem[] | undefined {
@@ -1373,13 +1591,14 @@ function getLiveHeaderNavigationItems(
         id: id ?? undefined,
         webUrl: id ? undefined : n.link,
         draftId: undefined,
-        metadata: {name: n.text || ''},
+        metadata: {
+          name: n.text || '',
+        },
         isPublished: true,
       } satisfies DocNavigationItem
     })
     .filter(isValidSiteHeaderItem)
 }
-
 function DocumentNavigationItemsBridge({
   docId,
   onItemsChange,
@@ -1390,12 +1609,10 @@ function DocumentNavigationItemsBridge({
   const machineNav = useDocumentNavigationOptional()
   const homeDraftOverride = useIsHomeDraftOverride()
   const isHomeDoc = homeDraftOverride ?? !docId.path?.length
-
   useEffect(() => {
     onItemsChange(isHomeDoc ? getLiveHeaderNavigationItems(machineNav) : undefined)
     return () => onItemsChange(undefined)
   }, [docId.id, isHomeDoc, machineNav, onItemsChange])
-
   return null
 }
 
@@ -1441,7 +1658,6 @@ export function PageShell({
   const navigate = useNavigate()
   const [isFileBrowserOpen, setIsFileBrowserOpen] = useState(false)
   const itemsForHeader = liveNavigationItems ?? headerData.items
-
   return (
     <div
       // The SSR fallback for the measured --site-header-live-h. The values
@@ -1482,7 +1698,10 @@ export function PageShell({
         onPrefetch={onPrefetchDocument}
         onNavigate={(id) => {
           setIsFileBrowserOpen(false)
-          navigate({key: 'document', id})
+          navigate({
+            key: 'document',
+            id,
+          })
         }}
       >
         {children}
@@ -1532,7 +1751,6 @@ export function PageWrapper({
   const homeDraftOverride = useIsHomeDraftOverride()
   const isHomeDoc = homeDraftOverride ?? !docId.path?.length
   const liveItems = liveNavigationItems ?? (isHomeDoc ? getLiveHeaderNavigationItems(machineNav) : undefined)
-
   return (
     <PageShell
       siteHomeId={siteHomeId}
@@ -1551,7 +1769,6 @@ export function PageWrapper({
     </PageShell>
   )
 }
-
 function TransientResourceBanner({error}: {error: TransientResourceError}) {
   if (!error) return null
   const tone =
@@ -1571,7 +1788,11 @@ function TransientResourceBanner({error}: {error: TransientResourceError}) {
       break
   }
   return (
-    <div role="status" className={cn('px-4 py-2 text-xs', tone)} data-testid="transient-resource-banner">
+    <div
+      role="status"
+      className={cn(stylex.props(styles.scf6a5dba).className || '', tone)}
+      data-testid="transient-resource-banner"
+    >
       {message}
     </div>
   )
@@ -1702,7 +1923,11 @@ function DocumentBody({
     if (existingDraft === undefined) {
       result = undefined
     } else if (!existingDraft) {
-      result = {draftId: null as string | null, content: null, cursorPosition: null}
+      result = {
+        draftId: null as string | null,
+        content: null,
+        cursorPosition: null,
+      }
     } else if (existingDraftContent) {
       result = {
         draftId: existingDraft.id,
@@ -1739,7 +1964,10 @@ function DocumentBody({
   const metadata = useMemo(
     () =>
       draftOverlayAllowed
-        ? {...(ctx.document?.metadata || document.metadata || {}), ...ctx.metadata}
+        ? {
+            ...(ctx.document?.metadata || document.metadata || {}),
+            ...ctx.metadata,
+          }
         : ctx.document?.metadata || document.metadata || {},
     [draftOverlayAllowed, ctx.document?.metadata, document.metadata, ctx.metadata],
   )
@@ -1763,14 +1991,24 @@ function DocumentBody({
   )
   const removeCover = useCallback(() => {
     beginEditIfNeeded()
-    send({type: 'change', metadata: {cover: ''}})
+    send({
+      type: 'change',
+      metadata: {
+        cover: '',
+      },
+    })
   }, [beginEditIfNeeded, send])
   const changeCover = useCallback(
     async (file: File) => {
       if (!fileUpload) return
       const cid = await fileUpload(file)
       beginEditIfNeeded()
-      send({type: 'change', metadata: {cover: cid.startsWith('ipfs://') ? cid : `ipfs://${cid}`}})
+      send({
+        type: 'change',
+        metadata: {
+          cover: cid.startsWith('ipfs://') ? cid : `ipfs://${cid}`,
+        },
+      })
     },
     [beginEditIfNeeded, fileUpload, send],
   )
@@ -1799,28 +2037,29 @@ function DocumentBody({
       const blockCount = conflictedBlockIds.length
       const blockNoun = blockCount === 1 ? 'block' : 'blocks'
       const who = author ? `${author}` : 'another author'
-      toast.info(`${who} also edited ${blockCount} ${blockNoun} — your version was kept.`, {duration: 6000})
+      toast.info(`${who} also edited ${blockCount} ${blockNoun} — your version was kept.`, {
+        duration: 6000,
+      })
     },
   })
-
   const route = useNavRoute()
   const navigate = useNavigate()
   const replaceRoute = useNavigate('replace')
-  const showOlderVersionToast = shouldShowOlderVersionToast({routeDocId, latestVersion})
+  const showOlderVersionToast = shouldShowOlderVersionToast({
+    routeDocId,
+    latestVersion,
+  })
   const olderVersionToastId = getOlderVersionToastId(routeDocId)
-
   useEffect(() => {
     return () => {
       toast.dismiss(olderVersionToastId)
     }
   }, [olderVersionToastId])
-
   useEffect(() => {
     if (!showOlderVersionToast) {
       toast.dismiss(olderVersionToastId)
       return
     }
-
     toast('Older version linked', {
       id: olderVersionToastId,
       description: 'The author has published updates since this document version was created',
@@ -1858,7 +2097,9 @@ function DocumentBody({
           rootReplyCommentVersion: route.rootReplyCommentVersion,
         }
       : openComment
-        ? {openComment}
+        ? {
+            openComment,
+          }
         : undefined
   const suppressMainCommentEditor = shouldSuppressMainCommentEditor({
     docId,
@@ -1883,16 +2124,25 @@ function DocumentBody({
     if (!fragment?.blockId) return
     const blockRange =
       'start' in fragment && 'end' in fragment
-        ? {start: fragment.start, end: fragment.end}
+        ? {
+            start: fragment.start,
+            end: fragment.end,
+          }
         : 'expanded' in fragment && fragment.expanded
-          ? {expanded: true}
+          ? {
+              expanded: true,
+            }
           : null
     // For comments routes, sync fragment into blockId/blockRange (comment block selection)
     if (route.key === 'comments') {
       if (route.blockId) return // already have block selection
       replaceRoute({
         ...route,
-        id: {...route.id, blockRef: fragment.blockId, blockRange},
+        id: {
+          ...route.id,
+          blockRef: fragment.blockId,
+          blockRange,
+        },
         blockId: fragment.blockId,
         blockRange,
       })
@@ -1928,7 +2178,11 @@ function DocumentBody({
     [collaborators.data, isHomeDoc],
   )
   const citationsTargetId = useMemo(
-    () => getCitationsTargetId({docId, documentVersion: document.version}),
+    () =>
+      getCitationsTargetId({
+        docId,
+        documentVersion: document.version,
+      }),
     [docId, document.version],
   )
   const citations = useCitations(citationsTargetId)
@@ -1952,7 +2206,6 @@ function DocumentBody({
     () => breadcrumbIds.map((id) => findDraftForPath(accountDrafts.data, id.uid, id.path ?? [])),
     [breadcrumbIds, accountDrafts.data],
   )
-
   const reservedDraftBreadcrumbNames = useMemo(
     () => breadcrumbIds.map((id) => getReservedLazyDraftBreadcrumbName(id.path?.at(-1), reservedDraftId)),
     [breadcrumbIds, reservedDraftId],
@@ -1981,9 +2234,9 @@ function DocumentBody({
       ),
     [breadcrumbIds, draftsForBreadcrumbs, pendingDraftLookup, reservedDraftBreadcrumbNames],
   )
-
-  const breadcrumbResults = useResources(resourceFetchIds, {subscribed: true})
-
+  const breadcrumbResults = useResources(resourceFetchIds, {
+    subscribed: true,
+  })
   const breadcrumbs = useMemo((): BreadcrumbEntry[] | undefined => {
     if (isHomeDoc) return undefined
     const lastIdx = breadcrumbIds.length - 1
@@ -1996,14 +2249,18 @@ function DocumentBody({
           : undefined
       const reservedDraftBreadcrumbName = reservedDraftBreadcrumbNames[i]
       const fallbackName = currentDraftName || reservedDraftBreadcrumbName || id.path?.at(-1) || id.uid.slice(0, 8)
-
       if (draft) {
         const draftIsUnpublished = isDraftPlaceholderPath(id.path, draft.id) || (isCurrent && isUnpublishedDraft)
         const draftMetadata = draft.metadata ?? {}
         const draftName = currentDraftName || draftMetadata.name
         return {
           id,
-          metadata: draftName ? {...draftMetadata, name: draftName} : draftMetadata,
+          metadata: draftName
+            ? {
+                ...draftMetadata,
+                name: draftName,
+              }
+            : draftMetadata,
           draftId: draft.id,
           fallbackName: draftName || fallbackName,
           isLoading: false,
@@ -2013,11 +2270,14 @@ function DocumentBody({
           isUnpublishedDraft: draftIsUnpublished,
         }
       }
-
       if (reservedDraftBreadcrumbName) {
         return {
           id,
-          metadata: currentDraftName ? {name: currentDraftName} : {},
+          metadata: currentDraftName
+            ? {
+                name: currentDraftName,
+              }
+            : {},
           fallbackName,
           isLoading: false,
           isTombstone: false,
@@ -2026,7 +2286,6 @@ function DocumentBody({
           isUnpublishedDraft: true,
         }
       }
-
       if (pendingDraftLookup[i]) {
         return {
           id,
@@ -2039,7 +2298,6 @@ function DocumentBody({
           isUnpublishedDraft: true,
         }
       }
-
       const result = breadcrumbResults[i]
       const data = result?.data
       // Fallback: the document machine knows the current doc is an
@@ -2048,7 +2306,10 @@ function DocumentBody({
       const showAsUnpublishedDraft = isCurrent && isUnpublishedDraft
       const itemMetadata = isCurrent
         ? currentDraftName
-          ? {...metadata, name: currentDraftName}
+          ? {
+              ...metadata,
+              name: currentDraftName,
+            }
           : metadata
         : data?.type === 'document'
           ? data.document?.metadata || {}
@@ -2076,7 +2337,9 @@ function DocumentBody({
       metadata: 'Attributes',
     }
     if (activeView !== 'content' && panelLabels[activeView]) {
-      items.push({label: panelLabels[activeView]})
+      items.push({
+        label: panelLabels[activeView],
+      })
     }
 
     // Append block text when a block is focused
@@ -2090,10 +2353,12 @@ function DocumentBody({
           text = text.slice(blockRange.start, blockRange.end)
         }
         const truncated = text.length > 40 ? text.slice(0, 40) + '…' : text
-        if (truncated) items.push({label: `"${truncated}"`})
+        if (truncated)
+          items.push({
+            label: `"${truncated}"`,
+          })
       }
     }
-
     return items
   }, [
     isHomeDoc,
@@ -2114,7 +2379,6 @@ function DocumentBody({
 
   // Mobile panel open state derived from URL panel route
   const mobilePanelOpen = !!panelKey
-
   const {showSidebars, showCollapsed, sidebarProps, mainContentProps, elementRef, wrapperProps, contentMaxWidth} =
     useDocumentLayout({
       contentWidth: metadata?.contentWidth,
@@ -2153,7 +2417,6 @@ function DocumentBody({
     () => (showCitationFragments ? normalizeCitationFragmentHighlights(citations.data?.citations) : []),
     [showCitationFragments, citations.data?.citations],
   )
-
   const handleCitationFragmentSelect = useCallback(
     (citation: CitationFragmentHighlight) => {
       setCitationFragmentClick(null)
@@ -2169,27 +2432,33 @@ function DocumentBody({
         })
         return
       }
-
       if (citation.sourceType === 'document' && citation.sourceId) {
         const sourceRoute: NavRoute = {
           key: 'document',
           id: {
             ...citation.sourceId,
             blockRef: citation.sourceBlockId,
-            blockRange: citation.sourceBlockId ? {expanded: true} : null,
+            blockRange: citation.sourceBlockId
+              ? {
+                  expanded: true,
+                }
+              : null,
           },
         }
         if (openRouteNewWindow) {
           openRouteNewWindow(sourceRoute)
         } else {
-          const href = routeToUrl(sourceRoute, {hostname: appOrigin, originHomeId}) || hmIdToURL(sourceRoute.id)
+          const href =
+            routeToUrl(sourceRoute, {
+              hostname: appOrigin,
+              originHomeId,
+            }) || hmIdToURL(sourceRoute.id)
           openUrl(href, true)
         }
       }
     },
     [appOrigin, navigate, openRouteNewWindow, openUrl, originHomeId, route],
   )
-
   const handleCitationFragmentClick = useCallback(
     (click: CitationFragmentClick) => {
       const [singleCitation] = click.citations
@@ -2211,7 +2480,11 @@ function DocumentBody({
           blockRef: blockId || null,
           // Mark the block as expanded so the editor highlight plugin focuses
           // and highlights the whole block (not just a text range).
-          blockRange: blockId ? {expanded: true} : null,
+          blockRange: blockId
+            ? {
+                expanded: true,
+              }
+            : null,
         },
         panel: {
           key: 'comments',
@@ -2225,7 +2498,6 @@ function DocumentBody({
     },
     [route, navigate, scrollToBlock],
   )
-
   const handleBlockCommentClick = useCallback(
     (blockId?: string | null, blockRangeInput?: BlockRange | undefined, _startCommentingNow?: boolean) => {
       if (route.key !== 'document' && route.key !== 'feed') return
@@ -2258,9 +2530,14 @@ function DocumentBody({
       if (route.key !== 'document' && route.key !== 'feed') return
       const blockRange =
         opts && 'start' in opts && 'end' in opts
-          ? {start: opts.start, end: opts.end}
+          ? {
+              start: opts.start,
+              end: opts.end,
+            }
           : opts && 'expanded' in opts && opts.expanded
-            ? {expanded: true}
+            ? {
+                expanded: true,
+              }
             : null
       const blockRoute = {
         ...route,
@@ -2312,11 +2589,9 @@ function DocumentBody({
       appOrigin,
     ],
   )
-
   const handleTextSelection = useCallback(() => {
     if (route.key !== 'document' && route.key !== 'feed') return
     if (!route.id.blockRef && !route.id.blockRange) return
-
     replaceRoute({
       ...route,
       id: {
@@ -2341,11 +2616,15 @@ function DocumentBody({
   const inspectMenuItem = useMemo<MenuItemType | null>(() => {
     if (!experiments?.developerTools) return null
     if (route.key === 'inspect') return null
-    const inspectDocId = {...docId, blockRef: null, blockRange: null}
+    const inspectDocId = {
+      ...docId,
+      blockRef: null,
+      blockRange: null,
+    }
     return {
       key: 'inspect',
       label: 'Inspect Document',
-      icon: <Search className="size-4" />,
+      icon: <Search className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => {
         navigate(createInspectNavRoute(inspectDocId))
       },
@@ -2356,10 +2635,18 @@ function DocumentBody({
     return {
       key: 'options',
       label: 'Document Settings',
-      icon: <FilePen className="size-4" />,
+      icon: <FilePen className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => {
-        const newPanel = panelKey === 'options' ? null : {key: 'options' as const}
-        replaceRoute({...route, panel: newPanel} as any)
+        const newPanel =
+          panelKey === 'options'
+            ? null
+            : {
+                key: 'options' as const,
+              }
+        replaceRoute({
+          ...route,
+          panel: newPanel,
+        } as any)
       },
     }
   }, [canEditCurrentRoute, panelKey, route, replaceRoute])
@@ -2367,7 +2654,7 @@ function DocumentBody({
     () => ({
       key: 'citation-fragments-toggle',
       label: showCitationFragments ? 'Hide fragment citations' : 'Show fragment citations',
-      icon: <Quote className="size-4" />,
+      icon: <Quote className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => {
         setShowCitationFragments((value) => !value)
         setCitationFragmentClick(null)
@@ -2375,19 +2662,24 @@ function DocumentBody({
     }),
     [showCitationFragments],
   )
-
   const metadataMenuItem = useMemo<MenuItemType | null>(() => {
     if (route.key === 'inspect' || route.key === 'metadata') return null
     return {
       key: 'metadata',
       label: 'Attributes',
-      icon: <Info className="size-4" />,
+      icon: <Info className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => {
-        navigate({key: 'metadata', id: {...docId, blockRef: null, blockRange: null}})
+        navigate({
+          key: 'metadata',
+          id: {
+            ...docId,
+            blockRef: null,
+            blockRange: null,
+          },
+        })
       },
     }
   }, [docId, navigate, route.key])
-
   const allMenuItems = useMemo(() => {
     let unorderedItems: MenuItemType[] = [...(optionsMenuItems ?? extraMenuItems ?? [])]
     unorderedItems.push(citationFragmentToggleMenuItem)
@@ -2443,7 +2735,6 @@ function DocumentBody({
     metadataMenuItem,
     isUnpublishedDraft,
   ])
-
   const hasOptions = allMenuItems.length > 0
   const actionButtons = hasOptions ? <OptionsDropdown menuItems={allMenuItems} align="end" side="bottom" /> : null
   const documentContentAction = getDocumentContentAction({
@@ -2458,7 +2749,14 @@ function DocumentBody({
   const floatingButtonsAction = activeView === 'content' && !documentContentAction ? floatingButtons : null
 
   // The bar always states where you are, so a home document is its own single crumb.
-  const topBarBreadcrumbs = breadcrumbs ?? [{id: hmId(docId.uid, {latest: true}), metadata}]
+  const topBarBreadcrumbs = breadcrumbs ?? [
+    {
+      id: hmId(docId.uid, {
+        latest: true,
+      }),
+      metadata,
+    },
+  ]
   const documentTopBar = (
     <DocumentTopBar
       breadcrumbs={topBarBreadcrumbs}
@@ -2479,7 +2777,7 @@ function DocumentBody({
   const mainPageContent = (
     <div
       className={cn(
-        'flex flex-col',
+        stylex.props(styles.s783f19f3).className || '',
         pageFooter &&
           'min-h-[calc(100dvh-var(--site-header-live-h,var(--site-header-default-h,60px))-var(--hm-host-banner-h,0px))]',
         !pageFooter && 'min-h-full',
@@ -2495,14 +2793,24 @@ function DocumentBody({
       ) : null}
 
       {!isMobile ? (
-        <div {...wrapperProps} className={cn(wrapperProps.className, 'flex-none', !showSidebars && 'justify-center')}>
+        <div
+          {...wrapperProps}
+          className={cn(
+            wrapperProps.className,
+            stylex.props(styles.s948be48c).className || '',
+            !showSidebars && 'justify-center',
+          )}
+        >
           {showSidebars && <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />}
-          <div {...mainContentProps} className={cn(mainContentProps.className, 'flex flex-col')}>
+          <div
+            {...mainContentProps}
+            className={cn(mainContentProps.className, stylex.props(styles.s783f19f3).className || '')}
+          >
             {isHomeDoc &&
               activeView !== 'all-documents' &&
               !siteMembers.isInitialLoading &&
               siteMembers.members.length > 0 && (
-                <div className="pt-4">
+                <div className={stylex.props(styles.s34a2ab).className || ''}>
                   <MembersFacepile members={siteMembers.members} siteId={siteId} />
                 </div>
               )}
@@ -2531,12 +2839,17 @@ function DocumentBody({
           {showSidebars && <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />}
         </div>
       ) : (
-        <div className={cn('mx-auto flex w-full flex-col px-4')} style={{maxWidth: contentMaxWidth}}>
+        <div
+          className={cn(stylex.props(styles.s1167bbe0).className || '')}
+          style={{
+            maxWidth: contentMaxWidth,
+          }}
+        >
           {isHomeDoc &&
             activeView !== 'all-documents' &&
             !siteMembers.isInitialLoading &&
             siteMembers.members.length > 0 && (
-              <div className="pt-4">
+              <div className={stylex.props(styles.s34a2ab).className || ''}>
                 <MembersFacepile members={siteMembers.members} siteId={siteId} />
               </div>
             )}
@@ -2567,7 +2880,7 @@ function DocumentBody({
       {/* DocumentTools - scrolls with the page; the border separates document
           identity above from document body below. Hidden when showActivity is false. */}
       {showActivity && (
-        <div className="px-5 py-1">
+        <div className={stylex.props(styles.s385e81dd).className || ''}>
           <DocumentTools
             id={docId}
             activeTab={
@@ -2624,7 +2937,13 @@ function DocumentBody({
       )}
 
       {/* Main content based on activeView */}
-      <div className={cn('flex-1', activeView !== 'content' && 'pb-60', isMobile && 'px-4')}>
+      <div
+        className={cn(
+          stylex.props(styles.sb42feb5d).className || '',
+          activeView !== 'content' && 'pb-60',
+          isMobile && 'px-4',
+        )}
+      >
         <MainContent
           docId={docId}
           resourceId={'id' in route && typeof route.id === 'object' ? route.id : docId}
@@ -2672,14 +2991,17 @@ function DocumentBody({
           />
         ) : null}
       </div>
-      {pageFooter ? <div className="mt-auto">{pageFooter}</div> : null}
+      {pageFooter ? <div className={stylex.props(styles.s4ea16215).className || ''}>{pageFooter}</div> : null}
     </div>
   )
 
   // Close panel handler
   const handlePanelClose = () => {
     if ('panel' in route) {
-      navigate({...route, panel: null})
+      navigate({
+        ...route,
+        panel: null,
+      })
     }
   }
 
@@ -2688,7 +3010,10 @@ function DocumentBody({
     if ((route.key === 'document' || route.key === 'feed') && route.panel?.key === 'activity') {
       navigate({
         ...route,
-        panel: {...route.panel, filterEventType: filter.filterEventType},
+        panel: {
+          ...route.panel,
+          filterEventType: filter.filterEventType,
+        },
       })
     }
   }
@@ -2697,7 +3022,7 @@ function DocumentBody({
   if (isMobile) {
     return (
       <>
-        <div className="relative flex flex-1 flex-col pb-20" ref={elementRef}>
+        <div className={stylex.props(styles.s6ac7095).className || ''} ref={elementRef}>
           {documentTopBar}
           {mainPageContent}
           {floatingButtonsAction}
@@ -2756,7 +3081,7 @@ function DocumentBody({
 
   // Desktop: use PanelLayout with scrollable main content + optional panel
   const panelContent = panelKey ? (
-    <ScrollArea className="flex-1">
+    <ScrollArea className={stylex.props(styles.sb42feb5d).className || ''}>
       <PanelContentRenderer
         panelRoute={panelRoute!}
         docId={docId}
@@ -2769,9 +3094,8 @@ function DocumentBody({
       />
     </ScrollArea>
   ) : null
-
   return (
-    <div className="relative flex flex-1 flex-col overflow-hidden" ref={elementRef}>
+    <div className={stylex.props(styles.sca000771).className || ''} ref={elementRef}>
       <PanelLayout
         panelKey={panelKey}
         panelContent={panelContent}
@@ -2828,8 +3152,10 @@ function EditableDocumentHeader({
   // Use machine context metadata if it has been changed, otherwise fall back to document metadata
   const name = ctx.metadata?.name ?? docMetadata?.name ?? ''
   const summary = ctx.metadata?.summary ?? docMetadata?.summary ?? ''
-  const metadata = {...(docMetadata || {}), ...ctx.metadata}
-
+  const metadata = {
+    ...(docMetadata || {}),
+    ...ctx.metadata,
+  }
   return (
     <DocumentHeader
       docId={docId}
@@ -2845,10 +3171,16 @@ function EditableDocumentHeader({
           mobileOnly
           fileUpload={fileUpload}
           onBeforeMetadataChange={() => {
-            if (!isEditing) send({type: 'edit.start'})
+            if (!isEditing)
+              send({
+                type: 'edit.start',
+              })
           }}
           onMetadata={(metadata) => {
-            send({type: 'change', metadata})
+            send({
+              type: 'change',
+              metadata,
+            })
           }}
           onRequestSummary={() => {
             setSummaryRequested(true)
@@ -2859,8 +3191,16 @@ function EditableDocumentHeader({
       onRemoveIcon={
         metadata.icon
           ? () => {
-              if (!isEditing) send({type: 'edit.start'})
-              send({type: 'change', metadata: {icon: ''}})
+              if (!isEditing)
+                send({
+                  type: 'edit.start',
+                })
+              send({
+                type: 'change',
+                metadata: {
+                  icon: '',
+                },
+              })
             }
           : undefined
       }
@@ -2872,18 +3212,29 @@ function EditableDocumentHeader({
         fileUpload={fileUpload}
         focusTitleOnMount={focusTitleOnMount}
         onBeginEdit={() => {
-          if (!isEditing) send({type: 'edit.start'})
+          if (!isEditing)
+            send({
+              type: 'edit.start',
+            })
         }}
         onMetadata={(metadata) => {
-          send({type: 'change', metadata})
+          send({
+            type: 'change',
+            metadata,
+          })
         }}
         onCancelEdit={() => {
           if (isEditing) {
-            send({type: 'edit.cancel'})
+            send({
+              type: 'edit.cancel',
+            })
           }
         }}
         onSummaryEnter={() => {
-          send({type: 'edit.start', cursorPosition: 'end'})
+          send({
+            type: 'edit.start',
+            cursorPosition: 'end',
+          })
         }}
         summaryRequested={summaryRequested}
         onSummaryRequestedChange={setSummaryRequested}
@@ -2917,7 +3268,7 @@ function PanelContentRenderer({
       return <DocumentOptionsPanel docId={docId} fileUpload={fileUpload} />
     case 'metadata':
       return (
-        <div className="px-4">
+        <div className={stylex.props(styles.s34b1af).className || ''}>
           <DocumentMetadataPage document={document} fileUpload={fileUpload} />
         </div>
       )
@@ -2952,16 +3303,14 @@ function PanelContentRenderer({
       return <DirectoryPageContent docId={docId} showTitle={false} contentMaxWidth={contentMaxWidth} />
     case 'collaborators':
       return (
-        <div className="p-4">
+        <div className={stylex.props(styles.s1aa17).className || ''}>
           <CollaboratorsPage docId={docId} />
         </div>
       )
-
     default:
       return null
   }
 }
-
 function CommentsPanelContent({
   docId,
   openComment,
@@ -2972,7 +3321,12 @@ function CommentsPanelContent({
 }: {
   docId: UnpackedHypermediaId
   openComment?: string
-  panelRoute: Extract<DocumentPanelRoute, {key: 'comments'}>
+  panelRoute: Extract<
+    DocumentPanelRoute,
+    {
+      key: 'comments'
+    }
+  >
   contentMaxWidth: number
   targetDomain?: string
   CommentEditor?: React.ComponentType<CommentEditorProps>
@@ -2980,7 +3334,6 @@ function CommentsPanelContent({
   const commentsContext = useCommentsServiceContext()
   const route = useNavRoute()
   const replaceRoute = useNavigate('replace')
-
   const onReplyClick = useCallback(
     (comment: HMComment) => {
       if (!('panel' in route)) return
@@ -2995,7 +3348,6 @@ function CommentsPanelContent({
     },
     [docId, replaceRoute, route],
   )
-
   const onReplyCountClick = useCallback(
     (comment: HMComment) => {
       if (!('panel' in route)) return
@@ -3009,7 +3361,6 @@ function CommentsPanelContent({
     },
     [docId, replaceRoute, route],
   )
-
   return (
     <CommentsProvider {...commentsContext} onReplyClick={onReplyClick} onReplyCountClick={onReplyCountClick}>
       <DiscussionsPageContent
@@ -3045,7 +3396,6 @@ function CommentsPanelContent({
     </CommentsProvider>
   )
 }
-
 function DocumentOptionsPanel({
   docId,
   fileUpload,
@@ -3058,12 +3408,13 @@ function DocumentOptionsPanel({
   const {beginEditIfNeeded} = useEditorGate()
   const homeDraftOverride = useIsHomeDraftOverride()
   const isHomeDoc = homeDraftOverride ?? !docId.path?.length
-
-  const metadata = {...(ctx.document?.metadata || {}), ...ctx.metadata}
+  const metadata = {
+    ...(ctx.document?.metadata || {}),
+    ...ctx.metadata,
+  }
   // draftId may not exist yet when the panel is opened in read mode. Fall back
   // to docId.id so form field HTML ids remain stable and unique.
   const formId = ctx.draftId ?? docId.id
-
   return (
     <OptionsPanel
       draftId={formId}
@@ -3073,12 +3424,14 @@ function DocumentOptionsPanel({
       onMetadata={(newMetadata) => {
         if (!newMetadata) return
         beginEditIfNeeded()
-        send({type: 'change', metadata: newMetadata})
+        send({
+          type: 'change',
+          metadata: newMetadata,
+        })
       }}
     />
   )
 }
-
 function HomeDocumentMetadataControls({
   metadata,
   fileUpload,
@@ -3088,7 +3441,6 @@ function HomeDocumentMetadataControls({
 }) {
   const send = useDocumentSend()
   const {beginEditIfNeeded} = useEditorGate()
-
   return (
     <HomeDocumentMetadataAffordanceBar
       metadata={metadata}
@@ -3096,7 +3448,10 @@ function HomeDocumentMetadataControls({
       onBeginEdit={beginEditIfNeeded}
       onMetadata={(patch) => {
         beginEditIfNeeded()
-        send({type: 'change', metadata: patch})
+        send({
+          type: 'change',
+          metadata: patch,
+        })
       }}
     />
   )
@@ -3118,14 +3473,16 @@ function DocumentMetadataPage({
   const openUrl = useOpenUrl()
 
   // Draft metadata (partial) overrides published metadata, same as the options panel.
-  const metadata = {...(ctx.document?.metadata || document.metadata || {}), ...ctx.metadata}
+  const metadata = {
+    ...(ctx.document?.metadata || document.metadata || {}),
+    ...ctx.metadata,
+  }
 
   // Open an uploaded IPFS file reference in its own dedicated viewer window/tab.
   const openFile = useCallback((cid: string) => openUrl(`hm://inspect/ipfs/${cid}`, true), [openUrl])
   // Open a blank blob editor (new IPFS object) in its own window; the `new`
   // sentinel path puts the viewer into create mode.
   const onCreateBlob = useCallback(() => openUrl('hm://inspect/ipfs/new', true), [openUrl])
-
   return (
     <DocumentMetadataView
       metadata={metadata as any}
@@ -3133,7 +3490,10 @@ function DocumentMetadataPage({
       onMetadata={(patch) => {
         if (!canEditCurrentRoute) return
         beginEditIfNeeded()
-        send({type: 'change', metadata: patch as any})
+        send({
+          type: 'change',
+          metadata: patch as any,
+        })
       }}
       fileUpload={fileUpload}
       openFile={openFile}
@@ -3141,7 +3501,6 @@ function DocumentMetadataPage({
     />
   )
 }
-
 function MainContent({
   docId,
   resourceId,
@@ -3204,7 +3563,13 @@ function MainContent({
   suppressCommentEditor?: boolean
   activityFilterEventType?: string[]
   onActivityFilterChange?: (filter: {filterEventType?: string[]}) => void
-  blockCitations?: Record<string, {citations: number; comments: number}> | null
+  blockCitations?: Record<
+    string,
+    {
+      citations: number
+      comments: number
+    }
+  > | null
   citationFragmentHighlights?: CitationFragmentHighlight[]
   onCitationFragmentClick?: (event: CitationFragmentClick) => void
   onBlockCitationClick?: (blockId?: string | null) => void
@@ -3244,12 +3609,14 @@ function MainContent({
   const parsedExploreQuery = useMemo(() => parseExploreQuery(exploreQuery), [exploreQuery])
   const explore = useExploreResults(
     parsedExploreQuery,
-    {type: 'site', id: allDocumentsSiteId},
+    {
+      type: 'site',
+      id: allDocumentsSiteId,
+    },
     {
       enabled: activeView === 'explore',
     },
   )
-
   switch (activeView) {
     case 'all-documents':
       return (
@@ -3257,12 +3624,17 @@ function MainContent({
           siteId={allDocumentsSiteId}
           scopeId={allDocumentsSiteId}
           onNavigateToDocument={(id, opts) => {
-            const route = {key: 'document' as const, id}
+            const route = {
+              key: 'document' as const,
+              id,
+            }
             if (opts?.newWindow) {
               if (openRouteNewWindow) {
                 openRouteNewWindow(route)
               } else {
-                const href = routeToHref(route, {originHomeId})
+                const href = routeToHref(route, {
+                  originHomeId,
+                })
                 if (href) window.open(href, '_blank')
               }
               return
@@ -3271,7 +3643,6 @@ function MainContent({
           }}
         />
       )
-
     case 'explore':
       return (
         <ExplorePage
@@ -3289,39 +3660,54 @@ function MainContent({
           onLoadMore={explore.loadMore}
           isLoading={explore.isLoading}
           error={explore.error instanceof Error ? explore.error.message : null}
-          onQueryChange={(q) => replaceRoute({key: 'explore', context: {type: 'site', id: allDocumentsSiteId}, q})}
+          onQueryChange={(q) =>
+            replaceRoute({
+              key: 'explore',
+              context: {
+                type: 'site',
+                id: allDocumentsSiteId,
+              },
+              q,
+            })
+          }
           accountUid={allDocumentsSiteId.uid}
-          context={{type: 'site', id: allDocumentsSiteId}}
+          context={{
+            type: 'site',
+            id: allDocumentsSiteId,
+          }}
           onOpenResult={(result) => {
             if (result.type === 'comment') {
-              navigate({key: 'comments', id: result.documentId, openComment: result.commentId})
+              navigate({
+                key: 'comments',
+                id: result.documentId,
+                openComment: result.commentId,
+              })
               return
             }
-            navigate({key: 'document', id: result.id})
+            navigate({
+              key: 'document',
+              id: result.id,
+            })
           }}
         />
       )
-
     case 'directory':
       return <DirectoryPageContent docId={docId} showTitle contentMaxWidth={contentMaxWidth} />
-
     case 'collaborators':
       return (
         <PageLayout contentMaxWidth={contentMaxWidth}>
           <CollaboratorsPage docId={docId} />
         </PageLayout>
       )
-
     case 'metadata':
       return (
         <PageLayout contentMaxWidth={contentMaxWidth}>
           {/* Extra left padding in the main view; the panel render keeps its own. */}
-          <div className="pl-4">
+          <div className={stylex.props(styles.s3484a3).className || ''}>
             <DocumentMetadataPage document={document} fileUpload={fileUpload} />
           </div>
         </PageLayout>
       )
-
     case 'activity':
       if (activityFilterToSlug(activityFilterEventType) === 'versions') {
         return (
@@ -3349,7 +3735,6 @@ function MainContent({
           />
         </PageLayout>
       )
-
     case 'comments':
       return (
         <DiscussionsPageContent
@@ -3383,7 +3768,6 @@ function MainContent({
           }
         />
       )
-
     case 'content':
     default:
       return (
@@ -3420,7 +3804,6 @@ function MainContent({
       )
   }
 }
-
 function ContentViewWithOutline({
   docId,
   resourceId,
@@ -3459,7 +3842,13 @@ function ContentViewWithOutline({
   mainContentProps: React.HTMLAttributes<HTMLDivElement>
   showSidebars: boolean
   showCollapsed: boolean
-  blockCitations?: Record<string, {citations: number; comments: number}> | null
+  blockCitations?: Record<
+    string,
+    {
+      citations: number
+      comments: number
+    }
+  > | null
   citationFragmentHighlights?: CitationFragmentHighlight[]
   onCitationFragmentClick?: (event: CitationFragmentClick) => void
   onBlockCitationClick?: (blockId?: string | null) => void
@@ -3506,19 +3895,21 @@ function ContentViewWithOutline({
       }
     }
   }, [fileUpload])
-
   return (
-    <div {...wrapperProps} className={cn(wrapperProps.className, 'flex')}>
+    <div {...wrapperProps} className={cn(wrapperProps.className, stylex.props(styles.s2ffff9).className || '')}>
       {showSidebars && (
         <div {...sidebarProps}>
           {outline.length > 0 && (
-            <div className="sticky top-4 mt-4">
+            <div className={stylex.props(styles.sab1db009).className || ''}>
               <DocNavigationWrapper showCollapsed={showCollapsed} outline={outline}>
                 <DocumentOutline
                   onActivateBlock={(blockId) => {
                     const el = window.document.getElementById(blockId)
                     if (el) {
-                      el.scrollIntoView({behavior: 'smooth', block: 'start'})
+                      el.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                      })
                     }
                   }}
                   outline={outline}
@@ -3531,7 +3922,10 @@ function ContentViewWithOutline({
         </div>
       )}
 
-      <div {...mainContentProps} className={cn(mainContentProps.className, 'px-4 pt-8')}>
+      <div
+        {...mainContentProps}
+        className={cn(mainContentProps.className, stylex.props(styles.s36a99680).className || '')}
+      >
         <DocumentContentHandoff ssrContentHTML={ssrContentHTML} editorMounted={!!DocumentContentComponent}>
           {DocumentContentComponent ? (
             <DocumentContentComponent
@@ -3593,7 +3987,6 @@ function DocumentContentHandoff({
   const containerRef = useRef<HTMLDivElement>(null)
   const placeholderRef = useRef<HTMLDivElement>(null)
   const [settled, setSettled] = useState(false)
-
   useIsomorphicLayoutEffect(() => {
     if (!editorMounted || settled) return
     // Hold the placeholder's height so content below the document doesn't
@@ -3613,17 +4006,17 @@ function DocumentContentHandoff({
       if (raf2) cancelAnimationFrame(raf2)
     }
   }, [editorMounted, settled])
-
   if (!ssrContentHTML) return <>{children}</>
-
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className={stylex.props(styles.sdef3facc).className || ''}>
       {children}
       {!settled && (
         <div
           ref={placeholderRef}
           className={editorMounted ? 'dark:bg-background absolute inset-x-0 top-0 z-10 bg-white' : undefined}
-          dangerouslySetInnerHTML={{__html: ssrContentHTML}}
+          dangerouslySetInnerHTML={{
+            __html: ssrContentHTML,
+          }}
         />
       )}
     </div>
@@ -3637,7 +4030,6 @@ function DocumentContentHandoff({
  */
 /** Profile discovery can take much longer than normal entity discovery (sync, etc). */
 const PROFILE_DISCOVERY_TIMEOUT_MS = 5 * 60 * 1000
-
 function SiteProfileContent({
   siteUid,
   accountUid,
@@ -3657,7 +4049,10 @@ function SiteProfileContent({
 }) {
   const profileId = hmId(accountUid)
   // Subscribe to trigger background discovery/sync and track discovery state
-  const profileResource = useResource(profileId, {subscribed: true, recursive: true})
+  const profileResource = useResource(profileId, {
+    subscribed: true,
+    recursive: true,
+  })
   const account = useAccount(accountUid)
 
   // Track when we started looking so we can keep showing discovery UI
@@ -3676,7 +4071,6 @@ function SiteProfileContent({
   }, [hasData, account.refetch])
   const elapsed = now - mountedAt
   const stillLooking = !hasData && elapsed < PROFILE_DISCOVERY_TIMEOUT_MS
-
   if (!hasData && (account.isLoading || profileResource.isDiscovering || stillLooking)) {
     return (
       <>
@@ -3685,7 +4079,6 @@ function SiteProfileContent({
       </>
     )
   }
-
   if (account.data) {
     return (
       <>
@@ -3701,7 +4094,6 @@ function SiteProfileContent({
       </>
     )
   }
-
   return (
     <>
       <PageNotFound entityType="profile" />

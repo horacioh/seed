@@ -1,9 +1,22 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMMetadata} from '@seed-hypermedia/client/hm-types'
 import {useTx, useTxUtils} from '@shm/shared/translation'
 import {SizableText} from './text'
-
 import {HoverCard, HoverCardContent, HoverCardTrigger} from './hover-card'
-
+const styles = stylex.create({
+  s9b9fe380: {
+    flexShrink: '0',
+    flexGrow: '0',
+    cursor: 'default',
+  },
+  se2dff6fe: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export function DocumentDate({
   metadata,
   updateTime,
@@ -59,14 +72,14 @@ export function DocumentDate({
         <SizableText
           size="xs"
           color={metadata?.displayPublishTime ? 'brand' : 'muted'}
-          className="shrink-0 grow-0 cursor-default"
+          className={stylex.props(styles.s9b9fe380).className || ''}
         >
           {displayText}
         </SizableText>
       </HoverCardTrigger>
       {!disableTooltip && (
         <HoverCardContent>
-          <div className="flex flex-col items-center justify-center gap-2">{content}</div>
+          <div className={stylex.props(styles.se2dff6fe).className || ''}>{content}</div>
         </HoverCardContent>
       )}
     </HoverCard>

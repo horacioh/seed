@@ -1,24 +1,43 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMMetadata} from '@seed-hypermedia/client/hm-types'
 import {useSubscribeToNotifications} from '@shm/shared/models/email-notifications'
 import {useState} from 'react'
 import {Button} from './button'
 import {Input} from './components/input'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  s8d8eae3a: {
+    color: 'var(--foreground)',
+    marginBottom: 'calc(0.25rem * 3)',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+    fontWeight: '600',
+  },
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s402349c2: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 interface InlineSubscribeBoxProps {
   accountId: string
   notifyServiceHost: string
   accountMeta?: HMMetadata
   className?: string
 }
-
 export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, className}: InlineSubscribeBoxProps) {
   const [email, setEmail] = useState('')
   const [successEmail, setSuccessEmail] = useState<string | null>(null)
   const {mutate, isPending, error: mutationError} = useSubscribeToNotifications()
-
   const error = mutationError instanceof Error ? mutationError.message : null
-
   const handleSubscribe = () => {
     if (!email.trim()) return
     mutate(
@@ -38,7 +57,6 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
       },
     )
   }
-
   if (successEmail) {
     return (
       <div
@@ -48,13 +66,13 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
         )}
       >
         <p className="text-sm text-green-800 dark:text-green-200">
-          <span className="font-semibold">{successEmail}</span> will be notified when{' '}
-          <span className="font-semibold">{accountMeta?.name || 'this space'}</span> is updated.
+          <span className={stylex.props(styles.s62c182b1).className || ''}>{successEmail}</span> will be notified when{' '}
+          <span className={stylex.props(styles.s62c182b1).className || ''}>{accountMeta?.name || 'this space'}</span> is
+          updated.
         </p>
       </div>
     )
   }
-
   return (
     <div
       className={cn(
@@ -62,11 +80,11 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
         className,
       )}
     >
-      <p className="text-foreground mb-3 text-base font-semibold">
+      <p className={stylex.props(styles.s8d8eae3a).className || ''}>
         Do you like what you are reading? Subscribe to receive updates.
       </p>
       {error && <p className="mb-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
-      <div className="flex gap-2">
+      <div className={stylex.props(styles.se658ac14).className || ''}>
         <Input
           type="email"
           placeholder="you@example.com"
@@ -88,7 +106,7 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
           {isPending ? 'Subscribing…' : 'Subscribe'}
         </Button>
       </div>
-      <p className="text-muted-foreground mt-2 text-xs">Unsubscribe anytime</p>
+      <p className={stylex.props(styles.s402349c2).className || ''}>Unsubscribe anytime</p>
     </div>
   )
 }

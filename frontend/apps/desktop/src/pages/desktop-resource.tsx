@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext} from '@/app-context'
 import {CommentBox, renderDesktopInlineEditor, triggerCommentDraftFocus} from '@/components/commenting'
 import {useCopyReferenceUrl} from '@/components/copy-reference-url'
@@ -94,21 +95,30 @@ import {Copy, FileInput, History, Layers, LayoutList, Split} from 'lucide-react'
 import {nanoid} from 'nanoid'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {fromPromise} from 'xstate'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sead8181d: {
+    textWrap: 'wrap',
+    wordBreak: 'break-all',
+  },
+  s4d1ad845: {
+    color: 'currentcolor',
+    textDecorationLine: 'underline',
+  },
+})
 const CLEANUP_LOG_PREFIX = '[Document embed cleanup]'
-
 function isCleanupLoggingEnabled() {
   return Boolean((globalThis as any).__SEED_DOCUMENT_EMBED_CLEANUP_LOGS__)
 }
-
 function cleanupInfo(...args: unknown[]) {
   if (isCleanupLoggingEnabled()) console.info(...args)
 }
-
 function cleanupError(...args: unknown[]) {
   if (isCleanupLoggingEnabled()) console.error(...args)
 }
-
 async function deleteDraftsForCleanup(parentDraftId: string, childDraftIds: string[]) {
   const ids = Array.from(new Set(childDraftIds.filter((id) => id && id !== parentDraftId)))
   for (const id of ids) {
@@ -119,9 +129,13 @@ async function deleteDraftsForCleanup(parentDraftId: string, childDraftIds: stri
     }
   }
 }
-
 function summarizeEditorBlocksForCleanup(blocks: any[]) {
-  const embedBlocks: Array<{id?: string; url?: string; view?: string; draftId?: string}> = []
+  const embedBlocks: Array<{
+    id?: string
+    url?: string
+    view?: string
+    draftId?: string
+  }> = []
   const topLevelBlockIds = blocks.map((block) => block?.id).filter(Boolean)
   const walk = (nodes: any[]) => {
     for (const block of nodes) {
@@ -137,9 +151,11 @@ function summarizeEditorBlocksForCleanup(blocks: any[]) {
     }
   }
   walk(blocks)
-  return {topLevelBlockIds, embedBlocks}
+  return {
+    topLevelBlockIds,
+    embedBlocks,
+  }
 }
-
 type DraftExternallyModifiedEvent = {
   type: 'draft_externally_modified'
   draftId: string
@@ -148,10 +164,8 @@ type DraftExternallyModifiedEvent = {
   removedBlockIds?: string[]
   autoReload?: boolean
 }
-
 function DraftExternalModificationMachineLogger() {
   const actorRef = useDocumentMachineRef()
-
   const handleDraftExternallyModified = useCallback(
     async (event: DraftExternallyModifiedEvent) => {
       const snapshot = actorRef.getSnapshot()
@@ -171,10 +185,13 @@ function DraftExternalModificationMachineLogger() {
         draftCreated: context.draftCreated,
       })
       if (event.source !== 'document-card-cleanup' || event.draftId !== context.draftId) {
-        actorRef.send({type: 'draft.externallyModified', draftId: event.draftId, source: event.source})
+        actorRef.send({
+          type: 'draft.externallyModified',
+          draftId: event.draftId,
+          source: event.source,
+        })
         return
       }
-
       let draft: Awaited<ReturnType<typeof client.drafts.get.query>> | null = null
       try {
         draft = await client.drafts.get.query(event.draftId)
@@ -184,7 +201,6 @@ function DraftExternalModificationMachineLogger() {
           error,
         })
       }
-
       actorRef.send({
         type: 'draft.externallyModified',
         draftId: event.draftId,
@@ -201,11 +217,9 @@ function DraftExternalModificationMachineLogger() {
     },
     [actorRef],
   )
-
   useListenAppEvent('draft_externally_modified', handleDraftExternallyModified)
   return null
 }
-
 export default function DesktopResourcePage() {
   const route = useNavRoute()
   const navigate = useNavigate()
@@ -229,7 +243,6 @@ export default function DesktopResourcePage() {
   // @ts-expect-error - route.id exists on all supported route types
   const docId = route.id
   if (!docId) throw new Error('No document ID in route')
-
   const attributeAutocomplete = useMemo<AttributeAutocomplete>(() => {
     const kindToEditor = (kind: DocumentAttributeKind): AttributeSuggestionKind | null => {
       if (kind === DocumentAttributeKind.OBJECT) return 'object'
@@ -248,7 +261,9 @@ export default function DesktopResourcePage() {
             pageSize: 30,
             pageToken,
           },
-          {signal},
+          {
+            signal,
+          },
         )
         return {
           items: response.names.map((item) => ({
@@ -278,7 +293,9 @@ export default function DesktopResourcePage() {
             pageSize: 30,
             pageToken,
           },
-          {signal},
+          {
+            signal,
+          },
         )
         return {
           items: response.values.flatMap((item) => {
@@ -296,7 +313,6 @@ export default function DesktopResourcePage() {
       },
     }
   }, [docId.uid])
-
   const dispatch = useNavigationDispatch()
   const existingDraft = useExistingDraft(route)
   const placeholderDraftId = getDraftIdFromDraftPathSegment(docId.path?.at(-1))
@@ -306,13 +322,14 @@ export default function DesktopResourcePage() {
   const documentResourceId = getPublishedResourceIdForDraftRoute(docId, existingDraftRecord || existingDraft)
   const capabilityId =
     hasLocationOnlyDraft && existingDraftRecord?.locationUid
-      ? hmId(existingDraftRecord.locationUid, {path: existingDraftRecord.locationPath})
+      ? hmId(existingDraftRecord.locationUid, {
+          path: existingDraftRecord.locationPath,
+        })
       : placeholderDraftId
         ? hmId(docId.uid, {
             path: isPrivateDraftPathSegment(docId.path?.at(-1)) ? [] : (docId.path ?? []).slice(0, -1),
           })
         : docId
-
   const capability = useSelectedAccountCapability(capabilityId)
   const canEdit = roleCanWrite(capability?.role)
   const myAccountIds = useMyAccountIds()
@@ -344,7 +361,10 @@ export default function DesktopResourcePage() {
       if (docIdRef.current?.id !== event.oldId) return
       const newId = unpackHmId(event.newId)
       if (!newId) return
-      replaceRouteRef.current({key: 'document', id: newId} as any)
+      replaceRouteRef.current({
+        key: 'document',
+        id: newId,
+      } as any)
     },
     [],
   )
@@ -452,7 +472,10 @@ export default function DesktopResourcePage() {
         // })
         replace({
           ...(route as any),
-          id: {...currentId, version: null},
+          id: {
+            ...currentId,
+            version: null,
+          },
         } as any)
       }
     },
@@ -522,7 +545,10 @@ export default function DesktopResourcePage() {
           // populates it (e.g. a home draft pre-written with metadata values by
           // the create space form), and a full replace would wipe those
           // fields on the first autosave.
-          metadata: {...existingDraft?.metadata, ...input.metadata},
+          metadata: {
+            ...existingDraft?.metadata,
+            ...input.metadata,
+          },
           signingAccount: input.signingAccountId || undefined,
           content,
           cursorPosition,
@@ -546,7 +572,11 @@ export default function DesktopResourcePage() {
           wroteEmbedBlocks: contentSummary.embedBlocks,
         })
         // console.log('[writeDraft] saved successfully:', {draftId: result.id})
-        return {...result, content, cursorPosition}
+        return {
+          ...result,
+          content,
+          cursorPosition,
+        }
       }),
     [],
   )
@@ -563,7 +593,6 @@ export default function DesktopResourcePage() {
       fromPromise<any, PublishInput>(async ({input}) => {
         const draftData = await client.drafts.get.query(input.draftId)
         if (!draftData) throw new Error('Draft not found: ' + input.draftId)
-
         const isPrivate = draftData.visibility === 'PRIVATE'
         // First-publish detection covers two cases:
         //   1. Legacy location-only drafts (no editUid) — clearly new docs.
@@ -598,7 +627,6 @@ export default function DesktopResourcePage() {
           accountId: input.publishAccountUid || '',
           pathOverride: input.pathOverride,
         })
-
         const oldRouteId = input.documentId
         const newRouteId = hmId(result.account, {
           path: entityQueryPathToHmIdPath(result.path),
@@ -609,14 +637,16 @@ export default function DesktopResourcePage() {
         // navigate this window to the new URL and broadcast the change so any
         // other window stuck on the old draft URL can react.
         if (pathChanged) {
-          navigateRef.current({key: 'document', id: newRouteId})
+          navigateRef.current({
+            key: 'document',
+            id: newRouteId,
+          })
           broadcastWindowEventRef.current({
             type: 'document_path_changed',
             oldId: oldRouteId.id,
             newId: newRouteId.id,
           })
         }
-
         if (isFirstPublish) {
           try {
             const childId = hmId(result.account, {
@@ -633,7 +663,10 @@ export default function DesktopResourcePage() {
               const navigateToParent = () => {
                 navigateRef.current({
                   key: 'document',
-                  id: hmId(parentId.uid, {path: parentId.path, latest: true}),
+                  id: hmId(parentId.uid, {
+                    path: parentId.path,
+                    latest: true,
+                  }),
                 })
               }
               const message =
@@ -656,7 +689,6 @@ export default function DesktopResourcePage() {
             toast.error('Published document, but failed to add link to parent')
           }
         }
-
         await deleteDraftsForCleanup(input.draftId, input.deletedChildDraftIds)
         await client.drafts.delete.mutate(input.draftId)
         invalidateQueries([queryKeys.DRAFT, input.draftId])
@@ -666,7 +698,6 @@ export default function DesktopResourcePage() {
       }),
     [],
   )
-
   const discardDraftActor = useMemo(
     () =>
       fromPromise<void, DiscardDraftInput>(async ({input}) => {
@@ -692,7 +723,10 @@ export default function DesktopResourcePage() {
           path: entityQueryPathToHmIdPath(doc.path),
           version: doc.version,
         })
-        pushAfterActionRef.current({id: pushId, trigger: 'publish'})
+        pushAfterActionRef.current({
+          id: pushId,
+          trigger: 'publish',
+        })
       }),
     [],
   )
@@ -712,7 +746,9 @@ export default function DesktopResourcePage() {
   )
 
   // Get site URL for publication actions
-  const siteHomeResource = useResource(hmId(docId.uid), {subscribed: true})
+  const siteHomeResource = useResource(hmId(docId.uid), {
+    subscribed: true,
+  })
   const siteUrl =
     siteHomeResource.data?.type === 'document' ? siteHomeResource.data.document?.metadata?.siteUrl : undefined
 
@@ -731,7 +767,12 @@ export default function DesktopResourcePage() {
   const resource = useResource(documentResourceId)
   const doc = resource.data?.type === 'document' ? resource.data.document : undefined
   lastPublishedContentRef.current = useMemo(
-    () => (doc?.content ? hmBlocksToEditorContent(doc.content, {childrenType: 'Group'}) : null),
+    () =>
+      doc?.content
+        ? hmBlocksToEditorContent(doc.content, {
+            childrenType: 'Group',
+          })
+        : null,
     [doc],
   )
   const docIsInMyAccount = myAccountIds.data?.includes(docId.uid)
@@ -797,15 +838,17 @@ export default function DesktopResourcePage() {
   const isOwnProfile = isSiteProfile && !!profileAccountUid && !!myAccountIds.data?.includes(profileAccountUid)
   const onEditProfile = useMemo(() => {
     if (!isOwnProfile || !profileAccountUid) return undefined
-    return () => editProfileDialog.open({accountUid: profileAccountUid})
+    return () =>
+      editProfileDialog.open({
+        accountUid: profileAccountUid,
+      })
   }, [isOwnProfile, profileAccountUid, editProfileDialog])
-
   const {exportDocument, openDirectory} = useAppContext()
   const deleteEntity = useDeleteDialog()
-  const destinationDialog = useAppDialog(DocumentDestinationDialog, {className: 'w-full max-w-2xl'})
-
+  const destinationDialog = useAppDialog(DocumentDestinationDialog, {
+    className: 'w-full max-w-2xl',
+  })
   const menuItems: MenuItemType[] = []
-
   menuItems.push(
     createCopyLinkMenuItem({
       advanced: experiments?.advancedCopyLinkOptions,
@@ -824,51 +867,66 @@ export default function DesktopResourcePage() {
       },
     }),
   )
-
   if (newMenuItem) {
     menuItems.push(newMenuItem)
   }
-
   if (canEdit && selectedAccountId && docId.path?.length) {
     menuItems.push({
       key: 'move',
       label: 'Move',
-      icon: <FileInput className="size-4" />,
+      icon: <FileInput className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: () => {
         const draftMoveId = currentDraftId || placeholderDraftId
         if (draftMoveId) {
-          const fallbackParent = docId.path?.length ? hmId(docId.uid, {path: docId.path.slice(0, -1)}) : undefined
+          const fallbackParent = docId.path?.length
+            ? hmId(docId.uid, {
+                path: docId.path.slice(0, -1),
+              })
+            : undefined
           destinationDialog.open({
             id: docId,
             mode: 'move',
             origin: draftData?.locationUid
-              ? {parentDocumentId: hmId(draftData.locationUid, {path: draftData.locationPath ?? []})}
+              ? {
+                  parentDocumentId: hmId(draftData.locationUid, {
+                    path: draftData.locationPath ?? [],
+                  }),
+                }
               : fallbackParent
-                ? {parentDocumentId: fallbackParent}
+                ? {
+                    parentDocumentId: fallbackParent,
+                  }
                 : undefined,
-            draft: {draftId: draftMoveId, title: draftData?.metadata?.name, icon: draftData?.metadata?.icon},
+            draft: {
+              draftId: draftMoveId,
+              title: draftData?.metadata?.name,
+              icon: draftData?.metadata?.icon,
+            },
           })
           return
         }
-        destinationDialog.open({id: docId, mode: 'move'})
+        destinationDialog.open({
+          id: docId,
+          mode: 'move',
+        })
       },
     })
   }
-
   if (canEdit && docId.path?.length) {
     menuItems.push({
       key: 'duplicate',
       label: 'Duplicate document',
-      icon: <Copy className="size-4" />,
+      icon: <Copy className={stylex.props(styles.sca3de968).className || ''} />,
       onClick: async () => {
         if (!doc) return
         try {
-          const editorContent = hmBlocksToEditorContent(doc.content || [], {childrenType: 'Group'})
+          const editorContent = hmBlocksToEditorContent(doc.content || [], {
+            childrenType: 'Group',
+          })
           const sourceName = doc.metadata?.name || 'Untitled'
           const copyName = `${sourceName} Copy`
           const draftId = nanoid(10)
           const parentPath = docId.path?.slice(0, -1) || []
-
           const draftEditPath = [...parentPath, `-${draftId}`]
           await client.drafts.write.mutate({
             id: draftId,
@@ -876,16 +934,20 @@ export default function DesktopResourcePage() {
             locationPath: parentPath,
             editUid: docId.uid,
             editPath: draftEditPath,
-            metadata: {...doc.metadata, name: copyName},
+            metadata: {
+              ...doc.metadata,
+              name: copyName,
+            },
             content: editorContent,
             deps: [],
             visibility: doc.visibility,
           })
-
           sessionStorage.setItem('duplicate-draft-focus', draftId)
           navigate({
             key: 'document',
-            id: hmId(docId.uid, {path: draftEditPath}),
+            id: hmId(docId.uid, {
+              path: draftEditPath,
+            }),
             panel: null,
           })
           toast.success(`Duplicated "${sourceName}"`)
@@ -896,11 +958,10 @@ export default function DesktopResourcePage() {
       },
     })
   }
-
   menuItems.push({
     key: 'export',
     label: 'Export document',
-    icon: <Download className="size-4" />,
+    icon: <Download className={stylex.props(styles.sca3de968).className || ''} />,
     onClick: async () => {
       if (!doc) return
       const title = doc?.metadata.name || 'document'
@@ -914,11 +975,11 @@ export default function DesktopResourcePage() {
         .then((res) => {
           toast.success(
             <div className="flex max-w-[700px] flex-col gap-1.5">
-              <SizableText className="text-wrap break-all">
+              <SizableText className={stylex.props(styles.sead8181d).className || ''}>
                 Successfully exported document &quot;{title}&quot; to: <b>{`${res}`}</b>.
               </SizableText>
               <SizableText
-                className="text-current underline"
+                className={stylex.props(styles.s4d1ad845).className || ''}
                 onClick={() => {
                   // @ts-expect-error
                   openDirectory(res)
@@ -934,21 +995,23 @@ export default function DesktopResourcePage() {
         })
     },
   })
-
   if (selectedAccountId && docId.path?.length) {
     menuItems.push({
       key: 'republish',
       label: 'Republish',
-      icon: <Split className="size-4" />,
+      icon: <Split className={stylex.props(styles.sca3de968).className || ''} />,
       tooltip: 'Republish means creating an independent copy that you can modify and keeps the original attribution.',
-      onClick: () => destinationDialog.open({id: docId, mode: 'republish'}),
+      onClick: () =>
+        destinationDialog.open({
+          id: docId,
+          mode: 'republish',
+        }),
     })
   }
-
   menuItems.push({
     key: 'versions',
     label: 'Versions history',
-    icon: <History className="size-4" />,
+    icon: <History className={stylex.props(styles.sca3de968).className || ''} />,
     onClick: () => {
       replace({
         key: 'document',
@@ -957,19 +1020,25 @@ export default function DesktopResourcePage() {
       })
     },
   })
-
   menuItems.push({
     key: 'directory',
     label: 'Sub documents',
-    icon: <Layers className="size-4" />,
-    onClick: () => navigate({key: 'directory', id: docId}),
+    icon: <Layers className={stylex.props(styles.sca3de968).className || ''} />,
+    onClick: () =>
+      navigate({
+        key: 'directory',
+        id: docId,
+      }),
   })
-
   menuItems.push({
     key: 'all-documents',
     label: 'All Documents',
-    icon: <LayoutList className="size-4" />,
-    onClick: () => navigate({key: 'all-documents', id: hmId(docId.uid)}),
+    icon: <LayoutList className={stylex.props(styles.sca3de968).className || ''} />,
+    onClick: () =>
+      navigate({
+        key: 'all-documents',
+        id: hmId(docId.uid),
+      }),
   })
 
   // Publish / Unpublish site options (only for home documents)
@@ -981,16 +1050,19 @@ export default function DesktopResourcePage() {
         menuItems.push({
           key: 'publish-custom-domain',
           label: 'Publish Custom Domain',
-          icon: <UploadCloud className="size-4" />,
+          icon: <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />,
           onClick: () => {
-            publishSite.open({id: docId, step: 'seed-host-custom-domain'})
+            publishSite.open({
+              id: docId,
+              step: 'seed-host-custom-domain',
+            })
           },
         })
       }
       menuItems.push({
         key: 'remove-site',
         label: 'Remove Space from Publication',
-        icon: <CloudOff className="size-4" />,
+        icon: <CloudOff className={stylex.props(styles.sca3de968).className || ''} />,
         variant: 'destructive',
         onClick: () => {
           removeSiteDialog.open(docId)
@@ -1000,22 +1072,28 @@ export default function DesktopResourcePage() {
       menuItems.push({
         key: 'publish-site',
         label: 'Publish Space to Domain',
-        icon: <UploadCloud className="size-4" />,
+        icon: <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: () => {
-          publishSite.open({id: docId})
+          publishSite.open({
+            id: docId,
+          })
         },
       })
     }
     if (isSiteOwner) {
-      menuItems.push(createEmailSubscribersMenuItem({navigate, accountUid: docId.uid}))
+      menuItems.push(
+        createEmailSubscribersMenuItem({
+          navigate,
+          accountUid: docId.uid,
+        }),
+      )
     }
   }
-
   if (canEdit && docId.path?.length) {
     menuItems.push({
       key: 'delete',
       label: 'Delete Document',
-      icon: <Trash className="size-4" />,
+      icon: <Trash className={stylex.props(styles.sca3de968).className || ''} />,
       variant: 'destructive',
       onClick: () => {
         deleteEntity.open({
@@ -1035,7 +1113,6 @@ export default function DesktopResourcePage() {
       },
     })
   }
-
   const showPublishToolbar = route.key === 'document' || route.key === 'metadata'
 
   // Walk the editor's blocks for embed blocks with a draftId.
@@ -1054,7 +1131,6 @@ export default function DesktopResourcePage() {
     walk(blocks)
     return ids.size
   }, [])
-
   const editingFloatingActions =
     canEdit && showPublishToolbar
       ? ({menuItems}: {menuItems: any[]}) => (
@@ -1067,7 +1143,6 @@ export default function DesktopResourcePage() {
       : undefined
   const {callbacks: draftVersionToolbarCallbacks, deleteDraftDialog: draftVersionDeleteDraftDialog} =
     useDesktopToolbarCallbacks(docId)
-
   const onAfterReply = useCallback(
     (_docId: UnpackedHypermediaId, comment: HMComment) => {
       triggerCommentDraftFocus(docId.id, comment.id)
@@ -1082,7 +1157,6 @@ export default function DesktopResourcePage() {
     onAfterReply,
   })
   const followIntent = useFollowProfileIntent(route.key === 'site-profile' ? route.accountUid || docId.uid : docId.uid)
-
   return (
     <div className="relative h-full max-h-full overflow-hidden rounded-lg border bg-white">
       <CommentsProvider
@@ -1091,12 +1165,17 @@ export default function DesktopResourcePage() {
         onReplyCountClick={onReplyCountClick}
         renderInlineEditor={renderDesktopInlineEditor}
         showDeletedContent
-        pushAfterCommentPublish={(targetDocId) => pushAfterAction({id: targetDocId, trigger: 'publish'})}
+        pushAfterCommentPublish={(targetDocId) =>
+          pushAfterAction({
+            id: targetDocId,
+            trigger: 'publish',
+          })
+        }
       >
         <DesktopDocumentActionsProvider>
           {/*
             Allow creating inline child drafts only when the current doc has a published version
-          */}
+           */}
           <DesktopDraftActionsProvider
             canCreateInlineDraft={canCreateChildDocs && (!existingDraft || !existingDraft.locationUid)}
           >

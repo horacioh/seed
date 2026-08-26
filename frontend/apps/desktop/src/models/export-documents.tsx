@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext} from '@/app-context'
 import {reportError} from '@/errors'
 import {grpcClient} from '@/grpc-client'
@@ -9,12 +10,18 @@ import {createResourceResolver} from '@shm/shared/resource-loader'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
-
+const styles = stylex.create({
+  s13588c5b: {
+    overflowWrap: 'break-word',
+  },
+  s375929f2: {
+    cursor: 'pointer',
+    textDecorationLine: 'underline',
+  },
+})
 const resolveResource = createResourceResolver(grpcClient)
-
 export function useExportDocuments() {
   const {exportDocuments, openDirectory} = useAppContext()
-
   return async (docIds: string[]) => {
     if (docIds.length == 0) {
       toast.error('No documents selected')
@@ -44,10 +51,10 @@ export function useExportDocuments() {
         const success = (
           <>
             <div className="flex max-w-[700px] flex-col gap-1.5">
-              <SizableText className="break-words">
+              <SizableText className={stylex.props(styles.s13588c5b).className || ''}>
                 Successfully exported documents to: <b>{`${res}`}</b>.
               </SizableText>
-              <SizableText color="brand" asChild className="cursor-pointer underline">
+              <SizableText color="brand" asChild className={stylex.props(styles.s375929f2).className || ''}>
                 <a
                   onClick={() => {
                     openDirectory(res)
@@ -59,8 +66,7 @@ export function useExportDocuments() {
             </div>
           </>
         )
-        // @ts-expect-error
-        toast.success('', {customContent: success})
+        toast.custom(() => success)
       })
       .catch((err) => {
         toast.error(err)

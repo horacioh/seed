@@ -1,24 +1,47 @@
+import * as stylex from '@stylexjs/stylex'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import {XIcon} from 'lucide-react'
 import * as React from 'react'
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  s88a3565a: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: '0',
+  },
+  sca2fef09: {
+    WebkitBackdropFilter: 'blur(8px)        ',
+    backdropFilter: 'blur(8px)        ',
+  },
+  s84ca715: {
+    fontSize: '1.125rem',
+    lineHeight: '1',
+    fontWeight: '600',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 function Dialog({...props}: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
-
 function DialogTrigger({...props}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
-
 function DialogPortal({...props}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
-
 function DialogClose({...props}: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
-
 const DialogOverlay = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -33,7 +56,6 @@ const DialogOverlay = React.forwardRef<
     {...props}
   />
 ))
-
 function DialogContent({
   className,
   children,
@@ -71,7 +93,7 @@ function DialogContent({
               className="absolute top-4 right-4 rounded-xs text-gray-500 transition-all hover:text-gray-700 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none dark:text-gray-400 dark:hover:text-gray-200 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
             >
               <XIcon />
-              <span className="sr-only">Close</span>
+              <span className={stylex.props(styles.s88a3565a).className || ''}>Close</span>
             </DialogPrimitive.Close>
           )}
         </div>
@@ -96,7 +118,7 @@ function DialogSideContent({
 }) {
   return (
     <DialogPortal data-slot="dialog-side-portal">
-      <DialogOverlay className="backdrop-blur-sm" />
+      <DialogOverlay className={stylex.props(styles.sca2fef09).className || ''} />
       <DialogPrimitive.Content
         data-slot="dialog-side-content"
         className={cn(
@@ -111,7 +133,6 @@ function DialogSideContent({
     </DialogPortal>
   )
 }
-
 function DialogHeader({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -121,7 +142,6 @@ function DialogHeader({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function DialogFooter({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -131,27 +151,24 @@ function DialogFooter({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function DialogTitle({className, ...props}: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('text-lg leading-none font-semibold', className)}
+      className={cn(stylex.props(styles.s84ca715).className || '', className)}
       {...props}
     />
   )
 }
-
 function DialogDescription({className, ...props}: React.ComponentProps<typeof DialogPrimitive.Description>) {
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn('text-muted-foreground text-sm', className)}
+      className={cn(stylex.props(styles.sa56e915f).className || '', className)}
       {...props}
     />
   )
 }
-
 export {
   Dialog,
   DialogClose,

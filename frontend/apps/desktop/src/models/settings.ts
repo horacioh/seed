@@ -15,8 +15,15 @@ export function useSystemThemeWriter() {
       invalidateQueries([queryKeys.SETTINGS, 'theme'])
     },
   })
-  function setTheme(theme: SystemTheme) {
-    setThemeMutation.mutate({key: 'theme', value: theme})
+  function setTheme(theme: SystemTheme, options?: {onError?: (error: unknown) => void}) {
+    setThemeMutation.mutate(
+      {key: 'theme', value: theme},
+      {
+        onError: (error) => {
+          options?.onError?.(error)
+        },
+      },
+    )
   }
   return [theme.data, setTheme, theme.isInitialLoading]
 }

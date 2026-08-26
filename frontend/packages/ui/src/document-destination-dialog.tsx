@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {HMDocument, HMMetadata, HMMetadataPayload, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {
   createSiteUrl,
@@ -34,6 +35,126 @@ import {Tooltip} from './tooltip'
 import {cn} from './utils'
 
 /** Destination action supported by the shared document destination dialog. */
+const styles = stylex.create({
+  s9c938e0: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+    paddingRight: 'calc(0.25rem * 8)',
+  },
+  sece0fd8a: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '1.5rem',
+    lineHeight: '1.25',
+    fontWeight: '600',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s25987914: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  sb1287830: {
+    height: 'calc(0.25rem * 11)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    paddingLeft: 'calc(0.25rem * 10)',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s3566be63: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sc53b6000: {
+    height: 'calc(0.25rem * 11)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+  },
+  se20faa2d: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+  },
+  s11c1d1bc: {
+    color: 'var(--destructive)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s6e7404c5: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 3)',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  se6880e46: {
+    borderColor: 'var(--border)',
+    marginInline: 'calc(0.25rem * -5)',
+    height: 'calc(0.25rem * 60)',
+    borderBlockStyle: 'solid',
+    borderBlockWidth: '1px',
+  },
+  s2c5084d7: {
+    color: 'var(--muted-foreground)',
+    padding: 'calc(0.25rem * 5)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s37a2594a: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+    fontWeight: '500',
+  },
+  s2627021c: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s51ab7e67: {
+    color: 'var(--destructive)',
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+})
 export type DocumentDestinationMode = 'move' | 'republish'
 
 /** Input passed when opening the shared document destination dialog. */
@@ -65,10 +186,24 @@ export type DocumentDestinationSubmitInput = {
   origin?: DocumentCardActionOrigin
   draft?: DocumentDestinationDialogInput['draft']
 }
-
-const modeCopy: Record<DocumentDestinationMode, {eyebrow: string; action: string; success: string}> = {
-  move: {eyebrow: 'Move', action: 'Move', success: 'Document moved'},
-  republish: {eyebrow: 'Republish', action: 'Republish', success: 'Document republished'},
+const modeCopy: Record<
+  DocumentDestinationMode,
+  {
+    eyebrow: string
+    action: string
+    success: string
+  }
+> = {
+  move: {
+    eyebrow: 'Move',
+    action: 'Move',
+    success: 'Document moved',
+  },
+  republish: {
+    eyebrow: 'Republish',
+    action: 'Republish',
+    success: 'Document republished',
+  },
 }
 
 /** Renders the shared destination picker for move and republish flows. */
@@ -105,17 +240,17 @@ export function DocumentDestinationDialog({
   const [slug, setSlug] = useState(initialSlug)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   useEffect(() => {
     setTargetParent(initialTargetParent)
     setSlug(initialSlug)
     setSearchQuery('')
     setIsSubmitting(false)
   }, [initialTargetParent, initialSlug, input.mode])
-
   const destinationId = useMemo(() => {
     if (!targetParent || !slug) return null
-    return hmId(targetParent.uid, {path: [...(targetParent.path || []), slug]})
+    return hmId(targetParent.uid, {
+      path: [...(targetParent.path || []), slug],
+    })
   }, [targetParent, slug])
   const targetParentResource = useResource(targetParent)
   const destinationResource = useResource(destinationId)
@@ -159,7 +294,6 @@ export function DocumentDestinationDialog({
                           ? 'A document already exists at this URL. Choose a different path.'
                           : null
   const canSubmit = !!destinationId && !validationMessage && !isSubmitting
-
   if (!selectedAccountUid) {
     return <DialogError message="Select an account before moving or republishing documents." />
   }
@@ -173,7 +307,6 @@ export function DocumentDestinationDialog({
   if (!isDraftSource && (isError || resource?.type !== 'document')) {
     return <DialogError message={error ? String(error) : 'Could not load document.'} />
   }
-
   async function submit() {
     if (!destinationId || !canSubmit || !selectedAccountUid) return
     const submitInput = {
@@ -196,30 +329,29 @@ export function DocumentDestinationDialog({
       setIsSubmitting(false)
     }
   }
-
   return (
     <div className="flex min-h-0 flex-col gap-5">
-      <div className="flex flex-col gap-1 pr-8">
+      <div className={stylex.props(styles.s9c938e0).className || ''}>
         <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.18em] uppercase">
           {modeCopy[input.mode].eyebrow}
         </SizableText>
-        <DialogTitle className="flex items-center gap-2 text-2xl leading-tight font-semibold">
+        <DialogTitle className={stylex.props(styles.sece0fd8a).className || ''}>
           <HMIcon id={sourceId} name={sourceTitle} icon={sourceIcon} size={30} />
           <span className="min-w-0 truncate">{sourceTitle}</span>
         </DialogTitle>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1.5">
+      <div className={stylex.props(styles.sfbc6e28f).className || ''}>
+        <div className={stylex.props(styles.s25987914).className || ''}>
           <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase">
             {targetParent ? 'Location' : 'Choose a space'}
           </SizableText>
           {targetParent ? <LocationBreadcrumb location={targetParent} onSelect={setTargetParent} /> : null}
         </div>
-        <div className="relative">
+        <div className={stylex.props(styles.sdef3facc).className || ''}>
           <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
-            className="h-11 rounded-xl pl-10 text-base"
+            className={stylex.props(styles.sb1287830).className || ''}
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search location…"
@@ -244,22 +376,22 @@ export function DocumentDestinationDialog({
         }}
       />
 
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase">
             URL Path
           </SizableText>
           <Tooltip content="This edits only the final URL segment. Choose the parent location above.">
-            <Help className="text-muted-foreground size-4" />
+            <Help className={stylex.props(styles.s3566be63).className || ''} />
           </Tooltip>
         </div>
         {isDraftSource ? (
-          <SizableText className="text-muted-foreground text-sm">
+          <SizableText className={stylex.props(styles.sa56e915f).className || ''}>
             Draft moves keep the draft placeholder path until publish.
           </SizableText>
         ) : (
           <Input
-            className="h-11 rounded-xl text-base"
+            className={stylex.props(styles.sc53b6000).className || ''}
             value={slug}
             onChange={(event) => setSlug(pathNameify(event.target.value))}
             placeholder="url-path"
@@ -267,15 +399,20 @@ export function DocumentDestinationDialog({
         )}
         {destinationUrl ? (
           <SizableText
-            className={cn('text-sm break-all', validationMessage ? 'text-muted-foreground' : 'text-primary')}
+            className={cn(
+              stylex.props(styles.se20faa2d).className || '',
+              validationMessage ? 'text-muted-foreground' : 'text-primary',
+            )}
           >
             {destinationUrl}
           </SizableText>
         ) : null}
-        {validationMessage ? <SizableText className="text-destructive text-sm">{validationMessage}</SizableText> : null}
+        {validationMessage ? (
+          <SizableText className={stylex.props(styles.s11c1d1bc).className || ''}>{validationMessage}</SizableText>
+        ) : null}
       </div>
 
-      <div className="flex items-center justify-end gap-3 pt-1">
+      <div className={stylex.props(styles.s6e7404c5).className || ''}>
         <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
           Cancel
         </Button>
@@ -287,7 +424,6 @@ export function DocumentDestinationDialog({
     </div>
   )
 }
-
 function DestinationBrowser({
   mode,
   sourceId,
@@ -331,7 +467,6 @@ function DestinationBrowser({
   }
   return <ChildLocations mode={mode} sourceId={sourceId} parent={targetParent} onSelect={onSelect} onClear={onClear} />
 }
-
 function SearchResults({
   mode,
   sourceId,
@@ -361,7 +496,13 @@ function SearchResults({
     .map((item, index) => {
       const resource = resultResources[index]?.data
       const document = resource?.type === 'document' ? resource.document : null
-      return {id: item.id, metadata: {name: item.title, icon: document?.metadata.icon || (item as any).icon}}
+      return {
+        id: item.id,
+        metadata: {
+          name: item.title,
+          icon: document?.metadata.icon || (item as any).icon,
+        },
+      }
     })
   const loadingLabel =
     search.isLoading || resultResources.some((result) => result.isLoading)
@@ -381,7 +522,6 @@ function SearchResults({
     </LocationList>
   )
 }
-
 function WritableRoots({
   mode,
   sourceId,
@@ -413,7 +553,6 @@ function WritableRoots({
     </LocationList>
   )
 }
-
 function ChildLocations({
   mode,
   sourceId,
@@ -427,13 +566,19 @@ function ChildLocations({
   onSelect: (location: UnpackedHypermediaId) => void
   onClear: () => void
 }) {
-  const {data: directory, isLoading} = useDirectory(parent, {mode: 'Children'})
-  const parentLocation = parent.path?.length ? hmId(parent.uid, {path: parent.path.slice(0, -1)}) : null
+  const {data: directory, isLoading} = useDirectory(parent, {
+    mode: 'Children',
+  })
+  const parentLocation = parent.path?.length
+    ? hmId(parent.uid, {
+        path: parent.path.slice(0, -1),
+      })
+    : null
   return (
     <LocationList emptyLabel={isLoading ? 'Loading locations…' : 'No subdocuments in this location.'}>
       <div className="bg-muted/30 border-border border-b p-4">
         <Button variant="outline" size="sm" onClick={() => (parentLocation ? onSelect(parentLocation) : onClear())}>
-          <Back className="size-4" />
+          <Back className={stylex.props(styles.sca3de968).className || ''} />
           Back
         </Button>
       </div>
@@ -453,18 +598,20 @@ function ChildLocations({
     </LocationList>
   )
 }
-
 function LocationList({children, emptyLabel}: {children: React.ReactNode; emptyLabel: string}) {
   const hasChildren = Array.isArray(children) ? children.length > 0 : !!children
   return (
-    <ScrollArea className="border-border -mx-5 h-60 border-y">
+    <ScrollArea className={stylex.props(styles.se6880e46).className || ''}>
       <div className="flex min-h-40 flex-col">
-        {hasChildren ? children : <SizableText className="text-muted-foreground p-5 text-sm">{emptyLabel}</SizableText>}
+        {hasChildren ? (
+          children
+        ) : (
+          <SizableText className={stylex.props(styles.s2c5084d7).className || ''}>{emptyLabel}</SizableText>
+        )}
       </div>
     </ScrollArea>
   )
 }
-
 function LocationRow({
   id,
   title,
@@ -486,14 +633,13 @@ function LocationRow({
     >
       <HMIcon id={id} name={title} icon={icon} size={28} />
       <div className="flex min-w-0 flex-1 items-baseline gap-2 overflow-hidden">
-        <SizableText className="truncate text-base font-medium">{title}</SizableText>
-        {suffix ? <SizableText className="text-muted-foreground truncate text-xs">{suffix}</SizableText> : null}
+        <SizableText className={stylex.props(styles.s37a2594a).className || ''}>{title}</SizableText>
+        {suffix ? <SizableText className={stylex.props(styles.s2627021c).className || ''}>{suffix}</SizableText> : null}
       </div>
-      <Forward className="text-muted-foreground size-4" />
+      <Forward className={stylex.props(styles.s3566be63).className || ''} />
     </button>
   )
 }
-
 function LocationBreadcrumb({
   location,
   onSelect,
@@ -501,11 +647,18 @@ function LocationBreadcrumb({
   location: UnpackedHypermediaId
   onSelect: (id: UnpackedHypermediaId) => void
 }) {
-  const siteId = hmId(location.uid, {latest: true})
+  const siteId = hmId(location.uid, {
+    latest: true,
+  })
   const {data: siteResource} = useResource(siteId)
   const siteTitle = siteResource?.type === 'document' ? getMetadataName(siteResource.document.metadata) : location.uid
   const ancestorIds = useMemo(
-    () => location.path?.map((_, index) => hmId(location.uid, {path: location.path?.slice(0, index + 1)})) || [],
+    () =>
+      location.path?.map((_, index) =>
+        hmId(location.uid, {
+          path: location.path?.slice(0, index + 1),
+        }),
+      ) || [],
     [location.id],
   )
   const ancestors = useResources(ancestorIds)
@@ -520,7 +673,7 @@ function LocationBreadcrumb({
         if (!id) return null
         return (
           <span key={id.id} className="flex min-w-0 items-center gap-1.5">
-            <span className="text-muted-foreground">/</span>
+            <span className={stylex.props(styles.sf2718385).className || ''}>/</span>
             <button
               type="button"
               className="max-w-48 truncate font-medium hover:underline"
@@ -534,26 +687,36 @@ function LocationBreadcrumb({
     </div>
   )
 }
-
 function useDestinationUrl(location: UnpackedHypermediaId | null) {
   const {origin} = useUniversalAppContext()
-  const {data: siteResource} = useResource(location ? hmId(location.uid, {latest: true}) : null)
+  const {data: siteResource} = useResource(
+    location
+      ? hmId(location.uid, {
+          latest: true,
+        })
+      : null,
+  )
   if (!location) return null
   const siteDocument = siteResource?.type === 'document' ? siteResource.document : undefined
   const siteUrl = siteDocument?.metadata.siteUrl
-  if (siteUrl) return createSiteUrl({path: location.path, hostname: siteUrl})
-  return createWebHMUrl(location.uid, {path: location.path, hostname: origin || DEFAULT_GATEWAY_URL})
+  if (siteUrl)
+    return createSiteUrl({
+      path: location.path,
+      hostname: siteUrl,
+    })
+  return createWebHMUrl(location.uid, {
+    path: location.path,
+    hostname: origin || DEFAULT_GATEWAY_URL,
+  })
 }
-
 function DialogError({message}: {message: string}) {
   return (
     <div className="border-destructive/30 bg-destructive/10 flex min-h-32 items-center gap-3 rounded-lg border p-4">
-      <FileText className="text-destructive size-5" />
-      <SizableText className="text-destructive text-sm">{message}</SizableText>
+      <FileText className={stylex.props(styles.s51ab7e67).className || ''} />
+      <SizableText className={stylex.props(styles.s11c1d1bc).className || ''}>{message}</SizableText>
     </div>
   )
 }
-
 function canWriteLocation(
   writableDocuments: WritableDocumentDestination[],
   location: UnpackedHypermediaId,
@@ -565,13 +728,13 @@ function canWriteLocation(
     return isIdParentOfOrEqual(document.id, location) && accountsWithWrite.includes(selectedAccountUid)
   })
 }
-
 function getSourceParentId(id: UnpackedHypermediaId) {
   const path = id.path || []
   if (!path.length) return null
-  return hmId(id.uid, {path: path.slice(0, -1)})
+  return hmId(id.uid, {
+    path: path.slice(0, -1),
+  })
 }
-
 function getWritableRoots(writableDocuments: WritableDocumentDestination[], selectedAccountUid: string) {
   const roots = writableDocuments.filter((document) =>
     (document.accountsWithWrite || [selectedAccountUid]).includes(selectedAccountUid),
@@ -582,7 +745,6 @@ function getWritableRoots(writableDocuments: WritableDocumentDestination[], sele
   })
   return Array.from(deduped.values())
 }
-
 function isPublicWritableDocument(document: WritableDocumentDestination) {
   return !document.document || canUseDocumentAsDestinationParent(document.document)
 }

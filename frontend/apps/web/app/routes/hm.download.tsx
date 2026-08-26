@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import downloadBg from '@/assets/download-bg.png'
 import {loadSiteResource, SiteDocumentPayload} from '@/loaders'
 import {defaultPageMeta} from '@/meta'
@@ -16,7 +17,43 @@ import {SizableText} from '@shm/ui/text'
 import {useEffect, useState} from 'react'
 import {z} from 'zod'
 import {Container} from '../ui/container'
-
+const styles = stylex.create({
+  s610350de: {
+    backgroundSize: 'cover',
+    backgroundPosition: 'top',
+  },
+  s912a40f4: {
+    gap: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 6)',
+  },
+  s65e234f5: {
+    textAlign: 'center',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  se2dff700: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 4)',
+  },
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sab7cc794: {
+    fontSize: '1.25rem',
+    lineHeight: 'calc(1.75 / 1.25)',
+  },
+})
 async function isArm64(): Promise<boolean | null> {
   // this check only works on chrome, not safari. So we need to handle null and offer both dl buttons
 
@@ -25,33 +62,27 @@ async function isArm64(): Promise<boolean | null> {
   if (!values) return null
   return values.architecture === 'arm'
 }
-
 function getOS(): undefined | 'mac' | 'windows' | 'linux' {
   const platform = navigator?.platform?.toLowerCase()
   if (!platform) return undefined
   if (platform.includes('mac')) return 'mac'
   if (platform.includes('win')) return 'windows'
   if (platform.includes('linux')) return 'linux'
-
   return undefined
 }
-
 async function getPlatform() {
   return {
     os: getOS(),
     isArm64: await isArm64(),
   }
 }
-
 const RELEASES_JSON_URL = 'https://seedreleases.s3.eu-west-2.amazonaws.com/prod/latest.json'
-
 const assetSchema = z.object({
   download_url: z.string().optional(),
   zip_url: z.string().optional(),
   nupkg_url: z.string().optional(),
   release_url: z.string().optional(),
 })
-
 const releaseSchema = z.object({
   name: z.string(),
   tag_name: z.string(),
@@ -72,13 +103,11 @@ const releaseSchema = z.object({
     }),
   }),
 })
-
 async function loadUpstreamRelease() {
   const response = await fetch(RELEASES_JSON_URL)
   const data = await response.json()
   return releaseSchema.parse(data)
 }
-
 export const loader = async ({request}: {request: Request}) => {
   const parsedRequest = parseRequest(request)
   const {hostname} = parsedRequest
@@ -89,16 +118,25 @@ export const loader = async ({request}: {request: Request}) => {
   const stableRelease = await loadUpstreamRelease()
   const authToken = await getDaemonAuthToken(request)
   return withDaemonAuthToken(authToken, () =>
-    loadSiteResource(parsedRequest, hmId(registeredAccountUid, {path: [], latest: true}), {
-      stableRelease,
-    }),
+    loadSiteResource(
+      parsedRequest,
+      hmId(registeredAccountUid, {
+        path: [],
+        latest: true,
+      }),
+      {
+        stableRelease,
+      },
+    ),
   )
 }
-
 export const meta = defaultPageMeta('Download Seed Hypermedia')
-
 export default function DownloadPage() {
-  const data = unwrap<SiteDocumentPayload & {stableRelease: z.infer<typeof releaseSchema>}>(useLoaderData())
+  const data = unwrap<
+    SiteDocumentPayload & {
+      stableRelease: z.infer<typeof releaseSchema>
+    }
+  >(useLoaderData())
   const {stableRelease, originHomeId, siteHost, homeMetadata, id, document, origin} = data
   //   const os = getOS();
   const [platform, setPlatform] = useState<Awaited<ReturnType<typeof getPlatform>> | undefined>(undefined)
@@ -131,7 +169,12 @@ export default function DownloadPage() {
   }
   return (
     <WebSiteProvider origin={origin} originHomeId={originHomeId} siteHost={siteHost}>
-      <div className="bg-cover bg-top" style={{backgroundImage: `url(${downloadBg})`}}>
+      <div
+        className={stylex.props(styles.s610350de).className || ''}
+        style={{
+          backgroundImage: `url(${downloadBg})`,
+        }}
+      >
         <WebSiteHeader
           homeMetadata={homeMetadata}
           originHomeId={originHomeId}
@@ -142,16 +185,18 @@ export default function DownloadPage() {
         />
         <NavigationLoadingContent className="flex flex-1 flex-col pt-[var(--site-header-h)] sm:pt-0">
           <div className="flex min-h-[45vh] flex-col items-center justify-center py-8">
-            <Container className="gap-4 px-6">
+            <Container className={stylex.props(styles.s912a40f4).className || ''}>
               <h1 className="text-center text-4xl font-bold md:text-5xl">Download Seed Hypermedia Today!</h1>
-              <SizableText size="xl" className="text-center">
+              <SizableText size="xl" className={stylex.props(styles.s65e234f5).className || ''}>
                 Start writing and collaborating with your peers.
               </SizableText>
-              <div className="flex flex-col gap-4">{suggestedButtons.length > 0 && suggestedButtons}</div>
+              <div className={stylex.props(styles.sfbc6e290).className || ''}>
+                {suggestedButtons.length > 0 && suggestedButtons}
+              </div>
             </Container>
           </div>
           <Container>
-            <div className="flex flex-col items-center justify-center gap-4">
+            <div className={stylex.props(styles.se2dff700).className || ''}>
               <SizableText size="2xl" weight="bold">
                 Download Seed Hypermedia {stableRelease.name}
               </SizableText>
@@ -174,7 +219,6 @@ export default function DownloadPage() {
     </WebSiteProvider>
   )
 }
-
 function PlatformItem({
   label,
   icon: Icon,
@@ -190,14 +234,13 @@ function PlatformItem({
       label: key,
       url: (asset as z.infer<typeof assetSchema>).download_url,
     }))
-
   return (
     <div className="border-border flex w-full flex-col items-center gap-3 rounded-md border bg-white p-4 shadow-xl sm:w-auto sm:min-w-3xs dark:bg-black">
       <Icon size={60} className="size-[60px]" />
       <SizableText size="lg" weight="bold">
         {label}
       </SizableText>
-      <div className="flex gap-2">
+      <div className={stylex.props(styles.se658ac14).className || ''}>
         {assetArray.map(
           (asset) =>
             asset.url && (
@@ -208,8 +251,13 @@ function PlatformItem({
                 size="sm"
                 asChild
               >
-                <a href={asset.url} style={{textDecoration: 'none'}}>
-                  <Download className="size-3" />
+                <a
+                  href={asset.url}
+                  style={{
+                    textDecoration: 'none',
+                  }}
+                >
+                  <Download className={stylex.props(styles.sca3de967).className || ''} />
                   {asset.label}
                 </a>
               </Button>
@@ -219,7 +267,6 @@ function PlatformItem({
     </div>
   )
 }
-
 function ReleaseEntry({label, asset, large}: {label: string; asset?: z.infer<typeof assetSchema>; large?: boolean}) {
   if (!asset) return null
   if (!asset.download_url) return null
@@ -230,11 +277,14 @@ function ReleaseEntry({label, asset, large}: {label: string; asset?: z.infer<typ
       className={`plausible-event-name=download p-8 plausible-event-os=${asset.download_url
         .split('.')
         .pop()} self-center rounded-md`}
-      style={{textDecoration: 'none'}}
+      style={{
+        textDecoration: 'none',
+      }}
       size={large ? 'lg' : 'default'}
     >
       <a href={asset.download_url}>
-        <Download className={large ? 'size-6' : 'size-4'} /> <span className="text-xl">{label}</span>
+        <Download className={large ? 'size-6' : 'size-4'} />{' '}
+        <span className={stylex.props(styles.sab7cc794).className || ''}>{label}</span>
       </a>
     </Button>
   )

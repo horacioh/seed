@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext} from '@/app-context'
 import {useDeleteDialog} from '@/components/delete-dialog'
 import {DocumentDestinationDialog} from '@/components/document-destination-dialog'
@@ -28,7 +29,16 @@ import {ResourceVisibility} from '@shm/shared/client/.generated/documents/v3alph
 import {buildRestoreVersionChanges, getRestoreVersionGeneration} from '@shm/shared/utils/restore-document-version'
 import {hmIdPathToEntityQueryPath} from '@shm/shared/utils/path-api'
 import {toast} from 'sonner'
-
+const styles = stylex.create({
+  sead8181d: {
+    textWrap: 'wrap',
+    wordBreak: 'break-all',
+  },
+  s4d1ad845: {
+    color: 'currentcolor',
+    textDecorationLine: 'underline',
+  },
+})
 export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
   const selectedAccountId = useSelectedAccountId()
   const myAccountIds = useMyAccountIds()
@@ -40,24 +50,22 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
   const universalClient = useUniversalClient()
   const drafts = useAccountDraftList(selectedAccountId ?? undefined)
   const writableDocuments = useSelectedAccountWritableDocuments()
-
-  const destinationDialog = useAppDialog(DocumentDestinationDialog, {className: 'w-full max-w-2xl'})
+  const destinationDialog = useAppDialog(DocumentDestinationDialog, {
+    className: 'w-full max-w-2xl',
+  })
   const deleteDialog = useDeleteDialog()
-
   const setBookmark = useMutation({
     mutationFn: (input: {url: string; isBookmark: boolean}) => client.bookmarks.setBookmark.mutate(input),
     onSuccess: () => {
       invalidateQueries([queryKeys.BOOKMARKS])
     },
   })
-
   const isBookmarked = useCallback(
     (id: UnpackedHypermediaId) => {
       return bookmarks?.some((bookmark) => bookmark.url === id.id) ?? false
     },
     [bookmarks],
   )
-
   const canWriteDocument = useCallback(
     (id: UnpackedHypermediaId) => {
       if (!selectedAccountId) return false
@@ -69,19 +77,24 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
     },
     [selectedAccountId, writableDocuments],
   )
-
   const onBookmarkToggle = useCallback(
     (id: UnpackedHypermediaId) => {
       const bookmarked = bookmarks?.some((bookmark) => bookmark.url === id.id) ?? false
-      setBookmark.mutate({url: id.id, isBookmark: !bookmarked})
+      setBookmark.mutate({
+        url: id.id,
+        isBookmark: !bookmarked,
+      })
     },
     [bookmarks, setBookmark],
   )
-
   const onEditDocument = useCallback(
     async (id: UnpackedHypermediaId, existingDraftId?: string) => {
       if (existingDraftId) {
-        navigate({key: 'document', id, panel: null})
+        navigate({
+          key: 'document',
+          id,
+          panel: null,
+        })
         return
       }
       const draftId = nanoid(10)
@@ -94,47 +107,60 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
         deps: id.version ? [id.version] : [],
         visibility: 'PUBLIC',
       })
-      navigate({key: 'document', id, panel: null})
+      navigate({
+        key: 'document',
+        id,
+        panel: null,
+      })
     },
     [navigate],
   )
-
   const onMoveDocument = useCallback(
     (id: UnpackedHypermediaId, origin?: DocumentCardActionOrigin) => {
-      destinationDialog.open({id, mode: 'move', origin})
+      destinationDialog.open({
+        id,
+        mode: 'move',
+        origin,
+      })
     },
     [destinationDialog],
   )
-
   const onDeleteDocument = useCallback(
     (id: UnpackedHypermediaId, onSuccess?: () => void) => {
-      deleteDialog.open({id, onSuccess})
+      deleteDialog.open({
+        id,
+        onSuccess,
+      })
     },
     [deleteDialog],
   )
-
   const onRepublishDocument = useCallback(
     (id: UnpackedHypermediaId, origin?: DocumentCardActionOrigin) => {
-      destinationDialog.open({id, mode: 'republish', origin})
+      destinationDialog.open({
+        id,
+        mode: 'republish',
+        origin,
+      })
     },
     [destinationDialog],
   )
-
   const onExportDocument = useCallback(
     async (doc: HMDocument) => {
       const title = doc.metadata.name || 'document'
       const blocks: HMBlockNode[] | undefined = doc.content || undefined
-      const editorBlocks = hmBlocksToEditorContent(blocks, {childrenType: 'Group'})
+      const editorBlocks = hmBlocksToEditorContent(blocks, {
+        childrenType: 'Group',
+      })
       const {markdownContent, mediaFiles} = await convertBlocksToMarkdown(editorBlocks, doc)
       exportDocument(title, markdownContent, mediaFiles)
         .then((res) => {
           toast.success(
             <div className="flex max-w-[700px] flex-col gap-1.5">
-              <SizableText className="text-wrap break-all">
+              <SizableText className={stylex.props(styles.sead8181d).className || ''}>
                 Successfully exported document &quot;{title}&quot; to: <b>{`${res}`}</b>.
               </SizableText>
               <SizableText
-                className="text-current underline"
+                className={stylex.props(styles.s4d1ad845).className || ''}
                 onClick={() => {
                   // @ts-expect-error
                   openDirectory(res)
@@ -151,7 +177,6 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
     },
     [exportDocument, openDirectory],
   )
-
   const onDuplicateDocument = useCallback(
     async (id: UnpackedHypermediaId) => {
       try {
@@ -161,13 +186,13 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
           toast.error('Could not load document to duplicate')
           return
         }
-
-        const editorContent = hmBlocksToEditorContent(doc.content || [], {childrenType: 'Group'})
+        const editorContent = hmBlocksToEditorContent(doc.content || [], {
+          childrenType: 'Group',
+        })
         const sourceName = doc.metadata?.name || 'Untitled'
         const copyName = `${sourceName} Copy`
         const draftId = nanoid(10)
         const parentPath = id.path?.slice(0, -1) || []
-
         const draftEditPath = [...parentPath, `-${draftId}`]
         await client.drafts.write.mutate({
           id: draftId,
@@ -175,16 +200,20 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
           locationPath: parentPath,
           editUid: id.uid,
           editPath: draftEditPath,
-          metadata: {...doc.metadata, name: copyName},
+          metadata: {
+            ...doc.metadata,
+            name: copyName,
+          },
           content: editorContent,
           deps: [],
           visibility: doc.visibility,
         })
-
         sessionStorage.setItem('duplicate-draft-focus', draftId)
         navigate({
           key: 'document',
-          id: hmId(id.uid, {path: draftEditPath}),
+          id: hmId(id.uid, {
+            path: draftEditPath,
+          }),
           panel: null,
         })
         toast.success(`Duplicated "${sourceName}"`)
@@ -195,14 +224,12 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
     },
     [navigate, universalClient],
   )
-
   const onCopyLink = useCallback(
     (id: UnpackedHypermediaId) => {
       onCopyReference?.(id)
     },
     [onCopyReference],
   )
-
   const getDraft = useCallback(
     (id: UnpackedHypermediaId) => {
       return drafts.data?.find((d: HMListedDraft) => {
@@ -212,9 +239,7 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
     },
     [drafts.data],
   )
-
   const getDraftId = useCallback((id: UnpackedHypermediaId) => getDraft(id)?.id, [getDraft])
-
   const onRestoreDocumentVersion = useCallback(
     async (id: UnpackedHypermediaId, selectedVersion: HMDocument) => {
       if (!selectedAccountId) {
@@ -229,7 +254,6 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
         toast.error('Restore is not available in this client')
         return
       }
-
       try {
         const targetId = latestId(id)
         const latestResource = await queryClient.fetchQuery(queryResource(universalClient, targetId))
@@ -239,23 +263,22 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
           toast.info('This version is already the latest version')
           return
         }
-
         const changes = buildRestoreVersionChanges(latestDocument, selectedVersion)
         if (!changes.length) {
           toast.info('This version matches the latest version')
           return
         }
-
         let capability = ''
         if (selectedAccountId !== targetId.uid) {
-          const result = await universalClient.request('ListCapabilities', {targetId})
+          const result = await universalClient.request('ListCapabilities', {
+            targetId,
+          })
           const rawCapability = result.capabilities.find(
             (cap: any) => cap.delegate === selectedAccountId && String(cap.role || '').toUpperCase() === 'WRITER',
           )
           if (!rawCapability?.id) throw new Error('Could not find write capability for selected account')
           capability = rawCapability.id
         }
-
         await universalClient.publishDocument({
           signerAccountUid: selectedAccountId,
           account: targetId.uid,
@@ -267,18 +290,15 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
           genesis: latestDocument.genesis,
           generation: getRestoreVersionGeneration(latestDocument),
         })
-
         const draftId = getDraftId(targetId)
         if (draftId) {
           await client.drafts.delete.mutate(draftId)
         }
-
         invalidateQueries([queryKeys.ENTITY])
         invalidateQueries([queryKeys.ACTIVITY_FEED])
         invalidateQueries([queryKeys.DRAFTS_LIST])
         invalidateQueries([queryKeys.DRAFTS_LIST_ACCOUNT])
         if (draftId) invalidateQueries([queryKeys.DRAFT, draftId])
-
         navigate(replaceRouteDocumentId(currentRoute, targetId))
         toast.success('Document restored successfully')
       } catch (error) {
@@ -289,7 +309,6 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
     },
     [canWriteDocument, currentRoute, getDraftId, navigate, selectedAccountId, universalClient],
   )
-
   const value = useMemo(
     () => ({
       selectedAccountUid: selectedAccountId ?? undefined,
@@ -326,7 +345,6 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
       getDraft,
     ],
   )
-
   return (
     <DocumentActionsProvider {...value}>
       {children}

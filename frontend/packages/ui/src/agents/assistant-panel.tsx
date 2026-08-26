@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   addOptimisticSessionMessage,
   addOptimisticSessionToCaches,
@@ -89,6 +90,189 @@ import {SessionStatusDot, SessionSummaryBanner, SubSessionsDisclosure} from './s
  * web (mounted beside the site page, toggled from the account menu). Everything host-specific —
  * signing, navigation, the account, the rich editor — comes through the agents platform seam.
  */
+const styles = stylex.create({
+  s2f33c551: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s64953398: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s1d6e4106: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingInline: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sf0768e89: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  sfc2d1d6a: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+  },
+  s183f42f7: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    textAlign: 'center',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sece3df36: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 2)',
+    paddingBottom: 'calc(0.25rem * 1)',
+  },
+  s8e8abc0f: {
+    width: '100%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  s739b83e6: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(0.25rem * 1)',
+    display: 'flex',
+    flexDirection: 'column',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  s26a52803: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flexShrink: '0',
+  },
+  s4a58805: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+  },
+  sca3de966: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+  },
+  s2cbbeae1: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s8cb6e7fe: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '3',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s3484a3: {
+    paddingLeft: 'calc(0.25rem * 4)',
+  },
+  s8d50829d: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s3198255c: {
+    color: 'var(--destructive)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sa96f997f: {
+    position: 'relative',
+    flex: '1',
+    overflowY: 'auto',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sf4852f34: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sb56b7abc: {
+    pointerEvents: 'none',
+    position: 'sticky',
+    bottom: 'calc(0.25rem * 2)',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  s87cca2a6: {
+    backgroundColor: 'var(--muted)',
+    borderColor: 'var(--border)',
+    color: 'var(--foreground)',
+    pointerEvents: 'auto',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1.5)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+  },
+  s10106704: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBottom: 'calc(0.25rem * 2)',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
 export function AssistantPanel({
   initialSessionId,
   newChatRequest,
@@ -108,20 +292,20 @@ export function AssistantPanel({
   const agentQueries = useAgentLists(serverUrls.data, accountUid)
   const sessions = useAllAgentSessions(serverUrls.data, accountUid)
   const navigate = useNavigate()
-
   const spaceAgents = useSpaceAgents(accountUid)
-
   const agents: AssistantAgentOption[] = useMemo(
     () =>
       orderAssistantAgents(
         spaceAgents.agents,
         (serverUrls.data || []).flatMap((serverUrl, index) =>
-          (agentQueries[index]?.data || []).map((agent) => ({serverUrl, agent})),
+          (agentQueries[index]?.data || []).map((agent) => ({
+            serverUrl,
+            agent,
+          })),
         ),
       ),
     [serverUrls.data, agentQueries, spaceAgents.agents],
   )
-
   const [stored, setStoredRaw] = useState<AssistantSessionRef | null>(() => decodeAssistantSessionRef(initialSessionId))
   const [chosenAgent, setChosenAgent] = useState<AssistantAgentKey | null>(null)
   const [isDraft, setIsDraft] = useState(false)
@@ -132,7 +316,6 @@ export function AssistantPanel({
   // Shares its cache with the transcript below; used to attribute a restored session to its agent
   // before the session lists have loaded, and for the full-view navigation target.
   const storedSessionQuery = useAgentSession(stored?.serverUrl, accountUid, stored?.sessionId)
-
   const selection = resolveAssistantSelection({
     agents,
     sessions: sessions.entries,
@@ -141,7 +324,6 @@ export function AssistantPanel({
     storedSessionAgentId: storedSessionQuery.data?.session.agentId,
     isDraft,
   })
-
   const setStored = useCallback(
     (ref: AssistantSessionRef | null) => {
       setStoredRaw(ref)
@@ -161,12 +343,17 @@ export function AssistantPanel({
     const same = resolved?.serverUrl === stored?.serverUrl && resolved?.sessionId === stored?.sessionId
     if (!same && !(resolved === null && stored === null)) setStored(resolved)
   }, [selection.session, stored, setStored, isDraft])
-
   const focusInput = useCallback(() => {
-    composerRef.current?.focus({moveCursorToEnd: true})
-    requestAnimationFrame(() => composerRef.current?.focus({moveCursorToEnd: true}))
+    composerRef.current?.focus({
+      moveCursorToEnd: true,
+    })
+    requestAnimationFrame(
+      () =>
+        composerRef.current?.focus({
+          moveCursorToEnd: true,
+        }),
+    )
   }, [])
-
   const selectSession = useCallback(
     (ref: AssistantSessionRef) => {
       setIsDraft(false)
@@ -174,18 +361,15 @@ export function AssistantPanel({
     },
     [setStored],
   )
-
   const startDraft = useCallback(() => {
     setIsDraft(true)
     focusInput()
   }, [focusInput])
-
   useEffect(() => {
     if (!newChatRequest || newChatRequest === lastNewChatRequestRef.current) return
     lastNewChatRequestRef.current = newChatRequest
     startDraft()
   }, [newChatRequest, startDraft])
-
   const activeAgent = selection.agent
   const activeSession = selection.session
   const sessionEntry = activeSession
@@ -195,13 +379,13 @@ export function AssistantPanel({
     : undefined
   const sessionTitle = sessionEntry?.session.title || storedSessionQuery.data?.session.title
   const sessionAgentId = sessionEntry?.session.agentId || storedSessionQuery.data?.session.agentId
-
   const deleteSession = useDeleteAgentSession(activeSession?.serverUrl, accountUid)
-  const deleteDialog = useAppDialog(DeleteSessionDialog, {isAlert: true})
+  const deleteDialog = useAppDialog(DeleteSessionDialog, {
+    isAlert: true,
+  })
   const createAgentDialog = useAppDialog(CreateAgentDialog)
-
   return (
-    <div className="flex h-full flex-col">
+    <div className={stylex.props(styles.s2f33c551).className || ''}>
       {/* Account-wide live updates per server: session changes (titles, statuses) reach the
           sidebar the moment they happen, instead of waiting on the 5s background poll. */}
       {accountUid
@@ -225,17 +409,24 @@ export function AssistantPanel({
               // Creating from the sidebar stays in the sidebar: select the new agent's context and
               // open a draft so the user can talk to it immediately.
               onCreated: ({serverUrl, agentId}) => {
-                setChosenAgent({serverUrl, agentId})
+                setChosenAgent({
+                  serverUrl,
+                  agentId,
+                })
                 setIsDraft(true)
                 focusInput()
               },
             })
           }
-          onOpenAgentsPage={() => navigate({key: 'agents'})}
+          onOpenAgentsPage={() =>
+            navigate({
+              key: 'agents',
+            })
+          }
         />
         <div className="no-window-drag flex shrink-0 items-center">
           <button onClick={startDraft} className="text-muted-foreground hover:text-foreground p-1" title="New chat">
-            <MessageCirclePlus className="size-4" />
+            <MessageCirclePlus className={stylex.props(styles.sca3de968).className || ''} />
           </button>
           {onClose ? (
             <button
@@ -244,12 +435,12 @@ export function AssistantPanel({
               title="Close agents panel"
               aria-label="Close agents panel"
             >
-              <X className="size-4" />
+              <X className={stylex.props(styles.sca3de968).className || ''} />
             </button>
           ) : null}
         </div>
       </div>
-      <div className="border-border flex items-center gap-1 border-b px-2 py-1.5">
+      <div className={stylex.props(styles.s64953398).className || ''}>
         <AssistantSessionPicker
           entries={selection.agentSessions}
           isLoading={sessions.isLoading}
@@ -263,7 +454,7 @@ export function AssistantPanel({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="text-muted-foreground hover:text-foreground p-1" title="Chat options">
-                <MoreHorizontal className="size-3.5" />
+                <MoreHorizontal className={stylex.props(styles.s3269316e).className || ''} />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -279,7 +470,7 @@ export function AssistantPanel({
                   })
                 }
               >
-                <Maximize2 className="size-3.5" />
+                <Maximize2 className={stylex.props(styles.s3269316e).className || ''} />
                 Open
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -293,7 +484,7 @@ export function AssistantPanel({
                   toast.success('Session URL copied')
                 }}
               >
-                <Link2 className="size-3.5" />
+                <Link2 className={stylex.props(styles.s3269316e).className || ''} />
                 Copy URL
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -313,7 +504,7 @@ export function AssistantPanel({
                   })
                 }
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 className={stylex.props(styles.s3269316e).className || ''} />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -340,7 +531,7 @@ export function AssistantPanel({
           onSessionCreated={selectSession}
         />
       ) : (
-        <div className="text-muted-foreground flex flex-1 items-center justify-center px-4 text-center text-xs">
+        <div className={stylex.props(styles.s1d6e4106).className || ''}>
           {sessions.isLoading ? 'Loading…' : 'No agents yet. Create one from the Agents menu above.'}
         </div>
       )}
@@ -366,7 +557,6 @@ function AgentAccountLiveUpdates({serverUrl, accountUid}: {serverUrl: string; ac
   useAgentWebSocketSubscription(serverUrl, accountUid, `account/${accountUid}`)
   return null
 }
-
 function AssistantAgentPicker({
   agents,
   activeAgent,
@@ -386,7 +576,6 @@ function AssistantAgentPicker({
   onOpenAgentsPage: () => void
 }) {
   const [open, setOpen] = useState(false)
-
   const groups = useMemo(() => {
     const byServer = new Map<string, AssistantAgentOption[]>()
     for (const option of agents) {
@@ -394,9 +583,11 @@ function AssistantAgentPicker({
       if (list) list.push(option)
       else byServer.set(option.serverUrl, [option])
     }
-    return Array.from(byServer, ([serverUrl, options]) => ({serverUrl, options}))
+    return Array.from(byServer, ([serverUrl, options]) => ({
+      serverUrl,
+      options,
+    }))
   }, [agents])
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -404,20 +595,20 @@ function AssistantAgentPicker({
           type="button"
           className="no-window-drag hover:bg-muted flex max-w-full min-w-0 items-center gap-2 rounded px-1.5 py-1"
         >
-          <Bot className="text-muted-foreground size-4 shrink-0" />
+          <Bot className={stylex.props(styles.sf0768e89).className || ''} />
           <SizableText size="sm" className="min-w-0 truncate font-medium">
             {activeAgent?.agent.definition.name || 'Agents'}
           </SizableText>
-          <ChevronDown className="text-muted-foreground size-3 shrink-0" />
+          <ChevronDown className={stylex.props(styles.sfc2d1d6a).className || ''} />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="max-h-96 w-72 overflow-y-auto p-1">
         {groups.length === 0 ? (
-          <div className="text-muted-foreground px-2 py-3 text-center text-xs">No agents yet.</div>
+          <div className={stylex.props(styles.s183f42f7).className || ''}>No agents yet.</div>
         ) : (
           groups.map((group) => (
-            <div key={group.serverUrl} className="flex flex-col">
-              <div className="flex items-center gap-2 px-2 pt-2 pb-1">
+            <div key={group.serverUrl} className={stylex.props(styles.s783f19f3).className || ''}>
+              <div className={stylex.props(styles.sece3df36).className || ''}>
                 <span className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
                   {describeAgentServer(group.serverUrl, localServerUrl)}
                 </span>
@@ -437,11 +628,16 @@ function AssistantAgentPicker({
                       isActive ? 'bg-muted' : ''
                     }`}
                     onClick={() => {
-                      onSelect({serverUrl: option.serverUrl, agentId: option.agent.id})
+                      onSelect({
+                        serverUrl: option.serverUrl,
+                        agentId: option.agent.id,
+                      })
                       setOpen(false)
                     }}
                   >
-                    <span className="w-full truncate text-xs font-medium">{option.agent.definition.name}</span>
+                    <span className={stylex.props(styles.s8e8abc0f).className || ''}>
+                      {option.agent.definition.name}
+                    </span>
                     <span className="text-muted-foreground w-full truncate text-[10px]">
                       {option.agent.definition.model}
                     </span>
@@ -451,7 +647,7 @@ function AssistantAgentPicker({
             </div>
           ))
         )}
-        <div className="border-border mt-1 flex flex-col border-t pt-1">
+        <div className={stylex.props(styles.s739b83e6).className || ''}>
           <button
             type="button"
             className="hover:bg-muted text-foreground flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
@@ -460,7 +656,7 @@ function AssistantAgentPicker({
               onCreateAgent()
             }}
           >
-            <Plus className="text-muted-foreground size-3.5 shrink-0" />
+            <Plus className={stylex.props(styles.s26a52803).className || ''} />
             New agent
           </button>
           <button
@@ -471,7 +667,7 @@ function AssistantAgentPicker({
               onOpenAgentsPage()
             }}
           >
-            <LayoutGrid className="text-muted-foreground size-3.5 shrink-0" />
+            <LayoutGrid className={stylex.props(styles.s26a52803).className || ''} />
             Agents page
           </button>
         </div>
@@ -499,7 +695,6 @@ function AssistantSessionPicker({
   onSelect: (ref: AssistantSessionRef) => void
 }) {
   const [open, setOpen] = useState(false)
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -510,39 +705,52 @@ function AssistantSessionPicker({
           <span className="min-w-0 flex-1 truncate text-left">
             {isDraft ? 'New chat' : selectedTitle || 'Untitled session'}
           </span>
-          <ChevronDown className="size-3 shrink-0" />
+          <ChevronDown className={stylex.props(styles.s4a58805).className || ''} />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="max-h-80 w-72 overflow-y-auto p-1">
         {isLoading && entries.length === 0 ? (
-          <div className="text-muted-foreground px-2 py-3 text-center text-xs">Loading sessions…</div>
+          <div className={stylex.props(styles.s183f42f7).className || ''}>Loading sessions…</div>
         ) : entries.length === 0 ? (
-          <div className="text-muted-foreground px-2 py-3 text-center text-xs">No chats with this agent yet.</div>
+          <div className={stylex.props(styles.s183f42f7).className || ''}>No chats with this agent yet.</div>
         ) : (
           entries.map((entry) => {
             const isSelected = entry.serverUrl === selected?.serverUrl && entry.session.id === selected?.sessionId
             return (
-              <div key={`${entry.serverUrl}${entry.session.id}`} className="flex flex-col">
+              <div
+                key={`${entry.serverUrl}${entry.session.id}`}
+                className={stylex.props(styles.s783f19f3).className || ''}
+              >
                 <button
                   type="button"
                   className={`hover:bg-muted flex w-full items-center gap-2 rounded px-2 py-1.5 text-left ${
                     isSelected ? 'bg-muted' : ''
                   }`}
                   onClick={() => {
-                    onSelect({serverUrl: entry.serverUrl, sessionId: entry.session.id})
+                    onSelect({
+                      serverUrl: entry.serverUrl,
+                      sessionId: entry.session.id,
+                    })
                     setOpen(false)
                   }}
                 >
-                  <SessionStatusDot status={entry.session.status} className="size-2" />
+                  <SessionStatusDot
+                    status={entry.session.status}
+                    className={stylex.props(styles.sca3de966).className || ''}
+                  />
                   <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-xs">{entry.session.title || 'Untitled session'}</span>
+                    <span className={stylex.props(styles.s2cbbeae1).className || ''}>
+                      {entry.session.title || 'Untitled session'}
+                    </span>
                     {entry.session.description ? (
-                      <span className="text-muted-foreground line-clamp-3 text-xs">{entry.session.description}</span>
+                      <span className={stylex.props(styles.s8cb6e7fe).className || ''}>
+                        {entry.session.description}
+                      </span>
                     ) : null}
                   </span>
                 </button>
                 {entry.session.childSessionCount ? (
-                  <div className="pl-4">
+                  <div className={stylex.props(styles.s3484a3).className || ''}>
                     <SubSessionsDisclosure
                       compact
                       serverUrl={entry.serverUrl}
@@ -551,7 +759,10 @@ function AssistantSessionPicker({
                       childSessionCount={entry.session.childSessionCount}
                       selectedSessionId={entry.serverUrl === selected?.serverUrl ? selected?.sessionId : undefined}
                       onOpenSession={(child) => {
-                        onSelect({serverUrl: entry.serverUrl, sessionId: child.id})
+                        onSelect({
+                          serverUrl: entry.serverUrl,
+                          sessionId: child.id,
+                        })
                         setOpen(false)
                       }}
                     />
@@ -598,10 +809,8 @@ function AssistantDraftChat({
   const windowContextLines = useAssistantWindowContextLines()
   const windowContextLinesRef = useRef(windowContextLines)
   windowContextLinesRef.current = windowContextLines
-
   const [error, setError] = useState<string | null>(null)
   const isSendingRef = useRef(false)
-
   async function handleSend(message: AgentSessionDraftMessage) {
     // The composer already cleared itself; a second send racing the create must not open a second
     // session.
@@ -611,7 +820,10 @@ function AssistantDraftChat({
     try {
       // No title at creation: the agent names the session (status verb, with the server's fallback
       // namer behind it). 'New chat' is only the optimistic row's display label below.
-      const result = await createSession.mutateAsync({serverUrl, agentId})
+      const result = await createSession.mutateAsync({
+        serverUrl,
+        agentId,
+      })
       if (result._ !== 'CreateSessionResponse') throw new Error('Unexpected CreateSession response')
       // Seed the caches before selecting: the selection resolver can only keep the new session if
       // it can attribute it to this agent, and the list refetch has not landed yet.
@@ -627,23 +839,31 @@ function AssistantDraftChat({
       })
       // Send the stamped drafts, so the durable echo replaces the optimistic row by identity.
       const messages = addOptimisticSessionMessage(serverUrl, accountUid, result.sessionId, [
-        {...message, contextLines: windowContextLinesRef.current},
+        {
+          ...message,
+          contextLines: windowContextLinesRef.current,
+        },
       ])
-      messageSession.mutate({sessionId: result.sessionId, message: messages})
-      onSessionCreated({serverUrl, sessionId: result.sessionId})
+      messageSession.mutate({
+        sessionId: result.sessionId,
+        message: messages,
+      })
+      onSessionCreated({
+        serverUrl,
+        sessionId: result.sessionId,
+      })
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Could not start the chat')
     } finally {
       isSendingRef.current = false
     }
   }
-
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="text-muted-foreground flex flex-1 items-center justify-center px-4 text-center text-xs">
+    <div className={stylex.props(styles.s8d50829d).className || ''}>
+      <div className={stylex.props(styles.s1d6e4106).className || ''}>
         {`Send a message to start chatting with ${agentName}`}
       </div>
-      {error ? <div className="text-destructive px-3 py-1 text-xs">{error}</div> : null}
+      {error ? <div className={stylex.props(styles.s3198255c).className || ''}>{error}</div> : null}
       {/* No sessionId yet: attachments and the tool palette unlock once the first send creates
           the session. A draft is always user-initiated, so the composer takes focus on mount. */}
       <AgentRichMessageComposer
@@ -684,7 +904,6 @@ function AssistantSessionChat({
   const windowContextLines = useAssistantWindowContextLines()
   const windowContextLinesRef = useRef(windowContextLines)
   windowContextLinesRef.current = windowContextLines
-
   const autoScroll = useChatAutoScroll()
 
   // Chatters (public chat) may send; only owners/writers may control runs, switch the model, or
@@ -729,7 +948,6 @@ function AssistantSessionChat({
   )
   // Which runs the scroll already owns, so the pinned slot does not tell the same story twice.
   const frozenRuns = useMemo(() => frozenRunIds(rows), [rows])
-
   const doSendMessage = useCallback(
     (message: AgentSessionDraftMessage | AgentSessionDraftMessage[]) => {
       if (!accountUid) return
@@ -740,10 +958,18 @@ function AssistantSessionChat({
         accountUid,
         sessionId,
         (Array.isArray(message) ? message : [message]).map((message, index) =>
-          index === 0 && contextLines ? {...message, contextLines} : message,
+          index === 0 && contextLines
+            ? {
+                ...message,
+                contextLines,
+              }
+            : message,
         ),
       )
-      messageSession.mutate({sessionId, message: messages})
+      messageSession.mutate({
+        sessionId,
+        message: messages,
+      })
     },
     [accountUid, messageSession, serverUrl, sessionId],
   )
@@ -756,11 +982,9 @@ function AssistantSessionChat({
       onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not retry this turn'),
     })
   }, [retrySession, sessionId])
-
   function handleSend(message: AgentSessionDraftMessage) {
     doSendMessage(message)
   }
-
   async function handleStop() {
     try {
       const result = await stopSession.mutateAsync(sessionId)
@@ -769,20 +993,17 @@ function AssistantSessionChat({
       toast.error(error instanceof Error ? error.message : 'Could not stop agent response')
     }
   }
-
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className={stylex.props(styles.s8d50829d).className || ''}>
       <SessionSummaryBanner compact description={session.data?.session.description} />
       <div
         ref={autoScroll.containerRef}
         onScroll={autoScroll.handleScroll}
-        className="relative flex-1 overflow-y-auto px-3 py-2"
+        className={stylex.props(styles.sa96f997f).className || ''}
       >
         <div ref={autoScroll.contentRef} className="flex min-h-full flex-col">
           {rows.length === 0 && !isStreaming ? (
-            <div className="text-muted-foreground flex flex-1 items-center justify-center text-xs">
-              Send a message to start chatting
-            </div>
+            <div className={stylex.props(styles.sf4852f34).className || ''}>Send a message to start chatting</div>
           ) : null}
           {rows.map((row) => {
             if (row.kind === 'message')
@@ -816,7 +1037,12 @@ function AssistantSessionChat({
                   runId={row.run.id}
                   plan={row.plan}
                   onOpenSession={(childSessionId, childAgentId) =>
-                    navigate({key: 'agent-session', agentId: childAgentId, sessionId: childSessionId, serverUrl})
+                    navigate({
+                      key: 'agent-session',
+                      agentId: childAgentId,
+                      sessionId: childSessionId,
+                      serverUrl,
+                    })
                   }
                 />
               )
@@ -824,20 +1050,28 @@ function AssistantSessionChat({
             return null
           })}
           {live.text ? (
-            <AssistantMessageParts parts={[{type: 'text', text: live.text}]} isStreaming={isStreaming} />
+            <AssistantMessageParts
+              parts={[
+                {
+                  type: 'text',
+                  text: live.text,
+                },
+              ]}
+              isStreaming={isStreaming}
+            />
           ) : null}
           {isStreaming && !(live.activity?.phase === 'tool' && rows.some(chatRowHasPendingToolCall)) ? (
             // Hidden while a pending tool row is showing its own live status, to avoid two spinners.
             <AgentRunStatusBar startedAt={runStartedAt} activity={live.activity} usage={live.usage} />
           ) : null}
           {autoScroll.showScrollButton ? (
-            <div className="pointer-events-none sticky bottom-2 flex justify-center">
+            <div className={stylex.props(styles.sb56b7abc).className || ''}>
               <button
                 onClick={autoScroll.scrollToBottom}
-                className="bg-muted border-border text-foreground pointer-events-auto rounded-full border p-1.5 shadow-lg"
+                className={stylex.props(styles.s87cca2a6).className || ''}
                 aria-label="Scroll to latest message"
               >
-                <ArrowDown className="size-4" />
+                <ArrowDown className={stylex.props(styles.sca3de968).className || ''} />
               </button>
             </div>
           ) : null}
@@ -853,7 +1087,12 @@ function AssistantSessionChat({
         frozenRunIds={frozenRuns}
         readOnly={!canWrite}
         onOpenSession={(childSessionId, childAgentId) =>
-          navigate({key: 'agent-session', agentId: childAgentId, sessionId: childSessionId, serverUrl})
+          navigate({
+            key: 'agent-session',
+            agentId: childAgentId,
+            sessionId: childSessionId,
+            serverUrl,
+          })
         }
       />
 
@@ -885,7 +1124,7 @@ function AssistantSessionChat({
       {/* The active model for THIS session: the same per-session override switcher as the full
           session page, so changing it here never touches the agent's default. */}
       {session.data ? (
-        <div className="flex flex-none items-center justify-end px-3 pb-2">
+        <div className={stylex.props(styles.s10106704).className || ''}>
           <SessionModelBadge
             agent={agentDetail.data?.agent}
             agentId={session.data.session.agentId}
@@ -907,15 +1146,18 @@ export function DeleteSessionDialog({
   input,
 }: {
   onClose: () => void
-  input: {sessionTitle?: string; onConfirm: () => void}
+  input: {
+    sessionTitle?: string
+    onConfirm: () => void
+  }
 }) {
   return (
     <>
       <AlertDialogTitle>Delete Chat</AlertDialogTitle>
-      <SizableText className="text-muted-foreground text-sm">
+      <SizableText className={stylex.props(styles.sa56e915f).className || ''}>
         {input.sessionTitle ? `Permanently delete "${input.sessionTitle}"?` : 'Permanently delete this chat?'}
       </SizableText>
-      <AlertDialogFooter className="flex-col">
+      <AlertDialogFooter className={stylex.props(styles.s67e351ac).className || ''}>
         <Button onClick={onClose} variant="ghost">
           Cancel
         </Button>

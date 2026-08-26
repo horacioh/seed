@@ -1,46 +1,125 @@
+import * as stylex from '@stylexjs/stylex'
 import 'katex/dist/katex.min.css'
 import {Button} from './button'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s5cf3d507: {
+    marginInline: 'calc(0.25rem * -2)',
+    display: 'flex',
+    width: '100%',
+    flexWrap: 'wrap',
+  },
+  s9ecf71fb: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s556cad3e: {
+    backgroundColor: 'var(--muted)',
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s486e68e8: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  s21835087: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s9f4cda1a: {
+    overflow: 'hidden',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s2ff5a9: {
+    height: 'calc(0.25rem * 15)',
+  },
+  s731a65c3: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sd06f99bc: {
+    display: 'flex',
+    width: '100%',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s535dddab: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s79cac5df: {
+    fontFamily: 'var(--font-sans)',
+    fontStyle: 'italic',
+  },
+})
 export function QueryBlockPlaceholder({styleType}: {styleType: 'Card' | 'List'}) {
   if (styleType === 'Card') {
     return <QueryBlockCardPlaceholder />
   }
-
   return <QueryBlockListPlaceholder />
 }
-
 export function QueryBlockCardPlaceholder() {
   return (
-    <div className="-mx-2 flex w-full flex-wrap">
+    <div className={stylex.props(styles.s5cf3d507).className || ''}>
       <EntityCardPlaceholder />
       <EntityCardPlaceholder />
       <EntityCardPlaceholder />
     </div>
   )
 }
-
 export function QueryBlockListPlaceholder() {
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className={stylex.props(styles.s9ecf71fb).className || ''}>
       <ListItemSkeleton />
       <ListItemSkeleton />
       <ListItemSkeleton />
     </div>
   )
 }
-
 export function EntityCardPlaceholder() {
   return (
     <div className="flex-basis-full sm:flex-basis-1/2 md:flex-basis-1/3 flex-none flex-shrink-0 p-2">
-      <div className="bg-muted border-border flex flex-1 flex-col overflow-hidden rounded-lg border">
+      <div className={stylex.props(styles.s556cad3e).className || ''}>
         <CoverPlaceholder />
-        <div className="flex flex-1 flex-col">
-          <div className="flex flex-col gap-4 p-4">
+        <div className={stylex.props(styles.s486e68e8).className || ''}>
+          <div className={stylex.props(styles.s21835087).className || ''}>
             {/* document name */}
-            <div className="flex flex-col gap-2">
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               <TextPlaceholder height={24} />
               <TextPlaceholder height={24} width="70%" />
             </div>
@@ -48,7 +127,7 @@ export function EntityCardPlaceholder() {
             {/* location and author */}
             <TextPlaceholder height={14} width="35%" />
 
-            <div className="flex flex-col gap-2">
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               <TextPlaceholder height={12} />
               <TextPlaceholder height={12} width="75%" />
               <TextPlaceholder height={12} width="80%" />
@@ -60,11 +139,9 @@ export function EntityCardPlaceholder() {
     </div>
   )
 }
-
 function CoverPlaceholder() {
   return <div className="bg-muted-foreground/20 h-[180px] w-full" />
 }
-
 function TextPlaceholder({
   height = 16,
   width = '100%',
@@ -76,7 +153,7 @@ function TextPlaceholder({
 }) {
   return (
     <div
-      className={cn('overflow-hidden rounded-full', color)}
+      className={cn(stylex.props(styles.s9f4cda1a).className || '', color)}
       style={{
         height: typeof height === 'number' ? `${height}px` : height,
         width: typeof width === 'number' ? `${width}px` : width,
@@ -84,30 +161,28 @@ function TextPlaceholder({
     />
   )
 }
-
 export function ListItemSkeleton() {
   return (
-    <Button variant="ghost" disabled className="h-15">
+    <Button variant="ghost" disabled className={stylex.props(styles.s2ff5a9).className || ''}>
       <Skeleton width={28} height={28} borderRadius={28} />
 
-      <div className="flex flex-1 flex-col gap-2">
-        <div className="flex items-center gap-2">
+      <div className={stylex.props(styles.s731a65c3).className || ''}>
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <Skeleton w="100%" maxWidth={300} height={20} borderRadius="$1" />
         </div>
-        <div className="flex w-full gap-2 overflow-hidden">
+        <div className={stylex.props(styles.sd06f99bc).className || ''}>
           <Skeleton w="100%" maxWidth={200} height={14} borderRadius="$1" />
         </div>
       </div>
       <Skeleton w="100%" maxWidth={80} height={20} borderRadius="$1" />
 
-      <div className="flex">
+      <div className={stylex.props(styles.s2ffff9).className || ''}>
         <Skeleton width={24} height={24} borderRadius={100} />
         <Skeleton width={24} height={24} borderRadius={100} marginLeft={-8} />
       </div>
     </Button>
   )
 }
-
 function Skeleton(
   props: React.HTMLAttributes<HTMLDivElement> & {
     w?: string | number
@@ -134,12 +209,11 @@ function Skeleton(
     />
   )
 }
-
 export function BlankQueryBlockMessage({message, loading = false}: {message: string; loading?: boolean}) {
   return (
-    <div className="bg-muted flex items-center gap-2 rounded-lg p-4">
-      {loading ? <Spinner size="small" className="text-muted-foreground" /> : null}
-      <SizableText size="lg" color="muted" weight="bold" className="font-sans italic">
+    <div className={stylex.props(styles.s535dddab).className || ''}>
+      {loading ? <Spinner size="small" className={stylex.props(styles.sf2718385).className || ''} /> : null}
+      <SizableText size="lg" color="muted" weight="bold" className={stylex.props(styles.s79cac5df).className || ''}>
         {message}
       </SizableText>
     </div>

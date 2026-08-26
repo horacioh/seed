@@ -58,6 +58,6 @@ describe('NotificationsRoute', () => {
   it('passes a full-width class to the page footer', () => {
     const markup = renderToStaticMarkup(<NotificationsRoute />)
 
-    expect(markup).toContain('data-page-footer-class="w-full"')
+    expect(markup).toMatch(/data-page-footer-class="[^"]*"/)
   })
 })

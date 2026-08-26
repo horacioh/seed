@@ -1,7 +1,7 @@
 import {vitePlugin as remix} from '@remix-run/dev'
 // @ts-ignore
 import {sentryVitePlugin} from '@sentry/vite-plugin'
-import tailwindcss from '@tailwindcss/vite'
+import stylex from '@stylexjs/unplugin'
 
 import * as path from 'path'
 import {defineConfig} from 'vite'
@@ -43,10 +43,16 @@ export default defineConfig(({isSsrBuild}) => {
           : ['expo-linear-gradient', 'react-icons', '@shm/editor', '@shm/shared', '@remix-run/react'],
     },
     plugins: [
+      // StyleX must run before framework plugins and have a root CSS entry it can
+      // append generated styles to. Route-level CSS chunks are not loaded by every
+      // route, so we force all atomic StyleX CSS into the global `root-*.css` asset
+      // that the Remix root route loads for every page.
+      stylex.vite({
+        cssInjectionTarget: (fileName: string) => /(^|\/)root(-[A-Za-z0-9_.-]+)?\.css$/.test(fileName),
+      }),
       remix(),
       envOnlyMacros(),
       tsconfigPaths({root: path.resolve(__dirname, '../..')}),
-      tailwindcss(),
       process.env.NODE_ENV === 'production' &&
         process.env.SENTRY_AUTH_TOKEN &&
         sentryVitePlugin({

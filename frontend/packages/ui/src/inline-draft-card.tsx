@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMListedDraft} from '@seed-hypermedia/client/hm-types'
 import {ImageIcon, MoreVertical, Forward, Pencil, Trash2} from 'lucide-react'
 import {useCallback, useEffect, useRef, useState} from 'react'
@@ -5,7 +6,40 @@ import {Button} from './button'
 import {DraftBadge} from './draft-badge'
 import {OptionsDropdown} from './options-dropdown'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s6e8f8a6d: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 12)',
+    height: 'calc(0.25rem * 12)',
+    opacity: '30%',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s2f003150: {
+    marginTop: 'calc(0.25rem * 2)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s7e411b84: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBlock: 'calc(0.25rem * 3)',
+    paddingRight: 'calc(0.25rem * 2)',
+    paddingLeft: 'calc(0.25rem * 4)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export interface InlineDraftCardProps {
   draft: HMListedDraft
   autoFocus?: boolean
@@ -15,7 +49,6 @@ export interface InlineDraftCardProps {
   onMoveDraft?: (draftId: string) => void
   onUpdateDraftName: (draftId: string, name: string) => void
 }
-
 export function InlineDraftCard({
   draft,
   autoFocus,
@@ -29,10 +62,12 @@ export function InlineDraftCard({
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
-
   useEffect(() => {
     if (!autoFocus || !containerRef.current) return
-    containerRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest'})
+    containerRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    })
     const timer = setTimeout(() => {
       inputRef.current?.focus()
     }, 300)
@@ -43,7 +78,6 @@ export function InlineDraftCard({
   useEffect(() => {
     setTitle(draft.metadata?.name || '')
   }, [draft.metadata?.name])
-
   const saveName = useCallback(
     (name: string) => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
@@ -60,7 +94,6 @@ export function InlineDraftCard({
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     }
   }, [])
-
   const openDraft = useCallback(() => {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current)
@@ -69,13 +102,11 @@ export function InlineDraftCard({
     onUpdateDraftName(draft.id, title)
     onOpenDraft(draft.id)
   }, [draft.id, title, onOpenDraft, onUpdateDraftName])
-
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setTitle(val)
     saveName(val)
   }
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation()
     if (e.key === 'Enter') {
@@ -87,7 +118,6 @@ export function InlineDraftCard({
       inputRef.current?.blur()
     }
   }
-
   return (
     <div
       ref={containerRef}
@@ -108,12 +138,12 @@ export function InlineDraftCard({
             banner && '@md:h-auto',
           )}
         >
-          <ImageIcon className="text-muted-foreground size-12 opacity-30" />
+          <ImageIcon className={stylex.props(styles.s6e8f8a6d).className || ''} />
         </div>
         {/* Content */}
         <div className="flex min-h-0 flex-1 flex-col justify-between">
-          <div className="p-4">
-            <div className="flex items-center gap-2">
+          <div className={stylex.props(styles.s1aa17).className || ''}>
+            <div className={stylex.props(styles.s86ff3e4).className || ''}>
               <input
                 ref={inputRef}
                 type="text"
@@ -128,23 +158,23 @@ export function InlineDraftCard({
                 )}
               />
             </div>
-            <div className="mt-2 flex items-center gap-2">
+            <div className={stylex.props(styles.s2f003150).className || ''}>
               <DraftBadge />
             </div>
           </div>
-          <div className="flex items-center justify-end py-3 pr-2 pl-4" onClick={(e) => e.stopPropagation()}>
+          <div className={stylex.props(styles.s7e411b84).className || ''} onClick={(e) => e.stopPropagation()}>
             <OptionsDropdown
               align="end"
               button={
                 <Button variant="ghost" size="iconSm" aria-label="Draft options">
-                  <MoreVertical className="size-4" />
+                  <MoreVertical className={stylex.props(styles.sca3de968).className || ''} />
                 </Button>
               }
               menuItems={[
                 {
                   key: 'open',
                   label: 'Open Draft',
-                  icon: <Pencil className="size-4" />,
+                  icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
                   onClick: openDraft,
                 },
                 ...(onMoveDraft
@@ -152,7 +182,7 @@ export function InlineDraftCard({
                       {
                         key: 'move',
                         label: 'Move',
-                        icon: <Forward className="size-4" />,
+                        icon: <Forward className={stylex.props(styles.sca3de968).className || ''} />,
                         onClick: () => onMoveDraft(draft.id),
                       },
                     ]
@@ -160,7 +190,7 @@ export function InlineDraftCard({
                 {
                   key: 'delete',
                   label: 'Delete Draft',
-                  icon: <Trash2 className="size-4" />,
+                  icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
                   variant: 'destructive',
                   onClick: () => onDeleteDraft(draft.id),
                 },

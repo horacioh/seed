@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {CloseButton, WindowsLinuxWindowControls} from '@/components/window-controls'
 import {useSidebarContext, useSidebarWidth} from '@/sidebar-context'
 import {useStream} from '@shm/shared/use-stream'
@@ -7,12 +8,24 @@ import {NavigationButtons, NavMenuButton, Omnibar, PageActionButtons} from './ti
 import {TitlebarMainRow} from './titlebar-layout'
 import './titlebar-windows-linux.css'
 import {SystemMenu} from './windows-linux-titlebar'
-
+const styles = stylex.create({
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  s517412d1: {
+    borderBottomColor: 'var(--border)',
+    display: 'flex',
+    height: 'calc(0.25rem * 6)',
+    alignItems: 'center',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+})
 export default function TitleBarWindows(props: TitleBarProps) {
   const sidebarWidth = useSidebarWidth()
   const sidebarContext = useSidebarContext()
   const isSidebarLocked = !!useStream(sidebarContext.isLocked)
-
   if (props.clean) {
     return (
       <TitlebarWrapper className="min-h-0">
@@ -29,7 +42,6 @@ export default function TitleBarWindows(props: TitleBarProps) {
       </TitlebarWrapper>
     )
   }
-
   return (
     <WindowsLinuxTitleBar
       content={
@@ -45,12 +57,11 @@ export default function TitleBarWindows(props: TitleBarProps) {
     />
   )
 }
-
 export function WindowsLinuxTitleBar({content, platform}: {content: React.ReactNode; platform?: string}) {
   return (
-    <div className="flex flex-col">
+    <div className={stylex.props(styles.s783f19f3).className || ''}>
       <div
-        className="border-b-border flex h-6 items-center border-b"
+        className={stylex.props(styles.s517412d1).className || ''}
         style={{
           backgroundColor: 'var(--background)',
         }}

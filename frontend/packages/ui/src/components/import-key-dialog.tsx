@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useEffect, useState, type FormEvent, type ReactNode} from 'react'
 import {Button} from '../button'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from './dialog'
@@ -19,6 +20,23 @@ import {Label} from './label'
  * - `warning` renders destination-specific stakes (e.g. "this key will be sent
  *   to a remote server") between the file field and the submit controls.
  */
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s11c1d1bc: {
+    color: 'var(--destructive)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 export function ImportKeyDialog({
   open,
   onOpenChange,
@@ -41,7 +59,6 @@ export function ImportKeyDialog({
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isImporting, setIsImporting] = useState(false)
-
   useEffect(() => {
     if (!open) {
       setPassword('')
@@ -49,7 +66,6 @@ export function ImportKeyDialog({
       setIsImporting(false)
     }
   }, [open])
-
   async function handleSubmit(event?: FormEvent) {
     event?.preventDefault()
     if (!hasFile) {
@@ -67,7 +83,6 @@ export function ImportKeyDialog({
       setIsImporting(false)
     }
   }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[420px]">
@@ -75,9 +90,11 @@ export function ImportKeyDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          {renderFileField({clearError: () => setError(null)})}
-          <div className="flex flex-col gap-2">
+        <form className={stylex.props(styles.sfbc6e290).className || ''} onSubmit={handleSubmit}>
+          {renderFileField({
+            clearError: () => setError(null),
+          })}
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <Label htmlFor="import-key-password">Password (optional)</Label>
             <Input
               id="import-key-password"
@@ -93,7 +110,7 @@ export function ImportKeyDialog({
               {warning}
             </div>
           ) : null}
-          {error ? <p className="text-destructive text-sm">{error}</p> : null}
+          {error ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{error}</p> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {unpackHmId} from '@shm/shared'
 import {ArrowDownRight, ChevronDown, ChevronRight} from 'lucide-react'
 import {ComponentProps, ReactNode, useState} from 'react'
@@ -8,7 +9,31 @@ import {MenuItemType, OptionsDropdown} from './options-dropdown'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  saa18cb42: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+    padding: 'calc(0.25rem * 1)',
+  },
+  sf2746014: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    overflow: 'hidden',
+  },
+  s421c6cb4: {
+    position: 'absolute',
+    left: 'calc(0.25rem * -6)',
+  },
+})
 export function FocusButton({onPress, label}: {onPress: () => void; label?: string}) {
   return (
     <Tooltip content={label ? `Focus ${label}` : 'Focus'}>
@@ -19,12 +44,11 @@ export function FocusButton({onPress, label}: {onPress: () => void; label?: stri
         }}
         size="sm"
       >
-        <ArrowDownRight className="size-3" />
+        <ArrowDownRight className={stylex.props(styles.sca3de967).className || ''} />
       </Button>
     </Tooltip>
   )
 }
-
 export function SmallListItem({
   disabled,
   title,
@@ -64,7 +88,6 @@ export function SmallListItem({
 }) {
   const indent = indented ? (typeof indented === 'number' ? indented : 1) : 0
   const highlighter = useHighlighter()
-
   return (
     <Button
       className={cn(
@@ -80,11 +103,11 @@ export function SmallListItem({
       {...(docId ? highlighter(unpackHmId(docId)!) : {})}
       {...props}
     >
-      <div className="flex flex-1 items-center gap-2 overflow-hidden p-1">
+      <div className={stylex.props(styles.saa18cb42).className || ''}>
         {icon}
         {children}
         {title || isDraft || accessory ? (
-          <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
+          <div className={stylex.props(styles.sf2746014).className || ''}>
             <SizableText
               size="sm"
               className={cn(
@@ -107,7 +130,7 @@ export function SmallListItem({
       </div>
       {isCollapsed != null ? (
         <Button
-          className="absolute -left-6"
+          className={stylex.props(styles.s421c6cb4).className || ''}
           size="sm"
           onClick={(e) => {
             e.stopPropagation()
@@ -115,7 +138,11 @@ export function SmallListItem({
             onSetCollapsed?.(!isCollapsed)
           }}
         >
-          {isCollapsed ? <ChevronRight className="size-3" /> : <ChevronDown className="size-3" />}
+          {isCollapsed ? (
+            <ChevronRight className={stylex.props(styles.sca3de967).className || ''} />
+          ) : (
+            <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
+          )}
         </Button>
       ) : null}
 
@@ -128,7 +155,6 @@ export function SmallListItem({
     </Button>
   )
 }
-
 export function SmallListGroupItem({
   items,
   defaultExpanded,

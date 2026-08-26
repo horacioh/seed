@@ -1,14 +1,38 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMAccountsMetadata, HMDocumentInfo, HMQueryBlockItemSummary} from '@seed-hypermedia/client/hm-types'
 import {ReactNode, useEffect, useRef, useState} from 'react'
 import {DocumentCardGrid} from './blocks-content-utils'
 import {DocumentListItem} from './document-list-item'
 import {Spinner} from './spinner'
 import {QueryBlockTable, type QueryBlockTableProps} from './query-block-table'
-
+const styles = stylex.create({
+  s71f4be97: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(0.25rem * 4)',
+    fontFamily: 'var(--font-sans)',
+  },
+  sb9bd3a30: {
+    fontStyle: 'italic',
+  },
+  s2f2c95e7: {
+    marginBlock: 'calc(0.25rem * 4)',
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s18c11: {
+    height: 'calc(0.25rem * 6)',
+  },
+})
 const INITIAL_LIST_CHUNK_SIZE = 25
 const LIST_CHUNK_SIZE = 25
 const LIST_CHUNK_ROOT_MARGIN = '800px 0px'
-
 export interface QueryBlockContentProps {
   items: HMDocumentInfo[]
   style: 'Card' | 'List' | 'Table'
@@ -30,7 +54,6 @@ export interface QueryBlockContentProps {
   tableSorting?: QueryBlockTableProps['sorting']
   onTableSortingChange?: QueryBlockTableProps['onSortingChange']
 }
-
 export function QueryBlockContent({
   items,
   style,
@@ -80,7 +103,6 @@ export function QueryBlockContent({
       />
     )
   }
-
   return (
     <QueryBlockListView
       items={items}
@@ -92,7 +114,6 @@ export function QueryBlockContent({
     />
   )
 }
-
 function QueryBlockCardView({
   items,
   banner,
@@ -120,9 +141,7 @@ function QueryBlockCardView({
 }) {
   const firstItem = banner && !bannerContent ? items[0] : undefined
   const restItems = banner && !bannerContent ? items.slice(1) : items
-
   const columnCountNum = typeof columnCount === 'string' ? parseInt(columnCount, 10) : columnCount
-
   return (
     <DocumentCardGrid
       firstItem={firstItem}
@@ -139,7 +158,6 @@ function QueryBlockCardView({
     />
   )
 }
-
 function QueryBlockListView({
   items,
   accountsMetadata,
@@ -158,48 +176,42 @@ function QueryBlockListView({
   const hasPrependItems = prependItems && prependItems.length > 0
   const [visibleCount, setVisibleCount] = useState(() => Math.min(items.length, INITIAL_LIST_CHUNK_SIZE))
   const loadMoreRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     setVisibleCount(Math.min(items.length, INITIAL_LIST_CHUNK_SIZE))
   }, [items])
-
   useEffect(() => {
     if (visibleCount >= items.length) return
     if (typeof IntersectionObserver === 'undefined') {
       setVisibleCount(items.length)
       return
     }
-
     const el = loadMoreRef.current
     if (!el) return
-
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
         if (!entry?.isIntersecting) return
         setVisibleCount((count) => Math.min(items.length, count + LIST_CHUNK_SIZE))
       },
-      {rootMargin: LIST_CHUNK_ROOT_MARGIN},
+      {
+        rootMargin: LIST_CHUNK_ROOT_MARGIN,
+      },
     )
-
     observer.observe(el)
     return () => observer.disconnect()
   }, [items.length, visibleCount])
-
   if (items.length === 0 && !hasPrependItems && isDiscovering) {
     return (
-      <div className="bg-muted text-muted-foreground flex items-center gap-2 rounded-lg p-4 font-sans">
+      <div className={stylex.props(styles.s71f4be97).className || ''}>
         <Spinner size="small" />
-        <span className="italic">Searching for documents…</span>
+        <span className={stylex.props(styles.sb9bd3a30).className || ''}>Searching for documents…</span>
       </div>
     )
   }
-
   const visibleItems = items.slice(0, visibleCount)
   const hasMoreItems = visibleCount < items.length
-
   return (
-    <div className="my-4 flex w-full flex-col gap-1">
+    <div className={stylex.props(styles.s2f2c95e7).className || ''}>
       {prependItems}
       {visibleItems.map((item) => {
         return (
@@ -212,7 +224,9 @@ function QueryBlockListView({
           />
         )
       })}
-      {hasMoreItems ? <div ref={loadMoreRef} className="h-6" aria-hidden="true" /> : null}
+      {hasMoreItems ? (
+        <div ref={loadMoreRef} className={stylex.props(styles.s18c11).className || ''} aria-hidden="true" />
+      ) : null}
     </div>
   )
 }

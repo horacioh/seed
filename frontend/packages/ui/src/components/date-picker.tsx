@@ -1,13 +1,36 @@
 'use client'
 
+import * as stylex from '@stylexjs/stylex'
 import {Calendar as CalendarIcon, X} from 'lucide-react'
 import * as React from 'react'
-
 import {Button} from '../button'
 import {cn} from '../utils'
 import {Calendar} from './calendar'
 import {Popover, PopoverContent, PopoverTrigger} from './popover'
-
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  se1f6a2b6: {
+    width: '100%',
+    justifyContent: 'flex-start',
+    textAlign: 'left',
+    fontWeight: '400',
+  },
+  sef1c143e: {
+    marginRight: 'calc(0.25rem * 2)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sf3d4bcb8: {
+    width: 'auto',
+    padding: 'calc(0.25rem * 0)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export interface DatePickerProps {
   value: string
   onValue: (value: string) => void
@@ -15,7 +38,6 @@ export interface DatePickerProps {
   placeholder?: string
   className?: string
 }
-
 export function DatePicker({value, onValue, onReset, placeholder = 'Select date', className}: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -35,7 +57,6 @@ export function DatePicker({value, onValue, onReset, placeholder = 'Select date'
       day: 'numeric',
     })
   }
-
   const handleDateSelect = (date: Date | undefined) => {
     if (!date) {
       onReset()
@@ -47,30 +68,28 @@ export function DatePicker({value, onValue, onReset, placeholder = 'Select date'
     }
     setOpen(false)
   }
-
   const handleReset = (e: React.MouseEvent) => {
     e.stopPropagation()
     onReset()
   }
-
   return (
     <div className={cn('flex w-full min-w-full items-center sm:min-w-0', className)}>
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger className="w-full">
+        <PopoverTrigger className={stylex.props(styles.scdbaf625).className || ''}>
           <Button
-            className={cn('w-full justify-start text-left font-normal', !selectedDate && 'text-muted-foreground')}
+            className={cn(stylex.props(styles.se1f6a2b6).className || '', !selectedDate && 'text-muted-foreground')}
           >
-            <CalendarIcon className="mr-2 size-4" />
+            <CalendarIcon className={stylex.props(styles.sef1c143e).className || ''} />
             {selectedDate ? formatDate(selectedDate) : placeholder}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className={stylex.props(styles.sf3d4bcb8).className || ''} align="start">
           <Calendar mode="single" selected={selectedDate} onSelect={handleDateSelect} captionLayout="dropdown" />
         </PopoverContent>
       </Popover>
       {selectedDate && (
         <Button onClick={handleReset}>
-          <X className="size-4" />
+          <X className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       )}
     </div>

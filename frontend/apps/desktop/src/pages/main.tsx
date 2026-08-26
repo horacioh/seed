@@ -1,5 +1,5 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAppContext, useListen} from '@/app-context'
-
 import {CloseButton} from '@/components/window-controls'
 import appError from '@/errors'
 import {ipc} from '@/ipc'
@@ -40,7 +40,38 @@ import {WindowTitle} from '../components/window-title'
 import {BaseLoading, NotFoundPage} from './base'
 import {DocumentPlaceholder} from './document-placeholder'
 import './polyfills'
-
+const styles = stylex.create({
+  s112d13d8: {
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+  s2f33c551: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+  },
+  s3484a0: {
+    paddingLeft: 'calc(0.25rem * 1)',
+  },
+  s7c401f0b: {
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s8474ee54: {
+    display: 'flex',
+    flex: '1',
+    overflow: 'hidden',
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+})
 var Onboarding = lazy(() => import('./onboarding'))
 var Settings = lazy(() => import('./settings'))
 var AccountSettings = lazy(() => import('./account-settings'))
@@ -78,7 +109,12 @@ function DraftRouteRedirect() {
     const inlineUid = route.editUid || route.locationUid
     if (inlineUid) {
       const inlinePath = route.editUid ? route.editPath : route.locationPath
-      replace({key: 'document', id: hmId(inlineUid, {path: inlinePath ?? []})})
+      replace({
+        key: 'document',
+        id: hmId(inlineUid, {
+          path: inlinePath ?? [],
+        }),
+      })
       return
     }
     if (draftQuery.isLoading) return
@@ -92,7 +128,10 @@ function DraftRouteRedirect() {
       replace(defaultRoute)
       return
     }
-    replace({key: 'document', id: targetId})
+    replace({
+      key: 'document',
+      id: targetId,
+    })
   }, [route, draftQuery.isLoading, draftQuery.data, replace])
   return <DocumentPlaceholder />
 }
@@ -131,11 +170,12 @@ export default function Main({className}: {className?: string}) {
   const {hasAgents, isSettled: agentsSettled} = useHasAnyAgent(agentServerUrls.data, selectedAccountId)
   const isAssistantAvailable = hasAgents || !agentsSettled
   const shouldRenderAssistantPanel = assistantOpen && isAssistantAvailable
-
   const sendAssistantState = useCallback((open: boolean, sessionId: string | null) => {
-    ipc.send('windowAssistantState', {assistantOpen: open, assistantSessionId: sessionId})
+    ipc.send('windowAssistantState', {
+      assistantOpen: open,
+      assistantSessionId: sessionId,
+    })
   }, [])
-
   const handleToggleAssistant = useCallback(() => {
     setAssistantOpen((prev: boolean) => {
       const next = !prev
@@ -147,10 +187,8 @@ export default function Main({className}: {className?: string}) {
     // last session.
     setAssistantNewChatRequest(0)
   }, [assistantSessionId, sendAssistantState])
-
   const handleNewAssistantChat = useCallback(() => {
     if (!isAssistantAvailable) return
-
     setAssistantOpen((prev: boolean) => {
       if (!prev) {
         sendAssistantState(true, assistantSessionId)
@@ -159,7 +197,6 @@ export default function Main({className}: {className?: string}) {
     })
     setAssistantNewChatRequest((prev) => prev + 1)
   }, [assistantSessionId, isAssistantAvailable, sendAssistantState])
-
   const handleSessionChange = useCallback(
     (sessionId: string | null) => {
       setAssistantSessionId(sessionId)
@@ -167,14 +204,12 @@ export default function Main({className}: {className?: string}) {
     },
     [assistantOpen, sendAssistantState],
   )
-
   useEffect(() => {
     if (agentsSettled && !hasAgents && assistantOpen) {
       setAssistantOpen(false)
       sendAssistantState(false, assistantSessionId)
     }
   }, [assistantOpen, assistantSessionId, agentsSettled, hasAgents, sendAssistantState])
-
   const {platform} = useAppContext()
   const {PageComponent, Fallback} = useMemo(() => getPageComponent(navR), [navR])
   // Reset route-scoped crashes on navigation without forcing the entire page tree
@@ -199,13 +234,13 @@ export default function Main({className}: {className?: string}) {
     titlebar = (
       <TitlebarWrapper className="bg-background h-8 min-h-8 dark:bg-black">
         <div className="window-drag flex w-full items-center justify-center">
-          <TitleText className="text-center font-bold">Settings</TitleText>
+          <TitleText className={stylex.props(styles.s112d13d8).className || ''}>Settings</TitleText>
           {platform !== 'darwin' && <WindowClose />}
         </div>
       </TitlebarWrapper>
     )
     return (
-      <div className={cn(windowContainerStyles, 'p-0', className)}>
+      <div className={cn(windowContainerStyles, stylex.props(styles.s1aa13).className || '', className)}>
         <WindowTitle />
         <ErrorBoundary
           resetKeys={[routeKey]}
@@ -223,7 +258,7 @@ export default function Main({className}: {className?: string}) {
     // Chromeless: no sidebar, no omnibar. The page renders its own slim top bar
     // (read-only ipfs:// URL + copy + "…" menu) as the window's title bar.
     return (
-      <div className={cn(windowContainerStyles, 'p-0', className)}>
+      <div className={cn(windowContainerStyles, stylex.props(styles.s1aa13).className || '', className)}>
         <WindowTitle />
         <ErrorBoundary
           resetKeys={[routeKey]}
@@ -240,24 +275,23 @@ export default function Main({className}: {className?: string}) {
     titlebar = (
       <TitlebarWrapper className="bg-background h-6 min-h-6 dark:bg-black">
         <div className="window-drag flex w-full items-center justify-center">
-          <TitleText className="text-center font-bold">Review Deleted Content</TitleText>
+          <TitleText className={stylex.props(styles.s112d13d8).className || ''}>Review Deleted Content</TitleText>
           {platform !== 'darwin' && <WindowClose />}
         </div>
       </TitlebarWrapper>
     )
   }
-
   return (
-    <div className={cn(windowContainerStyles, 'p-0', className)}>
+    <div className={cn(windowContainerStyles, stylex.props(styles.s1aa13).className || '', className)}>
       <WindowTitle />
       <PanelGroup direction="horizontal" autoSaveId="main-assistant">
         <Panel id="app-content" order={1}>
-          <div className="flex h-full flex-col">
+          <div className={stylex.props(styles.s2f33c551).className || ''}>
             <SidebarContextProvider>
               {titlebar}
               <PanelContent>
                 {sidebar}
-                <Panel id="page" order={2} className="pl-1">
+                <Panel id="page" order={2} className={stylex.props(styles.s3484a0).className || ''}>
                   <ErrorBoundary
                     resetKeys={[routeKey]}
                     FallbackComponent={RootAppError}
@@ -285,7 +319,14 @@ export default function Main({className}: {className?: string}) {
         {shouldRenderAssistantPanel && (
           <>
             <PanelResizeHandle className="panel-resize-handle" />
-            <Panel id="assistant" order={2} minSize={15} maxSize={40} defaultSize={25} className="border-l">
+            <Panel
+              id="assistant"
+              order={2}
+              minSize={15}
+              maxSize={40}
+              defaultSize={25}
+              className={stylex.props(styles.s7c401f0b).className || ''}
+            >
               <AssistantPanel
                 initialSessionId={assistantSessionId}
                 newChatRequest={assistantNewChatRequest}
@@ -298,7 +339,6 @@ export default function Main({className}: {className?: string}) {
     </div>
   )
 }
-
 function ConfirmConnectionDialogContent({input, onClose}: {input: string; onClose: () => void}) {
   const connect = useConnectPeer({
     onSuccess: () => {
@@ -307,14 +347,16 @@ function ConfirmConnectionDialogContent({input, onClose}: {input: string; onClos
     },
     onError: (error) => {
       // @ts-expect-error
-      appError(`Connect to peer error: ${error?.rawMessage}`, {error})
+      appError(`Connect to peer error: ${error?.rawMessage}`, {
+        error,
+      })
     },
   })
   return (
     <>
       <DialogTitle>Confirm Connection</DialogTitle>
       {connect.isLoading ? (
-        <div className="flex items-center justify-center">
+        <div className={stylex.props(styles.s9a378369).className || ''}>
           <Spinner />
         </div>
       ) : null}
@@ -330,7 +372,6 @@ function ConfirmConnectionDialogContent({input, onClose}: {input: string; onClos
     </>
   )
 }
-
 function ConfirmConnectionDialog() {
   const dialog = useAppDialog(ConfirmConnectionDialogContent)
   useListenAppEvent('connectPeer', (payload) => {
@@ -338,13 +379,11 @@ function ConfirmConnectionDialog() {
   })
   return dialog.content
 }
-
 function PanelContent({children}: {children: ReactNode}) {
   const ctx = useSidebarContext()
   const isLocked = useStream(ctx.isLocked)
   const sidebarWidth = useStream(ctx.sidebarWidth)
   const ref = useRef<ImperativePanelGroupHandle>(null)
-
   useListenAppEvent('toggle_sidebar', () => {
     const activeEl = document.activeElement
     const pmEl = activeEl?.closest?.('.ProseMirror') as HTMLElement | null
@@ -361,7 +400,6 @@ function PanelContent({children}: {children: ReactNode}) {
     }
     ctx.onToggleMenuLock()
   })
-
   useEffect(() => {
     const panelGroup = ref.current
     if (panelGroup) {
@@ -376,12 +414,11 @@ function PanelContent({children}: {children: ReactNode}) {
       }
     }
   }, [sidebarWidth, isLocked])
-
   return (
     <PanelGroup
       ref={ref}
       direction="horizontal"
-      className={cn('flex flex-1 overflow-hidden px-2')}
+      className={cn(stylex.props(styles.s8474ee54).className || '')}
       autoSaveId="main"
       storage={ctx.widthStorage}
     >
@@ -389,7 +426,6 @@ function PanelContent({children}: {children: ReactNode}) {
     </PanelGroup>
   )
 }
-
 function getPageComponent(navRoute: NavRoute) {
   switch (navRoute.key) {
     case 'onboarding':
@@ -540,7 +576,6 @@ function getPageComponent(navRoute: NavRoute) {
       }
   }
 }
-
 function WindowClose() {
   return (
     <div className="no-window-drag absolute top-0 right-0 size-[26px] items-center justify-center">

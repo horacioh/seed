@@ -1,5 +1,5 @@
 import {sentryVitePlugin} from '@sentry/vite-plugin'
-import tailwindcss from '@tailwindcss/vite'
+import stylex from '@stylexjs/unplugin'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import {defineConfig} from 'vite'
@@ -15,6 +15,14 @@ export default defineConfig(({command, mode}) => {
   const enableProfiler = !!process.env.REACT_PROFILER
 
   const config = {
+    server: {
+      // Bind to the IPv6 unspecified address so the dev server accepts both
+      // IPv4 and IPv6 connections. Electron renderer dynamic imports can
+      // resolve `localhost` to either stack; binding only to the loopback
+      // address that Vite’s `localhost` resolves to can cause intermittent
+      // "Failed to fetch dynamically imported module" errors in development.
+      host: '::',
+    },
     build: {
       sourcemap: !((process.platform === 'win32' || process.arch === 'arm64') && process.env.CI),
       rollupOptions: {
@@ -33,11 +41,16 @@ export default defineConfig(({command, mode}) => {
     publicDir: 'assets',
     assetsInclude: ['**/*.png'],
     plugins: [
+      // Make StyleX append all generated atomic CSS to the renderer's global
+      // `index-*.css` asset. Without this the unplugin may inject it into an
+      // arbitrary code-split CSS chunk that other pages never load.
+      stylex.vite({
+        cssInjectionTarget: (fileName: string) => /(^|\/)index-[A-Za-z0-9_.-]+\.css$/.test(fileName),
+      }),
       tsConfigPaths({
         root: '../../',
       }),
       react(),
-      tailwindcss(),
     ],
     resolve: {
       extensions,

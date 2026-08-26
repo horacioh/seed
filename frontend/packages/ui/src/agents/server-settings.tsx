@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Button} from '@shm/ui/button'
 import {
   AlertDialog,
@@ -37,6 +38,65 @@ import {
 } from './models'
 
 /** Manages the configured agent servers: add, remove, and pick the default. */
+const styles = stylex.create({
+  sd330460: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s760cfea1: {
+    alignSelf: 'flex-start',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sdf62ae4e: {
+    display: 'flex',
+    flexShrink: '0',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s88a3565a: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: '0',
+    margin: '-1px',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: '0',
+  },
+  s38dca3a9: {
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '700',
+  },
+  sb87f7413: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 3)',
+  },
+})
 export function AgentServersSettings() {
   // Edits apply to the persisted list only. The locally spawned server is shown separately below
   // because its URL is assigned at startup and must never be written to settings.
@@ -48,7 +108,6 @@ export function AgentServersSettings() {
   const builtInDefaultUrl = getDefaultAgentServerUrl()
   const [draftUrl, setDraftUrl] = useState(builtInDefaultUrl ?? '')
   const [isAddOpen, setIsAddOpen] = useState(false)
-
   async function addServer() {
     try {
       const next = [...(servers.data || []), draftUrl]
@@ -60,7 +119,6 @@ export function AgentServersSettings() {
       toast.error(error instanceof Error ? error.message : 'Could not add agent server')
     }
   }
-
   async function removeServer(serverUrl: string) {
     try {
       const next = (servers.data || []).filter((url) => url !== serverUrl)
@@ -70,7 +128,6 @@ export function AgentServersSettings() {
       toast.error(error instanceof Error ? error.message : 'Could not remove agent server')
     }
   }
-
   async function makeDefault(serverUrl: string) {
     try {
       await setDefaultServer.mutateAsync(serverUrl)
@@ -79,13 +136,12 @@ export function AgentServersSettings() {
       toast.error(error instanceof Error ? error.message : 'Could not update default agent server')
     }
   }
-
   return (
-    <div className="flex flex-col gap-3 py-3">
-      <SizableText size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sd330460).className || ''}>
+      <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Connect to different AI agent servers, accessible from Agents page.
       </SizableText>
-      <div className="flex flex-col gap-2">
+      <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         {localServerUrl.data ? (
           <AgentServerSettingsRow
             key={localServerUrl.data}
@@ -105,15 +161,15 @@ export function AgentServersSettings() {
           />
         ))}
         {!servers.data?.length && !localServerUrl.data ? (
-          <SizableText size="sm" className="text-muted-foreground">
+          <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
             No agent servers configured.
           </SizableText>
         ) : null}
       </div>
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="self-start">
-            <Plus className="size-4" />
+          <Button variant="outline" className={stylex.props(styles.s760cfea1).className || ''}>
+            <Plus className={stylex.props(styles.sca3de968).className || ''} />
             Add server
           </Button>
         </DialogTrigger>
@@ -143,7 +199,6 @@ export function AgentServersSettings() {
     </div>
   )
 }
-
 function AgentServerSettingsRow({
   serverUrl,
   isDefault,
@@ -162,8 +217,8 @@ function AgentServerSettingsRow({
   return (
     <div className="group border-border bg-background flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <SizableText size="sm" weight="bold" className="truncate">
+        <div className={stylex.props(styles.s86ff3e4).className || ''}>
+          <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
             {isLocal ? LOCAL_AGENT_SERVER_LABEL : serverUrl}
           </SizableText>
           {isDefault ? <Badge variant="secondary">Default</Badge> : null}
@@ -176,7 +231,7 @@ function AgentServerSettingsRow({
               : `Online · uptime ${Math.floor((health.data?.uptime || 0) / 60)}m`}
         </SizableText>
       </div>
-      <div className="flex shrink-0 gap-2">
+      <div className={stylex.props(styles.sdf62ae4e).className || ''}>
         {isDefault ? null : (
           <Button
             variant="outline"
@@ -192,18 +247,20 @@ function AgentServerSettingsRow({
             <Tooltip content="Remove agent server">
               <AlertDialogTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Trash className="size-4" />
-                  <span className="sr-only">Remove</span>
+                  <Trash className={stylex.props(styles.sca3de968).className || ''} />
+                  <span className={stylex.props(styles.s88a3565a).className || ''}>Remove</span>
                 </Button>
               </AlertDialogTrigger>
             </Tooltip>
             <AlertDialogPortal>
               <AlertDialogContent className="max-w-[500px] gap-4">
-                <AlertDialogTitle className="text-2xl font-bold">Remove Agent Server</AlertDialogTitle>
+                <AlertDialogTitle className={stylex.props(styles.s38dca3a9).className || ''}>
+                  Remove Agent Server
+                </AlertDialogTitle>
                 <AlertDialogDescription>
                   Are you sure you want to remove {serverUrl}? You can add it back later.
                 </AlertDialogDescription>
-                <div className="flex justify-end gap-3">
+                <div className={stylex.props(styles.sb87f7413).className || ''}>
                   <AlertDialogCancel asChild>
                     <Button variant="ghost">Cancel</Button>
                   </AlertDialogCancel>

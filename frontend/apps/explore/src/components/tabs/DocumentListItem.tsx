@@ -1,12 +1,21 @@
+import * as stylex from '@stylexjs/stylex'
 import {hmIdPathToEntityQueryPath, hmIdToURL} from '@shm/shared'
 import {Copy, ExternalLink} from 'lucide-react'
 import {copyToClipboardWithToast} from '../../utils/clipboard'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s66e38c43: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: 'oklch(72.3% 0.219 149.579)',
+  },
+})
 export function DocumentListItem({doc, apiHost}: {doc: any; apiHost: string}) {
   const url = hmIdToURL(doc.id)
-  let webUrl = `${apiHost}/hm/${doc.id.type}/${
-    doc.id.uid
-  }${hmIdPathToEntityQueryPath(doc.id.path)}`
+  let webUrl = `${apiHost}/hm/${doc.id.type}/${doc.id.uid}${hmIdPathToEntityQueryPath(doc.id.path)}`
   if (doc.id.version) {
     webUrl += `?v=${doc.id.version}`
   }
@@ -28,7 +37,7 @@ export function DocumentListItem({doc, apiHost}: {doc: any; apiHost: string}) {
             copyToClipboardWithToast(url)
           }}
         >
-          <Copy className="size-4" />
+          <Copy className={stylex.props(styles.sca3de968).className || ''} />
           <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover/button:opacity-100">
             Copy URL
           </span>
@@ -41,7 +50,7 @@ export function DocumentListItem({doc, apiHost}: {doc: any; apiHost: string}) {
             window.open(webUrl, '_blank')
           }}
         >
-          <ExternalLink className="size-4" />
+          <ExternalLink className={stylex.props(styles.sca3de968).className || ''} />
           <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover/button:opacity-100">
             Open in new tab
           </span>
@@ -54,7 +63,7 @@ export function DocumentListItem({doc, apiHost}: {doc: any; apiHost: string}) {
             window.open(url, '_blank')
           }}
         >
-          <ExternalLink className="size-4 text-green-500" />
+          <ExternalLink className={stylex.props(styles.s66e38c43).className || ''} />
           <span className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded bg-gray-900 px-2 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-hover/button:opacity-100">
             Open in Seed App
           </span>

@@ -1,12 +1,35 @@
+import * as stylex from '@stylexjs/stylex'
 import {Slot} from '@radix-ui/react-slot'
 import * as React from 'react'
-
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  s21672183: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 2)',
+  },
+  sa1ca981b: {
+    backgroundColor: 'var(--sidebar-border)',
+    marginInline: 'calc(0.25rem * 2)',
+    height: '1px',
+    borderStyle: 'none',
+  },
+  s4beb63ff: {
+    width: '100%',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 function SidebarHeader({className, ...props}: React.ComponentProps<'div'>) {
-  return <div data-slot="sidebar-header" className={cn('flex flex-col gap-2 p-2', className)} {...props} />
+  return (
+    <div
+      data-slot="sidebar-header"
+      className={cn(stylex.props(styles.s21672183).className || '', className)}
+      {...props}
+    />
+  )
 }
-
 function SidebarContent({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -16,17 +39,24 @@ function SidebarContent({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function SidebarFooter({className, ...props}: React.ComponentProps<'div'>) {
-  return <div data-slot="sidebar-footer" className={cn('flex flex-col gap-2 p-2', className)} {...props} />
-}
-
-function SidebarSeparator({className, ...props}: React.ComponentProps<'hr'>) {
   return (
-    <hr data-slot="sidebar-separator" className={cn('bg-sidebar-border mx-2 h-px border-none', className)} {...props} />
+    <div
+      data-slot="sidebar-footer"
+      className={cn(stylex.props(styles.s21672183).className || '', className)}
+      {...props}
+    />
   )
 }
-
+function SidebarSeparator({className, ...props}: React.ComponentProps<'hr'>) {
+  return (
+    <hr
+      data-slot="sidebar-separator"
+      className={cn(stylex.props(styles.sa1ca981b).className || '', className)}
+      {...props}
+    />
+  )
+}
 function SidebarGroup({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -36,7 +66,6 @@ function SidebarGroup({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function SidebarGroupLabel({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -49,12 +78,13 @@ function SidebarGroupLabel({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 function SidebarGroupAction({
   className,
   asChild = false,
   ...props
-}: React.ComponentProps<'button'> & {asChild?: boolean}) {
+}: React.ComponentProps<'button'> & {
+  asChild?: boolean
+}) {
   const Comp = asChild ? Slot : 'button'
   return (
     <Comp
@@ -67,19 +97,21 @@ function SidebarGroupAction({
     />
   )
 }
-
 function SidebarGroupContent({className, ...props}: React.ComponentProps<'div'>) {
-  return <div data-slot="sidebar-group-content" className={cn('w-full text-sm', className)} {...props} />
+  return (
+    <div
+      data-slot="sidebar-group-content"
+      className={cn(stylex.props(styles.s4beb63ff).className || '', className)}
+      {...props}
+    />
+  )
 }
-
 function SidebarMenu({className, ...props}: React.ComponentProps<'ul'>) {
   return <ul data-slot="sidebar-menu" className={cn('flex w-full min-w-0 flex-col gap-1', className)} {...props} />
 }
-
 function SidebarMenuItem({className, ...props}: React.ComponentProps<'li'>) {
   return <li data-slot="sidebar-menu-item" className={cn('group/menu-item relative', className)} {...props} />
 }
-
 function SidebarMenuButton({
   asChild = false,
   isActive = false,
@@ -102,25 +134,26 @@ function SidebarMenuButton({
     />
   )
 }
-
-const SidebarMenuAction = React.forwardRef<HTMLButtonElement, React.ComponentProps<'button'> & {asChild?: boolean}>(
-  ({className, asChild = false, ...props}, ref) => {
-    const Comp = asChild ? Slot : 'button'
-    return (
-      <Comp
-        ref={ref}
-        data-slot="sidebar-menu-action"
-        className={cn(
-          'text-sidebar-foreground/70 hover:text-sidebar-foreground absolute top-1/2 right-1 flex -translate-y-1/2 items-center justify-center rounded-md p-1 opacity-0 group-hover/menu-item:opacity-100 focus-within:opacity-100 has-[[data-state=open]]:opacity-100',
-          className,
-        )}
-        {...props}
-      />
-    )
-  },
-)
+const SidebarMenuAction = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<'button'> & {
+    asChild?: boolean
+  }
+>(({className, asChild = false, ...props}, ref) => {
+  const Comp = asChild ? Slot : 'button'
+  return (
+    <Comp
+      ref={ref}
+      data-slot="sidebar-menu-action"
+      className={cn(
+        'text-sidebar-foreground/70 hover:text-sidebar-foreground absolute top-1/2 right-1 flex -translate-y-1/2 items-center justify-center rounded-md p-1 opacity-0 group-hover/menu-item:opacity-100 focus-within:opacity-100 has-[[data-state=open]]:opacity-100',
+        className,
+      )}
+      {...props}
+    />
+  )
+})
 SidebarMenuAction.displayName = 'SidebarMenuAction'
-
 function SidebarMenuBadge({className, ...props}: React.ComponentProps<'div'>) {
   return (
     <div
@@ -130,7 +163,6 @@ function SidebarMenuBadge({className, ...props}: React.ComponentProps<'div'>) {
     />
   )
 }
-
 export {
   SidebarHeader,
   SidebarContent,

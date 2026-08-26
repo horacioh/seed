@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 /**
  * WordPress WXR Import Dialog Component.
  * Provides a multi-step UI for importing WordPress exports.
@@ -21,17 +22,193 @@ import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {useEffect, useState} from 'react'
 import type {ImportResults} from '../wxr-import'
-
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  se2c17d68: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  s77710dd2: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 12)',
+    height: 'calc(0.25rem * 12)',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sb76e9daa: {
+    display: 'none',
+  },
+  s5f6cd3a4: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s8c7165a7: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+  sfbc6e292: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 6)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  se99caeca: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sc07810d1: {
+    marginTop: 'calc(0.25rem * 0.5)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sed10310: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+    opacity: '50%',
+  },
+  s53b1e0b7: {
+    cursor: 'not-allowed',
+  },
+  s701d2f54: {
+    width: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s1773a764: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 2)',
+    textAlign: 'left',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    textDecorationLine: 'underline',
+    textUnderlineOffset: '2px',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s332789: {
+    marginLeft: 'calc(0.25rem * 7)',
+  },
+  s7f0c067: {
+    height: 'calc(0.25rem * 2)',
+    width: '100%',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(92.8% 0.006 264.531)',
+  },
+  sef11a89c: {
+    height: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(54.6% 0.245 262.881)',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  see7dd00: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s9b11d173: {
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(96.2% 0.044 156.743)',
+  },
+  sb39f9c32: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(62.7% 0.194 149.214)',
+  },
+  sbc125d4c: {
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(97.3% 0.071 103.193)',
+  },
+  sb53bb757: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(68.1% 0.162 75.834)',
+  },
+  s33712701: {
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(93.6% 0.032 17.717)',
+  },
+  s3a20a840: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(57.7% 0.245 27.325)',
+  },
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+})
 export function useWXRImportDialog() {
   return useAppDialog(WXRImportDialog)
 }
-
 interface WXRImportDialogInput {
   destinationId: UnpackedHypermediaId
 }
-
 type ImportStep = 'upload' | 'preview' | 'options' | 'importing' | 'complete'
-
 function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose: () => void}) {
   const [step, setStep] = useState<ImportStep>('upload')
   const [wxrContent, setWxrContent] = useState<string | null>(null)
@@ -41,7 +218,11 @@ function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose
     authorCount: number
     postCount: number
     pageCount: number
-    authors: Array<{login: string; displayName: string; email: string}>
+    authors: Array<{
+      login: string
+      displayName: string
+      email: string
+    }>
     authoredFallbackAuthors: Array<{
       login: string
       displayName: string
@@ -54,16 +235,13 @@ function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose
   const [confirmPassword, setConfirmPassword] = useState('')
   const [overwriteExisting, setOverwriteExisting] = useState(false)
   const [importResults, setImportResults] = useState<ImportResults | null>(null)
-
   const accounts = useMyAccountsWithWriteAccess(input.destinationId)
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null)
-
   useEffect(() => {
     if (!selectedAccount && accounts[0]?.data?.id.uid) {
       setSelectedAccount(accounts[0].data?.id.uid)
     }
   }, [selectedAccount, accounts])
-
   const parseWXR = useMutation({
     mutationFn: (content: string) => client.webImporting.wxrParseFile.mutate(content),
     onSuccess: (result) => {
@@ -72,10 +250,12 @@ function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose
     },
     onError: (error: Error) => {
       toast.error(`Failed to parse WXR file: ${error.message}`)
-      reportError(error, {feature: 'wxr-import', operation: 'parse'})
+      reportError(error, {
+        feature: 'wxr-import',
+        operation: 'parse',
+      })
     },
   })
-
   const startImport = useMutation({
     mutationFn: (params: {
       wxrContent: string
@@ -98,19 +278,15 @@ function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose
       })
     },
   })
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
-
     const content = await file.text()
     setWxrContent(content)
     parseWXR.mutate(content)
   }
-
   const handleStartImport = () => {
     if (!wxrContent || !selectedAccount) return
-
     startImport.mutate({
       wxrContent,
       destinationUid: input.destinationId.uid,
@@ -121,7 +297,6 @@ function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose
       overwriteExisting,
     })
   }
-
   return (
     <>
       <DialogClose />
@@ -164,7 +339,6 @@ function WXRImportDialog({input, onClose}: {input: WXRImportDialogInput; onClose
     </>
   )
 }
-
 function UploadStep({
   onFileUpload,
   isLoading,
@@ -173,10 +347,10 @@ function UploadStep({
   isLoading: boolean
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle>Import WordPress Export (WXR)</DialogTitle>
       <DialogDescription>Upload a WordPress export file (.xml) to import posts and pages.</DialogDescription>
-      <div className="flex flex-col items-center gap-4 py-8">
+      <div className={stylex.props(styles.se2c17d68).className || ''}>
         {isLoading ? (
           <>
             <Spinner size="small" />
@@ -184,9 +358,14 @@ function UploadStep({
           </>
         ) : (
           <>
-            <Upload className="text-muted-foreground size-12" />
-            <label className="cursor-pointer">
-              <input type="file" accept=".xml" onChange={onFileUpload} className="hidden" />
+            <Upload className={stylex.props(styles.s77710dd2).className || ''} />
+            <label className={stylex.props(styles.sc7847ec6).className || ''}>
+              <input
+                type="file"
+                accept=".xml"
+                onChange={onFileUpload}
+                className={stylex.props(styles.sb76e9daa).className || ''}
+              />
               <Button variant="outline" asChild>
                 <span>Select WXR File</span>
               </Button>
@@ -200,7 +379,6 @@ function UploadStep({
     </div>
   )
 }
-
 function PreviewStep({
   result,
   onContinue,
@@ -212,7 +390,11 @@ function PreviewStep({
     authorCount: number
     postCount: number
     pageCount: number
-    authors: Array<{login: string; displayName: string; email: string}>
+    authors: Array<{
+      login: string
+      displayName: string
+      email: string
+    }>
     authoredFallbackAuthors: Array<{
       login: string
       displayName: string
@@ -224,28 +406,28 @@ function PreviewStep({
   onBack: () => void
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle>Preview Import</DialogTitle>
       <DialogDescription>Review the content that will be imported from {result.siteTitle}.</DialogDescription>
 
       <div className="space-y-3 rounded-lg border p-4">
-        <div className="flex justify-between">
+        <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
           <SizableText color="muted">Site</SizableText>
           <SizableText>{result.siteTitle}</SizableText>
         </div>
-        <div className="flex justify-between">
+        <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
           <SizableText color="muted">URL</SizableText>
           <SizableText>{result.siteUrl}</SizableText>
         </div>
-        <div className="flex justify-between">
+        <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
           <SizableText color="muted">Posts</SizableText>
           <SizableText>{result.postCount}</SizableText>
         </div>
-        <div className="flex justify-between">
+        <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
           <SizableText color="muted">Pages</SizableText>
           <SizableText>{result.pageCount}</SizableText>
         </div>
-        <div className="flex justify-between">
+        <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
           <SizableText color="muted">Authors</SizableText>
           <SizableText>{result.authorCount}</SizableText>
         </div>
@@ -256,7 +438,7 @@ function PreviewStep({
           <SizableText weight="bold">Authors</SizableText>
           <div className="max-h-32 space-y-1 overflow-y-auto">
             {result.authors.map((author) => (
-              <div key={author.login} className="flex items-center gap-2">
+              <div key={author.login} className={stylex.props(styles.s86ff3e4).className || ''}>
                 <SizableText>{author.displayName}</SizableText>
                 <SizableText size="sm" color="muted">
                   ({author.email})
@@ -267,7 +449,7 @@ function PreviewStep({
         </div>
       )}
 
-      <div className="flex justify-between pt-4">
+      <div className={stylex.props(styles.s8c7165a7).className || ''}>
         <Button variant="ghost" onClick={onBack}>
           Back
         </Button>
@@ -276,7 +458,6 @@ function PreviewStep({
     </div>
   )
 }
-
 function OptionsStep({
   importMode,
   setImportMode,
@@ -316,30 +497,26 @@ function OptionsStep({
   isLoading: boolean
 }) {
   const [showFallbackAuthors, setShowFallbackAuthors] = useState(() => authoredFallbackAuthors.length <= 2)
-
   useEffect(() => {
     setShowFallbackAuthors(authoredFallbackAuthors.length <= 2)
   }, [authoredFallbackAuthors.length])
-
   const passwordsMatch = password === confirmPassword
   const showPasswordError = importMode === 'authored' && confirmPassword.length > 0 && !passwordsMatch
-
   const canStart =
     !isLoading &&
     selectedAccount &&
     (importMode === 'ghostwritten' || (password.length > 0 && confirmPassword.length > 0 && passwordsMatch))
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle>Import Options</DialogTitle>
       <DialogDescription>Configure how the content should be imported.</DialogDescription>
 
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-3">
+      <div className={stylex.props(styles.sfbc6e292).className || ''}>
+        <div className={stylex.props(styles.sfbc6e28f).className || ''}>
           <Label>Signing Account</Label>
           {selectedAccount && (
             <Select value={selectedAccount} onValueChange={setSelectedAccount}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className={stylex.props(styles.scdbaf625).className || ''}>
                 <SelectValue placeholder="Select Account" />
               </SelectTrigger>
               <SelectContent>
@@ -348,7 +525,7 @@ function OptionsStep({
                   if (!id) return null
                   return (
                     <SelectItem key={id.uid} value={id.uid}>
-                      <div className="flex items-center gap-2">
+                      <div className={stylex.props(styles.s86ff3e4).className || ''}>
                         <HMIcon
                           size={24}
                           id={id}
@@ -365,31 +542,40 @@ function OptionsStep({
           )}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className={stylex.props(styles.sfbc6e28f).className || ''}>
           <Label>Import Mode</Label>
           <RadioGroup
             value={importMode}
             onValueChange={(v) => setImportMode(v as 'ghostwritten' | 'authored')}
-            className="flex flex-col gap-3"
+            className={stylex.props(styles.sfbc6e28f).className || ''}
           >
-            <div className="flex items-start gap-3">
-              <RadioGroupItem value="ghostwritten" id="mode-ghostwritten" className="mt-0.5" />
-              <div className="flex flex-col gap-1">
-                <Label htmlFor="mode-ghostwritten" className="cursor-pointer">
+            <div className={stylex.props(styles.se99caeca).className || ''}>
+              <RadioGroupItem
+                value="ghostwritten"
+                id="mode-ghostwritten"
+                className={stylex.props(styles.sc07810d1).className || ''}
+              />
+              <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+                <Label htmlFor="mode-ghostwritten" className={stylex.props(styles.sc7847ec6).className || ''}>
                   Ghostwritten
                 </Label>
-                <span className="text-muted-foreground text-xs">
+                <span className={stylex.props(styles.sa56e9200).className || ''}>
                   Publisher signs all content, authors shown as display names
                 </span>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <RadioGroupItem value="authored" id="mode-authored" className="mt-0.5" disabled />
-              <div className="flex flex-col gap-1 opacity-50">
-                <Label htmlFor="mode-authored" className="cursor-not-allowed">
+            <div className={stylex.props(styles.se99caeca).className || ''}>
+              <RadioGroupItem
+                value="authored"
+                id="mode-authored"
+                className={stylex.props(styles.sc07810d1).className || ''}
+                disabled
+              />
+              <div className={stylex.props(styles.sed10310).className || ''}>
+                <Label htmlFor="mode-authored" className={stylex.props(styles.s53b1e0b7).className || ''}>
                   Authored
                 </Label>
-                <span className="text-muted-foreground text-xs">
+                <span className={stylex.props(styles.sa56e9200).className || ''}>
                   Generate keys for each author (temporarily unavailable)
                 </span>
               </div>
@@ -398,7 +584,7 @@ function OptionsStep({
         </div>
 
         {importMode === 'authored' && (
-          <div className="flex flex-col gap-3">
+          <div className={stylex.props(styles.sfbc6e28f).className || ''}>
             <Label>Author Keys Password</Label>
             <SizableText size="xs" color="muted">
               Encrypts the author keys file. Share this password with authors so they can import their identity, or use
@@ -409,7 +595,7 @@ function OptionsStep({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="w-full rounded-md border px-3 py-2 text-sm"
+              className={stylex.props(styles.s701d2f54).className || ''}
             />
             <input
               type="password"
@@ -417,7 +603,7 @@ function OptionsStep({
               onChange={(e) => setConfirmPassword(e.target.value)}
               onPaste={(e) => e.preventDefault()}
               placeholder="Confirm password"
-              className="w-full rounded-md border px-3 py-2 text-sm"
+              className={stylex.props(styles.s701d2f54).className || ''}
             />
             {showPasswordError && (
               <SizableText size="xs" color="destructive">
@@ -435,7 +621,7 @@ function OptionsStep({
                 </SizableText>
                 <button
                   type="button"
-                  className="text-muted-foreground mt-2 text-left text-xs underline underline-offset-2"
+                  className={stylex.props(styles.s1773a764).className || ''}
                   onClick={() => setShowFallbackAuthors((expanded) => !expanded)}
                 >
                   {showFallbackAuthors ? 'Hide' : 'Show'} affected writers ({authoredFallbackAuthors.length})
@@ -455,17 +641,17 @@ function OptionsStep({
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <CheckboxField id="overwrite-existing" checked={overwriteExisting} onCheckedChange={setOverwriteExisting}>
             Overwrite existing documents at same path
           </CheckboxField>
-          <SizableText size="xs" color="muted" className="ml-7">
+          <SizableText size="xs" color="muted" className={stylex.props(styles.s332789).className || ''}>
             When unchecked, documents that already exist will be skipped
           </SizableText>
         </div>
       </div>
 
-      <div className="flex justify-between pt-4">
+      <div className={stylex.props(styles.s8c7165a7).className || ''}>
         <Button variant="ghost" onClick={onBack}>
           Back
         </Button>
@@ -476,37 +662,38 @@ function OptionsStep({
     </div>
   )
 }
-
 function ImportingStep({onComplete}: {onComplete: (results: ImportResults | null) => void}) {
   const {data: status} = useQuery({
     queryKey: ['WXR_IMPORT_STATUS'],
     queryFn: () => client.webImporting.wxrGetStatus.query(),
     refetchInterval: 500,
   })
-
   useEffect(() => {
     if (status?.status?.phase === 'complete') {
       // Results are stored in the import state
       onComplete(status?.status?.results || null)
     }
   }, [status?.status?.phase, onComplete, status?.status])
-
   const progress = status?.status
   const percent =
     progress && progress.totalPosts > 0 ? Math.round((progress.importedPosts / progress.totalPosts) * 100) : 0
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle>Importing…</DialogTitle>
       <DialogDescription>Please wait while your content is being imported.</DialogDescription>
 
-      <div className="flex flex-col items-center gap-4 py-8">
+      <div className={stylex.props(styles.se2c17d68).className || ''}>
         <Spinner size="small" />
 
         {progress && (
           <>
-            <div className="h-2 w-full rounded-full bg-gray-200">
-              <div className="h-2 rounded-full bg-blue-600 transition-all" style={{width: `${percent}%`}} />
+            <div className={stylex.props(styles.s7f0c067).className || ''}>
+              <div
+                className={stylex.props(styles.sef11a89c).className || ''}
+                style={{
+                  width: `${percent}%`,
+                }}
+              />
             </div>
             <SizableText>
               {progress.importedPosts} / {progress.totalPosts} posts imported
@@ -522,16 +709,13 @@ function ImportingStep({onComplete}: {onComplete: (results: ImportResults | null
     </div>
   )
 }
-
 const MAX_DISPLAY_ITEMS = 5
-
 function CompleteStep({onClose, results}: {onClose: () => void; results: ImportResults | null}) {
   const {data: statusData} = useQuery({
     queryKey: ['WXR_IMPORT_STATUS'],
     queryFn: () => client.webImporting.wxrGetStatus.query(),
   })
   const canExportAuthorKeys = !!statusData?.canExportAuthorKeys
-
   const exportAuthorKeysMutation = useMutation({
     mutationFn: () => client.webImporting.wxrExportAuthorKeys.mutate({}),
     onSuccess: (result) => {
@@ -540,16 +724,17 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
     },
     onError: (error) => {
       toast.error(`Failed to export author keys file: ${error instanceof Error ? error.message : 'Unknown error'}`)
-      reportError(error, {feature: 'wxr-import', operation: 'export-author-keys'})
+      reportError(error, {
+        feature: 'wxr-import',
+        operation: 'export-author-keys',
+      })
     },
   })
-
   const hasSkipped = results && results.skipped.length > 0
   const hasFailed = results && results.failed.length > 0
   const allSuccessful = !hasSkipped && !hasFailed
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       <DialogTitle>Import Complete</DialogTitle>
       <DialogDescription>
         {allSuccessful
@@ -557,11 +742,11 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
           : 'Import finished with some items skipped or failed.'}
       </DialogDescription>
 
-      <div className="flex flex-col gap-4 py-4">
+      <div className={stylex.props(styles.see7dd00).className || ''}>
         {/* Success count */}
-        <div className="flex items-center gap-3">
-          <div className="flex size-8 items-center justify-center rounded-full bg-green-100">
-            <span className="text-sm text-green-600">&#10003;</span>
+        <div className={stylex.props(styles.s86ff3e5).className || ''}>
+          <div className={stylex.props(styles.s9b11d173).className || ''}>
+            <span className={stylex.props(styles.sb39f9c32).className || ''}>&#10003;</span>
           </div>
           <SizableText>
             {results?.imported || 0} document
@@ -571,10 +756,10 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
 
         {/* Skipped items */}
         {hasSkipped && (
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-full bg-yellow-100">
-                <span className="text-sm text-yellow-600">&#8722;</span>
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+            <div className={stylex.props(styles.s86ff3e5).className || ''}>
+              <div className={stylex.props(styles.sbc125d4c).className || ''}>
+                <span className={stylex.props(styles.sb53bb757).className || ''}>&#8722;</span>
               </div>
               <SizableText>
                 {results.skipped.length} document
@@ -598,10 +783,10 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
 
         {/* Failed items */}
         {hasFailed && (
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-full bg-red-100">
-                <span className="text-sm text-red-600">&#10005;</span>
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+            <div className={stylex.props(styles.s86ff3e5).className || ''}>
+              <div className={stylex.props(styles.s33712701).className || ''}>
+                <span className={stylex.props(styles.s3a20a840).className || ''}>&#10005;</span>
               </div>
               <SizableText>
                 {results.failed.length} document
@@ -629,11 +814,11 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className={stylex.props(styles.se658ac14).className || ''}>
         {canExportAuthorKeys && (
           <Button
             variant="outline"
-            className="flex-1"
+            className={stylex.props(styles.sb42feb5d).className || ''}
             onClick={() => exportAuthorKeysMutation.mutate()}
             disabled={exportAuthorKeysMutation.isLoading}
           >

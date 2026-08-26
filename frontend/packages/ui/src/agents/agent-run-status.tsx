@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {type AgentRunActivity, type AgentRunUsage} from './client'
 import {cn} from '@shm/ui/utils'
 import {Loader2} from 'lucide-react'
@@ -9,6 +10,34 @@ import {useEffect, useState} from 'react'
  * elapsed time, and token count. Callers hide it while a pending tool-call row is
  * showing its own live progress, so only one spinner is visible at a time.
  */
+const styles = stylex.create({
+  seb2f4560: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sd8333cb0: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flexShrink: '0',
+    animation: 'spin 1s linear infinite',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s99d6bfaf: {
+    marginLeft: 'auto',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    fontVariantNumeric: '   tabular-nums ',
+  },
+})
 export function AgentRunStatusBar({
   startedAt,
   activity,
@@ -29,11 +58,11 @@ export function AgentRunStatusBar({
   }, [startedAt])
   const elapsed = startedAt === null ? 0 : Math.max(0, now - startedAt)
   return (
-    <div className={cn('text-muted-foreground flex items-center gap-2 py-2 text-xs', className)} aria-live="polite">
-      <Loader2 className="size-3.5 shrink-0 animate-spin" />
-      <span className="font-medium">{activityLabel(activity)}</span>
+    <div className={cn(stylex.props(styles.seb2f4560).className || '', className)} aria-live="polite">
+      <Loader2 className={stylex.props(styles.sd8333cb0).className || ''} />
+      <span className={stylex.props(styles.s129e46b3).className || ''}>{activityLabel(activity)}</span>
       {activity?.detail ? <span className="max-w-64 min-w-0 truncate opacity-75">{activity.detail}</span> : null}
-      <span className="ml-auto flex shrink-0 items-center gap-3 tabular-nums">
+      <span className={stylex.props(styles.s99d6bfaf).className || ''}>
         <span aria-label="Elapsed time">{formatElapsed(elapsed)}</span>
         {usage && usage.total > 0 ? <span aria-label="Tokens used">{formatTokenCount(usage.total)} tokens</span> : null}
       </span>

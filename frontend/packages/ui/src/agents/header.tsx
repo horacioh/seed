@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {type AgentDefinition, type AgentModelRef, type SessionModelOverride} from './client'
 import {
   describeAgentServer,
@@ -35,20 +36,118 @@ import {
   Wrench,
 } from 'lucide-react'
 import {Fragment, type ReactNode, useEffect, useMemo, useRef, useState} from 'react'
-
+const styles = stylex.create({
+  sf9dfefc3: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s13369fda: {
+    backgroundColor: 'var(--card)',
+    position: 'relative',
+    zIndex: '10',
+    width: '100%',
+    flex: 'none',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s2627017b: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s12583799: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  sa0238738: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sef1c143e: {
+    marginRight: 'calc(0.25rem * 2)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s8a0ec2d6: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+    opacity: '70%',
+  },
+  sf6cf9d65: {
+    width: 'calc(0.25rem * 72)',
+    padding: 'calc(0.25rem * 1)',
+  },
+  s26e23c22: {
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sf8eef924: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  s7239d2e5: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(0.25rem * 1)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingTop: 'calc(0.25rem * 2)',
+    paddingBottom: 'calc(0.25rem * 1)',
+  },
+  se9d91b89: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(0.25rem * 1)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+  },
+})
 export type AgentPageTab = 'sessions' | 'triggers' | 'memory' | 'tools' | 'prompt' | 'collaborators' | 'settings'
-
 export type AgentHeaderInfo = {
   definition: AgentDefinition
   status: string
   /** Viewer's role on the agent; model switching from the header needs write access. */
   accessRole?: string
 }
-
-type AgentBreadcrumbItem = {label: string; route?: NavRoute}
-
+type AgentBreadcrumbItem = {
+  label: string
+  route?: NavRoute
+}
 type AgentTitleSaveState = 'idle' | 'saving' | 'saved' | 'error'
-
 export function AgentBreadcrumb({
   serverUrl,
   agentId,
@@ -67,10 +166,14 @@ export function AgentBreadcrumb({
   const serverLabel = serverUrl ? describeAgentServer(serverUrl, localServerUrl.data) : null
   const serverIsCurrent = !!serverUrl && !agentName && !items.length
   return (
-    <nav className="text-muted-foreground flex items-center gap-1 text-xs" aria-label="Agent breadcrumb">
+    <nav className={stylex.props(styles.sf9dfefc3).className || ''} aria-label="Agent breadcrumb">
       <button
         className="hover:text-foreground rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
-        onClick={() => navigate({key: 'agents'})}
+        onClick={() =>
+          navigate({
+            key: 'agents',
+          })
+        }
       >
         Agents
       </button>
@@ -82,7 +185,12 @@ export function AgentBreadcrumb({
           ) : (
             <button
               className="hover:text-foreground max-w-48 truncate rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
-              onClick={() => navigate({key: 'agent-server', serverUrl})}
+              onClick={() =>
+                navigate({
+                  key: 'agent-server',
+                  serverUrl,
+                })
+              }
             >
               {serverLabel}
             </button>
@@ -94,7 +202,14 @@ export function AgentBreadcrumb({
           <span>&gt;</span>
           <button
             className="hover:text-foreground max-w-48 truncate rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
-            onClick={() => agentId && navigate({key: 'agent', agentId, serverUrl})}
+            onClick={() =>
+              agentId &&
+              navigate({
+                key: 'agent',
+                agentId,
+                serverUrl,
+              })
+            }
             disabled={!agentId}
           >
             {agentName}
@@ -119,7 +234,6 @@ export function AgentBreadcrumb({
     </nav>
   )
 }
-
 export function AgentSubpageHeader({
   title,
   placeholder,
@@ -145,10 +259,10 @@ export function AgentSubpageHeader({
   children?: ReactNode
 }) {
   return (
-    <header className="bg-card relative z-10 w-full flex-none shadow-sm">
+    <header className={stylex.props(styles.s13369fda).className || ''}>
       <div className="mx-auto flex h-12 w-full max-w-4xl items-center gap-2 px-4">
         <Button variant="ghost" size="icon" aria-label={backLabel} onClick={onBack}>
-          <ArrowLeft className="size-4" />
+          <ArrowLeft className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <input
@@ -179,7 +293,7 @@ export function AgentSubpageHeader({
       </div>
       {subtitle ? (
         <div className="mx-auto w-full max-w-4xl px-4 pb-2 pl-[3.75rem]">
-          <p className="text-muted-foreground truncate text-sm" title={subtitle}>
+          <p className={stylex.props(styles.s2627017b).className || ''} title={subtitle}>
             {subtitle}
           </p>
         </div>
@@ -187,7 +301,6 @@ export function AgentSubpageHeader({
     </header>
   )
 }
-
 export function AgentHeader({
   agent,
   agentId,
@@ -242,44 +355,67 @@ export function AgentHeader({
       icon: GitBranch,
       count: triggersCount || undefined,
     },
-    {key: 'memory' as const, label: 'Memory', tooltip: "Browse and edit the agent's memory files", icon: Brain},
-    {key: 'tools' as const, label: 'Tools', tooltip: 'Control tools and signing identities', icon: Wrench},
-    {key: 'prompt' as const, label: 'Prompt', tooltip: 'Edit the system prompt', icon: ScrollText},
-    {key: 'collaborators' as const, label: 'Collaborators', tooltip: 'Manage who can access this agent', icon: Users},
-    {key: 'settings' as const, label: 'Settings', tooltip: 'Edit model settings', icon: Settings},
+    {
+      key: 'memory' as const,
+      label: 'Memory',
+      tooltip: "Browse and edit the agent's memory files",
+      icon: Brain,
+    },
+    {
+      key: 'tools' as const,
+      label: 'Tools',
+      tooltip: 'Control tools and signing identities',
+      icon: Wrench,
+    },
+    {
+      key: 'prompt' as const,
+      label: 'Prompt',
+      tooltip: 'Edit the system prompt',
+      icon: ScrollText,
+    },
+    {
+      key: 'collaborators' as const,
+      label: 'Collaborators',
+      tooltip: 'Manage who can access this agent',
+      icon: Users,
+    },
+    {
+      key: 'settings' as const,
+      label: 'Settings',
+      tooltip: 'Edit model settings',
+      icon: Settings,
+    },
   ]
-
   const activeTabLabel = tabs.find((tab) => tab.key === activeTab)?.label || 'Sessions'
   const currentAgentName = agentName ?? agent?.definition.name ?? 'Agent'
-
   useIsomorphicLayoutEffect(() => {
     if (!containerRef.current || !measureRef.current) return
-
     const updateLabelVisibility = () => {
       if (!containerRef.current || !measureRef.current) return
-
       setShowLabels(measureRef.current.offsetWidth + 20 <= containerRef.current.offsetWidth)
     }
-
     updateLabelVisibility()
-
     const resizeObserver = new ResizeObserver(updateLabelVisibility)
     resizeObserver.observe(containerRef.current)
-
     return () => {
       resizeObserver.disconnect()
     }
   }, [activeTab, agentId, serverUrl, sessionsCount, triggersCount])
-
   return (
     <>
       <AgentBreadcrumb
         serverUrl={serverUrl}
         agentId={agentId}
         agentName={currentAgentName}
-        items={breadcrumbItems || [{label: activeTabLabel}]}
+        items={
+          breadcrumbItems || [
+            {
+              label: activeTabLabel,
+            },
+          ]
+        }
       />
-      <section className="flex flex-col gap-3">
+      <section className={stylex.props(styles.sfbc6e28f).className || ''}>
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 sm:flex-nowrap">
           <div className="flex min-w-0 flex-col gap-1">
             {onEditName ? (
@@ -303,37 +439,37 @@ export function AgentHeader({
                 onChange={(event) => onAgentNameChange(event.currentTarget.value)}
               />
             ) : (
-              <SizableText size="2xl" weight="bold" className="block truncate">
+              <SizableText size="2xl" weight="bold" className={stylex.props(styles.s12583799).className || ''}>
                 {agent?.definition.name || 'Agent'}
               </SizableText>
             )}
             {!agent ? (
-              <SizableText color="muted" className="block">
+              <SizableText color="muted" className={stylex.props(styles.s597c48d).className || ''}>
                 Loading agent…
               </SizableText>
             ) : agentNameSaveState === 'saving' ? (
-              <SizableText color="muted" className="block">
+              <SizableText color="muted" className={stylex.props(styles.s597c48d).className || ''}>
                 Saving…
               </SizableText>
             ) : agentNameSaveState === 'saved' ? (
-              <SizableText color="muted" className="block">
+              <SizableText color="muted" className={stylex.props(styles.s597c48d).className || ''}>
                 Saved
               </SizableText>
             ) : agentNameSaveState === 'error' ? (
-              <SizableText color="muted" className="block">
+              <SizableText color="muted" className={stylex.props(styles.s597c48d).className || ''}>
                 Save failed
               </SizableText>
             ) : null}
           </div>
-          <div className="flex flex-none items-center gap-2">
+          <div className={stylex.props(styles.sa0238738).className || ''}>
             {activeTab === 'sessions' && onCreateSession ? (
               <Button className="max-sm:min-h-10" onClick={onCreateSession} disabled={creatingSession}>
-                <MessageSquarePlus className="mr-2 size-4" /> New session
+                <MessageSquarePlus className={stylex.props(styles.sef1c143e).className || ''} /> New session
               </Button>
             ) : null}
             {activeTab === 'triggers' && onCreateTrigger ? (
               <Button className="max-sm:min-h-10" onClick={onCreateTrigger} disabled={!canCreateTrigger}>
-                <GitBranch className="mr-2 size-4" /> New trigger
+                <GitBranch className={stylex.props(styles.sef1c143e).className || ''} /> New trigger
               </Button>
             ) : null}
             {menuItems?.some((item) => item != null) ? (
@@ -367,7 +503,7 @@ export function AgentHeader({
                   icon={tab.icon}
                   count={tab.count}
                   showLabel
-                  className="flex-none"
+                  className={stylex.props(styles.s948be48c).className || ''}
                 />
               ))}
             </div>
@@ -425,11 +561,13 @@ export function SessionModelBadge({
   const [open, setOpen] = useState(false)
   const definition = agent?.definition
   const agentPair: AgentModelRef | null = definition
-    ? {provider: definition.modelProvider, model: definition.model}
+    ? {
+        provider: definition.modelProvider,
+        model: definition.model,
+      }
     : null
   const effective: AgentModelRef | null = modelOverride ?? agentPair
   const effectiveReasoning = modelOverride ? modelOverride.reasoningLevel : definition?.reasoningLevel
-
   const catalogProviders = useMemo(
     () =>
       Array.from(
@@ -444,8 +582,9 @@ export function SessionModelBadge({
     [effective?.provider, agentPair?.provider, definition?.enabledModels],
   )
   const catalogs = useProviderModelCatalogs(serverUrl, accountUid, canWrite && agentId ? catalogProviders : [], agentId)
-
-  const [pendingLevel, setPendingLevel] = useState<{level: ReasoningLevel | undefined} | null>(null)
+  const [pendingLevel, setPendingLevel] = useState<{
+    level: ReasoningLevel | undefined
+  } | null>(null)
   const commitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(
     () => () => {
@@ -453,7 +592,6 @@ export function SessionModelBadge({
     },
     [],
   )
-
   if (!definition || !agentPair || !effective) return null
 
   // Same switchable set as the agent header, seeded with the session's effective
@@ -469,31 +607,30 @@ export function SessionModelBadge({
     options.push(entry)
   }
   const spansProviders = options.some((entry) => entry.provider !== effective.provider)
-
   if (!canWrite || !agentId) {
     return (
       <Badge variant="secondary" className="max-w-56 flex-none gap-1.5">
-        <span className="truncate">{effective.model}</span>
+        <span className={stylex.props(styles.s6e724d66).className || ''}>{effective.model}</span>
         {effectiveReasoning ? <ReasoningPie level={effectiveReasoning} /> : null}
       </Badge>
     )
   }
-
   const effectiveProviderType = providers.data?.find((provider) => provider.name === effective.provider)?.type
   const reasoningSupported = effectiveProviderType
     ? modelReasoningSupport(effectiveProviderType, effective.model)
     : null
-
   function commitOverride(override: SessionModelOverride | null) {
     updateSession.mutate(
-      {sessionId, modelOverride: override},
+      {
+        sessionId,
+        modelOverride: override,
+      },
       {
         onSettled: () => setPendingLevel(null),
         onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not set the session model'),
       },
     )
   }
-
   function handleSelect(entry: AgentModelRef) {
     setOpen(false)
     if (samePair(entry, effective!)) return
@@ -505,11 +642,20 @@ export function SessionModelBadge({
     }
     const providerType = providers.data?.find((provider) => provider.name === entry.provider)?.type
     const level = coerceReasoningLevel(providerType, entry.model, effectiveReasoning)
-    commitOverride({provider: entry.provider, model: entry.model, ...(level ? {reasoningLevel: level} : {})})
+    commitOverride({
+      provider: entry.provider,
+      model: entry.model,
+      ...(level
+        ? {
+            reasoningLevel: level,
+          }
+        : {}),
+    })
   }
-
   function handleReasoningChange(level: ReasoningLevel | undefined) {
-    setPendingLevel({level})
+    setPendingLevel({
+      level,
+    })
     if (commitTimer.current) clearTimeout(commitTimer.current)
     commitTimer.current = setTimeout(() => {
       // Same pair and same level as the agent means no override is needed at all.
@@ -520,11 +666,14 @@ export function SessionModelBadge({
       commitOverride({
         provider: effective!.provider,
         model: effective!.model,
-        ...(level ? {reasoningLevel: level} : {}),
+        ...(level
+          ? {
+              reasoningLevel: level,
+            }
+          : {}),
       })
     }, 500)
   }
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
@@ -537,9 +686,9 @@ export function SessionModelBadge({
         {reasoningSupported || effectiveReasoning ? (
           <ReasoningPie level={pendingLevel ? pendingLevel.level : effectiveReasoning} />
         ) : null}
-        <ChevronsUpDown className="size-3 shrink-0 opacity-70" />
+        <ChevronsUpDown className={stylex.props(styles.s8a0ec2d6).className || ''} />
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-72 p-1">
+      <PopoverContent align="end" className={stylex.props(styles.sf6cf9d65).className || ''}>
         {options.map((entry) => {
           const isActive = samePair(entry, effective)
           const isAgentDefault = samePair(entry, agentPair)
@@ -552,16 +701,18 @@ export function SessionModelBadge({
               onClick={() => handleSelect(entry)}
             >
               <span className="min-w-0 flex-1 truncate">{info ? modelLabel(info) : entry.model}</span>
-              {isAgentDefault ? <span className="text-muted-foreground shrink-0 text-xs">agent default</span> : null}
-              {spansProviders && !isAgentDefault ? (
-                <span className="text-muted-foreground shrink-0 text-xs">{entry.provider}</span>
+              {isAgentDefault ? (
+                <span className={stylex.props(styles.s26e23c22).className || ''}>agent default</span>
               ) : null}
-              {isActive ? <Check className="size-4 shrink-0" /> : null}
+              {spansProviders && !isAgentDefault ? (
+                <span className={stylex.props(styles.s26e23c22).className || ''}>{entry.provider}</span>
+              ) : null}
+              {isActive ? <Check className={stylex.props(styles.sf8eef924).className || ''} /> : null}
             </button>
           )
         })}
         {reasoningSupported ? (
-          <div className="border-border mt-1 border-t px-2 pt-2 pb-1">
+          <div className={stylex.props(styles.s7239d2e5).className || ''}>
             <ReasoningSlider
               providerType={effectiveProviderType}
               model={effective.model}
@@ -570,13 +721,18 @@ export function SessionModelBadge({
             />
           </div>
         ) : null}
-        <div className="border-border mt-1 border-t p-1">
+        <div className={stylex.props(styles.se9d91b89).className || ''}>
           <button
             type="button"
             className="hover:bg-muted text-muted-foreground w-full rounded-sm px-2 py-1.5 text-left text-xs"
             onClick={() => {
               setOpen(false)
-              navigate({key: 'agent', agentId: agentId!, serverUrl, tab: 'settings'})
+              navigate({
+                key: 'agent',
+                agentId: agentId!,
+                serverUrl,
+                tab: 'settings',
+              })
             }}
           >
             Choose models in Settings…

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {agentsRouteFromUrl} from '@/agents-routing'
 import {clientLazy, ClientOnly} from '@/client-lazy'
 import {SiteHeaderPayload} from '@/loaders'
@@ -13,6 +14,11 @@ import {Suspense, useMemo} from 'react'
 
 // The agents chunk pulls in the editor and agents models; keep it out of the SSR bundle and load
 // it only on the client, like the commenting editor.
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+})
 const WebAgentsContent = clientLazy(async () => ({
   default: (await import('./agents-page-content')).default,
 }))
@@ -57,7 +63,7 @@ export function AgentsPage() {
             </Suspense>
           </ClientOnly>
         </NavigationLoadingContent>
-        <PageFooter className="w-full" />
+        <PageFooter className={stylex.props(styles.scdbaf625).className || ''} />
       </GeneralPageSurface>
     </WebSiteProvider>
   )

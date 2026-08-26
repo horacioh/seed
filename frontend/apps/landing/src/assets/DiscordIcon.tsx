@@ -1,7 +1,4 @@
-export default function DiscordIcon({
-  className = 'size-6 text-gray-400',
-  ...props
-}) {
+export default function DiscordIcon({className = 'size-6 text-gray-400', ...props}) {
   return (
     <svg
       className={className}

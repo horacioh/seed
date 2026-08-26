@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import {cva, VariantProps} from 'class-variance-authority'
 import {CheckIcon} from 'lucide-react'
@@ -5,7 +6,24 @@ import * as React from 'react'
 import {HTMLAttributes} from 'react'
 import {cn} from '../utils'
 import {Label} from './label'
-
+const styles = stylex.create({
+  sedb714c0: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'currentcolor',
+    transitionProperty: 'none',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+})
 const checkboxVariants = cva(
   'peer ring ring-px ring-border bg-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
   {
@@ -34,22 +52,28 @@ const checkboxVariants = cva(
     },
   },
 )
-
 export function Checkbox({className, variant = 'brand', ...props}: CheckboxProps) {
   return (
-    <CheckboxPrimitive.Root data-slot="checkbox" className={cn(checkboxVariants({variant}), className)} {...props}>
+    <CheckboxPrimitive.Root
+      data-slot="checkbox"
+      className={cn(
+        checkboxVariants({
+          variant,
+        }),
+        className,
+      )}
+      {...props}
+    >
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className="flex items-center justify-center text-current transition-none"
+        className={stylex.props(styles.sedb714c0).className || ''}
       >
-        <CheckIcon className="size-3.5" />
+        <CheckIcon className={stylex.props(styles.s3269316e).className || ''} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )
 }
-
 export type CheckboxProps = React.ComponentProps<typeof CheckboxPrimitive.Root> & VariantProps<typeof checkboxVariants>
-
 export function CheckboxField({
   checked,
   onCheckedChange,
@@ -67,7 +91,7 @@ export function CheckboxField({
 } & HTMLAttributes<HTMLDivElement> &
   CheckboxProps) {
   return (
-    <div className={cn('flex items-center gap-3', className)}>
+    <div className={cn(stylex.props(styles.s86ff3e5).className || '', className)}>
       <Checkbox checked={checked} onCheckedChange={onCheckedChange} variant={variant} />
       <Label htmlFor={id} {...labelProps}>
         {children}

@@ -1,12 +1,26 @@
+import * as stylex from '@stylexjs/stylex'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import * as React from 'react'
-
 import {cn} from '../utils'
-
+const styles = stylex.create({
+  s783f19f3: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  sec3ba5c6: {
+    flex: '1',
+    outlineStyle: 'none',
+  },
+})
 function Tabs({className, ...props}: React.ComponentProps<typeof TabsPrimitive.Root>) {
-  return <TabsPrimitive.Root data-slot="tabs" className={cn('flex flex-col', className)} {...props} />
+  return (
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      className={cn(stylex.props(styles.s783f19f3).className || '', className)}
+      {...props}
+    />
+  )
 }
-
 function TabsList({className, ...props}: React.ComponentProps<typeof TabsPrimitive.List>) {
   return (
     <TabsPrimitive.List
@@ -19,7 +33,6 @@ function TabsList({className, ...props}: React.ComponentProps<typeof TabsPrimiti
     />
   )
 }
-
 function TabsTrigger({className, ...props}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
   return (
     <TabsPrimitive.Trigger
@@ -32,9 +45,13 @@ function TabsTrigger({className, ...props}: React.ComponentProps<typeof TabsPrim
     />
   )
 }
-
 function TabsContent({className, ...props}: React.ComponentProps<typeof TabsPrimitive.Content>) {
-  return <TabsPrimitive.Content data-slot="tabs-content" className={cn('flex-1 outline-none', className)} {...props} />
+  return (
+    <TabsPrimitive.Content
+      data-slot="tabs-content"
+      className={cn(stylex.props(styles.sec3ba5c6).className || '', className)}
+      {...props}
+    />
+  )
 }
-
 export {Tabs, TabsContent, TabsList, TabsTrigger}

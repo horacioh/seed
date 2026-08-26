@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMMetadata} from '@seed-hypermedia/client/hm-types'
 import {useState} from 'react'
 import {PanelContent} from './accessories'
@@ -10,7 +11,22 @@ import {getDaemonFileUrl} from './get-file-url'
 import {IconForm} from './icon-form'
 import {ImageForm} from './image-form'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from './select-dropdown'
-
+const styles = stylex.create({
+  s21835087: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
 export function OptionsPanel({
   draftId,
   onMetadata,
@@ -26,7 +42,7 @@ export function OptionsPanel({
 }) {
   return (
     <PanelContent>
-      <div className="flex flex-col gap-4 p-4">
+      <div className={stylex.props(styles.s21835087).className || ''}>
         {isHomeDoc ? (
           <>
             <NameInput metadata={metadata} onMetadata={onMetadata} />
@@ -49,24 +65,24 @@ export function OptionsPanel({
     </PanelContent>
   )
 }
-
 function NameInput({metadata, onMetadata}: {metadata: HMMetadata; onMetadata: (values: Partial<HMMetadata>) => void}) {
   return (
-    <div className="flex flex-col gap-1">
-      <Label size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <Label size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Name
       </Label>
       <Input
         value={metadata.name}
         onChange={(e) => {
           const name = e.target.value
-          onMetadata({name})
+          onMetadata({
+            name,
+          })
         }}
       />
     </div>
   )
 }
-
 function DocumentIconForm({
   draftId,
   metadata,
@@ -79,8 +95,8 @@ function DocumentIconForm({
   fileUpload?: (file: File) => Promise<string>
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <Label size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <Label size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Icon
       </Label>
       <IconForm
@@ -105,7 +121,6 @@ function DocumentIconForm({
     </div>
   )
 }
-
 function ContentWidth({
   metadata,
   onMetadata,
@@ -114,12 +129,16 @@ function ContentWidth({
   onMetadata: (values: Partial<HMMetadata>) => void
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <Label size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <Label size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Content Width
       </Label>
       <Select
-        onValueChange={(contentWidth: 'S' | 'M' | 'L') => onMetadata({contentWidth})}
+        onValueChange={(contentWidth: 'S' | 'M' | 'L') =>
+          onMetadata({
+            contentWidth,
+          })
+        }
         value={metadata.contentWidth || 'M'}
       >
         <SelectTrigger>
@@ -134,7 +153,6 @@ function ContentWidth({
     </div>
   )
 }
-
 function HeaderLayout({
   metadata,
   onMetadata,
@@ -143,14 +161,18 @@ function HeaderLayout({
   onMetadata: (values: Partial<HMMetadata>) => void
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <Label size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <Label size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Header Layout
       </Label>
       <Select
         onValueChange={(headerLayout: 'default' | 'Center') => {
           const layoutValue = headerLayout === 'default' ? '' : headerLayout
-          onMetadata({theme: {headerLayout: layoutValue}})
+          onMetadata({
+            theme: {
+              headerLayout: layoutValue,
+            },
+          })
         }}
         value={metadata.theme?.headerLayout || 'default'}
       >
@@ -165,7 +187,6 @@ function HeaderLayout({
     </div>
   )
 }
-
 function HeaderLogo({
   draftId,
   metadata,
@@ -178,8 +199,8 @@ function HeaderLogo({
   fileUpload?: (file: File) => Promise<string>
 }) {
   return (
-    <div className="flex flex-col gap-1">
-      <Label size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <Label size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Header Logo
       </Label>
       <ImageForm
@@ -206,7 +227,6 @@ function HeaderLogo({
     </div>
   )
 }
-
 function OriginalPublishDate({
   metadata,
   onMetadata,
@@ -223,8 +243,8 @@ function OriginalPublishDate({
     )
   }
   return (
-    <div className="flex flex-col gap-1">
-      <Label size="sm" className="text-muted-foreground">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
+      <Label size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         Publication Display Date
       </Label>
       <DatePicker
@@ -234,17 +254,20 @@ function OriginalPublishDate({
             : new Date().toDateString()
         }
         onValue={(displayPublishTime) => {
-          onMetadata({displayPublishTime})
+          onMetadata({
+            displayPublishTime,
+          })
         }}
         onReset={() => {
           setIsAdding(false)
-          onMetadata({displayPublishTime: ''})
+          onMetadata({
+            displayPublishTime: '',
+          })
         }}
       />
     </div>
   )
 }
-
 function OutlineVisibility({
   metadata,
   onMetadata,
@@ -254,19 +277,20 @@ function OutlineVisibility({
 }) {
   const checked = typeof metadata.showOutline == 'undefined' || metadata.showOutline
   return (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       <SwitchField
         label="Show Outline"
         id="outline"
         defaultChecked={checked}
         onCheckedChange={(value) => {
-          onMetadata({showOutline: value})
+          onMetadata({
+            showOutline: value,
+          })
         }}
       />
     </div>
   )
 }
-
 function ActivityVisibility({
   metadata,
   onMetadata,
@@ -275,19 +299,20 @@ function ActivityVisibility({
   onMetadata: (values: Partial<HMMetadata>) => void
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className={stylex.props(styles.sfbc6e28d).className || ''}>
       <SwitchField
         label="Enable Activity Tabs"
         id="activity"
         checked={metadata.showActivity !== false}
         onCheckedChange={(value) => {
-          onMetadata({showActivity: value})
+          onMetadata({
+            showActivity: value,
+          })
         }}
       />
     </div>
   )
 }
-
 export function dateStringToDate(dateString: string) {
   return new Date(dateString)
 }

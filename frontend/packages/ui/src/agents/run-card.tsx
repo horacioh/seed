@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {type RunInfo, type RunJournalEntryInfo, type RunPlan, type RunStatus} from './client'
 import {ToolCallLine} from './message-rendering'
 import {ParkedRunActions} from './run-parked-actions'
@@ -30,6 +31,89 @@ import React, {useEffect, useMemo, useRef, useState} from 'react'
  * keeps its title: the child rows below already show what is running, and a "waiting on N" line
  * would be one more spinner saying the same thing.
  */
+const styles = stylex.create({
+  s77d4c9c4: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--card)',
+    marginRight: 'calc(0.25rem * 6)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 2.5)',
+  },
+  s3b87a119: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flex: 'none',
+    animation: 'spin 1s linear infinite',
+  },
+  s255e9b3e: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  sa0238737: {
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  sfbc6e28d: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s6bbccae4: {
+    backgroundColor: 'var(--muted)',
+    height: 'calc(0.25rem * 1)',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s438f8b66: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  sd266775: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  se6c9d13: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flex: 'none',
+  },
+  s54eab7db: {
+    opacity: '70%',
+  },
+  s257f847e: {
+    marginTop: 'calc(0.25rem * 1)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 0.5)',
+  },
+})
 function parkedLabel(run: RunInfo): string | undefined {
   const wait = run.wait
   if (wait?.reason === 'budget-pause') return wait.label || 'Paused: out of time budget'
@@ -64,8 +148,16 @@ function formatWakeTime(wakeAt: number): string {
   const date = new Date(wakeAt)
   const sameDay = new Date().toDateString() === date.toDateString()
   return sameDay
-    ? date.toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})
-    : date.toLocaleString([], {month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})
+    ? date.toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : date.toLocaleString([], {
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      })
 }
 
 /** How a run's status reads in the header pill. */
@@ -78,7 +170,6 @@ const RUN_STATUS_LABELS: Record<RunStatus, string> = {
   failed: 'Failed',
   canceled: 'Canceled',
 }
-
 function runStatusClass(status: RunStatus): string {
   if (status === 'failed') return 'border-destructive/30 bg-destructive/10 text-destructive'
   if (status === 'succeeded') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
@@ -135,7 +226,6 @@ export function SessionRunCard({
     seedRoot,
     seedIsLive,
   )
-
   const root = seedRoot ? runsById[seedRoot.id] ?? seedRoot : undefined
   const children = useMemo(() => (root ? descendantsOf(runsById, root.id) : []), [runsById, root?.id])
 
@@ -149,7 +239,6 @@ export function SessionRunCard({
   // Frozen mid-flight: the transcript is already telling this run's story at the place it settled,
   // so the pinned slot clears early rather than holding a finished summary over the composer.
   if (root && !isTerminalRun(root.status) && frozenRunIds?.has(root.id)) return null
-
   if (root && isOrchestration && !isTerminalRun(root.status)) {
     return (
       <RunCardShell compact={compact} column>
@@ -214,14 +303,12 @@ export function RunRecordCard({
   const {runsById, liveState} = useRunTreeView(serverUrl, accountUid, seed?.rootRunId, seed, true)
   const focus = seed ? runsById[seed.id] ?? seed : undefined
   const children = useMemo(() => (focus ? descendantsOf(runsById, focus.id) : []), [runsById, focus?.id])
-
   if (!focus) {
     return run.isLoading ? <div className="text-muted-foreground py-1 text-[11px]">Loading run…</div> : null
   }
-
   return (
     // Same shell as the pinned card: this IS that card, frozen where the run finished.
-    <div className="border-border bg-card mr-6 flex flex-col gap-2 rounded-lg border p-2.5">
+    <div className={stylex.props(styles.s77d4c9c4).className || ''}>
       <RunCardBody
         serverUrl={serverUrl}
         accountUid={accountUid}
@@ -295,23 +382,20 @@ function RunCardBody({
       (part) => part.id === `wf-${run.id}:${callSeq}`,
     )
   }, [liveState.journal, run.id, run.error?.callSeq])
-
   useEffect(() => {
     if (isTerminal) setConfirmingCancel(false)
   }, [isTerminal])
-
   const headerTitle = (isParked ? parkedLabel(run) : undefined) ?? cardTitle(run, plan, childRuns)
-
   return (
     <>
       <div className="group/runhead flex min-w-0 items-center gap-2">
-        {showRunControls ? <Loader2 className="text-muted-foreground size-3.5 flex-none animate-spin" /> : null}
+        {showRunControls ? <Loader2 className={stylex.props(styles.s3b87a119).className || ''} /> : null}
         <span className="min-w-0 flex-1 truncate text-xs font-medium" title={headerTitle}>
           {headerTitle}
         </span>
         {/* Technical details live behind the same info bubble every tool row uses, live or done —
             and like those, the bubble shows itself only while the row is hovered. */}
-        <span className="flex flex-none items-center gap-1.5">
+        <span className={stylex.props(styles.s255e9b3e).className || ''}>
           {isCompletedTranscript && issueCount ? (
             <span className="text-[10px] text-amber-700 dark:text-amber-300">
               {issueCount} recovered issue{issueCount === 1 ? '' : 's'}
@@ -324,11 +408,11 @@ function RunCardBody({
             onClick={() => setDetailsOpen(true)}
             className="hover:bg-background/70 text-muted-foreground hover:text-foreground bg-background/60 rounded-full border p-0.75 opacity-0 transition-opacity group-hover/runhead:opacity-100 focus-visible:opacity-100"
           >
-            <Info className="size-3" />
+            <Info className={stylex.props(styles.sca3de967).className || ''} />
           </button>
         </span>
         {!showRunControls ? null : confirmingCancel ? (
-          <span className="flex flex-none items-center gap-1">
+          <span className={stylex.props(styles.sa0238737).className || ''}>
             <Button
               size="sm"
               variant="destructive"
@@ -345,7 +429,12 @@ function RunCardBody({
             </Button>
           </span>
         ) : (
-          <Button size="sm" variant="ghost" className="flex-none" onClick={() => setConfirmingCancel(true)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className={stylex.props(styles.s948be48c).className || ''}
+            onClick={() => setConfirmingCancel(true)}
+          >
             Cancel
           </Button>
         )}
@@ -370,13 +459,15 @@ function RunCardBody({
       <RunTimerProgress run={run} journal={liveState.journal} wide />
 
       {progress && !isTerminal ? (
-        <div className="flex flex-col gap-1">
+        <div className={stylex.props(styles.sfbc6e28d).className || ''}>
           {progress.label ? <span className="text-muted-foreground text-[11px]">{progress.label}</span> : null}
           {progress.fraction !== undefined ? (
-            <div className="bg-muted h-1 w-full overflow-hidden rounded-full">
+            <div className={stylex.props(styles.s6bbccae4).className || ''}>
               <div
                 className="bg-primary h-full rounded-full transition-[width] duration-300"
-                style={{width: `${Math.min(100, Math.max(0, progress.fraction * 100))}%`}}
+                style={{
+                  width: `${Math.min(100, Math.max(0, progress.fraction * 100))}%`,
+                }}
               />
             </div>
           ) : null}
@@ -432,7 +523,7 @@ function RunCardBody({
       </Dialog>
 
       {/* Status and elapsed time anchor the card's bottom-left; cost keeps the opposite corner. */}
-      <div className="border-border flex items-center gap-2 border-t pt-1">
+      <div className={stylex.props(styles.s438f8b66).className || ''}>
         <span
           className={`flex-none rounded-full border px-1.5 py-0.5 text-[10px] ${runStatusClass(
             isCompletedTranscript && !isTerminal ? 'succeeded' : run.status,
@@ -458,7 +549,12 @@ function RunCardBody({
 const MAX_ACTIVITY_LINES = 100
 
 /** One rendered journal line: what happened, how loudly to say it, and the full entry behind it. */
-type ActivityLine = {key: string; text: string; tone?: 'error' | 'warn'; entry: RunJournalEntryInfo}
+type ActivityLine = {
+  key: string
+  text: string
+  tone?: 'error' | 'warn'
+  entry: RunJournalEntryInfo
+}
 
 /**
  * Renders the journal entries a workflow writes as it runs. Kinds not listed here (`timer`, `fired`,
@@ -476,7 +572,10 @@ function journalEntryLine(entry: RunJournalEntryInfo): ActivityLine | null {
     op?: string
     tool?: string
     status?: string
-    error?: {code?: string; message?: string}
+    error?: {
+      code?: string
+      message?: string
+    }
   }
   const key = `${entry.runId}:${entry.seq}`
   if (payload.kind === 'log') {
@@ -497,8 +596,17 @@ function journalEntryLine(entry: RunJournalEntryInfo): ActivityLine | null {
     }
   }
   if (payload.kind === 'call') {
-    if (payload.op === 'agent') return {key, text: 'agent: sub-session', entry}
-    return {key, text: `tool: ${payload.tool ?? 'unknown'}`, entry}
+    if (payload.op === 'agent')
+      return {
+        key,
+        text: 'agent: sub-session',
+        entry,
+      }
+    return {
+      key,
+      text: `tool: ${payload.tool ?? 'unknown'}`,
+      entry,
+    }
   }
   // Successful results are replay bookkeeping, but a failed result is the one place the error
   // message lives — surface it where someone reading the log is looking for it.
@@ -536,20 +644,22 @@ function RunActivityDrawer({journal}: {journal: RunJournalEntryInfo[]}) {
     if (!open || !scrollRef.current) return
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [open, lines.length])
-
   if (!lines.length) return null
-
   return (
-    <div className="border-border flex flex-col border-t pt-1">
+    <div className={stylex.props(styles.sd266775).className || ''}>
       <button
         type="button"
         aria-expanded={open}
         className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
         onClick={() => setOpen((current) => !current)}
       >
-        {open ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}
+        {open ? (
+          <ChevronDown className={stylex.props(styles.se6c9d13).className || ''} />
+        ) : (
+          <ChevronRight className={stylex.props(styles.se6c9d13).className || ''} />
+        )}
         Activity
-        <span className="opacity-70">{lines.length}</span>
+        <span className={stylex.props(styles.s54eab7db).className || ''}>{lines.length}</span>
       </button>
       {open ? (
         <div
@@ -605,19 +715,23 @@ function RunSourceDrawer({runs}: {runs: RunInfo[]}) {
   const sources = runs.filter((run) => run.kind === 'workflow' && run.sourceText)
   if (!sources.length) return null
   return (
-    <div className="border-border flex flex-col border-t pt-1">
+    <div className={stylex.props(styles.sd266775).className || ''}>
       <button
         type="button"
         aria-expanded={open}
         className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
         onClick={() => setOpen((current) => !current)}
       >
-        {open ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}
+        {open ? (
+          <ChevronDown className={stylex.props(styles.se6c9d13).className || ''} />
+        ) : (
+          <ChevronRight className={stylex.props(styles.se6c9d13).className || ''} />
+        )}
         Code
       </button>
       {open
         ? sources.map((run) => (
-            <div key={run.id} className="mt-1 flex flex-col gap-0.5">
+            <div key={run.id} className={stylex.props(styles.s257f847e).className || ''}>
               {sources.length > 1 ? <span className="text-muted-foreground text-[10px]">{runTitle(run)}</span> : null}
               <pre
                 aria-label={`Workflow source: ${runTitle(run)}`}

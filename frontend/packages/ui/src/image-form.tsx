@@ -1,9 +1,50 @@
+import * as stylex from '@stylexjs/stylex'
 import {X} from 'lucide-react'
 import {ChangeEvent} from 'react'
 import {Button} from './button'
 import {SizableText} from './text'
 
 /** Props for the ImageForm component. */
+const styles = stylex.create({
+  s5af07b88: {
+    backgroundColor: 'var(--muted)',
+    flex: '1',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s7d53a800: {
+    position: 'relative',
+    width: '100%',
+    alignSelf: 'stretch',
+    overflow: 'hidden',
+  },
+  s236e44da: {
+    color: 'var(--muted-foreground)',
+    textAlign: 'center',
+  },
+  sf8375e72: {
+    backgroundColor: 'var(--muted)',
+    borderColor: 'var(--border)',
+    pointerEvents: 'none',
+    position: 'absolute',
+    zIndex: '50',
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 0)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    opacity: '100%',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+})
 export interface ImageFormProps {
   label?: string
   emptyLabel?: string
@@ -49,7 +90,6 @@ export function ImageForm({
     const file = fileList?.[0]
     if (!file) return
     if (!onImageUpload) return
-
     if (uploadOnChange) {
       if (!fileUpload) return
       fileUpload(file)
@@ -67,9 +107,8 @@ export function ImageForm({
       onImageUpload(file)
     }
   }
-
   const image = url ? (
-    <div className="bg-muted flex-1 overflow-hidden rounded-md">
+    <div className={stylex.props(styles.s5af07b88).className || ''}>
       <img
         alt="Image preview"
         src={url}
@@ -85,16 +124,21 @@ export function ImageForm({
       />
     </div>
   ) : null
-
   if (!onImageUpload) return image
-
   return (
     <div
       className="group group-icon relative flex w-auto items-end self-stretch overflow-hidden rounded-md"
-      style={width ? {width, flex: 'none'} : undefined}
+      style={
+        width
+          ? {
+              width,
+              flex: 'none',
+            }
+          : undefined
+      }
     >
       <div
-        className="relative w-full self-stretch overflow-hidden"
+        className={stylex.props(styles.s7d53a800).className || ''}
         style={{
           minHeight: height || 60,
         }}
@@ -115,20 +159,12 @@ export function ImageForm({
             zIndex: 20,
           }}
         />
-        {emptyLabel && !url ? (
-          <div className="bg-muted pointer-events-none absolute z-50 h-full items-center justify-center gap-2 opacity-100">
-            <SizableText size="xs" className="text-muted-foreground text-center">
-              {emptyLabel}
-            </SizableText>
-          </div>
-        ) : null}
-
         {image || (
-          <div className="bg-muted border-border pointer-events-none absolute z-50 flex h-full w-full flex-col items-center justify-center gap-0 rounded-md border opacity-100">
-            <SizableText size="xs" weight="bold" className="text-muted-foreground text-center">
-              {url ? 'Update Cover' : emptyLabel || 'Add Cover'}
+          <div className={stylex.props(styles.sf8375e72).className || ''}>
+            <SizableText size="xs" weight="bold" className={stylex.props(styles.s236e44da).className || ''}>
+              {emptyLabel || 'Add Cover'}
             </SizableText>
-            <SizableText size="xs" className="text-muted-foreground text-center">
+            <SizableText size="xs" className={stylex.props(styles.s236e44da).className || ''}>
               {suggestedSize}
             </SizableText>
           </div>
@@ -137,14 +173,14 @@ export function ImageForm({
       {onRemove && url ? (
         <Button
           size="icon"
-          className="grouo-hover:pointer-events-all absolute top-0 right-0 z-50 opacity-0 group-hover:opacity-100"
+          className="absolute top-0 right-0 z-50 opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
           onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()
             onRemove()
           }}
         >
-          <X className="size-3" />
+          <X className={stylex.props(styles.sca3de967).className || ''} />
         </Button>
       ) : null}
     </div>

@@ -1,8 +1,17 @@
+import * as stylex from '@stylexjs/stylex'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {pluralS} from '@shm/shared'
 import React from 'react'
 
 /** Supported Explore tabs for a resource page. */
+const styles = stylex.create({
+  sfbc0224e: {
+    marginBottom: 'calc(0.25rem * 4)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'oklch(92.8% 0.006 264.531)',
+  },
+})
 export type TabType =
   | 'profile'
   | 'document'
@@ -13,7 +22,6 @@ export type TabType =
   | 'capabilities'
   | 'children'
   | 'authored-comments'
-
 type ResourceType = 'document' | 'comment' | 'redirect' | 'not-found' | 'tombstone' | 'error' | undefined
 
 /** Tab metadata used to render the Explore tab bar. */
@@ -21,7 +29,6 @@ export interface TabDefinition {
   id: TabType
   label: string
 }
-
 interface TabCounts {
   changeCount?: number
   versionCount?: number
@@ -43,28 +50,31 @@ export function getTabs({
   capabilityCount = 0,
   childrenCount = 0,
   authoredCommentCount = 0,
-}: {id: UnpackedHypermediaId; resourceType?: ResourceType} & TabCounts): TabDefinition[] {
+}: {
+  id: UnpackedHypermediaId
+  resourceType?: ResourceType
+} & TabCounts): TabDefinition[] {
   const isAccountRoot = !id.path?.filter((p) => !!p).length
   const tabs: TabDefinition[] = []
 
   // Accounts expose a Profile view (their home document as a profile); the raw
   // Document State stays available alongside it.
   if (isAccountRoot && resourceType === 'document') {
-    tabs.push({id: 'profile', label: 'Profile'})
+    tabs.push({
+      id: 'profile',
+      label: 'Profile',
+    })
   }
-
   tabs.push({
     id: 'document',
     label: `${resourceType === 'comment' ? 'Comment' : 'Document'} State${id.version ? ` (Exact Version)` : ''}`,
   })
-
   if (resourceType === 'document') {
     tabs.push({
       id: 'changes',
       label: `${changeCount} ${pluralS(changeCount, 'Change')}`,
     })
   }
-
   if (resourceType === 'comment') {
     tabs.push({
       id: 'versions',
@@ -98,14 +108,12 @@ export function getTabs({
       label: `${childrenCount} ${pluralS(childrenCount, 'Child', 'Children')}`,
     })
   }
-
   if (isAccountRoot) {
     tabs.push({
       id: 'authored-comments',
       label: `${authoredCommentCount} ${pluralS(authoredCommentCount, 'Authored Comment', 'Authored Comments')}`,
     })
   }
-
   return tabs
 }
 
@@ -120,14 +128,12 @@ export function getTabSearchParams(searchParams: URLSearchParams, tab: TabType) 
   nextSearchParams.set('tab', tab)
   return nextSearchParams
 }
-
 interface TabProps {
   id: TabType
   label: string
   isActive: boolean
   onClick: (tab: TabType) => void
 }
-
 const Tab: React.FC<TabProps> = ({id, label, isActive, onClick}) => {
   return (
     <li role="presentation">
@@ -147,7 +153,6 @@ const Tab: React.FC<TabProps> = ({id, label, isActive, onClick}) => {
     </li>
   )
 }
-
 interface TabsProps {
   currentTab: TabType
   id: UnpackedHypermediaId
@@ -161,7 +166,6 @@ interface TabsProps {
   childrenCount: number | undefined
   authoredCommentCount: number | undefined
 }
-
 const Tabs: React.FC<TabsProps> = ({
   id,
   currentTab,
@@ -186,9 +190,8 @@ const Tabs: React.FC<TabsProps> = ({
     childrenCount,
     authoredCommentCount,
   })
-
   return (
-    <div className="mb-4 border-b border-gray-200">
+    <div className={stylex.props(styles.sfbc0224e).className || ''}>
       <ul className="flex flex-nowrap overflow-x-auto px-2 text-center text-sm font-medium md:px-0" role="tablist">
         {tabs.map((tab) => (
           <Tab key={tab.id} id={tab.id} label={tab.label} isActive={currentTab === tab.id} onClick={onTabChange} />
@@ -197,5 +200,4 @@ const Tabs: React.FC<TabsProps> = ({
     </div>
   )
 }
-
 export default Tabs

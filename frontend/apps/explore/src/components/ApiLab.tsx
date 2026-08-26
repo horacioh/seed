@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   AlertCircle,
   ArrowRight,
@@ -11,8 +12,8 @@ import {
   TerminalSquare,
   Unplug,
 } from 'lucide-react'
-import { useDeferredValue, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import {useDeferredValue, useEffect, useState} from 'react'
+import {useSearchParams} from 'react-router-dom'
 import {
   buildApiRequestPreview,
   createStarterPayload,
@@ -24,15 +25,327 @@ import {
   type ApiSchemaRouteSummary,
   type JSONSchemaNode,
 } from '../api-lab'
-import { useApiHost } from '../apiHostStore'
+import {useApiHost} from '../apiHostStore'
 import DataViewer from './DataViewer'
 
 /** Developer playground for the desktop TypeScript HTTP API. */
+const styles = stylex.create({
+  sd63a8a39: {
+    position: 'relative',
+    display: 'block',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  se80bcbd2: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  se80bcbd3: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s2b64fb66: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    animation: 'spin 1s linear infinite',
+  },
+  s99f3c3c3: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(55.4% 0.046 257.417)',
+  },
+  sc7c6263a: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(92.9% 0.013 255.508)',
+    backgroundColor: 'oklch(98.4% 0.003 247.858)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  s155ffa56: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+    color: 'oklch(27.9% 0.041 260.031)',
+  },
+  sc5293c96: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+    color: 'oklch(20.8% 0.042 265.755)',
+  },
+  s4768be23: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: 'oklch(76.9% 0.188 70.08)',
+  },
+  s720ca7bb: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(44.6% 0.043 257.281)',
+  },
+  se228e976: {
+    display: 'inline-flex',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(92.9% 0.013 255.508)',
+    backgroundColor: 'oklch(96.8% 0.007 247.896)',
+    padding: 'calc(0.25rem * 1)',
+  },
+  sff93336e: {
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(92.9% 0.013 255.508)',
+    backgroundColor: 'oklch(98.4% 0.003 247.858)',
+  },
+  s576f334c: {
+    cursor: 'pointer',
+    listStyleType: 'none',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+    color: 'oklch(27.9% 0.041 260.031)',
+  },
+  s5e351f5f: {
+    overflowX: 'auto',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    borderColor: 'oklch(92.9% 0.013 255.508)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(37.2% 0.044 257.287)',
+  },
+  s7d0eb007: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(55.4% 0.046 257.417)',
+  },
+  s9f5ea161: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: 'oklch(68.5% 0.169 237.323)',
+  },
+  sebadccac: {
+    marginTop: 'calc(0.25rem * 4)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  s59cb3585: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    color: 'oklch(70.4% 0.04 256.788)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s56ff61da: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+    color: 'oklch(20.8% 0.042 265.755)',
+  },
+  s36d848a6: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    wordBreak: 'break-all',
+    color: 'oklch(55.4% 0.046 257.417)',
+  },
+  sb2d2baf0: {
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(20.8% 0.042 265.755)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '600',
+    color: '#fff',
+  },
+  s149f498c: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(44.6% 0.043 257.281)',
+  },
+  scbcc2085: {
+    marginTop: 'calc(0.25rem * 3)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s2aec4671: {
+    marginLeft: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(92.9% 0.013 255.508)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontFamily: 'var(--font-mono)',
+    letterSpacing: '0em',
+    color: 'oklch(27.9% 0.041 260.031)',
+    textTransform: 'none',
+  },
+  se2631900: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(86.9% 0.022 252.894)',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s8b64edee: {
+    marginTop: 'calc(0.25rem * 4)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(86.9% 0.022 252.894)',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s7b2650b8: {
+    marginTop: 'calc(0.25rem * 4)',
+    overflowX: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(37.2% 0.044 257.287)',
+  },
+  sdf14d023: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '600',
+    letterSpacing: '-0.025em',
+    color: 'oklch(12.9% 0.042 264.695)',
+  },
+  sd77f856d: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(44.6% 0.043 257.281)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sd0177a8a: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+    color: 'oklch(20.8% 0.042 265.755)',
+  },
+  sb3c7b34e: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s4a3ea40b: {
+    marginTop: 'calc(0.25rem * 1)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+    color: 'oklch(27.9% 0.041 260.031)',
+  },
+  s5f49acfc: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(89.2% 0.058 10.001)',
+    backgroundColor: 'oklch(96.9% 0.015 12.422)',
+    padding: 'calc(0.25rem * 4)',
+    color: 'oklch(45.5% 0.188 13.697)',
+  },
+  s69f644cf: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+  },
+  s9097ff5: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+  },
+  s1300853f: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(89.2% 0.058 10.001)',
+    backgroundColor: 'oklch(96.9% 0.015 12.422)',
+    padding: 'calc(0.25rem * 6)',
+    color: 'oklch(41% 0.159 10.272)',
+  },
+  sd6b3e1b6: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+  },
+  s2a13436d: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(86.9% 0.022 252.894)',
+    backgroundColor: 'oklch(98.4% 0.003 247.858)',
+    padding: 'calc(0.25rem * 6)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(55.4% 0.046 257.417)',
+  },
+})
 export default function ApiLab() {
   const apiHost = useApiHost()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedKey = searchParams.get('key')
-
   const [routeFilter, setRouteFilter] = useState('')
   const deferredRouteFilter = useDeferredValue(routeFilter)
   const [schemaIndex, setSchemaIndex] = useState<ApiSchemaIndex | null>(null)
@@ -46,23 +359,21 @@ export default function ApiLab() {
   const [isRunning, setIsRunning] = useState(false)
   const [runError, setRunError] = useState<string | null>(null)
   const [schemaTab, setSchemaTab] = useState<'input' | 'output'>('input')
-
   useEffect(() => {
     setResults({})
     setRunError(null)
   }, [apiHost])
-
   useEffect(() => {
     const abortController = new AbortController()
-
     setIsIndexLoading(true)
     setIndexError(null)
     setDefinitionError(null)
     setSchemaDefinitions({})
-
     fetch(buildAbsoluteUrl(apiHost, '/api/schema'), {
       signal: abortController.signal,
-      headers: {Accept: 'application/json'},
+      headers: {
+        Accept: 'application/json',
+      },
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -85,10 +396,8 @@ export default function ApiLab() {
           setIsIndexLoading(false)
         }
       })
-
     return () => abortController.abort()
   }, [apiHost])
-
   useEffect(() => {
     const routes = schemaIndex?.routes ?? []
     if (!routes.length) {
@@ -98,30 +407,28 @@ export default function ApiLab() {
     if (!firstRoute) {
       return
     }
-
     if (selectedKey && routes.some((route) => route.key === selectedKey)) {
       return
     }
-
     const nextParams = new URLSearchParams(searchParams)
     nextParams.set('key', firstRoute.key)
-    setSearchParams(nextParams, {replace: true})
+    setSearchParams(nextParams, {
+      replace: true,
+    })
   }, [schemaIndex, searchParams, selectedKey, setSearchParams])
-
   useEffect(() => {
     if (!selectedKey || schemaDefinitions[selectedKey]) {
       return
     }
-
     const abortController = new AbortController()
-
     setLoadingDefinitionKey(selectedKey)
     setDefinitionError(null)
     setSchemaTab('input')
-
     fetch(buildAbsoluteUrl(apiHost, `/api/schema?key=${encodeURIComponent(selectedKey)}`), {
       signal: abortController.signal,
-      headers: {Accept: 'application/json'},
+      headers: {
+        Accept: 'application/json',
+      },
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -146,22 +453,17 @@ export default function ApiLab() {
           setLoadingDefinitionKey(null)
         }
       })
-
     return () => abortController.abort()
   }, [apiHost, schemaDefinitions, selectedKey])
-
   const selectedDefinition = selectedKey ? schemaDefinitions[selectedKey] : undefined
-
   useEffect(() => {
     if (!selectedDefinition) {
       return
     }
-
     setDraftInputs((currentDrafts) => {
       if (currentDrafts[selectedDefinition.key] !== undefined) {
         return currentDrafts
       }
-
       return {
         ...currentDrafts,
         [selectedDefinition.key]: formatJsonValue(
@@ -170,23 +472,19 @@ export default function ApiLab() {
       }
     })
   }, [selectedDefinition])
-
   const filteredRoutes = (schemaIndex?.routes ?? []).filter((route) => {
     const query = deferredRouteFilter.trim().toLowerCase()
     if (!query) {
       return true
     }
-
     return (
       route.key.toLowerCase().includes(query) ||
       route.path.toLowerCase().includes(query) ||
       route.kind.toLowerCase().includes(query)
     )
   })
-
   const selectedInput = selectedKey ? draftInputs[selectedKey] ?? '' : ''
   const selectedResult = selectedKey ? results[selectedKey] : undefined
-
   let previewError: string | null = null
   let preview: ReturnType<typeof buildApiRequestPreview> | undefined
   if (selectedDefinition && selectedInput) {
@@ -196,18 +494,14 @@ export default function ApiLab() {
       previewError = getErrorMessage(error)
     }
   }
-
   const activeSchema =
     selectedDefinition && schemaTab === 'input' ? selectedDefinition.inputSchema : selectedDefinition?.outputSchema
-
   async function handleRunRequest() {
     if (!selectedDefinition || !selectedKey) {
       return
     }
-
     setIsRunning(true)
     setRunError(null)
-
     try {
       const result = await executeApiRequest(apiHost, selectedDefinition, draftInputs[selectedKey] ?? '')
       setResults((currentResults) => ({
@@ -220,18 +514,15 @@ export default function ApiLab() {
       setIsRunning(false)
     }
   }
-
   function handleRouteSelection(route: ApiSchemaRouteSummary) {
     const nextParams = new URLSearchParams(searchParams)
     nextParams.set('key', route.key)
     setSearchParams(nextParams)
   }
-
   function handleInputReset() {
     if (!selectedDefinition) {
       return
     }
-
     setDraftInputs((currentDrafts) => ({
       ...currentDrafts,
       [selectedDefinition.key]: formatJsonValue(
@@ -240,7 +531,6 @@ export default function ApiLab() {
     }))
     setRunError(null)
   }
-
   function handleFormatJson() {
     if (!selectedKey) {
       return
@@ -255,22 +545,19 @@ export default function ApiLab() {
       setRunError(getErrorMessage(error))
     }
   }
-
   function handleCopyPreviewUrl() {
     if (!preview) {
       return
     }
     navigator.clipboard.writeText(preview.url)
   }
-
   return (
     <div>
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-2 pb-10">
         <div className="grid gap-6 xl:grid-cols-[22rem_minmax(0,1fr)]">
           <aside className="space-y-4">
-            <Panel
-            >
-              <label className="relative block">
+            <Panel>
+              <label className={stylex.props(styles.sd63a8a39).className || ''}>
                 <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-slate-400" />
                 <input
                   type="search"
@@ -314,7 +601,7 @@ export default function ApiLab() {
                   title={selectedDefinition.key}
                   subtitle={`${selectedDefinition.method} ${selectedDefinition.path}`}
                   actions={
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                       <StatusPill label={selectedDefinition.inputEncoding} tone="amber" />
                       <StatusPill label={selectedDefinition.outputSerialization} tone="sky" />
                       {selectedDefinition.usesParamMapping ? (
@@ -339,13 +626,13 @@ export default function ApiLab() {
                     title="Input JSON"
                     subtitle="Edit the logical input payload. The lab will derive the real wire shape from the schema."
                     actions={
-                      <div className="flex flex-wrap gap-2">
+                      <div className={stylex.props(styles.se80bcbd2).className || ''}>
                         <ActionButton onClick={handleInputReset} disabled={!selectedDefinition}>
-                          <RefreshCw className="size-4" />
+                          <RefreshCw className={stylex.props(styles.sca3de968).className || ''} />
                           Reset
                         </ActionButton>
                         <ActionButton onClick={handleFormatJson} disabled={!selectedDefinition || !!previewError}>
-                          <Sparkles className="size-4" />
+                          <Sparkles className={stylex.props(styles.sca3de968).className || ''} />
                           Format JSON
                         </ActionButton>
                       </div>
@@ -370,7 +657,7 @@ export default function ApiLab() {
                     {previewError ? <InlineAlert title="Preview unavailable" message={previewError} /> : null}
                     {runError ? <InlineAlert title="Request failed" message={runError} /> : null}
 
-                    <div className="flex flex-wrap gap-3">
+                    <div className={stylex.props(styles.se80bcbd3).className || ''}>
                       <button
                         type="button"
                         onClick={handleRunRequest}
@@ -378,14 +665,14 @@ export default function ApiLab() {
                         className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
                       >
                         {isRunning ? (
-                          <RefreshCw className="size-4 animate-spin" />
+                          <RefreshCw className={stylex.props(styles.s2b64fb66).className || ''} />
                         ) : (
-                          <TerminalSquare className="size-4" />
+                          <TerminalSquare className={stylex.props(styles.sca3de968).className || ''} />
                         )}
                         {isRunning ? 'Running…' : 'Run request'}
                       </button>
-                      <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <ArrowRight className="size-4" />
+                      <div className={stylex.props(styles.s99f3c3c3).className || ''}>
+                        <ArrowRight className={stylex.props(styles.sca3de968).className || ''} />
                         Exact transport: {selectedDefinition.method}{' '}
                         {selectedDefinition.method === 'GET' ? 'query string' : 'CBOR body'}
                       </div>
@@ -398,17 +685,17 @@ export default function ApiLab() {
                     subtitle="The resolved request that will be sent to the desktop API."
                     actions={
                       <ActionButton onClick={handleCopyPreviewUrl} disabled={!preview}>
-                        <Copy className="size-4" />
+                        <Copy className={stylex.props(styles.sca3de968).className || ''} />
                         Copy URL
                       </ActionButton>
                     }
                   >
                     {preview ? (
                       <div className="space-y-5">
-                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                          <div className="flex flex-wrap items-center gap-2">
+                        <div className={stylex.props(styles.sc7c6263a).className || ''}>
+                          <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                             <StatusPill label={preview.method} tone="slate" />
-                            <p className="font-mono text-sm break-all text-slate-800">{preview.url}</p>
+                            <p className={stylex.props(styles.s155ffa56).className || ''}>{preview.url}</p>
                           </div>
                         </div>
 
@@ -427,12 +714,12 @@ export default function ApiLab() {
                             emptyMessage="No query params are required for this request."
                           />
                         ) : (
-                          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                              <Binary className="size-4 text-amber-500" />
+                          <div className={stylex.props(styles.sc7c6263a).className || ''}>
+                            <div className={stylex.props(styles.sc5293c96).className || ''}>
+                              <Binary className={stylex.props(styles.s4768be23).className || ''} />
                               CBOR body
                             </div>
-                            <p className="mt-3 text-sm text-slate-600">
+                            <p className={stylex.props(styles.s720ca7bb).className || ''}>
                               {preview.cborByteLength ?? 0} bytes generated from the current JSON payload.
                             </p>
                           </div>
@@ -449,7 +736,7 @@ export default function ApiLab() {
                   title={schemaTab === 'input' ? 'Input Schema' : 'Output Schema'}
                   subtitle="Follow the schema tree while composing requests or inspecting response structure."
                   actions={
-                    <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1">
+                    <div className={stylex.props(styles.se228e976).className || ''}>
                       <SchemaTabButton
                         label="Input"
                         isActive={schemaTab === 'input'}
@@ -476,11 +763,9 @@ export default function ApiLab() {
                         isRoot
                       />
 
-                      <details className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-                        <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-slate-800">
-                          Raw JSON Schema
-                        </summary>
-                        <pre className="overflow-x-auto border-t border-slate-200 px-4 py-4 text-xs leading-6 text-slate-700">
+                      <details className={stylex.props(styles.sff93336e).className || ''}>
+                        <summary className={stylex.props(styles.s576f334c).className || ''}>Raw JSON Schema</summary>
+                        <pre className={stylex.props(styles.s5e351f5f).className || ''}>
                           {formatJsonValue(activeSchema)}
                         </pre>
                       </details>
@@ -497,12 +782,12 @@ export default function ApiLab() {
                 >
                   {selectedResult ? (
                     <div className="space-y-5">
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                         <StatusPill
                           label={`${selectedResult.status} ${selectedResult.statusText}`.trim()}
                           tone={selectedResult.ok ? 'emerald' : 'rose'}
                         />
-                        <p className="text-sm text-slate-500">
+                        <p className={stylex.props(styles.s7d0eb007).className || ''}>
                           {selectedResult.ok ? 'Decoded with superjson.' : 'Non-2xx responses are shown raw.'}
                         </p>
                       </div>
@@ -522,12 +807,12 @@ export default function ApiLab() {
                             selectedResult.rawBody ? prettyRawBody(selectedResult.rawBody) : '(empty response body)'
                           }
                         />
-                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                          <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                            <Braces className="size-4 text-sky-500" />
+                        <div className={stylex.props(styles.sc7c6263a).className || ''}>
+                          <div className={stylex.props(styles.sc5293c96).className || ''}>
+                            <Braces className={stylex.props(styles.s9f5ea161).className || ''} />
                             Decoded Output
                           </div>
-                          <div className="mt-4 overflow-auto rounded-md border border-white bg-white p-3">
+                          <div className={stylex.props(styles.sebadccac).className || ''}>
                             {selectedResult.decodedBody !== undefined ? (
                               <DataViewer data={selectedResult.decodedBody} />
                             ) : (
@@ -555,7 +840,6 @@ export default function ApiLab() {
     </div>
   )
 }
-
 function RouteGroup({
   title,
   routes,
@@ -570,12 +854,11 @@ function RouteGroup({
   if (!routes.length) {
     return null
   }
-
   return (
     <section className="space-y-2">
-      <div className="flex items-center justify-between">
+      <div className={stylex.props(styles.s78289774).className || ''}>
         <h2 className="text-xs font-semibold tracking-[0.24em] text-slate-500 uppercase">{title}</h2>
-        <span className="text-xs text-slate-400">{routes.length}</span>
+        <span className={stylex.props(styles.s59cb3585).className || ''}>{routes.length}</span>
       </div>
 
       <div className="space-y-2">
@@ -593,11 +876,11 @@ function RouteGroup({
               }`}
             >
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-slate-900">{route.key}</span>
+                <div className={stylex.props(styles.s86ff3e4).className || ''}>
+                  <span className={stylex.props(styles.s56ff61da).className || ''}>{route.key}</span>
                   <StatusPill label={route.method} tone={route.kind === 'query' ? 'sky' : 'amber'} compact />
                 </div>
-                <p className="mt-2 font-mono text-xs break-all text-slate-500">{route.path}</p>
+                <p className={stylex.props(styles.s36d848a6).className || ''}>{route.path}</p>
               </div>
               <ChevronRight
                 className={`mt-1 h-4 w-4 shrink-0 transition ${
@@ -611,7 +894,6 @@ function RouteGroup({
     </section>
   )
 }
-
 function SchemaNodeView({
   rootSchema,
   schema,
@@ -628,13 +910,10 @@ function SchemaNodeView({
   const resolvedSchema = resolveSchemaNode(rootSchema, schema)
   const schemaType = getSchemaType(resolvedSchema)
   const variants = resolvedSchema.oneOf ?? resolvedSchema.anyOf
-
   return (
     <div className={`rounded-lg border border-slate-200 ${isRoot ? 'bg-white' : 'bg-slate-50'} p-4`}>
-      <div className="flex flex-wrap items-center gap-2">
-        {name ? (
-          <code className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">{name}</code>
-        ) : null}
+      <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
+        {name ? <code className={stylex.props(styles.sb2d2baf0).className || ''}>{name}</code> : null}
         {required ? (
           <span className="rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-rose-700 uppercase">
             required
@@ -648,11 +927,11 @@ function SchemaNodeView({
       </div>
 
       {resolvedSchema.description ? (
-        <p className="mt-3 text-sm leading-6 text-slate-600">{resolvedSchema.description}</p>
+        <p className={stylex.props(styles.s149f498c).className || ''}>{resolvedSchema.description}</p>
       ) : null}
 
       {resolvedSchema.enum?.length ? (
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className={stylex.props(styles.scbcc2085).className || ''}>
           {resolvedSchema.enum.map((option, optionIndex) => (
             <SchemaBadge key={`${String(option)}-${optionIndex}`} label={formatInlineValue(option)} tone="emerald" />
           ))}
@@ -662,7 +941,7 @@ function SchemaNodeView({
       {resolvedSchema.default !== undefined ? (
         <p className="mt-3 text-xs tracking-[0.18em] text-slate-500 uppercase">
           Default{' '}
-          <span className="ml-2 rounded-full bg-slate-200 px-2 py-1 font-mono tracking-normal text-slate-800 normal-case">
+          <span className={stylex.props(styles.s2aec4671).className || ''}>
             {formatInlineValue(resolvedSchema.default)}
           </span>
         </p>
@@ -671,10 +950,7 @@ function SchemaNodeView({
       {variants?.length ? (
         <div className="mt-4 space-y-3">
           {variants.map((variant, index) => (
-            <div
-              key={`variant-${index}`}
-              className="rounded-md border border-dashed border-slate-300 bg-white p-3"
-            >
+            <div key={`variant-${index}`} className={stylex.props(styles.se2631900).className || ''}>
               <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">Option {index + 1}</p>
               <SchemaNodeView rootSchema={rootSchema} schema={variant} name={undefined} />
             </div>
@@ -697,7 +973,7 @@ function SchemaNodeView({
       ) : null}
 
       {schemaType === 'array' ? (
-        <div className="mt-4 rounded-md border border-dashed border-slate-300 bg-white p-3">
+        <div className={stylex.props(styles.s8b64edee).className || ''}>
           <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">Array Items</p>
           {Array.isArray(resolvedSchema.items) ? (
             resolvedSchema.items.map((itemSchema, index) => (
@@ -717,7 +993,7 @@ function SchemaNodeView({
       ) : null}
 
       {resolvedSchema.additionalProperties && typeof resolvedSchema.additionalProperties === 'object' ? (
-        <div className="mt-4 rounded-md border border-dashed border-slate-300 bg-white p-3">
+        <div className={stylex.props(styles.s8b64edee).className || ''}>
           <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">Additional Properties</p>
           <SchemaNodeView rootSchema={rootSchema} schema={resolvedSchema.additionalProperties} name="*" />
         </div>
@@ -725,21 +1001,17 @@ function SchemaNodeView({
     </div>
   )
 }
-
 function ResponseBlock({title, content}: {title: string; content: string}) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-      <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-        <Braces className="size-4 text-amber-500" />
+    <div className={stylex.props(styles.sc7c6263a).className || ''}>
+      <div className={stylex.props(styles.sc5293c96).className || ''}>
+        <Braces className={stylex.props(styles.s4768be23).className || ''} />
         {title}
       </div>
-      <pre className="mt-4 overflow-x-auto rounded-md border border-white bg-white p-3 text-xs leading-6 text-slate-700">
-        {content}
-      </pre>
+      <pre className={stylex.props(styles.s7b2650b8).className || ''}>{content}</pre>
     </div>
   )
 }
-
 function Panel({
   eyebrow,
   title,
@@ -756,20 +1028,21 @@ function Panel({
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white/95 p-2 backdrop-blur sm:p-6">
       {eyebrow || title || subtitle ? (
-      <div className="flex mb-5 flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          {eyebrow ? <p className="text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase">{eyebrow}</p> : null}
-          {title ? <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{title}</h2> : null}
-          {subtitle ? <p className="mt-2 text-sm leading-6 text-slate-600">{subtitle}</p> : null}
-        </div>
-            {actions ? <div className="shrink-0">{actions}</div> : null}
+        <div className="mb-5 flex flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            {eyebrow ? (
+              <p className="text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase">{eyebrow}</p>
+            ) : null}
+            {title ? <h2 className={stylex.props(styles.sdf14d023).className || ''}>{title}</h2> : null}
+            {subtitle ? <p className={stylex.props(styles.sd77f856d).className || ''}>{subtitle}</p> : null}
+          </div>
+          {actions ? <div className={stylex.props(styles.sf032ed6c).className || ''}>{actions}</div> : null}
         </div>
       ) : null}
       <div className="space-y-4">{children}</div>
     </section>
   )
 }
-
 function ActionButton({
   children,
   onClick,
@@ -790,7 +1063,6 @@ function ActionButton({
     </button>
   )
 }
-
 function SchemaTabButton({label, isActive, onClick}: {label: string; isActive: boolean; onClick: () => void}) {
   return (
     <button
@@ -804,7 +1076,6 @@ function SchemaTabButton({label, isActive, onClick}: {label: string; isActive: b
     </button>
   )
 }
-
 function StatusPill({
   label,
   tone,
@@ -824,7 +1095,6 @@ function StatusPill({
     </span>
   )
 }
-
 function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'slate' | 'emerald'}) {
   return (
     <span
@@ -836,37 +1106,38 @@ function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'sla
     </span>
   )
 }
-
 function MetaBlock({label, value}: {label: string; value: string}) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <div className={stylex.props(styles.sc7c6263a).className || ''}>
       <p className="text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">{label}</p>
-      <p className="mt-3 font-mono text-sm break-all text-slate-900">{value}</p>
+      <p className={stylex.props(styles.sd0177a8a).className || ''}>{value}</p>
     </div>
   )
 }
-
 function KeyValueList({
   title,
   rows,
   emptyMessage = 'Nothing to show.',
 }: {
   title: string
-  rows: Array<{key: string; value: string}>
+  rows: Array<{
+    key: string
+    value: string
+  }>
   emptyMessage?: string
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-      <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-        <ArrowRight className="size-4 text-sky-500" />
+    <div className={stylex.props(styles.sc7c6263a).className || ''}>
+      <div className={stylex.props(styles.sc5293c96).className || ''}>
+        <ArrowRight className={stylex.props(styles.s9f5ea161).className || ''} />
         {title}
       </div>
       {rows.length ? (
         <div className="mt-4 space-y-2">
           {rows.map((row) => (
-            <div key={`${row.key}-${row.value}`} className="rounded-md border border-white bg-white px-3 py-2">
+            <div key={`${row.key}-${row.value}`} className={stylex.props(styles.sb3c7b34e).className || ''}>
               <p className="text-[11px] font-semibold tracking-[0.18em] text-slate-500 uppercase">{row.key}</p>
-              <p className="mt-1 font-mono text-sm break-all text-slate-800">{row.value}</p>
+              <p className={stylex.props(styles.s4a3ea40b).className || ''}>{row.value}</p>
             </div>
           ))}
         </div>
@@ -876,54 +1147,43 @@ function KeyValueList({
     </div>
   )
 }
-
 function InlineAlert({title, message}: {title: string; message: string}) {
   return (
-    <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-rose-800">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        <AlertCircle className="size-4" />
+    <div className={stylex.props(styles.s5f49acfc).className || ''}>
+      <div className={stylex.props(styles.s69f644cf).className || ''}>
+        <AlertCircle className={stylex.props(styles.sca3de968).className || ''} />
         {title}
       </div>
-      <p className="mt-2 text-sm leading-6">{message}</p>
+      <p className={stylex.props(styles.s9097ff5).className || ''}>{message}</p>
     </div>
   )
 }
-
 function ErrorState({message}: {message: string}) {
   return (
-    <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-rose-900">
+    <div className={stylex.props(styles.s1300853f).className || ''}>
       <div className="flex items-center gap-2 text-sm font-semibold tracking-[0.18em] uppercase">
-        <Unplug className="size-4" />
+        <Unplug className={stylex.props(styles.sca3de968).className || ''} />
         Error
       </div>
-      <p className="mt-3 text-sm leading-6">{message}</p>
+      <p className={stylex.props(styles.sd6b3e1b6).className || ''}>{message}</p>
     </div>
   )
 }
-
 function MutedState({message}: {message: string}) {
-  return (
-    <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-sm leading-6 text-slate-500">
-      {message}
-    </div>
-  )
+  return <div className={stylex.props(styles.s2a13436d).className || ''}>{message}</div>
 }
-
 function buildAbsoluteUrl(apiHost: string, path: string): string {
   return `${apiHost.replace(/\/+$/, '')}${path}`
 }
-
 function formatJsonValue(value: unknown): string {
   return JSON.stringify(value, null, 2)
 }
-
 function formatInlineValue(value: unknown): string {
   if (typeof value === 'string') {
     return JSON.stringify(value)
   }
   return String(value)
 }
-
 function prettyRawBody(rawBody: string): string {
   try {
     return JSON.stringify(JSON.parse(rawBody), null, 2)
@@ -931,11 +1191,9 @@ function prettyRawBody(rawBody: string): string {
     return rawBody
   }
 }
-
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
-
 function getPillClasses(tone: 'amber' | 'sky' | 'slate' | 'emerald' | 'rose'): string {
   switch (tone) {
     case 'amber':
@@ -950,7 +1208,6 @@ function getPillClasses(tone: 'amber' | 'sky' | 'slate' | 'emerald' | 'rose'): s
       return 'bg-slate-200 text-slate-800'
   }
 }
-
 function getSchemaType(schema: JSONSchemaNode): string | undefined {
   if (Array.isArray(schema.type)) {
     return schema.type.find((type) => type !== 'null') ?? schema.type[0]

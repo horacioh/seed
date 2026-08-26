@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMBlockNode, HMComment} from '@seed-hypermedia/client/hm-types'
 import {
   getCommentTargetId,
@@ -36,6 +37,20 @@ import {ResourceStatus} from './ResourceStatus'
 import {Title} from './Title'
 
 /** Resource states rendered as a status panel instead of the tabbed document view. */
+const styles = stylex.create({
+  s3301fc: {
+    marginBottom: 'calc(0.25rem * 4)',
+  },
+  s9416e008: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  sb15c2b53: {
+    flexShrink: '0',
+    fontWeight: '500',
+  },
+})
 const STATUS_RESOURCE_TYPES = ['redirect', 'tombstone', 'not-found', 'error'] as const
 
 /** Returns all descendant replies for a comment in the same order they were loaded. */
@@ -43,13 +58,10 @@ export function getReplyComments(comments: HMComment[] | undefined, commentId: s
   if (!Array.isArray(comments) || !commentId) {
     return []
   }
-
   const descendantIds = new Set<string>()
   let foundNewReply = true
-
   while (foundNewReply) {
     foundNewReply = false
-
     comments.forEach((comment) => {
       if (!comment.replyParent || descendantIds.has(comment.id)) {
         return
@@ -60,10 +72,8 @@ export function getReplyComments(comments: HMComment[] | undefined, commentId: s
       }
     })
   }
-
   return comments.filter((comment) => descendantIds.has(comment.id))
 }
-
 export default function HM() {
   const {'*': path} = useParams()
   const [searchParams] = useSearchParams()
@@ -71,7 +81,6 @@ export default function HM() {
   // leak into the entity path, and remember which tab it implies. A
   // /:comments/<commentId> tail resolves `uid`/`hmPath` to the comment itself.
   const {uid, path: hmPath, viewTerm, commentId: routeCommentId} = parseHmRoutePath(path)
-
   const apiHost = useApiHost()
   const navigate = useHmNavigate()
   const id = hmId(uid, {
@@ -106,9 +115,7 @@ export default function HM() {
   const {data: commentVersions} = useCommentVersions(commentId)
   const {data: capabilities} = useCapabilities(id)
   const {data: childrenDocs} = useChildrenList(id)
-
   const url = packHmId(id)
-
   const tabs = useMemo(
     () =>
       getTabs({
@@ -148,7 +155,6 @@ export default function HM() {
   const handleTabChange = (tab: TabType) => {
     navigate(exploreTabHref(id, tab, searchParams))
   }
-
   const preparedData = useMemo(() => {
     if (!data) return null
 
@@ -156,7 +162,10 @@ export default function HM() {
     if (data.type === 'document') {
       const doc = data.document
       const {metadata, account, authors, genesis, version, content, ...rest} = doc
-      const cleaned: Record<string, any> = {...metadata, ...rest}
+      const cleaned: Record<string, any> = {
+        ...metadata,
+        ...rest,
+      }
       if (account) {
         cleaned.account = `hm://${account}`
       }
@@ -178,9 +187,11 @@ export default function HM() {
       }
       return flattenSingleItemArrays(cleaned)
     }
-
     if (data.type === 'comment') {
-      return {type: 'comment', comment: data.comment}
+      return {
+        type: 'comment',
+        comment: data.comment,
+      }
     }
 
     // Redirect / tombstone / not-found / error are rendered by <ResourceStatus />.
@@ -219,18 +230,15 @@ export default function HM() {
         return null
     }
   }
-
   let webUrl = `${apiHost}/hm/${id.uid}${hmIdPathToEntityQueryPath(id.path)}`
   if (id.version) {
     webUrl += `?v=${id.version}`
   }
-
   const isStatusResource = !!data && STATUS_RESOURCE_TYPES.includes(data.type as (typeof STATUS_RESOURCE_TYPES)[number])
-
   return (
     <div className="container mx-auto max-w-full overflow-hidden p-4">
       <Title
-        className="mb-4"
+        className={stylex.props(styles.s3301fc).className || ''}
         buttons={
           <>
             <CopyTextButton text={url} />
@@ -246,8 +254,8 @@ export default function HM() {
           to={exploreHref(commentTargetId)}
           className="mb-4 flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700 transition-colors hover:bg-blue-100"
         >
-          <MessageCircle className="size-4 flex-shrink-0" />
-          <span className="flex-shrink-0 font-medium">Comment on</span>
+          <MessageCircle className={stylex.props(styles.s9416e008).className || ''} />
+          <span className={stylex.props(styles.sb15c2b53).className || ''}>Comment on</span>
           <span className="min-w-0 truncate font-semibold">
             {commentTargetName || `${commentTargetId.uid}${hmIdPathToEntityQueryPath(commentTargetId.path)}`}
           </span>
@@ -277,16 +285,16 @@ export default function HM() {
     </div>
   )
 }
-
 function flattenBlockNode(node: HMBlockNode) {
   const {block, children} = node
-  const out: Record<string, unknown> = {...block}
+  const out: Record<string, unknown> = {
+    ...block,
+  }
   if (children && Array.isArray(children)) {
     out.children = children.map(flattenBlockNode)
   }
   return out
 }
-
 function flattenSingleItemArrays(obj: any): any {
   for (const key in obj) {
     if (Array.isArray(obj[key])) {

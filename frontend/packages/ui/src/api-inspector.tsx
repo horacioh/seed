@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   AlertCircle,
   ArrowRight,
@@ -25,7 +26,319 @@ import {
 } from '@shm/shared/api-lab'
 import DataViewer from './data-viewer'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  sd63a8a39: {
+    position: 'relative',
+    display: 'block',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  se80bcbd2: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  se80bcbd3: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s2b64fb66: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    animation: 'spin 1s linear infinite',
+  },
+  sa5279f8a: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(55.2% 0.016 285.938)',
+  },
+  s46c30091: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(92% 0.004 286.32)',
+    backgroundColor: 'oklch(98.5% 0 0)',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sa0e0d57d: {
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+    color: 'oklch(27.4% 0.006 286.033)',
+  },
+  s8dc64edf: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+    color: 'oklch(21% 0.006 285.885)',
+  },
+  s4768be23: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: 'oklch(76.9% 0.188 70.08)',
+  },
+  sc4e66034: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(44.2% 0.017 285.786)',
+  },
+  sf4bc5bd8: {
+    display: 'inline-flex',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(92% 0.004 286.32)',
+    backgroundColor: 'oklch(96.7% 0.001 286.375)',
+    padding: 'calc(0.25rem * 1)',
+  },
+  sf4b54005: {
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(92% 0.004 286.32)',
+    backgroundColor: 'oklch(98.5% 0 0)',
+  },
+  s482ba5c7: {
+    cursor: 'pointer',
+    listStyleType: 'none',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+    color: 'oklch(27.4% 0.006 286.033)',
+  },
+  sb5fcaba7: {
+    overflowX: 'auto',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    borderColor: 'oklch(92% 0.004 286.32)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(37% 0.013 285.805)',
+  },
+  s309c1ac6: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    color: 'oklch(55.2% 0.016 285.938)',
+  },
+  s9f5ea161: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: 'oklch(68.5% 0.169 237.323)',
+  },
+  s3ffc2aef: {
+    marginTop: 'calc(0.25rem * 4)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sb399e9e6: {
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    color: 'oklch(70.5% 0.015 286.067)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s79b4711b: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+    color: 'oklch(21% 0.006 285.885)',
+  },
+  sc2fd7247: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    wordBreak: 'break-all',
+    color: 'oklch(55.2% 0.016 285.938)',
+  },
+  sf8d612f7: {
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(21% 0.006 285.885)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '600',
+    color: '#fff',
+  },
+  s357fc043: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(44.2% 0.017 285.786)',
+  },
+  scbcc2085: {
+    marginTop: 'calc(0.25rem * 3)',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sd71515ff: {
+    marginLeft: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(92% 0.004 286.32)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontFamily: 'var(--font-mono)',
+    letterSpacing: '0em',
+    color: 'oklch(27.4% 0.006 286.033)',
+    textTransform: 'none',
+  },
+  s3a19df69: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(87.1% 0.006 286.286)',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+  },
+  sd432b4bb: {
+    marginTop: 'calc(0.25rem * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(87.1% 0.006 286.286)',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+  },
+  sf67243d5: {
+    marginTop: 'calc(0.25rem * 4)',
+    overflowX: 'auto',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    padding: 'calc(0.25rem * 3)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(37% 0.013 285.805)',
+  },
+  s2b839648: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    fontWeight: '600',
+    letterSpacing: '-0.025em',
+    color: 'oklch(14.1% 0.005 285.823)',
+  },
+  sb7a80442: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(44.2% 0.017 285.786)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s85de826b: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+    color: 'oklch(21% 0.006 285.885)',
+  },
+  s2c815aea: {
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sbb5ba128: {
+    marginTop: 'calc(0.25rem * 1)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    wordBreak: 'break-all',
+    color: 'oklch(27.4% 0.006 286.033)',
+  },
+  s5ab913f5: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(89.2% 0.058 10.001)',
+    backgroundColor: 'oklch(96.9% 0.015 12.422)',
+    padding: 'calc(0.25rem * 4)',
+    color: 'oklch(45.5% 0.188 13.697)',
+  },
+  s69f644cf: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+  },
+  s9097ff5: {
+    marginTop: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+  },
+  se6fec38: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'oklch(89.2% 0.058 10.001)',
+    backgroundColor: 'oklch(96.9% 0.015 12.422)',
+    padding: 'calc(0.25rem * 6)',
+    color: 'oklch(41% 0.159 10.272)',
+  },
+  sd6b3e1b6: {
+    marginTop: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+  },
+  s44342515: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'oklch(87.1% 0.006 286.286)',
+    backgroundColor: 'oklch(98.5% 0 0)',
+    padding: 'calc(0.25rem * 6)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(0.25rem * 6)',
+    color: 'oklch(55.2% 0.016 285.938)',
+  },
+})
 type ApiInspectorProps = {
   apiHost: string
 }
@@ -46,24 +359,22 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
   const [isRunning, setIsRunning] = useState(false)
   const [runError, setRunError] = useState<string | null>(null)
   const [schemaTab, setSchemaTab] = useState<'input' | 'output'>('input')
-
   useEffect(() => {
     setResults({})
     setRunError(null)
   }, [apiHost])
-
   useEffect(() => {
     const abortController = new AbortController()
-
     setIsIndexLoading(true)
     setIndexError(null)
     setDefinitionError(null)
     setSchemaDefinitions({})
     setSelectedKey(null)
-
     fetch(buildAbsoluteUrl(apiHost, '/api/schema'), {
       signal: abortController.signal,
-      headers: {Accept: 'application/json'},
+      headers: {
+        Accept: 'application/json',
+      },
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -86,10 +397,8 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
           setIsIndexLoading(false)
         }
       })
-
     return () => abortController.abort()
   }, [apiHost])
-
   useEffect(() => {
     const routes = schemaIndex?.routes ?? []
     if (!routes.length) {
@@ -100,21 +409,19 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
     }
     setSelectedKey(routes[0]?.key ?? null)
   }, [schemaIndex, selectedKey])
-
   useEffect(() => {
     if (!selectedKey || schemaDefinitions[selectedKey]) {
       return
     }
-
     const abortController = new AbortController()
-
     setLoadingDefinitionKey(selectedKey)
     setDefinitionError(null)
     setSchemaTab('input')
-
     fetch(buildAbsoluteUrl(apiHost, `/api/schema?key=${encodeURIComponent(selectedKey)}`), {
       signal: abortController.signal,
-      headers: {Accept: 'application/json'},
+      headers: {
+        Accept: 'application/json',
+      },
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -139,22 +446,17 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
           setLoadingDefinitionKey(null)
         }
       })
-
     return () => abortController.abort()
   }, [apiHost, schemaDefinitions, selectedKey])
-
   const selectedDefinition = selectedKey ? schemaDefinitions[selectedKey] : undefined
-
   useEffect(() => {
     if (!selectedDefinition) {
       return
     }
-
     setDraftInputs((currentDrafts) => {
       if (currentDrafts[selectedDefinition.key] !== undefined) {
         return currentDrafts
       }
-
       return {
         ...currentDrafts,
         [selectedDefinition.key]: formatJsonValue(
@@ -163,23 +465,19 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
       }
     })
   }, [selectedDefinition])
-
   const filteredRoutes = (schemaIndex?.routes ?? []).filter((route) => {
     const query = deferredRouteFilter.trim().toLowerCase()
     if (!query) {
       return true
     }
-
     return (
       route.key.toLowerCase().includes(query) ||
       route.path.toLowerCase().includes(query) ||
       route.kind.toLowerCase().includes(query)
     )
   })
-
   const selectedInput = selectedKey ? draftInputs[selectedKey] ?? '' : ''
   const selectedResult = selectedKey ? results[selectedKey] : undefined
-
   let previewError: string | null = null
   let preview: ReturnType<typeof buildApiRequestPreview> | undefined
   if (selectedDefinition && selectedInput) {
@@ -189,18 +487,14 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
       previewError = getErrorMessage(error)
     }
   }
-
   const activeSchema =
     selectedDefinition && schemaTab === 'input' ? selectedDefinition.inputSchema : selectedDefinition?.outputSchema
-
   async function handleRunRequest() {
     if (!selectedDefinition || !selectedKey) {
       return
     }
-
     setIsRunning(true)
     setRunError(null)
-
     try {
       const result = await executeApiRequest(apiHost, selectedDefinition, draftInputs[selectedKey] ?? '')
       setResults((currentResults) => ({
@@ -213,16 +507,13 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
       setIsRunning(false)
     }
   }
-
   function handleRouteSelection(route: ApiSchemaRouteSummary) {
     setSelectedKey(route.key)
   }
-
   function handleInputReset() {
     if (!selectedDefinition) {
       return
     }
-
     setDraftInputs((currentDrafts) => ({
       ...currentDrafts,
       [selectedDefinition.key]: formatJsonValue(
@@ -231,7 +522,6 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
     }))
     setRunError(null)
   }
-
   function handleFormatJson() {
     if (!selectedKey) {
       return
@@ -246,20 +536,18 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
       setRunError(getErrorMessage(error))
     }
   }
-
   function handleCopyPreviewUrl() {
     if (!preview) {
       return
     }
     navigator.clipboard.writeText(preview.url)
   }
-
   return (
     <div className="mx-auto flex h-full min-h-0 w-full max-w-7xl flex-col">
       <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[20rem_minmax(0,1fr)]">
         <aside className="min-h-0">
           <Panel className="flex h-full min-h-0 flex-col" contentClassName="flex min-h-0 flex-1 flex-col">
-            <label className="relative block">
+            <label className={stylex.props(styles.sd63a8a39).className || ''}>
               <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-zinc-400" />
               <input
                 type="search"
@@ -306,7 +594,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                   title={selectedDefinition.key}
                   subtitle={`${selectedDefinition.method} ${selectedDefinition.path}`}
                   actions={
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                       <StatusPill label={selectedDefinition.inputEncoding} tone="amber" />
                       <StatusPill label={selectedDefinition.outputSerialization} tone="sky" />
                       {selectedDefinition.usesParamMapping ? <StatusPill label="Mapped Params" tone="slate" /> : null}
@@ -329,13 +617,13 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                     title="Input JSON"
                     subtitle="Edit the logical request payload. The API inspector derives the exact wire format from the schema."
                     actions={
-                      <div className="flex flex-wrap gap-2">
+                      <div className={stylex.props(styles.se80bcbd2).className || ''}>
                         <ActionButton onClick={handleInputReset} disabled={!selectedDefinition}>
-                          <RefreshCw className="size-4" />
+                          <RefreshCw className={stylex.props(styles.sca3de968).className || ''} />
                           Reset
                         </ActionButton>
                         <ActionButton onClick={handleFormatJson} disabled={!selectedDefinition}>
-                          <Sparkles className="size-4" />
+                          <Sparkles className={stylex.props(styles.sca3de968).className || ''} />
                           Format JSON
                         </ActionButton>
                       </div>
@@ -360,7 +648,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                     {previewError ? <InlineAlert title="Preview unavailable" message={previewError} /> : null}
                     {runError ? <InlineAlert title="Request failed" message={runError} /> : null}
 
-                    <div className="flex flex-wrap gap-3">
+                    <div className={stylex.props(styles.se80bcbd3).className || ''}>
                       <button
                         type="button"
                         onClick={handleRunRequest}
@@ -368,14 +656,14 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                         className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-500"
                       >
                         {isRunning ? (
-                          <RefreshCw className="size-4 animate-spin" />
+                          <RefreshCw className={stylex.props(styles.s2b64fb66).className || ''} />
                         ) : (
-                          <TerminalSquare className="size-4" />
+                          <TerminalSquare className={stylex.props(styles.sca3de968).className || ''} />
                         )}
                         {isRunning ? 'Running…' : 'Run request'}
                       </button>
-                      <div className="flex items-center gap-2 text-sm text-zinc-500">
-                        <ArrowRight className="size-4" />
+                      <div className={stylex.props(styles.sa5279f8a).className || ''}>
+                        <ArrowRight className={stylex.props(styles.sca3de968).className || ''} />
                         Exact transport: {selectedDefinition.method}{' '}
                         {selectedDefinition.method === 'GET' ? 'query string' : 'CBOR body'}
                       </div>
@@ -388,17 +676,17 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                     subtitle="The exact request the desktop API will receive."
                     actions={
                       <ActionButton onClick={handleCopyPreviewUrl} disabled={!preview}>
-                        <Copy className="size-4" />
+                        <Copy className={stylex.props(styles.sca3de968).className || ''} />
                         Copy URL
                       </ActionButton>
                     }
                   >
                     {preview ? (
                       <div className="space-y-5">
-                        <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                          <div className="flex flex-wrap items-center gap-2">
+                        <div className={stylex.props(styles.s46c30091).className || ''}>
+                          <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                             <StatusPill label={preview.method} tone="slate" />
-                            <p className="font-mono text-sm break-all text-zinc-800">{preview.url}</p>
+                            <p className={stylex.props(styles.sa0e0d57d).className || ''}>{preview.url}</p>
                           </div>
                         </div>
 
@@ -417,12 +705,12 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                             emptyMessage="No query params are required for this request."
                           />
                         ) : (
-                          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                            <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900">
-                              <Binary className="size-4 text-amber-500" />
+                          <div className={stylex.props(styles.s46c30091).className || ''}>
+                            <div className={stylex.props(styles.s8dc64edf).className || ''}>
+                              <Binary className={stylex.props(styles.s4768be23).className || ''} />
                               CBOR body
                             </div>
-                            <p className="mt-3 text-sm text-zinc-600">
+                            <p className={stylex.props(styles.sc4e66034).className || ''}>
                               {preview.cborByteLength ?? 0} bytes generated from the current JSON payload.
                             </p>
                           </div>
@@ -439,7 +727,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                   title={schemaTab === 'input' ? 'Input Schema' : 'Output Schema'}
                   subtitle="Use the schema tree while composing requests and inspecting response structure."
                   actions={
-                    <div className="inline-flex rounded-full border border-zinc-200 bg-zinc-100 p-1">
+                    <div className={stylex.props(styles.sf4bc5bd8).className || ''}>
                       <SchemaTabButton
                         label="Input"
                         isActive={schemaTab === 'input'}
@@ -466,11 +754,9 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                         isRoot
                       />
 
-                      <details className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50">
-                        <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-zinc-800">
-                          Raw JSON Schema
-                        </summary>
-                        <pre className="overflow-x-auto border-t border-zinc-200 px-4 py-4 text-xs leading-6 text-zinc-700">
+                      <details className={stylex.props(styles.sf4b54005).className || ''}>
+                        <summary className={stylex.props(styles.s482ba5c7).className || ''}>Raw JSON Schema</summary>
+                        <pre className={stylex.props(styles.sb5fcaba7).className || ''}>
                           {formatJsonValue(activeSchema)}
                         </pre>
                       </details>
@@ -487,12 +773,12 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                 >
                   {selectedResult ? (
                     <div className="space-y-5">
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                         <StatusPill
                           label={`${selectedResult.status} ${selectedResult.statusText}`.trim()}
                           tone={selectedResult.ok ? 'emerald' : 'rose'}
                         />
-                        <p className="text-sm text-zinc-500">
+                        <p className={stylex.props(styles.s309c1ac6).className || ''}>
                           {selectedResult.ok ? 'Decoded with superjson.' : 'Non-2xx responses are shown raw.'}
                         </p>
                       </div>
@@ -512,12 +798,12 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                             selectedResult.rawBody ? prettyRawBody(selectedResult.rawBody) : '(empty response body)'
                           }
                         />
-                        <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                          <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900">
-                            <Braces className="size-4 text-sky-500" />
+                        <div className={stylex.props(styles.s46c30091).className || ''}>
+                          <div className={stylex.props(styles.s8dc64edf).className || ''}>
+                            <Braces className={stylex.props(styles.s9f5ea161).className || ''} />
                             Decoded Output
                           </div>
-                          <div className="mt-4 overflow-auto rounded-xl border border-white bg-white p-3">
+                          <div className={stylex.props(styles.s3ffc2aef).className || ''}>
                             {selectedResult.decodedBody !== undefined ? (
                               <DataViewer data={selectedResult.decodedBody} />
                             ) : (
@@ -545,7 +831,6 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
     </div>
   )
 }
-
 function RouteGroup({
   title,
   routes,
@@ -560,12 +845,11 @@ function RouteGroup({
   if (!routes.length) {
     return null
   }
-
   return (
     <section className="space-y-2">
-      <div className="flex items-center justify-between">
+      <div className={stylex.props(styles.s78289774).className || ''}>
         <h2 className="text-xs font-semibold tracking-[0.24em] text-zinc-500 uppercase">{title}</h2>
-        <span className="text-xs text-zinc-400">{routes.length}</span>
+        <span className={stylex.props(styles.sb399e9e6).className || ''}>{routes.length}</span>
       </div>
 
       <div className="space-y-2">
@@ -583,11 +867,11 @@ function RouteGroup({
               }`}
             >
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-zinc-900">{route.key}</span>
+                <div className={stylex.props(styles.s86ff3e4).className || ''}>
+                  <span className={stylex.props(styles.s79b4711b).className || ''}>{route.key}</span>
                   <StatusPill label={route.method} tone={route.kind === 'query' ? 'sky' : 'amber'} compact />
                 </div>
-                <p className="mt-2 font-mono text-xs break-all text-zinc-500">{route.path}</p>
+                <p className={stylex.props(styles.sc2fd7247).className || ''}>{route.path}</p>
               </div>
               <ChevronRight
                 className={`mt-1 h-4 w-4 shrink-0 transition ${
@@ -601,7 +885,6 @@ function RouteGroup({
     </section>
   )
 }
-
 function SchemaNodeView({
   rootSchema,
   schema,
@@ -618,13 +901,10 @@ function SchemaNodeView({
   const resolvedSchema = resolveSchemaNode(rootSchema, schema)
   const schemaType = getSchemaType(resolvedSchema)
   const variants = resolvedSchema.oneOf ?? resolvedSchema.anyOf
-
   return (
     <div className={`rounded-xl border border-zinc-200 ${isRoot ? 'bg-white' : 'bg-zinc-50'} p-4`}>
-      <div className="flex flex-wrap items-center gap-2">
-        {name ? (
-          <code className="rounded-full bg-zinc-900 px-3 py-1 text-xs font-semibold text-white">{name}</code>
-        ) : null}
+      <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
+        {name ? <code className={stylex.props(styles.sf8d612f7).className || ''}>{name}</code> : null}
         {required ? (
           <span className="rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-rose-700 uppercase">
             required
@@ -638,11 +918,11 @@ function SchemaNodeView({
       </div>
 
       {resolvedSchema.description ? (
-        <p className="mt-3 text-sm leading-6 text-zinc-600">{resolvedSchema.description}</p>
+        <p className={stylex.props(styles.s357fc043).className || ''}>{resolvedSchema.description}</p>
       ) : null}
 
       {resolvedSchema.enum?.length ? (
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className={stylex.props(styles.scbcc2085).className || ''}>
           {resolvedSchema.enum.map((option, optionIndex) => (
             <SchemaBadge key={`${String(option)}-${optionIndex}`} label={formatInlineValue(option)} tone="emerald" />
           ))}
@@ -652,7 +932,7 @@ function SchemaNodeView({
       {resolvedSchema.default !== undefined ? (
         <p className="mt-3 text-xs tracking-[0.18em] text-zinc-500 uppercase">
           Default{' '}
-          <span className="ml-2 rounded-full bg-zinc-200 px-2 py-1 font-mono tracking-normal text-zinc-800 normal-case">
+          <span className={stylex.props(styles.sd71515ff).className || ''}>
             {formatInlineValue(resolvedSchema.default)}
           </span>
         </p>
@@ -661,7 +941,7 @@ function SchemaNodeView({
       {variants?.length ? (
         <div className="mt-4 space-y-3">
           {variants.map((variant, index) => (
-            <div key={`variant-${index}`} className="rounded-lg border border-dashed border-zinc-300 bg-white p-3">
+            <div key={`variant-${index}`} className={stylex.props(styles.s3a19df69).className || ''}>
               <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">Option {index + 1}</p>
               <SchemaNodeView rootSchema={rootSchema} schema={variant} name={undefined} />
             </div>
@@ -684,7 +964,7 @@ function SchemaNodeView({
       ) : null}
 
       {schemaType === 'array' ? (
-        <div className="mt-4 rounded-lg border border-dashed border-zinc-300 bg-white p-3">
+        <div className={stylex.props(styles.sd432b4bb).className || ''}>
           <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">Array Items</p>
           {Array.isArray(resolvedSchema.items) ? (
             resolvedSchema.items.map((itemSchema, index) => (
@@ -704,7 +984,7 @@ function SchemaNodeView({
       ) : null}
 
       {resolvedSchema.additionalProperties && typeof resolvedSchema.additionalProperties === 'object' ? (
-        <div className="mt-4 rounded-lg border border-dashed border-zinc-300 bg-white p-3">
+        <div className={stylex.props(styles.sd432b4bb).className || ''}>
           <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">Additional Properties</p>
           <SchemaNodeView rootSchema={rootSchema} schema={resolvedSchema.additionalProperties} name="*" />
         </div>
@@ -712,21 +992,17 @@ function SchemaNodeView({
     </div>
   )
 }
-
 function ResponseBlock({title, content}: {title: string; content: string}) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-      <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900">
-        <Braces className="size-4 text-amber-500" />
+    <div className={stylex.props(styles.s46c30091).className || ''}>
+      <div className={stylex.props(styles.s8dc64edf).className || ''}>
+        <Braces className={stylex.props(styles.s4768be23).className || ''} />
         {title}
       </div>
-      <pre className="mt-4 overflow-x-auto rounded-lg border border-white bg-white p-3 text-xs leading-6 text-zinc-700">
-        {content}
-      </pre>
+      <pre className={stylex.props(styles.sf67243d5).className || ''}>{content}</pre>
     </div>
   )
 }
-
 function Panel({
   eyebrow,
   title,
@@ -752,17 +1028,16 @@ function Panel({
             {eyebrow ? (
               <p className="text-xs font-semibold tracking-[0.28em] text-zinc-500 uppercase">{eyebrow}</p>
             ) : null}
-            {title ? <h2 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-950">{title}</h2> : null}
-            {subtitle ? <p className="mt-2 text-sm leading-6 text-zinc-600">{subtitle}</p> : null}
+            {title ? <h2 className={stylex.props(styles.s2b839648).className || ''}>{title}</h2> : null}
+            {subtitle ? <p className={stylex.props(styles.sb7a80442).className || ''}>{subtitle}</p> : null}
           </div>
-          {actions ? <div className="shrink-0">{actions}</div> : null}
+          {actions ? <div className={stylex.props(styles.sf032ed6c).className || ''}>{actions}</div> : null}
         </div>
       ) : null}
       <div className={cn('space-y-4', contentClassName)}>{children}</div>
     </section>
   )
 }
-
 function ActionButton({
   children,
   onClick,
@@ -783,7 +1058,6 @@ function ActionButton({
     </button>
   )
 }
-
 function SchemaTabButton({label, isActive, onClick}: {label: string; isActive: boolean; onClick: () => void}) {
   return (
     <button
@@ -797,7 +1071,6 @@ function SchemaTabButton({label, isActive, onClick}: {label: string; isActive: b
     </button>
   )
 }
-
 function StatusPill({
   label,
   tone,
@@ -817,7 +1090,6 @@ function StatusPill({
     </span>
   )
 }
-
 function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'slate' | 'emerald'}) {
   return (
     <span
@@ -829,37 +1101,38 @@ function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'sla
     </span>
   )
 }
-
 function MetaBlock({label, value}: {label: string; value: string}) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+    <div className={stylex.props(styles.s46c30091).className || ''}>
       <p className="text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">{label}</p>
-      <p className="mt-3 font-mono text-sm break-all text-zinc-900">{value}</p>
+      <p className={stylex.props(styles.s85de826b).className || ''}>{value}</p>
     </div>
   )
 }
-
 function KeyValueList({
   title,
   rows,
   emptyMessage = 'Nothing to show.',
 }: {
   title: string
-  rows: Array<{key: string; value: string}>
+  rows: Array<{
+    key: string
+    value: string
+  }>
   emptyMessage?: string
 }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-      <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900">
-        <ArrowRight className="size-4 text-sky-500" />
+    <div className={stylex.props(styles.s46c30091).className || ''}>
+      <div className={stylex.props(styles.s8dc64edf).className || ''}>
+        <ArrowRight className={stylex.props(styles.s9f5ea161).className || ''} />
         {title}
       </div>
       {rows.length ? (
         <div className="mt-4 space-y-2">
           {rows.map((row) => (
-            <div key={`${row.key}-${row.value}`} className="rounded-lg border border-white bg-white px-3 py-2">
+            <div key={`${row.key}-${row.value}`} className={stylex.props(styles.s2c815aea).className || ''}>
               <p className="text-[11px] font-semibold tracking-[0.18em] text-zinc-500 uppercase">{row.key}</p>
-              <p className="mt-1 font-mono text-sm break-all text-zinc-800">{row.value}</p>
+              <p className={stylex.props(styles.sbb5ba128).className || ''}>{row.value}</p>
             </div>
           ))}
         </div>
@@ -869,54 +1142,43 @@ function KeyValueList({
     </div>
   )
 }
-
 function InlineAlert({title, message}: {title: string; message: string}) {
   return (
-    <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        <AlertCircle className="size-4" />
+    <div className={stylex.props(styles.s5ab913f5).className || ''}>
+      <div className={stylex.props(styles.s69f644cf).className || ''}>
+        <AlertCircle className={stylex.props(styles.sca3de968).className || ''} />
         {title}
       </div>
-      <p className="mt-2 text-sm leading-6">{message}</p>
+      <p className={stylex.props(styles.s9097ff5).className || ''}>{message}</p>
     </div>
   )
 }
-
 function ErrorState({message}: {message: string}) {
   return (
-    <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-rose-900">
+    <div className={stylex.props(styles.se6fec38).className || ''}>
       <div className="flex items-center gap-2 text-sm font-semibold tracking-[0.18em] uppercase">
-        <Unplug className="size-4" />
+        <Unplug className={stylex.props(styles.sca3de968).className || ''} />
         Error
       </div>
-      <p className="mt-3 text-sm leading-6">{message}</p>
+      <p className={stylex.props(styles.sd6b3e1b6).className || ''}>{message}</p>
     </div>
   )
 }
-
 function MutedState({message}: {message: string}) {
-  return (
-    <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-sm leading-6 text-zinc-500">
-      {message}
-    </div>
-  )
+  return <div className={stylex.props(styles.s44342515).className || ''}>{message}</div>
 }
-
 function buildAbsoluteUrl(apiHost: string, path: string): string {
   return `${apiHost.replace(/\/+$/, '')}${path}`
 }
-
 function formatJsonValue(value: unknown): string {
   return JSON.stringify(value, null, 2)
 }
-
 function formatInlineValue(value: unknown): string {
   if (typeof value === 'string') {
     return JSON.stringify(value)
   }
   return String(value)
 }
-
 function prettyRawBody(rawBody: string): string {
   try {
     return JSON.stringify(JSON.parse(rawBody), null, 2)
@@ -924,11 +1186,9 @@ function prettyRawBody(rawBody: string): string {
     return rawBody
   }
 }
-
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
-
 function getPillClasses(tone: 'amber' | 'sky' | 'slate' | 'emerald' | 'rose'): string {
   switch (tone) {
     case 'amber':
@@ -943,7 +1203,6 @@ function getPillClasses(tone: 'amber' | 'sky' | 'slate' | 'emerald' | 'rose'): s
       return 'bg-zinc-200 text-zinc-800'
   }
 }
-
 function getSchemaType(schema: JSONSchemaNode): string | undefined {
   if (Array.isArray(schema.type)) {
     return schema.type.find((type) => type !== 'null') ?? schema.type[0]

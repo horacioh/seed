@@ -1,10 +1,16 @@
+import * as stylex from '@stylexjs/stylex'
 import {useSidebarContext, useSidebarWidth} from '@/sidebar-context'
 import {useStream} from '@shm/shared/use-stream'
 import {TitleText, TitlebarWrapper} from '@shm/ui/titlebar'
 import {TitleBarProps} from './titlebar'
 import {NavMenuButton, NavigationButtons, Omnibar, PageActionButtons} from './titlebar-common'
 import {TitlebarMainRow} from './titlebar-layout'
-
+const styles = stylex.create({
+  s112d13d8: {
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+})
 export default function TitleBarMacos(props: TitleBarProps) {
   const {clean, cleanTitle, ...restProps} = props
   const sidebarWidth = useSidebarWidth()
@@ -14,12 +20,11 @@ export default function TitleBarMacos(props: TitleBarProps) {
     return (
       <TitlebarWrapper className="min-h-0" {...restProps}>
         <div className="window-drag flex w-full items-center justify-center">
-          <TitleText className="text-center font-bold">{cleanTitle}</TitleText>
+          <TitleText className={stylex.props(styles.s112d13d8).className || ''}>{cleanTitle}</TitleText>
         </div>
       </TitlebarWrapper>
     )
   }
-
   return (
     <TitlebarWrapper {...restProps}>
       <TitlebarMainRow

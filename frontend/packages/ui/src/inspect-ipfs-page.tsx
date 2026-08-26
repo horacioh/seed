@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {createInspectIpfsNavRoute, NavRoute, useCID} from '@shm/shared'
 import {code as DAG_CBOR_CODE} from '@shm/shared/cbor'
 import {DEFAULT_GATEWAY_URL} from '@shm/shared/constants'
@@ -17,7 +18,58 @@ import {Spinner} from './spinner'
 import {toast} from './toast'
 import {OmnibarUrl} from './url-omnibar'
 import {CBOR_VALUE_RULES, isPlainObject, ValueDisplay, ValueEditor, ValueEditorProvider} from './value-editor'
-
+const styles = stylex.create({
+  s7026dbcb: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  s78630139: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sbaa01070: {
+    backgroundColor: 'var(--background)',
+    overflowX: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 4)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    whiteSpace: 'pre-wrap',
+  },
+  s7054e59b: {
+    flex: '1',
+    overflowY: 'auto',
+    backgroundColor: 'oklch(96.7% 0.001 286.375)',
+  },
+  s53eda8b5: {
+    marginInline: 'auto',
+    width: '100%',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+})
 type IpfsKind = 'loading' | 'image' | 'cbor' | 'text'
 
 /** Sentinel `ipfsPath` that opens the viewer in "author a new object" mode. */
@@ -52,22 +104,45 @@ function useIsLoadableImage(imageUrl: string): boolean | null {
 }
 
 /** Fetches an IPFS file as text (for editing/viewing plain-text blobs). */
-function useIpfsText(url: string): {text: string | null; loading: boolean} {
-  const [state, setState] = useState<{text: string | null; loading: boolean}>({text: null, loading: !!url})
+function useIpfsText(url: string): {
+  text: string | null
+  loading: boolean
+} {
+  const [state, setState] = useState<{
+    text: string | null
+    loading: boolean
+  }>({
+    text: null,
+    loading: !!url,
+  })
   useEffect(() => {
     if (!url) {
-      setState({text: null, loading: false})
+      setState({
+        text: null,
+        loading: false,
+      })
       return
     }
     let cancelled = false
-    setState({text: null, loading: true})
+    setState({
+      text: null,
+      loading: true,
+    })
     fetch(url)
       .then((r) => r.text())
       .then((text) => {
-        if (!cancelled) setState({text, loading: false})
+        if (!cancelled)
+          setState({
+            text,
+            loading: false,
+          })
       })
       .catch(() => {
-        if (!cancelled) setState({text: null, loading: false})
+        if (!cancelled)
+          setState({
+            text: null,
+            loading: false,
+          })
       })
     return () => {
       cancelled = true
@@ -126,7 +201,6 @@ export function InspectIpfsPage({
   }, [contentCid])
   const isDagCbor = codec === DAG_CBOR_CODE
   const isFile = codec != null && !isDagCbor
-
   const getImageUrl = useImageUrl()
   const imageUrl = !isDraft && isFile && !hasSubpath && contentCid ? getImageUrl(`ipfs://${contentCid}`) : ''
   const isImage = useIsLoadableImage(imageUrl)
@@ -134,7 +208,6 @@ export function InspectIpfsPage({
   // Proxy URL (/hm/api/file/<cid>) on web so text fetches don't hit a localhost
   // daemon URL; falls back to the direct daemon URL on desktop.
   const getFileUrl = useFileProxyUrl()
-
   const preparedData = useMemo(() => {
     if (ipfsData.data?.value === undefined) return null
     // Keep IPLD links/bytes in their DAG-JSON shape so ValueDisplay renders them
@@ -153,7 +226,6 @@ export function InspectIpfsPage({
   } else {
     kind = ipfsData.isLoading ? 'loading' : ipfsData.data?.value != null ? 'cbor' : 'text'
   }
-
   const textUrl = kind === 'text' && !hasSubpath && contentCid ? getFileUrl(`ipfs://${contentCid}`) : ''
   const {text: rawText, loading: textLoading} = useIpfsText(textUrl)
 
@@ -193,7 +265,6 @@ export function InspectIpfsPage({
   const openLinkedBlob = (linkCid: string) => openUrl(`hm://inspect/ipfs/${linkCid}`, true)
   // Open an hm:// reference (e.g. a decoded signer) in a new window.
   const openInNewWindow = (url: string) => openUrl(url, true)
-
   const publish = async () => {
     setPublishing(true)
     try {
@@ -208,16 +279,14 @@ export function InspectIpfsPage({
       setPublishing(false)
     }
   }
-
   const gatewayLink = `${gatewayUrl.replace(/\/+$/, '')}/ipfs/${ipfsPath}`
   const exitLinkProps = useRouteLink(exitRoute || null)
-
   let body: ReactNode
   if (mode === 'edit' && kind === 'cbor') {
     // A fork is still loading its source until editJson is seeded.
     body =
       editJson === undefined ? (
-        <div className="flex items-center justify-center py-8">
+        <div className={stylex.props(styles.s7026dbcb).className || ''}>
           <Spinner />
         </div>
       ) : (
@@ -228,7 +297,7 @@ export function InspectIpfsPage({
   } else if (mode === 'edit' && kind === 'text') {
     body =
       editText === null && forkCid ? (
-        <div className="flex items-center justify-center py-8">
+        <div className={stylex.props(styles.s7026dbcb).className || ''}>
           <Spinner />
         </div>
       ) : (
@@ -242,13 +311,13 @@ export function InspectIpfsPage({
       )
   } else if (kind === 'loading' || (kind === 'text' && textLoading)) {
     body = (
-      <div className="flex items-center justify-center py-8">
+      <div className={stylex.props(styles.s7026dbcb).className || ''}>
         <Spinner />
       </div>
     )
   } else if (kind === 'image') {
     body = (
-      <div className="flex justify-center">
+      <div className={stylex.props(styles.s78630139).className || ''}>
         <img
           src={imageUrl}
           alt={`ipfs://${cid}`}
@@ -259,14 +328,12 @@ export function InspectIpfsPage({
   } else if (kind === 'text') {
     body =
       rawText == null ? (
-        <div className="text-muted-foreground text-sm">No IPFS data found.</div>
+        <div className={stylex.props(styles.sa56e915f).className || ''}>No IPFS data found.</div>
       ) : (
-        <pre className="bg-background overflow-x-auto rounded-md border p-4 font-mono text-sm whitespace-pre-wrap">
-          {rawText}
-        </pre>
+        <pre className={stylex.props(styles.sbaa01070).className || ''}>{rawText}</pre>
       )
   } else if (preparedData === null || preparedData === undefined) {
-    body = <div className="text-muted-foreground text-sm">No IPFS data found.</div>
+    body = <div className={stylex.props(styles.sa56e915f).className || ''}>No IPFS data found.</div>
   } else {
     // Render the published blob with the editor's own value renderer so the view
     // matches the editor (native IPLD links show as tags, opening in a new window).
@@ -276,7 +343,6 @@ export function InspectIpfsPage({
       </ValueEditorProvider>
     )
   }
-
   return (
     <div className="bg-background flex h-full max-h-full flex-col overflow-hidden">
       <IpfsTopBar
@@ -292,9 +358,14 @@ export function InspectIpfsPage({
         windowControls={windowControls}
         trafficLightInset={trafficLightInset}
       />
-      <div className="flex-1 overflow-y-auto bg-zinc-100">
-        <div className="mx-auto w-full px-4 py-4" style={{maxWidth: 960}}>
-          <div className="flex flex-col gap-4">{body}</div>
+      <div className={stylex.props(styles.s7054e59b).className || ''}>
+        <div
+          className={stylex.props(styles.s53eda8b5).className || ''}
+          style={{
+            maxWidth: 960,
+          }}
+        >
+          <div className={stylex.props(styles.sfbc6e290).className || ''}>{body}</div>
         </div>
       </div>
     </div>
@@ -333,20 +404,20 @@ function IpfsTopBar({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="iconSm" aria-label="More actions">
-          <MoreHorizontal className="size-4" />
+          <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {canEdit && (
           <DropdownMenuItem onSelect={onEdit}>
-            <FileEdit className="size-4" />
+            <FileEdit className={stylex.props(styles.sca3de968).className || ''} />
             Edit...
           </DropdownMenuItem>
         )}
         {exitRoute && (
           <DropdownMenuItem asChild>
             <a {...exitLinkProps}>
-              <X className="size-4" />
+              <X className={stylex.props(styles.sca3de968).className || ''} />
               Open Resource
             </a>
           </DropdownMenuItem>
@@ -354,21 +425,30 @@ function IpfsTopBar({
       </DropdownMenuContent>
     </DropdownMenu>
   ) : undefined
-
   return (
     <div
       className="window-drag border-border bg-background flex h-11 shrink-0 items-center gap-2 border-b px-3"
-      style={trafficLightInset ? {paddingLeft: 78} : undefined}
+      style={
+        trafficLightInset
+          ? {
+              paddingLeft: 78,
+            }
+          : undefined
+      }
     >
       {editing ? (
         <>
           <span className="bg-muted text-muted-foreground no-window-drag rounded px-2 py-0.5 text-xs font-medium">
             Unpublished draft
           </span>
-          <div className="flex-1" />
+          <div className={stylex.props(styles.sb42feb5d).className || ''} />
           <div className="no-window-drag flex items-center gap-2">
             <Button size="sm" onClick={onPublish} disabled={publishing}>
-              {publishing ? <Spinner className="size-4" /> : <Check className="size-4" />}
+              {publishing ? (
+                <Spinner className={stylex.props(styles.sca3de968).className || ''} />
+              ) : (
+                <Check className={stylex.props(styles.sca3de968).className || ''} />
+              )}
               Publish
             </Button>
           </div>
@@ -402,10 +482,8 @@ function decodeSignerBytes(data: unknown, parentKey?: string): unknown {
   }
   return data
 }
-
 function readInspectIpfsPath(data: unknown, pathSegments: string[]): unknown {
   if (!pathSegments.length) return data
-
   return pathSegments.reduce<unknown>((currentValue, segment) => {
     if (Array.isArray(currentValue)) {
       const index = Number(segment)

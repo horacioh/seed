@@ -1,12 +1,55 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMAccountsMetadata, HMActivitySummary, HMComment, HMLibraryDocument} from '@seed-hypermedia/client/hm-types'
 import {formattedDate, getMetadataName, normalizeDate, plainTextOfContent, useRouteLink} from '@shm/shared'
 import {Button} from './button'
 import {Version} from './icons'
 import {SizableText} from './text'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s7b2d8cee: {
+    height: 'auto',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  s921206a0: {
+    display: 'flex',
+    width: '100%',
+    flex: '1',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
+  s3e376100: {
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+  },
+  s48f55329: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s675d16be: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '1',
+    textAlign: 'left',
+    fontFamily: 'var(--font-sans)',
+  },
+  sf79d1283: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: '1',
+    flexShrink: '0',
+    fontFamily: 'var(--font-sans)',
+    opacity: '80%',
+  },
+})
 const iconSize = 20
-
 export function SubDocumentItem({
   item,
   accountsMetadata,
@@ -21,9 +64,12 @@ export function SubDocumentItem({
   const metadata = item?.metadata
   const id = item.id
   const isRead = markedAsRead || !item.activitySummary?.isUnread
-  const linkProps = useRouteLink({key: 'document', id})
+  const linkProps = useRouteLink({
+    key: 'document',
+    id,
+  })
   return (
-    <Button className={cn('h-auto items-start justify-start')} {...linkProps}>
+    <Button className={cn(stylex.props(styles.s7b2d8cee).className || '')} {...linkProps}>
       {!hideIcon && (
         <div
           className={`w-[${iconSize}px] h-[${iconSize}px] items-center justify-center rounded-full bg-gray-800 p-0.5`}
@@ -31,11 +77,8 @@ export function SubDocumentItem({
           <Version size={16} color="white" />
         </div>
       )}
-      <div className="flex w-full flex-1 flex-col justify-start">
-        <SizableText
-          weight={isRead ? 'normal' : 'bold'}
-          className="flex-1 truncate overflow-hidden text-left whitespace-nowrap"
-        >
+      <div className={stylex.props(styles.s921206a0).className || ''}>
+        <SizableText weight={isRead ? 'normal' : 'bold'} className={stylex.props(styles.s3e376100).className || ''}>
           {getMetadataName(metadata)}
         </SizableText>
 
@@ -50,7 +93,6 @@ export function SubDocumentItem({
     </Button>
   )
 }
-
 export function LibraryEntryUpdateSummary({
   activitySummary,
   accountsMetadata,
@@ -75,15 +117,14 @@ export function LibraryEntryUpdateSummary({
     }
   }
   return (
-    <div className="flex items-center justify-start gap-2">
-      <SizableText size="xs" color="muted" className="line-clamp-1 text-left font-sans" weight="light">
+    <div className={stylex.props(styles.s48f55329).className || ''}>
+      <SizableText size="xs" color="muted" className={stylex.props(styles.s675d16be).className || ''} weight="light">
         {summaryText}
       </SizableText>
       <ActivityTime activitySummary={activitySummary} />
     </div>
   )
 }
-
 export function ActivityTime({activitySummary}: {activitySummary: HMActivitySummary}) {
   const latestChangeTime = normalizeDate(activitySummary?.latestChangeTime)
   const latestCommentTime = normalizeDate(activitySummary?.latestCommentTime)
@@ -91,7 +132,7 @@ export function ActivityTime({activitySummary}: {activitySummary: HMActivitySumm
     latestCommentTime && latestChangeTime && latestCommentTime > latestChangeTime ? latestCommentTime : latestChangeTime
   if (displayTime) {
     return (
-      <SizableText size="xs" color="muted" className="line-clamp-1 shrink-0 font-sans opacity-80" weight="light">
+      <SizableText size="xs" color="muted" className={stylex.props(styles.sf79d1283).className || ''} weight="light">
         ({formattedDate(displayTime)})
       </SizableText>
     )

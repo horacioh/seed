@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   isLocalAgentServer,
   LOCAL_AGENT_SERVER_LABEL,
@@ -28,7 +29,79 @@ import {CreateAgentDialog, ManageAgentAccountsDialog, ModelProvidersDialog} from
 import {AgentsNoAccountPage} from './no-account'
 import {getAgentsPlatform} from './platform'
 import {AgentServersDialog} from './server-settings'
-
+const styles = stylex.create({
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s584ecc36: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s86ff3e5: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sca3de96a: {
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sbbe27b51: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 4)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s3566be63: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sf2f4c151: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--card)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s12583799: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+})
 function AgentsListPage() {
   const selectedAccountId = useSelectedAccountId()
   // Agent servers reject unauthenticated requests, so without an active account there is nothing
@@ -36,7 +109,6 @@ function AgentsListPage() {
   if (!selectedAccountId) return <AgentsNoAccountPage />
   return <AgentsListContent selectedAccountId={selectedAccountId} />
 }
-
 function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
   // Keep every account these agents can author as synced locally, so they are immediately
   // mentionable and openable elsewhere in the app.
@@ -54,18 +126,23 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
   const serverSettingsDialog = useAppDialog(AgentServersDialog)
   // Platforms with a settings window (desktop) open it; the rest manage servers in a dialog here.
   const openServerSettings = (getAgentsPlatform().useOpenServerSettings ?? (() => null))()
-
   const agents = useMemo(
     () =>
       serverUrls.flatMap((serverUrl, index) =>
-        (agentQueries[index]?.data || []).map((agent) => ({...agent, serverUrl})),
+        (agentQueries[index]?.data || []).map((agent) => ({
+          ...agent,
+          serverUrl,
+        })),
       ),
     [agentQueries, serverUrls],
   )
   const invites = useMemo(
     () =>
       serverUrls.flatMap((serverUrl, index) =>
-        (inviteQueries[index]?.data || []).map((invite) => ({...invite, serverUrl})),
+        (inviteQueries[index]?.data || []).map((invite) => ({
+          ...invite,
+          serverUrl,
+        })),
       ),
     [inviteQueries, serverUrls],
   )
@@ -83,14 +160,13 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
   const isLoadingAgents = agentQueries.some((query) => query.isFetching && !query.data)
   const agentError = agentQueries.find((query) => query.isError)?.error
   const createAgentDisabledReason = !serverUrls.length ? 'Configure an agent server before creating an agent.' : null
-
   return (
-    <PanelContainer className="overflow-y-auto">
+    <PanelContainer className={stylex.props(styles.sac38f2ae).className || ''}>
       <Container className="max-w-4xl gap-6 py-8">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
+        <div className={stylex.props(styles.s584ecc36).className || ''}>
+          <div className={stylex.props(styles.s86ff3e5).className || ''}>
             <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
-              <Bot className="size-6" />
+              <Bot className={stylex.props(styles.sca3de96a).className || ''} />
             </div>
             <SizableText size="2xl" weight="bold">
               Agents
@@ -98,12 +174,12 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
           </div>
         </div>
 
-        <section className="flex flex-col gap-2">
-          <div className="flex items-center justify-between gap-4">
+        <section className={stylex.props(styles.sfbc6e28e).className || ''}>
+          <div className={stylex.props(styles.sbbe27b51).className || ''}>
             <SizableText weight="bold">Agent Servers</SizableText>
             <Tooltip content="Configure agent servers">
               <Button onClick={() => (openServerSettings ? openServerSettings() : serverSettingsDialog.open(true))}>
-                <Settings className="size-4" />
+                <Settings className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </Tooltip>
           </div>
@@ -118,7 +194,12 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
               <AgentServerSubscription key={serverUrl} serverUrl={serverUrl} selectedAccountId={selectedAccountId}>
                 <div
                   className="border-border bg-card hover:bg-muted/50 flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors"
-                  onClick={() => navigate({key: 'agent-server', serverUrl})}
+                  onClick={() =>
+                    navigate({
+                      key: 'agent-server',
+                      serverUrl,
+                    })
+                  }
                 >
                   <div className="flex min-w-0 items-center gap-2">
                     <SizableText size="xs" className={isLocal ? 'truncate font-medium' : 'truncate font-mono'}>
@@ -138,17 +219,20 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
                       </Tooltip>
                     ) : null}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className={stylex.props(styles.s86ff3e4).className || ''}>
                     <Button
                       variant="outline"
                       size="sm"
                       className="max-sm:min-h-10"
                       onClick={(event) => {
                         event.stopPropagation()
-                        manageAccountsDialog.open({serverUrl, selectedAccountId})
+                        manageAccountsDialog.open({
+                          serverUrl,
+                          selectedAccountId,
+                        })
                       }}
                     >
-                      <CircleUserRound className="size-4" />
+                      <CircleUserRound className={stylex.props(styles.sca3de968).className || ''} />
                       Accounts
                     </Button>
                     <Button
@@ -157,10 +241,13 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
                       className="max-sm:min-h-10"
                       onClick={(event) => {
                         event.stopPropagation()
-                        providersDialog.open({serverUrl, selectedAccountId})
+                        providersDialog.open({
+                          serverUrl,
+                          selectedAccountId,
+                        })
                       }}
                     >
-                      <Settings className="size-4" />
+                      <Settings className={stylex.props(styles.sca3de968).className || ''} />
                       Providers
                     </Button>
                   </div>
@@ -177,15 +264,15 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
         {serverSettingsDialog.content}
 
         {invites.length ? (
-          <section className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <Mail className="text-muted-foreground size-4" />
+          <section className={stylex.props(styles.sfbc6e28f).className || ''}>
+            <div className={stylex.props(styles.s86ff3e4).className || ''}>
+              <Mail className={stylex.props(styles.s3566be63).className || ''} />
               <SizableText weight="bold">Invites</SizableText>
               <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-bold">
                 {invites.length}
               </span>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               {invites.map((invite) => (
                 <AgentInviteRow
                   key={`${invite.serverUrl}:${invite.agentId}`}
@@ -198,9 +285,9 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
         ) : null}
 
         {publishedAgents.length ? (
-          <section className="flex flex-col gap-3">
+          <section className={stylex.props(styles.sfbc6e28f).className || ''}>
             <SizableText weight="bold">Agents in this space</SizableText>
-            <div className="flex flex-col gap-2">
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               {publishedAgents.map(({serverUrl, agent}) => (
                 <AgentListRow
                   key={`${serverUrl}:${agent.id}`}
@@ -215,17 +302,22 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
           </section>
         ) : null}
 
-        <section className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-4">
+        <section className={stylex.props(styles.sfbc6e28f).className || ''}>
+          <div className={stylex.props(styles.sbbe27b51).className || ''}>
             <SizableText weight="bold">All Agents</SizableText>
             <Tooltip content={createAgentDisabledReason || 'Create Agent'}>
               <span>
                 <Button
                   className="max-sm:min-h-10"
-                  onClick={() => createAgentDialog.open({serverUrls, selectedAccountId})}
+                  onClick={() =>
+                    createAgentDialog.open({
+                      serverUrls,
+                      selectedAccountId,
+                    })
+                  }
                   disabled={!!createAgentDisabledReason}
                 >
-                  <Bot className="size-4" />
+                  <Bot className={stylex.props(styles.sca3de968).className || ''} />
                   Create Agent
                 </Button>
               </span>
@@ -233,12 +325,12 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
           </div>
           {isLoadingAgents ? <SizableText color="muted">Loading agents…</SizableText> : null}
           {agentError ? (
-            <SizableText className="text-destructive">
+            <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
               {agentError instanceof Error ? agentError.message : 'Could not load agents'}
             </SizableText>
           ) : null}
           {!isLoadingAgents && !agents.length ? <SizableText color="muted">No agents yet.</SizableText> : null}
-          <div className="flex flex-col gap-2">
+          <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             {agents.map((agent) => (
               <AgentListRow
                 key={`${agent.serverUrl}:${agent.id}`}
@@ -255,7 +347,6 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
     </PanelContainer>
   )
 }
-
 function AgentInviteRow({
   invite,
   selectedAccountId,
@@ -273,17 +364,16 @@ function AgentInviteRow({
   const accept = useAcceptAgentInvite(invite.serverUrl, selectedAccountId)
   const decline = useDeclineAgentInvite(invite.serverUrl, selectedAccountId)
   const pending = accept.isLoading || decline.isLoading
-
   return (
-    <div className="border-border bg-card flex items-center gap-3 rounded-lg border p-3">
+    <div className={stylex.props(styles.sf2f4c151).className || ''}>
       <div className="bg-primary/10 text-primary flex size-9 flex-none items-center justify-center rounded-lg">
-        <Bot className="size-4" />
+        <Bot className={stylex.props(styles.sca3de968).className || ''} />
       </div>
       <div className="min-w-0 flex-1">
-        <SizableText weight="bold" className="block truncate">
+        <SizableText weight="bold" className={stylex.props(styles.s12583799).className || ''}>
           {invite.agentName}
         </SizableText>
-        <SizableText size="xs" color="muted" className="block">
+        <SizableText size="xs" color="muted" className={stylex.props(styles.s597c48d).className || ''}>
           {invite.role === 'writer' ? 'Write collaborator' : 'Read collaborator'} · invited by{' '}
           {abbreviateUid(invite.ownerAccountId)}
         </SizableText>
@@ -294,21 +384,24 @@ function AgentInviteRow({
           accept.mutate(invite.agentId, {
             onSuccess: (result) => {
               if (result._ !== 'AcceptAgentInviteResponse') return
-              navigate({key: 'agent', agentId: invite.agentId, serverUrl: invite.serverUrl})
+              navigate({
+                key: 'agent',
+                agentId: invite.agentId,
+                serverUrl: invite.serverUrl,
+              })
             },
           })
         }
         disabled={pending}
       >
-        <Check className="size-4" /> Accept
+        <Check className={stylex.props(styles.sca3de968).className || ''} /> Accept
       </Button>
       <Button variant="ghost" size="sm" onClick={() => decline.mutate(invite.agentId)} disabled={pending}>
-        <X className="size-4" /> Decline
+        <X className={stylex.props(styles.sca3de968).className || ''} /> Decline
       </Button>
     </div>
   )
 }
-
 function AgentServerSubscription({
   serverUrl,
   selectedAccountId,
@@ -321,5 +414,4 @@ function AgentServerSubscription({
   useAgentWebSocketSubscription(serverUrl, selectedAccountId, `account/${selectedAccountId}`)
   return <>{children}</>
 }
-
 export default AgentsListPage

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {domainResolver} from '@/grpc-client'
 import {roleCanWrite, useSelectedAccountCapability} from '@/models/access-control'
 import {DEFAULT_AGENT_SERVER_URL} from '@/agents-defaults'
@@ -81,6 +82,155 @@ import {SearchInput, SearchInputHandle} from './search-input'
 import {TitleBarProps} from './titlebar'
 
 // Route keys that have an id and support DocOptionsButton
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sb53e5ce9: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s3566be63: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s48010636: {
+    cursor: 'pointer',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: '0',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sca3de969: {
+    width: 'calc(0.25rem * 5)',
+    height: 'calc(0.25rem * 5)',
+  },
+  se0a4e204: {
+    fontSize: '0.875rem',
+    lineHeight: '1.25',
+    fontWeight: '500',
+  },
+  s6d876997: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25',
+  },
+  s2f251391: {
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    borderRadius: '0',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s3facd310: {
+    cursor: 'pointer',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: '0',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sf9c0c009: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s59c17cd3: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  sf8eef924: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    flexShrink: '0',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s2b214c4f: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s8a0ec2b7: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+    opacity: '60%',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s8bcb4b84: {
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  s69c7b445: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 0.5)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  sf7fb00e8: {
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '150ms',
+  },
+  s2cc286a6: {
+    marginRight: 'calc(0.25rem * 1)',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s26a52803: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+    flexShrink: '0',
+  },
+})
 const DOC_OPTIONS_ROUTE_KEYS = [
   'document',
   'feed',
@@ -92,11 +242,8 @@ const DOC_OPTIONS_ROUTE_KEYS = [
   'all-documents',
   'metadata',
 ] as const
-
 type DocOptionsRouteKey = (typeof DOC_OPTIONS_ROUTE_KEYS)[number]
-
 const OMNIBAR_DOMAIN_STALE_TIME_MS = 3 * 60 * 60 * 1000
-
 function getUrlHostname(url?: string | null): string | null {
   if (!url) return null
   try {
@@ -105,23 +252,22 @@ function getUrlHostname(url?: string | null): string | null {
     return null
   }
 }
-
-function isDocOptionsRoute(route: NavRoute): route is NavRoute & {key: DocOptionsRouteKey; id: UnpackedHypermediaId} {
+function isDocOptionsRoute(route: NavRoute): route is NavRoute & {
+  key: DocOptionsRouteKey
+  id: UnpackedHypermediaId
+} {
   return DOC_OPTIONS_ROUTE_KEYS.includes(route.key as DocOptionsRouteKey) && 'id' in route
 }
-
 export function DocOptionsButton(_props: {
   onPublishSite: (input: {id: UnpackedHypermediaId; step?: 'seed-host-custom-domain'}) => void
 }) {
   return null
 }
-
 function NotificationButton() {
   const accountUid = useSelectedAccountId()
   if (!accountUid) return null
   return <NotificationButtonForAccount accountUid={accountUid} />
 }
-
 function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
   const navigate = useNavigate()
   const route = useNavRoute()
@@ -132,7 +278,6 @@ function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
     queryKey: [queryKeys.SETTINGS, 'notifications-view'],
     queryFn: () => client.appSettings.getSetting.query('notifications-view'),
   })
-
   const unreadCount = useMemo(() => {
     if (!inbox.data || !readState.data) return 0
     return inbox.data.filter(
@@ -144,7 +289,6 @@ function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
         }),
     ).length
   }, [inbox.data, readState.data])
-
   return (
     <Tooltip content="Notifications" asChild>
       <Button
@@ -161,11 +305,14 @@ function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
             ? undefined
             : () => {
                 const view = persistedView.data === 'unread' ? ('unread' as const) : undefined
-                navigate({key: 'notifications', view})
+                navigate({
+                  key: 'notifications',
+                  view,
+                })
               }
         }
       >
-        <Bell className="size-4" />
+        <Bell className={stylex.props(styles.sca3de968).className || ''} />
         {unreadCount > 0 ? (
           <span className="flex h-5 min-w-5 items-center justify-center rounded-lg bg-red-500 px-1 text-[12px] font-bold text-white">
             {unreadCount > 99 ? '99+' : unreadCount}
@@ -175,7 +322,6 @@ function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
     </Tooltip>
   )
 }
-
 export function AccountProfileButton() {
   const navigate = useNavigate()
   const accountUid = useSelectedAccountId()
@@ -200,94 +346,115 @@ export function AccountProfileButton() {
       toast.success('Logged out')
       authDialog.close()
       setSelectedIdentity?.(null)
-      navigate({key: 'onboarding'})
+      navigate({
+        key: 'onboarding',
+      })
     },
     onError: (error) => {
       toast.error('Failed to log out: ' + (error instanceof Error ? error.message : String(error)))
     },
   })
-
   const accountOptions = myAccountIds.data?.map((uid, index) => {
     const accountData = accountQueries[index]?.data
     // Fall back to a bare id-only entry so un-onboarded keys (no profile
     // metadata yet) still appear and remain selectable in the switcher,
     // instead of being filtered out and stranding a valid daemon key.
-    return accountData ?? {id: hmId(uid), metadata: null}
+    return (
+      accountData ?? {
+        id: hmId(uid),
+        metadata: null,
+      }
+    )
   })
   const hasAccounts = !!myAccountIds.data?.length
-
   useEffect(() => {
     if (myAccountIds.data?.length === 0 && selectedIdentityValue) {
       setSelectedIdentity?.(null)
     }
   }, [myAccountIds.data, selectedIdentityValue, setSelectedIdentity])
-
   useEffect(() => {
     if (!menuOpen) {
       requestedSyncForMenuOpen.current = false
       return
     }
     if (!remoteVaultConnected || isForceVaultSyncPending || requestedSyncForMenuOpen.current) return
-
     requestedSyncForMenuOpen.current = true
-
     forceVaultSync(undefined, {
       onError: () => {
         // Best-effort refresh when the account switcher opens.
       },
     })
   }, [forceVaultSync, isForceVaultSyncPending, menuOpen, remoteVaultConnected])
-
   if (!hasAccounts) {
     return (
       <>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0">
-              <div className="bg-muted flex size-8 items-center justify-center rounded-full">
-                <User className="text-muted-foreground size-4" />
+              <div className={stylex.props(styles.sb53e5ce9).className || ''}>
+                <User className={stylex.props(styles.s3566be63).className || ''} />
               </div>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="bottom" align="end" className="w-[320px] rounded-2xl p-0">
             <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-none px-4 py-3"
-              onClick={() => authDialog.open({initialSubmit: {type: 'login'}})}
+              className={stylex.props(styles.s48010636).className || ''}
+              onClick={() =>
+                authDialog.open({
+                  initialSubmit: {
+                    type: 'login',
+                  },
+                })
+              }
             >
               <div className="flex size-11 items-center justify-center rounded-full border border-black/10 bg-white dark:border-white/10 dark:bg-black/10">
-                <LogIn className="size-5" />
+                <LogIn className={stylex.props(styles.sca3de969).className || ''} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm leading-tight font-medium">Sign in</p>
-                <p className="text-muted-foreground mt-1 text-sm leading-tight">I already have a Hypermedia identity</p>
+                <p className={stylex.props(styles.se0a4e204).className || ''}>Sign in</p>
+                <p className={stylex.props(styles.s6d876997).className || ''}>I already have a Hypermedia identity</p>
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-0 bg-black/10 dark:bg-white/10" />
             <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-none px-4 py-3"
-              onClick={() => authDialog.open({initialSubmit: {type: 'register'}})}
+              className={stylex.props(styles.s48010636).className || ''}
+              onClick={() =>
+                authDialog.open({
+                  initialSubmit: {
+                    type: 'register',
+                  },
+                })
+              }
             >
               <div className="bg-muted flex size-11 items-center justify-center rounded-full dark:bg-black/20">
-                <Plus className="size-5" />
+                <Plus className={stylex.props(styles.sca3de969).className || ''} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm leading-tight font-medium">Create my identity</p>
-                <p className="text-muted-foreground mt-1 text-sm leading-tight">New to Seed Hypermedia</p>
+                <p className={stylex.props(styles.se0a4e204).className || ''}>Create my identity</p>
+                <p className={stylex.props(styles.s6d876997).className || ''}>New to Seed Hypermedia</p>
               </div>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-0 bg-black/10 dark:bg-white/10" />
             <DropdownMenuItem
-              className="text-muted-foreground cursor-pointer rounded-none px-4 py-3 text-sm"
-              onClick={() => authDialog.open({initialStep: 'custom-identity'})}
+              className={stylex.props(styles.s2f251391).className || ''}
+              onClick={() =>
+                authDialog.open({
+                  initialStep: 'custom-identity',
+                })
+              }
             >
               I have a different identity domain
             </DropdownMenuItem>
             <DropdownMenuSeparator className="my-0 bg-black/10 dark:bg-white/10" />
             <DropdownMenuItem
-              className="cursor-pointer gap-3 rounded-none px-4 py-3 text-sm"
-              onClick={() => navigate({key: 'settings'})}
+              className={stylex.props(styles.s3facd310).className || ''}
+              onClick={() =>
+                navigate({
+                  key: 'settings',
+                })
+              }
             >
-              <Settings className="size-4" />
+              <Settings className={stylex.props(styles.sca3de968).className || ''} />
               App settings
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -296,7 +463,6 @@ export function AccountProfileButton() {
       </>
     )
   }
-
   return (
     <>
       <DropdownMenu
@@ -315,8 +481,8 @@ export function AccountProfileButton() {
                 size={32}
               />
             ) : (
-              <div className="bg-muted flex size-8 items-center justify-center rounded-full">
-                <User className="text-muted-foreground size-4" />
+              <div className={stylex.props(styles.sb53e5ce9).className || ''}>
+                <User className={stylex.props(styles.s3566be63).className || ''} />
               </div>
             )}
           </Button>
@@ -336,14 +502,20 @@ export function AccountProfileButton() {
                   size={32}
                 />
               ) : (
-                <div className="bg-muted flex size-8 shrink-0 items-center justify-center rounded-full">
-                  <User className="text-muted-foreground size-4" />
+                <div className={stylex.props(styles.sf9c0c009).className || ''}>
+                  <User className={stylex.props(styles.s3566be63).className || ''} />
                 </div>
               )}
               <div className="min-w-0 flex-1 text-left">
-                <p className="truncate text-sm font-medium">{selectedAccount?.metadata?.name || 'Account'}</p>
+                <p className={stylex.props(styles.s59c17cd3).className || ''}>
+                  {selectedAccount?.metadata?.name || 'Account'}
+                </p>
               </div>
-              {switcherOpen ? <ChevronUp className="size-4 shrink-0" /> : <ChevronDown className="size-4 shrink-0" />}
+              {switcherOpen ? (
+                <ChevronUp className={stylex.props(styles.sf8eef924).className || ''} />
+              ) : (
+                <ChevronDown className={stylex.props(styles.sf8eef924).className || ''} />
+              )}
             </button>
             {switcherOpen && (
               <>
@@ -387,10 +559,10 @@ export function AccountProfileButton() {
                     createAccountDialog.open({})
                   }}
                 >
-                  <div className="bg-muted flex size-8 items-center justify-center rounded-full">
-                    <Plus className="size-4" />
+                  <div className={stylex.props(styles.sb53e5ce9).className || ''}>
+                    <Plus className={stylex.props(styles.sca3de968).className || ''} />
                   </div>
-                  <p className="text-sm">Create account</p>
+                  <p className={stylex.props(styles.sab7cc6fa).className || ''}>Create account</p>
                 </button>
               </>
             )}
@@ -399,23 +571,38 @@ export function AccountProfileButton() {
           {accountUid && (
             <DropdownMenuItem
               onClick={() => {
-                navigate({key: 'profile', id: hmId(accountUid)})
+                navigate({
+                  key: 'profile',
+                  id: hmId(accountUid),
+                })
               }}
             >
-              <User className="size-4" />
+              <User className={stylex.props(styles.sca3de968).className || ''} />
               My Profile
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onClick={() => navigate({key: 'account-settings'})}>
-            <UserCog className="size-4" />
+          <DropdownMenuItem
+            onClick={() =>
+              navigate({
+                key: 'account-settings',
+              })
+            }
+          >
+            <UserCog className={stylex.props(styles.sca3de968).className || ''} />
             Account Settings
           </DropdownMenuItem>
           {/* <DropdownMenuItem disabled>
             <Monitor className="size-4" />
             Site settings
-          </DropdownMenuItem> */}
-          <DropdownMenuItem onClick={() => navigate({key: 'settings'})}>
-            <Settings className="size-4" />
+           </DropdownMenuItem> */}
+          <DropdownMenuItem
+            onClick={() =>
+              navigate({
+                key: 'settings',
+              })
+            }
+          >
+            <Settings className={stylex.props(styles.sca3de968).className || ''} />
             App settings
           </DropdownMenuItem>
           {canLogOut ? (
@@ -428,7 +615,7 @@ export function AccountProfileButton() {
                   setLogoutOpen(true)
                 }}
               >
-                <LogOut className="size-4" />
+                <LogOut className={stylex.props(styles.sca3de968).className || ''} />
                 Log out
               </DropdownMenuItem>
             </>
@@ -446,7 +633,6 @@ export function AccountProfileButton() {
     </>
   )
 }
-
 export function PageActionButtons(props: TitleBarProps) {
   const route = useNavRoute()
   return (
@@ -458,10 +644,8 @@ export function PageActionButtons(props: TitleBarProps) {
     </TitlebarSection>
   )
 }
-
 function DocumentTitlebarButtons({route}: {route: DocumentRoute | FeedRoute}) {
   const {id} = route
-
   const publishSite = usePublishSite()
   const isHomeDoc = !id.path?.length
   const capability = useSelectedAccountCapability(id)
@@ -472,9 +656,17 @@ function DocumentTitlebarButtons({route}: {route: DocumentRoute | FeedRoute}) {
   return (
     <TitlebarSection>
       {showPublishSiteButton ? (
-        <Button variant="default" onClick={() => publishSite.open({id})} size="sm">
+        <Button
+          variant="default"
+          onClick={() =>
+            publishSite.open({
+              id,
+            })
+          }
+          size="sm"
+        >
           Publish to Web Domain
-          <UploadCloud className="size-4" />
+          <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       ) : null}
       {publishSite.content}
@@ -489,34 +681,40 @@ export function NavigationButtons() {
     <div className="no-window-drag flex shrink-0">
       <Button
         size="icon"
-        onClick={() => dispatch({type: 'pop'})}
+        onClick={() =>
+          dispatch({
+            type: 'pop',
+          })
+        }
         variant="ghost"
         disabled={state.routeIndex <= 0}
         className="rounded-tl-0 rounded-bl-0 shrink-0"
       >
-        <Back className="size-4" />
+        <Back className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
 
       <Button
         size="icon"
-        onClick={() => dispatch({type: 'forward'})}
+        onClick={() =>
+          dispatch({
+            type: 'forward',
+          })
+        }
         disabled={state.routeIndex >= state.routes.length - 1}
         className="rounded-tr-0 rounded-br-0 shrink-0"
       >
-        <Forward className="size-4" />
+        <Forward className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
     </div>
   )
 }
-
 export function NavMenuButton({left}: {left?: ReactNode}) {
   const ctx = useContext(SidebarContext)
   const isLocked = useStream(ctx?.isLocked)
-  const icon = <PanelLeft className="size-4" />
+  const icon = <PanelLeft className={stylex.props(styles.sca3de968).className || ''} />
   let tooltip = 'Lock Sidebar Open'
   let onPress = ctx?.onLockSidebarOpen
   let key = 'lock'
-
   if (isLocked) {
     tooltip = 'Close Sidebar'
     onPress = ctx?.onCloseSidebar
@@ -525,7 +723,6 @@ export function NavMenuButton({left}: {left?: ReactNode}) {
 
   // Add a state to track the last click time to debounce clicks
   const lastClickTime = useRef(0)
-
   const handleClick = () => {
     if (onPress) {
       const now = Date.now()
@@ -536,9 +733,8 @@ export function NavMenuButton({left}: {left?: ReactNode}) {
       }
     }
   }
-
   return (
-    <div className="flex shrink-0 items-center">
+    <div className={stylex.props(styles.s2b214c4f).className || ''}>
       {left || <div />}
       {ctx && (
         <div className="no-window-drag relative z-10">
@@ -546,7 +742,13 @@ export function NavMenuButton({left}: {left?: ReactNode}) {
             content={tooltip}
             key={key} // use this key to make sure the component is unmounted when changes, to blur the button and make tooltip disappear
           >
-            <Button size="icon" key={key} aria-label={tooltip} className="shrink-0" onClick={handleClick}>
+            <Button
+              size="icon"
+              key={key}
+              aria-label={tooltip}
+              className={stylex.props(styles.sf032ed6c).className || ''}
+              onClick={handleClick}
+            >
               {icon}
             </Button>
           </Tooltip>
@@ -555,7 +757,6 @@ export function NavMenuButton({left}: {left?: ReactNode}) {
     </div>
   )
 }
-
 export function TitlebarTitle() {
   const route = useNavRoute()
   if (route.key !== 'document') return null
@@ -610,7 +811,6 @@ function getRouteLabel(route: NavRoute): string | null {
       return null
   }
 }
-
 const ACCOUNT_SETTINGS_TAB_LABELS: Record<string, string> = {
   devices: 'Devices',
   notifications: 'Notifications',
@@ -631,18 +831,16 @@ function AccountSettingsOmnibarLabel({
   isVault: boolean
 }) {
   const account = useAccount(isVault ? undefined : accountUid)
-
   if (isVault || !accountUid) {
     return <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs">Identity Settings</span>
   }
-
   const name = account.data?.metadata?.name || 'Account'
   const tabLabel = ACCOUNT_SETTINGS_TAB_LABELS[tab ?? 'devices'] ?? 'Devices'
   return (
     <span className="text-muted-foreground flex min-w-0 flex-1 items-center gap-1 truncate text-xs">
-      <span className="truncate">{name}</span>
-      <ChevronRight className="size-3 shrink-0 opacity-60" />
-      <span className="shrink-0">{tabLabel}</span>
+      <span className={stylex.props(styles.s6e724d66).className || ''}>{name}</span>
+      <ChevronRight className={stylex.props(styles.s8a0ec2b7).className || ''} />
+      <span className={stylex.props(styles.sf032ed6c).className || ''}>{tabLabel}</span>
     </span>
   )
 }
@@ -657,7 +855,7 @@ function LocalAgentsOmnibarToken() {
   return (
     <div className="flex min-w-0 flex-1 items-center">
       <div className="bg-muted text-muted-foreground no-select flex items-center gap-1 rounded-full px-2 py-0.5 text-xs">
-        <Bot className="size-3" />
+        <Bot className={stylex.props(styles.sca3de967).className || ''} />
         <span>{LOCAL_AGENT_SERVER_LABEL}</span>
       </div>
     </div>
@@ -732,9 +930,7 @@ function useCurrentRouteUrl(): {
   // while `useResource` is still loading so the copy button never flashes on
   // for a placeholder path.
   const isLocationOnlyDraft = !!draft && !draft.editUid
-
   const draftTitle = draft?.metadata?.name
-
   return useMemo(() => {
     if (route.key === 'draft') {
       const hostname = validatedSiteUrl || gwUrl
@@ -744,7 +940,10 @@ function useCurrentRouteUrl(): {
           hostname,
           originHomeId: validatedSiteUrl ? hmId(route.editUid) : undefined,
         })
-        return {displayUrl: url, copyableUrl: url}
+        return {
+          displayUrl: url,
+          copyableUrl: url,
+        }
       }
       if (route.locationUid) {
         const pathSegment = draftTitle?.trim() ? pathNameify(draftTitle) : route.id
@@ -754,36 +953,62 @@ function useCurrentRouteUrl(): {
           hostname,
           originHomeId: validatedSiteUrl ? hmId(route.locationUid) : undefined,
         })
-        return {displayUrl: url, copyableUrl: null}
+        return {
+          displayUrl: url,
+          copyableUrl: null,
+        }
       }
-      return {displayUrl: null, copyableUrl: null}
+      return {
+        displayUrl: null,
+        copyableUrl: null,
+      }
     }
-
     if (route.key === 'agent-server') {
-      if (isLocalAgentsRoute) return {displayUrl: null, copyableUrl: null}
+      if (isLocalAgentsRoute)
+        return {
+          displayUrl: null,
+          copyableUrl: null,
+        }
       const url = `${route.serverUrl}/agents`
-      return {displayUrl: url, copyableUrl: url}
+      return {
+        displayUrl: url,
+        copyableUrl: url,
+      }
     }
-
     if (route.key === 'agent') {
-      if (isLocalAgentsRoute) return {displayUrl: null, copyableUrl: null}
+      if (isLocalAgentsRoute)
+        return {
+          displayUrl: null,
+          copyableUrl: null,
+        }
       const url =
         route.tab === 'triggers' && route.triggerId
           ? agentTriggerUrl(route.serverUrl || DEFAULT_AGENT_SERVER_URL, route.agentId, route.triggerId)
           : agentUrl(route.serverUrl || DEFAULT_AGENT_SERVER_URL, route.agentId, route.tab, route.memoryPath)
-      return {displayUrl: url, copyableUrl: url}
+      return {
+        displayUrl: url,
+        copyableUrl: url,
+      }
     }
-
     if (route.key === 'agent-session') {
-      if (isLocalAgentsRoute) return {displayUrl: null, copyableUrl: null}
+      if (isLocalAgentsRoute)
+        return {
+          displayUrl: null,
+          copyableUrl: null,
+        }
       const agentId = route.agentId || agentSession.data?.session.agentId
       if (agentId) {
         const url = agentSessionUrl(route.serverUrl || DEFAULT_AGENT_SERVER_URL, agentId, route.sessionId)
-        return {displayUrl: url, copyableUrl: url}
+        return {
+          displayUrl: url,
+          copyableUrl: url,
+        }
       }
-      return {displayUrl: null, copyableUrl: null}
+      return {
+        displayUrl: null,
+        copyableUrl: null,
+      }
     }
-
     if (routeId) {
       // Unpublished new doc with a location-only draft attached — show
       // slugified preview URL, never copyable.
@@ -797,7 +1022,10 @@ function useCurrentRouteUrl(): {
           hostname,
           originHomeId: validatedSiteUrl ? hmId(routeId.uid) : undefined,
         })
-        return {displayUrl: url, copyableUrl: null}
+        return {
+          displayUrl: url,
+          copyableUrl: null,
+        }
       }
 
       // Standard route URL. Only mark copyable once we've confirmed a published
@@ -807,15 +1035,24 @@ function useCurrentRouteUrl(): {
         hostname: validatedSiteUrl || gwUrl,
         originHomeId: validatedSiteUrl ? hmId(routeId.uid) : undefined,
       })
-      return {displayUrl: url, copyableUrl: hasPublishedResource ? url : null}
+      return {
+        displayUrl: url,
+        copyableUrl: hasPublishedResource ? url : null,
+      }
     }
-
     if (route.key === 'inspect-ipfs') {
-      const url = routeToUrl(route, {hostname: validatedSiteUrl || gwUrl})
-      return {displayUrl: url, copyableUrl: url}
+      const url = routeToUrl(route, {
+        hostname: validatedSiteUrl || gwUrl,
+      })
+      return {
+        displayUrl: url,
+        copyableUrl: url,
+      }
     }
-
-    return {displayUrl: null, copyableUrl: null}
+    return {
+      displayUrl: null,
+      copyableUrl: null,
+    }
   }, [
     routeId,
     route,
@@ -891,7 +1128,6 @@ function useOmnibarState(currentUrl: string | null) {
   const [mode, setMode] = useState<OmnibarMode>('idle')
   const [inputValue, setInputValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
-
   const focus = useCallback(
     (selectAll: boolean = true) => {
       if (currentUrl) {
@@ -910,7 +1146,6 @@ function useOmnibarState(currentUrl: string | null) {
     },
     [currentUrl],
   )
-
   const focusSearch = useCallback(() => {
     setInputValue('')
     setMode('search')
@@ -918,12 +1153,10 @@ function useOmnibarState(currentUrl: string | null) {
       inputRef.current?.focus()
     }, 0)
   }, [])
-
   const blur = useCallback(() => {
     setMode('idle')
     setInputValue('')
   }, [])
-
   const handleInputChange = useCallback(
     (value: string) => {
       setInputValue(value)
@@ -935,7 +1168,6 @@ function useOmnibarState(currentUrl: string | null) {
           value.startsWith('https://') ||
           value.startsWith('hm://') ||
           (value.includes('.') && !value.includes(' '))
-
         if (!looksLikeUrl) {
           setMode('search')
         }
@@ -943,7 +1175,6 @@ function useOmnibarState(currentUrl: string | null) {
     },
     [mode, currentUrl],
   )
-
   return {
     mode,
     setMode,
@@ -970,7 +1201,6 @@ export function Omnibar() {
   const publishSite = usePublishSite()
   const searchInputRef = useRef<SearchInputHandle>(null)
   const [isSearchLoading, setIsSearchLoading] = useState(false)
-
   const routeId = getRouteId(route)
   const existingDraft = useExistingDraft(route)
   // Location-only draft (no `editUid`) means an unpublished new doc.
@@ -1000,7 +1230,9 @@ export function Omnibar() {
   // Handle URL navigation - returns true if navigation was synchronous
   const handleUrlNavigation = useCallback(
     async (url: string): Promise<boolean> => {
-      const route = await resolveOmnibarUrlToRoute(url, {domainResolver})
+      const route = await resolveOmnibarUrlToRoute(url, {
+        domainResolver,
+      })
       if (route) {
         navigate(route)
         return true
@@ -1023,7 +1255,6 @@ export function Omnibar() {
             // Check if it's an HTTP URL that needs async resolution
             const isHttpUrl = url.startsWith('http://') || url.startsWith('https://')
             const unpacked = unpackHmId(url)
-
             if (unpacked) {
               // Sync navigation - blur immediately
               handleUrlNavigation(url)
@@ -1077,9 +1308,9 @@ export function Omnibar() {
 
   // Render indicators on the right
   const indicators = isPrivate ? (
-    <div className="flex shrink-0 items-center gap-1 px-2">
-      <div className="bg-muted text-muted-foreground flex items-center gap-1 rounded-full px-2 py-0.5 text-xs">
-        <Lock className="size-3" />
+    <div className={stylex.props(styles.s8bcb4b84).className || ''}>
+      <div className={stylex.props(styles.s69c7b445).className || ''}>
+        <Lock className={stylex.props(styles.sca3de967).className || ''} />
         <span>Private</span>
       </div>
     </div>
@@ -1092,7 +1323,7 @@ export function Omnibar() {
         className={cn(
           'no-window-drag border-border flex min-w-0 flex-1 cursor-text items-center gap-2 overflow-hidden rounded-full border-2 pl-2',
           'hover:border-border hover:bg-muted/50 bg-white dark:bg-black',
-          'transition-colors',
+          stylex.props(styles.sf7fb00e8).className || '',
           'max-w-2xl',
           routeId ? 'py-0' : 'py-1',
         )}
@@ -1114,7 +1345,14 @@ export function Omnibar() {
                 // Drafts that haven't been published yet have no shareable URL
                 isUnsharable && 'select-none',
               )}
-              style={isUnsharable ? {userSelect: 'none', WebkitUserSelect: 'none'} : undefined}
+              style={
+                isUnsharable
+                  ? {
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none',
+                    }
+                  : undefined
+              }
               onCopy={
                 isUnsharable
                   ? (e) => {
@@ -1130,7 +1368,7 @@ export function Omnibar() {
           {indicators}
         </div>
         {routeId ? (
-          <div className="mr-1 flex shrink-0 items-center justify-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <div className={stylex.props(styles.s2cc286a6).className || ''} onClick={(e) => e.stopPropagation()}>
             <BookmarkButton id={routeId} className="size-6 min-w-6" />
             {/* Hide copy-reference when
                 the doc's URL isn't shareable */}
@@ -1155,7 +1393,7 @@ export function Omnibar() {
           'max-w-2xl',
         )}
       >
-        <Search className="text-muted-foreground size-3.5 shrink-0" />
+        <Search className={stylex.props(styles.s26a52803).className || ''} />
         <input
           ref={inputRef}
           type="text"
@@ -1186,7 +1424,7 @@ export function Omnibar() {
             'max-w-2xl',
           )}
         >
-          <Search className="text-muted-foreground size-3.5 shrink-0" />
+          <Search className={stylex.props(styles.s26a52803).className || ''} />
           <input
             ref={inputRef}
             type="text"
@@ -1200,7 +1438,7 @@ export function Omnibar() {
             placeholder="Search documents or paste a URL…"
             autoFocus
           />
-          {isSearchLoading ? <Spinner className="text-muted-foreground size-3.5 shrink-0" /> : null}
+          {isSearchLoading ? <Spinner className={stylex.props(styles.s26a52803).className || ''} /> : null}
           {indicators}
         </div>
       </PopoverTrigger>

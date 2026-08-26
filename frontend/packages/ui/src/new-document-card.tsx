@@ -1,10 +1,29 @@
+import * as stylex from '@stylexjs/stylex'
 import {Plus} from 'lucide-react'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s21fb93aa: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s3566be67: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  sd523fbe3: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+})
 export interface NewDocumentCardProps {
   onCreateDraft: () => void
 }
-
 export function NewDocumentCard({onCreateDraft}: NewDocumentCardProps) {
   return (
     <button
@@ -16,9 +35,9 @@ export function NewDocumentCard({onCreateDraft}: NewDocumentCardProps) {
         'dark:hover:bg-muted/20 dark:bg-black',
       )}
     >
-      <div className="flex flex-col items-center gap-2">
-        <Plus className="text-muted-foreground size-8" />
-        <span className="text-muted-foreground font-sans text-sm font-medium">New Document</span>
+      <div className={stylex.props(styles.s21fb93aa).className || ''}>
+        <Plus className={stylex.props(styles.s3566be67).className || ''} />
+        <span className={stylex.props(styles.sd523fbe3).className || ''}>New Document</span>
       </div>
     </button>
   )

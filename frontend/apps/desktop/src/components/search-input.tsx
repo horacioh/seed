@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import appError from '@/errors'
 import {useConnectPeer} from '@/models/contacts'
 import {agentUrlToRoute} from '@/omnibar-url'
@@ -37,13 +38,31 @@ import {toast} from '@shm/ui/toast'
 import {useMutation} from '@tanstack/react-query'
 import {useDebounce} from '@shm/shared/utils/use-debounce'
 import {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
-
+const styles = stylex.create({
+  s24134196: {
+    marginBlock: 'calc(0.25rem * 4)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sa56e915f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  se978af5d: {
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export interface SearchInputHandle {
   handleArrowUp: () => void
   handleArrowDown: () => void
   handleEnter: () => void
 }
-
 export const SearchInput = forwardRef<
   SearchInputHandle,
   {
@@ -68,7 +87,6 @@ export const SearchInput = forwardRef<
   const setSearch = onExternalSearchChange || setInternalSearch
   const debouncedSearch = useDebounce(search, 200)
   const isSearchPending = search !== debouncedSearch
-
   const [focusedIndex, setFocusedIndex] = useState(0)
   const [actionPromise, setActionPromise] = useState<Promise<void> | null>(null)
   const gwHost = useGatewayHost_DEPRECATED()
@@ -76,7 +94,6 @@ export const SearchInput = forwardRef<
   const recents = useRecents()
   const selectedAccountId = useSelectedAccountId()
   const triggerWindowEvent = useTriggerWindowEvent()
-
   const searchResults = useSearch(debouncedSearch, {
     includeBody: true,
     contextSize: 48 - debouncedSearch.length,
@@ -84,7 +101,6 @@ export const SearchInput = forwardRef<
     searchType: debouncedSearch.length < 3 ? SearchType.SEARCH_KEYWORD : SearchType.SEARCH_HYBRID,
     pageSize: 50,
   })
-
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
   let queryItem: null | SearchResult = useMemo(() => {
     if (
@@ -116,7 +132,6 @@ export const SearchInput = forwardRef<
           const searchRouteKey = viewTermToRouteKey(searchViewTerm)
           const unpacked = unpackHmId(cleanSearch)
           const appRoute = unpacked ? appRouteOfId(unpacked) : null
-
           if ((unpacked?.scheme === HYPERMEDIA_SCHEME || unpacked?.hostname === gwHost) && appRoute && unpacked) {
             onClose?.()
             onSelect({
@@ -132,20 +147,26 @@ export const SearchInput = forwardRef<
             })
           } else if (search.startsWith('http://') || search.startsWith('https://') || search.includes('.')) {
             if (allowWebURL) {
-              onSelect({webUrl: search})
+              onSelect({
+                webUrl: search,
+              })
             }
-
             setActionPromise(
               handleUrl(search)
                 .then((navRoute) => {
                   if (navRoute) {
                     onClose?.()
-                    onSelect({route: navRoute, webUrl: search})
+                    onSelect({
+                      route: navRoute,
+                      webUrl: search,
+                    })
                   }
                 })
                 .catch((error) => {
                   if (!allowWebURL) {
-                    appError(`Launcher Error: ${error}`, {error})
+                    appError(`Launcher Error: ${error}`, {
+                      error,
+                    })
                   }
                 })
                 .finally(() => {
@@ -164,7 +185,6 @@ export const SearchInput = forwardRef<
     }
     return null
   }, [debouncedSearch, search, triggerWindowEvent])
-
   const searchItems: SearchResult[] =
     searchResults?.data?.entities
       ?.sort((a, b) => {
@@ -183,9 +203,16 @@ export const SearchInput = forwardRef<
         const title = item.title || item.id.uid
         const route =
           item.type === 'contact'
-            ? ({key: 'profile', id: item.id} as NavRoute)
+            ? ({
+                key: 'profile',
+                id: item.id,
+              } as NavRoute)
             : item.type === 'comment' && item.commentId
-              ? ({key: 'comments', id: item.id, openComment: item.commentId} as NavRoute)
+              ? ({
+                  key: 'comments',
+                  id: item.id,
+                  openComment: item.commentId,
+                } as NavRoute)
               : appRouteOfId(item.id)
         const subtitle = item.type === 'contact' ? 'Contact' : item.type === 'comment' ? 'Comment' : 'Document'
         return {
@@ -199,14 +226,17 @@ export const SearchInput = forwardRef<
           onMouseEnter: () => {
             setFocusedIndex(index)
           },
-          onSelect: () => onSelect({id: item.id, route}),
+          onSelect: () =>
+            onSelect({
+              id: item.id,
+              route,
+            }),
           subtitle,
           searchQuery: item.searchQuery,
           versionTime: item.versionTime || '',
         }
       })
       .filter(Boolean) ?? []
-
   const route = useNavRoute()
   const docRoute = route?.key === 'document' ? route : null
   const recentItems =
@@ -232,7 +262,10 @@ export const SearchInput = forwardRef<
               toast.error('Failed to open recent: ' + id + ' ' + name)
               return
             } else {
-              onSelect({id: id, route: appRouteOfId(id)})
+              onSelect({
+                id: id,
+                route: appRouteOfId(id),
+              })
               setTimeout(() => onClose?.(), 100)
               return
             }
@@ -251,7 +284,14 @@ export const SearchInput = forwardRef<
       onSelect({
         route: {
           key: 'explore',
-          context: siteId ? {type: 'site', id: siteId} : {type: 'node'},
+          context: siteId
+            ? {
+                type: 'site',
+                id: siteId,
+              }
+            : {
+                type: 'node',
+              },
         },
       })
     },
@@ -268,7 +308,14 @@ export const SearchInput = forwardRef<
       onSelect({
         route: {
           key: 'explore',
-          context: siteId ? {type: 'site', id: siteId} : {type: 'node'},
+          context: siteId
+            ? {
+                type: 'site',
+                id: siteId,
+              }
+            : {
+                type: 'node',
+              },
           q: debouncedSearch || undefined,
         },
       })
@@ -283,11 +330,9 @@ export const SearchInput = forwardRef<
   const handleArrowUp = useCallback(() => {
     setFocusedIndex((prev) => (prev - 1 + activeItems.length) % activeItems.length)
   }, [activeItems.length])
-
   const handleArrowDown = useCallback(() => {
     setFocusedIndex((prev) => (prev + 1) % activeItems.length)
   }, [activeItems.length])
-
   const handleEnter = useCallback(() => {
     const item = activeItems[focusedIndex]
     if (item) {
@@ -295,7 +340,6 @@ export const SearchInput = forwardRef<
       item.onSelect?.()
     }
   }, [activeItems, focusedIndex, onClose])
-
   useImperativeHandle(
     ref,
     () => ({
@@ -305,17 +349,13 @@ export const SearchInput = forwardRef<
     }),
     [handleArrowUp, handleArrowDown, handleEnter],
   )
-
   const isLoading = (isSearchPending || searchResults.isFetching) && !isDisplayingRecents
-
   useEffect(() => {
     onLoadingChange?.(isLoading)
   }, [isLoading, onLoadingChange])
-
   useEffect(() => {
     if (focusedIndex >= activeItems.length) setFocusedIndex(0)
   }, [focusedIndex, activeItems])
-
   useEffect(() => {
     const el = itemRefs.current[focusedIndex]
     if (el) {
@@ -325,7 +365,6 @@ export const SearchInput = forwardRef<
       })
     }
   }, [focusedIndex])
-
   const content = (
     <>
       {isDisplayingRecents ? (
@@ -345,7 +384,6 @@ export const SearchInput = forwardRef<
             onFocus: () => setFocusedIndex(activeItemIndex),
             onMouseEnter: () => setFocusedIndex(activeItemIndex),
           }
-
           return (
             <div ref={(el) => (itemRefs.current[activeItemIndex] = el)} key={item.key} className="focus:outline-none">
               {isDisplayingRecents ? (
@@ -376,13 +414,12 @@ export const SearchInput = forwardRef<
           )
         })
       ) : !isDisplayingRecents && !isSearchPending ? (
-        <div className="my-4 flex items-center justify-center">
-          <p className="text-muted-foreground text-sm">No results found.</p>
+        <div className={stylex.props(styles.s24134196).className || ''}>
+          <p className={stylex.props(styles.sa56e915f).className || ''}>No results found.</p>
         </div>
       ) : null}
     </>
   )
-
   const searchFooter = (
     <div className="border-border space-y-1 border-t px-1 pt-1">
       {footerItems.map((item, index) => {
@@ -413,13 +450,12 @@ export const SearchInput = forwardRef<
   // When hideInput is true, just render the results without the input wrapper
   if (hideInput) {
     return (
-      <div className="flex h-full w-full flex-col gap-2">
+      <div className={stylex.props(styles.se978af5d).className || ''}>
         <div className="max-h-[200px] min-h-0 flex-1 overflow-y-auto">{content || <p>working…</p>}</div>
         {searchFooter}
       </div>
     )
   }
-
   return (
     <SearchInputUI
       searchResults={activeItems || []}
@@ -479,20 +515,37 @@ function applyViewTermToRoute(
     // On comment permalinks, ?v pins the comment version, not the document version
     return {
       key: 'comments',
-      id: {...route.id, version: null, latest: true},
+      id: {
+        ...route.id,
+        version: null,
+        latest: true,
+      },
       openComment: commentId,
       openCommentVersion: route.id.version || undefined,
     }
   }
   if (isSiteProfileTab(routeKey)) {
-    return {key: 'site-profile', id: route.id, accountUid: accountUid || undefined, tab: routeKey}
+    return {
+      key: 'site-profile',
+      id: route.id,
+      accountUid: accountUid || undefined,
+      tab: routeKey,
+    }
   }
   if (routeKey === 'explore') {
-    return {key: 'explore', context: {type: 'site', id: route.id}}
+    return {
+      key: 'explore',
+      context: {
+        type: 'site',
+        id: route.id,
+      },
+    }
   }
-  return {key: routeKey, id: route.id}
+  return {
+    key: routeKey,
+    id: route.id,
+  }
 }
-
 function useURLHandler() {
   const experiments = useExperiments()
   const webQuery = useMutation({
@@ -504,7 +557,6 @@ function useURLHandler() {
       console.error('Peer Connect Error:', err)
     },
   })
-
   const routeFromResolvedUrl = useCallback(
     (cleanUrl: string, result: Awaited<ReturnType<typeof resolveHypermediaUrl>>) => {
       const parsedUrl = parseCustomURL(cleanUrl)
@@ -513,14 +565,15 @@ function useURLHandler() {
         blockRef: fragment?.blockId || null,
         blockRange:
           fragment?.start !== undefined && fragment?.end !== undefined
-            ? {start: fragment.start, end: fragment.end}
+            ? {
+                start: fragment.start,
+                end: fragment.end,
+              }
             : null,
       }
-
       if (!result) {
         return null
       }
-
       if (result.type === 'Comment' && result.target && result.hmId && result.hmId.path) {
         return {
           key: 'document',
@@ -533,27 +586,32 @@ function useURLHandler() {
           },
         } satisfies NavRoute
       }
-
       if (!result.hmId) {
         return null
       }
-
       if (result.panel) {
-        return createDocumentNavRoute({...result.hmId, ...idFragment}, null, result.panel)
+        return createDocumentNavRoute(
+          {
+            ...result.hmId,
+            ...idFragment,
+          },
+          null,
+          result.panel,
+        )
       }
-
-      return appRouteOfId({...result.hmId, ...idFragment})
+      return appRouteOfId({
+        ...result.hmId,
+        ...idFragment,
+      })
     },
     [],
   )
-
   return async (search: string): Promise<NavRoute | null> => {
     const httpSearch = isHttpUrl(search) ? search : `https://${search}`
     const existingRoute = hypermediaUrlToRoute(search) || hypermediaUrlToRoute(httpSearch)
     if (existingRoute) {
       return existingRoute
     }
-
     const agentRoute = agentUrlToRoute(httpSearch)
     if (agentRoute) {
       return agentRoute
@@ -569,21 +627,24 @@ function useURLHandler() {
       accountUid,
     } = extractViewTermFromUrl(httpSearch)
     const routeKey = viewTermToRouteKey(viewTerm)
-
     connect.mutate(cleanUrl)
-
-    const directResult = await resolveHypermediaUrl(cleanUrl, {domainResolver}).catch(() => null)
+    const directResult = await resolveHypermediaUrl(cleanUrl, {
+      domainResolver,
+    }).catch(() => null)
     const directRoute = routeFromResolvedUrl(cleanUrl, directResult)
     if (directRoute) {
       return applyViewTermToRoute(directRoute, routeKey, commentId, accountUid, activityFilter, isInspect)
     }
-
     if (experiments.data?.webImporting) {
-      const webResult = await webQuery.mutateAsync({webUrl: cleanUrl})
+      const webResult = await webQuery.mutateAsync({
+        webUrl: cleanUrl,
+      })
       if (webResult.hypermedia) {
         const resolvedWebRoute = routeFromResolvedUrl(
           webResult.hypermedia.url,
-          await resolveHypermediaUrl(webResult.hypermedia.url, {domainResolver}),
+          await resolveHypermediaUrl(webResult.hypermedia.url, {
+            domainResolver,
+          }),
         )
         if (resolvedWebRoute) {
           return applyViewTermToRoute(resolvedWebRoute, routeKey, commentId, accountUid, activityFilter, isInspect)

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {getUpdateStatusLabel, useUpdateStatus} from '@/components/auto-updater'
 import {useConnectionSummary} from '@/models/contacts'
 import {useDaemonInfo} from '@/models/daemon'
@@ -26,6 +27,118 @@ import {OnlineIndicator} from './indicator'
 import {useNetworkDialog} from './network-dialog'
 
 /** Renders the desktop app footer and status actions. */
+const styles = stylex.create({
+  s948be48c: {
+    flex: 'none',
+  },
+  s19022da6: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  s105b9321: {
+    color: 'var(--muted-foreground)',
+    cursor: 'default',
+    opacity: '50%',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s44343d13: {
+    cursor: 'default',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sa271fd16: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sd362335f: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s4a58805: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+  },
+  sba46caf: {
+    width: 'calc(0.25rem * 1.5)',
+    height: 'calc(0.25rem * 1.5)',
+    flexShrink: '0',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s3566be62: {
+    color: 'var(--muted-foreground)',
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s36c833: {
+    width: 'calc(0.25rem * 96)',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s25987914: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s78289774: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s5cebed3: {
+    height: 'calc(0.25rem * 1.5)',
+  },
+  s400bc241: {
+    display: 'flex',
+    cursor: 'default',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc7a0694e: {
+    color: 'var(--muted-foreground)',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s36c80e: {
+    width: 'calc(0.25rem * 80)',
+  },
+  sfbc6e28f: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+})
 export default function Footer({
   children,
   assistantOpen,
@@ -39,24 +152,33 @@ export default function Footer({
 }) {
   const updateStatus = useUpdateStatus()
   return (
-    <FooterWrapper className="flex-none">
+    <FooterWrapper className={stylex.props(styles.s948be48c).className || ''}>
       <FooterNetworkingButton />
-      <div className="flex items-center gap-4 px-1">
+      <div className={stylex.props(styles.s19022da6).className || ''}>
         <SizableText
           size="xs"
-          className="text-muted-foreground cursor-default opacity-50 select-none"
-          style={{fontSize: 10}}
+          className={stylex.props(styles.s105b9321).className || ''}
+          style={{
+            fontSize: 10,
+          }}
         >
           {`Seed ${VERSION} (${COMMIT_HASH.slice(0, 8)})`}
         </SizableText>
         {updateStatus && updateStatus?.type != 'idle' && (
-          <SizableText size="xs" color="muted" className="cursor-default select-none" style={{fontSize: 10}}>
+          <SizableText
+            size="xs"
+            color="muted"
+            className={stylex.props(styles.s44343d13).className || ''}
+            style={{
+              fontSize: 10,
+            }}
+          >
             {getUpdateStatusLabel(updateStatus)}
           </SizableText>
         )}
       </div>
 
-      <div className="flex flex-1 items-center justify-end gap-1">
+      <div className={stylex.props(styles.sa271fd16).className || ''}>
         <DaemonTasksIndicator />
         <SubscriptionsPanel />
         {children}
@@ -65,11 +187,14 @@ export default function Footer({
             <Button
               size="xs"
               variant={'ghost'}
-              className={cn('px-2', assistantOpen && 'text-brand hover:text-brand-hover')}
+              className={cn(
+                stylex.props(styles.s34b1ad).className || '',
+                assistantOpen && 'text-brand hover:text-brand-hover',
+              )}
               onClick={onToggleAssistant}
               aria-label="Toggle assistant"
             >
-              <Bot className="size-3" />
+              <Bot className={stylex.props(styles.sca3de967).className || ''} />
             </Button>
           </Tooltip>
         )}
@@ -78,11 +203,11 @@ export default function Footer({
             <Button
               size="xs"
               variant={'ghost'}
-              className="px-2"
+              className={stylex.props(styles.s34b1ad).className || ''}
               onClick={onNewAssistantChat}
               aria-label="New assistant chat"
             >
-              <MessageCirclePlus className="size-3" />
+              <MessageCirclePlus className={stylex.props(styles.sca3de967).className || ''} />
             </Button>
           </Tooltip>
         )}
@@ -107,7 +232,7 @@ export function FooterButton({
     <Button
       size="sm"
       variant={active ? 'default' : 'ghost'}
-      className={cn('px-2', active && 'bg-link hover:bg-link-hover')}
+      className={cn(stylex.props(styles.s34b1ad).className || '', active && 'bg-link hover:bg-link-hover')}
       onClick={onPress}
     >
       {icon}
@@ -115,20 +240,19 @@ export function FooterButton({
     </Button>
   )
 }
-
 function FooterNetworkingButton() {
   const route = useNavRoute()
   const networkDialog = useNetworkDialog()
   const summary = useConnectionSummary()
   return (
-    <div className="flex items-center gap-2">
+    <div className={stylex.props(styles.s86ff3e4).className || ''}>
       <Button
         size="xs"
-        className={cn('px-2', route.key == 'contacts' && 'text-primary')}
+        className={cn(stylex.props(styles.s34b1ad).className || '', route.key == 'contacts' && 'text-primary')}
         onClick={() => networkDialog.open(true)}
       >
         <OnlineIndicator online={summary.online} />
-        <Cable className="size-3" />
+        <Cable className={stylex.props(styles.sca3de967).className || ''} />
         <SizableText size="xs">{summary.connectedCount}</SizableText>
       </Button>
       {networkDialog.content}
@@ -141,14 +265,26 @@ function SubscriptionItem({subscriptionKey}: {subscriptionKey: string}) {
   // Extract the entity ID (strip /* and :profile suffixes) for discovery state lookup
   const entityId = subscriptionKey.replace(/\/\*$/, '').replace(/:profile$/, '')
   const id = unpackHmId(entityId)
-  const resource = useResource(id, {subscribed: false})
+  const resource = useResource(id, {
+    subscribed: false,
+  })
   const discoveryState = useStream(getDiscoveryStream(entityId))
-
   const isProfile = subscriptionKey.endsWith(':profile')
   const isRecursive = subscriptionKey.includes('/*')
   const isAccount = id && !id.path?.length
-
-  const linkProps = useRouteLink(id ? (isProfile ? {key: 'profile', id} : {key: 'document', id}) : null)
+  const linkProps = useRouteLink(
+    id
+      ? isProfile
+        ? {
+            key: 'profile',
+            id,
+          }
+        : {
+            key: 'document',
+            id,
+          }
+      : null,
+  )
 
   // Resolve display name from resource metadata
   const name = resource.data?.type === 'document' ? resource.data.document.metadata.name : null
@@ -157,18 +293,16 @@ function SubscriptionItem({subscriptionKey}: {subscriptionKey: string}) {
       ? `${id.uid.slice(0, 8)}…`
       : `${id.uid.slice(0, 6)}/${id.path?.join('/')}`
     : entityId
-
   const suffix = isProfile ? ' (profile)' : isRecursive ? ' /*' : ''
   const syncLabel = getSyncLabel(discoveryState)
-
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className={stylex.props(styles.sd362335f).className || ''}>
       {discoveryState?.isDiscovering ? (
-        <Spinner size="small" className="size-3 shrink-0" />
+        <Spinner size="small" className={stylex.props(styles.s4a58805).className || ''} />
       ) : (
         <span
           className={cn(
-            'size-1.5 shrink-0 rounded-full',
+            stylex.props(styles.sba46caf).className || '',
             discoveryState?.isTombstone
               ? 'bg-destructive'
               : discoveryState?.isNotFound
@@ -185,7 +319,6 @@ function SubscriptionItem({subscriptionKey}: {subscriptionKey: string}) {
     </div>
   )
 }
-
 function getSyncLabel(state: DiscoveryState | null | undefined): string {
   if (!state) return 'watching'
   if (state.isTombstone) return 'deleted'
@@ -205,25 +338,23 @@ function SubscriptionsPanel() {
   const aggregated = useStream(getAggregatedDiscoveryStream())
   const count = subscriptionKeys.length
   const isAnySyncing = (aggregated?.activeCount ?? 0) > 0
-
   if (count === 0) return null
-
   return (
     <Popover>
       <Tooltip content={`Subscribed to ${count} ${count === 1 ? 'entity' : 'entities'}`}>
         <PopoverTrigger asChild>
-          <Button size="xs" variant="ghost" className="px-2">
+          <Button size="xs" variant="ghost" className={stylex.props(styles.s34b1ad).className || ''}>
             {isAnySyncing ? (
-              <Spinner size="small" className="size-3" />
+              <Spinner size="small" className={stylex.props(styles.sca3de967).className || ''} />
             ) : (
-              <Binoculars className="text-muted-foreground size-3" />
+              <Binoculars className={stylex.props(styles.s3566be62).className || ''} />
             )}
           </Button>
         </PopoverTrigger>
       </Tooltip>
-      <PopoverContent side="top" align="end" className="w-96">
-        <div className="flex flex-col gap-2">
-          <SizableText size="sm" className="font-medium">
+      <PopoverContent side="top" align="end" className={stylex.props(styles.s36c833).className || ''}>
+        <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+          <SizableText size="sm" className={stylex.props(styles.s129e46b3).className || ''}>
             Watching {count} Resources
           </SizableText>
           <div className="flex max-h-64 flex-col gap-1.5 overflow-y-auto">
@@ -271,20 +402,19 @@ function DaemonTaskItem({task}: {task: Task}) {
   const label = getTaskLabel(task.taskName)
   const total = Number(task.total)
   const completed = Number(task.completed)
-
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center justify-between">
-        <SizableText size="xs" className="font-medium">
+    <div className={stylex.props(styles.s25987914).className || ''}>
+      <div className={stylex.props(styles.s78289774).className || ''}>
+        <SizableText size="xs" className={stylex.props(styles.s129e46b3).className || ''}>
           {label}
         </SizableText>
-        <SizableText size="xs" className="text-muted-foreground">
+        <SizableText size="xs" className={stylex.props(styles.sf2718385).className || ''}>
           {progress}%
         </SizableText>
       </div>
-      <Progress value={progress} className="h-1.5" />
+      <Progress value={progress} className={stylex.props(styles.s5cebed3).className || ''} />
       {total > 0 && (
-        <SizableText size="xs" className="text-muted-foreground">
+        <SizableText size="xs" className={stylex.props(styles.sf2718385).className || ''}>
           {completed.toLocaleString()} / {total.toLocaleString()}
           {task.description && ` - ${task.description}`}
         </SizableText>
@@ -314,28 +444,39 @@ function DaemonTasksIndicator() {
     tasks.length > 0
       ? Math.round(tasks.reduce((sum: number, task: Task) => sum + getTaskProgress(task), 0) / tasks.length)
       : 0
-
   return (
     <HoverCard openDelay={200}>
       <HoverCardTrigger asChild>
-        <div className="flex cursor-default items-center gap-2 px-2">
-          <Spinner size="small" className="size-3" />
-          <SizableText size="xs" className="text-muted-foreground select-none" style={{fontSize: 10}}>
+        <div className={stylex.props(styles.s400bc241).className || ''}>
+          <Spinner size="small" className={stylex.props(styles.sca3de967).className || ''} />
+          <SizableText
+            size="xs"
+            className={stylex.props(styles.sc7a0694e).className || ''}
+            style={{
+              fontSize: 10,
+            }}
+          >
             {summaryText}
           </SizableText>
           {tasks.length === 1 && (
-            <SizableText size="xs" className="text-muted-foreground select-none" style={{fontSize: 10}}>
+            <SizableText
+              size="xs"
+              className={stylex.props(styles.sc7a0694e).className || ''}
+              style={{
+                fontSize: 10,
+              }}
+            >
               ({avgProgress}%)
             </SizableText>
           )}
         </div>
       </HoverCardTrigger>
-      <HoverCardContent side="top" align="end" className="w-80">
-        <div className="flex flex-col gap-3">
-          <SizableText size="sm" className="font-medium">
+      <HoverCardContent side="top" align="end" className={stylex.props(styles.s36c80e).className || ''}>
+        <div className={stylex.props(styles.sfbc6e28f).className || ''}>
+          <SizableText size="sm" className={stylex.props(styles.s129e46b3).className || ''}>
             Background Tasks
           </SizableText>
-          <div className="flex flex-col gap-3">
+          <div className={stylex.props(styles.sfbc6e28f).className || ''}>
             {tasks.map((task: Task, index: number) => (
               <DaemonTaskItem key={`${task.taskName}-${index}`} task={task} />
             ))}

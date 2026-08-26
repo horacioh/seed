@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {
   type AgentRunActivity,
   type RunInfo,
@@ -59,6 +60,142 @@ import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popove
 import {Markdown} from './markdown'
 
 /** Renders a chat message bubble shared by the assistant panel and Agents session UI. */
+const styles = stylex.create({
+  se99caec8: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sd4fdc70c: {
+    marginBottom: 'calc(0.25rem * 1)',
+    fontWeight: '500',
+  },
+  sa4989684: {
+    whiteSpace: 'pre-wrap',
+  },
+  sfbc6e28e: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sa56e9200: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  se658ac14: {
+    display: 'flex',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s38d63d4d: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s3697b550: {
+    backgroundColor: 'var(--muted)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  s25987914: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s347a6fa7: {
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+  },
+  sfd2ff57d: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 0.5)',
+    display: 'flex',
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000,  0 0 0 calc(1px + 0px) var(--border), 0 0 #0000',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s6c0acb04: {
+    backgroundColor: 'var(--foreground)',
+    display: 'inline-block',
+    height: 'calc(0.25rem * 3)',
+    width: 'calc(0.25rem * 1)',
+    animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+  },
+  s5402efaf: {
+    width: 'calc(0.25rem * 2.5)',
+    height: 'calc(0.25rem * 2.5)',
+    flexShrink: '0',
+    animation: 'spin 1s linear infinite',
+  },
+  seafbb27f: {
+    width: 'calc(0.25rem * 2.5)',
+    height: 'calc(0.25rem * 2.5)',
+    flexShrink: '0',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s111ee2c3: {
+    color: 'var(--muted-foreground)',
+    marginBottom: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  s14e67425: {
+    fontWeight: '400',
+  },
+  s13588c5b: {
+    overflowWrap: 'break-word',
+  },
+  s2a511dff: {
+    flexShrink: '0',
+    fontWeight: '500',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  saaddf753: {
+    whiteSpace: 'pre',
+  },
+  s1fa2d8e6: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb7d2c3e9: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+    animation: 'spin 1s linear infinite',
+  },
+  s4a58805: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+    flexShrink: '0',
+  },
+  s155a2d53: {
+    marginLeft: 'auto',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+})
 export const ChatMessageBubble = React.memo(function ChatMessageBubble({
   message,
   liveActivity,
@@ -83,7 +220,6 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
   const isUser = !isSystem && message.role === 'user'
   const rawMarkdown = message.rawMarkdown ?? message.content
   const resolvedBlocks = useAttachmentResolvedBlocks(serverUrl, message)
-
   return (
     <div className="group/message my-1.5" data-message-kind={isSystem ? 'system' : isUser ? 'user' : 'assistant'}>
       {isSystem ? (
@@ -92,7 +228,7 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
           rawMarkdownButton={rawMarkdown ? <RawMarkdownButton onClick={() => setShowRawMarkdown(true)} /> : null}
         />
       ) : isUser ? (
-        <div className="flex items-start gap-1">
+        <div className={stylex.props(styles.se99caec8).className || ''}>
           <div className="ml-6 min-w-0 flex-1 rounded-lg border border-sky-200 bg-sky-100 px-3 py-2 text-[13px] text-slate-950 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-50 [&_.ProseMirror]:!text-[13px] [&_.hm-prose]:!text-[13px]">
             {resolvedBlocks?.length ? (
               <div className="text-foreground rounded-md bg-transparent px-1 py-0.5 [&_.ProseMirror]:!bg-transparent [&_.bn-container]:!bg-transparent [&_.bn-editor]:!bg-transparent [&_.hm-prose]:!font-sans [&_.hm-prose]:!text-base">
@@ -121,8 +257,8 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
       )}
       {message.errorMessage ? (
         <div className="border-destructive/30 bg-destructive/10 text-destructive mt-1 mr-6 rounded-lg border px-3 py-2 text-xs">
-          <div className="mb-1 font-medium">Error</div>
-          <p className="whitespace-pre-wrap">{message.errorMessage}</p>
+          <div className={stylex.props(styles.sd4fdc70c).className || ''}>Error</div>
+          <p className={stylex.props(styles.sa4989684).className || ''}>{message.errorMessage}</p>
         </div>
       ) : null}
       {rawMarkdown ? (
@@ -135,9 +271,9 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
               <DialogDescription>This is the exact markdown text represented by this message.</DialogDescription>
             </DialogHeader>
             {message.shareUrl ? (
-              <div className="flex flex-col gap-2">
-                <div className="text-muted-foreground text-xs">Share URL</div>
-                <div className="flex gap-2">
+              <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+                <div className={stylex.props(styles.sa56e9200).className || ''}>Share URL</div>
+                <div className={stylex.props(styles.se658ac14).className || ''}>
                   <code className="bg-muted min-w-0 flex-1 overflow-auto rounded-md p-2 text-xs whitespace-nowrap">
                     {message.shareUrl}
                   </code>
@@ -151,13 +287,15 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
                 </div>
               </div>
             ) : null}
-            <div className="flex flex-wrap gap-2 text-xs">
+            <div className={stylex.props(styles.s38d63d4d).className || ''}>
               {message.sessionId ? (
-                <span className="bg-muted rounded px-2 py-1">Session: {message.sessionId}</span>
+                <span className={stylex.props(styles.s3697b550).className || ''}>Session: {message.sessionId}</span>
               ) : null}
-              {message.eventId ? <span className="bg-muted rounded px-2 py-1">Message: {message.eventId}</span> : null}
+              {message.eventId ? (
+                <span className={stylex.props(styles.s3697b550).className || ''}>Message: {message.eventId}</span>
+              ) : null}
               {typeof message.seq === 'number' ? (
-                <span className="bg-muted rounded px-2 py-1">Seq: {message.seq}</span>
+                <span className={stylex.props(styles.s3697b550).className || ''}>Seq: {message.seq}</span>
               ) : null}
             </div>
             <EventMetaSection meta={message.meta} />
@@ -165,8 +303,8 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
               {rawMarkdown}
             </pre>
             {message.contextLines?.length ? (
-              <div className="flex flex-col gap-2">
-                <div className="text-muted-foreground text-xs">
+              <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+                <div className={stylex.props(styles.sa56e9200).className || ''}>
                   Context shared with the agent (attached to this message, hidden from the chat)
                 </div>
                 <pre className="bg-muted max-h-[30vh] overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap">
@@ -195,7 +333,7 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
  */
 function SystemMessageRow({content, rawMarkdownButton}: {content: string; rawMarkdownButton?: React.ReactNode}) {
   return (
-    <div className="flex items-start gap-1">
+    <div className={stylex.props(styles.se99caec8).className || ''}>
       <div
         data-testid="system-message"
         className="border-border/70 text-muted-foreground my-0.5 ml-6 min-w-0 flex-1 border-l-2 py-0.5 pl-2.5 text-[11px] leading-4 [&_.hm-prose]:!text-[11px] [&_p]:!my-0"
@@ -217,12 +355,12 @@ function EventMetaSection({meta}: {meta?: SessionEventMeta}) {
   const rows = eventMetaRows(meta)
   if (!rows.length) return null
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={stylex.props(styles.s25987914).className || ''}>
       <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Details</div>
       <div className="bg-muted grid gap-x-4 gap-y-1 rounded-md p-2 sm:grid-cols-2">
         {rows.map((row) => (
           <div key={row.label} className="flex min-w-0 items-baseline justify-between gap-2 text-xs">
-            <span className="text-muted-foreground shrink-0">{row.label}</span>
+            <span className={stylex.props(styles.s347a6fa7).className || ''}>{row.label}</span>
             <span className="min-w-0 text-right font-medium break-all" title={row.value}>
               {row.value}
             </span>
@@ -232,15 +370,22 @@ function EventMetaSection({meta}: {meta?: SessionEventMeta}) {
     </div>
   )
 }
-
 function UserMessageOrigin({meta}: {meta?: SessionEventMeta}) {
-  const account = useAccount(meta?.accountId, {subscribe: true, enabled: !!meta?.accountId})
+  const account = useAccount(meta?.accountId, {
+    subscribe: true,
+    enabled: !!meta?.accountId,
+  })
   const metadata = account.data?.metadata
   const label = metadata?.name || meta?.accountId || 'Unknown user'
   const linkProps = useRouteLink(
-    meta?.accountId ? {key: 'site-profile', id: hmId(meta.accountId), tab: 'profile'} : null,
+    meta?.accountId
+      ? {
+          key: 'site-profile',
+          id: hmId(meta.accountId),
+          tab: 'profile',
+        }
+      : null,
   )
-
   return meta?.accountId ? (
     <a
       {...linkProps}
@@ -252,11 +397,11 @@ function UserMessageOrigin({meta}: {meta?: SessionEventMeta}) {
     </a>
   ) : (
     <div
-      className="ring-border bg-muted text-muted-foreground mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full ring-1"
+      className={stylex.props(styles.sfd2ff57d).className || ''}
       title="Unknown user (legacy message)"
       aria-label="Message from unknown user"
     >
-      <UserRound className="size-3.5" />
+      <UserRound className={stylex.props(styles.s3269316e).className || ''} />
     </div>
   )
 }
@@ -288,7 +433,6 @@ export const AssistantMessageParts = React.memo(function AssistantMessageParts({
   const rawButtonIndex = rawMarkdownButton
     ? parts.reduce((lastTextIndex, part, index) => (part.type === 'text' ? index : lastTextIndex), -1)
     : -1
-
   return parts.map((part, index) => {
     if (part.type === 'tool') {
       return (
@@ -303,13 +447,12 @@ export const AssistantMessageParts = React.memo(function AssistantMessageParts({
         />
       )
     }
-
     const showCursor = isStreaming && index === parts.length - 1
     return (
-      <div key={`text:${index}`} className="flex items-start gap-1">
+      <div key={`text:${index}`} className={stylex.props(styles.se99caec8).className || ''}>
         <div className="bg-muted my-1 mr-6 min-w-0 flex-1 rounded-lg px-3 py-2 text-sm">
           <Markdown enableGfm={!isStreaming}>{part.text}</Markdown>
-          {showCursor && <span className="bg-foreground inline-block h-3 w-1 animate-pulse" />}
+          {showCursor && <span className={stylex.props(styles.s6c0acb04).className || ''} />}
         </div>
         {index === rawButtonIndex ? rawMarkdownButton : null}
       </div>
@@ -345,8 +488,8 @@ export function AgentErrorRow({
           : 'border-destructive/30 bg-destructive/10 text-destructive mr-6 rounded-lg border px-3 py-2 text-xs'
       }
     >
-      {compact ? null : <div className="mb-1 font-medium">Error</div>}
-      <p className="whitespace-pre-wrap">{message}</p>
+      {compact ? null : <div className={stylex.props(styles.sd4fdc70c).className || ''}>Error</div>}
+      <p className={stylex.props(styles.sa4989684).className || ''}>{message}</p>
       {onRetry ? (
         <button
           type="button"
@@ -356,9 +499,9 @@ export function AgentErrorRow({
           className="bg-background/75 hover:bg-background text-foreground mt-1.5 inline-flex items-center gap-1 rounded-full border px-2 py-0.75 text-[10px] font-medium transition-colors disabled:opacity-60"
         >
           {retryPending ? (
-            <Loader2 className="size-2.5 shrink-0 animate-spin" />
+            <Loader2 className={stylex.props(styles.s5402efaf).className || ''} />
           ) : (
-            <RotateCcw className="size-2.5 shrink-0" />
+            <RotateCcw className={stylex.props(styles.seafbb27f).className || ''} />
           )}
           {retryPending ? 'Retrying…' : 'Retry'}
         </button>
@@ -372,8 +515,17 @@ export type ChatBubbleMessage = {
   role?: string
   content?: string
   parts?: ChatMessagePart[]
-  toolCalls?: Array<{id: string; name: string; args: Record<string, unknown>}>
-  toolResults?: Array<{id: string; name: string; result: string; rawOutput?: unknown}>
+  toolCalls?: Array<{
+    id: string
+    name: string
+    args: Record<string, unknown>
+  }>
+  toolResults?: Array<{
+    id: string
+    name: string
+    result: string
+    rawOutput?: unknown
+  }>
   errorMessage?: string
   rawMarkdown?: string
   blocks?: HMBlockNode[]
@@ -412,17 +564,28 @@ function useAttachmentResolvedBlocks(
     return substituteAttachmentLinks(message.blocks, srcById)
   }, [message.blocks, srcById])
 }
-
 function substituteAttachmentLinks(blocks: HMBlockNode[], srcById: Record<string, string>): HMBlockNode[] {
   return blocks.map((node) => {
     let block = node.block
-    const link = (block as {link?: unknown}).link
+    const link = (
+      block as {
+        link?: unknown
+      }
+    ).link
     if (typeof link === 'string' && link.startsWith('attachment://')) {
       const src = srcById[link.slice('attachment://'.length)]
-      if (src) block = {...block, link: src} as typeof node.block
+      if (src)
+        block = {
+          ...block,
+          link: src,
+        } as typeof node.block
     }
     const children = node.children?.length ? substituteAttachmentLinks(node.children, srcById) : node.children
-    return {...node, block, children}
+    return {
+      ...node,
+      block,
+      children,
+    }
   })
 }
 
@@ -442,12 +605,12 @@ function MessageContextInfo({lines}: {lines: string[]}) {
           className="text-muted-foreground hover:text-foreground mt-1.5 flex items-center gap-1 rounded-full border border-current/20 px-1.5 py-0.5 text-[10px] opacity-80"
           title="What the agent was told about your current window"
         >
-          <Info className="size-3" />
+          <Info className={stylex.props(styles.sca3de967).className || ''} />
           Context
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-96 max-w-[90vw] p-3">
-        <div className="text-muted-foreground mb-2 text-xs font-medium">Context shared with the agent</div>
+        <div className={stylex.props(styles.s111ee2c3).className || ''}>Context shared with the agent</div>
         <pre className="bg-muted max-h-64 overflow-auto rounded-md p-2 font-mono text-[11px] whitespace-pre-wrap">
           {lines.join('\n')}
         </pre>
@@ -455,7 +618,6 @@ function MessageContextInfo({lines}: {lines: string[]}) {
     </Popover>
   )
 }
-
 function RichMessageBlocks({blocks}: {blocks: HMBlockNode[]}) {
   const ReadOnlyMessageViewer = getAgentsPlatform().ReadOnlyMessageViewer
   if (!ReadOnlyMessageViewer) return null
@@ -469,7 +631,6 @@ function RichMessageBlocks({blocks}: {blocks: HMBlockNode[]}) {
     />
   )
 }
-
 function RawMarkdownButton({onClick}: {onClick: () => void}) {
   return (
     <button
@@ -479,34 +640,29 @@ function RawMarkdownButton({onClick}: {onClick: () => void}) {
       aria-label="Show markdown sent to the LLM"
       title="Show markdown sent to the LLM"
     >
-      <Info className="size-3.5" />
+      <Info className={stylex.props(styles.s3269316e).className || ''} />
     </button>
   )
 }
-
 function getAssistantMessageParts(message: ChatBubbleMessage) {
   if (message.parts && message.parts.length > 0) {
     return message.parts
   }
-
   return buildLegacyChatMessageParts({
     content: message.content,
     toolCalls: message.toolCalls,
     toolResults: message.toolResults,
   })
 }
-
 function formatToolDebugValue(value: unknown): string {
   if (value === undefined) return '(none)'
   if (typeof value === 'string') return value
-
   try {
     return JSON.stringify(value, null, 2)
   } catch {
     return String(value)
   }
 }
-
 function ToolChip({children, tone}: {children: React.ReactNode; tone?: 'error'}) {
   return (
     <span
@@ -541,7 +697,6 @@ function ToolSourceChip({children}: {children: React.ReactNode}) {
  */
 function ToolResourceLink({url, label}: {url: string; label: string}) {
   const openUrl = useOpenUrl()
-
   return (
     <button
       type="button"
@@ -556,10 +711,8 @@ function ToolResourceLink({url, label}: {url: string; label: string}) {
     </button>
   )
 }
-
 function ToolTextLink({url, children}: {url: string; children: React.ReactNode}) {
   const openUrl = useOpenUrl()
-
   return (
     <button
       type="button"
@@ -593,7 +746,6 @@ function useToolLinkOpener() {
   const {serverUrl, agentId} = React.useContext(ToolRowContext)
   const openUrl = useOpenUrl()
   const clickNavigate = useClickNavigate()
-
   return {
     /** False when the target needs context this row does not have — the label stays plain text. */
     canOpen(target: ToolLinkTarget | undefined): target is ToolLinkTarget {
@@ -608,14 +760,32 @@ function useToolLinkOpener() {
         return
       }
       if (target.type === 'session') {
-        clickNavigate({key: 'agent-session', sessionId: target.sessionId, serverUrl}, event as never)
+        clickNavigate(
+          {
+            key: 'agent-session',
+            sessionId: target.sessionId,
+            serverUrl,
+          },
+          event as never,
+        )
         return
       }
       if (!agentId) return
       const route =
         target.type === 'memory'
-          ? {key: 'agent' as const, agentId, serverUrl, tab: 'memory' as const, memoryPath: target.path}
-          : {key: 'agent' as const, agentId, serverUrl, tab: 'tools' as const}
+          ? {
+              key: 'agent' as const,
+              agentId,
+              serverUrl,
+              tab: 'memory' as const,
+              memoryPath: target.path,
+            }
+          : {
+              key: 'agent' as const,
+              agentId,
+              serverUrl,
+              tab: 'tools' as const,
+            }
       clickNavigate(route, event as never)
     },
   }
@@ -638,7 +808,6 @@ function ToolLinkText({
   className?: string
 }) {
   const {canOpen, open} = useToolLinkOpener()
-
   if (!canOpen(target)) {
     return (
       <span title={title} className={cn('min-w-0 truncate', className)}>
@@ -646,7 +815,6 @@ function ToolLinkText({
       </span>
     )
   }
-
   return (
     <button
       type="button"
@@ -669,12 +837,16 @@ function ToolLinkText({
 function ToolDetailText({value}: {value: string}) {
   const target = detailLinkTarget(value)
   return target ? (
-    <ToolLinkText target={target} label={value} title={value} className="font-normal" />
+    <ToolLinkText
+      target={target}
+      label={value}
+      title={value}
+      className={stylex.props(styles.s14e67425).className || ''}
+    />
   ) : (
-    <span className="break-words">{value}</span>
+    <span className={stylex.props(styles.s13588c5b).className || ''}>{value}</span>
   )
 }
-
 function ToolCallDebugDialog({
   item,
   open,
@@ -739,76 +911,92 @@ function getRowToolMetadata(item: ChatToolPart): SeedToolMetadata | undefined {
       ...render,
       primaryArg: render.primaryArg ? nest(render.primaryArg) : undefined,
       summaryArg: render.summaryArg ? nest(render.summaryArg) : undefined,
-      links: render.links?.map((link) => (link.source === 'input' ? {...link, path: nest(link.path)} : link)),
+      links: render.links?.map((link) =>
+        link.source === 'input'
+          ? {
+              ...link,
+              path: nest(link.path),
+            }
+          : link,
+      ),
       details: render.details?.map((detail) =>
-        detail.source === 'input' ? {...detail, path: nest(detail.path)} : detail,
+        detail.source === 'input'
+          ? {
+              ...detail,
+              path: nest(detail.path),
+            }
+          : detail,
       ),
     },
   }
 }
-
 function getToolLinks(item: ChatToolPart) {
   const metadata = getRowToolMetadata(item)
   const input = item.args
   const output = item.rawOutput
   const links = metadata?.render.links || []
   const seen = new Set<string>()
-
   return links.flatMap((link) => {
     const source = link.source === 'input' ? input : output
     const urls = getPathValues(source, link.path)
     const labels = link.labelPath ? getPathValues(source, link.labelPath) : []
-
     return urls.flatMap((url, index) => {
       if (typeof url !== 'string' || !url) return []
       if (seen.has(url)) return []
       seen.add(url)
       const label = link.label || formatInlineValue(labels[index]) || shortUrlLabel(url)
-      return [{url, label}]
+      return [
+        {
+          url,
+          label,
+        },
+      ]
     })
   })
 }
-
 function getToolSummary(item: ChatToolPart): string | undefined {
   if (item.summaryOverride) return item.summaryOverride
   const metadata = getRowToolMetadata(item)
   const outputSummary = firstInlinePathValue(item.rawOutput, metadata?.render.summaryOutputPath)
   if (outputSummary) return outputSummary
-
   const inputSummary = firstInlinePathValue(item.args, metadata?.render.summaryArg || metadata?.render.primaryArg)
   if (inputSummary) return inputSummary
-
   return item.result
 }
-
 function getToolDetails(item: ChatToolPart) {
   const metadata = getRowToolMetadata(item)
   const details = metadata?.render.details || [
-    {label: 'Input', source: 'input' as const},
-    {label: 'Output', source: 'output' as const},
+    {
+      label: 'Input',
+      source: 'input' as const,
+    },
+    {
+      label: 'Output',
+      source: 'output' as const,
+    },
   ]
-
   return details.flatMap((detail) => {
     const source = detail.source === 'input' ? item.args : item.rawOutput ?? item.result
     const value = detail.path ? getPathValues(source, detail.path)[0] : source
     if (value === undefined) return []
-    return [{...detail, value}]
+    return [
+      {
+        ...detail,
+        value,
+      },
+    ]
   })
 }
-
 function getToolCustomView(item: ChatToolPart) {
   const command = getToolString(item.args, 'command') || getToolString(item.rawOutput, 'command')
   return getSeedTool(item.name)?.render.customViews?.find((view) => view.command === command)
 }
-
 function isHMBlockNodeArray(value: unknown): value is HMBlockNode[] {
   return Array.isArray(value) && value.every((item) => isRecord(item) && isRecord(item.block))
 }
-
 function parseToolBlocks(value: unknown, format?: string): HMBlockNode[] | undefined {
   if (isHMBlockNodeArray(value)) return value
   if (typeof value !== 'string' || format !== 'json') return undefined
-
   try {
     const parsed = JSON.parse(value)
     return isHMBlockNodeArray(parsed) ? parsed : undefined
@@ -816,7 +1004,6 @@ function parseToolBlocks(value: unknown, format?: string): HMBlockNode[] | undef
     return undefined
   }
 }
-
 function buildCommentUrl(targetUrl: string, commentId: string): string {
   const hashIndex = targetUrl.indexOf('#')
   const withoutHash = hashIndex === -1 ? targetUrl : targetUrl.slice(0, hashIndex)
@@ -824,34 +1011,36 @@ function buildCommentUrl(targetUrl: string, commentId: string): string {
   if (queryIndex === -1) return `${withoutHash}/:comments/${commentId}`
   return `${withoutHash.slice(0, queryIndex)}/:comments/${commentId}${withoutHash.slice(queryIndex)}`
 }
-
 function isCommentRecordId(value: string | undefined): value is string {
   return Boolean(value && value.includes('/') && !value.startsWith('bafy'))
 }
-
 function isCommentUrlForRecordId(value: string | undefined): value is string {
   return Boolean(value && /\/:comments\/[^/?#]+\/[^?#]+/.test(value))
 }
-
-function commentInfoFromRecordId(recordId: string | undefined): {targetUrl: string; commentUrl: string} | undefined {
+function commentInfoFromRecordId(recordId: string | undefined):
+  | {
+      targetUrl: string
+      commentUrl: string
+    }
+  | undefined {
   if (!isCommentRecordId(recordId)) return undefined
   const normalized = recordId.replace(/^hm:\/\//, '')
   const parts = normalized.split('/').filter(Boolean)
   if (parts.length < 2) return undefined
   const targetUrl = `hm://${parts.slice(0, -1).join('/')}`
-  return {targetUrl, commentUrl: buildCommentUrl(targetUrl, normalized)}
+  return {
+    targetUrl,
+    commentUrl: buildCommentUrl(targetUrl, normalized),
+  }
 }
-
 function buildProfileUrl(publicKey: string | undefined): string | undefined {
   if (!publicKey) return undefined
   if (publicKey.startsWith('hm://')) return publicKey
   return `hm://${publicKey}/:profile`
 }
-
 function getWriteCommand(item: ChatToolPart): string | undefined {
   return getFirstToolString(item.args, ['command']) || getFirstToolString(item.rawOutput, ['command'])
 }
-
 function getWriteDocumentName(item: ChatToolPart, fallback = 'Untitled'): string {
   return (
     getFirstToolString(item.rawOutput, ['metadata.name', 'name', 'title']) ||
@@ -870,27 +1059,41 @@ function getWriteDocumentName(item: ChatToolPart, fallback = 'Untitled'): string
     fallback
   )
 }
-
-function getWriteContent(item: ChatToolPart): {label: string; markdown?: string; blocks?: HMBlockNode[]} | undefined {
+function getWriteContent(item: ChatToolPart):
+  | {
+      label: string
+      markdown?: string
+      blocks?: HMBlockNode[]
+    }
+  | undefined {
   const command = getWriteCommand(item)
   const label = command?.startsWith('comment.') ? 'Comment' : 'Content'
   const outputMarkdown = getFirstToolString(item.rawOutput, ['markdown'])
-  if (outputMarkdown) return {label, markdown: outputMarkdown}
-
+  if (outputMarkdown)
+    return {
+      label,
+      markdown: outputMarkdown,
+    }
   const format = getFirstToolString(item.args, ['input.format', 'format'])
   const rawInputContent =
     getFirstToolValue(item.args, ['input.body', 'input.text', 'body', 'text', 'input.content', 'content']) ??
     getFirstToolValue(item.rawOutput, ['content'])
   const blocks = parseToolBlocks(rawInputContent, format)
-  if (blocks) return {label, blocks}
-  if (typeof rawInputContent === 'string' && rawInputContent) return {label, markdown: rawInputContent}
+  if (blocks)
+    return {
+      label,
+      blocks,
+    }
+  if (typeof rawInputContent === 'string' && rawInputContent)
+    return {
+      label,
+      markdown: rawInputContent,
+    }
   return undefined
 }
-
 function getWriteMetadata(item: ChatToolPart): unknown {
   return getFirstToolValue(item.rawOutput, ['metadata']) ?? getFirstToolValue(item.args, ['input.metadata', 'metadata'])
 }
-
 function getWritePrimaryDocumentUrl(item: ChatToolPart): string | undefined {
   const command = getWriteCommand(item)
   if (command === 'document.move') {
@@ -920,14 +1123,12 @@ function getWritePrimaryDocumentUrl(item: ChatToolPart): string | undefined {
     getFirstToolString(item.args, ['input.edit', 'edit', 'input.id', 'id', 'input.target', 'target', 'address'])
   )
 }
-
 function getWriteSourceDocumentUrl(item: ChatToolPart): string | undefined {
   return (
     getFirstToolString(item.rawOutput, ['redirect.id']) ||
     getFirstToolString(item.args, ['input.source', 'input.sourceId', 'source', 'sourceId', 'input.id', 'id'])
   )
 }
-
 function getWriteDestinationDocumentUrl(item: ChatToolPart): string | undefined {
   return (
     getFirstToolString(item.rawOutput, ['destination', 'ref.id', 'target']) ||
@@ -943,7 +1144,6 @@ function getWriteDestinationDocumentUrl(item: ChatToolPart): string | undefined 
     ])
   )
 }
-
 function getCommentLinks(item: ChatToolPart) {
   const output = item.rawOutput
   const targetUrl = getFirstToolString(output, ['targetUrl', 'target'])
@@ -960,9 +1160,11 @@ function getCommentLinks(item: ChatToolPart) {
       ? buildCommentUrl(targetUrl, commentRecordId[1])
       : fallbackRecord?.commentUrl)
   const resolvedTargetUrl = targetUrl || fallbackRecord?.targetUrl
-  return {commentUrl, targetUrl: resolvedTargetUrl}
+  return {
+    commentUrl,
+    targetUrl: resolvedTargetUrl,
+  }
 }
-
 function ToolDetailSection({label, children}: {label: string; children: React.ReactNode}) {
   return (
     <div className="space-y-1.5">
@@ -971,15 +1173,12 @@ function ToolDetailSection({label, children}: {label: string; children: React.Re
     </div>
   )
 }
-
 function ToolDetailCard({children}: {children: React.ReactNode}) {
   return <div className="bg-background/60 text-foreground rounded-md border px-2.5 py-2">{children}</div>
 }
-
 function ToolDetailList({children}: {children: React.ReactNode}) {
   return <div className="grid gap-1.5 sm:grid-cols-2">{children}</div>
 }
-
 function ToolDetailItem({label, children}: {label: string; children: React.ReactNode}) {
   return (
     <div className="min-w-0 space-y-0.5">
@@ -988,12 +1187,17 @@ function ToolDetailItem({label, children}: {label: string; children: React.React
     </div>
   )
 }
-
 function ToolEntityText({url, label}: {url?: string; label: string}) {
   return url ? <ToolTextLink url={url}>{label}</ToolTextLink> : <span>{label}</span>
 }
-
-function ToolRenderedContent({content}: {content: {markdown?: string; blocks?: HMBlockNode[]}}) {
+function ToolRenderedContent({
+  content,
+}: {
+  content: {
+    markdown?: string
+    blocks?: HMBlockNode[]
+  }
+}) {
   if (content.blocks?.length) {
     return (
       <div className="text-foreground rounded-md bg-transparent px-1 py-0.5 [&_.ProseMirror]:!bg-transparent [&_.bn-container]:!bg-transparent [&_.bn-editor]:!bg-transparent [&_.hm-prose]:!font-sans [&_.hm-prose]:!text-base">
@@ -1003,7 +1207,6 @@ function ToolRenderedContent({content}: {content: {markdown?: string; blocks?: H
       </div>
     )
   }
-
   return <Markdown>{content.markdown || ''}</Markdown>
 }
 
@@ -1017,7 +1220,7 @@ function ToolRenderedContent({content}: {content: {markdown?: string; blocks?: H
 function AddressToolSummary({summary, override}: {summary: ToolRowSummary; override?: string}) {
   return (
     <span className="text-foreground/80 flex min-w-0 flex-1 items-baseline gap-1 overflow-hidden">
-      {override ? null : <span className="shrink-0 font-medium">{summary.verb}</span>}
+      {override ? null : <span className={stylex.props(styles.s2a511dff).className || ''}>{summary.verb}</span>}
       <ToolLinkText target={summary.target} label={override ?? summary.label} title={summary.title} />
       {summary.detail ? <span className="text-foreground/55 shrink truncate">{summary.detail}</span> : null}
     </span>
@@ -1033,10 +1236,13 @@ function MemoryEntryLink({entry}: {entry: Record<string, unknown>}) {
   return (
     <div className="flex min-w-0 items-baseline gap-2 text-[12px]">
       <ToolLinkText
-        target={{type: 'memory', path}}
+        target={{
+          type: 'memory',
+          path,
+        }}
         label={isDir ? `${path}/` : path}
         title={`~/memory/${path}`}
-        className="font-normal"
+        className={stylex.props(styles.s14e67425).className || ''}
       />
       {size !== undefined && !isDir ? (
         <span className="text-muted-foreground shrink-0 text-[10px]">{size} bytes</span>
@@ -1061,7 +1267,6 @@ function ReadToolDetails({item}: {item: ChatToolPart}) {
   // A memory file is text, not markdown — it keeps its own line breaks instead of being formatted.
   const fileContent = markdown ? undefined : getToolString(output, 'content')
   const entries = getPathValues(output, 'entries[]').filter(isRecord)
-
   return (
     <div className="space-y-3">
       <ToolDetailSection label="Source">
@@ -1132,7 +1337,6 @@ function WriteAddressDetails({item}: {item: ChatToolPart}) {
   const size = getFirstToolValue(output, ['size'])
   const options = getFirstToolValue(item.args, ['options'])
   const content = getToolString(item.args, 'content')
-
   return (
     <div className="space-y-3">
       <ToolDetailSection label="Destination">
@@ -1173,7 +1377,6 @@ function WriteAddressDetails({item}: {item: ChatToolPart}) {
     </div>
   )
 }
-
 function WriteCommandSummary({item}: {item: ChatToolPart}) {
   const command = getWriteCommand(item)
   const output = item.rawOutput
@@ -1212,7 +1415,6 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
   const authorUrl = authorPublicKey?.startsWith('hm://') ? authorPublicKey : buildProfileUrl(authorPublicKey)
   const authorName = getFirstToolString(output, ['authorName', 'signer.profileName']) || authorPublicKey || 'Author'
   const targetName = getFirstToolString(output, ['targetName']) || labelFromUrl(targetUrl, 'document')
-
   switch (command) {
     case 'comment.create':
       return (
@@ -1220,7 +1422,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
           {commentUrl ? (
             <ToolTextLink url={commentUrl}>New Comment</ToolTextLink>
           ) : (
-            <span className="font-medium">New Comment</span>
+            <span className={stylex.props(styles.s129e46b3).className || ''}>New Comment</span>
           )}{' '}
           by <ToolEntityText url={authorUrl} label={authorName} /> on{' '}
           <ToolEntityText url={targetUrl} label={targetName} />
@@ -1229,7 +1431,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
     case 'comment.update':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Update comment</span>
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Update comment</span>
           {targetUrl ? (
             <>
               {' '}
@@ -1241,7 +1443,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
     case 'comment.delete':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Delete comment</span>
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Delete comment</span>
           {targetUrl ? (
             <>
               {' '}
@@ -1253,86 +1455,89 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
     case 'document.create':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Create document:</span>{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Create document:</span>{' '}
           <ToolEntityText url={documentUrl} label={documentName} />
         </span>
       )
     case 'document.update':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Update document:</span>{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Update document:</span>{' '}
           <ToolEntityText url={documentUrl} label={documentName} />
         </span>
       )
     case 'document.delete':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Delete document:</span>{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Delete document:</span>{' '}
           <ToolEntityText url={documentUrl} label={documentName} />
         </span>
       )
     case 'document.fork':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Copy document:</span>{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Copy document:</span>{' '}
           <ToolEntityText url={destinationUrl || documentUrl} label={destinationName} />
         </span>
       )
     case 'document.ref':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Reference document:</span>{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Reference document:</span>{' '}
           <ToolEntityText url={destinationUrl || documentUrl} label={destinationName} />
         </span>
       )
     case 'document.move':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Move document:</span> <ToolEntityText url={sourceUrl} label={sourceName} /> →{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Move document:</span>{' '}
+          <ToolEntityText url={sourceUrl} label={sourceName} /> →{' '}
           <ToolEntityText url={destinationUrl} label={destinationName} />
         </span>
       )
     case 'document.redirect':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Redirect document:</span> <ToolEntityText url={sourceUrl} label={sourceName} />{' '}
-          → <ToolEntityText url={destinationUrl} label={destinationName} />
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Redirect document:</span>{' '}
+          <ToolEntityText url={sourceUrl} label={sourceName} /> →{' '}
+          <ToolEntityText url={destinationUrl} label={destinationName} />
         </span>
       )
     case 'draft.create':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Create draft:</span> {draftTitle}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Create draft:</span> {draftTitle}
         </span>
       )
     case 'draft.update':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Update draft:</span> {draftTitle}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Update draft:</span> {draftTitle}
         </span>
       )
     case 'draft.get':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Open draft:</span> {draftTitle}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Open draft:</span> {draftTitle}
         </span>
       )
     case 'draft.list':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">List drafts</span>
+          <span className={stylex.props(styles.s129e46b3).className || ''}>List drafts</span>
         </span>
       )
     case 'draft.delete':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Delete draft:</span> {draftTitle || draftId || 'Draft'}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Delete draft:</span>{' '}
+          {draftTitle || draftId || 'Draft'}
         </span>
       )
     case 'draft.publish':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Publish draft:</span> {draftTitle}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Publish draft:</span> {draftTitle}
           {documentUrl ? (
             <>
               {' '}
@@ -1344,33 +1549,34 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
     case 'profile.update':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Update profile:</span> <ToolEntityText url={profileUrl} label={profileName} />
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Update profile:</span>{' '}
+          <ToolEntityText url={profileUrl} label={profileName} />
         </span>
       )
     case 'profile.alias':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Alias profile:</span> {alias}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Alias profile:</span> {alias}
         </span>
       )
     case 'contact.create':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Create contact:</span>{' '}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Create contact:</span>{' '}
           <ToolEntityText url={contactSubjectUrl} label={contactName} />
         </span>
       )
     case 'contact.delete':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Delete contact:</span> {contactName}
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Delete contact:</span> {contactName}
         </span>
       )
     case 'capability.create':
     case 'capability.grant':
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">Grant {capabilityRole} capability</span>
+          <span className={stylex.props(styles.s129e46b3).className || ''}>Grant {capabilityRole} capability</span>
           {capabilityDelegate ? (
             <>
               {' '}
@@ -1382,7 +1588,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
     default:
       return (
         <span className="text-foreground/80 min-w-0 truncate">
-          <span className="font-medium">{command || 'Write'}</span>
+          <span className={stylex.props(styles.s129e46b3).className || ''}>{command || 'Write'}</span>
           {documentUrl ? (
             <>
               : <ToolEntityText url={documentUrl} label={documentName} />
@@ -1392,7 +1598,6 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
   }
 }
-
 function WriteCommandDetails({item}: {item: ChatToolPart}) {
   const command = getWriteCommand(item)
   const content = getWriteContent(item)
@@ -1441,7 +1646,6 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
   const authorUrl = authorPublicKey?.startsWith('hm://') ? authorPublicKey : buildProfileUrl(authorPublicKey)
   const authorName = getFirstToolString(output, ['authorName', 'signer.profileName']) || authorPublicKey || 'Author'
   const drafts = getPathValues(output, 'drafts[]').filter((draft) => isRecord(draft)) as Record<string, unknown>[]
-
   return (
     <div className="space-y-3">
       {dryRun || warning ? (
@@ -1628,7 +1832,6 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
     </div>
   )
 }
-
 const toolColorClasses = {
   sky: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300',
   emerald: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
@@ -1638,7 +1841,6 @@ const toolColorClasses = {
   muted: 'border-border bg-muted/60 text-muted-foreground',
   hidden: 'border-border bg-muted/60 text-muted-foreground',
 }
-
 const toolIcons = {
   search: Search,
   read: BookOpenText,
@@ -1657,11 +1859,9 @@ function lastOutputLines(outputTail: string, maxLines: number): string {
     .slice(-maxLines)
     .join('\n')
 }
-
 function formatDurationMs(ms: number): string {
   return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`
 }
-
 function ToolOutputPre({children, className}: {children: React.ReactNode; className?: string}) {
   return (
     <pre
@@ -1693,13 +1893,15 @@ function ExecuteCodeDetails({item, liveTail}: {item: ChatToolPart; liveTail?: st
   const exitCode = typeof output?.exitCode === 'number' ? output.exitCode : undefined
   const durationMs = typeof output?.durationMs === 'number' ? output.durationMs : undefined
   const changedFiles = Array.isArray(output?.changedFiles)
-    ? (output.changedFiles.filter(isRecord) as {path?: unknown; change?: unknown}[])
+    ? (output.changedFiles.filter(isRecord) as {
+        path?: unknown
+        change?: unknown
+      }[])
     : []
-
   return (
     <div className="space-y-3">
       <ToolDetailSection label={language ? `Code · ${language}` : 'Code'}>
-        <ToolOutputPre className="whitespace-pre">{code || '(no code)'}</ToolOutputPre>
+        <ToolOutputPre className={stylex.props(styles.saaddf753).className || ''}>{code || '(no code)'}</ToolOutputPre>
       </ToolDetailSection>
       {liveTail ? (
         <ToolDetailSection label="Output · live">
@@ -1718,7 +1920,7 @@ function ExecuteCodeDetails({item, liveTail}: {item: ChatToolPart; liveTail?: st
               <ToolOutputPre className="text-amber-800 dark:text-amber-200">{stderr}</ToolOutputPre>
             </ToolDetailSection>
           ) : null}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
             <ToolChip>{output.success === true ? 'Success' : `Failed · exit ${exitCode ?? '?'}`}</ToolChip>
             {durationMs !== undefined ? <ToolChip>{formatDurationMs(durationMs)}</ToolChip> : null}
             {output.truncated === true ? <ToolChip>Output truncated</ToolChip> : null}
@@ -1774,7 +1976,6 @@ function DelegateWorkDetails({
   const runId = reportedRunId ?? spawnedChild?.id
   // Same for the transcript link: the child's session exists from the moment it spawns.
   const sessionId = getToolSessionId(item) ?? spawnedChild?.sessionId
-
   return (
     <div className="flex min-w-0 flex-col gap-2">
       {brief ? (
@@ -1791,14 +1992,16 @@ function DelegateWorkDetails({
         <DelegateRunView serverUrl={serverUrl} accountUid={signingAccount} runId={runId} seed={spawnedChild} />
       ) : isPending ? (
         <div className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
-          <Loader2 className="size-3 shrink-0 animate-spin" />
+          <Loader2 className={stylex.props(styles.sb7d2c3e9).className || ''} />
           {sessionId ? 'The child is working — open its transcript to watch.' : 'Starting the child…'}
         </div>
       ) : null}
 
       {typedOutput !== undefined ? (
         <ToolDetailSection label="Result">
-          <ToolOutputPre className="whitespace-pre-wrap">{formatToolDebugValue(typedOutput)}</ToolOutputPre>
+          <ToolOutputPre className={stylex.props(styles.sa4989684).className || ''}>
+            {formatToolDebugValue(typedOutput)}
+          </ToolOutputPre>
         </ToolDetailSection>
       ) : null}
 
@@ -1814,7 +2017,16 @@ function OpenTranscriptLink({sessionId, serverUrl}: {sessionId: string; serverUr
     <button
       type="button"
       className="text-primary self-start text-[11px] hover:underline"
-      onClick={(event) => clickNavigate({key: 'agent-session', sessionId, serverUrl}, event)}
+      onClick={(event) =>
+        clickNavigate(
+          {
+            key: 'agent-session',
+            sessionId,
+            serverUrl,
+          },
+          event,
+        )
+      }
     >
       Open transcript →
     </button>
@@ -1889,7 +2101,6 @@ function DelegateRunView({
   const {runsById, liveState} = useRunTreeView(serverUrl, accountUid, seed?.rootRunId, seed, isLive)
   const focus = seed ? runsById[seed.id] ?? seed : undefined
   const children = useMemo(() => (focus ? descendantsOf(runsById, focus.id) : []), [runsById, focus?.id])
-
   if (!focus) {
     return direct.isLoading ? <div className="text-muted-foreground text-[11px]">Loading the child run…</div> : null
   }
@@ -1905,7 +2116,13 @@ function DelegateRunView({
         journal={liveState.journal}
         liveState={liveState}
         compact
-        onOpenSession={(childSessionId) => navigate({key: 'agent-session', sessionId: childSessionId, serverUrl})}
+        onOpenSession={(childSessionId) =>
+          navigate({
+            key: 'agent-session',
+            sessionId: childSessionId,
+            serverUrl,
+          })
+        }
         renderToolPart={(part) => (
           <ToolCallLine item={part} serverUrl={serverUrl} accountUid={accountUid} agentId={focus.agentId} />
         )}
@@ -1956,7 +2173,6 @@ function ToolRouteLink({
     </button>
   )
 }
-
 export function ToolCallLine({
   item,
   liveActivity,
@@ -2016,7 +2232,12 @@ export function ToolCallLine({
       : toolColorClasses[render?.color || 'muted']
   const customView = getToolCustomView(item)
   const rowContext = useMemo(
-    () => ({serverUrl, accountUid, agentId, sessionId}),
+    () => ({
+      serverUrl,
+      accountUid,
+      agentId,
+      sessionId,
+    }),
     [serverUrl, accountUid, agentId, sessionId],
   )
   // Live progress for this specific call while it runs (matched by call ID, with a
@@ -2028,7 +2249,6 @@ export function ToolCallLine({
       ? liveActivity
       : undefined
   const liveTailPreview = liveTool?.outputTail ? lastOutputLines(liveTool.outputTail, 10) : ''
-
   return (
     <ToolRowContext.Provider value={rowContext}>
       <div className={cn('group/toolrow my-1.5 mr-6 rounded-lg border px-2 py-1.5 text-xs', colorClass)}>
@@ -2047,9 +2267,17 @@ export function ToolCallLine({
             }}
             className="hover:bg-background/70 rounded p-0.5"
           >
-            {expanded ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />}
+            {expanded ? (
+              <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
+            ) : (
+              <ChevronRight className={stylex.props(styles.sca3de967).className || ''} />
+            )}
           </button>
-          {isPending ? <Loader2 className="size-3 shrink-0 animate-spin" /> : <Icon className="size-3 shrink-0" />}
+          {isPending ? (
+            <Loader2 className={stylex.props(styles.sb7d2c3e9).className || ''} />
+          ) : (
+            <Icon className={stylex.props(styles.s4a58805).className || ''} />
+          )}
           {item.actor === 'user' ? (
             <span className="border-primary/40 bg-primary/10 text-primary shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-[9px] font-medium tracking-wide uppercase">
               You
@@ -2063,7 +2291,7 @@ export function ToolCallLine({
             <AddressToolSummary summary={addressSummary} override={item.summaryOverride} />
           ) : (
             <>
-              <span className="shrink-0 font-medium">{rowLabel}</span>
+              <span className={stylex.props(styles.s2a511dff).className || ''}>{rowLabel}</span>
               {summary ? (
                 childSessionId && serverUrl ? (
                   <ToolRouteLink
@@ -2072,7 +2300,14 @@ export function ToolCallLine({
                     // clickNavigate honours cmd/shift-click into a new window, like every other
                     // session row in the app.
                     onOpen={(event) =>
-                      clickNavigate({key: 'agent-session', sessionId: childSessionId, serverUrl}, event)
+                      clickNavigate(
+                        {
+                          key: 'agent-session',
+                          sessionId: childSessionId,
+                          serverUrl,
+                        },
+                        event,
+                      )
                     }
                   />
                 ) : (
@@ -2093,7 +2328,7 @@ export function ToolCallLine({
             </>
           )}
           {/* One quiet marker of where this came from, then the row's state, then the raw payload. */}
-          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+          <div className={stylex.props(styles.s155a2d53).className || ''}>
             {sourceChip ? <ToolSourceChip>{sourceChip}</ToolSourceChip> : null}
             {isPending ? (
               <ToolChip>{isTimerWorkflow ? 'Scheduled' : render?.pendingLabel || 'Running'}</ToolChip>
@@ -2109,7 +2344,7 @@ export function ToolCallLine({
               }}
               className="hover:bg-background/70 text-muted-foreground hover:text-foreground bg-background/60 rounded-full border p-0.75 opacity-0 transition-opacity group-hover/toolrow:opacity-100 focus-visible:opacity-100"
             >
-              <Info className="size-3" />
+              <Info className={stylex.props(styles.sca3de967).className || ''} />
             </button>
           </div>
         </div>
@@ -2173,7 +2408,6 @@ export function ToolCallLine({
     </ToolRowContext.Provider>
   )
 }
-
 function ToolCallItem({
   item,
   liveActivity,

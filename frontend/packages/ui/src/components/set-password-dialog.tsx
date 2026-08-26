@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useEffect, useState, type FormEvent} from 'react'
 import {Button} from '../button'
 import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from './dialog'
@@ -10,6 +11,18 @@ import {checkPasswordStrength, PasswordInput} from './password-input'
  * wrapping inside `onSubmit` (the desktop daemon does it with the in-daemon DEK;
  * the web vault does it in-browser), so the UX stays identical.
  */
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s11c1d1bc: {
+    color: 'var(--destructive)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 export function SetPasswordDialog({
   open,
   onOpenChange,
@@ -26,7 +39,6 @@ export function SetPasswordDialog({
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   useEffect(() => {
     if (!open) return
     setPassword('')
@@ -34,10 +46,8 @@ export function SetPasswordDialog({
     setError(null)
     setIsSubmitting(false)
   }, [open])
-
   const title = mode === 'change' ? 'Change Password' : 'Set Password'
   const submitLabel = mode === 'change' ? 'Change Password' : 'Set Password'
-
   async function handleSubmit(e?: FormEvent) {
     e?.preventDefault()
     if (password !== confirmPassword) {
@@ -59,7 +69,6 @@ export function SetPasswordDialog({
       setIsSubmitting(false)
     }
   }
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[420px]">
@@ -69,7 +78,7 @@ export function SetPasswordDialog({
             Your password protects your vault. Choose a strong password you won't forget — it can't be recovered.
           </DialogDescription>
         </DialogHeader>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <form className={stylex.props(styles.sfbc6e290).className || ''} onSubmit={handleSubmit}>
           <PasswordInput
             id="set-password"
             label={mode === 'change' ? 'New Password' : 'Password'}
@@ -86,7 +95,7 @@ export function SetPasswordDialog({
             onChange={setConfirmPassword}
             autoComplete="new-password"
           />
-          {error ? <p className="text-destructive text-sm">{error}</p> : null}
+          {error ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{error}</p> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel

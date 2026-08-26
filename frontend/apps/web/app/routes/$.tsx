@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {WebCommenting} from '@/client-lazy'
 import {
   createInstrumentationContext,
@@ -54,6 +55,40 @@ import {SizableText} from '@shm/ui/text'
 import {shouldRevalidateDocumentRoute} from './revalidation'
 
 // Extended payload with view term and panel param for page routing
+const styles = stylex.create({
+  sceaed122: {
+    display: 'flex',
+    height: '100vh',
+    width: '100vw',
+    flexDirection: 'column',
+  },
+  s7776823a: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s7c2bd18e: {
+    color: 'var(--primary)',
+    textDecorationLine: 'underline',
+  },
+  se6224f5b: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 12)',
+  },
+  s82744b21: {
+    color: 'var(--destructive)',
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+  },
+})
 type ExtendedSitePayload = SiteDocumentPayload & {
   isInspect?: boolean
   viewTerm?: ViewRouteKey | null
@@ -65,20 +100,16 @@ type ExtendedSitePayload = SiteDocumentPayload & {
   accountUid?: string | null
   inspectTab?: InspectTab | null
 }
-
 type InspectIpfsPayload = {
   kind: 'inspect-ipfs'
   ipfsPath: string
   originHomeId: UnpackedHypermediaId
   siteHost: string
 }
-
 type DocumentPayload = ExtendedSitePayload | InspectIpfsPayload | SiteSettingsEmailsPayload | 'unregistered' | 'no-site'
-
 function isInspectIpfsPayload(data: DocumentPayload): data is InspectIpfsPayload {
   return typeof data === 'object' && 'kind' in data && data.kind === 'inspect-ipfs'
 }
-
 function getInspectTab(value: string | null): InspectTab | null {
   switch (value) {
     case 'document':
@@ -107,7 +138,11 @@ function extractViewTermFromPath(pathParts: string[]): {
   commentId?: string
   accountUid?: string
 } {
-  if (pathParts.length === 0) return {path: [], viewTerm: null}
+  if (pathParts.length === 0)
+    return {
+      path: [],
+      viewTerm: null,
+    }
 
   // Check for :comments/UID/TSID pattern (3 segments from end)
   if (pathParts.length >= 3) {
@@ -144,7 +179,6 @@ function extractViewTermFromPath(pathParts: string[]): {
       }
     }
   }
-
   if (pathParts.length >= 2) {
     const secondToLast = pathParts[pathParts.length - 2]
     const lastPart = pathParts[pathParts.length - 1]
@@ -159,10 +193,8 @@ function extractViewTermFromPath(pathParts: string[]): {
       }
     }
   }
-
   const lastPart = pathParts[pathParts.length - 1]
   const viewTermMatch = VIEW_TERMS.find((term) => lastPart === term)
-
   if (viewTermMatch) {
     const viewTerm = viewTermToRouteKey(viewTermMatch)
     if (viewTerm) {
@@ -172,36 +204,47 @@ function extractViewTermFromPath(pathParts: string[]): {
       }
     }
   }
-
-  return {path: pathParts, viewTerm: null}
+  return {
+    path: pathParts,
+    viewTerm: null,
+  }
 }
-
 function extractInspectPrefixFromPath(
   pathParts: string[],
   isGatewayPath: boolean,
-): {pathParts: string[]; isInspect: boolean} {
+): {
+  pathParts: string[]
+  isInspect: boolean
+} {
   if (isGatewayPath) {
     if (pathParts[1] === 'inspect') {
-      return {pathParts: pathParts.slice(2), isInspect: true}
+      return {
+        pathParts: pathParts.slice(2),
+        isInspect: true,
+      }
     }
-    return {pathParts: pathParts.slice(1), isInspect: false}
+    return {
+      pathParts: pathParts.slice(1),
+      isInspect: false,
+    }
   }
-
   if (pathParts[0] === 'inspect') {
-    return {pathParts: pathParts.slice(1), isInspect: true}
+    return {
+      pathParts: pathParts.slice(1),
+      isInspect: true,
+    }
   }
-
-  return {pathParts, isInspect: false}
+  return {
+    pathParts,
+    isInspect: false,
+  }
 }
-
 function extractInspectIpfsPathFromPath(pathParts: string[], isGatewayPath: boolean): string | null {
   if (isGatewayPath) {
     return pathParts[1] === 'inspect' && pathParts[2] === 'ipfs' ? pathParts.slice(3).join('/') || null : null
   }
-
   return pathParts[0] === 'inspect' && pathParts[1] === 'ipfs' ? pathParts.slice(2).join('/') || null : null
 }
-
 const unregisteredMeta = defaultPageMeta('Welcome to Seed Hypermedia')
 
 // export const links = () => [...documentLinks()]
@@ -210,10 +253,18 @@ export const documentPageMeta = ({data}: {data: Wrapped<SiteDocumentPayload>}): 
   const siteDocument = unwrap<SiteDocumentPayload>(data)
   if (!siteDocument?.document) {
     if (siteDocument?.discoveryPending) {
-      return [{title: 'Looking for this document…'}]
+      return [
+        {
+          title: 'Looking for this document…',
+        },
+      ]
     }
     return siteDocument
-      ? [{title: siteDocument.daemonError?.code === Code.PermissionDenied ? 'Private Document' : 'Not Found'}]
+      ? [
+          {
+            title: siteDocument.daemonError?.code === Code.PermissionDenied ? 'Private Document' : 'Not Found',
+          },
+        ]
       : []
   }
   const metadata = createResourceMetadata({
@@ -227,23 +278,29 @@ export const documentPageMeta = ({data}: {data: Wrapped<SiteDocumentPayload>}): 
     siteHomeIcon: siteDocument.siteHomeIcon,
   })
 }
-
 export const meta: MetaFunction<typeof loader> = (args) => {
   const payload = unwrap<DocumentPayload>(args.data)
   if (payload === 'unregistered') return unregisteredMeta()
   if (payload === 'no-site') return unregisteredMeta()
   if ('kind' in payload && payload.kind === 'inspect-ipfs') {
-    return [{title: `ipfs://${payload.ipfsPath}`}]
+    return [
+      {
+        title: `ipfs://${payload.ipfsPath}`,
+      },
+    ]
   }
   if ('kind' in payload && payload.kind === 'site-settings-emails') {
-    return [{title: 'Email Subscribers'}]
+    return [
+      {
+        title: 'Email Subscribers',
+      },
+    ]
   }
   return documentPageMeta({
     // @ts-ignore
     data: args.data,
   })
 }
-
 export const headers: HeadersFunction = ({loaderHeaders}) => loaderHeaders
 
 /**
@@ -260,14 +317,21 @@ export function shouldRevalidate({
   nextUrl: URL
   defaultShouldRevalidate: boolean
 }) {
-  return shouldRevalidateDocumentRoute({currentUrl, nextUrl, defaultShouldRevalidate})
+  return shouldRevalidateDocumentRoute({
+    currentUrl,
+    nextUrl,
+    defaultShouldRevalidate,
+  })
 }
-
 export const loader = async ({params, request}: {params: Params; request: Request}) => {
   const authToken = await getDaemonAuthToken(request)
-  return withDaemonAuthToken(authToken, () => loadRoute({params, request}))
+  return withDaemonAuthToken(authToken, () =>
+    loadRoute({
+      params,
+      request,
+    }),
+  )
 }
-
 async function loadRoute({params, request}: {params: Params; request: Request}) {
   const parsedRequest = parseRequest(request)
   const ctx = createInstrumentationContext(parsedRequest.url.pathname, request.method)
@@ -281,7 +345,6 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
   if (!isDataRequest) {
     setRequestInstrumentationContext(request.url, ctx)
   }
-
   const {url, hostname, pathParts} = parsedRequest
   const version = url.searchParams.get('v')
   const latest = url.searchParams.get('l') === '' || !version
@@ -297,20 +360,23 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
     rawExploreSort === 'title'
       ? rawExploreSort
       : null
-
   const serviceConfig = await instrument(ctx, 'getConfig', () => getConfig(hostname))
   if (!serviceConfig) {
     if (isDataRequest && ctx.enabled) {
       printInstrumentationSummary(ctx)
     }
-    return wrapJSON('no-site', {status: 404})
+    return wrapJSON('no-site', {
+      status: 404,
+    })
   }
   const {registeredAccountUid} = serviceConfig
   if (!registeredAccountUid) {
     if (isDataRequest && ctx.enabled) {
       printInstrumentationSummary(ctx)
     }
-    return wrapJSON('unregistered', {status: 404})
+    return wrapJSON('unregistered', {
+      status: 404,
+    })
   }
 
   // Site settings pages use a `:settings` view term: /:settings/email-subscribers
@@ -339,7 +405,6 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
       notifyServiceHost: NOTIFY_SERVICE_HOST || null,
     } satisfies SiteSettingsEmailsPayload)
   }
-
   const gatewayInspectIpfsPath = pathParts[0] === 'hm' ? extractInspectIpfsPathFromPath(pathParts, true) : null
   const siteInspectIpfsPath = gatewayInspectIpfsPath ? null : extractInspectIpfsPathFromPath(pathParts, false)
   const inspectIpfsPath = gatewayInspectIpfsPath || siteInspectIpfsPath
@@ -354,7 +419,6 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
       siteHost: hostname,
     } satisfies InspectIpfsPayload)
   }
-
   let documentId
   let isInspect = false
   let viewTerm: ViewRouteKey | null = null
@@ -419,7 +483,6 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
       latest: isCommentPermalink ? true : latest,
     })
   }
-
   const siteResourceData = {
     prefersLanguages: parsedRequest.prefersLanguages,
     viewTerm,
@@ -433,13 +496,11 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
     inspectTab: isInspect ? getInspectTab(inspectTab) : null,
     instrumentationCtx: ctx,
   }
-
   const shouldLoadLocalDraftShell = shouldBypassServerDocumentFetchForWebDraftShell({
     path: documentId.path,
     isInspect,
     version,
   })
-
   const result = await instrument(
     ctx,
     shouldLoadLocalDraftShell ? 'loadWebDraftPlaceholderResource' : 'loadSiteResource',
@@ -453,10 +514,8 @@ async function loadRoute({params, request}: {params: Params; request: Request}) 
   if (isDataRequest && ctx.enabled) {
     printInstrumentationSummary(ctx)
   }
-
   return result
 }
-
 export default function UnifiedDocumentPage() {
   const unwrappedData = useLoaderData()
   const data = unwrap<DocumentPayload>(unwrappedData)
@@ -525,7 +584,6 @@ export default function UnifiedDocumentPage() {
     siteData.accountUid,
     siteData.inspectTab,
   )
-
   return (
     <WebSiteProvider
       origin={siteData.origin}
@@ -554,14 +612,12 @@ function InnerResourcePage({docId, ssrContentHTML}: {docId: UnpackedHypermediaId
 function InnerInspectorPage({docId}: {docId: UnpackedHypermediaId}) {
   return <WebInspectorPage docId={docId} />
 }
-
 function InnerInspectIpfsPage({ipfsPath}: {ipfsPath: string}) {
   const navState = useNavigationState()
   const getRouteForUrl = useCallback((url: string) => {
     if (url.startsWith('ipfs://')) {
       return createInspectIpfsNavRoute(url.slice('ipfs://'.length))
     }
-
     const targetRoute = hypermediaUrlToRoute(url)
     return targetRoute ? createInspectNavRouteFromRoute(targetRoute) : null
   }, [])
@@ -584,7 +640,6 @@ function InnerInspectIpfsPage({ipfsPath}: {ipfsPath: string}) {
     />
   )
 }
-
 const DISCOVERY_POLL_INTERVAL_MS = 2_000
 // Give up polling after ~2 minutes even if the daemon never reports the task
 // as completed (e.g. the status endpoint keeps erroring).
@@ -599,17 +654,18 @@ const DISCOVERY_MAX_POLLS = 60
 function DiscoveryPendingPage({id}: {id: UnpackedHypermediaId}) {
   const tx = useTx()
   const [failed, setFailed] = useState(false)
-
   useEffect(() => {
     let cancelled = false
     let timeout: ReturnType<typeof setTimeout> | undefined
     let polls = 0
-
     async function poll() {
       polls += 1
       let status: HMDiscoveryStatusOutput | null = null
       try {
-        const params = new URLSearchParams({uid: id.uid, path: (id.path || []).join('/')})
+        const params = new URLSearchParams({
+          uid: id.uid,
+          path: (id.path || []).join('/'),
+        })
         if (id.version) params.set('v', id.version)
         if (id.latest || !id.version) params.set('l', '')
         const res = await fetch(`/api/DiscoveryStatus?${params.toString()}`)
@@ -630,17 +686,15 @@ function DiscoveryPendingPage({id}: {id: UnpackedHypermediaId}) {
       }
       timeout = setTimeout(poll, DISCOVERY_POLL_INTERVAL_MS)
     }
-
     poll()
     return () => {
       cancelled = true
       if (timeout) clearTimeout(timeout)
     }
   }, [id.uid, id.path?.join('/'), id.version, id.latest])
-
   return (
-    <div className="flex h-screen w-screen flex-col">
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-4">
+    <div className={stylex.props(styles.sceaed122).className || ''}>
+      <div className={stylex.props(styles.s7776823a).className || ''}>
         {failed ? (
           <>
             <SizableText size="3xl">☹️</SizableText>
@@ -654,7 +708,7 @@ function DiscoveryPendingPage({id}: {id: UnpackedHypermediaId}) {
               )}
             </SizableText>
             <button
-              className="text-primary underline"
+              className={stylex.props(styles.s7c2bd18e).className || ''}
               onClick={() => {
                 window.location.reload()
               }}
@@ -680,12 +734,11 @@ function DiscoveryPendingPage({id}: {id: UnpackedHypermediaId}) {
     </div>
   )
 }
-
 export function DaemonErrorPage(props: GRPCError) {
   const tx = useTx()
   return (
-    <div className="flex h-screen w-screen flex-col">
-      <div className="flex flex-1 items-start justify-center px-4 py-12">
+    <div className={stylex.props(styles.sceaed122).className || ''}>
+      <div className={stylex.props(styles.se6224f5b).className || ''}>
         <div className="border-border dark:bg-background flex w-full max-w-2xl flex-1 flex-col gap-4 rounded-lg border bg-white p-6 shadow-lg">
           <SizableText size="3xl">☹️</SizableText>
           <SizableText size="2xl" weight="bold">
@@ -701,7 +754,7 @@ export function DaemonErrorPage(props: GRPCError) {
             </SizableText>
           ) : null}
 
-          <pre className="text-destructive wrap-break-word whitespace-pre-wrap">{props.message}</pre>
+          <pre className={stylex.props(styles.s82744b21).className || ''}>{props.message}</pre>
         </div>
       </div>
     </div>

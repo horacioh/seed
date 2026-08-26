@@ -1,5 +1,12 @@
+import * as stylex from '@stylexjs/stylex'
 import {type InputHTMLAttributes, useEffect, useRef, useState} from 'react'
-
+const styles = stylex.create({
+  s4c15bd54: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 interface CodeInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
   value: string
   onChange: (value: string) => void
@@ -24,12 +31,10 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
   useEffect(() => {
     inputRefs.current[0]?.focus()
   }, [])
-
   const handleChange = (index: number, digit: string) => {
     // Restrict input to single digits. Prevents broken pasting into one cell.
     const cleaned = digit.replace(/\D/g, '').slice(-1)
     if (!cleaned) return
-
     const chars = value.split('')
     chars[index] = cleaned
     const newValue = chars.join('').slice(0, length)
@@ -39,12 +44,10 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
     if (index < length - 1) {
       inputRefs.current[index + 1]?.focus()
     }
-
     if (newValue.length === length) {
       onComplete?.(newValue)
     }
   }
-
   const handleKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Backspace') {
       const chars = value.split('')
@@ -65,7 +68,6 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
       inputRefs.current[index + 1]?.focus()
     }
   }
-
   const handlePaste = (event: React.ClipboardEvent) => {
     event.preventDefault()
     // Allow full-code paste. Users expect to paste the entire code at once.
@@ -75,43 +77,45 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
       // Jump to last filled cell. User can continue typing from there.
       const nextIndex = Math.min(pasted.length, length - 1)
       inputRefs.current[nextIndex]?.focus()
-
       if (pasted.length === length) {
         onComplete?.(pasted)
       }
     }
   }
-
   const handleFocus = (index: number) => {
     setFocusedIndex(index)
     // Pre-select content. User can replace the digit with a single keystroke.
     inputRefs.current[index]?.select()
   }
-
   return (
-    <div className="flex justify-center gap-2" onPaste={handlePaste}>
-      {Array.from({length}, (_, i) => (
-        <input
-          key={i}
-          ref={(el) => {
-            inputRefs.current[i] = el
-          }}
-          type="text"
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          maxLength={1}
-          value={value[i] || ''}
-          onChange={(e) => handleChange(i, e.target.value)}
-          onKeyDown={(e) => handleKeyDown(i, e)}
-          onFocus={() => handleFocus(i)}
-          onBlur={() => setFocusedIndex(null)}
-          className={`bg-background h-14 w-12 rounded-md border text-center text-2xl font-semibold transition-colors ${
-            focusedIndex === i ? 'border-primary ring-primary/20 ring-2' : 'border-border hover:border-primary/50'
-          } ${value[i] ? 'border-primary/50' : ''} ${className || ''}`}
-          aria-label={`Digit ${i + 1} of ${length}`}
-          {...props}
-        />
-      ))}
+    <div className={stylex.props(styles.s4c15bd54).className || ''} onPaste={handlePaste}>
+      {Array.from(
+        {
+          length,
+        },
+        (_, i) => (
+          <input
+            key={i}
+            ref={(el) => {
+              inputRefs.current[i] = el
+            }}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={1}
+            value={value[i] || ''}
+            onChange={(e) => handleChange(i, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(i, e)}
+            onFocus={() => handleFocus(i)}
+            onBlur={() => setFocusedIndex(null)}
+            className={`bg-background h-14 w-12 rounded-md border text-center text-2xl font-semibold transition-colors ${
+              focusedIndex === i ? 'border-primary ring-primary/20 ring-2' : 'border-border hover:border-primary/50'
+            } ${value[i] ? 'border-primary/50' : ''} ${className || ''}`}
+            aria-label={`Digit ${i + 1} of ${length}`}
+            {...props}
+          />
+        ),
+      )}
     </div>
   )
 }

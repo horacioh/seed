@@ -1,14 +1,61 @@
+import * as stylex from '@stylexjs/stylex'
 import {Menu, X} from 'lucide-react'
 import {useEffect, useState} from 'react'
 import SeedLogo from '../assets/SeedLogo'
-
+const styles = stylex.create({
+  s292fe16c: {
+    position: 'fixed',
+    top: 'calc(0.25rem * 0)',
+    right: 'calc(0.25rem * 0)',
+    left: 'calc(0.25rem * 0)',
+    zIndex: '40',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'oklch(92.8% 0.006 264.531)',
+    backgroundColor: '#fff',
+    paddingInline: 'calc(0.25rem * 8)',
+    paddingBlock: 'calc(0.25rem * 4)',
+    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+  },
+  sac43974f: {
+    display: 'flex',
+    alignItems: 'center',
+    columnGap: 'calc(0.25rem * 2)',
+  },
+  s873ca3db: {
+    color: 'var(--brand-5)',
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+  },
+  sf90270c: {
+    backgroundImage: 'linear-gradient(to right in oklab, var(--brand-5) 0%, var(--brand-6) 100%)',
+    backgroundClip: 'text',
+    fontSize: '1.125rem',
+    lineHeight: 'calc(1.75 / 1.125)',
+    fontWeight: '600',
+    whiteSpace: 'nowrap',
+    color: 'transparent',
+  },
+  sfbb1eac7: {
+    position: 'relative',
+    padding: 'calc(0.25rem * 8)',
+  },
+  s4156227: {
+    marginTop: 'calc(0.25rem * 4)',
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: 'calc(0.25rem * 1)',
+  },
+})
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
-
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false)
   }
@@ -26,32 +73,39 @@ export default function Navbar() {
       document.body.style.overflow = 'auto'
     }
   }, [isMobileMenuOpen])
-
   const navLinks = [
-    {href: 'https://seed.hyper.media/resources', label: 'Resources'},
-    {href: 'https://seed.hyper.media/blog', label: 'Blog'},
-    {href: 'https://seed.hyper.media/team', label: 'Team'},
-    {href: 'https://seed.hyper.media/community', label: 'Support'},
-    {href: 'https://seedteamtalks.hyper.media/', label: 'Development'},
+    {
+      href: 'https://seed.hyper.media/resources',
+      label: 'Resources',
+    },
+    {
+      href: 'https://seed.hyper.media/blog',
+      label: 'Blog',
+    },
+    {
+      href: 'https://seed.hyper.media/team',
+      label: 'Team',
+    },
+    {
+      href: 'https://seed.hyper.media/community',
+      label: 'Support',
+    },
+    {
+      href: 'https://seedteamtalks.hyper.media/',
+      label: 'Development',
+    },
   ]
-
   return (
-    <header className="fixed top-0 right-0 left-0 z-40 flex w-full items-center justify-between border-b border-gray-200 bg-white px-8 py-4 shadow-sm">
-      <a href="/" className="flex items-center gap-x-2">
-        <SeedLogo className="text-brand-5 size-6" />
-        <span className="from-brand-5 to-brand-6 bg-gradient-to-r bg-clip-text text-lg font-semibold whitespace-nowrap text-transparent">
-          Seed Hypermedia
-        </span>
+    <header className={stylex.props(styles.s292fe16c).className || ''}>
+      <a href="/" className={stylex.props(styles.sac43974f).className || ''}>
+        <SeedLogo className={stylex.props(styles.s873ca3db).className || ''} />
+        <span className={stylex.props(styles.sf90270c).className || ''}>Seed Hypermedia</span>
       </a>
 
       {/* Desktop nav links */}
       <nav className="hidden gap-x-6 text-sm font-medium text-gray-700 md:flex">
         {navLinks.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            className="transition hover:text-black"
-          >
+          <a key={link.label} href={link.href} className="transition hover:text-black">
             {link.label}
           </a>
         ))}
@@ -68,10 +122,7 @@ export default function Navbar() {
 
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/20 backdrop-blur-md md:hidden"
-          onClick={closeMobileMenu}
-        />
+        <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-md md:hidden" onClick={closeMobileMenu} />
       )}
 
       {/* Mobile menu */}
@@ -87,7 +138,7 @@ export default function Navbar() {
           } `}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative p-8">
+          <div className={stylex.props(styles.sfbb1eac7).className || ''}>
             {/* Close button */}
             <button
               onClick={closeMobileMenu}
@@ -97,7 +148,7 @@ export default function Navbar() {
               <X size={20} />
             </button>
 
-            <div className="mt-4 flex flex-col gap-y-1">
+            <div className={stylex.props(styles.s4156227).className || ''}>
               {navLinks.map((link) => (
                 <a
                   key={link.label}

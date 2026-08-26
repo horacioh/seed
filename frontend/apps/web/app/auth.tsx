@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useNavigate} from '@remix-run/react'
 import {createSeedClient} from '@seed-hypermedia/client'
 import {HMDocument, HMPrepareDocumentChangeInput, HMSigner} from '@seed-hypermedia/client/hm-types'
@@ -34,9 +35,59 @@ import {
 } from './local-db'
 import {reportError} from './report-error'
 import {getVaultAccountSettingsUrl} from './vault-links'
-
+const styles = stylex.create({
+  s86ff3e4: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s33b7a7d9: {
+    display: 'flex',
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'oklch(59.6% 0.145 163.225)',
+  },
+  sf796cd41: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+    color: '#fff',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  sb87f7412: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s65917ff5: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s9a378369: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 const seedClient = createSeedClient('')
-
 function createSignerFromKeyPair(kp: CryptoKeyPair): HMSigner {
   return {
     getPublicKey: async () => preparePublicKey(kp.publicKey),
@@ -45,13 +96,11 @@ function createSignerFromKeyPair(kp: CryptoKeyPair): HMSigner {
     },
   }
 }
-
 export async function getCurrentSigner(): Promise<HMSigner | null> {
   const stored = await getStoredLocalKeys()
   if (!stored) return null
   return createSignerFromKeyPair(stored.keyPair)
 }
-
 export type LocalWebIdentity = CryptoKeyPair & {
   id: string
   delegatedAccountUid?: string
@@ -66,12 +115,10 @@ let keyPair: LocalWebIdentity | null = null
 // (e.g. draft resolution) gate on this via `useLocalKeyPairLoaded`.
 let keyPairLoaded = false
 const keyPairHandlers = new Set<() => void>()
-
 export async function getCurrentAccountUidWithDelegation(): Promise<string | null> {
   const stored = await getStoredLocalKeys()
   return stored?.delegatedAccountUid ?? keyPair?.id ?? null
 }
-
 export const keyPairStore = {
   get: () => keyPair,
   set: (kp: LocalWebIdentity | null) => {
@@ -85,7 +132,6 @@ export const keyPairStore = {
     }
   },
 }
-
 async function loadLocalWebIdentity(): Promise<LocalWebIdentity | null> {
   const stored = await getStoredLocalKeys()
   if (!stored) return null
@@ -99,7 +145,6 @@ async function loadLocalWebIdentity(): Promise<LocalWebIdentity | null> {
     notifyServerUrl: stored.notifyServerUrl,
   }
 }
-
 function syncKeyPair(newKeyPair: LocalWebIdentity | null) {
   if (
     (!newKeyPair && keyPair) ||
@@ -112,13 +157,11 @@ function syncKeyPair(newKeyPair: LocalWebIdentity | null) {
     keyPairStore.set(newKeyPair)
   }
 }
-
 function markKeyPairLoaded() {
   if (keyPairLoaded) return
   keyPairLoaded = true
   keyPairHandlers.forEach((callback) => callback())
 }
-
 function updateKeyPair() {
   loadLocalWebIdentity()
     .then((next) => {
@@ -130,10 +173,12 @@ function updateKeyPair() {
       // rather than hanging draft resolution forever.
       markKeyPairLoaded()
       console.error(err)
-      reportError(err, {feature: 'auth', operation: 'load-local-identity'})
+      reportError(err, {
+        feature: 'auth',
+        operation: 'load-local-identity',
+      })
     })
 }
-
 export function logout() {
   const vaultUrl = keyPairStore.get()?.vaultUrl
   keyPairStore.set(null)
@@ -142,9 +187,15 @@ export function logout() {
     setHasPromptedEmailNotifications(false),
     vaultUrl ? authSession.clearSession(vaultUrl) : Promise.resolve(),
     clearAllAuthState(),
-    fetch('/hm/api/auth', {method: 'DELETE', credentials: 'include'}).catch((e) => {
+    fetch('/hm/api/auth', {
+      method: 'DELETE',
+      credentials: 'include',
+    }).catch((e) => {
       console.error('Failed to clear daemon auth cookie', e)
-      reportError(e, {feature: 'auth', operation: 'logout-clear-daemon-cookie'})
+      reportError(e, {
+        feature: 'auth',
+        operation: 'logout-clear-daemon-cookie',
+      })
     }),
   ])
     .then(() => {
@@ -152,10 +203,12 @@ export function logout() {
     })
     .catch((e) => {
       console.error('Failed to log out', e)
-      reportError(e, {feature: 'auth', operation: 'logout'})
+      reportError(e, {
+        feature: 'auth',
+        operation: 'logout',
+      })
     })
 }
-
 export function useLocalKeyPair() {
   return useSyncExternalStore(
     (callback: () => void) => {
@@ -186,7 +239,6 @@ export function useLocalKeyPairLoaded() {
     () => false,
   )
 }
-
 export async function updateProfile({
   keyPair,
   document,
@@ -199,14 +251,35 @@ export async function updateProfile({
   const signer = createSignerFromKeyPair(keyPair)
   const changes: HMPrepareDocumentChangeInput['changes'] = []
   if (updates.name && updates.name !== document.metadata.name) {
-    changes.push({op: {case: 'setMetadata', value: {key: 'name', value: updates.name}}})
+    changes.push({
+      op: {
+        case: 'setMetadata',
+        value: {
+          key: 'name',
+          value: updates.name,
+        },
+      },
+    })
   }
   if (updates.icon && typeof updates.icon !== 'string') {
     const iconBlock = await encodeBlock(await updates.icon.arrayBuffer(), rawCodec)
     await seedClient.publish({
-      blobs: [{data: iconBlock.bytes, cid: iconBlock.cid.toString()}],
+      blobs: [
+        {
+          data: iconBlock.bytes,
+          cid: iconBlock.cid.toString(),
+        },
+      ],
     })
-    changes.push({op: {case: 'setMetadata', value: {key: 'icon', value: iconBlock.cid.toString()}}})
+    changes.push({
+      op: {
+        case: 'setMetadata',
+        value: {
+          key: 'icon',
+          value: iconBlock.cid.toString(),
+        },
+      },
+    })
   }
   await seedClient.publishDocument(
     {
@@ -219,15 +292,12 @@ export async function updateProfile({
     signer,
   )
 }
-
 type CreateAccountDialogInput = {
   source?: 'join' | 'login'
 }
-
 export function useCreateAccount(options?: {onClose?: () => void}) {
   const userKeyPair = useLocalKeyPair()
   const isMobileKeyboardOpen = useIsMobileKeyboardOpen()
-
   const createAccountDialog = useAppDialog(CreateAccountDialog, {
     onClose: options?.onClose,
     className: [
@@ -243,37 +313,34 @@ export function useCreateAccount(options?: {onClose?: () => void}) {
   })
   return {
     canCreateAccount: !userKeyPair,
-    createAccount: (input?: CreateAccountDialogInput) => createAccountDialog.open({source: input?.source ?? 'login'}),
+    createAccount: (input?: CreateAccountDialogInput) =>
+      createAccountDialog.open({
+        source: input?.source ?? 'login',
+      }),
     content: createAccountDialog.content,
     userKeyPair,
   }
 }
-
 function useIsMobileKeyboardOpen() {
   const [isOpen, setIsOpen] = useState(false)
-
   useEffect(() => {
     if (typeof window === 'undefined') return
-
     const handleResize = () => {
       const layoutViewportHeight = window.innerHeight
       const visualViewportHeight = window.visualViewport?.height ?? layoutViewportHeight
       setIsOpen(layoutViewportHeight - visualViewportHeight > 150)
     }
-
     const visualViewport = window.visualViewport
     visualViewport?.addEventListener('resize', handleResize)
     window.addEventListener('resize', handleResize)
     window.addEventListener('orientationchange', handleResize)
     handleResize()
-
     return () => {
       visualViewport?.removeEventListener('resize', handleResize)
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('orientationchange', handleResize)
     }
   }, [])
-
   return isOpen
 }
 
@@ -284,7 +351,6 @@ function useSiteName() {
   const homeDocument = homeResource.data?.type === 'document' ? homeResource.data.document : null
   return homeDocument?.metadata?.name || hostnameStripProtocol(origin) || 'this space'
 }
-
 function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose: () => void}) {
   const {origin, originHomeId} = useUniversalAppContext()
   const tx = useTxString()
@@ -294,7 +360,6 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
   const [customVaultUrl, setCustomVaultUrl] = useState('https://hyper.media')
   const [showCustomVaultInput, setShowCustomVaultInput] = useState(false)
   const customVaultInputRef = useRef<HTMLInputElement>(null)
-
   const handleVaultSignIn = async (urlOverride?: string, email?: string) => {
     const vaultUrl = urlOverride || defaultVaultUrl
     const source = input.source ?? 'login'
@@ -308,7 +373,10 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
     console.log('[handleVaultSignIn] originHomeId:', originHomeId)
     console.log('[handleVaultSignIn] source:', source)
     if (source === 'join' && !existingIntent && originHomeId?.uid) {
-      await setPendingIntent({type: 'join', subjectUid: originHomeId.uid})
+      await setPendingIntent({
+        type: 'join',
+        subjectUid: originHomeId.uid,
+      })
     }
     try {
       const authUrl = await authSession.startAuth({
@@ -323,19 +391,21 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
       toast.error(err instanceof Error ? err.message : String(err))
     }
   }
-
   const isJoin = input.source === 'join'
-
   return (
     <>
-      <div className="flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-full bg-emerald-600">
-          <SeedLogo className="size-4 text-white" />
+      <div className={stylex.props(styles.s86ff3e4).className || ''}>
+        <div className={stylex.props(styles.s33b7a7d9).className || ''}>
+          <SeedLogo className={stylex.props(styles.sf796cd41).className || ''} />
         </div>
-        <span className="font-semibold">Hypermedia</span>
+        <span className={stylex.props(styles.s62c182b1).className || ''}>Hypermedia</span>
       </div>
       <DialogTitle className="max-sm:text-base">
-        {isJoin ? tx('join_site', ({siteName}) => `Join ${siteName}`, {siteName}) : tx('sign_in', 'Sign in')}
+        {isJoin
+          ? tx('join_site', ({siteName}) => `Join ${siteName}`, {
+              siteName,
+            })
+          : tx('sign_in', 'Sign in')}
       </DialogTitle>
 
       <DialogDescription className="max-sm:text-sm">
@@ -344,7 +414,9 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
               'join_site_description',
               ({siteName}) =>
                 `${siteName} is built with Hypermedia, a platform to create spaces to share knowledge. Create your identity to participate, it takes two minutes.`,
-              {siteName},
+              {
+                siteName,
+              },
             )
           : 'Sign in or create your identity to get started.'}
       </DialogDescription>
@@ -361,17 +433,28 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
                 </a>
                 .
               </SizableText> */}
-      <Button variant="default" type="submit" size="lg" className="w-full" onClick={() => handleVaultSignIn()}>
+      <Button
+        variant="default"
+        type="submit"
+        size="lg"
+        className={stylex.props(styles.scdbaf625).className || ''}
+        onClick={() => handleVaultSignIn()}
+      >
         {tx('Create identity in Hypermedia')}
       </Button>
 
-      <div className="flex items-center gap-2">
+      <div className={stylex.props(styles.s86ff3e4).className || ''}>
         <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
         <span className="text-xs text-neutral-400 dark:text-neutral-500">Or</span>
         <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
       </div>
 
-      <Button variant="outline" size="lg" className="w-full" onClick={() => handleVaultSignIn()}>
+      <Button
+        variant="outline"
+        size="lg"
+        className={stylex.props(styles.scdbaf625).className || ''}
+        onClick={() => handleVaultSignIn()}
+      >
         {tx('Already have a Hypermedia identity')}
       </Button>
 
@@ -387,7 +470,7 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
 
       {showCustomVaultInput && (
         <div className="flex flex-col gap-2 rounded-md border border-neutral-200 p-3 dark:border-neutral-700">
-          <SizableText size="sm" className="font-medium">
+          <SizableText size="sm" className={stylex.props(styles.s129e46b3).className || ''}>
             Identity Domain
           </SizableText>
           <input
@@ -403,7 +486,7 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
               }
             }}
           />
-          <div className="flex justify-end gap-2">
+          <div className={stylex.props(styles.sb87f7412).className || ''}>
             <Button variant="ghost" size="sm" onClick={() => setShowCustomVaultInput(false)}>
               Cancel
             </Button>
@@ -421,15 +504,21 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
     </>
   )
 }
-function VaultSuccessDialog({onClose}: {input: {variant: 'comment'}; onClose: () => void}) {
+function VaultSuccessDialog({
+  onClose,
+}: {
+  input: {
+    variant: 'comment'
+  }
+  onClose: () => void
+}) {
   useEffect(() => {
     const timer = setTimeout(onClose, 4000)
     return () => clearTimeout(timer)
   }, [onClose])
-
   return (
     <>
-      <DialogTitle className="flex items-center gap-2">
+      <DialogTitle className={stylex.props(styles.s86ff3e4).className || ''}>
         You are in <span aria-hidden>🎉</span>
       </DialogTitle>
       <DialogDescription>
@@ -437,7 +526,7 @@ function VaultSuccessDialog({onClose}: {input: {variant: 'comment'}; onClose: ()
         <br />
         This post will be signed by you and shared across the network.
       </DialogDescription>
-      <div className="flex justify-center py-2">
+      <div className={stylex.props(styles.s65917ff5).className || ''}>
         <Spinner />
       </div>
     </>
@@ -448,18 +537,17 @@ function VaultSuccessDialog({onClose}: {input: {variant: 'comment'}; onClose: ()
 export function useVaultSuccessDialog() {
   const dialog = useAppDialog(VaultSuccessDialog)
   const siteName = useSiteName()
-
   useEffect(() => {
     if (typeof window === 'undefined') return
     const url = new URL(window.location.href)
     const variant = url.searchParams.get('vault_success')
     if (!variant) return
-
     url.searchParams.delete('vault_success')
     window.history.replaceState(null, '', url.pathname + url.search + url.hash)
-
     if (variant === 'comment') {
-      dialog.open({variant})
+      dialog.open({
+        variant,
+      })
       return
     }
     if (variant === 'publish-draft') {
@@ -479,10 +567,8 @@ export function useVaultSuccessDialog() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siteName])
-
   return dialog.content
 }
-
 async function optimizeImage(file: File): Promise<Blob> {
   const response = await fetch('/hm/api/site-image', {
     method: 'POST',
@@ -498,9 +584,10 @@ async function optimizeImage(file: File): Promise<Blob> {
   }
   const contentType = response.headers.get('content-type') || 'image/png'
   const responseBlob = await response.blob()
-  return new Blob([responseBlob], {type: contentType})
+  return new Blob([responseBlob], {
+    type: contentType,
+  })
 }
-
 export function LogoutDialog({onClose}: {onClose: () => void}) {
   const keyPair = useLocalKeyPair()
   const account = useAccount(keyPair?.id)
@@ -509,7 +596,7 @@ export function LogoutDialog({onClose}: {onClose: () => void}) {
   if (!keyPair) return <DialogTitle>No session found</DialogTitle>
   if (account.isLoading)
     return (
-      <div className="flex items-center justify-center">
+      <div className={stylex.props(styles.s9a378369).className || ''}>
         <Spinner />
       </div>
     )
@@ -527,17 +614,24 @@ export function LogoutDialog({onClose}: {onClose: () => void}) {
             )}
       </DialogDescription>
       <div className="flex gap-2 sm:justify-stretch">
-        <Button variant="outline" size="lg" className="flex-1" onClick={onClose}>
+        <Button
+          variant="outline"
+          size="lg"
+          className={stylex.props(styles.sb42feb5d).className || ''}
+          onClick={onClose}
+        >
           {tx('Cancel')}
         </Button>
         <Button
           variant="destructive"
           size="lg"
-          className="flex-1"
+          className={stylex.props(styles.sb42feb5d).className || ''}
           onClick={() => {
             logout()
             onClose()
-            navigate('/', {replace: true})
+            navigate('/', {
+              replace: true,
+            })
           }}
         >
           {isAccountAliased ? tx('Log out') : tx('Log out forever')}
@@ -546,8 +640,15 @@ export function LogoutDialog({onClose}: {onClose: () => void}) {
     </>
   )
 }
-
-export function EditProfileDialog({onClose, input}: {onClose: () => void; input: {accountUid: string}}) {
+export function EditProfileDialog({
+  onClose,
+  input,
+}: {
+  onClose: () => void
+  input: {
+    accountUid: string
+  }
+}) {
   const keyPair = useLocalKeyPair()
   const id = hmId(input.accountUid)
   const tx = useTx()
@@ -604,7 +705,9 @@ export function EditProfileDialog({onClose, input}: {onClose: () => void; input:
 /** Renders the own-profile session actions shown in the account header. */
 export function LogoutButton() {
   const userKeyPair = useLocalKeyPair()
-  const logoutDialog = useAppDialog(LogoutDialog, {showCloseButton: false})
+  const logoutDialog = useAppDialog(LogoutDialog, {
+    showCloseButton: false,
+  })
   const tx = useTxString()
   const vaultAccountSettingsUrl = getVaultAccountSettingsUrl({
     vaultUrl: userKeyPair?.vaultUrl,
@@ -616,25 +719,25 @@ export function LogoutButton() {
       {vaultAccountSettingsUrl ? (
         <Button variant="outline" asChild>
           <a href={vaultAccountSettingsUrl} target="_blank" rel="noopener noreferrer">
-            <Settings className="size-4" />
+            <Settings className={stylex.props(styles.sca3de968).className || ''} />
             {tx('Account Settings')}
           </a>
         </Button>
       ) : null}
       <Button variant="outline" onClick={() => logoutDialog.open({})}>
-        <LogOut className="size-4" />
+        <LogOut className={stylex.props(styles.sca3de968).className || ''} />
         {tx('Logout')}
       </Button>
       {logoutDialog.content}
     </>
   )
 }
-
 export function AccountFooterActions() {
   const userKeyPair = useLocalKeyPair()
-  const logoutDialog = useAppDialog(LogoutDialog, {showCloseButton: false})
+  const logoutDialog = useAppDialog(LogoutDialog, {
+    showCloseButton: false,
+  })
   const editProfileDialog = useAppDialog(EditProfileDialog)
-
   if (!userKeyPair) return null
   return (
     <div className="flex max-w-full flex-wrap justify-end gap-2">
@@ -643,7 +746,6 @@ export function AccountFooterActions() {
     </div>
   )
 }
-
 if (typeof window !== 'undefined') {
   updateKeyPair()
   setInterval(updateKeyPair, 200)

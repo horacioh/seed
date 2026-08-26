@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useAssistantPanel} from '@/assistant-panel-state'
 import {clientLazy} from '@/client-lazy'
 import {useSiteContextSnapshot} from '@/site-context-bridge'
@@ -13,16 +14,62 @@ import React, {Suspense, useCallback, useEffect, useRef, useState} from 'react'
 // The panel body pulls in the agents models and the rich editor. Like the /hm/agents pages and the
 // commenting editor, it is a separate client-only chunk that only loads once the panel opens, so
 // nothing agents-related enters the initial bundle.
-const WebAssistantPanelContent = clientLazy<{showClose?: boolean}>(async () => ({
+const styles = stylex.create({
+  s1dd0bfd2: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'stretch',
+  },
+  s520c9021: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    position: 'sticky',
+    top: 'calc(0.25rem * 0)',
+    display: 'flex',
+    height: '100dvh',
+    flexShrink: '0',
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    overflow: 'hidden',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+  },
+  sb03e17cd: {
+    backgroundColor: 'var(--background)',
+    position: 'fixed',
+    inset: 'calc(0.25rem * 0)',
+    zIndex: '50',
+    display: 'flex',
+    height: '100dvh',
+    width: '100%',
+    flexDirection: 'column',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s3b59b99: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(0.25rem * 12)',
+  },
+})
+const WebAssistantPanelContent = clientLazy<{
+  showClose?: boolean
+}>(async () => ({
   default: (await import('./web-assistant-panel-content')).default,
 }))
-
 const WIDTH_STORAGE_KEY = 'seed.assistant.width'
 const DEFAULT_WIDTH_PX = 380
 const MIN_WIDTH_PX = 280
 /** The page keeps at least this share of the viewport, mirroring desktop's maxSize={40}. */
 const MAX_WIDTH_FRACTION = 0.4
-
 function clampWidth(width: number): number {
   const max = typeof window === 'undefined' ? Infinity : Math.max(MIN_WIDTH_PX, window.innerWidth * MAX_WIDTH_FRACTION)
   return Math.min(Math.max(width, MIN_WIDTH_PX), max)
@@ -73,12 +120,17 @@ export function WebAssistantHost({children}: {children: React.ReactNode}) {
   const isMobile = media.xs
   const [width, setWidth] = usePanelWidth()
   const [dragging, setDragging] = useState(false)
-  const dragStart = useRef<{x: number; width: number} | null>(null)
-
+  const dragStart = useRef<{
+    x: number
+    width: number
+  } | null>(null)
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
       event.preventDefault()
-      dragStart.current = {x: event.clientX, width}
+      dragStart.current = {
+        x: event.clientX,
+        width,
+      }
       event.currentTarget.setPointerCapture?.(event.pointerId)
       setDragging(true)
     },
@@ -97,12 +149,10 @@ export function WebAssistantHost({children}: {children: React.ReactNode}) {
     event.currentTarget.releasePointerCapture?.(event.pointerId)
     setDragging(false)
   }, [])
-
   const showSidePanel = panel.isOpen && !isMobile
   const showFullScreen = panel.isOpen && isMobile
-
   return (
-    <div className={cn('flex w-full flex-row items-stretch', dragging && 'cursor-col-resize select-none')}>
+    <div className={cn(stylex.props(styles.s1dd0bfd2).className || '', dragging && 'cursor-col-resize select-none')}>
       <div className="min-w-0 flex-1">{children}</div>
       {showSidePanel ? (
         <>
@@ -119,8 +169,10 @@ export function WebAssistantHost({children}: {children: React.ReactNode}) {
           <aside
             aria-label="Agents"
             data-testid="web-assistant-panel"
-            className="bg-background border-border sticky top-0 flex h-dvh shrink-0 flex-col self-start overflow-hidden border-l"
-            style={{width}}
+            className={stylex.props(styles.s520c9021).className || ''}
+            style={{
+              width,
+            }}
           >
             <PanelBody showClose />
           </aside>
@@ -147,18 +199,23 @@ function FullScreenPanel({onBack}: {onBack: () => void}) {
       document.removeEventListener('keydown', onKeyDown)
     }
   }, [onBack])
-
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label="Agents"
       data-testid="web-assistant-panel-fullscreen"
-      className="bg-background fixed inset-0 z-50 flex h-dvh w-full flex-col"
+      className={stylex.props(styles.sb03e17cd).className || ''}
     >
       <div className="border-border flex shrink-0 items-center border-b px-1 py-1 pt-[env(safe-area-inset-top)]">
-        <Button variant="ghost" size="sm" onClick={onBack} className="gap-2" aria-label="Back to page">
-          <ArrowLeft className="size-4" />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+          className={stylex.props(styles.s5d936fb).className || ''}
+          aria-label="Back to page"
+        >
+          <ArrowLeft className={stylex.props(styles.sca3de968).className || ''} />
           Back to page
         </Button>
       </div>
@@ -186,10 +243,9 @@ function PanelBody({showClose}: {showClose?: boolean}) {
     </UniversalAppContext.Provider>
   )
 }
-
 function PanelLoading() {
   return (
-    <div className="flex flex-1 items-center justify-center py-12">
+    <div className={stylex.props(styles.s3b59b99).className || ''}>
       <Spinner />
     </div>
   )

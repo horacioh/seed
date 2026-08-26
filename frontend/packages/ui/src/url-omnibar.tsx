@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Copy} from 'lucide-react'
 import {type ReactNode, useEffect, useRef, useState} from 'react'
 import {Button} from './button'
@@ -14,6 +15,18 @@ import {cn} from './utils'
  * Shared so any surface that needs an omnibar-like read-only URL (e.g. the IPFS
  * file viewer) gets the same appearance and copy affordance.
  */
+const styles = stylex.create({
+  se452a8c6: {
+    marginRight: 'calc(0.25rem * 1)',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+})
 export function OmnibarUrl({
   restingUrl,
   copyUrl,
@@ -39,13 +52,11 @@ export function OmnibarUrl({
   useEffect(() => {
     if (revealed) inputRef.current?.select()
   }, [revealed])
-
   const copy = () => {
     if (typeof navigator === 'undefined' || !navigator.clipboard) return
     navigator.clipboard.writeText(reveal)
     toast.success('Copied link')
   }
-
   return (
     <div
       className={cn(
@@ -67,10 +78,10 @@ export function OmnibarUrl({
         onBlur={() => setRevealed(false)}
         className="text-muted-foreground min-w-0 flex-1 truncate border-none bg-transparent py-1.5 font-mono text-xs outline-none"
       />
-      <div className="mr-1 flex shrink-0 items-center" onClick={(e) => e.stopPropagation()}>
+      <div className={stylex.props(styles.se452a8c6).className || ''} onClick={(e) => e.stopPropagation()}>
         <Tooltip content={copyLabel}>
           <Button variant="ghost" size="iconSm" aria-label={copyLabel} onClick={copy}>
-            <Copy className="size-3.5" />
+            <Copy className={stylex.props(styles.s3269316e).className || ''} />
           </Button>
         </Tooltip>
         {rightActions}

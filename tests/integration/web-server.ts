@@ -4,6 +4,7 @@
  */
 
 import {spawn, ChildProcess, execSync} from 'child_process'
+import {rmSync} from 'node:fs'
 import * as readline from 'node:readline'
 import path from 'path'
 
@@ -24,6 +25,12 @@ export type WebServerInstance = {
 export async function buildWebApp(): Promise<void> {
   // tests/integration/web-server.ts -> web app is at ../../frontend/apps/web
   const webAppDir = path.resolve(__dirname, '../../frontend/apps/web')
+  const buildDir = path.join(webAppDir, 'build')
+
+  // Remove any stale build artifacts from previous test runs so the Remix
+  // server manifest and assets are generated from a clean state.
+  rmSync(buildDir, {recursive: true, force: true})
+
   console.log('[Web] Building web app...')
 
   execSync('pnpm build', {
