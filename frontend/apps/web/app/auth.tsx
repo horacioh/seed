@@ -349,7 +349,7 @@ function useSiteName() {
   const {origin, originHomeId} = useUniversalAppContext()
   const homeResource = useResource(originHomeId)
   const homeDocument = homeResource.data?.type === 'document' ? homeResource.data.document : null
-  return homeDocument?.metadata?.name || hostnameStripProtocol(origin) || 'this site'
+  return homeDocument?.metadata?.name || hostnameStripProtocol(origin) || 'this space'
 }
 function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose: () => void}) {
   const {origin, originHomeId} = useUniversalAppContext()
@@ -413,7 +413,7 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
           ? tx(
               'join_site_description',
               ({siteName}) =>
-                `${siteName} is built with Hypermedia, a platform to create sites to share knowledge. Create your identity to participate, it takes two minutes.`,
+                `${siteName} is built with Hypermedia, a platform to create spaces to share knowledge. Create your identity to participate, it takes two minutes.`,
               {
                 siteName,
               },
@@ -522,7 +522,7 @@ function VaultSuccessDialog({
         You are in <span aria-hidden>🎉</span>
       </DialogTitle>
       <DialogDescription>
-        You joined the site, posting your comment now...
+        You joined the space, posting your comment now...
         <br />
         This post will be signed by you and shared across the network.
       </DialogDescription>

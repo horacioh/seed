@@ -67,7 +67,7 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
       >
         <p className="text-sm text-green-800 dark:text-green-200">
           <span className={stylex.props(styles.s62c182b1).className || ''}>{successEmail}</span> will be notified when{' '}
-          <span className={stylex.props(styles.s62c182b1).className || ''}>{accountMeta?.name || 'this site'}</span> is
+          <span className={stylex.props(styles.s62c182b1).className || ''}>{accountMeta?.name || 'this space'}</span> is
           updated.
         </p>
       </div>

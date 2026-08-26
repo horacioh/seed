@@ -10,7 +10,7 @@ import {
 } from '@shm/shared'
 import {DEFAULT_GATEWAY_URL} from '@shm/shared/constants'
 import {useIsSiteOwner} from '@shm/shared/models/capabilities'
-import {useAccount} from '@shm/shared/models/entity'
+import {useAccount, useResource} from '@shm/shared/models/entity'
 import {isNotificationEventRead} from '@shm/shared/models/notification-read-logic'
 import {hmIdToURL} from '@shm/shared/utils/entity-id-url'
 import {useNavigate, useNavRoute} from '@shm/shared/utils/navigation'
@@ -30,6 +30,7 @@ import {HMIcon} from '@shm/ui/hm-icon'
 import {Add} from '@shm/ui/icons'
 import {JoinButton} from '@shm/ui/join-button'
 import {MobilePanelSheet} from '@shm/ui/mobile-panel-sheet'
+import {useAssistantPanel} from '@/assistant-panel-state'
 import {MenuItemType} from '@shm/ui/options-dropdown'
 import {createEmailSubscribersMenuItem} from '@shm/ui/site-email-subscribers'
 import {toast} from '@shm/ui/toast'
@@ -39,6 +40,7 @@ import {useMedia} from '@shm/ui/use-media'
 import {cn} from '@shm/ui/utils'
 import {
   Bell,
+  Bot,
   ExternalLink,
   FilePlus2,
   Globe,
@@ -403,6 +405,19 @@ function PlaceholderAvatar({onClick}: {onClick: () => void}) {
 /**
  * Site-header join button or avatar with notifications bell
  */
+/**
+ * The agents server this space names for its readers, if any.
+ *
+ * Read straight from the home document rather than through `useSiteAdvertisedAgentServerUrl`: that
+ * lives in the agents models, and importing them here would pull the whole agents chunk — editor
+ * included — into the initial bundle, which the assistant panel and the /hm/agents pages go out of
+ * their way to avoid. `useResource` is already here via `useAccount`, so this costs nothing.
+ */
+function useSiteAgentServerUrl(siteUid: string): string | null {
+  const home = useResource(hmId(siteUid))
+  const raw = home.data?.type === 'document' ? home.data.document?.metadata?.agentServerUrl : undefined
+  return typeof raw === 'string' && raw ? raw : null
+}
 export function WebHeaderActions({siteUid}: {siteUid: string}) {
   const keyPair = useLocalKeyPair()
   const accountId = keyPair?.delegatedAccountUid ?? keyPair?.id
@@ -438,6 +453,11 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
   const media = useMedia()
   const isMobile = media.xs
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const assistantPanel = useAssistantPanel()
+  // A space that names no agents server has nothing for its readers to talk to, so the entry point
+  // is not offered while browsing it. It stays absent until the home document has loaded, so the
+  // item appears late rather than appearing and then vanishing.
+  const hasSiteAgents = !!useSiteAgentServerUrl(siteUid)
 
   // Show the join button if not joined the site
   if (!keyPair) {
@@ -484,7 +504,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
   const mySiteUrl = account?.metadata?.siteUrl || null
   const mySiteLabel = mySiteUrl
     ? mySiteUrl.replace(/^https?:\/\//, '').replace(/\/+$/, '')
-    : account?.metadata?.name || 'My site'
+    : account?.metadata?.name || 'My space'
   const goToMySite = () => {
     if (mySiteUrl) window.open(mySiteUrl, '_blank', 'noopener,noreferrer')
     else if (accountId)
@@ -528,6 +548,23 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
         <UserCog className={stylex.props(styles.sca3de969).className || ''} />
         <span className={stylex.props(styles.sab7cc6fa).className || ''}>Manage account</span>
       </button>
+      {hasSiteAgents ? (
+        <>
+          <div className={stylex.props(styles.s69a761ef).className || ''} />
+          <button
+            className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
+            onClick={() => {
+              setMobileMenuOpen(false)
+              assistantPanel.toggle()
+            }}
+          >
+            <Bot className={stylex.props(styles.sca3de969).className || ''} />
+            <span className={stylex.props(styles.sab7cc6fa).className || ''}>
+              {assistantPanel.isOpen ? 'Close Agents' : 'Agents'}
+            </span>
+          </button>
+        </>
+      ) : null}
       <div className={stylex.props(styles.s69a761ef).className || ''} />
       {canCreateSpace ? (
         <button
@@ -538,11 +575,11 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
           }}
         >
           <Plus className={stylex.props(styles.sca3de969).className || ''} />
-          <span className={stylex.props(styles.sab7cc6fa).className || ''}>Create my site</span>
+          <span className={stylex.props(styles.sab7cc6fa).className || ''}>Create my space</span>
         </button>
       ) : (
         <>
-          <div className={stylex.props(styles.s40a3db72).className || ''}>My site</div>
+          <div className={stylex.props(styles.s40a3db72).className || ''}>My space</div>
           <button
             className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
             onClick={() => {
@@ -632,6 +669,15 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
                 <UserCog className={stylex.props(styles.sca3de968).className || ''} />
                 Manage account
               </DropdownMenuItem>
+              {hasSiteAgents ? (
+                <>
+                  <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+                  <DropdownMenuItem onClick={assistantPanel.toggle}>
+                    <Bot className={stylex.props(styles.sca3de968).className || ''} />
+                    {assistantPanel.isOpen ? 'Close Agents' : 'Agents'}
+                  </DropdownMenuItem>
+                </>
+              ) : null}
               <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
               {canCreateSpace ? (
                 <DropdownMenuItem
@@ -639,11 +685,11 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
                   className="text-green-600 focus:text-green-600 dark:text-green-500 dark:focus:text-green-500"
                 >
                   <Plus className="size-4 text-green-600 dark:text-green-500" />
-                  Create my site
+                  Create my space
                 </DropdownMenuItem>
               ) : (
                 <>
-                  <div className={stylex.props(styles.sdda8cd7).className || ''}>My site</div>
+                  <div className={stylex.props(styles.sdda8cd7).className || ''}>My space</div>
                   <DropdownMenuItem onClick={goToMySite}>
                     <Globe className={stylex.props(styles.sca3de968).className || ''} />
                     <span className={stylex.props(styles.sb136bac9).className || ''}>{mySiteLabel}</span>

@@ -41,7 +41,7 @@ export function SiteLogo({id, metadata}: {id: UnpackedHypermediaId; metadata?: H
       >
         <a {...homeLinkProps} data-resourceid={id.id} className={stylex.props(styles.s9e61af4b).className || ''}>
           <img
-            alt={metadata?.name || 'Site logo'}
+            alt={metadata?.name || 'Space logo'}
             src={imageUrl(metadata.seedExperimentalLogo, 'M')}
             height={60}
             style={{

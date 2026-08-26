@@ -112,7 +112,7 @@ export function DebugDialogs() {
               })
             }
           >
-            Publish Site (Main)
+            Publish Space (Main)
           </Button>
 
           <Button
@@ -125,7 +125,7 @@ export function DebugDialogs() {
               })
             }
           >
-            Publish Site (Custom Domain)
+            Publish Space (Custom Domain)
           </Button>
 
           <Button
@@ -146,7 +146,7 @@ export function DebugDialogs() {
           </Button>
 
           <Button size="sm" variant="outline" onClick={() => removeSiteDialog.open(MOCK_DOCUMENT_ID)}>
-            Remove Site
+            Remove Space
           </Button>
         </div>
 

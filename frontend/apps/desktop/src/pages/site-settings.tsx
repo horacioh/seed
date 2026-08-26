@@ -1,4 +1,5 @@
 import * as stylex from '@stylexjs/stylex'
+import {SpaceAgentsSettings} from '@/components/site-settings-agents'
 import {MembersSettings} from '@/components/site-settings-members'
 import {NavigationSettings} from '@/components/site-settings-navigation'
 import {useUpdateHomeDocument} from '@/models/site'
@@ -18,7 +19,7 @@ import {Spinner} from '@shm/ui/spinner'
 import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {cn} from '@shm/ui/utils'
-import {Image as ImageIcon, Navigation as NavigationIcon, Plus, Users} from 'lucide-react'
+import {Bot, Image as ImageIcon, Navigation as NavigationIcon, Plus, Users} from 'lucide-react'
 import {type ReactNode, useState} from 'react'
 
 // Tabs of the site settings page
@@ -102,7 +103,7 @@ const styles = stylex.create({
     height: 'calc(0.25rem * 4)',
   },
 })
-type SiteSettingsSection = 'identity' | 'navigation' | 'members'
+type SiteSettingsSection = 'identity' | 'navigation' | 'members' | 'agents'
 type SiteSettingsTabConfig = {
   key: SiteSettingsSection
   icon: any
@@ -124,12 +125,18 @@ const SITE_SETTINGS_TAB_CONFIG: SiteSettingsTabConfig[] = [
     icon: Users,
     label: 'Members',
   },
+  {
+    key: 'agents',
+    icon: Bot,
+    label: 'Agents',
+  },
 ]
 
 /** Map a URL subpath to its tab. */
 function sectionForTab(tab: SiteSettingsTab | undefined): SiteSettingsSection {
   if (tab === 'navigation') return 'navigation'
   if (tab === 'members' || tab === 'writers' || tab === 'email-subscribers') return 'members'
+  if (tab === 'agents') return 'agents'
   return 'identity'
 }
 export default function SiteSettings() {
@@ -156,7 +163,7 @@ export default function SiteSettings() {
                 color="muted"
                 className={stylex.props(styles.saa15f52).className || ''}
               >
-                Site Settings
+                Space Settings
               </SizableText>
               {SITE_SETTINGS_TAB_CONFIG.map((tab) => (
                 <SidebarTab
@@ -174,6 +181,7 @@ export default function SiteSettings() {
                 {activeSection === 'identity' && <IdentityTab siteId={route.id} />}
                 {activeSection === 'navigation' && <NavigationSettings siteId={route.id} />}
                 {activeSection === 'members' && <MembersSettings siteId={route.id} activeTab={route.tab} />}
+                {activeSection === 'agents' && <SpaceAgentsSettings siteId={route.id} />}
               </div>
             </ScrollArea>
           </div>
@@ -204,7 +212,7 @@ function IdentityTab({siteId}: {siteId: UnpackedHypermediaId}) {
     )
   }
   if (!document) {
-    return <SizableText color="muted">This account doesn't have a site yet.</SizableText>
+    return <SizableText color="muted">This account doesn't have a space yet.</SizableText>
   }
   if (!isSiteOwner) {
     return (
@@ -212,7 +220,7 @@ function IdentityTab({siteId}: {siteId: UnpackedHypermediaId}) {
         <SizableText size="2xl" weight="bold">
           Identity
         </SizableText>
-        <SizableText color="muted">Only the site owner can edit these settings.</SizableText>
+        <SizableText color="muted">Only the space owner can edit these settings.</SizableText>
       </>
     )
   }
@@ -235,12 +243,12 @@ function IdentityTab({siteId}: {siteId: UnpackedHypermediaId}) {
       await updateHome.mutateAsync({
         metadata: nextMetadata,
       })
-      toast.success('Site identity updated')
+      toast.success('Space identity updated')
       setName(null)
       setLogo(undefined)
       setCover(undefined)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update site identity')
+      toast.error(error instanceof Error ? error.message : 'Failed to update space identity')
     }
   }
   return (
@@ -254,11 +262,11 @@ function IdentityTab({siteId}: {siteId: UnpackedHypermediaId}) {
         </Button>
       </div>
 
-      <SettingsField label="Site name">
-        <Input value={nameValue} onChange={(e) => setName(e.target.value)} placeholder="Your site name" />
+      <SettingsField label="Space name">
+        <Input value={nameValue} onChange={(e) => setName(e.target.value)} placeholder="Your space name" />
       </SettingsField>
 
-      <SettingsField label="Site logo" hint="100px height JPG or PNG.">
+      <SettingsField label="Space logo" hint="100px height JPG or PNG.">
         <ImagePicker
           value={logoValue}
           onChange={setLogo}

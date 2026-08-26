@@ -53,7 +53,7 @@ export function useDocumentUrl({
   return {
     url,
     label: siteHostname
-      ? 'Site' + (latest ? ' Latest' : ' Exact Version')
+      ? 'Space' + (latest ? ' Latest' : ' Exact Version')
       : 'Public' + (latest ? ' Latest' : ' Exact Version'),
     content: copyDialogContent,
     onCopy: (blockId: string | undefined, blockRange?: BlockRange | null) => {

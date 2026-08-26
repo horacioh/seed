@@ -36,6 +36,7 @@ vi.mock('@shm/ui/agents/models', () => ({
   useAgentDetail: () => ({data: undefined, isLoading: false}),
   useRun: () => ({data: undefined}),
   useAgentLists: () => mockState.agentLists,
+  useSpaceAgents: () => ({agents: [], isLoading: false}),
   useAgentServerUrls: () => ({data: mockState.serverUrls, isSuccess: true, isLoading: false}),
   useAgentSession: () => ({data: undefined}),
   useAgentWebSocketSubscription: () => ({text: ''}),
@@ -131,7 +132,7 @@ vi.mock('@shm/shared/utils/navigation', () => {
   }
 })
 
-import {AssistantPanel} from '../components/assistant-panel'
+import {AssistantPanel} from '@shm/ui/agents/assistant-panel'
 
 let root: Root
 let container: HTMLDivElement

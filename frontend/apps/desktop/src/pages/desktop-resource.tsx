@@ -1061,7 +1061,7 @@ export default function DesktopResourcePage() {
       }
       menuItems.push({
         key: 'remove-site',
-        label: 'Remove Site from Publication',
+        label: 'Remove Space from Publication',
         icon: <CloudOff className={stylex.props(styles.sca3de968).className || ''} />,
         variant: 'destructive',
         onClick: () => {
@@ -1071,7 +1071,7 @@ export default function DesktopResourcePage() {
     } else {
       menuItems.push({
         key: 'publish-site',
-        label: 'Publish Site to Domain',
+        label: 'Publish Space to Domain',
         icon: <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: () => {
           publishSite.open({

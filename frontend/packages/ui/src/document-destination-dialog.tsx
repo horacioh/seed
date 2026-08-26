@@ -281,7 +281,7 @@ export function DocumentDestinationDialog({
             : !slug
               ? 'Enter a URL path.'
               : moveTargetWrongSite
-                ? 'Moves must stay inside the current site.'
+                ? 'Moves must stay inside the current space.'
                 : moveTargetBlocked
                   ? 'Choose a location outside this document subtree.'
                   : pathInvalid
@@ -344,7 +344,7 @@ export function DocumentDestinationDialog({
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <div className={stylex.props(styles.s25987914).className || ''}>
           <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase">
-            {targetParent ? 'Location' : 'Choose a site'}
+            {targetParent ? 'Location' : 'Choose a space'}
           </SizableText>
           {targetParent ? <LocationBreadcrumb location={targetParent} onSelect={setTargetParent} /> : null}
         </div>

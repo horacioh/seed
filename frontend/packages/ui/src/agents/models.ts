@@ -35,13 +35,20 @@ import {
 import {isOptimisticUserEcho} from './agent-session-rows'
 import {moveAgentToServer, type MoveAgentOptions} from './move-agent'
 import {getAgentsPlatform} from './platform'
+import {parseSpaceAgentIds} from './space-agents'
 import {getToolReferencedUrls} from '@seed-hypermedia/agents-protocol'
 import * as cbor from '@shm/shared/cbor'
-import {invalidateQueries, queryClient} from '@shm/shared/models/query-client'
+import {getQueryClient, invalidateQueries} from '@shm/shared/models/query-client'
+import type {HMMetadata} from '@seed-hypermedia/client/hm-types'
+import {useResource} from '@shm/shared/models/entity'
+import {UniversalAppContext} from '@shm/shared/routing'
+import type {NavRoute} from '@shm/shared/routes'
+import {hmId} from '@shm/shared/utils/entity-id-url'
+import {useNavRouteOrNull} from '@shm/shared/utils/navigation'
 import {queryKeys} from '@shm/shared'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {useMutation, useQueries, useQuery} from '@tanstack/react-query'
-import {useEffect, useMemo, useRef, useState} from 'react'
+import {useContext, useEffect, useMemo, useRef, useState} from 'react'
 
 const AGENT_SERVER_URL_KEY = 'agent-server-url'
 const AGENT_SERVER_URLS_KEY = 'agent-server-urls'
@@ -251,16 +258,115 @@ export function useConfiguredAgentServerUrls() {
 export function useAgentServerUrls() {
   const localServerUrl = useLocalAgentServerUrl()
   const configured = useConfiguredAgentServerUrls()
+  const advertisedServerUrl = useSiteAdvertisedAgentServerUrl()
 
+  // Order is meaning: the assistant panel's default agent context is the first agent of the first
+  // server. The app's own local server keeps that spot; a server the site in view advertises comes
+  // next, ahead of the user's configured list, so on a site (or the gateway, which shows many) the
+  // panel opens on that site's agents.
   const data = useMemo(() => {
     if (!configured.data) return undefined
     const urls = new Set<string>()
     if (localServerUrl.data) urls.add(localServerUrl.data)
+    if (advertisedServerUrl) urls.add(advertisedServerUrl)
     for (const url of configured.data) urls.add(url)
     return Array.from(urls)
-  }, [configured.data, localServerUrl.data])
+  }, [advertisedServerUrl, configured.data, localServerUrl.data])
 
-  return {...configured, data}
+  return {...configured, data, advertisedServerUrl}
+}
+
+/**
+ * Home document metadata of the space in view, if any.
+ *
+ * The space is the account of the current route's document (a draft's edit target counts). Where
+ * the app is itself served by a space — the web app and the gateway — that space is the fallback
+ * for routes that name no document, so the /hm/agents pages are still "in" the space hosting them.
+ * The desktop app sets no origin, so there it is the route or nothing. Code rendered outside a
+ * navigation provider (settings windows) reads no space at all rather than throwing.
+ */
+function useSiteHomeMetadata(): HMMetadata | undefined {
+  const route = useNavRouteOrNull()
+  const originHomeId = useContext(UniversalAppContext).originHomeId
+  const siteUid = (route ? siteUidOfRoute(route) : undefined) ?? originHomeId?.uid
+  const home = useResource(siteUid ? hmId(siteUid) : undefined)
+  return home.data?.type === 'document' ? home.data.document?.metadata : undefined
+}
+
+/**
+ * The agents server advertised by the site whose document is on screen, if any.
+ *
+ * Read from the site home document's `agentServerUrl` metadata — the same signed document that
+ * names the site — so it is discoverable wherever the site's content is, with no server config.
+ * It is never persisted into the user's configured list: it applies while viewing that site.
+ */
+export function useSiteAdvertisedAgentServerUrl(): string | null {
+  const raw = useSiteHomeMetadata()?.agentServerUrl
+  return useMemo(() => (typeof raw === 'string' && raw ? tryNormalizeAgentServerUrl(raw) : null), [raw])
+}
+
+/** One agent a space publishes, paired with the server it lives on. */
+export type SpaceAgentOption = {serverUrl: string; agent: AgentInfo}
+
+/**
+ * The agents the space in view publishes to its readers, in the order it published them.
+ *
+ * A reader cannot list a space's agents — `ListAgents` only ever returns agents the caller owns or
+ * collaborates on — so each one is fetched by the id the space named in its home document. The
+ * server resolves the owning account from the id itself and answers for any signed account once the
+ * agent is public-read, which is what lets somebody who just joined a space open the assistant and
+ * find something to talk to.
+ *
+ * Agents that fail to load are dropped rather than surfaced: a space naming an agent that was since
+ * deleted, made private, or moved should quietly offer one fewer agent, not an error where a chat
+ * belongs. The queries share their cache key with {@link useAgentDetail}, so opening one of these
+ * agents in the full view renders from what the panel already loaded.
+ */
+export function useSpaceAgents(accountUid: string | null | undefined): {
+  agents: SpaceAgentOption[]
+  isLoading: boolean
+} {
+  const metadata = useSiteHomeMetadata()
+  const rawServerUrl = metadata?.agentServerUrl
+  const serverUrl = useMemo(
+    () => (typeof rawServerUrl === 'string' && rawServerUrl ? tryNormalizeAgentServerUrl(rawServerUrl) : null),
+    [rawServerUrl],
+  )
+  const agentIds = useMemo(() => parseSpaceAgentIds(metadata?.spaceAgents), [metadata?.spaceAgents])
+  const queries = useQueries({
+    queries: (serverUrl && accountUid ? agentIds : []).map((agentId) => ({
+      queryKey: ['agents', 'detail', serverUrl, accountUid, agentId],
+      queryFn: async () => {
+        const res = await sendAgentAction({
+          serverUrl: serverUrl!,
+          accountUid: accountUid!,
+          action: {_: 'GetAgent', agentId},
+        })
+        if (res._ !== 'GetAgentResponse') throw new Error('Unexpected GetAgent response')
+        return res
+      },
+      refetchInterval: AGENT_BACKGROUND_REFETCH_INTERVAL_MS,
+      refetchIntervalInBackground: true,
+      retry: false,
+      useErrorBoundary: false,
+    })),
+  })
+  const agents = serverUrl
+    ? queries
+        .map((query) => query.data?.agent)
+        .filter((agent): agent is AgentInfo => !!agent)
+        .map((agent) => ({serverUrl, agent}))
+    : []
+  return {agents, isLoading: queries.some((query) => query.isLoading)}
+}
+
+/** Account uid of the site a route is looking at, when the route is about a document. */
+export function siteUidOfRoute(route: NavRoute): string | undefined {
+  if (route.key === 'draft') return route.editUid ?? undefined
+  if ('id' in route && route.id && typeof route.id === 'object' && 'uid' in route.id) {
+    return (route.id as {uid?: string}).uid || undefined
+  }
+  return undefined
 }
 
 /** Persists the configured agent server URL list. */
@@ -672,14 +778,20 @@ export function useAgentServerHealths(serverUrls: string[] | undefined) {
  * The assistant entry points key off this rather than off server availability: the desktop always
  * runs a local server, so "a server exists" is always true and says nothing about whether there is
  * anything to chat with. A server with no agents cannot start a session.
+ *
+ * The space in view counts too. A visitor owns no agents and collaborates on none, so every list
+ * comes back empty for them — without this they would be told there is nothing to chat with while
+ * standing in a space that publishes agents.
  */
 export function useHasAnyAgent(serverUrls: string[] | undefined, accountUid: string | null | undefined) {
   const agentLists = useAgentLists(serverUrls, accountUid)
-  const hasAgents = agentLists.some((query) => (query.data?.length || 0) > 0)
+  const spaceAgents = useSpaceAgents(accountUid)
+  const hasAgents = spaceAgents.agents.length > 0 || agentLists.some((query) => (query.data?.length || 0) > 0)
   // "No agents" is only meaningful once every server has answered. Treating the in-flight state as
   // empty would hide the assistant on each launch and discard the restored sidebar state.
   const isSettled =
     serverUrls !== undefined &&
+    !spaceAgents.isLoading &&
     (agentLists.length === 0 || agentLists.every((query) => query.isSuccess || query.isError))
   return {hasAgents, isSettled}
 }
@@ -1302,7 +1414,7 @@ export async function prefetchAgentDetail(
   if (!serverUrl || !accountUid || !agentId) return
   const res = await sendAgentAction({serverUrl, accountUid, action: {_: 'GetAgent', agentId}})
   if (res._ !== 'GetAgentResponse') throw new Error('Unexpected GetAgent response')
-  queryClient.setQueryData(['agents', 'detail', serverUrl, accountUid, agentId], res)
+  getQueryClient().setQueryData(['agents', 'detail', serverUrl, accountUid, agentId], res)
   return res
 }
 
@@ -1860,8 +1972,11 @@ export function useUpdateAgent(serverUrl: string | undefined, accountUid: string
     },
     onSuccess(result, variables) {
       if (result._ === 'GetAgentResponse') {
-        queryClient.setQueriesData({queryKey: ['agents', 'detail', serverUrl, accountUid, variables.agentId]}, result)
-        queryClient.setQueriesData(
+        getQueryClient().setQueriesData(
+          {queryKey: ['agents', 'detail', serverUrl, accountUid, variables.agentId]},
+          result,
+        )
+        getQueryClient().setQueriesData(
           {queryKey: ['agents', 'list', serverUrl, accountUid]},
           (old: AgentInfo[] | undefined) =>
             old?.map((agent) => (agent.id === result.agent.id ? result.agent : agent)) ?? old,
@@ -2313,17 +2428,20 @@ export function useAgentWebSocketSubscription(
         })
       }
       const sessionId = event.event.sessionId
-      queryClient.setQueriesData({queryKey: ['agents', 'session', serverUrl, accountUid, sessionId]}, (old: any) => {
-        if (!old || old._ !== 'GetSessionResponse') return old
-        if (old.events.some((existing: any) => existing.id === event.event.id)) return old
-        const events = old.events.filter((existing: any) => {
-          if (typeof existing.id !== 'string' || !existing.id.startsWith('optimistic-')) return true
-          // Only a message the USER wrote can be the echo of a message the user is waiting on. The
-          // runtime writes as `role: 'user'` too, mid-run, over this same stream.
-          return !isOptimisticUserEcho(event.event.event, existing.event)
-        })
-        return {...old, events: [...events, event.event]}
-      })
+      getQueryClient().setQueriesData(
+        {queryKey: ['agents', 'session', serverUrl, accountUid, sessionId]},
+        (old: any) => {
+          if (!old || old._ !== 'GetSessionResponse') return old
+          if (old.events.some((existing: any) => existing.id === event.event.id)) return old
+          const events = old.events.filter((existing: any) => {
+            if (typeof existing.id !== 'string' || !existing.id.startsWith('optimistic-')) return true
+            // Only a message the USER wrote can be the echo of a message the user is waiting on. The
+            // runtime writes as `role: 'user'` too, mid-run, over this same stream.
+            return !isOptimisticUserEcho(event.event.event, existing.event)
+          })
+          return {...old, events: [...events, event.event]}
+        },
+      )
       invalidateQueries(['agents', 'detail'])
     } else if (event._ === 'appendPartial') {
       // Run-keyed partials (workflow progress) are handled by the run-tree hook, not here.
@@ -2464,7 +2582,7 @@ type AgentWSRunPatch = {progress?: {fraction?: number; label?: string}; activity
  * would otherwise re-select the session that is being deleted from the still-stale cache.
  */
 export function removeOptimisticSessionFromLists(serverUrl: string, accountUid: string, sessionId: string) {
-  queryClient.setQueriesData({queryKey: ['agents', 'sessions', serverUrl, accountUid]}, (old: any) => {
+  getQueryClient().setQueriesData({queryKey: ['agents', 'sessions', serverUrl, accountUid]}, (old: any) => {
     if (!Array.isArray(old)) return old
     return old.filter((entry: AgentSessionListEntry) => entry.session.id !== sessionId)
   })
@@ -2482,12 +2600,12 @@ export function removeOptimisticSessionFromLists(serverUrl: string, accountUid: 
  * fetches replace both seeds as they land.
  */
 export function addOptimisticSessionToCaches(serverUrl: string, accountUid: string, session: SessionInfo) {
-  queryClient.setQueryData(['agents', 'sessions', serverUrl, accountUid], (old: any) => {
+  getQueryClient().setQueryData(['agents', 'sessions', serverUrl, accountUid], (old: any) => {
     const list = Array.isArray(old) ? old : []
     if (list.some((entry: AgentSessionListEntry) => entry.session.id === session.id)) return old
     return [{serverUrl, session} satisfies AgentSessionListEntry, ...list]
   })
-  queryClient.setQueryData(['agents', 'session', serverUrl, accountUid, session.id], (old: any) => {
+  getQueryClient().setQueryData(['agents', 'session', serverUrl, accountUid, session.id], (old: any) => {
     if (old) return old
     return {_: 'GetSessionResponse', session, events: [], systemPromptMarkdown: ''}
   })
@@ -2506,7 +2624,7 @@ export function addOptimisticSessionMessage(
     ...message,
     clientMessageId: message.clientMessageId ?? crypto.randomUUID(),
   }))
-  queryClient.setQueriesData({queryKey: ['agents', 'session', serverUrl, accountUid, sessionId]}, (old: any) => {
+  getQueryClient().setQueriesData({queryKey: ['agents', 'session', serverUrl, accountUid, sessionId]}, (old: any) => {
     if (!old || old._ !== 'GetSessionResponse') return old
     const now = Date.now()
     return {
@@ -2607,7 +2725,7 @@ export function useUpdateAgentSession(serverUrl: string | undefined, accountUid:
       return res.session
     },
     onSuccess(updatedSession) {
-      queryClient.setQueriesData(
+      getQueryClient().setQueriesData(
         {queryKey: ['agents', 'session', serverUrl, accountUid, updatedSession.id]},
         (old: any) => {
           if (!old || old._ !== 'GetSessionResponse') return old
@@ -2629,7 +2747,7 @@ export function useDeleteAgentSession(serverUrl: string | undefined, accountUid:
       return res
     },
     onSuccess(deletedSession) {
-      queryClient.removeQueries(['agents', 'session', serverUrl, accountUid, deletedSession.sessionId])
+      getQueryClient().removeQueries(['agents', 'session', serverUrl, accountUid, deletedSession.sessionId])
       invalidateQueries(['agents'])
     },
   })

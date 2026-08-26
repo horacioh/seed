@@ -128,7 +128,7 @@ export const TRIGGER_TYPE_OPTIONS: {
   },
   {
     value: 'site-update',
-    label: 'Site update',
+    label: 'Space update',
   },
   {
     value: 'schedule',
@@ -302,7 +302,7 @@ export function TriggerSourceFields({
       {source.type === 'site-update' ? (
         <div className="grid gap-3 md:grid-cols-2">
           <AccountAutocompleteField
-            label="Resource/site prefix"
+            label="Resource/space prefix"
             value={source.resourcePrefix}
             onChange={(value) =>
               onChange({
@@ -310,7 +310,7 @@ export function TriggerSourceFields({
                 resourcePrefix: value,
               })
             }
-            placeholder="Search site/account or enter hm:// prefix"
+            placeholder="Search space/account or enter hm:// prefix"
             valueFormat="hm-url"
           />
           <label className={stylex.props(styles.sfbc6e28d).className || ''}>

@@ -558,6 +558,27 @@ export const HMDocumentMetadataSchema = z
     thumbnail: z.string().optional(), // DEPRECATED
     cover: z.string().optional(),
     siteUrl: z.string().optional(),
+    /**
+     * Agents server a space advertises for its readers (an http(s) origin). Clients viewing the
+     * space's documents connect to it alongside their own configured servers, so a site can host
+     * agents for its audience — on the gateway, each site brings its own agents backend.
+     */
+    agentServerUrl: z.string().optional(),
+    /**
+     * Agents this space publishes to its readers: `{[agentId]: order}`, where each id names an agent
+     * on {@link agentServerUrl} and the number is its position in the picker.
+     *
+     * This is what makes a space's agents reachable by someone who just arrived: an agent server
+     * only ever lists agents you own or collaborate on, so a reader cannot discover them by asking.
+     * Named here, the client fetches each one by id, which the server serves to any signed account
+     * once the agent is public-read.
+     *
+     * Only ids and order live here — an agent's name and icon are read from the agent itself, so
+     * renaming one never strands a stale copy in a signed document. Values are typed loosely
+     * because removal leaves a null attribute behind rather than dropping the key; `parseSpaceAgentIds`
+     * in @shm/ui/agents/space-agents is the reader for this field.
+     */
+    spaceAgents: z.record(z.unknown()).optional(),
     layout: z.union([z.literal('Seed/Experimental/Newspaper'), z.literal('')]).optional(),
     displayPublishTime: z.string().optional(),
     displayAuthor: z.string().optional(),
@@ -605,17 +626,19 @@ export const DOCUMENT_ATTRIBUTE_DESCRIPTIONS: Readonly<Record<string, string>> =
   thumbnail: 'Deprecated image field kept for older documents.',
   cover: 'Wide cover image shown in headers and cards.',
   siteUrl: 'Published website URL for a space.',
-  layout: 'Legacy site header layout setting.',
+  agentServerUrl: 'Agents server readers of this space connect to.',
+  spaceAgents: 'Agents this space publishes to its readers, by id and order.',
+  layout: 'Legacy space header layout setting.',
   displayPublishTime: 'Publication date shown to readers.',
   displayAuthor: 'Author byline shown to readers.',
-  seedExperimentalLogo: 'Logo shown in the site header.',
+  seedExperimentalLogo: 'Logo shown in the space header.',
   seedExperimentalHomeOrder: 'Legacy ordering preference for a space home page.',
   showOutline: 'Whether to show the document outline.',
   showActivity: 'Whether to show document activity and tools.',
   contentWidth: 'Width of the document content area.',
   childrenType: 'Layout of the document’s root-level blocks.',
-  theme: 'Visual settings for a site.',
-  'theme.headerLayout': 'Alignment of the site header.',
+  theme: 'Visual settings for a space.',
+  'theme.headerLayout': 'Alignment of the space header.',
   importCategories: 'Categories retained from an imported document.',
   importTags: 'Tags retained from an imported document.',
   title: 'Legacy document title; new documents use name.',

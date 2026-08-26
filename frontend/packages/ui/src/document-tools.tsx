@@ -203,7 +203,7 @@ export function DocumentTools({
             {
               tab: 'contacts' as const,
               label: 'Contacts',
-              tooltip: 'Inspect Site Contacts',
+              tooltip: 'Inspect Space Contacts',
               icon: Users,
             },
             {

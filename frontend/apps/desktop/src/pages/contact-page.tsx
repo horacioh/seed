@@ -289,7 +289,7 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
               }
             >
               <ArrowUpRight className={stylex.props(styles.sca3de968).className || ''} />
-              Open Site
+              Open Space
             </Button>
             {myContact ? (
               <>

@@ -103,7 +103,7 @@ export function SiteEmailSubscribersPanel({
         <h1>{tx('Email Subscribers')}</h1>
       </SizableText>
       <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
-        {tx('People who subscribed to receive updates from this site.')}
+        {tx('People who subscribed to receive updates from this space.')}
       </SizableText>
       {message ? (
         <SizableText className={stylex.props(styles.sf2718385).className || ''}>{message}</SizableText>
@@ -141,7 +141,7 @@ export function SiteEmailSubscribersList({
   if (!subscribers?.length) {
     return (
       <SizableText className={stylex.props(styles.sf2718385).className || ''}>
-        {tx('No one has subscribed to this site yet.')}
+        {tx('No one has subscribed to this space yet.')}
       </SizableText>
     )
   }

@@ -173,7 +173,7 @@ export function ImageForm({
       {onRemove && url ? (
         <Button
           size="icon"
-          className="grouo-hover:pointer-events-all absolute top-0 right-0 z-50 opacity-0 group-hover:opacity-100"
+          className="absolute top-0 right-0 z-50 opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
           onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()

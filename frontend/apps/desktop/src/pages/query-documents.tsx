@@ -1256,7 +1256,7 @@ function ConditionRow({
             })
           }
           suggestions={spaceSuggestions}
-          placeholder="Space ID or site name"
+          placeholder="Space ID or space name"
           ariaLabel={`Condition ${index + 1} space`}
         />
       ) : isPath ? (

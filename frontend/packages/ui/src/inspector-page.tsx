@@ -428,7 +428,7 @@ function getInspectToolTabs(
     {
       tab: 'contacts',
       label: 'Contacts',
-      tooltip: 'Inspect site contacts',
+      tooltip: 'Inspect space contacts',
       icon: Users,
       count: inspectData.contacts.data?.length,
     },

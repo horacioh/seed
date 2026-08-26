@@ -52,7 +52,7 @@ import {coerceReasoningLevel, ReasoningSlider} from './reasoning-select'
 import {pickDefaultProviderModel} from './model-utils'
 import {AgentPromptEditor, promptBlocksForRequest} from './prompt-editor'
 import {ProviderIcon} from './provider-icons'
-import {SubscriptionSignIn} from './provider-oauth'
+import {isSubscriptionSignInAvailable, SubscriptionSignIn} from './provider-oauth'
 import {PROVIDER_METADATA, PROVIDER_TYPE_ORDER, providerLabel} from './provider-registry'
 const styles = stylex.create({
   sfbc6e28f: {
@@ -252,13 +252,18 @@ export function ModelProvidersDialog({
                 <SizableText size="sm" className={stylex.props(styles.s8a2570e2).className || ''}>
                   Sign-in expired — sign in again to keep using this provider.
                 </SizableText>
-                {health.data?.subscriptionAuth === true ? (
+                {isSubscriptionSignInAvailable(provider.type as ModelProviderType, health.data) ? (
                   <SubscriptionSignIn
                     serverUrl={input.serverUrl}
                     selectedAccountId={input.selectedAccountId}
                     providerType={provider.type as ModelProviderType}
                     onConnected={() => toast.success('Signed in again')}
                   />
+                ) : health.data?.subscriptionAuth === true ? (
+                  <SizableText size="sm" color="muted">
+                    Subscription sign-in is only available from the desktop app. Sign in again there, or delete this
+                    provider and use an API key instead.
+                  </SizableText>
                 ) : (
                   <SizableText size="sm" color="muted">
                     This server no longer offers subscription sign-in. Delete this provider and use an API key instead.
@@ -341,10 +346,9 @@ function AddModelProviderForm({
   const [authMode, setAuthMode] = useState<'api-key' | 'subscription'>('api-key')
   const [oauthSecretName, setOauthSecretName] = useState<string | null>(null)
   const metadata = PROVIDER_METADATA[type]
-  // Subscription sign-in is offered only when this server has explicitly
-  // enabled it (health.subscriptionAuth) — the flow needs this desktop app to
-  // catch the provider's localhost redirect on the server's behalf.
-  const subscriptionAvailable = Boolean(metadata.subscription) && health.data?.subscriptionAuth === true
+  // Server opt-in *and* a platform that can catch the provider's localhost
+  // redirect (desktop only) — see isSubscriptionSignInAvailable.
+  const subscriptionAvailable = isSubscriptionSignInAvailable(type, health.data)
   const subscriptionMode = authMode === 'subscription' && subscriptionAvailable
   useEffect(() => {
     setName(providerLabel(type))
@@ -648,7 +652,7 @@ export function ManageAgentAccountsDialog({
           Hypermedia accounts that can be used by your agents on this server to write content.
         </DialogDescription>
         <DialogDescription>
-          To give an agent access to write content, invite these accounts as collaborators on your sites or documents.
+          To give an agent access to write content, invite these accounts as collaborators on your spaces or documents.
         </DialogDescription>
       </div>
       <div className={stylex.props(styles.sd1c4c9a2).className || ''}>

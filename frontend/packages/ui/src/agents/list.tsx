@@ -11,6 +11,7 @@ import {
   useAgentServerUrls,
   useAgentWebSocketSubscription,
   useLocalAgentServerUrl,
+  useSpaceAgents,
 } from './models'
 import {useSelectedAccountId} from './account'
 import {useNavigate} from './navigation'
@@ -145,6 +146,17 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
       ),
     [inviteQueries, serverUrls],
   )
+  const spaceAgents = useSpaceAgents(selectedAccountId)
+  // Only the ones the user does not already have. A space owner's own agents belong under "All
+  // Agents" below, where they can be opened and edited; what this section is for is the visitor
+  // case, where every list comes back empty and the space's published agents are the only way in.
+  const publishedAgents = useMemo(
+    () =>
+      spaceAgents.agents.filter(
+        (option) => !agents.some((agent) => agent.serverUrl === option.serverUrl && agent.id === option.agent.id),
+      ),
+    [agents, spaceAgents.agents],
+  )
   const isLoadingAgents = agentQueries.some((query) => query.isFetching && !query.data)
   const agentError = agentQueries.find((query) => query.isError)?.error
   const createAgentDisabledReason = !serverUrls.length ? 'Configure an agent server before creating an agent.' : null
@@ -266,6 +278,24 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
                   key={`${invite.serverUrl}:${invite.agentId}`}
                   invite={invite}
                   selectedAccountId={selectedAccountId}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {publishedAgents.length ? (
+          <section className={stylex.props(styles.sfbc6e28f).className || ''}>
+            <SizableText weight="bold">Agents in this space</SizableText>
+            <div className={stylex.props(styles.sfbc6e28e).className || ''}>
+              {publishedAgents.map(({serverUrl, agent}) => (
+                <AgentListRow
+                  key={`${serverUrl}:${agent.id}`}
+                  agentId={agent.id}
+                  name={agent.definition.name}
+                  status={agent.status}
+                  serverUrl={serverUrl}
+                  accessRole={agent.accessRole}
                 />
               ))}
             </div>

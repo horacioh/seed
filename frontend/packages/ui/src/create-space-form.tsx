@@ -393,7 +393,7 @@ function AppearanceStep({state, update}: StepProps) {
       <div className={stylex.props(styles.saa44949d).className || ''}>
         <div className={stylex.props(styles.sac428cea).className || ''}>
           <Label htmlFor="space-activity-tabs">Show activity tabs</Label>
-          <Tooltip content="Show the People, Comments, and Citations tabs on your site's pages.">
+          <Tooltip content="Show the People, Comments, and Citations tabs on your space's pages.">
             <HelpCircle className={stylex.props(styles.s76b0b3a9).className || ''} />
           </Tooltip>
         </div>

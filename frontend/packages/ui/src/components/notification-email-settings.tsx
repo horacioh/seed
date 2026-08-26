@@ -167,7 +167,7 @@ export function NotificationEmailSettings({
 
       <div className={stylex.props(styles.sbbe27b51).className || ''}>
         <Label htmlFor="notification-email-switch" className={stylex.props(styles.s14e67425).className || ''}>
-          Get notified for mentions and replies across all Hypermedia sites
+          Get notified for mentions and replies across all Hypermedia spaces
         </Label>
         <Switch
           id="notification-email-switch"

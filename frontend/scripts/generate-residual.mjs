@@ -44,6 +44,28 @@ function addString(str) {
   }
 }
 
+function collectClassStringsFromNode(node, ignoreKeys = new Set()) {
+  if (!node || typeof node !== 'object') return
+  if (node.type === 'StringLiteral') {
+    addString(node.value)
+    return
+  }
+  if (node.type === 'ObjectProperty' || node.type === 'ObjectMethod') {
+    const key =
+      node.key && (node.key.type === 'Identifier' ? node.key.name : node.key.type === 'StringLiteral' ? node.key.value : null)
+    if (key && ignoreKeys.has(key)) return
+  }
+  for (const key of Object.keys(node)) {
+    if (key === 'loc' || key === 'start' || key === 'end' || key === 'range' || key === 'leadingComments' || key === 'trailingComments') continue
+    const child = node[key]
+    if (Array.isArray(child)) {
+      for (const c of child) collectClassStringsFromNode(c, ignoreKeys)
+    } else if (child && typeof child === 'object') {
+      collectClassStringsFromNode(child, ignoreKeys)
+    }
+  }
+}
+
 for (const f of files) {
   const src = fs.readFileSync(path.join(root, f), 'utf8')
   let ast
@@ -53,6 +75,14 @@ for (const f of files) {
     continue
   }
   babel.traverse(ast, {
+    CallExpression(p) {
+      if (p.node.callee?.name === 'cva') {
+        // The first argument is the base class string; everything inside
+        // `variants` and `compoundVariants` is also class strings.
+        // `defaultVariants` holds variant option names, not CSS, so skip it.
+        collectClassStringsFromNode(p.node, new Set(['defaultVariants']))
+      }
+    },
     JSXAttribute(p) {
       if (p.node.name.name !== 'className') return
       const value = p.get('value')
@@ -74,6 +104,11 @@ for (const f of files) {
             else if (arg.isConditionalExpression()) {
               if (arg.node.consequent.type === 'StringLiteral') addString(arg.node.consequent.value)
               if (arg.node.alternate.type === 'StringLiteral') addString(arg.node.alternate.value)
+            } else if (arg.isCallExpression()) {
+              // Some call expressions (e.g. buttonVariants(...)) may contain
+              // variant option names, but their cva base/variant strings are
+              // already collected at the cva definition site.
+              collectClassStringsFromNode(arg.node)
             }
           }
         } else if (expr.isConditionalExpression()) {

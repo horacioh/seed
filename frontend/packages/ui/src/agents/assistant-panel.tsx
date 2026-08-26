@@ -11,6 +11,7 @@ import {
   useSessionRuns,
   useAgentWebSocketSubscription,
   useAllAgentSessions,
+  useSpaceAgents,
   useCreateAgentSessionOnServer,
   useDeleteAgentSession,
   useLocalAgentServerUrl,
@@ -20,7 +21,7 @@ import {
   useStopAgentSession,
   type AgentSessionDraftMessage,
   type AgentSessionListEntry,
-} from '@shm/ui/agents/models'
+} from './models'
 import {
   buildAgentSessionChatRows,
   interleaveRunRecords,
@@ -28,15 +29,16 @@ import {
   chatRowHasPendingToolCall,
   frozenRunIds,
   retryableErrorRowKey,
-} from '@shm/ui/agents/agent-session-rows'
+} from './agent-session-rows'
 import {
+  orderAssistantAgents,
   resolveAssistantSelection,
   type AssistantAgentKey,
   type AssistantAgentOption,
-} from '@/models/assistant-selection'
-import {CreateAgentDialog} from '@shm/ui/agents/dialogs'
-import {useSelectedAccountId} from '@/selected-account'
-import {useNavigate} from '@/utils/useNavigate'
+} from './assistant-selection'
+import {CreateAgentDialog} from './dialogs'
+import {useSelectedAccountId} from './account'
+import {useNavigate} from './navigation'
 import {AlertDialogFooter, AlertDialogTitle} from '@shm/ui/components/alert-dialog'
 import {Button} from '@shm/ui/button'
 import {
@@ -61,24 +63,20 @@ import {
   MoreHorizontal,
   Plus,
   Trash2,
+  X,
 } from 'lucide-react'
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import {agentAccessCanChat, agentAccessCanWrite} from '@shm/ui/agents/access'
-import {AgentRunStatusBar, useRunStartedAt} from '@shm/ui/agents/agent-run-status'
-import {AgentErrorRow, AssistantMessageParts, ChatMessageBubble} from '@shm/ui/agents/message-rendering'
-import {useChatAutoScroll} from '@shm/ui/agents/chat-autoscroll'
+import {agentAccessCanChat, agentAccessCanWrite} from './access'
+import {AgentRunStatusBar, useRunStartedAt} from './agent-run-status'
+import {AgentErrorRow, AssistantMessageParts, ChatMessageBubble} from './message-rendering'
+import {useChatAutoScroll} from './chat-autoscroll'
 import {decodeAssistantSessionRef, encodeAssistantSessionRef, type AssistantSessionRef} from './assistant-session-ref'
 import {useAssistantWindowContextLines} from './assistant-window-context'
-import {
-  AgentRichMessageComposer,
-  SUB_SESSION_DRIVEN_MESSAGE,
-  TERMINAL_RUN_STATUSES,
-} from '@shm/ui/agents/rich-message-composer'
-import type {CommentEditorSubmitHandle} from '@shm/editor/comment-editor'
-import {RunRecordCard, SessionRunCard} from '@shm/ui/agents/run-card'
-import {SessionModelBadge} from '@shm/ui/agents/header'
-import {SessionStatusDot, SessionSummaryBanner, SubSessionsDisclosure} from '@shm/ui/agents/session-children'
-import {QueuedChatMessages, useQueuedChatMessages} from '@shm/ui/agents/chat-message-queue'
+import {AgentRichMessageComposer, SUB_SESSION_DRIVEN_MESSAGE, TERMINAL_RUN_STATUSES} from './rich-message-composer'
+import type {AgentsRichEditorSubmitHandle} from './platform'
+import {RunRecordCard, SessionRunCard} from './run-card'
+import {SessionModelBadge} from './header'
+import {SessionStatusDot, SessionSummaryBanner, SubSessionsDisclosure} from './session-children'
 
 /**
  * Assistant sidebar.
@@ -87,6 +85,10 @@ import {QueuedChatMessages, useQueuedChatMessages} from '@shm/ui/agents/chat-mes
  * top picks the agent context, the row below it picks a session within that context, and new chats
  * start directly in the current context — no dialog in the way. A new chat is a draft until the
  * first send, which creates the session and delivers the message in one motion.
+ *
+ * Shared between desktop (mounted in the main window beside the page, toggled from the footer) and
+ * web (mounted beside the site page, toggled from the account menu). Everything host-specific —
+ * signing, navigation, the account, the rich editor — comes through the agents platform seam.
  */
 const styles = stylex.create({
   s2f33c551: {
@@ -275,11 +277,14 @@ export function AssistantPanel({
   initialSessionId,
   newChatRequest,
   onSessionChange,
+  onClose,
 }: {
   /** Serialized {@link AssistantSessionRef} restored from window state. */
   initialSessionId?: string | null
   newChatRequest?: number
   onSessionChange?: (sessionId: string | null) => void
+  /** Renders a close button in the header when the host has no other way to dismiss the panel. */
+  onClose?: () => void
 }) {
   const accountUid = useSelectedAccountId()
   const serverUrls = useAgentServerUrls()
@@ -287,22 +292,26 @@ export function AssistantPanel({
   const agentQueries = useAgentLists(serverUrls.data, accountUid)
   const sessions = useAllAgentSessions(serverUrls.data, accountUid)
   const navigate = useNavigate()
+  const spaceAgents = useSpaceAgents(accountUid)
   const agents: AssistantAgentOption[] = useMemo(
     () =>
-      (serverUrls.data || []).flatMap((serverUrl, index) =>
-        (agentQueries[index]?.data || []).map((agent) => ({
-          serverUrl,
-          agent,
-        })),
+      orderAssistantAgents(
+        spaceAgents.agents,
+        (serverUrls.data || []).flatMap((serverUrl, index) =>
+          (agentQueries[index]?.data || []).map((agent) => ({
+            serverUrl,
+            agent,
+          })),
+        ),
       ),
-    [serverUrls.data, agentQueries],
+    [serverUrls.data, agentQueries, spaceAgents.agents],
   )
   const [stored, setStoredRaw] = useState<AssistantSessionRef | null>(() => decodeAssistantSessionRef(initialSessionId))
   const [chosenAgent, setChosenAgent] = useState<AssistantAgentKey | null>(null)
   const [isDraft, setIsDraft] = useState(false)
   const lastNewChatRequestRef = useRef(0)
   // Handle onto whichever rich composer is mounted (session chat or draft), for imperative focus.
-  const composerRef = useRef<CommentEditorSubmitHandle | null>(null)
+  const composerRef = useRef<AgentsRichEditorSubmitHandle | null>(null)
 
   // Shares its cache with the transcript below; used to attribute a restored session to its agent
   // before the session lists have loaded, and for the full-view navigation target.
@@ -391,6 +400,7 @@ export function AssistantPanel({
           agents={agents}
           activeAgent={activeAgent}
           localServerUrl={localServerUrl.data ?? null}
+          advertisedServerUrl={serverUrls.advertisedServerUrl}
           onSelect={(key) => setChosenAgent(key)}
           onCreateAgent={() =>
             createAgentDialog.open({
@@ -414,13 +424,21 @@ export function AssistantPanel({
             })
           }
         />
-        <button
-          onClick={startDraft}
-          className="no-window-drag text-muted-foreground hover:text-foreground p-1"
-          title="New chat"
-        >
-          <MessageCirclePlus className={stylex.props(styles.sca3de968).className || ''} />
-        </button>
+        <div className="no-window-drag flex shrink-0 items-center">
+          <button onClick={startDraft} className="text-muted-foreground hover:text-foreground p-1" title="New chat">
+            <MessageCirclePlus className={stylex.props(styles.sca3de968).className || ''} />
+          </button>
+          {onClose ? (
+            <button
+              onClick={onClose}
+              className="text-muted-foreground hover:text-foreground p-1"
+              title="Close agents panel"
+              aria-label="Close agents panel"
+            >
+              <X className={stylex.props(styles.sca3de968).className || ''} />
+            </button>
+          ) : null}
+        </div>
       </div>
       <div className={stylex.props(styles.s64953398).className || ''}>
         <AssistantSessionPicker
@@ -543,6 +561,7 @@ function AssistantAgentPicker({
   agents,
   activeAgent,
   localServerUrl,
+  advertisedServerUrl,
   onSelect,
   onCreateAgent,
   onOpenAgentsPage,
@@ -550,6 +569,8 @@ function AssistantAgentPicker({
   agents: AssistantAgentOption[]
   activeAgent: AssistantAgentOption | null
   localServerUrl: string | null
+  /** Server the site on screen advertises; its group is labeled so the user knows why it is here. */
+  advertisedServerUrl?: string | null
   onSelect: (key: AssistantAgentKey) => void
   onCreateAgent: () => void
   onOpenAgentsPage: () => void
@@ -591,6 +612,11 @@ function AssistantAgentPicker({
                 <span className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
                   {describeAgentServer(group.serverUrl, localServerUrl)}
                 </span>
+                {advertisedServerUrl && group.serverUrl === advertisedServerUrl ? (
+                  <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-[10px] font-medium">
+                    This space
+                  </span>
+                ) : null}
               </div>
               {group.options.map((option) => {
                 const isActive = option.serverUrl === activeAgent?.serverUrl && option.agent.id === activeAgent.agent.id
@@ -775,7 +801,7 @@ function AssistantDraftChat({
   readOnly: boolean
   /** False for chat-only access: the tool palette needs write access to the agent. */
   canInvokeTools: boolean
-  composerRef: React.MutableRefObject<CommentEditorSubmitHandle | null>
+  composerRef: React.MutableRefObject<AgentsRichEditorSubmitHandle | null>
   onSessionCreated: (ref: AssistantSessionRef) => void
 }) {
   const createSession = useCreateAgentSessionOnServer(accountUid)
@@ -864,7 +890,7 @@ function AssistantSessionChat({
 }: {
   sessionRef: AssistantSessionRef
   accountUid: string | null | undefined
-  composerRef: React.MutableRefObject<CommentEditorSubmitHandle | null>
+  composerRef: React.MutableRefObject<AgentsRichEditorSubmitHandle | null>
 }) {
   const {serverUrl, sessionId} = sessionRef
   const navigate = useNavigate()

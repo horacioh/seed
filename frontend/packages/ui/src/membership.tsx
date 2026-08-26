@@ -42,7 +42,7 @@ export function MembershipContent({accountUid}: {accountUid: string}) {
   if (!uniqueSiteSubscribed?.length) {
     return (
       <div className={stylex.props(styles.s65430849).className || ''}>
-        <SizableText color="muted">No sites joined yet</SizableText>
+        <SizableText color="muted">No spaces joined yet</SizableText>
       </div>
     )
   }

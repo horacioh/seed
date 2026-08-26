@@ -151,7 +151,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
     )
   }
   if (!document) {
-    return <SizableText color="muted">This account doesn't have a site yet.</SizableText>
+    return <SizableText color="muted">This account doesn't have a space yet.</SizableText>
   }
   if (!isSiteOwner) {
     return (
@@ -159,7 +159,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
         <SizableText size="2xl" weight="bold">
           People with access
         </SizableText>
-        <SizableText color="muted">Only the site owner can view members.</SizableText>
+        <SizableText color="muted">Only the space owner can view members.</SizableText>
       </>
     )
   }
@@ -219,7 +219,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
             />
           ) : (
             <SizableText color="muted" className={stylex.props(styles.s34b570).className || ''}>
-              This site doesn't have a notification service configured, so it can't collect email subscribers yet.
+              This space doesn't have a notification service configured, so it can't collect email subscribers yet.
             </SizableText>
           )}
         </div>

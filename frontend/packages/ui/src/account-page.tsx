@@ -89,7 +89,7 @@ const SITE_ACCOUNT_TABS: {
     icon: ActivityIcon,
   },
   {
-    label: 'Site Membership',
+    label: 'Space Membership',
     value: 'membership',
     icon: Users,
   },
@@ -126,11 +126,11 @@ export function getAccountSiteLinkState(params: {
   isDomainLoading?: boolean
 }) {
   const hostname = getSiteHostname(params.siteUrl)
-  const domainLabel = params.siteUrl ? hostnameStripProtocol(params.siteUrl) : 'Open Site'
+  const domainLabel = params.siteUrl ? hostnameStripProtocol(params.siteUrl) : 'Open Space'
   if (!params.hasSite) {
     return {
       kind: 'hidden' as const,
-      label: 'Open Site',
+      label: 'Open Space',
       status: 'default' as const,
       hostname,
     }
@@ -138,7 +138,7 @@ export function getAccountSiteLinkState(params: {
   if (!params.siteUrl) {
     return {
       kind: 'internal' as const,
-      label: 'Open Site',
+      label: 'Open Space',
       status: 'default' as const,
       hostname,
     }
@@ -146,7 +146,7 @@ export function getAccountSiteLinkState(params: {
   if (!hostname) {
     return {
       kind: 'internal' as const,
-      label: 'Open Site',
+      label: 'Open Space',
       status: 'default' as const,
       hostname,
     }
@@ -175,7 +175,7 @@ export function getAccountSiteLinkState(params: {
   }
   return {
     kind: 'internal' as const,
-    label: 'Open Site',
+    label: 'Open Space',
     status: 'warning' as const,
     hostname,
     warningMessage: `${domainLabel} is not resolving to this profile account.`,

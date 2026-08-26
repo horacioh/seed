@@ -358,9 +358,9 @@ function RemoveSiteDialog({onClose, input}: {onClose: () => void; input: Unpacke
   const removeSite = useRemoveSite(input)
   return (
     <div className={stylex.props(styles.s2b00eca2).className || ''}>
-      <AlertDialogTitle>Remove Site</AlertDialogTitle>
+      <AlertDialogTitle>Remove Space</AlertDialogTitle>
       <AlertDialogDescription>
-        Remove this site URL from the entity? Your site will still exist until you delete the server.
+        Remove this space URL from the entity? Your space will still exist until you delete the server.
       </AlertDialogDescription>
 
       <div className={stylex.props(styles.sb87f7413).className || ''}>
@@ -381,7 +381,7 @@ function RemoveSiteDialog({onClose, input}: {onClose: () => void; input: Unpacke
             onClose()
           }}
         >
-          Remove Site
+          Remove Space
         </AlertDialogAction>
       </div>
     </div>
@@ -636,7 +636,7 @@ function SeedHostInfo({info, onSubmit}: {info: HostInfoResponse; onSubmit: () =>
             />
             <PlanFeature
               label={siteCountLabel(info.pricing.premium.siteCount)}
-              plus={`${formatPriceUSDCents(info.pricing.premium.siteCountOverageUSDCents)}/mo extra site`}
+              plus={`${formatPriceUSDCents(info.pricing.premium.siteCountOverageUSDCents)}/mo extra space`}
             />
           </PlanFeatures>
           <SelectPlanButton comingSoon />
@@ -696,9 +696,9 @@ function OverageWarning() {
 }
 function siteCountLabel(count: number) {
   if (count === 1) {
-    return '1 Site'
+    return '1 Space'
   }
-  return `${count} Sites`
+  return `${count} Spaces`
 }
 const PlanHeading = ({className, ...props}: React.HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -1036,7 +1036,7 @@ function SeedHostRegisterSubdomain({
           <FormInput
             control={control}
             name="subdomain"
-            placeholder="my-site-name"
+            placeholder="my-space-name"
             transformInput={(text) =>
               text
                 .replace(/[ _]/g, '-')
@@ -1049,7 +1049,7 @@ function SeedHostRegisterSubdomain({
 
         <BlueButton type="submit">
           <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />
-          Publish Site
+          Publish Space
         </BlueButton>
 
         <AnimatedSpinner isVisible={isSubmitting} />
@@ -1086,7 +1086,7 @@ function SeedHostSubdomainPublished({
       graphic={<WebPublishedGraphic />}
       footer={
         <div className={stylex.props(styles.sfbc6e28f).className || ''}>
-          <SizableText className="text-white/80">Now you can publish the site to your own domain.</SizableText>
+          <SizableText className="text-white/80">Now you can publish the space to your own domain.</SizableText>
 
           <div className={stylex.props(styles.se658ac15).className || ''}>
             <Button onClick={onClose}>
@@ -1101,7 +1101,7 @@ function SeedHostSubdomainPublished({
         </div>
       }
     >
-      <SizableText className="text-white/80">Here is the link to your new site.</SizableText>
+      <SizableText className="text-white/80">Here is the link to your new space.</SizableText>
       <PublishedUrl url={host} />
     </SeedHostCongratsContainer>
   )
@@ -1219,7 +1219,7 @@ function SeedHostDomainPublishedDialog({
 function SeedHostDomainPublished({onClose, host, id}: {onClose: () => void; host: string; id: UnpackedHypermediaId}) {
   return (
     <SeedHostCongratsContainer heading={`Now Published to ${host}!`} graphic={<CongratsGraphic />}>
-      <SizableText className="text-white/80">Here is the link for your site.</SizableText>
+      <SizableText className="text-white/80">Here is the link for your space.</SizableText>
       <PublishedUrl url={`https://${host}`} />
       <div className={stylex.props(styles.s2ffff9).className || ''}>
         <BlueButton onClick={onClose}>
@@ -1267,7 +1267,7 @@ function SeedHostRegisterCustomDomain({
   const document = entity.data?.type === 'document' ? entity.data.document : undefined
   const siteUrl = document?.metadata?.siteUrl
   function onSubmit({domain}: RegisterCustomDomainFields) {
-    if (!siteUrl) throw new Error('Site URL not found')
+    if (!siteUrl) throw new Error('Space URL not found')
     createDomain
       .mutateAsync({
         hostname: domain,
@@ -1371,7 +1371,7 @@ function SeedHostRegisterCustomDomain({
           </DialogInner>
         </>
       ) : (
-        <SizableText className="text-white/80">You need to publish your site first.</SizableText>
+        <SizableText className="text-white/80">You need to publish your space first.</SizableText>
       )}
     </SeedHostContainer>
   )
@@ -1516,7 +1516,7 @@ function PublishWithUrl({
       })
       .then((publishedUrl) => {
         onComplete()
-        toast.success(`Site published to ${publishedUrl}`)
+        toast.success(`Space published to ${publishedUrl}`)
         // make sure the user is seeing the latest version of the site that now includes the url
         replace({
           key: 'document',
@@ -1565,7 +1565,7 @@ function PublishWithUrl({
         will output a setup URL for you to paste here.
       </SizableText>
       <form onSubmit={handleSubmit(onSubmit)} className={stylex.props(styles.s21fb93ac).className || ''}>
-        <FormField name="url" label="Site Setup URL" errors={errors}>
+        <FormField name="url" label="Space Setup URL" errors={errors}>
           <FormInput control={control} name="url" placeholder="https://mysite.com/hm/register?..." width={500} />
         </FormField>
         {/* @ts-expect-error */}
@@ -1573,7 +1573,7 @@ function PublishWithUrl({
 
         <GreenButton type="submit">
           <UploadCloud className={stylex.props(styles.sca3de968).className || ''} />
-          Publish Site
+          Publish Space
         </GreenButton>
 
         {register.isLoading ? (
