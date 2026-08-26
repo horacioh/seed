@@ -18,17 +18,6 @@ const styles = stylex.create({
     alignSelf: 'stretch',
     overflow: 'hidden',
   },
-  s6ea40878: {
-    backgroundColor: 'var(--muted)',
-    pointerEvents: 'none',
-    position: 'absolute',
-    zIndex: '50',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 'calc(0.25rem * 2)',
-    opacity: '100%',
-  },
   s236e44da: {
     color: 'var(--muted-foreground)',
     textAlign: 'center',
@@ -170,18 +159,10 @@ export function ImageForm({
             zIndex: 20,
           }}
         />
-        {emptyLabel && !url ? (
-          <div className={stylex.props(styles.s6ea40878).className || ''}>
-            <SizableText size="xs" className={stylex.props(styles.s236e44da).className || ''}>
-              {emptyLabel}
-            </SizableText>
-          </div>
-        ) : null}
-
         {image || (
           <div className={stylex.props(styles.sf8375e72).className || ''}>
             <SizableText size="xs" weight="bold" className={stylex.props(styles.s236e44da).className || ''}>
-              {url ? 'Update Cover' : emptyLabel || 'Add Cover'}
+              {emptyLabel || 'Add Cover'}
             </SizableText>
             <SizableText size="xs" className={stylex.props(styles.s236e44da).className || ''}>
               {suggestedSize}

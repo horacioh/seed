@@ -15,7 +15,7 @@ import {
   useSetPushOnPublish,
 } from '@/models/gateway-settings'
 import {usePeerInfo} from '@/models/networking'
-import {useSystemThemeWriter} from '@/models/settings'
+import {useSystemThemeWriter, type SystemTheme} from '@/models/settings'
 import {useOpenUrl} from '@/open-url'
 import {client} from '@/trpc'
 import {useNavigate} from '@/utils/useNavigate'
@@ -615,6 +615,11 @@ export function DeleteAllRecents() {
 }
 function GeneralSettings() {
   const [theme, setTheme, isInitialLoading] = useSystemThemeWriter()
+  const serverTheme = (theme as SystemTheme | undefined) || 'system'
+  const [optimisticTheme, setOptimisticTheme] = useState(serverTheme)
+  useEffect(() => {
+    setOptimisticTheme(serverTheme)
+  }, [serverTheme])
   return (
     <>
       <SizableText size="2xl" weight="bold">
@@ -626,8 +631,16 @@ function GeneralSettings() {
           right={
             !isInitialLoading ? (
               <RadioGroup
-                value={theme || 'system'}
-                onValueChange={setTheme}
+                value={optimisticTheme}
+                onValueChange={(value) => {
+                  const next = value as SystemTheme
+                  const previous = optimisticTheme
+                  if (next === previous) return
+                  setOptimisticTheme(next)
+                  setTheme(next, {
+                    onError: () => setOptimisticTheme(previous),
+                  })
+                }}
                 className={stylex.props(styles.s86ff3e6).className || ''}
               >
                 <div className={stylex.props(styles.sac428cea).className || ''}>

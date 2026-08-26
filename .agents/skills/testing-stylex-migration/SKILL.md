@@ -13,10 +13,10 @@ inputs, account settings tabs, the editor chrome, or the main shell.
 
 ## Web app
 
-1. Build the production app:
+1. Build the production app under Node 22 to avoid ESM loader issues:
    ```bash
    cd frontend/apps/web
-   pnpm --filter @shm/web build
+   mise exec node@22.22.0 -- pnpm --filter @shm/web build
    ```
 2. Create a data directory and an empty `config.json` so the not-registered page
    can render without a daemon:
@@ -91,9 +91,13 @@ inputs, account settings tabs, the editor chrome, or the main shell.
    - If the Vite renderer dev server binds to `127.0.0.1`, Electron can fail to
      resolve `localhost` for IPv6; ensure `host: '::'` is set in
      `frontend/apps/desktop/vite.renderer.config.mts`.
-   - Sync-options radio groups (`On publish`, `On copy`) may not respond to clicks
-     in a fixture-only setup; the `Appearance` theme radio is the best way to
-     verify dark mode toggling.
+   - Sync-options radio groups (`On publish`, `On copy`) may not respond to mouse
+     clicks in a fixture-only setup. Use keyboard navigation (`Tab` to focus the
+     radio group, then `Down`/`Up` to change selection) to verify the optimistic
+     state update; the `Appearance` theme radio can be verified the same way.
+   - `/hm/create-site` Step 2 `ImageForm` blocks should show the placeholder and
+     size hint stacked, not concatenated. If `emptyLabel` is supplied (logo/favicon),
+     check that it is not duplicated by both the empty placeholder and the overlay.
 5. Use `wmctrl -l` to discover open desktop windows (welcome, settings, etc.)
    and `wmctrl -i -a <WID>` to focus them for screenshots.
 6. The settings window may open as a modal overlay inside the main window
