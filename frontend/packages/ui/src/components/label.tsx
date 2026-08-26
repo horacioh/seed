@@ -20,9 +20,28 @@ const labelVariants = cva(
 function Label({
   className,
   size = 'default',
+  htmlFor,
+  onClick,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>) {
-  return <LabelPrimitive.Root data-slot="label" className={cn(labelVariants({size}), className)} {...props} />
+  const handleClick = (event: React.MouseEvent<HTMLLabelElement>) => {
+    onClick?.(event)
+    if (!htmlFor) return
+    const control = document.getElementById(htmlFor)
+    if (control && control.tagName === 'BUTTON' && control.getAttribute('role') === 'radio') {
+      event.preventDefault()
+      control.click()
+    }
+  }
+  return (
+    <LabelPrimitive.Root
+      data-slot="label"
+      htmlFor={htmlFor}
+      className={cn(labelVariants({size}), className)}
+      onClick={handleClick}
+      {...props}
+    />
+  )
 }
 
 export {Label}

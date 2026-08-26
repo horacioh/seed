@@ -35,8 +35,10 @@ inputs, account settings tabs, the editor chrome, or the main shell.
    - `http://localhost:3456/hm/register`
    - `http://localhost:3456/hm/create-site`
    - `http://localhost:3456/hm/download` (error boundary)
-5. Use Playwright `page.fill('#space-name', '...')` to reliably interact with
-   the React-controlled `Space name` input.
+5. Use Playwright `page.fill('input#space-name', '...')` to reliably type in
+   the React-controlled `Space name` input. The `Continue` button is reached
+   with `page.getByRole('button', {name: 'Continue'}).click()`; direct mouse
+   coordinates in the test VM may not hit the exact clickable area.
 6. Watch the browser console for hydration errors and `Failed to load resource`
    404s; the latter are usually a missing favicon/static asset, not a route
    failure. Inspect network `response` events to confirm.
@@ -88,13 +90,17 @@ inputs, account settings tabs, the editor chrome, or the main shell.
      module has a bundler/hydration error, the settings window will show a
      "Failed to fetch dynamically imported module" error and account settings
      tabs cannot be reached without an identity.
+   - If `Seed -> Preferences` does not open from the menu, try the `Ctrl+,`
+     shortcut or use `wmctrl` to focus the "Settings" window that Electron
+     opens.
    - If the Vite renderer dev server binds to `127.0.0.1`, Electron can fail to
      resolve `localhost` for IPv6; ensure `host: '::'` is set in
      `frontend/apps/desktop/vite.renderer.config.mts`.
-   - Sync-options radio groups (`On publish`, `On copy`) may not respond to mouse
-     clicks in a fixture-only setup. Use keyboard navigation (`Tab` to focus the
-     radio group, then `Down`/`Up` to change selection) to verify the optimistic
-     state update; the `Appearance` theme radio can be verified the same way.
+   - Sync-options radio groups (`On publish`, `On copy`) and the General theme
+     radio should respond to both the radio circle and the associated label text.
+     If direct mouse clicks on a radio circle are hard to hit in a fixture-only
+     setup, verify by clicking the label text; keyboard navigation (`Tab` to
+     focus, `Left`/`Right` to change) remains a fallback.
    - `/hm/create-site` Step 2 `ImageForm` blocks should show the placeholder and
      size hint stacked, not concatenated. If `emptyLabel` is supplied (logo/favicon),
      check that it is not duplicated by both the empty placeholder and the overlay.
