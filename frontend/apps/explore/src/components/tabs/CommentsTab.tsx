@@ -1,14 +1,21 @@
+import * as stylex from '@stylexjs/stylex'
 import {commentIdToHmId, entityQueryPathToHmIdPath, hmId, packHmId} from '@shm/shared'
 import {MessageCircle} from 'lucide-react'
 import React, {useMemo} from 'react'
 import {useHmNavigate} from '../../utils/useHmNavigate'
 import DataViewer from '../DataViewer'
 import EmptyState from '../EmptyState'
-
-const CommentsTab: React.FC<{comments: any[] | undefined; emptyMessage?: string}> = ({
-  comments,
-  emptyMessage = 'No comments available',
-}) => {
+const styles = stylex.create({
+  sfbc6e290: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+})
+const CommentsTab: React.FC<{
+  comments: any[] | undefined
+  emptyMessage?: string
+}> = ({comments, emptyMessage = 'No comments available'}) => {
   const navigate = useHmNavigate()
   const preparedComments = useMemo(() => {
     if (!Array.isArray(comments)) {
@@ -17,7 +24,9 @@ const CommentsTab: React.FC<{comments: any[] | undefined; emptyMessage?: string}
     }
     return comments.map((comment) => {
       const {id, author, targetPath, targetAccount, targetVersion, ...rest} = comment
-      const out: Record<string, any> = {...rest}
+      const out: Record<string, any> = {
+        ...rest,
+      }
       if (id) {
         out.id = packHmId(commentIdToHmId(id, typeof rest.version === 'string' ? rest.version : undefined))
       }
@@ -35,13 +44,11 @@ const CommentsTab: React.FC<{comments: any[] | undefined; emptyMessage?: string}
       return out
     })
   }, [comments])
-
   if (!Array.isArray(comments) || comments.length === 0) {
     return <EmptyState message={emptyMessage} icon={MessageCircle} />
   }
-
   return (
-    <div className="flex flex-col gap-4">
+    <div className={stylex.props(styles.sfbc6e290).className || ''}>
       {preparedComments.map((comment) => (
         <div key={comment.id}>
           <DataViewer data={comment} onNavigate={navigate} />
@@ -50,5 +57,4 @@ const CommentsTab: React.FC<{comments: any[] | undefined; emptyMessage?: string}
     </div>
   )
 }
-
 export default CommentsTab

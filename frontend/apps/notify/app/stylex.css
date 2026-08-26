@@ -1,0 +1,23 @@
+@import '@shm/ui/stylex.css';
+@import './styles.css';
+
+:root {
+  --highlight: hsl(123, 50%, 93%);
+  --secondary: oklch(0.9552 0.0294 146.9093);
+  --hljs-comment: #71717a;
+  --hljs-red: #ef4444;
+  --hljs-orange: #f97316;
+  --hljs-green: #22c55e;
+  --hljs-yellow: #ca8a04;
+  --hljs-blue: #3b82f6;
+}
+
+.dark {
+  --highlight: hsl(180, 41%, 8%);
+  --hljs-comment: #a1a1aa;
+  --hljs-red: #f87171;
+  --hljs-orange: #fb923c;
+  --hljs-green: #4ade80;
+  --hljs-yellow: #eab308;
+  --hljs-blue: #60a5fa;
+}

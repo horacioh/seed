@@ -6,7 +6,12 @@ const workspacePath = (path: string) => new URL(path, import.meta.url).pathname
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [stylex.vite(), react()],
+  plugins: [
+    stylex.vite({
+      cssInjectionTarget: (fileName: string) => /(^|\/)index(-[A-Za-z0-9_.-]+)?\.css$/.test(fileName),
+    }),
+    react(),
+  ],
   define: {
     'process.env': {},
   },

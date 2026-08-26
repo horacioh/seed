@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useCID} from '@shm/shared'
 import {base58btc} from 'multiformats/bases/base58'
 import React, {useMemo} from 'react'
@@ -8,7 +9,11 @@ import {CopyTextButton} from './CopyTextButton'
 import {DataViewer} from './DataViewer'
 import {DownloadButton} from './DownloadButton'
 import {Title} from './Title'
-
+const styles = stylex.create({
+  s33458e: {
+    marginTop: 'calc(0.25rem * 4)',
+  },
+})
 const IPFS: React.FC = () => {
   const {cid} = useParams()
   const apiHost = useApiHost()
@@ -16,7 +21,6 @@ const IPFS: React.FC = () => {
   const navigate = useHmNavigate()
   const revisedData = useMemo(() => {
     if (!data?.value) return null
-
     const cleaned = cleanIPLDData(data.value)
     if (cleaned.signer && cleaned.signer instanceof Uint8Array) {
       cleaned.signer = `hm://${base58btc.encode(cleaned.signer)}`
@@ -35,14 +39,13 @@ const IPFS: React.FC = () => {
         title={`ipfs://${cid}`}
       />
       {revisedData && (
-        <div className="mt-4">
+        <div className={stylex.props(styles.s33458e).className || ''}>
           <DataViewer data={revisedData} onNavigate={navigate} />
         </div>
       )}
     </div>
   )
 }
-
 function cleanIPLDData(data: any): any {
   if (!data) return null
   if (typeof data === 'object' && data['/']) {
@@ -68,5 +71,4 @@ function cleanIPLDData(data: any): any {
   }
   return data
 }
-
 export default IPFS

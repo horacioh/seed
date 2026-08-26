@@ -1,7 +1,4 @@
-export default function SeedLogo({
-  className = "size-6 text-gray-400",
-  ...props
-}) {
+export default function SeedLogo({className = 'size-6 text-gray-400', ...props}) {
   return (
     <svg
       className={className}
@@ -25,5 +22,5 @@ export default function SeedLogo({
         fill="currentColor"
       />
     </svg>
-  );
+  )
 }

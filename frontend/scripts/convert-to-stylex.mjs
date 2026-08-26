@@ -249,11 +249,9 @@ console.log(
   `Loaded token map: ${tokenDecls.size} tokens, ${initialVars.size} @property defaults, ${themeVars.size} theme variables`,
 )
 
-const targetDirs = [
-  'packages/ui/src',
-  'apps/web/app',
-  'apps/desktop/src',
-]
+const targetDirs = process.env.TARGET_DIRS
+  ? process.env.TARGET_DIRS.split(',').map((d) => d.trim())
+  : ['packages/ui/src', 'apps/web/app', 'apps/desktop/src']
 
 const onlyFile = process.argv[2]
 
@@ -291,10 +289,9 @@ function processStringLiteral(node, fileState) {
   const memberExpr = t.logicalExpression(
     '||',
     t.memberExpression(
-      t.callExpression(
-        t.memberExpression(t.identifier(fileState.stylexName), t.identifier('props')),
-        [fileState.memberExpressionForKey(key)],
-      ),
+      t.callExpression(t.memberExpression(t.identifier(fileState.stylexName), t.identifier('props')), [
+        fileState.memberExpressionForKey(key),
+      ]),
       t.identifier('className'),
     ),
     t.stringLiteral(''),
@@ -357,9 +354,7 @@ class FileState {
           if (namespaceSpecifier) {
             this.stylexName = namespaceSpecifier.local.name
           } else {
-            const namedSpecifier = node.specifiers.find(
-              (s) => t.isImportSpecifier(s) && s.imported.name === 'stylex',
-            )
+            const namedSpecifier = node.specifiers.find((s) => t.isImportSpecifier(s) && s.imported.name === 'stylex')
             if (namedSpecifier) this.stylexName = namedSpecifier.local.name
           }
         }
@@ -387,10 +382,10 @@ class FileState {
       }),
     )
     const decl = t.variableDeclaration('const', [
-      t.variableDeclarator(t.identifier(this.stylesName), t.callExpression(
-        t.memberExpression(t.identifier(this.stylexName), t.identifier('create')),
-        [styleObject],
-      )),
+      t.variableDeclarator(
+        t.identifier(this.stylesName),
+        t.callExpression(t.memberExpression(t.identifier(this.stylexName), t.identifier('create')), [styleObject]),
+      ),
     ])
     const lastImportIndex = this.ast.program.body.findLastIndex((n) => t.isImportDeclaration(n))
     const insertIndex = lastImportIndex === -1 ? 0 : lastImportIndex + 1
@@ -470,19 +465,13 @@ function processFile(filePath) {
         const expr = processStringLiteral({value: original}, fileState)
         if (expr) {
           const classNameBinding = path.scope.getBinding('className')
-          const shouldAppend =
-            classNameBinding &&
-            classNameBinding.kind === 'param' &&
-            isRootElement(path)
+          const shouldAppend = classNameBinding && classNameBinding.kind === 'param' && isRootElement(path)
           let replacement = expr
           if (shouldAppend) {
             replacement = t.callExpression(
               t.memberExpression(
                 t.callExpression(
-                  t.memberExpression(
-                    t.arrayExpression([expr, t.identifier('className')]),
-                    t.identifier('filter'),
-                  ),
+                  t.memberExpression(t.arrayExpression([expr, t.identifier('className')]), t.identifier('filter')),
                   [t.identifier('Boolean')],
                 ),
                 t.identifier('join'),
@@ -503,10 +492,7 @@ function processFile(filePath) {
           const generated = processStringLiteral({value: str}, fileState)
           if (generated) {
             const classNameBinding = path.scope.getBinding('className')
-            const shouldAppend =
-              classNameBinding &&
-              classNameBinding.kind === 'param' &&
-              isRootElement(path)
+            const shouldAppend = classNameBinding && classNameBinding.kind === 'param' && isRootElement(path)
             let replacement = generated
             if (shouldAppend) {
               replacement = t.callExpression(
@@ -531,10 +517,7 @@ function processFile(filePath) {
 
         if (exprPath.isCallExpression()) {
           const callee = exprPath.node.callee
-          if (
-            t.isIdentifier(callee) &&
-            (callee.name === 'cn' || callee.name === 'twMerge')
-          ) {
+          if (t.isIdentifier(callee) && (callee.name === 'cn' || callee.name === 'twMerge')) {
             let callChanged = false
             for (const argPath of exprPath.get('arguments')) {
               if (argPath.isStringLiteral()) {

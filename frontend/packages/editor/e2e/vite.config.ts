@@ -1,12 +1,17 @@
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import stylex from '@stylexjs/unplugin'
-import tailwindcss from '@tailwindcss/vite'
 import {defineConfig} from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [stylex.vite(), react(), tailwindcss(), tsconfigPaths({root: path.resolve(__dirname, '../../..')})],
+  plugins: [
+    stylex.vite({
+      cssInjectionTarget: (fileName: string) => /(^|\/)(?:index|stylex)(?:[.\-][A-Za-z0-9_.-]+)?\.css$/.test(fileName),
+    }),
+    react(),
+    tsconfigPaths({root: path.resolve(__dirname, '../../..')}),
+  ],
   root: path.resolve(__dirname, 'test-app'),
   define: {
     // TODO: Define process.env for dependencies

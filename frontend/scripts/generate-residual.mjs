@@ -17,11 +17,7 @@ const basePath = path.join(root, 'packages/ui/src/base.css')
 const residualPath = path.join(root, 'packages/ui/src/residual.css')
 const allTokensPath = '/tmp/all-tokens-full.css'
 
-const srcDirs = [
-  'apps/*/app',
-  'apps/*/src',
-  'packages/*/src',
-]
+const srcDirs = ['apps/*/app', 'apps/*/src', 'packages/*/src', 'packages/editor/e2e']
 
 const files = []
 for (const d of srcDirs) {
@@ -52,11 +48,20 @@ function collectClassStringsFromNode(node, ignoreKeys = new Set()) {
   }
   if (node.type === 'ObjectProperty' || node.type === 'ObjectMethod') {
     const key =
-      node.key && (node.key.type === 'Identifier' ? node.key.name : node.key.type === 'StringLiteral' ? node.key.value : null)
+      node.key &&
+      (node.key.type === 'Identifier' ? node.key.name : node.key.type === 'StringLiteral' ? node.key.value : null)
     if (key && ignoreKeys.has(key)) return
   }
   for (const key of Object.keys(node)) {
-    if (key === 'loc' || key === 'start' || key === 'end' || key === 'range' || key === 'leadingComments' || key === 'trailingComments') continue
+    if (
+      key === 'loc' ||
+      key === 'start' ||
+      key === 'end' ||
+      key === 'range' ||
+      key === 'leadingComments' ||
+      key === 'trailingComments'
+    )
+      continue
     const child = node[key]
     if (Array.isArray(child)) {
       for (const c of child) collectClassStringsFromNode(c, ignoreKeys)
@@ -95,7 +100,7 @@ for (const f of files) {
           addString(expr.node.value)
         } else if (
           expr.isCallExpression() &&
-          (expr.node.callee.name === 'cn' || expr.node.callee.name === 'twMerge')
+          (expr.node.callee.name === 'cn' || expr.node.callee.name === 'twMerge' || expr.node.callee.name === 'clsx')
         ) {
           for (const arg of expr.get('arguments')) {
             if (arg.isStringLiteral()) addString(arg.node.value)
