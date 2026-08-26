@@ -6,6 +6,7 @@ import {webUniversalClient} from '@/universal-client'
 import {useHasExistingSpace} from '@/web-create-space-dialog'
 import {useNavigate} from '@remix-run/react'
 import {Button} from '@shm/ui/button'
+import {useLocalKeyPairLoaded} from '@/auth'
 import {createSpaceMetadata} from '@shm/ui/create-space-platform'
 import {CreateSpaceForm, type CreateSpaceFormState} from '@shm/ui/create-space-form'
 import {Spinner} from '@shm/ui/spinner'
@@ -53,12 +54,23 @@ function Panel({children}: {children: React.ReactNode}) {
 export default function CreateSiteRoute() {
   const navigate = useNavigate()
   const userKeyPair = useLocalKeyPair()
+  const keyPairLoaded = useLocalKeyPairLoaded()
   const accountUid = userKeyPair?.delegatedAccountUid ?? userKeyPair?.id ?? null
   const [busy, setBusy] = useState(false)
   const fileUpload = useMemo(() => makeWebFileUpload(webUniversalClient), [])
 
   // When signed in, check whether this account already has a space.
   const existingSpace = useHasExistingSpace(accountUid)
+
+  if (!keyPairLoaded) {
+    return (
+      <Panel>
+        <div className={stylex.props(styles.sf48c8a4d).className || ''}>
+          <Spinner />
+        </div>
+      </Panel>
+    )
+  }
   async function handleComplete(state: CreateSpaceFormState) {
     setBusy(true)
     try {
