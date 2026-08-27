@@ -7,6 +7,7 @@ import {SearchResultItem, UniversalAppProvider, writeableStateStream} from '@shm
 import {NavContextProvider} from '@shm/shared/utils/navigation'
 import {DocumentMachineProvider, useDocumentMachineRef} from '@shm/shared/models/use-document-machine'
 import {DocumentEditor} from '../../src/document-editor'
+import {LifecycleTestApp} from './LifecycleTestApp'
 import {DraftActionsContext, type DraftActions} from '../../src/draft-actions-context'
 import {TooltipProvider} from '@shm/ui/tooltip'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
@@ -563,6 +564,9 @@ function RealModeApp({fixtureName}: {fixtureName: FixtureName}) {
 export function TestEditor() {
   const fixtureName = getFixtureFromUrl()
   const sp = new URLSearchParams(window.location.search)
+  if (sp.get('lifecycle') === '1') {
+    return <LifecycleTestApp />
+  }
   const real = sp.get('real') === '1'
   if (real) {
     return (
