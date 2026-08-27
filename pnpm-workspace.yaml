@@ -4,6 +4,7 @@ packages:
   - 'frontend/scripts'
   - 'docs'
   - 'tests'
+  - 'harness'
 
 # Supply-chain security settings — https://pnpm.io/supply-chain-security
 

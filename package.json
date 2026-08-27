@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "test": "pnpm web:test && pnpm shared:test && pnpm desktop:test:unit",
+    "harness:demo": "pnpm --filter @shm/harness demo",
+    "harness:web": "pnpm --filter @shm/harness harness:web",
     "shared:test": "pnpm --filter @shm/shared test",
     "format:check": "pnpm -r --parallel run format:check && (cd agents && bun run format:check) && (cd vault && bun run format:check)",
     "typecheck": "pnpm -r --parallel run typecheck",
