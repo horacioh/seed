@@ -2,6 +2,76 @@ import * as stylex from '@stylexjs/stylex'
 import type {NavRoute} from '@shm/shared/routes'
 import {useRouteLink} from '@shm/shared/routing'
 import {memo, useState} from 'react'
+const styles_4 = stylex.create({
+  s21707c9a: {
+    overflow: 'auto',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  sf7998a14: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+})
+const styles_3 = stylex.create({
+  s6fb0ede4: {
+    cursor: 'pointer',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--color-blue-600)',
+    textDecorationLine: 'underline',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s80ddecfc: {
+    display: 'flex',
+    width: 'calc(var(--spacing) * 4)',
+    cursor: 'pointer',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'auto',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-black)',
+      },
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s21707c9a: {
+    overflow: 'auto',
+  },
+  s18e76f87: {
+    overflow: 'auto',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+    borderColor: 'oklch(92.8% 0.006 264.531)',
+    paddingLeft: 'calc(0.25rem * 2)',
+  },
+  s581a54b3: {
+    marginBlock: 'calc(0.25rem * 1)',
+    display: 'flex',
+    alignItems: 'center',
+    overflow: 'auto',
+  },
+  sb326915d: {
+    marginBlock: 'calc(0.25rem * 1)',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'auto',
+  },
+})
 const styles = stylex.create({
   saf5ba32b: {
     color: 'oklch(55.1% 0.027 264.364)',
@@ -82,7 +152,7 @@ export const DataViewer = memo(function DataViewer({data, level = 0, onNavigate,
           href={data}
           target="_blank"
           rel="noopener noreferrer"
-          className="cursor-pointer font-mono text-blue-600 underline hover:underline"
+          className={stylex.props(styles_3.s6fb0ede4).className || ''}
         >
           {data}
         </a>
@@ -96,17 +166,23 @@ export const DataViewer = memo(function DataViewer({data, level = 0, onNavigate,
   if (Array.isArray(data)) {
     if (data.length === 0) return <span className={stylex.props(styles.saf5ba32b).className || ''}>[]</span>
     return (
-      <div className={`overflow-auto rounded bg-white ${isTopLevel ? 'rounded-xl px-4 py-2' : ''}`}>
+      <div
+        className={
+          (stylex.props(styles_4.s21707c9a, styles_4.s529492ad, styles_4.s605ce4a1).className || '') +
+          ' ' +
+          (isTopLevel ? stylex.props(styles_4.sf7998a14, styles_4.s34b1af, styles_4.s34b56e).className || '' : '')
+        }
+      >
         <div className={stylex.props(styles.sd459c8b3).className || ''}>
           {!isTopLevel && (
             <div
-              className="flex w-4 cursor-pointer items-center justify-center overflow-auto hover:bg-black"
+              className={stylex.props(styles_3.s80ddecfc).className || ''}
               onClick={() => setIsExpanded((expanded) => !expanded)}
             />
           )}
           <div className={stylex.props(styles.sa257f517).className || ''}>
             {isExpanded ? (
-              <div className={isTopLevel ? 'overflow-auto' : 'overflow-auto border-l border-gray-200 pl-2'}>
+              <div className={stylex.props(isTopLevel ? styles_2.s21707c9a : styles_2.s18e76f87).className || ''}>
                 {data.map((item, index) => (
                   <div key={index} className={stylex.props(styles.s630fa70b).className || ''}>
                     <DataViewer data={item} level={level + 1} onNavigate={onNavigate} getRouteForUrl={getRouteForUrl} />
@@ -128,17 +204,23 @@ export const DataViewer = memo(function DataViewer({data, level = 0, onNavigate,
       return <span className={stylex.props(styles.saf5ba32b).className || ''}>Empty Object</span>
     }
     return (
-      <div className={`overflow-auto rounded bg-white ${isTopLevel ? 'rounded-xl px-4 py-2' : ''}`}>
+      <div
+        className={
+          (stylex.props(styles_4.s21707c9a, styles_4.s529492ad, styles_4.s605ce4a1).className || '') +
+          ' ' +
+          (isTopLevel ? stylex.props(styles_4.sf7998a14, styles_4.s34b1af, styles_4.s34b56e).className || '' : '')
+        }
+      >
         <div className={stylex.props(styles.sd459c8b3).className || ''}>
           {!isTopLevel && (
             <div
-              className="flex w-4 cursor-pointer items-center justify-center overflow-auto hover:bg-black"
+              className={stylex.props(styles_3.s80ddecfc).className || ''}
               onClick={() => setIsExpanded((expanded) => !expanded)}
             />
           )}
           <div className={stylex.props(styles.sa257f517).className || ''}>
             {isExpanded ? (
-              <div className={isTopLevel ? 'overflow-auto' : 'overflow-auto border-l border-gray-200 pl-2'}>
+              <div className={stylex.props(isTopLevel ? styles_2.s21707c9a : styles_2.s18e76f87).className || ''}>
                 {keys.map((key) => {
                   const value = objectData[key]
                   const isSimpleValue =
@@ -148,9 +230,7 @@ export const DataViewer = memo(function DataViewer({data, level = 0, onNavigate,
                   return (
                     <div
                       key={key}
-                      className={
-                        isSimpleValue ? 'my-1 flex items-center overflow-auto' : 'my-1 flex flex-col overflow-auto'
-                      }
+                      className={stylex.props(isSimpleValue ? styles_2.s581a54b3 : styles_2.sb326915d).className || ''}
                     >
                       <span className={stylex.props(styles.s8582b27a).className || ''}>{key}:</span>
                       {isSimpleValue ? (
@@ -197,7 +277,7 @@ function DataViewerLink({
   const linkProps = useRouteLink(route)
   if (route) {
     return (
-      <a {...linkProps} className="cursor-pointer font-mono text-blue-600 underline hover:underline">
+      <a {...linkProps} className={stylex.props(styles_3.s6fb0ede4).className || ''}>
         {url}
       </a>
     )
@@ -206,7 +286,7 @@ function DataViewerLink({
     return <span className={stylex.props(styles.seeb0a33e).className || ''}>{url}</span>
   }
   return (
-    <span className="cursor-pointer font-mono text-blue-600 underline hover:underline" onClick={() => onNavigate(url)}>
+    <span className={stylex.props(styles_3.s6fb0ede4).className || ''} onClick={() => onNavigate(url)}>
       {url}
     </span>
   )

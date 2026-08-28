@@ -24,6 +24,135 @@ import {nanoid} from 'nanoid'
 import {useEffect, useMemo, useRef, useState} from 'react'
 
 // UI values for the header-layout select.
+const styles_5 = stylex.create({
+  sc883a3d5: {
+    boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+  },
+})
+const styles_4 = stylex.create({
+  s12ac75d0: {
+    borderColor: 'var(--primary)',
+    color: 'var(--primary)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--primary)',
+        backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+      },
+    },
+    backgroundColor: 'transparent',
+  },
+  s26933dae: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    display: 'flex',
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s4f10d081: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s85f5b5e7: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  sa4add46b: {
+    borderColor: 'var(--border)',
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 5)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--tone-neutral-400-2)',
+      },
+    },
+  },
+  seed5853c: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--surface-contrast)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2.5)',
+  },
+  s32a3e7ae: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    cursor: 'grab',
+    padding: 'calc(var(--spacing) * 1)',
+    ':active': {
+      cursor: 'grabbing',
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s28ba13db: {
+    flex: '1',
+    justifyContent: 'flex-end',
+  },
+  s95df6d8d: {
+    width: '100%',
+    justifyContent: 'center',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_2 = stylex.create({
+  s15930976: {
+    maxWidth: '28rem',
+  },
+})
 const styles = stylex.create({
   s4c9e7ebc: {
     display: 'flex',
@@ -287,7 +416,7 @@ export function NavigationSettings({siteId}: {siteId: UnpackedHypermediaId}) {
         <div>
           <Button
             variant="outline"
-            className="border-primary dark:border-primary text-primary hover:text-primary hover:bg-primary/10 bg-transparent"
+            className={stylex.props(styles_4.s12ac75d0).className || ''}
             onClick={openNewDialog}
           >
             <Plus className={stylex.props(styles.sca3de968).className || ''} />
@@ -380,7 +509,7 @@ function HeaderPreview({
       <div
         className={cn(
           stylex.props(styles.s380d63c9).className || '',
-          isCenter ? 'justify-center' : 'flex-1 justify-end',
+          stylex.props(isCenter ? styles_3.sce22ca32 : styles_3.s28ba13db).className || '',
         )}
       >
         <SizableText color="muted" className={stylex.props(styles.sb9bd3a30).className || ''}>
@@ -392,7 +521,7 @@ function HeaderPreview({
         ref={containerRef}
         className={cn(
           stylex.props(styles.sd2daac47).className || '',
-          isCenter ? 'w-full justify-center' : 'flex-1 justify-end',
+          stylex.props(isCenter ? styles_3.s95df6d8d : styles_3.s28ba13db).className || '',
         )}
       >
         {/* Hidden measurement container (measures each item's natural width) */}
@@ -427,7 +556,7 @@ function HeaderPreview({
             align="end"
             ariaLabel="More navigation items"
             button={
-              <button className="text-muted-foreground hover:text-foreground flex size-6 shrink-0 items-center justify-center rounded-full">
+              <button className={stylex.props(styles_4.s26933dae).className || ''}>
                 <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
               </button>
             }
@@ -443,7 +572,7 @@ function HeaderPreview({
     )
   if (isCenter) {
     return (
-      <div className="border-border bg-muted/30 flex flex-col items-center gap-3 rounded-md border p-4">
+      <div className={stylex.props(styles_4.s4f10d081).className || ''}>
         <div className={stylex.props(styles.s86ff3e4).className || ''}>
           {iconEl}
           {name ? <SizableText weight="bold">{name}</SizableText> : null}
@@ -453,7 +582,7 @@ function HeaderPreview({
     )
   }
   return (
-    <div className="border-border bg-muted/30 flex items-center gap-3 rounded-md border p-4">
+    <div className={stylex.props(styles_4.s85f5b5e7).className || ''}>
       {iconEl}
       {name ? <SizableText weight="bold">{name}</SizableText> : null}
       {navRow}
@@ -494,11 +623,7 @@ function NavItemList({
   }, [items, onReorder])
   if (!items.length) {
     return (
-      <button
-        type="button"
-        onClick={onAdd}
-        className="border-border text-muted-foreground flex w-full items-center gap-2 rounded-md border border-dashed px-4 py-5 transition-colors hover:border-neutral-400 dark:hover:border-neutral-500"
-      >
+      <button type="button" onClick={onAdd} className={stylex.props(styles_4.sa4add46b).className || ''}>
         <Plus className={stylex.props(styles.sca3de968).className || ''} />
         <SizableText color="muted">Add navigation item</SizableText>
       </button>
@@ -553,13 +678,13 @@ function NavItemRow({
     <div
       ref={rowRef}
       className={cn(
-        'border-border flex items-center gap-3 rounded-md border bg-white px-3 py-2.5 dark:bg-black',
-        isDraggingOver && 'ring-primary/60 ring-2',
+        stylex.props(styles_4.seed5853c).className || '',
+        isDraggingOver ? stylex.props(styles_5.sc883a3d5).className || '' : '',
       )}
     >
       <div
         ref={handleRef}
-        className="text-muted-foreground hover:text-foreground cursor-grab p-1 active:cursor-grabbing"
+        className={stylex.props(styles_4.s32a3e7ae).className || ''}
         style={{
           userSelect: 'none',
           WebkitUserSelect: 'none',
@@ -568,7 +693,10 @@ function NavItemRow({
         <EllipsisVertical className={stylex.props(styles.sca3de968).className || ''} />
       </div>
       <SizableText
-        className={cn(stylex.props(styles.sb136bac9).className || '', !item.text.trim() && 'text-muted-foreground')}
+        className={cn(
+          stylex.props(styles.sb136bac9).className || '',
+          stylex.props(!item.text.trim() && styles_3.sf2718385).className || '',
+        )}
       >
         {item.text || 'Untitled item'}
       </SizableText>
@@ -612,7 +740,7 @@ function NavItemDialog({
   const canAdd = text.trim().length > 0 && link.trim().length > 0
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className={stylex.props(styles_2.s15930976).className || ''}>
         <DialogHeader>
           <DialogTitle>{isNew ? 'Create navigation item' : 'Edit navigation item'}</DialogTitle>
         </DialogHeader>

@@ -54,6 +54,184 @@ import {AgentPromptEditor, promptBlocksForRequest} from './prompt-editor'
 import {ProviderIcon} from './provider-icons'
 import {isSubscriptionSignInAvailable, SubscriptionSignIn} from './provider-oauth'
 import {PROVIDER_METADATA, PROVIDER_TYPE_ORDER, providerLabel} from './provider-registry'
+const styles_5 = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sd5b893dc: {
+    pointerEvents: 'none',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s74a79380: {
+    inset: 'calc(0.25rem * 0)',
+  },
+  s6cd0490: {
+    zIndex: '5',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s199f2714: {
+    backgroundColor: 'color-mix(in oklab, #000 40%, transparent)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_4 = stylex.create({
+  s3a851a40: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+    '@media ((min-width: 640px))': {
+      minWidth: '460px',
+    },
+  },
+  s3a4cbc3c: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+    '@media ((min-width: 640px))': {
+      minWidth: '420px',
+    },
+  },
+  s4eb9e601: {
+    position: 'absolute',
+    inset: 'calc(var(--spacing) * 0)',
+    zIndex: '10',
+    cursor: 'pointer',
+    opacity: '0%',
+    ':disabled': {
+      cursor: 'default',
+    },
+  },
+  se26c7753: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    inset: 'calc(var(--spacing) * 0)',
+    zIndex: '6',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'color-mix(in oklab, var(--color-black) 40%, transparent)',
+  },
+  s3c0194db: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+    '@media ((min-width: 640px))': {
+      minWidth: '520px',
+    },
+  },
+  s93ff291a: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  sc45b9f2a: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+})
+const styles_3 = stylex.create({
+  sd136531d: {
+    color: 'var(--destructive)',
+    whiteSpace: 'nowrap',
+  },
+  sf8e652db: {
+    whiteSpace: 'nowrap',
+  },
+})
+const styles_2 = stylex.create({
+  s284935df: {
+    display: 'flex',
+    width: '100%',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 5)',
+  },
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s284935de: {
+    display: 'flex',
+    width: '100%',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s28f45d7a: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 3)',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  sccb16a58: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s258be8: {
+    display: 'flex',
+    maxWidth: '32rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  se4cad04: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 const styles = stylex.create({
   sfbc6e28f: {
     display: 'flex',
@@ -209,7 +387,7 @@ export function ModelProvidersDialog({
     }
   }
   return (
-    <div className="flex flex-col gap-5 sm:min-w-[460px]">
+    <div className={stylex.props(styles_4.s3a851a40).className || ''}>
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Model providers</DialogTitle>
         <DialogDescription>
@@ -298,7 +476,7 @@ export function AddModelProviderDialog({
   onClose: () => void
 }) {
   return (
-    <div className="flex flex-col gap-5 sm:min-w-[420px]">
+    <div className={stylex.props(styles_4.s3a4cbc3c).className || ''}>
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Add model provider</DialogTitle>
         <DialogDescription>
@@ -645,7 +823,7 @@ export function ManageAgentAccountsDialog({
     toast.success(`Imported ${identity.label || identity.accountId}`)
   }
   return (
-    <div className="flex w-full min-w-0 flex-col gap-5">
+    <div className={stylex.props(styles_2.s284935df).className || ''}>
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Agent Server Accounts</DialogTitle>
         <DialogDescription>
@@ -728,7 +906,9 @@ export function ManageAgentAccountsDialog({
             />
             <Button type="button" variant="outline" onClick={() => importFileInputRef.current?.click()}>
               <FileKey className={stylex.props(styles.sca3de968).className || ''} />
-              <span className="min-w-0 truncate">{importFile ? importFile.name : 'Choose key file…'}</span>
+              <span className={stylex.props(styles_2.s64fb8207).className || ''}>
+                {importFile ? importFile.name : 'Choose key file…'}
+              </span>
             </Button>
           </div>
         )}
@@ -776,7 +956,7 @@ function NewAgentAccountDialog({
     }
   }
   return (
-    <div className="flex w-full min-w-0 flex-col gap-4">
+    <div className={stylex.props(styles_2.s284935de).className || ''}>
       <DialogTitle>New agent account</DialogTitle>
       <DialogDescription>
         Create a new server-side HM account key. You can rename it and set up its profile afterward.
@@ -854,11 +1034,19 @@ export function EditAgentAccountDialog({
     }
   }
   return (
-    <div className="flex w-full min-w-0 flex-col gap-4">
+    <div className={stylex.props(styles_2.s284935de).className || ''}>
       <DialogTitle>Edit agent account</DialogTitle>
       <div className={stylex.props(styles.s86ff3e5).className || ''}>
         <label
-          className="group/icon relative shrink-0 cursor-pointer overflow-hidden rounded-full"
+          className={
+            stylex.props(
+              styles_5.sdef3facc,
+              styles_5.sf032ed6c,
+              styles_5.sc7847ec6,
+              styles_5.s92852dd5,
+              styles_5.s775755af,
+            ).className || ''
+          }
           style={{
             width: 48,
             height: 48,
@@ -869,7 +1057,7 @@ export function EditAgentAccountDialog({
             type="file"
             accept="image/*"
             disabled={updateIdentity.isLoading}
-            className="absolute inset-0 z-10 cursor-pointer opacity-0 disabled:cursor-default"
+            className={stylex.props(styles_4.s4eb9e601).className || ''}
             onChange={(event) => {
               const file = event.target.files?.[0]
               event.target.value = ''
@@ -879,7 +1067,21 @@ export function EditAgentAccountDialog({
               }
             }}
           />
-          <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center bg-black/40 opacity-0 group-hover/icon:opacity-100">
+          <div
+            className={
+              stylex.props(
+                styles_5.sd5b893dc,
+                styles_5.s67010d77,
+                styles_5.s74a79380,
+                styles_5.s6cd0490,
+                styles_5.s2ffff9,
+                styles_5.sc6ed1702,
+                styles_5.sce22ca32,
+                styles_5.s199f2714,
+                styles_5.s765a26ee,
+              ).className || ''
+            }
+          >
             <Camera className={stylex.props(styles.sf796cd41).className || ''} />
           </div>
           {previewUrl ? (
@@ -934,7 +1136,7 @@ function DeleteAgentAccountDialog({
     }
   }
   return (
-    <div className="flex w-full min-w-0 flex-col gap-4">
+    <div className={stylex.props(styles_2.s284935de).className || ''}>
       <AlertDialogTitle>Delete “{input.label}”?</AlertDialogTitle>
       <AlertDialogDescription>
         This agent account will be permanently deleted from this server. This action cannot be undone, and may prevent
@@ -1001,9 +1203,17 @@ function AgentAccountRow({
     onIconSelect(file)
   }
   return (
-    <div className="border-border flex min-w-0 items-center gap-3 rounded-lg border p-3">
+    <div className={stylex.props(styles_2.s28f45d7a).className || ''}>
       <label
-        className="group/icon relative shrink-0 cursor-pointer overflow-hidden rounded-full"
+        className={
+          stylex.props(
+            styles_5.sdef3facc,
+            styles_5.sf032ed6c,
+            styles_5.sc7847ec6,
+            styles_5.s92852dd5,
+            styles_5.s775755af,
+          ).className || ''
+        }
         style={{
           width: 36,
           height: 36,
@@ -1014,7 +1224,7 @@ function AgentAccountRow({
           type="file"
           accept="image/*"
           disabled={uploading}
-          className="absolute inset-0 z-10 cursor-pointer opacity-0 disabled:cursor-default"
+          className={stylex.props(styles_4.s4eb9e601).className || ''}
           onChange={(event) => {
             const file = event.target.files?.[0]
             event.target.value = ''
@@ -1022,11 +1232,25 @@ function AgentAccountRow({
           }}
         />
         {uploading ? (
-          <div className="pointer-events-none absolute inset-0 z-[6] flex items-center justify-center bg-black/40">
+          <div className={stylex.props(styles_4.se26c7753).className || ''}>
             <Spinner className={stylex.props(styles.s2daecf89).className || ''} />
           </div>
         ) : (
-          <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center bg-black/40 opacity-0 group-hover/icon:opacity-100">
+          <div
+            className={
+              stylex.props(
+                styles_5.sd5b893dc,
+                styles_5.s67010d77,
+                styles_5.s74a79380,
+                styles_5.s6cd0490,
+                styles_5.s2ffff9,
+                styles_5.sc6ed1702,
+                styles_5.sce22ca32,
+                styles_5.s199f2714,
+                styles_5.s765a26ee,
+              ).className || ''
+            }
+          >
             <Camera className={stylex.props(styles.sf796cd41).className || ''} />
           </div>
         )}
@@ -1036,15 +1260,15 @@ function AgentAccountRow({
           <HMIcon id={profileId} name={metadata?.metadata?.name || name} icon={metadata?.metadata?.icon} size={36} />
         )}
       </label>
-      <div className="min-w-0 flex-1">
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>
         <Input value={name} onChange={(event) => onNameChange(event.target.value)} />
       </div>
-      <div className="flex min-w-0 flex-none items-center gap-1">
+      <div className={stylex.props(styles_2.sccb16a58).className || ''}>
         {saveState !== 'idle' ? (
           <SizableText
             size="xs"
             color={saveState === 'error' ? undefined : 'muted'}
-            className={saveState === 'error' ? 'text-destructive whitespace-nowrap' : 'whitespace-nowrap'}
+            className={stylex.props(saveState === 'error' ? styles_3.sd136531d : styles_3.sf8e652db).className || ''}
           >
             {saveState === 'saving' ? 'Saving…' : saveState === 'saved' ? 'Saved' : 'Save failed'}
           </SizableText>
@@ -1213,7 +1437,7 @@ export function CreateAgentDialog({
   const needsProvider = !providers.isLoading && !providers.data?.length
   if (needsProvider) {
     return (
-      <div className="flex flex-col gap-5 sm:min-w-[520px]">
+      <div className={stylex.props(styles_4.s3c0194db).className || ''}>
         <DialogTitle>Create Agent</DialogTitle>
         {serverSelector}
         <div className={stylex.props(styles.s6450334e).className || ''}>
@@ -1229,7 +1453,7 @@ export function CreateAgentDialog({
     )
   }
   return (
-    <div className="flex flex-col gap-5 sm:min-w-[520px]">
+    <div className={stylex.props(styles_4.s3c0194db).className || ''}>
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Create Agent</DialogTitle>
         <DialogDescription>
@@ -1244,7 +1468,7 @@ export function CreateAgentDialog({
         </SizableText>
         <Input autoFocus value={name} onChange={(event) => setName(event.target.value)} />
       </label>
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className={stylex.props(styles_4.s93ff291a).className || ''}>
         <label className={stylex.props(styles.sfbc6e28d).className || ''}>
           <SizableText size="sm" weight="bold">
             Model
@@ -1357,7 +1581,7 @@ export function EditAgentNameDialog({
   }
   return (
     <form
-      className="flex flex-col gap-5 sm:min-w-[420px]"
+      className={stylex.props(styles_4.s3a4cbc3c).className || ''}
       onSubmit={(event) => {
         event.preventDefault()
         if (saving) return
@@ -1405,7 +1629,7 @@ export function EnableWindowsHypervisorDialog({onClose}: {input: Record<string, 
     toast.success('Command copied')
   }
   return (
-    <div className="flex max-w-lg flex-col gap-4">
+    <div className={stylex.props(styles_2.s258be8).className || ''}>
       <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <DialogTitle>Turn on Windows Hypervisor Platform</DialogTitle>
         <DialogDescription>
@@ -1442,8 +1666,8 @@ export function EnableWindowsHypervisorDialog({onClose}: {input: Record<string, 
         <SizableText size="sm" color="muted">
           Prefer the terminal? Run this in PowerShell as Administrator, then restart:
         </SizableText>
-        <div className="border-border bg-muted/40 flex items-center gap-2 rounded-lg border px-3 py-2">
-          <code className="min-w-0 flex-1 truncate font-mono text-xs">{WHP_ENABLE_COMMAND}</code>
+        <div className={stylex.props(styles_4.sc45b9f2a).className || ''}>
+          <code className={stylex.props(styles_2.se4cad04).className || ''}>{WHP_ENABLE_COMMAND}</code>
           <Button variant="ghost" size="iconSm" aria-label="Copy command" onClick={() => void copyCommand()}>
             <Copy className={stylex.props(styles.s3269316e).className || ''} />
           </Button>

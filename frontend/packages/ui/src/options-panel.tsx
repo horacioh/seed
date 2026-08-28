@@ -11,6 +11,11 @@ import {getDaemonFileUrl} from './get-file-url'
 import {IconForm} from './icon-form'
 import {ImageForm} from './image-form'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from './select-dropdown'
+const styles_2 = stylex.create({
+  s5305ac91: {
+    width: '180px',
+  },
+})
 const styles = stylex.create({
   s21835087: {
     display: 'flex',
@@ -176,7 +181,7 @@ function HeaderLayout({
         }}
         value={metadata.theme?.headerLayout || 'default'}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className={stylex.props(styles_2.s5305ac91).className || ''}>
           <SelectValue placeholder="Select a header layout" />
         </SelectTrigger>
         <SelectContent>

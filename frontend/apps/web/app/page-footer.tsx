@@ -9,6 +9,25 @@ import {ExternalLink} from 'lucide-react'
 import {ReactNode} from 'react'
 import {AccountFooterActions} from './auth'
 import {ClientOnly} from './client-lazy'
+const styles_2 = stylex.create({
+  s89cdf403: {
+    borderColor: 'var(--border)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      paddingInline: 'calc(var(--spacing) * 4)',
+      paddingBlock: 'calc(var(--spacing) * 2)',
+    },
+  },
+  s53e71ca3: {
+    display: 'none',
+    '@media ((min-width: 640px))': {
+      display: 'flex',
+    },
+  },
+})
 const styles = stylex.create({
   s1fa2d8e8: {
     display: 'flex',
@@ -34,7 +53,7 @@ const styles = stylex.create({
 export function PageFooter({id, className}: {id?: UnpackedHypermediaId | null; className?: string}) {
   const tx = useTx()
   return (
-    <div data-page-footer="true" className={cn('border-border border-t px-3 py-2 sm:px-4 sm:py-2', className)}>
+    <div data-page-footer="true" className={cn(stylex.props(styles_2.s89cdf403).className || '', className)}>
       <div className={stylex.props(styles.s1fa2d8e8).className || ''}>
         <ClientOnly>
           <div>
@@ -62,7 +81,7 @@ export function PageFooter({id, className}: {id?: UnpackedHypermediaId | null; c
             )}
           </SizableText>
           {id ? (
-            <Button className="hidden sm:flex" size="sm" variant="default" asChild>
+            <Button className={stylex.props(styles_2.s53e71ca3).className || ''} size="sm" variant="default" asChild>
               <a href={createOSProtocolUrl(id)}>
                 <ExternalLink className={stylex.props(styles.sca3de967).className || ''} />
                 {tx('Open App')}

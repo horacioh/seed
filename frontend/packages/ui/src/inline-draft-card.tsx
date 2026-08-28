@@ -6,6 +6,139 @@ import {Button} from './button'
 import {DraftBadge} from './draft-badge'
 import {OptionsDropdown} from './options-dropdown'
 import {cn} from './utils'
+const styles_9 = stylex.create({
+  s8c694c13: {
+    ':is(.dark *)': {
+      backgroundColor: 'oklch(21% 0.034 264.665)',
+    },
+  },
+})
+const styles_8 = stylex.create({
+  sbdde5449: {
+    flexDirection: 'row',
+  },
+})
+const styles_7 = stylex.create({
+  sd507cda3: {
+    '::placeholder': {
+      color: 'oklch(70.7% 0.022 261.325)',
+    },
+  },
+})
+const styles_6 = stylex.create({
+  s77be7ef7: {
+    height: 'auto',
+  },
+  s5f86341b: {
+    width: '50%',
+  },
+})
+const styles_5 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sfcf3a2ae: {
+    maxWidth: '100%',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ff601: {
+    height: 'calc(0.25rem * 40)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s7ef3c0bd: {
+    backgroundColor: 'oklch(98.5% 0.002 247.839)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  s29df1839: {
+    borderStyle: 'none',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  s8e879397: {
+    lineHeight: '1.25',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+})
+const styles_4 = stylex.create({
+  sbed77557: {
+    containerType: 'inline-size',
+    display: 'flex',
+    minHeight: '200px',
+    flex: '1',
+    cursor: 'pointer',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'dashed',
+    borderWidth: '2px',
+    borderColor: 'color-mix(in oklab, var(--color-yellow-400) 50%, transparent)',
+    backgroundColor: 'var(--surface-contrast)',
+    boxShadow: 'var(--shadow-sm)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '300ms',
+  },
+  s60cb9ddc: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+    '@media ((min-width: 768px))': {
+      minHeight: '240px',
+    },
+    '@media ((min-width: 1024px))': {
+      minHeight: '280px',
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sc41b2606: {
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+  },
+  sab7cc61b: {
+    fontSize: '1.125rem',
+    lineHeight: 'calc(1.75 / 1.125)',
+  },
+})
+const styles_2 = stylex.create({
+  s89507f83: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+})
 const styles = stylex.create({
   s6e8f8a6d: {
     color: 'var(--muted-foreground)',
@@ -126,22 +259,39 @@ export function InlineDraftCard({
         openDraft()
       }}
       className={cn(
-        '@container flex min-h-[200px] flex-1 cursor-pointer overflow-hidden rounded-lg border-2 border-dashed border-yellow-400/50 bg-white shadow-sm transition-colors duration-300 dark:bg-black',
-        banner && 'rounded-xl md:min-h-[240px] lg:min-h-[280px]',
+        stylex.props(styles_4.sbed77557).className || '',
+        stylex.props(banner ? styles_4.s60cb9ddc : null).className || '',
       )}
     >
-      <div className="flex max-w-full flex-1 flex-col @md:flex-row">
+      <div
+        className={
+          (stylex.props(styles_5.s2ffff9, styles_5.sfcf3a2ae, styles_5.sb42feb5d, styles_5.s67e351ac).className || '') +
+          ' ' +
+          (stylex.props(styles_8.sbdde5449).className || '')
+        }
+      >
         {/* Image placeholder */}
         <div
           className={cn(
-            'relative flex h-40 w-full shrink-0 items-center justify-center bg-gray-50 @md:h-auto @md:w-1/2 dark:bg-gray-900',
-            banner && '@md:h-auto',
+            stylex.props(
+              styles_5.sdef3facc,
+              styles_5.s2ffff9,
+              styles_5.s2ff601,
+              styles_5.scdbaf625,
+              styles_5.sf032ed6c,
+              styles_5.sc6ed1702,
+              styles_5.sce22ca32,
+              styles_5.s7ef3c0bd,
+            ).className || '',
+            stylex.props(styles_6.s77be7ef7, styles_6.s5f86341b).className || '',
+            stylex.props(styles_9.s8c694c13).className || '',
+            banner ? stylex.props(styles_6.s77be7ef7).className || '' : '',
           )}
         >
           <ImageIcon className={stylex.props(styles.s6e8f8a6d).className || ''} />
         </div>
         {/* Content */}
-        <div className="flex min-h-0 flex-1 flex-col justify-between">
+        <div className={stylex.props(styles_2.s89507f83).className || ''}>
           <div className={stylex.props(styles.s1aa17).className || ''}>
             <div className={stylex.props(styles.s86ff3e4).className || ''}>
               <input
@@ -153,8 +303,19 @@ export function InlineDraftCard({
                 onClick={(e) => e.stopPropagation()}
                 placeholder="Untitled document"
                 className={cn(
-                  'text-foreground block w-full border-none bg-transparent font-sans leading-tight font-bold outline-none placeholder:text-gray-400',
-                  banner ? 'text-2xl' : 'text-lg',
+                  stylex.props(
+                    styles_5.sc05281e3,
+                    styles_5.s597c48d,
+                    styles_5.scdbaf625,
+                    styles_5.s29df1839,
+                    styles_5.s60f53bca,
+                    styles_5.sa1762f51,
+                    styles_5.sa16ea943,
+                    styles_5.s8e879397,
+                    styles_5.sa602a1e3,
+                  ).className || '',
+                  stylex.props(styles_7.sd507cda3).className || '',
+                  stylex.props(banner ? styles_3.sc41b2606 : styles_3.sab7cc61b).className || '',
                 )}
               />
             </div>

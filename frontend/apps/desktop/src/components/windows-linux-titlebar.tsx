@@ -19,6 +19,29 @@ import {
 import {AddSquare, Close, CloseAll, Contact, Delete, Hide, Reload, Search, Settings} from '@shm/ui/icons'
 import {TitlebarRow, TitlebarSection, TitlebarWrapper} from '@shm/ui/titlebar'
 import {useMemo} from 'react'
+const styles_2 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  scad93cc1: {
+    minWidth: 'min-content',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s6044a01e: {
+    justifyContent: 'flex-end',
+  },
+  s3484a1: {
+    paddingLeft: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   s1a67a0f6: {
     pointerEvents: 'none',
@@ -56,15 +79,33 @@ export function WindowsLinuxTitleBar({
         <TitlebarSection>
           <SystemMenu />
         </TitlebarSection>
-        <div className="window-drag flex flex-1" />
+        <div className={stylex.props(styles_2.s2ffff9, styles_2.sb42feb5d).className || ''} />
         <TitlebarSection>
           <WindowsLinuxWindowControls />
         </TitlebarSection>
       </TitlebarRow>
       <TitlebarRow className="window-drag">
-        <div className="window-drag flex min-w-min flex-none items-center">{left}</div>
+        <div
+          className={
+            stylex.props(styles_2.s2ffff9, styles_2.scad93cc1, styles_2.s948be48c, styles_2.sc6ed1702).className || ''
+          }
+        >
+          {left}
+        </div>
         <div className={stylex.props(styles.s1a67a0f6).className || ''}>{title}</div>
-        <div className="window-drag flex min-w-min flex-none items-center justify-end">{right}</div>
+        <div
+          className={
+            stylex.props(
+              styles_2.s2ffff9,
+              styles_2.scad93cc1,
+              styles_2.s948be48c,
+              styles_2.sc6ed1702,
+              styles_2.s6044a01e,
+            ).className || ''
+          }
+        >
+          {right}
+        </div>
       </TitlebarRow>
     </TitlebarWrapper>
   )
@@ -258,7 +299,7 @@ export function SystemMenu() {
     [createDraft, close, hide, invoke, spawn, triggerFocusedWindow, route.key, navDispatch, push],
   )
   return (
-    <div className="no-window-drag flex pl-2">
+    <div className={stylex.props(styles_2.s2ffff9, styles_2.s3484a1).className || ''}>
       <Menubar>
         {menuItems.map((item: MenuItemElement) => (
           <MenubarMenu key={item.id}>

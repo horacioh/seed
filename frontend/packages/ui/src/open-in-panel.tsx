@@ -6,6 +6,30 @@ import {SquareChevronRight} from 'lucide-react'
 import {Button} from './button'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  sea927280: {
+    display: 'none',
+    '@media ((min-width: 768px))': {
+      display: 'inline-flex',
+    },
+  },
+  s947842f9: {
+    height: 'calc(var(--spacing) * 9)',
+    borderTopLeftRadius: '0',
+    borderBottomLeftRadius: '0',
+    borderTopRightRadius: 'calc(infinity * 1px)',
+    borderBottomRightRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-5-10)',
+      },
+    },
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -31,8 +55,8 @@ export function OpenInPanelButton({
       <Button
         variant={nested ? 'ghost' : accent ? 'accent' : 'ghost'}
         className={cn(
-          'hidden md:inline-flex',
-          nested ? 'h-9 rounded-l-none rounded-r-full px-3 hover:bg-black/5 dark:hover:bg-white/10' : 'rounded-full',
+          stylex.props(styles_2.sea927280).className || '',
+          stylex.props(nested ? styles_2.s947842f9 : styles_2.s775755af).className || '',
         )}
         onClick={() => {
           replace({

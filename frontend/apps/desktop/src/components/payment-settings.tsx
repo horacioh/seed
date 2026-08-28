@@ -45,6 +45,11 @@ import {Tooltip} from '@shm/ui/tooltip'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useState} from 'react'
 import QRCode from 'react-qr-code'
+const styles_2 = stylex.create({
+  s5305ac91: {
+    width: '180px',
+  },
+})
 const styles = stylex.create({
   s9a378369: {
     display: 'flex',
@@ -762,7 +767,7 @@ function WalletValue({amount}: {amount: number}) {
     <div className={stylex.props(styles.s86ff3e5).className || ''}>
       <SizableText size="2xl" family="mono">{`${character}${displayValue}`}</SizableText>
       <Select onValueChange={(value) => setActiveCurrency(value as typeof activeCurrency)} value={activeCurrency}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className={stylex.props(styles_2.s5305ac91).className || ''}>
           <SelectValue placeholder="Select a currency" />
         </SelectTrigger>
         <SelectContent>

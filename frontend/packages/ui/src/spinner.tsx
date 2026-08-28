@@ -1,6 +1,14 @@
 import * as stylex from '@stylexjs/stylex'
 import {cn} from './utils'
 import * as React from 'react'
+const styles_2 = stylex.create({
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+})
 const styles = stylex.create({
   s3999bf0e: {
     display: 'inline-block',
@@ -27,18 +35,15 @@ export type SpinnerProps = React.HTMLAttributes<HTMLSpanElement> & {
 // a <div> triggers `validateDOMNesting` warnings and force-closes the <p>.
 export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
   ({size = 'small', color, hide = false, className, ...props}, ref) => {
-    const sizeClasses = {
-      small: 'size-4 border-2',
-      large: 'size-8 border-4',
-    }
     return (
       <span
         ref={ref}
+        data-slot="spinner"
+        data-size={size}
         className={cn(
           stylex.props(styles.s3999bf0e).className || '',
           stylex.props(styles.s4d18f127).className || '',
-          hide ? 'opacity-0' : 'opacity-100',
-          sizeClasses[size],
+          stylex.props(hide ? styles_2.s765a26ee : styles_2.s486c2d2f).className || '',
           className,
         )}
         style={{

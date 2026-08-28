@@ -1,5 +1,10 @@
+import * as stylex from '@stylexjs/stylex'
 import {Button} from './button'
-
+const styles = stylex.create({
+  s2daecf89: {
+    color: '#fff',
+  },
+})
 export interface JoinButtonProps {
   onClick: () => void
   disabled?: boolean
@@ -15,7 +20,7 @@ export function JoinButton({onClick, disabled}: JoinButtonProps) {
     <Button
       variant="brand"
       size="sm"
-      className="plausible-event-name=click-join-button text-white"
+      className={stylex.props(styles.s2daecf89).className || ''}
       onClick={onClick}
       disabled={disabled}
     >

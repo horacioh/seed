@@ -2,6 +2,16 @@ import * as stylex from '@stylexjs/stylex'
 import {useCallback, useEffect, useRef, useState} from 'react'
 
 /** Manages queued chat messages while a chat backend is busy responding. */
+const styles_2 = stylex.create({
+  se3f66ed4: {
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '10px',
+    fontStyle: 'italic',
+  },
+})
 const styles = stylex.create({
   s717ba5e5: {
     borderColor: 'var(--border)',
@@ -53,7 +63,7 @@ export function QueuedChatMessages<Message = string>({
   return (
     <div className={stylex.props(styles.s717ba5e5).className || ''}>
       {messages.map((message, index) => (
-        <div key={index} className="text-muted-foreground truncate text-[10px] italic">
+        <div key={index} className={stylex.props(styles_2.se3f66ed4).className || ''}>
           Queued: {getText(message)}
         </div>
       ))}

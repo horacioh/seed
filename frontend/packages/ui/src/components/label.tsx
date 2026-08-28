@@ -1,29 +1,35 @@
+import * as stylex from '@stylexjs/stylex'
 import * as LabelPrimitive from '@radix-ui/react-label'
 import * as React from 'react'
 
-import {cva, type VariantProps} from 'class-variance-authority'
 import {cn} from '../utils'
 
-const labelVariants = cva(
-  'flex items-center gap-2 text-sm leading-none font-medium font-sans select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
-  {
-    variants: {
-      size: {
-        default: 'text-sm',
-        sm: 'text-xs',
-        lg: 'text-lg',
-      },
-    },
+const styles = stylex.create({
+  base: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    fontSize: '0.875rem',
+    lineHeight: 1,
+    fontWeight: 500,
+    fontFamily: 'var(--font-sans)',
+    userSelect: 'none',
   },
-)
+  sizeSm: {
+    fontSize: '0.75rem',
+  },
+  sizeLg: {
+    fontSize: '1.125rem',
+  },
+})
 
-function Label({
-  className,
-  size = 'default',
-  htmlFor,
-  onClick,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>) {
+type LabelSize = 'default' | 'sm' | 'lg'
+
+export interface LabelProps extends React.ComponentProps<typeof LabelPrimitive.Root> {
+  size?: LabelSize
+}
+
+function Label({className, size = 'default', htmlFor, onClick, ...props}: LabelProps) {
   const handleClick = (event: React.MouseEvent<HTMLLabelElement>) => {
     onClick?.(event)
     if (!htmlFor) return
@@ -33,11 +39,14 @@ function Label({
       control.click()
     }
   }
+
+  const sizeStyle = size === 'sm' ? styles.sizeSm : size === 'lg' ? styles.sizeLg : undefined
+
   return (
     <LabelPrimitive.Root
       data-slot="label"
       htmlFor={htmlFor}
-      className={cn(labelVariants({size}), className)}
+      className={cn(stylex.props(styles.base, sizeStyle).className, className)}
       onClick={handleClick}
       {...props}
     />

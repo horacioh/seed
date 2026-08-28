@@ -23,6 +23,142 @@ import {Bot, Image as ImageIcon, Navigation as NavigationIcon, Plus, Users} from
 import {type ReactNode, useState} from 'react'
 
 // Tabs of the site settings page
+const styles_5 = stylex.create({
+  sc3f47650: {
+    ':is(.dark *)': {
+      ':hover': {
+        borderColor: 'oklch(55.6% 0 none)',
+      },
+    },
+  },
+})
+const styles_4 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s8ce93e28: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s7c401ed1: {
+    borderStyle: 'solid',
+    borderWidth: '2px',
+  },
+  s1ca68c72: {
+    borderStyle: 'dashed',
+  },
+  s22aabf0b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'oklch(70.8% 0 0)',
+      },
+    },
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s478fb0c0: {
+    right: 'calc(0.25rem * 1)',
+  },
+  s696c5b9: {
+    top: 'calc(0.25rem * 1)',
+  },
+  s382471: {
+    zIndex: '20',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s199f2752: {
+    backgroundColor: 'color-mix(in oklab, #000 60%, transparent)',
+  },
+  sc5cefc73: {
+    paddingInline: 'calc(0.25rem * 1.5)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s2daecf89: {
+    color: '#fff',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_3 = stylex.create({
+  sfe6d77b6: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '220px',
+    flexShrink: '0',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRightStyle: 'solid',
+    borderRightWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  se53f363: {
+    height: '100px',
+    width: '100px',
+  },
+  s9aa60e0c: {
+    height: '160px',
+    width: '100%',
+    maxWidth: 'var(--container-2xl)',
+  },
+  sf8679c30: {
+    backgroundColor: 'color-mix(in oklab, var(--brand) 10%, transparent)',
+    color: 'var(--brand-2)',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  s53fb45c: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s47f7faa6: {
+    height: '100%',
+    maxHeight: '100%',
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+    overflow: 'hidden',
+    paddingTop: 'calc(0.25rem * 0)',
+  },
+})
 const styles = stylex.create({
   sa368bb19: {
     display: 'flex',
@@ -93,8 +229,7 @@ const styles = stylex.create({
     textAlign: 'left',
     fontSize: '0.875rem',
     lineHeight: 'calc(1.25 / 0.875)',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
   },
@@ -151,12 +286,12 @@ export default function SiteSettings() {
       tab,
     })
   return (
-    <div className={cn(windowContainerStyles, 'h-full max-h-full min-h-0 w-full overflow-hidden pt-0')}>
+    <div className={cn(windowContainerStyles, stylex.props(styles_2.s47f7faa6).className || '')}>
       <div className={panelContainerStyles}>
         <div className={stylex.props(styles.sa368bb19).className || ''}>
           <div className={stylex.props(styles.sc3ed6c02).className || ''}>
             {/* Sidebar */}
-            <div className="border-border flex w-[220px] shrink-0 flex-col gap-1 border-r p-2">
+            <div className={stylex.props(styles_3.sfe6d77b6).className || ''}>
               <SizableText
                 size="xs"
                 weight="bold"
@@ -271,7 +406,7 @@ function IdentityTab({siteId}: {siteId: UnpackedHypermediaId}) {
           value={logoValue}
           onChange={setLogo}
           onClear={() => setLogo(null)}
-          className="h-[100px] w-[100px]"
+          className={stylex.props(styles_3.se53f363).className || ''}
         />
       </SettingsField>
 
@@ -280,7 +415,7 @@ function IdentityTab({siteId}: {siteId: UnpackedHypermediaId}) {
           value={coverValue}
           onChange={setCover}
           onClear={() => setCover(null)}
-          className="h-[160px] w-full max-w-2xl"
+          className={stylex.props(styles_3.s9aa60e0c).className || ''}
         />
       </SettingsField>
     </>
@@ -323,7 +458,22 @@ function ImagePicker({
   return (
     <div
       className={cn(
-        'group border-border bg-muted/40 relative flex cursor-pointer items-center justify-center overflow-hidden rounded-md border-2 border-dashed hover:border-neutral-400 dark:hover:border-neutral-500',
+        stylex.props(
+          styles_4.s1a01a0ed,
+          styles_4.s8ce93e28,
+          styles_4.sdef3facc,
+          styles_4.s2ffff9,
+          styles_4.sc7847ec6,
+          styles_4.sc6ed1702,
+          styles_4.sce22ca32,
+          styles_4.s92852dd5,
+          styles_4.sf79988b7,
+          styles_4.s7c401ed1,
+          styles_4.s1ca68c72,
+          styles_4.s22aabf0b,
+        ).className || '',
+        stylex.props(styles_5.sc3f47650).className || '',
+        'group',
         className,
       )}
     >
@@ -349,7 +499,22 @@ function ImagePicker({
             e.stopPropagation()
             onClear()
           }}
-          className="absolute top-1 right-1 z-20 rounded bg-black/60 px-1.5 py-0.5 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+          className={
+            stylex.props(
+              styles_4.s67010d77,
+              styles_4.s478fb0c0,
+              styles_4.s696c5b9,
+              styles_4.s382471,
+              styles_4.s529492ad,
+              styles_4.s199f2752,
+              styles_4.sc5cefc73,
+              styles_4.sc5dd1033,
+              styles_4.sab7cc79b,
+              styles_4.s2daecf89,
+              styles_4.s765a26ee,
+              styles_4.s83442393,
+            ).className || ''
+          }
         >
           Remove
         </button>
@@ -372,7 +537,7 @@ function SidebarTab({
     <button
       className={cn(
         stylex.props(styles.sd94ce182).className || '',
-        active ? 'bg-brand/10 text-brand-2 font-medium' : 'text-muted-foreground hover:bg-muted',
+        stylex.props(active ? styles_3.sf8679c30 : styles_3.s53fb45c).className || '',
       )}
       onClick={onClick}
     >

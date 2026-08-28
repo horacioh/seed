@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMDocument, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {getDocumentTitle, hmId, unpackHmId} from '@shm/shared'
 import {useAccount, useResource} from '@shm/shared/models/entity'
@@ -11,7 +12,111 @@ import {BlockNoteEditor, getBlockInfoFromPos, HyperlinkToolbarProps} from './blo
 import {getNodeById} from './blocknote/core/api/util/nodeUtil'
 import {HypermediaLinkForm} from './hm-link-form'
 import {HMBlockSchema} from './schema'
-
+const styles = stylex.create({
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s620be2c4: {
+    maxHeight: '60vh',
+  },
+  s561ad0c9: {
+    width: '320px',
+  },
+  s21707c9a: {
+    overflow: 'auto',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s646c459b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+      },
+    },
+  },
+  s4d2890f8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        opacity: '80%',
+      },
+    },
+  },
+  s48a3ed91: {
+    ':active': {
+      backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+    },
+  },
+  s316038ee: {
+    ':active': {
+      opacity: '80%',
+    },
+  },
+  sbf63c09a: {
+    color: 'var(--link)',
+  },
+  s28e3580b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--link-hover)',
+      },
+    },
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export function HypermediaLinkPreview(
   props: HyperlinkToolbarProps & {
     url: string
@@ -30,7 +135,6 @@ export function HypermediaLinkPreview(
   const [isEditing, setIsEditing] = useState(props.forceEditing || false)
   const unpackedRef = useMemo(() => unpackHmId(props.url), [props.url])
   const profileAccountUid = unpackedRef?.path?.[0] === ':profile' ? unpackedRef.path[1] || unpackedRef.uid : null
-
   const entity = useResource(profileAccountUid ? null : unpackedRef || undefined)
   const account = useAccount(profileAccountUid)
   // console.log('entity', entity)
@@ -41,13 +145,11 @@ export function HypermediaLinkPreview(
     }
   }, [props.stopEditing, isEditing])
   const highlight = useHighlighter()
-
   function handleChangeBlockType(type: string) {
     const tiptap = props.editor._tiptapEditor
     const {state, view} = tiptap
     const unpackedRef = unpackHmId(props.url)
     const schema = state.schema
-
     const getTitle = () => {
       if (profileAccountUid) {
         return account.data?.metadata?.name || props.text || props.url
@@ -58,17 +160,27 @@ export function HypermediaLinkPreview(
       }
       return props.text || props.url
     }
-
     const title = getTitle()
-
     if (type === 'link') {
-      const node = schema.text(title, [schema.marks['link'].create({href: props.url})])
+      const node = schema.text(title, [
+        schema.marks['link'].create({
+          href: props.url,
+        }),
+      ])
       insertNode(props.editor, props.id, props.url, props.text, props.type, node)
     } else if (type === 'inline-embed') {
-      const node = schema.nodes['inline-embed'].create({link: props.url}, schema.text(' '))
+      const node = schema.nodes['inline-embed'].create(
+        {
+          link: props.url,
+        },
+        schema.text(' '),
+      )
       insertMentionNode(props.editor, props.text, node, props.id, props.type === 'link')
     } else if (type === 'button') {
-      const node = schema.nodes.button.create({url: props.url, name: title})
+      const node = schema.nodes.button.create({
+        url: props.url,
+        name: title,
+      })
       insertNode(props.editor, props.id, props.url, props.text, props.type, node)
     } else if (type === 'embed' || type === 'card' || type === 'comments' || type === 'embed-link') {
       const node = schema.nodes.embed.create({
@@ -77,23 +189,35 @@ export function HypermediaLinkPreview(
       })
       insertNode(props.editor, props.id, props.url, props.text, props.type, node)
     }
-
     props.resetHyperlink()
   }
 
   // Card and Link view embeds have their own action bar. Suppress toolbar for those types
   if (props.type === 'card' || props.type === 'embed-link') return null
-
   return (
     <div
       data-testid="hm-link-preview"
-      className="link-preview-toolbar bg-muted flex max-h-[60vh] w-[320px] overflow-auto rounded-md p-2 shadow-lg"
+      className={
+        stylex.props(
+          styles.s5fd609e3,
+          styles.s2ffff9,
+          styles.s620be2c4,
+          styles.s561ad0c9,
+          styles.s21707c9a,
+          styles.sf79988b7,
+          styles.s1aa15,
+          styles.s8a6c2948,
+        ).className || ''
+      }
     >
       {isEditing ? (
-        <div data-testid="hm-link-form" className="flex flex-1 flex-col gap-2">
+        <div
+          data-testid="hm-link-form"
+          className={stylex.props(styles.s2ffff9, styles.sb42feb5d, styles.s67e351ac, styles.s5d936fb).className || ''}
+        >
           {/* <SizableText fontWeight="700">{`${
             props.type.charAt(0).toUpperCase() + props.type.slice(1)
-          } settings`}</SizableText> */}
+           } settings`}</SizableText> */}
 
           {props.formComponents && props.formComponents()}
 
@@ -117,16 +241,43 @@ export function HypermediaLinkPreview(
           />
         </div>
       ) : (
-        <div className="flex w-full items-center justify-between gap-2 px-1">
+        <div
+          className={
+            stylex.props(
+              styles.s2ffff9,
+              styles.scdbaf625,
+              styles.sc6ed1702,
+              styles.sc1a629cb,
+              styles.s5d936fb,
+              styles.s34b1ac,
+            ).className || ''
+          }
+        >
           <div
             data-testid="hm-link-preview-open-button"
-            className="flex flex-1 cursor-pointer overflow-hidden rounded-lg px-2 py-1.5 hover:bg-black/5 hover:opacity-80 active:bg-black/5 active:opacity-80 dark:hover:bg-white/10 dark:active:bg-white/10"
+            className={
+              stylex.props(
+                styles.s2ffff9,
+                styles.sb42feb5d,
+                styles.sc7847ec6,
+                styles.s92852dd5,
+                styles.sf799889b,
+                styles.s34b1ad,
+                styles.sc5dd13f4,
+                styles.s646c459b,
+                styles.s4d2890f8,
+                styles.s48a3ed91,
+                styles.s316038ee,
+              ).className || ''
+            }
             onClick={() => props.openUrl(props.url)}
             {...highlight(profileAccountUid ? hmId(profileAccountUid) : unpackedRef)}
           >
             <SizableText
               size="lg"
-              className="text-link hover:text-link-hover flex-1 truncate"
+              className={
+                stylex.props(styles.sbf63c09a, styles.s28e3580b, styles.sb42feb5d, styles.s6e724d66).className || ''
+              }
               data-testid="hm-link-preview-url"
             >
               {!!unpackedRef ? account.data?.metadata?.name ?? document?.metadata.name ?? props.url : props.url}
@@ -134,10 +285,10 @@ export function HypermediaLinkPreview(
           </div>
           <Button
             data-testid="hm-link-preview-edit-button"
-            className="hover:bg-black/5 hover:opacity-80 dark:hover:bg-white/10"
+            className={stylex.props(styles.s646c459b, styles.s4d2890f8).className || ''}
             onClick={() => setIsEditing(true)}
           >
-            <Pencil className="size-4" />
+            <Pencil className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </div>
       )}
@@ -160,15 +311,24 @@ export function transformEmbedNode(
   const schema = state.schema
   let node: Node
   if (toType === 'link') {
-    node = schema.text(fallbackTitle || url, [schema.marks['link'].create({href: url})])
+    node = schema.text(fallbackTitle || url, [
+      schema.marks['link'].create({
+        href: url,
+      }),
+    ])
   } else if (toType === 'button') {
-    node = schema.nodes.button.create({url, name: fallbackTitle || url})
+    node = schema.nodes.button.create({
+      url,
+      name: fallbackTitle || url,
+    })
   } else {
-    node = schema.nodes.embed.create({url, view: toType === 'card' ? 'Card' : 'Content'})
+    node = schema.nodes.embed.create({
+      url,
+      view: toType === 'card' ? 'Card' : 'Content',
+    })
   }
   insertNode(editor, selectedId, url, '', 'embed', node)
 }
-
 function getTitleFromEntity(unpackedId?: UnpackedHypermediaId | null, document?: HMDocument | null) {
   if (!document || !unpackedId) return
   let title
@@ -188,7 +348,6 @@ function getTitleFromEntity(unpackedId?: UnpackedHypermediaId | null, document?:
   }
   return title
 }
-
 function insertNode(
   editor: BlockNoteEditor<HMBlockSchema>,
   selectedId: string,
@@ -233,7 +392,6 @@ function insertNode(
         }
       })
     }
-
     tr = tr.replaceRangeWith(startPos, endPos, node)
 
     // const newBlock = state.schema.nodes['blockNode'].createAndFill()!
@@ -272,7 +430,6 @@ function insertNode(
   view.dispatch(tr)
   editor._tiptapEditor.commands.focus()
 }
-
 function insertMentionNode(
   editor: BlockNoteEditor<HMBlockSchema>,
   name: string,
@@ -283,11 +440,9 @@ function insertMentionNode(
   const {state, view} = editor._tiptapEditor
   let tr = state.tr
   const {posBeforeNode} = getNodeById(selectedId, state.doc)
-
   const $pos = state.doc.resolve(posBeforeNode + 1)
   let startPos = $pos.start()
   let endPos = $pos.start() + 2
-
   if (inline) {
     let offset = 0
     // @ts-ignore
@@ -299,6 +454,5 @@ function insertMentionNode(
     startPos = startPos + offset
     endPos = startPos + name.length
   }
-
   view.dispatch(tr.replaceRangeWith(startPos, endPos, node))
 }

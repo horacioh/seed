@@ -15,6 +15,91 @@ import {cn} from './utils'
 import {Check} from 'lucide-react'
 
 /** Props for the notification list item. */
+const styles_5 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sca3de96b: {
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_4 = stylex.create({
+  s9c6684ea: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+      },
+    },
+  },
+  s1a570aef: {
+    backgroundColor: 'var(--tone-blue-50)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--tone-blue-100)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  s2c8b4ee7: {
+    color: 'var(--brand)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_2 = stylex.create({
+  s1ccb701d: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 3)',
+    textAlign: 'left',
+  },
+  sc67d55c1: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+})
 const styles = stylex.create({
   sc5969aae: {
     paddingTop: 'calc(0.25rem * 0.5)',
@@ -82,11 +167,20 @@ export function NotificationListItem({item, isRead, onOpen, onToggleRead}: Notif
   return (
     <div
       className={cn(
-        'group flex w-full items-start gap-3 p-4 text-left transition-colors',
-        isRead ? 'hover:bg-muted/40' : 'bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/40',
+        stylex.props(
+          styles_5.s2ffff9,
+          styles_5.scdbaf625,
+          styles_5.s93b5f015,
+          styles_5.s5d936fc,
+          styles_5.s1aa17,
+          styles_5.sbf63b0a7,
+          styles_5.sf7fb00e8,
+        ).className || '',
+        'group',
+        stylex.props(isRead ? styles_4.s9c6684ea : styles_4.s1a570aef).className || '',
       )}
     >
-      <button type="button" className="flex min-w-0 flex-1 items-start gap-3 text-left" onClick={() => void onOpen()}>
+      <button type="button" className={stylex.props(styles_2.s1ccb701d).className || ''} onClick={() => void onOpen()}>
         <div className={stylex.props(styles.sc5969aae).className || ''}>
           {authorId ? (
             <HMIcon size={24} id={authorId} name={authorName} icon={authorIcon} />
@@ -94,10 +188,15 @@ export function NotificationListItem({item, isRead, onOpen, onToggleRead}: Notif
             <div className={stylex.props(styles.sc4465ee8).className || ''} />
           )}
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <div className={stylex.props(styles_2.sc67d55c1).className || ''}>
           <div className={stylex.props(styles.se99caec9).className || ''}>
             {!isRead ? <span className={stylex.props(styles.s4b70932d).className || ''} /> : null}
-            <p className={cn(stylex.props(styles.sab7cc6fa).className || '', !isRead && 'font-bold')}>
+            <p
+              className={cn(
+                stylex.props(styles.sab7cc6fa).className || '',
+                stylex.props(!isRead && styles_3.sa16ea943).className || '',
+              )}
+            >
               {notificationTitle(item, {
                 authorName,
                 targetName,
@@ -119,12 +218,14 @@ export function NotificationListItem({item, isRead, onOpen, onToggleRead}: Notif
           type="button"
           variant="ghost"
           size="icon"
-          className="size-7 shrink-0 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+          className={
+            stylex.props(styles_5.sca3de96b, styles_5.sf032ed6c, styles_5.s765a26ee, styles_5.s83442393).className || ''
+          }
           onClick={() => {
             onToggleRead()
           }}
         >
-          <Check size={16} className={isRead ? 'text-brand' : 'text-muted-foreground'} />
+          <Check size={16} className={stylex.props(isRead ? styles_3.s2c8b4ee7 : styles_3.sf2718385).className || ''} />
         </Button>
       </Tooltip>
     </div>

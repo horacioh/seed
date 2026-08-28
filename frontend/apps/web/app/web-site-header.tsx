@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMDocument, HMMetadata, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {unpackHmId} from '@shm/shared'
 import {NOTIFY_SERVICE_HOST} from '@shm/shared/constants'
@@ -7,6 +8,14 @@ import {DocNavigationItem, isValidSiteHeaderItem} from '@shm/ui/navigation'
 import {AutoHideSiteHeaderClassName, SiteHeader} from '@shm/ui/site-header'
 
 /** Picks explicit top-navigation items, returning [] while the home resource is still loading to prevent flash. */
+const styles = stylex.create({
+  s5cee774: {
+    position: 'fixed',
+  },
+  s9c95338e: {
+    position: 'static',
+  },
+})
 export function resolveNavigationItems({
   isHomeResourceLoading,
   homeNavigationItems,
@@ -17,7 +26,6 @@ export function resolveNavigationItems({
   if (isHomeResourceLoading) return []
   return homeNavigationItems
 }
-
 export type WebSiteHeaderProps = {
   noScroll?: boolean
   homeMetadata: HMMetadata | null
@@ -30,17 +38,12 @@ export type WebSiteHeaderProps = {
   hideSiteBarClassName?: AutoHideSiteHeaderClassName
   rightActions?: React.ReactNode
 }
-
 export function WebSiteHeader({origin, ...props}: React.PropsWithChildren<WebSiteHeaderProps>) {
   const homeResourceQuery = useResource(props.siteHomeId)
-
   const isCenterLayout =
     props.homeMetadata?.theme?.headerLayout === 'Center' || props.homeMetadata?.layout === 'Seed/Experimental/Newspaper'
-
   const homeDocFromQuery = homeResourceQuery.data?.type === 'document' ? homeResourceQuery.data.document : null
-
   const navigationBlockNode = homeDocFromQuery?.detachedBlocks?.navigation
-
   const homeNavigationItems: DocNavigationItem[] = navigationBlockNode
     ? navigationBlockNode.children
         ?.map((child) => {
@@ -50,7 +53,9 @@ export function WebSiteHeader({origin, ...props}: React.PropsWithChildren<WebSit
           const item: DocNavigationItem = {
             isPublished: true,
             key: linkBlock.id,
-            metadata: {name: linkBlock.text || ''},
+            metadata: {
+              name: linkBlock.text || '',
+            },
             id: id || undefined,
             webUrl: id ? undefined : linkBlock.link,
           }
@@ -59,12 +64,10 @@ export function WebSiteHeader({origin, ...props}: React.PropsWithChildren<WebSit
         .filter((item): item is DocNavigationItem => item !== null)
         .filter(isValidSiteHeaderItem) || []
     : []
-
   const items = resolveNavigationItems({
     isHomeResourceLoading: homeResourceQuery.isLoading,
     homeNavigationItems,
   })
-
   return (
     <>
       {origin && props.siteHomeId && props.siteHomeId.uid !== props.originHomeId.uid ? (
@@ -80,7 +83,10 @@ export function WebSiteHeader({origin, ...props}: React.PropsWithChildren<WebSit
         onBlockFocus={(blockId) => {
           const element = document.getElementById(blockId)
           if (element) {
-            element.scrollIntoView({behavior: 'smooth', block: 'start'})
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            })
           }
         }}
         onShowMobileMenu={(open) => {
@@ -91,7 +97,7 @@ export function WebSiteHeader({origin, ...props}: React.PropsWithChildren<WebSit
           }
         }}
         isMainFeedVisible={false}
-        wrapperClassName="fixed sm:static"
+        wrapperClassName={stylex.props(styles.s5cee774, styles.s9c95338e).className || ''}
         notifyServiceHost={NOTIFY_SERVICE_HOST}
         rightActions={props.rightActions}
       />

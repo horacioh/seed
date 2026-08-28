@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {createPortal} from 'react-dom'
 import {useEffect, useRef, useState} from 'react'
 import {BlockNoteEditor} from '../../core/BlockNoteEditor'
@@ -22,6 +23,21 @@ import {
  * to inspect in the debugger since it doesn't vanish the moment the user
  * stops moving the pointer.
  */
+const styles = stylex.create({
+  s5cee774: {
+    position: 'fixed',
+  },
+  s74a79380: {
+    inset: 'calc(0.25rem * 0)',
+  },
+  s6c4ecf36: {
+    zIndex: '9998',
+  },
+  s1ad53cdb: {
+    width: '100%',
+    height: '100%',
+  },
+})
 export function PredictionConeDebugOverlay<BSchema extends BlockSchema = BlockSchema>({
   editor,
 }: {
@@ -31,13 +47,10 @@ export function PredictionConeDebugOverlay<BSchema extends BlockSchema = BlockSc
     blockHoverActions?: BlockHoverActionsProsemirrorPlugin<BSchema> | null
   }
   const plugin = (editor as EditorWithCone).blockHoverActions
-
   const [coneState, setConeState] = useState<PredictionConeDebugState | null>(null)
   const stickyRef = useRef<PredictionConeDebugState | null>(null)
-
   useEffect(() => {
     if (!plugin) return
-
     return plugin.onConeDebug((state) => {
       if (state) {
         stickyRef.current = state
@@ -50,13 +63,16 @@ export function PredictionConeDebugOverlay<BSchema extends BlockSchema = BlockSc
   // inspectable between mouse movements.
   const visible = coneState ?? stickyRef.current
   if (!visible) return null
-
   const {origin, cardTop, cardBottom} = visible
-
   const trianglePoints = `${origin.x},${origin.y} ${cardTop.x},${cardTop.y} ${cardBottom.x},${cardBottom.y}`
-
   const overlay = (
-    <svg className="fixed inset-0 z-[9998] size-full" style={{pointerEvents: 'none'}} aria-hidden="true">
+    <svg
+      className={stylex.props(styles.s5cee774, styles.s74a79380, styles.s6c4ecf36, styles.s1ad53cdb).className || ''}
+      style={{
+        pointerEvents: 'none',
+      }}
+      aria-hidden="true"
+    >
       {/* The prediction cone triangle */}
       <polygon
         points={trianglePoints}
@@ -75,6 +91,5 @@ export function PredictionConeDebugOverlay<BSchema extends BlockSchema = BlockSc
       <circle cx={cardBottom.x} cy={cardBottom.y} r={3} fill="rgba(59, 130, 246, 0.4)" />
     </svg>
   )
-
   return createPortal(overlay, document.body)
 }

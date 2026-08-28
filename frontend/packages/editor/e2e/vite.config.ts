@@ -7,6 +7,8 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [
     stylex.vite({
+      // Minify the atomic CSS StyleX appends; Vite's own minifier never sees it.
+      lightningcssOptions: {minify: true},
       cssInjectionTarget: (fileName: string) => /(^|\/)(?:index|stylex)(?:[.\-][A-Za-z0-9_.-]+)?\.css$/.test(fileName),
     }),
     react(),

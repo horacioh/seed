@@ -4,6 +4,11 @@ import {PropsWithChildren} from 'react'
 import {FieldErrors, FieldValues} from 'react-hook-form'
 import {Label} from './components/label'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s6f33f519: {
+    color: 'oklch(63.7% 0.237 25.331)',
+  },
+})
 const styles = stylex.create({
   scdbaf625: {
     width: '100%',
@@ -42,7 +47,7 @@ export function FormField<Fields extends FieldValues>({
     <div
       className={cn(
         stylex.props(styles.scdbaf625).className || '',
-        width && `w-[${typeof width == 'number' ? `${width}px` : width}]`,
+        width ? 'w-[' + ' ' + (typeof width == 'number' ? width + ' ' + 'px' : width) + ' ' + ']' : '',
         className,
       )}
     >
@@ -52,7 +57,7 @@ export function FormField<Fields extends FieldValues>({
             htmlFor={String(name)}
             className={cn(
               stylex.props(styles.s3301fa).className || '',
-              errors && errors[name]?.message && 'text-red-500',
+              stylex.props(errors && errors[name]?.message ? styles_2.s6f33f519 : null).className || '',
             )}
           >
             {label}

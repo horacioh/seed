@@ -64,6 +64,155 @@ import {getTriggerActivityRoute, summarizeTriggerSource, TriggerContextView} fro
  * to drive. A parked parent leaves this page silent for minutes, so the banner is what makes that
  * legible rather than looking like a stalled chat.
  */
+const styles_4 = stylex.create({
+  s597c48d: {
+    display: 'block',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sa173a9a1: {
+    fontFamily: 'var(--font-mono)',
+  },
+})
+const styles_3 = stylex.create({
+  s846c663c: {
+    backgroundColor: 'var(--muted)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        color: 'var(--foreground)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    maxWidth: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    alignSelf: 'flex-start',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2.5)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s15b5f0b0: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    color: 'var(--muted-foreground)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s3182a8b6: {
+    width: 'min(92vw, 44rem)',
+  },
+  s51ea7900: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  s93ff291a: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  saad8830: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    maxHeight: 'calc(var(--spacing) * 60)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    whiteSpace: 'pre-wrap',
+  },
+  s5071f6ae: {
+    ':target': {
+      boxShadow: '0 0 0 2px currentcolor',
+    },
+    scrollMarginTop: 'calc(var(--spacing) * 24)',
+    borderRadius: 'var(--radius)',
+  },
+  sc1a86e82: {
+    display: 'flex',
+    maxWidth: 'min(92vw, 42rem)',
+    minWidth: 'min(92vw, 42rem)',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  sbdc48e93: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    maxHeight: '70vh',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    whiteSpace: 'pre-wrap',
+  },
+})
+const styles_2 = stylex.create({
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb7febe14: {
+    maxWidth: '56rem',
+    gap: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 4)',
+  },
+  sae1e2ee2: {
+    marginInline: 'auto',
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+    maxWidth: '56rem',
+    flex: '1',
+    flexDirection: 'column',
+    paddingRight: 'calc(0.25rem * 1)',
+    paddingLeft: 'calc(0.25rem * 4)',
+  },
+  s4fcd49d8: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  sef2be82b: {
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflowY: 'auto',
+    paddingRight: 'calc(0.25rem * 1)',
+  },
+  s62276c59: {
+    display: 'flex',
+    minHeight: '100%',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+})
 const styles = stylex.create({
   s6a3cf028: {
     display: 'flex',
@@ -140,7 +289,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     padding: 'calc(0.25rem * 1.5)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+    boxShadow: 'var(--shadow-lg)',
   },
   s2b00eca2: {
     display: 'flex',
@@ -178,17 +327,15 @@ function SubSessionHeader({
     <div className={stylex.props(styles.s6a3cf028).className || ''}>
       <button
         type="button"
-        className="bg-muted hover:bg-muted/70 text-muted-foreground hover:text-foreground flex max-w-full items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-xs"
+        className={stylex.props(styles_3.s846c663c).className || ''}
         onClick={onOpenParent}
         title="Open the parent session"
       >
         <CornerLeftUp className={stylex.props(styles.se6c9d13).className || ''} />
-        <span className="min-w-0 truncate">{parentTitle || 'Parent session'}</span>
+        <span className={stylex.props(styles_2.s64fb8207).className || ''}>{parentTitle || 'Parent session'}</span>
       </button>
       {isDriven ? (
-        <div className="border-border bg-muted/40 text-muted-foreground rounded-md border px-3 py-1.5 text-xs">
-          {SUB_SESSION_DRIVEN_MESSAGE}
-        </div>
+        <div className={stylex.props(styles_3.s15b5f0b0).className || ''}>{SUB_SESSION_DRIVEN_MESSAGE}</div>
       ) : null}
     </div>
   )
@@ -207,10 +354,10 @@ function TriggerContextPopover({
           <Info className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="!w-[min(92vw,44rem)]">
+      <PopoverContent align="end" className={stylex.props(styles_3.s3182a8b6).className || ''}>
         <div className={stylex.props(styles.sfbc6e28f).className || ''}>
           <div className={stylex.props(styles.sf57902f3).className || ''}>
-            <div className="min-w-0">
+            <div className={stylex.props(styles_2.s3f58665f).className || ''}>
               <SizableText weight="bold">Started by trigger</SizableText>
               <SizableText size="sm" color="muted" className={stylex.props(styles.s12583799).className || ''}>
                 {context.triggerName} · {context.activitySummary}
@@ -220,7 +367,7 @@ function TriggerContextPopover({
               Open trigger
             </Button>
           </div>
-          <div className="grid gap-3 text-sm md:grid-cols-2">
+          <div className={stylex.props(styles_3.s51ea7900).className || ''}>
             <TriggerDetail label="Source" value={summarizeTriggerSource(context.source)} />
             <TriggerDetail label="Activity key" value={context.activityKey} mono />
             <TriggerDetail label="Firing ID" value={context.firingId} mono />
@@ -228,20 +375,18 @@ function TriggerContextPopover({
             <TriggerDetail label="Status" value={context.status} />
             {context.error ? <TriggerDetail label="Error" value={context.error} /> : null}
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className={stylex.props(styles_3.s93ff291a).className || ''}>
             <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Trigger prompt
               </SizableText>
-              <pre className="bg-muted/60 max-h-60 overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap">
-                {context.prompt}
-              </pre>
+              <pre className={stylex.props(styles_3.saad8830).className || ''}>{context.prompt}</pre>
             </div>
             <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Activity context passed to session
               </SizableText>
-              <pre className="bg-muted/60 max-h-60 overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap">
+              <pre className={stylex.props(styles_3.saad8830).className || ''}>
                 {JSON.stringify(context.activity, null, 2)}
               </pre>
             </div>
@@ -253,11 +398,19 @@ function TriggerContextPopover({
 }
 function TriggerDetail({label, value, mono}: {label: string; value: string; mono?: boolean}) {
   return (
-    <div className="min-w-0">
+    <div className={stylex.props(styles_2.s3f58665f).className || ''}>
       <SizableText size="sm" weight="bold">
         {label}
       </SizableText>
-      <SizableText size="sm" color="muted" className={`block truncate ${mono ? 'font-mono' : ''}`}>
+      <SizableText
+        size="sm"
+        color="muted"
+        className={
+          (stylex.props(styles_4.s597c48d, styles_4.s6e724d66).className || '') +
+          ' ' +
+          (mono ? stylex.props(styles_4.sa173a9a1).className || '' : '')
+        }
+      >
         {value}
       </SizableText>
     </div>
@@ -465,7 +618,7 @@ function AgentSessionPage({
   return (
     <PanelContainer className={stylex.props(styles.s6ebbda8).className || ''}>
       <div className={stylex.props(styles.s26068628).className || ''}>
-        <Container className="max-w-4xl gap-4 pt-4 pb-4">
+        <Container className={stylex.props(styles_2.sb7febe14).className || ''}>
           <AgentHeader
             agent={agent.data?.agent}
             agentId={agentId}
@@ -603,7 +756,7 @@ function AgentSessionPage({
           </div>
         ) : null}
       </AgentSubpageHeader>
-      <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col pr-1 pl-4">
+      <div className={stylex.props(styles_2.sae1e2ee2).className || ''}>
         {session.isLoading ? <SizableText color="muted">Loading session…</SizableText> : null}
         {session.isError ? (
           <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
@@ -611,7 +764,7 @@ function AgentSessionPage({
           </SizableText>
         ) : null}
         {session.data ? (
-          <div className="flex min-h-0 flex-1 flex-col">
+          <div className={stylex.props(styles_2.s4fcd49d8).className || ''}>
             {parentSessionId ? (
               <SubSessionHeader
                 parentTitle={parentSession.data?.session.title}
@@ -630,15 +783,15 @@ function AgentSessionPage({
             <div
               ref={autoScroll.containerRef}
               onScroll={autoScroll.handleScroll}
-              className="min-h-0 flex-1 overflow-y-auto pr-1"
+              className={stylex.props(styles_2.sef2be82b).className || ''}
             >
-              <div ref={autoScroll.contentRef} className="flex min-h-full flex-col gap-3 pt-4">
+              <div ref={autoScroll.contentRef} className={stylex.props(styles_2.s62276c59).className || ''}>
                 {!chatRows.length ? <SizableText color="muted">No messages yet.</SizableText> : null}
                 {chatRows.map((row) => (
                   <div
                     key={row.key}
                     id={`event-${row.key}`}
-                    className="target:ring-primary/40 scroll-mt-24 rounded-lg target:ring-2"
+                    className={stylex.props(styles_3.s5071f6ae).className || ''}
                   >
                     <AgentSessionChatRow
                       row={row}
@@ -729,7 +882,7 @@ function SystemPromptDialog({
   onClose: () => void
 }) {
   return (
-    <div className="flex max-w-[min(92vw,42rem)] min-w-[min(92vw,42rem)] flex-col gap-4">
+    <div className={stylex.props(styles_3.sc1a86e82).className || ''}>
       <div>
         <DialogTitle>Current system prompt</DialogTitle>
         <DialogDescription>
@@ -737,7 +890,7 @@ function SystemPromptDialog({
           {input.updatedAt ? ` (session updated ${new Date(input.updatedAt).toLocaleString()})` : ''}.
         </DialogDescription>
       </div>
-      <pre className="bg-muted/60 max-h-[70vh] overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap">
+      <pre className={stylex.props(styles_3.sbdc48e93).className || ''}>
         {input.prompt || 'No system prompt configured.'}
       </pre>
     </div>

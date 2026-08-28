@@ -11,6 +11,12 @@ import {ImageForm} from './image-form'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from './select-dropdown'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
+const styles_2 = stylex.create({
+  sde8ebc88: {
+    backgroundColor: 'var(--tone-emerald-100)',
+    color: 'var(--tone-emerald-800)',
+  },
+})
 const styles = stylex.create({
   sd6dded7f: {
     display: 'flex',
@@ -168,7 +174,7 @@ export function CreateSpaceForm({
   return (
     <div className={stylex.props(styles.sd6dded7f).className || ''}>
       <div className={stylex.props(styles.sfaef8fa5).className || ''}>
-        <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
+        <Badge className={stylex.props(styles_2.sde8ebc88).className || ''}>
           Step {step + 1}/{TOTAL_STEPS}
         </Badge>
         {onClose ? (

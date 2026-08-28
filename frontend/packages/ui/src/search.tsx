@@ -27,6 +27,153 @@ import {HMIcon} from './hm-icon'
 import {Separator} from './separator'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  s74586d9b: {
+    color: 'var(--muted-foreground)',
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 2)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s661644f6: {
+    backgroundColor: 'var(--background)',
+    position: 'absolute',
+    insetInline: 'calc(var(--spacing) * 2)',
+    top: 'calc(100% + 8px)',
+    zIndex: '20',
+    maxHeight: '65dvh',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  sdfaef2d3: {
+    maxHeight: '65dvh',
+  },
+  sff0b9a5b: {
+    display: 'none',
+    flexDirection: 'column',
+    '@media ((min-width: 640px))': {
+      display: 'flex',
+    },
+  },
+  scc11e8f6: {
+    backgroundColor: 'var(--surface-hover)',
+  },
+  sa8e74781: {
+    display: 'flex',
+    height: 'calc(100vh - 100px)',
+    maxHeight: '600px',
+    flexDirection: 'column',
+  },
+  s9b4a76a1: {
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 4)',
+    zIndex: '30',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  sc14611cb: {
+    color: 'var(--muted-foreground)',
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 4)',
+    zIndex: '30',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s820fadce: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--brand-12)',
+      },
+    },
+    ':active': {
+      backgroundColor: 'var(--brand-11)',
+    },
+    containerType: 'inline-size',
+    display: 'flex',
+    height: 'auto',
+    width: '100%',
+    alignItems: 'flex-start',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: '0',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+  s6f0c3745: {
+    backgroundColor: 'var(--brand-10)',
+    color: 'var(--text-on-secondary)',
+    display: 'inline-block',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  s35ddbd0c: {
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 2.5)',
+    zIndex: '3',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s1bfd6f2d: {
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 7)',
+    zIndex: '3',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+    color: 'var(--overlay-50)',
+  },
+  sddbbea52: {
+    maxHeight: '200px',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    overflow: 'hidden',
+  },
+})
+const styles_3 = stylex.create({
+  s579c56af: {
+    backgroundColor: 'var(--brand-12)',
+  },
+})
+const styles_2 = stylex.create({
+  sf1ed2181: {
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+    maxWidth: '42rem',
+    flex: '1',
+  },
+  sfbcb1886: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    gap: 'calc(0.25rem * 1)',
+  },
+  seb39dbfa: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+  },
+  s946f13fd: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+  },
+})
 const styles = stylex.create({
   sca36b5d1: {
     color: 'var(--muted-foreground)',
@@ -292,13 +439,11 @@ export function MobileSearch({
           }}
           placeholder="Search Documents"
         />
-        {isLoading ? (
-          <Spinner className="text-muted-foreground absolute top-1/2 right-2 size-4 -translate-y-1/2" />
-        ) : null}
+        {isLoading ? <Spinner className={stylex.props(styles_4.s74586d9b).className || ''} /> : null}
       </div>
       {isSearchActive ? (
-        <div className="bg-background absolute inset-x-2 top-[calc(100%+8px)] z-20 max-h-[65dvh] overflow-hidden rounded-md border shadow-sm">
-          <ScrollArea className="max-h-[65dvh]">
+        <div className={stylex.props(styles_4.s661644f6).className || ''}>
+          <ScrollArea className={stylex.props(styles_4.sdfaef2d3).className || ''}>
             <div className={stylex.props(styles.s34b56e).className || ''}>
               {searchItems.length > 0 ? (
                 searchItems.map((item: SearchResult) => {
@@ -374,7 +519,7 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
     if (focusedIndex >= searchItems.length) setFocusedIndex(0)
   }, [focusedIndex, searchItems])
   return (
-    <div className="hidden flex-col sm:flex">
+    <div className={stylex.props(styles_4.sff0b9a5b).className || ''}>
       <Popover
         {...popoverState}
         onOpenChange={(open) => {
@@ -388,7 +533,7 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
               size="icon"
               className={cn(
                 stylex.props(styles.s62783270).className || '',
-                popoverState.open && 'dark:bg-muted bg-black/5',
+                stylex.props(popoverState.open ? styles_4.scc11e8f6 : null).className || '',
               )}
             >
               <Search className={stylex.props(styles.sca3de968).className || ''} />
@@ -396,12 +541,10 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
           </PopoverTrigger>
         </Tooltip>
         <PopoverContent align="end" side="bottom" className={stylex.props(styles.s1aa13).className || ''}>
-          <div className="flex h-[calc(100vh-100px)] max-h-[600px] flex-col">
+          <div className={stylex.props(styles_4.sa8e74781).className || ''}>
             <div className={stylex.props(styles.sf2aded09).className || ''}>
-              <Search className="absolute top-1/2 left-4 z-30 size-4 -translate-y-1/2" />
-              {isLoading ? (
-                <Spinner className="text-muted-foreground absolute top-1/2 right-4 z-30 size-4 -translate-y-1/2" />
-              ) : null}
+              <Search className={stylex.props(styles_4.s9b4a76a1).className || ''} />
+              {isLoading ? <Spinner className={stylex.props(styles_4.sc14611cb).className || ''} /> : null}
               <Input
                 value={searchValue}
                 className={stylex.props(styles.s39d68924).className || ''}
@@ -441,7 +584,7 @@ export function HeaderSearch({siteHomeId}: {siteHomeId: UnpackedHypermediaId | n
                 }}
               />
             </div>
-            <div className="min-h-0 w-full max-w-2xl flex-1">
+            <div className={stylex.props(styles_2.sf1ed2181).className || ''}>
               <ScrollArea>
                 <div className={stylex.props(styles.s783f19f3).className || ''}>
                   {searchItems.length > 0 ? (
@@ -546,8 +689,8 @@ export function SearchResultItem({
       data-testid={`search-result-${item.title}`}
       className={cn(
         // dark:hover:bg-brand-12 overrides the ghost variant's dark:hover:bg-muted
-        'hover:bg-brand-12 dark:hover:bg-brand-12 active:bg-brand-11 @container flex h-auto w-full items-start gap-3 rounded-none py-2',
-        selected && 'bg-brand-12',
+        stylex.props(styles_4.s820fadce).className || '',
+        stylex.props(selected && styles_3.s579c56af).className || '',
         className,
       )}
     >
@@ -559,7 +702,7 @@ export function SearchResultItem({
       )}
 
       {/* Main (title/details) column */}
-      <div className="flex min-w-0 flex-1 flex-col justify-start gap-1">
+      <div className={stylex.props(styles_2.sfbcb1886).className || ''}>
         <SizableText className={stylex.props(styles.sf8247e22).className || ''}>
           {!!item.path && unpackedId?.blockRef
             ? item.path[item.path?.length - 1]
@@ -573,8 +716,8 @@ export function SearchResultItem({
         )}
 
         {!!item.path && (unpackedId?.latest || item.versionTime) && (
-          <div className="flex min-w-0 items-center gap-2 overflow-hidden">
-            <div className="flex min-w-0 flex-1 items-center">
+          <div className={stylex.props(styles_2.seb39dbfa).className || ''}>
+            <div className={stylex.props(styles_2.s946f13fd).className || ''}>
               {!!item.path && (
                 <SizableText size="xs" weight="light" className={stylex.props(styles.s558ede3b).className || ''}>
                   {collapsedPath.join(' / ')}
@@ -651,10 +794,7 @@ export function highlightSearchMatch(text: string, highlight: string = '') {
       {parts.map((part, i) => {
         const isMatch = part.toLowerCase() === highlight.toLowerCase()
         return isMatch ? (
-          <SizableText
-            className="bg-brand-10 text-secondary-foreground inline-block rounded-md px-1 font-medium dark:text-white"
-            key={i}
-          >
+          <SizableText className={stylex.props(styles_4.s6f0c3745).className || ''} key={i}>
             {part}
           </SizableText>
         ) : (
@@ -689,10 +829,8 @@ export function SearchInput({
   return (
     <div className={stylex.props(styles.se978af5d).className || ''}>
       <div className={stylex.props(styles.sd9440047).className || ''}>
-        <Search className="absolute top-1/2 left-2.5 z-3 size-4 -translate-y-1/2" />
-        {loading ? (
-          <Spinner className="absolute top-1/2 right-7 z-3 size-4 -translate-y-1/2 text-black/50 dark:text-white/50" />
-        ) : null}
+        <Search className={stylex.props(styles_4.s35ddbd0c).className || ''} />
+        {loading ? <Spinner className={stylex.props(styles_4.s1bfd6f2d).className || ''} /> : null}
         <Input
           autoFocus={true}
           placeholder="Search Hypermedia documents"
@@ -718,7 +856,7 @@ export function SearchInput({
           }}
         />
       </div>
-      <div className="max-h-[200px] min-h-0 flex-1 overflow-hidden">
+      <div className={stylex.props(styles_4.sddbbea52).className || ''}>
         <ScrollArea className={stylex.props(styles.sb42244d4).className || ''}>{children}</ScrollArea>
       </div>
     </div>

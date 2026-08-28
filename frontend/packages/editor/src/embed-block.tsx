@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {resolveHypermediaUrl, type DomainResolverFn} from '@seed-hypermedia/client'
 import {HMBlockEmbed, HMEmbedViewSchema, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useRouteLink} from '@shm/shared'
@@ -60,7 +61,215 @@ import {transformEmbedNode} from './hm-link-preview'
 import {MediaContainer} from './media-container'
 import {DisplayComponentProps, MediaRender, MediaType} from './media-render'
 import {HMBlockSchema} from './schema'
-
+const styles_4 = stylex.create({
+  sf4e42823: {
+    ':is([class~="group"]:hover *)': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_3 = stylex.create({
+  se0d1ade9: {
+    '::placeholder': {
+      color: 'color-mix(in oklab, var(--muted-foreground) 80%, transparent)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  se012b27f: {
+    scrollbarWidth: 'none',
+  },
+})
+const styles = stylex.create({
+  s335851: {
+    marginBlock: 'calc(0.25rem * 2)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  s426adf6a: {
+    lineHeight: '1.25',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s29df1839: {
+    borderStyle: 'none',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sab7cc61b: {
+    fontSize: '1.125rem',
+    lineHeight: 'var(--text-lg--line-height)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  s67b8c9c2: {
+    color: 'color-mix(in oklab, var(--muted-foreground) 80%, transparent)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  s3cc0cac7: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitboxOrient: 'vertical',
+    WebkitlineClamp: '2',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s4430632f: {
+    fill: 'currentcolor',
+  },
+  sca3de96b: {
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s808fc110: {
+    bottom: 'calc(0.25rem * 2)',
+  },
+  s478fb0c1: {
+    right: 'calc(0.25rem * 2)',
+  },
+  s382452: {
+    zIndex: '10',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s8a6c2a27: {
+    boxShadow: 'var(--shadow-sm)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  se40e3bb5: {
+    ':focus-within': {
+      opacity: '100%',
+    },
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s5cee774: {
+    position: 'fixed',
+  },
+  s6c4ecf55: {
+    zIndex: '9999',
+  },
+  sdbe7142e: {
+    maxHeight: '400px',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s21707c9a: {
+    overflow: 'auto',
+  },
+  s2527420a: {
+    overflowX: 'hidden',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s34b56f: {
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  s7355feda: {
+    borderBottomLeftRadius: 'calc(var(--radius) - 2px)',
+  },
+  s7358b914: {
+    borderBottomRightRadius: 'calc(var(--radius) - 2px)',
+  },
+  s335492: {
+    marginInline: 'calc(0.25rem * 4)',
+  },
+  s6f33f519: {
+    color: 'oklch(63.7% 0.237 25.331)',
+  },
+  s199f26b7: {
+    backgroundColor: 'color-mix(in oklab, #000 10%, transparent)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s168882a6: {
+    borderColor: 'color-mix(in oklab, var(--muted-foreground) 30%, transparent)',
+  },
+  s5b4447b4: {
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+    },
+  },
+})
 export const EmbedBlock = createReactBlockSpec({
   type: 'embed',
   propSchema: {
@@ -72,7 +281,8 @@ export const EmbedBlock = createReactBlockSpec({
       default: 'false',
     },
     view: {
-      values: ['Content', 'Card', 'Comments', 'Link'], // TODO: convert HMEmbedView type to array items
+      values: ['Content', 'Card', 'Comments', 'Link'],
+      // TODO: convert HMEmbedView type to array items
       default: 'Content',
     },
     draftId: {
@@ -85,10 +295,8 @@ export const EmbedBlock = createReactBlockSpec({
   // the invisible-content merge/caret traps.
   containsInlineContent: false,
   selectable: true,
-
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
-
   parseHTML: [
     {
       tag: 'div[data-content-type=embed]',
@@ -120,7 +328,14 @@ function DraftEmbedPlaceholder({
   const draftActions = useDraftActions()
   const draftQuery = draftActions?.useInlineDraft(draftId)
   const draft = draftQuery?.data
-  const metadata = draft?.metadata as {name?: string; summary?: string; icon?: string; cover?: string} | undefined
+  const metadata = draft?.metadata as
+    | {
+        name?: string
+        summary?: string
+        icon?: string
+        cover?: string
+      }
+    | undefined
   const [title, setTitle] = useState(metadata?.name || '')
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -130,24 +345,23 @@ function DraftEmbedPlaceholder({
   // the draft. Captured at mousedown, before the click changes the selection.
   const wasSelectedAtMouseDown = useRef(false)
   const summary = metadata?.summary || 'Add some details here'
-
   useEffect(() => {
     setTitle(metadata?.name || '')
   }, [metadata?.name])
-
   useEffect(() => {
     if (draftActions?.lastCreatedInlineDraftId !== draftId) return
-    containerRef.current?.scrollIntoView?.({behavior: 'smooth', block: 'nearest'})
+    containerRef.current?.scrollIntoView?.({
+      behavior: 'smooth',
+      block: 'nearest',
+    })
     inputRef.current?.focus()
     draftActions.clearLastCreatedInlineDraftId?.(draftId)
   }, [draftActions, draftId])
-
   useEffect(() => {
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     }
   }, [])
-
   const saveName = useCallback(
     (name: string) => {
       if (!draftActions?.onUpdateDraftName) return
@@ -158,7 +372,6 @@ function DraftEmbedPlaceholder({
     },
     [draftActions, draftId],
   )
-
   const flushName = useCallback(
     async (name: string) => {
       if (saveTimeoutRef.current) {
@@ -169,7 +382,6 @@ function DraftEmbedPlaceholder({
     },
     [draftActions, draftId],
   )
-
   const handleOpen = useCallback(async () => {
     if (!draft || !draftActions?.onOpenDraft) return
     await flushName(title)
@@ -179,14 +391,12 @@ function DraftEmbedPlaceholder({
       (draft as any).editPath?.length > 0 ? (draft as any).editPath : [...(draft.locationPath ?? []), `-${draftId}`]
     draftActions.onOpenDraft(draftId, editPath)
   }, [draft, draftActions, draftId, flushName, title])
-
   const handleTitleInput = (e: FormEvent<HTMLInputElement>) => {
     e.stopPropagation()
     const name = e.currentTarget.value
     setTitle(name)
     saveName(name)
   }
-
   const handleTitleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     e.stopPropagation()
     if (e.key === 'Enter') {
@@ -198,11 +408,9 @@ function DraftEmbedPlaceholder({
       inputRef.current?.blur()
     }
   }
-
   const stopEditorPropagation = (e: SyntheticEvent) => {
     e.stopPropagation()
   }
-
   return (
     <div
       ref={containerRef}
@@ -216,7 +424,7 @@ function DraftEmbedPlaceholder({
         // a click on an already-selected card opens the draft.
         if (wasSelectedAtMouseDown.current) void handleOpen()
       }}
-      className={cn('my-2', documentCardContainerClassName())}
+      className={cn(stylex.props(styles.s335851).className || '', documentCardContainerClassName())}
     >
       <DocumentCardShell
         interactive
@@ -239,7 +447,9 @@ function DraftEmbedPlaceholder({
               // Editing the title means working with this card: select it,
               // but keep DOM focus in the input.
               if (editor.isEditable && !isBlockSelected(editor, blockId)) {
-                selectBlockNodeById(editor, blockId, {focus: false})
+                selectBlockNodeById(editor, blockId, {
+                  focus: false,
+                })
               }
             }}
             onCompositionStartCapture={stopEditorPropagation}
@@ -252,12 +462,34 @@ function DraftEmbedPlaceholder({
             readOnly={!draftActions?.onUpdateDraftName}
             placeholder="Untitled document"
             className={cn(
-              'text-foreground placeholder:text-muted-foreground/80 block w-full truncate border-none bg-transparent font-sans text-lg leading-tight! font-bold outline-none',
-              !title && 'text-muted-foreground/80',
+              stylex.props(
+                styles.sc05281e3,
+                styles.s426adf6a,
+                styles.s597c48d,
+                styles.scdbaf625,
+                styles.s6e724d66,
+                styles.s29df1839,
+                styles.s60f53bca,
+                styles.sa1762f51,
+                styles.sab7cc61b,
+                styles.sa16ea943,
+                styles.sa602a1e3,
+              ).className || '',
+              stylex.props(styles_3.se0d1ade9).className || '',
+              !title ? stylex.props(styles.s67b8c9c2).className || '' : '',
             )}
           />
         }
-        summary={<p className="text-muted-foreground mt-2 line-clamp-2 font-sans text-sm">{summary}</p>}
+        summary={
+          <p
+            className={
+              stylex.props(styles.sf2718385, styles.s33458c, styles.s3cc0cac7, styles.sa1762f51, styles.sab7cc6fa)
+                .className || ''
+            }
+          >
+            {summary}
+          </p>
+        }
         badges={<DraftBadge />}
         actions={
           // Stop clicks on the menu from bubbling to the card's open-draft handler.
@@ -270,7 +502,7 @@ function DraftEmbedPlaceholder({
                 {
                   key: 'open',
                   label: 'Open draft',
-                  icon: <Pencil className="size-4" />,
+                  icon: <Pencil className={stylex.props(styles.sca3de968).className || ''} />,
                   disabled: !draftActions?.onOpenDraft || !draft,
                   onClick: () => void handleOpen(),
                 },
@@ -279,16 +511,19 @@ function DraftEmbedPlaceholder({
                       {
                         key: 'move',
                         label: 'Move',
-                        icon: <Forward className="size-4" />,
+                        icon: <Forward className={stylex.props(styles.sca3de968).className || ''} />,
                         disabled: !draft,
-                        onClick: () => draftActions.onMoveDraft?.(draftId, {embedBlockId: blockId}),
+                        onClick: () =>
+                          draftActions.onMoveDraft?.(draftId, {
+                            embedBlockId: blockId,
+                          }),
                       },
                     ]
                   : []),
                 {
                   key: 'remove',
                   label: 'Remove card',
-                  icon: <Trash2 className="size-4" />,
+                  icon: <Trash2 className={stylex.props(styles.sca3de968).className || ''} />,
                   variant: 'destructive',
                   onClick: () => editor.removeBlocks([blockId]),
                 },
@@ -303,10 +538,21 @@ function DraftEmbedPlaceholder({
 
 // Result of attempting to resolve a URL for embedding. Pure to keep it testable.
 export type EmbedResolveResult =
-  | {kind: 'direct'; url: string}
-  | {kind: 'resolved'; url: string}
-  | {kind: 'no-match'}
-  | {kind: 'error'; error: unknown}
+  | {
+      kind: 'direct'
+      url: string
+    }
+  | {
+      kind: 'resolved'
+      url: string
+    }
+  | {
+      kind: 'no-match'
+    }
+  | {
+      kind: 'error'
+      error: unknown
+    }
 
 /**
  * Resolve an arbitrary URL into something usable as an embed reference.
@@ -324,19 +570,31 @@ export async function resolveEmbedUrl(
 ): Promise<EmbedResolveResult> {
   const directHmId = unpackHmId(url)
   if (directHmId) {
-    return {kind: 'direct', url: packHmId(directHmId)}
+    return {
+      kind: 'direct',
+      url: packHmId(directHmId),
+    }
   }
   try {
-    const res = await resolveHypermediaUrl(url, {domainResolver: opts.domainResolver})
+    const res = await resolveHypermediaUrl(url, {
+      domainResolver: opts.domainResolver,
+    })
     if (res?.hmId) {
-      return {kind: 'resolved', url: packHmId(res.hmId)}
+      return {
+        kind: 'resolved',
+        url: packHmId(res.hmId),
+      }
     }
-    return {kind: 'no-match'}
+    return {
+      kind: 'no-match',
+    }
   } catch (error) {
-    return {kind: 'error', error}
+    return {
+      kind: 'error',
+      error,
+    }
   }
 }
-
 const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) => {
   // When the embed points at an unpublished child draft,
   // render a placeholder card instead of the URL input form.
@@ -355,20 +613,34 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       if (cursorPosition.block.id === block.id) {
         if (cursorPosition.nextBlock) editor.setTextCursorPosition(cursorPosition.nextBlock, 'start')
         else {
-          editor.insertBlocks([{type: 'paragraph', content: ''}], block.id, 'after')
+          editor.insertBlocks(
+            [
+              {
+                type: 'paragraph',
+                content: '',
+              },
+            ],
+            block.id,
+            'after',
+          )
           editor.setTextCursorPosition(editor.getTextCursorPosition().nextBlock!, 'start')
         }
       }
     }
-
     setLoading(true)
-    const result = await resolveEmbedUrl(url, {gwUrl, domainResolver: editor.domainResolver})
+    const result = await resolveEmbedUrl(url, {
+      gwUrl,
+      domainResolver: editor.domainResolver,
+    })
     setLoading(false)
-
     switch (result.kind) {
       case 'direct':
       case 'resolved':
-        assign({props: {url: result.url}} as MediaType)
+        assign({
+          props: {
+            url: result.url,
+          },
+        } as MediaType)
         advanceCursor()
         return
       case 'no-match':
@@ -407,7 +679,6 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     />
   )
 }
-
 const EmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   const {canEdit, isEditing} = useEditorGate()
   const isSelected = useIsBlockSelected(editor, block)
@@ -459,32 +730,45 @@ function SubdocumentMenu({
   const doc = docResource.data?.type === 'document' ? docResource.data.document : null
   const baseItems = useDocumentCardMenuItems(docId, doc)
   const actions = useDocumentActions()
-  const openLink = useRouteLink({key: 'document', id: docId} as any)
+  const openLink = useRouteLink({
+    key: 'document',
+    id: docId,
+  } as any)
   const bookmarked = actions.isBookmarked?.(docId) ?? false
   const currentView = (block.props.view as string) || 'Content'
   const url = block.props.url as string
 
   // Embed specific items prepended to the document menu.
   const prependedItems: MenuItemType[] = []
-
   prependedItems.push({
     key: 'open',
     label: 'Open document',
-    icon: <ExternalLinkIcon className="size-4" />,
+    icon: <ExternalLinkIcon className={stylex.props(styles.sca3de968).className || ''} />,
     onClick: (e) => {
       e?.stopPropagation()
       openLink.onClick?.(e as any)
     },
   })
-
   const docTitle = doc?.metadata?.name || url
   const transformTo = (toType: 'card' | 'embed' | 'link' | 'button') => () => {
     if (toType === 'card') {
-      editor.updateBlock(block.id, {props: {view: 'Card'}} as any)
+      editor.updateBlock(block.id, {
+        props: {
+          view: 'Card',
+        },
+      } as any)
     } else if (toType === 'embed') {
-      editor.updateBlock(block.id, {props: {view: 'Content'}} as any)
+      editor.updateBlock(block.id, {
+        props: {
+          view: 'Content',
+        },
+      } as any)
     } else if (toType === 'link') {
-      editor.updateBlock(block.id, {props: {view: 'Link'}} as any)
+      editor.updateBlock(block.id, {
+        props: {
+          view: 'Link',
+        },
+      } as any)
     } else {
       transformEmbedNode(editor, block.id, url, toType, docTitle)
     }
@@ -493,40 +777,46 @@ function SubdocumentMenu({
   prependedItems.push({
     key: 'change-view',
     label: 'Change subdocument view',
-    icon: <SquarePen className="size-4" />,
+    icon: <SquarePen className={stylex.props(styles.sca3de968).className || ''} />,
     children: [
       {
         key: 'view-card',
         label: labelWithCurrent('Card', currentView === 'Card'),
-        icon: <CreditCard className="size-4" />,
+        icon: <CreditCard className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: transformTo('card'),
       },
       {
         key: 'view-embed',
         label: labelWithCurrent('Embed', currentView === 'Content'),
-        icon: <BetweenHorizontalStart className="size-4" />,
+        icon: <BetweenHorizontalStart className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: transformTo('embed'),
       },
       {
         key: 'view-link',
         label: labelWithCurrent('Link', currentView === 'Link'),
-        icon: <Link2 className="size-4 rotate-135" />,
+        icon: <Link2 className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: transformTo('link'),
       },
       {
         key: 'view-button',
         label: 'Button',
-        icon: <SquareMinus className="size-4" />,
+        icon: <SquareMinus className={stylex.props(styles.sca3de968).className || ''} />,
         onClick: transformTo('button'),
       },
     ],
   })
-
   if (actions.onBookmarkToggle) {
     prependedItems.push({
       key: 'bookmark',
       label: bookmarked ? 'Remove Bookmark' : 'Bookmark',
-      icon: <Bookmark className={cn('size-4', bookmarked && 'fill-current')} />,
+      icon: (
+        <Bookmark
+          className={cn(
+            stylex.props(styles.sca3de968).className || '',
+            bookmarked ? stylex.props(styles.s4430632f).className || '' : '',
+          )}
+        />
+      ),
       onClick: (e) => {
         e?.stopPropagation()
         actions.onBookmarkToggle!(docId)
@@ -546,9 +836,7 @@ function SubdocumentMenu({
         }
       : item,
   )
-
   const allItems = [...prependedItems, ...enhancedBaseItems]
-
   return (
     <OptionsDropdown
       align="end"
@@ -556,14 +844,14 @@ function SubdocumentMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="size-7"
+          className={stylex.props(styles.sca3de96b).className || ''}
           aria-label="Subdocument options"
           onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()
           }}
         >
-          <MoreHorizontal className="size-3.5" />
+          <MoreHorizontal className={stylex.props(styles.s3269316e).className || ''} />
         </Button>
       }
       menuItems={allItems}
@@ -596,17 +884,33 @@ function SelectedEmbedActions({
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       className={cn(
-        'absolute right-2 bottom-2 z-10 flex items-center gap-1 rounded-md',
-        'border-border bg-background border px-1 py-0.5 shadow-sm',
-        'opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100',
-        isSelected && 'opacity-100',
+        stylex.props(
+          styles.s67010d77,
+          styles.s808fc110,
+          styles.s478fb0c1,
+          styles.s382452,
+          styles.s2ffff9,
+          styles.sc6ed1702,
+          styles.s5d936fa,
+          styles.sf79988b7,
+        ).className || '',
+        stylex.props(
+          styles.s1a01a0ed,
+          styles.s436dc7b6,
+          styles.sad8c742c,
+          styles.s34b1ac,
+          styles.sc5dd1033,
+          styles.s8a6c2a27,
+        ).className || '',
+        stylex.props(styles.s765a26ee, styles.s83442393, styles.se40e3bb5).className || '',
+        stylex.props(styles_4.sf4e42823).className || '',
+        isSelected ? stylex.props(styles.s486c2d2f).className || '' : '',
       )}
     >
       <SubdocumentMenu editor={editor} block={block} docId={docId} />
     </div>
   )
 }
-
 function EditorEmbedContent({
   block,
   parentBlockId,
@@ -653,7 +957,6 @@ function EditorEmbedContent({
     />
   )
 }
-
 export const EmbedLauncherInput = ({
   editor,
   assign,
@@ -678,12 +981,14 @@ export const EmbedLauncherInput = ({
     includeBody: true,
     contextSize: 20 - search.length,
   })
-
   const searchItems: SearchResultItem[] =
     searchResults.data?.entities
       ?.map((item) => {
         const title = item.title || item.id.uid
-        const sanitizedId = {...item.id, blockRange: null}
+        const sanitizedId = {
+          ...item.id,
+          blockRange: null,
+        }
         return {
           key: packHmId(sanitizedId),
           title,
@@ -691,14 +996,18 @@ export const EmbedLauncherInput = ({
           icon: item.icon,
           onFocus: () => {},
           onMouseEnter: () => {},
-          onSelect: () => assign({props: {url: packHmId(sanitizedId)}} as MediaType),
+          onSelect: () =>
+            assign({
+              props: {
+                url: packHmId(sanitizedId),
+              },
+            } as MediaType),
           subtitle: 'Document',
           searchQuery: item.searchQuery,
           versionTime: item.versionTime || '',
         }
       })
       .filter(Boolean) || []
-
   const recentItems: SearchResultItem[] =
     recents.data?.map(({id, name}, index) => {
       return {
@@ -718,31 +1027,40 @@ export const EmbedLauncherInput = ({
             toast.error('Failed to open recent: ' + id + ' ' + name)
             return
           } else {
-            assign({props: {url: id.id}} as MediaType)
+            assign({
+              props: {
+                url: id.id,
+              },
+            } as MediaType)
           }
         },
       }
     }) || []
   const isDisplayingRecents = !search.length
   const activeItems: SearchResultItem[] = isDisplayingRecents ? recentItems : searchItems
-
   const [focusedIndex, setFocusedIndex] = useState(0)
   // Portal the dropdown to document.body so it escapes the .blockNode's
   // stacking context. Otherwise the dropdown is confined to its block and
   // sibling blocks render on top regardless of z-index.
   const inputRef = useRef<HTMLInputElement>(null)
-  const [inputRect, setInputRect] = useState<{top: number; left: number; width: number} | null>(null)
-
+  const [inputRect, setInputRect] = useState<{
+    top: number
+    left: number
+    width: number
+  } | null>(null)
   useEffect(() => {
     if (focusedIndex >= activeItems.length) setFocusedIndex(0)
   }, [focusedIndex, activeItems])
-
   useEffect(() => {
     if (!focused || !inputRef.current) return
     const update = () => {
       if (!inputRef.current) return
       const rect = inputRef.current.getBoundingClientRect()
-      setInputRect({top: rect.bottom, left: rect.left, width: rect.width})
+      setInputRect({
+        top: rect.bottom,
+        left: rect.left,
+        width: rect.width,
+      })
     }
     update()
     window.addEventListener('scroll', update, true)
@@ -752,16 +1070,27 @@ export const EmbedLauncherInput = ({
       window.removeEventListener('resize', update)
     }
   }, [focused])
-
   let content =
     focused && inputRect
       ? createPortal(
           <div
             className={cn(
-              'fixed z-[9999] flex max-h-[400px] flex-col overflow-auto overflow-x-hidden px-3 py-3 opacity-100',
-              'bg-muted',
-              'rounded-br-md rounded-bl-md',
-              'scrollbar-none shadow-sm',
+              stylex.props(
+                styles.s5cee774,
+                styles.s6c4ecf55,
+                styles.s2ffff9,
+                styles.sdbe7142e,
+                styles.s67e351ac,
+                styles.s21707c9a,
+                styles.s2527420a,
+                styles.s34b1ae,
+                styles.s34b56f,
+                styles.s486c2d2f,
+              ).className || '',
+              stylex.props(styles.s5fd609e3).className || '',
+              stylex.props(styles.s7355feda, styles.s7358b914).className || '',
+              stylex.props(styles.s8a6c2a27).className || '',
+              stylex.props(styles_2.se012b27f).className || '',
             )}
             style={{
               scrollbarWidth: 'none',
@@ -774,7 +1103,11 @@ export const EmbedLauncherInput = ({
             onMouseDown={(e) => e.preventDefault()}
           >
             {isDisplayingRecents && (
-              <SizableText color="muted" family="default" className="mx-4 text-red-500">
+              <SizableText
+                color="muted"
+                family="default"
+                className={stylex.props(styles.s335492, styles.s6f33f519).className || ''}
+              >
                 Recent Resources
               </SizableText>
             )}
@@ -786,16 +1119,23 @@ export const EmbedLauncherInput = ({
                 onMouseEnter: () => setFocusedIndex(itemIndex),
                 onMouseDown: (e: React.MouseEvent) => e.preventDefault(),
               }
-
               return (
                 <ReactFragment key={item.key}>
                   {isDisplayingRecents ? (
-                    <RecentSearchResultItem item={{...item, id: item.id}} {...sharedProps} />
+                    <RecentSearchResultItem
+                      item={{
+                        ...item,
+                        id: item.id,
+                      }}
+                      {...sharedProps}
+                    />
                   ) : (
                     <SearchResultItem item={item} {...sharedProps} />
                   )}
 
-                  {itemIndex !== activeItems.length - 1 ? <Separator className="bg-black/10 dark:bg-white/10" /> : null}
+                  {itemIndex !== activeItems.length - 1 ? (
+                    <Separator className={stylex.props(styles.s199f26b7).className || ''} />
+                  ) : null}
                 </ReactFragment>
               )
             })}
@@ -803,9 +1143,8 @@ export const EmbedLauncherInput = ({
           document.body,
         )
       : null
-
   return (
-    <div className="relative flex flex-1 flex-col">
+    <div className={stylex.props(styles.sdef3facc, styles.s2ffff9, styles.sb42feb5d, styles.s67e351ac).className || ''}>
       <Input
         ref={inputRef}
         value={search}
@@ -814,7 +1153,10 @@ export const EmbedLauncherInput = ({
           setSearch(text)
           setUrl(text)
           if (fileName.color) {
-            setFileName({name: 'Upload File', color: undefined})
+            setFileName({
+              name: 'Upload File',
+              color: undefined,
+            })
           }
         }}
         placeholder="Query or input Embed URL…"
@@ -837,7 +1179,6 @@ export const EmbedLauncherInput = ({
           // submit directly so the embed is created instead of selecting a search result.
           if (e.key === 'Enter') {
             const isUrl = search.startsWith('http://') || search.startsWith('https://') || search.startsWith('hm://')
-
             if (isUrl) {
               setFocused(false)
               if (submit) {
@@ -854,9 +1195,7 @@ export const EmbedLauncherInput = ({
             }
             return
           }
-
           if (!activeItems.length) return
-
           if (e.key === 'ArrowDown') {
             e.preventDefault()
             setFocusedIndex((prev) => (prev + 1) % activeItems.length)
@@ -865,7 +1204,7 @@ export const EmbedLauncherInput = ({
             setFocusedIndex((prev) => (prev - 1 + activeItems.length) % activeItems.length)
           }
         }}
-        className="border-muted-foreground/30 focus-visible:border-ring text-foreground placeholder:text-foreground/50 w-full"
+        className={stylex.props(styles.s168882a6, styles.s5b4447b4, styles.sc05281e3, styles.scdbaf625).className || ''}
       />
 
       {content}

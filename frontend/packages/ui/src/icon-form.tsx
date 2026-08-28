@@ -5,6 +5,50 @@ import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {X} from 'lucide-react'
 import {ChangeEvent} from 'react'
+const styles_2 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdb8b145: {
+    width: 'auto',
+  },
+  s815a054e: {
+    alignItems: 'flex-end',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s760cfea1: {
+    alignSelf: 'flex-start',
+  },
+  sd5b893dc: {
+    pointerEvents: 'none',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s199f26f5: {
+    backgroundColor: 'color-mix(in oklab, #000 30%, transparent)',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
 const styles = stylex.create({
   s87ddcc81: {
     position: 'relative',
@@ -64,7 +108,13 @@ export function IconForm({
   const iconImage = <UIAvatar label={label} id={id} url={url} size={size} />
   if (!onIconUpload) return iconImage
   return (
-    <div className="group flex w-auto items-end gap-2 self-start" data-group="icon">
+    <div
+      className={
+        stylex.props(styles_2.s2ffff9, styles_2.scdb8b145, styles_2.s815a054e, styles_2.s5d936fb, styles_2.s760cfea1)
+          .className || ''
+      }
+      data-group="icon"
+    >
       <div
         className={stylex.props(styles.s87ddcc81).className || ''}
         style={{
@@ -91,7 +141,20 @@ export function IconForm({
         />
         {emptyLabel && !url ? (
           <div
-            className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-100 group-hover:opacity-0"
+            className={
+              stylex.props(
+                styles_2.sd5b893dc,
+                styles_2.s67010d77,
+                styles_2.s2ffff9,
+                styles_2.sb42244d4,
+                styles_2.scdbaf625,
+                styles_2.sc6ed1702,
+                styles_2.sce22ca32,
+                styles_2.s5d936fb,
+                styles_2.s199f26f5,
+                styles_2.s486c2d2f,
+              ).className || ''
+            }
             style={{
               zIndex: 5,
             }}
@@ -102,7 +165,20 @@ export function IconForm({
           </div>
         ) : null}
         <div
-          className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-0 group-hover:opacity-100"
+          className={
+            stylex.props(
+              styles_2.sd5b893dc,
+              styles_2.s67010d77,
+              styles_2.s2ffff9,
+              styles_2.sb42244d4,
+              styles_2.scdbaf625,
+              styles_2.sc6ed1702,
+              styles_2.sce22ca32,
+              styles_2.s5d936fb,
+              styles_2.s199f26f5,
+              styles_2.s765a26ee,
+            ).className || ''
+          }
           style={{
             zIndex: 5,
           }}
@@ -116,7 +192,7 @@ export function IconForm({
       {onRemoveIcon && url ? (
         <Tooltip content="Remove Icon">
           <Button
-            className="opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
+            className={stylex.props(styles_2.s765a26ee).className || ''}
             variant="destructive"
             size="sm"
             style={{

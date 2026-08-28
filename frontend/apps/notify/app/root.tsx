@@ -23,6 +23,58 @@ import {
 import {SizableText} from '@shm/ui/text'
 import {Providers} from './providers'
 import './stylex.css'
+const styles_2 = stylex.create({
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  sa9df3e8c: {
+    minHeight: '100vh',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sf611594d: {
+    WebkitfontSmoothing: 'antialiased',
+    MozosxFontSmoothing: 'grayscale',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s1593095a: {
+    maxWidth: '32rem',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fd: {
+    gap: 'calc(0.25rem * 4)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s1aa19: {
+    padding: 'calc(0.25rem * 6)',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+})
 const styles = stylex.create({
   sceaed122: {
     display: 'flex',
@@ -111,7 +163,11 @@ export function Layout({children}: {children: React.ReactNode}) {
           />
         ) : null}
       </head>
-      <body className="bg-muted min-h-screen font-sans antialiased">
+      <body
+        className={
+          stylex.props(styles_2.s5fd609e3, styles_2.sa9df3e8c, styles_2.sa1762f51, styles_2.sf611594d).className || ''
+        }
+      >
         <Providers>{children}</Providers>
 
         <ScrollRestoration />
@@ -137,7 +193,24 @@ export function ErrorBoundary({}: {}) {
       <body>
         <div className={stylex.props(styles.sceaed122).className || ''}>
           <div className={stylex.props(styles.se6224f5b).className || ''}>
-            <div className="border-border dark:bg-background flex w-full max-w-lg flex-1 flex-col gap-4 rounded-lg border bg-white p-6 shadow-lg">
+            <div
+              className={
+                stylex.props(
+                  styles_2.s1a01a0ed,
+                  styles_2.s2ffff9,
+                  styles_2.scdbaf625,
+                  styles_2.s1593095a,
+                  styles_2.sb42feb5d,
+                  styles_2.s67e351ac,
+                  styles_2.s5d936fd,
+                  styles_2.sf799889b,
+                  styles_2.sad8c742c,
+                  styles_2.s605ce4a1,
+                  styles_2.s1aa19,
+                  styles_2.s8a6c2948,
+                ).className || ''
+              }
+            >
               <SizableText size="5xl">🤕</SizableText>
               <SizableText size="2xl" weight="bold">
                 Uh oh, it's not you, it's us...

@@ -52,6 +52,42 @@ import {
 } from 'lucide-react'
 import {ReactNode, useCallback, useMemo} from 'react'
 import type {InspectTab} from '@shm/shared/routes'
+const styles_3 = stylex.create({
+  s18c14: {
+    height: 'calc(0.25rem * 9)',
+  },
+  s5201f19: {
+    borderTopLeftRadius: '0',
+    borderBottomLeftRadius: '0',
+  },
+  sf59a62a: {
+    borderTopRightRadius: 'calc(infinity * 1px)',
+    borderBottomRightRadius: 'calc(infinity * 1px)',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s646c459b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+      },
+    },
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
+const styles_2 = stylex.create({
+  s3581f9af: {
+    display: 'flex',
+    height: '100%',
+    maxHeight: '100%',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    backgroundColor: 'oklch(96.7% 0.001 286.375)',
+  },
+})
 const styles = stylex.create({
   s91243feb: {
     flex: '1',
@@ -137,7 +173,7 @@ export function InspectorPage({docId, pageFooter}: {docId: UnpackedHypermediaId;
   )
   if (resource.isInitialLoading) {
     return (
-      <div className="flex h-full max-h-full flex-col overflow-hidden bg-zinc-100">
+      <div className={stylex.props(styles_2.s3581f9af).className || ''}>
         <div className={stylex.props(styles.s91243feb).className || ''}>
           <InspectorShell title={title} toolbar={toolbar}>
             <div className={stylex.props(styles.s7026dbcb).className || ''}>
@@ -151,7 +187,7 @@ export function InspectorPage({docId, pageFooter}: {docId: UnpackedHypermediaId;
   }
   if (resource.isDiscovering) {
     return (
-      <div className="flex h-full max-h-full flex-col overflow-hidden bg-zinc-100">
+      <div className={stylex.props(styles_2.s3581f9af).className || ''}>
         <div className={stylex.props(styles.s91243feb).className || ''}>
           <InspectorShell title={title} toolbar={toolbar}>
             <PageDiscovery />
@@ -162,7 +198,7 @@ export function InspectorPage({docId, pageFooter}: {docId: UnpackedHypermediaId;
     )
   }
   return (
-    <div className="flex h-full max-h-full flex-col overflow-hidden bg-zinc-100">
+    <div className={stylex.props(styles_2.s3581f9af).className || ''}>
       <div className={stylex.props(styles.s8d50829d).className || ''}>
         <div className={stylex.props(styles.s91243feb).className || ''}>
           <InspectorShell title={title} toolbar={toolbar}>
@@ -276,9 +312,10 @@ function InspectorOpenButton({
       variant={nested ? 'ghost' : accent ? 'accent' : 'outline'}
       className={
         nested
-          ? 'h-9 rounded-l-none rounded-r-full px-3 hover:bg-black/5 dark:hover:bg-white/10'
+          ? stylex.props(styles_3.s18c14, styles_3.s5201f19, styles_3.sf59a62a, styles_3.s34b1ae, styles_3.s646c459b)
+              .className || ''
           : accent
-            ? 'rounded-full'
+            ? stylex.props(styles_3.s775755af).className || ''
             : undefined
       }
     >

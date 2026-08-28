@@ -16,6 +16,110 @@ import {FacePile} from './face-pile'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  s526b5929: {
+    borderColor: 'color-mix(in oklab, var(--muted-foreground) 20%, transparent)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '2px',
+  },
+  s507ade17: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '0.25rem',
+  },
+  s2db32042: {
+    display: 'block',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontWeight: 'var(--font-weight-medium)',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  sac44e43d: {
+    display: 'flex',
+    height: '100%',
+    minHeight: '520px',
+    flexDirection: 'column',
+    paddingInline: 'calc(var(--spacing) * 6)',
+  },
+  s6f7c6ca7: {
+    color: 'var(--muted-foreground)',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 3)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  sc9990868: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+  },
+  s8ce93e09: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+  },
+  s8ce93e47: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+  },
+})
+const styles_3 = stylex.create({
+  scdb8b145: {
+    width: 'auto',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s3b627426: {
+    maxWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+  },
+})
+const styles_2 = stylex.create({
+  sa4681c44: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  sb21c636f: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sa67bf7d: {
+    position: 'relative',
+    marginLeft: 'auto',
+    width: '100%',
+    maxWidth: '24rem',
+  },
+})
 const styles = stylex.create({
   s14e680f: {
     color: 'var(--muted-foreground)',
@@ -278,7 +382,10 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
           const pathLabel = pathLabelOf(item.doc)
           return (
             <div
-              className={cn('flex min-w-0 items-center gap-1', nested && 'border-muted-foreground/20 border-l-2')}
+              className={cn(
+                stylex.props(styles_2.sa4681c44).className || '',
+                stylex.props(nested ? styles_4.s526b5929 : null).className || '',
+              )}
               style={{
                 paddingLeft: nested ? (item.depth - 1) * 24 + 4 : 0,
               }}
@@ -287,7 +394,7 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
                 <button
                   type="button"
                   aria-label={effectiveExpandedPaths.has(item.pathKey) ? 'Collapse document' : 'Expand document'}
-                  className="hover:bg-muted flex size-6 shrink-0 items-center justify-center rounded"
+                  className={stylex.props(styles_4.s507ade17).className || ''}
                   onClick={() => toggleExpanded(item.pathKey)}
                 >
                   {effectiveExpandedPaths.has(item.pathKey) ? (
@@ -299,10 +406,10 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
               ) : (
                 <span className={stylex.props(styles.se181db62).className || ''} />
               )}
-              <div className="min-w-0 flex-1">
+              <div className={stylex.props(styles_2.se30fd43e).className || ''}>
                 <button
                   type="button"
-                  className="block min-w-0 truncate text-left font-medium hover:underline"
+                  className={stylex.props(styles_4.s2db32042).className || ''}
                   onClick={(event) => {
                     if (event.shiftKey)
                       onNavigateToDocument(item.doc.id, {
@@ -376,9 +483,9 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
     manualSorting: true,
   })
   return (
-    <div className="flex h-full min-h-[520px] flex-col px-6">
+    <div className={stylex.props(styles_4.sac44e43d).className || ''}>
       <div className={stylex.props(styles.s5f9dd851).className || ''}>
-        <div className="flex min-w-0 flex-col gap-2">
+        <div className={stylex.props(styles_2.sb21c636f).className || ''}>
           <SizableText size="3xl" weight="bold">
             All Documents
           </SizableText>
@@ -390,8 +497,8 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
          {selectedPaths.size > 0 ? (
           <div className="bg-muted rounded-full px-3 py-1 text-sm">{selectedPaths.size} selected</div>
          ) : null} */}
-        <div className="relative ml-auto w-full max-w-sm">
-          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <div className={stylex.props(styles_2.sa67bf7d).className || ''}>
+          <Search className={stylex.props(styles_4.s6f7c6ca7).className || ''} />
           <Input
             value={filter}
             onChangeText={setFilter}
@@ -423,7 +530,7 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
                     return (
                       <TableHead
                         key={header.id}
-                        className={cn(isTitle ? 'w-auto' : 'overflow-hidden')}
+                        className={cn(stylex.props(isTitle ? styles_3.scdb8b145 : styles_3.s92852dd5).className || '')}
                         style={
                           isTitle
                             ? undefined
@@ -435,7 +542,7 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
                         {header.isPlaceholder ? null : canSort ? (
                           <button
                             type="button"
-                            className="hover:text-foreground flex items-center gap-1"
+                            className={stylex.props(styles_4.sc9990868).className || ''}
                             onClick={header.column.getToggleSortingHandler()}
                           >
                             {flexRender(header.column.columnDef.header, header.getContext())}
@@ -456,14 +563,20 @@ export function AllDocumentsPage({siteId, scopeId, onNavigateToDocument}: AllDoc
                   key={row.original.pathKey}
                   // Bulk selection is hidden until bulk actions exist.
                   // data-state={selectedPaths.has(row.original.pathKey) ? 'selected' : undefined}
-                  className={cn(row.original.depth > 0 && 'bg-muted/30', row.original.depth > 1 && 'bg-muted/50')}
+                  className={cn(
+                    stylex.props(row.original.depth > 0 ? styles_4.s8ce93e09 : null).className || '',
+                    stylex.props(row.original.depth > 1 ? styles_4.s8ce93e47 : null).className || '',
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => {
                     const isTitle = cell.column.id === 'title'
                     return (
                       <TableCell
                         key={cell.id}
-                        className={cn(isTitle && 'max-w-0 overflow-hidden', !isTitle && 'overflow-hidden')}
+                        className={cn(
+                          stylex.props(isTitle && styles_3.s3b627426).className || '',
+                          stylex.props(!isTitle && styles_3.s92852dd5).className || '',
+                        )}
                         style={
                           isTitle
                             ? undefined

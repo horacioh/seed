@@ -45,6 +45,8 @@ export default defineConfig(({command, mode}) => {
       // `index-*.css` asset. Without this the unplugin may inject it into an
       // arbitrary code-split CSS chunk that other pages never load.
       stylex.vite({
+        // Minify the atomic CSS StyleX appends; Vite's own minifier never sees it.
+        lightningcssOptions: {minify: true},
         cssInjectionTarget: (fileName: string) => /(^|\/)index-[A-Za-z0-9_.-]+\.css$/.test(fileName),
       }),
       tsConfigPaths({

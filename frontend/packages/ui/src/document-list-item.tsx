@@ -39,6 +39,109 @@ import {PrivateBadge} from './private-badge'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_5 = stylex.create({
+  s74bfe3fb: {
+    ':is(.dark *)': {
+      backgroundColor: '#000',
+    },
+  },
+})
+const styles_4 = stylex.create({
+  sb41ffff4: {
+    height: 'auto',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s626516e5: {
+    justifyContent: 'flex-start',
+  },
+  s29df1839: {
+    borderStyle: 'none',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s8a6c2a27: {
+    boxShadow: 'var(--shadow-sm)',
+  },
+  s9ab038a6: {
+    ':hover': {
+      '@media (hover: hover)': {
+        boxShadow: 'var(--shadow-md)',
+      },
+    },
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s9c668547: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 70%, transparent)',
+      },
+    },
+  },
+  s2ad4931: {
+    marginLeft: 'calc(0.25rem * -2)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sca3de96b: {
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+})
+const styles_3 = stylex.create({
+  s86afa306: {
+    paddingInline: 'calc(var(--spacing) * 0)',
+    fontSize: '10px',
+  },
+  sc72d0d51: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '10px',
+  },
+})
+const styles_2 = stylex.create({
+  s6eb95469: {
+    pointerEvents: 'none',
+    visibility: 'hidden',
+  },
+  sb58610c9: {
+    rotate: '90deg',
+  },
+})
 const styles = stylex.create({
   s3269316e: {
     width: 'calc(0.25rem * 3.5)',
@@ -258,7 +361,7 @@ export function DocumentListItem({
       items.push(
         createCopyLinkMenuItem({
           advanced: experiments?.advancedCopyLinkOptions,
-          iconClassName: 'size-3.5',
+          iconSize: 'sm',
           canonical: {
             copy: copyCanonical,
           },
@@ -356,7 +459,21 @@ export function DocumentListItem({
       variant="ghost"
       {...highlighter(id)}
       className={cn(
-        'group/item h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black',
+        stylex.props(
+          styles_4.sb41ffff4,
+          styles_4.scdbaf625,
+          styles_4.sc6ed1702,
+          styles_4.s626516e5,
+          styles_4.s29df1839,
+          styles_4.s60f53bca,
+          styles_4.s605ce4a1,
+          styles_4.s34b1af,
+          styles_4.s34b56e,
+          styles_4.s8a6c2a27,
+          styles_4.s9ab038a6,
+        ).className || '',
+        stylex.props(styles_5.s74bfe3fb).className || '',
+        'group/item',
         className,
       )}
     >
@@ -369,8 +486,20 @@ export function DocumentListItem({
             aria-expanded={expandable.expanded}
             disabled={!canExpand}
             className={cn(
-              'no-window-drag text-muted-foreground hover:bg-muted/70 -ml-2 flex size-7 shrink-0 items-center justify-center rounded-md transition-colors',
-              !canExpand && 'pointer-events-none invisible',
+              stylex.props(
+                styles_4.sf2718385,
+                styles_4.s9c668547,
+                styles_4.s2ad4931,
+                styles_4.s2ffff9,
+                styles_4.sca3de96b,
+                styles_4.sf032ed6c,
+                styles_4.sc6ed1702,
+                styles_4.sce22ca32,
+                styles_4.sf79988b7,
+                styles_4.sf7fb00e8,
+              ).className || '',
+              'no-window-drag',
+              stylex.props(!canExpand && styles_2.s6eb95469).className || '',
             )}
             onClick={(e) => {
               e.preventDefault()
@@ -379,7 +508,10 @@ export function DocumentListItem({
             }}
           >
             <ChevronRight
-              className={cn(stylex.props(styles.sc2ca51c7).className || '', expandable.expanded && 'rotate-90')}
+              className={cn(
+                stylex.props(styles.sc2ca51c7).className || '',
+                stylex.props(expandable.expanded && styles_2.sb58610c9).className || '',
+              )}
             />
           </button>
         )}
@@ -433,7 +565,7 @@ export function DocumentListItem({
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="no-window-drag flex items-center gap-1"
+                      className={stylex.props(styles_4.s2ffff9, styles_4.sc6ed1702, styles_4.s5d936fa).className || ''}
                       onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -480,7 +612,7 @@ function DocumentListItemBreadcrumbs({breadcrumbs}: {breadcrumbs: HMBreadcrumb[]
         <Fragment key={breadcrumb.path}>
           <Button
             variant="link"
-            className="px-0 text-[10px]"
+            className={stylex.props(styles_3.s86afa306).className || ''}
             size="xs"
             onClick={(e) => {
               e.stopPropagation()
@@ -501,7 +633,7 @@ function DocumentListItemCommentCount({count}: {count: number}) {
   return (
     <div className={stylex.props(styles.s86ff3e3).className || ''}>
       <MessageSquare className={stylex.props(styles.s76b0b3a9).className || ''} />
-      <SizableText className="text-muted-foreground font-sans text-[10px]">{count}</SizableText>
+      <SizableText className={stylex.props(styles_3.sc72d0d51).className || ''}>{count}</SizableText>
     </div>
   )
 }

@@ -1,7 +1,17 @@
-export default function BlueskyIcon({className = 'size-6 text-gray-400', ...props}: React.SVGProps<SVGSVGElement>) {
+import * as stylex from '@stylexjs/stylex'
+
+const styles = stylex.create({
+  icon: {
+    width: 24,
+    height: 24,
+    color: 'var(--color-gray-400)',
+  },
+})
+
+export default function BlueskyIcon({className, ...props}: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      className={className}
+      className={className ?? stylex.props(styles.icon).className}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 600 530"
       width="50px"

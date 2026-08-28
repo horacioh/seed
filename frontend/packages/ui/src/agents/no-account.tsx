@@ -7,6 +7,25 @@ import {getAgentsPlatform, type AgentsSignInPrompt} from './platform'
 
 // The platform is registered once before render and never swapped, so resolving the optional
 // sign-in hook through a wrapper keeps hook order stable across renders.
+const styles_3 = stylex.create({
+  s2ae8e6d: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 11)',
+    height: 'calc(var(--spacing) * 11)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+})
+const styles_2 = stylex.create({
+  sa4a9384c: {
+    maxWidth: '56rem',
+    gap: 'calc(0.25rem * 6)',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+})
 const styles = stylex.create({
   sac38f2ae: {
     overflowY: 'auto',
@@ -55,9 +74,9 @@ export function AgentsNoAccountPage() {
   const {hasAccounts, signIn, dialog} = useSignInPromptHook()
   return (
     <PanelContainer className={stylex.props(styles.sac38f2ae).className || ''}>
-      <Container className="max-w-4xl gap-6 py-8">
+      <Container className={stylex.props(styles_2.sa4a9384c).className || ''}>
         <div className={stylex.props(styles.s86ff3e5).className || ''}>
-          <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
+          <div className={stylex.props(styles_3.s2ae8e6d).className || ''}>
             <Bot className={stylex.props(styles.sca3de96a).className || ''} />
           </div>
           <SizableText size="2xl" weight="bold">

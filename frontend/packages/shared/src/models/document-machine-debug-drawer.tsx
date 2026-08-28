@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useSelector} from '@xstate/react'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {useUniversalAppContext} from '../routing'
@@ -8,6 +9,242 @@ import {useDocumentMachineRef, type DocumentMachineSnapshot} from './use-documen
  * Formats a state value into a readable dot-separated path.
  * Handles both string values ("loading") and object values ({editing: "idle"}).
  */
+const styles_2 = stylex.create({
+  sc7133e96: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1)',
+  },
+})
+const styles = stylex.create({
+  s5cee774: {
+    position: 'fixed',
+  },
+  s808fc113: {
+    bottom: 'calc(0.25rem * 5)',
+  },
+  s478fb0c2: {
+    right: 'calc(0.25rem * 3)',
+  },
+  s6c4ecf55: {
+    zIndex: '9999',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sf4676641: {
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sdddec04c: {
+    borderColor: 'oklch(87% 0 0)',
+  },
+  s327a116b: {
+    backgroundColor: 'oklch(20.5% 0 0)',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  sa173a9a1: {
+    fontFamily: 'var(--font-mono)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s61da104b: {
+    color: 'oklch(97% 0 0)',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sb60737a8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'oklch(26.9% 0 0)',
+      },
+    },
+  },
+  sd5276459: {
+    display: 'inline-block',
+  },
+  sca3de966: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+  },
+  se911c76b: {
+    insetInline: 'calc(0.25rem * 0)',
+  },
+  s808fc10e: {
+    bottom: 'calc(0.25rem * 0)',
+  },
+  s61fdcb43: {
+    maxHeight: '50vh',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s7c401f13: {
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  sc3182879: {
+    boxShadow: 'var(--shadow-2xl)',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s7c401f01: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  sdddebc8b: {
+    borderColor: 'oklch(92.2% 0 0)',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  s61da2a92: {
+    color: 'oklch(26.9% 0 0)',
+  },
+  s61da1b8e: {
+    color: 'oklch(70.8% 0 0)',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s61da1f4f: {
+    color: 'oklch(55.6% 0 0)',
+  },
+  sb6071d61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'oklch(97% 0 0)',
+      },
+    },
+  },
+  s36c4c94f: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'oklch(37.1% 0 0)',
+      },
+    },
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s21707c9a: {
+    overflow: 'auto',
+  },
+  s7c401f11: {
+    borderRightStyle: 'solid',
+    borderRightWidth: '1px',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  s3301fa: {
+    marginBottom: 'calc(0.25rem * 2)',
+  },
+  sd52b2d2: {
+    textTransform: 'uppercase',
+  },
+  s37483969: {
+    letterSpacing: '0.05em',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s8ecdafd3: {
+    wordBreak: 'break-all',
+  },
+  s33458e: {
+    marginTop: 'calc(0.25rem * 4)',
+  },
+  s9490059e: {
+    flexWrap: 'wrap',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s61da26d1: {
+    color: 'oklch(37.1% 0 0)',
+  },
+  s36c80e: {
+    width: 'calc(0.25rem * 80)',
+  },
+  s55426dfb: {
+    fontSize: '10px',
+  },
+  s36c4c58e: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'oklch(43.9% 0 0)',
+      },
+    },
+  },
+  sdddeb8ca: {
+    borderColor: 'oklch(97% 0 0)',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s326929ec: {
+    width: 'calc(0.25rem * 1.5)',
+    height: 'calc(0.25rem * 1.5)',
+  },
+})
 function formatStateValue(value: unknown): string {
   if (typeof value === 'string') return value
   if (typeof value === 'object' && value !== null) {
@@ -42,7 +279,6 @@ function selectDebugContext(snapshot: DocumentMachineSnapshot) {
     document: ctx.document ? `v:${ctx.document.version?.slice(0, 12)}` : 'null',
   }
 }
-
 export interface DocumentMachineDebugDrawerProps {
   /** The event store to subscribe to for inspection events. */
   store?: InspectEventStore
@@ -72,9 +308,7 @@ export function DocumentMachineDebugDrawer({store}: DocumentMachineDebugDrawerPr
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [enabled])
-
   if (!enabled) return null
-
   return (
     <>
       <StatePill onClick={() => setIsOpen(true)} isOpen={isOpen} />
@@ -82,21 +316,43 @@ export function DocumentMachineDebugDrawer({store}: DocumentMachineDebugDrawerPr
     </>
   )
 }
-
 function StatePill({onClick, isOpen}: {onClick: () => void; isOpen: boolean}) {
   const actorRef = useDocumentMachineRef()
   const stateValue = useSelector(actorRef, selectStateValue)
   const label = formatStateValue(stateValue)
-
   return (
     <button
       onClick={onClick}
-      className="fixed right-3 bottom-5 z-[9999] flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-900 px-3 py-1.5 font-mono text-xs text-neutral-100 shadow-lg transition-colors hover:bg-neutral-800 dark:border-neutral-600 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+      className={
+        stylex.props(
+          styles.s5cee774,
+          styles.s808fc113,
+          styles.s478fb0c2,
+          styles.s6c4ecf55,
+          styles.s2ffff9,
+          styles.sc6ed1702,
+          styles.sf4676641,
+          styles.s775755af,
+          styles.sad8c742c,
+          styles.sdddec04c,
+          styles.s327a116b,
+          styles.s34b1ae,
+          styles.sc5dd13f4,
+          styles.sa173a9a1,
+          styles.sab7cc79b,
+          styles.s61da104b,
+          styles.s8a6c2948,
+          styles.sf7fb00e8,
+          styles.sb60737a8,
+        ).className || ''
+      }
       title="Open Document Machine Debug Panel (Cmd+Shift+D)"
-      style={{display: isOpen ? 'none' : undefined}}
+      style={{
+        display: isOpen ? 'none' : undefined,
+      }}
     >
       <span
-        className="inline-block size-2 rounded-full"
+        className={stylex.props(styles.sd5276459, styles.sca3de966, styles.s775755af).className || ''}
         style={{
           backgroundColor: label.startsWith('error')
             ? '#ef4444'
@@ -111,7 +367,6 @@ function StatePill({onClick, isOpen}: {onClick: () => void; isOpen: boolean}) {
     </button>
   )
 }
-
 function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEventStore}) {
   const actorRef = useDocumentMachineRef()
   const stateValue = useSelector(actorRef, selectStateValue)
@@ -120,7 +375,6 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
   // Event log from the inspect store (captures all XState inspection events)
   const [events, setEvents] = useState<InspectEntry[]>(() => (store ? [...store.entries] : []))
   const eventsEndRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     if (!store) return
     // Seed with existing entries
@@ -146,40 +400,79 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
     })
     return () => sub.unsubscribe()
   }, [actorRef, store])
-
   const handleSendEvent = useCallback(
     (eventType: string) => {
       try {
-        actorRef.send({type: eventType} as any)
+        actorRef.send({
+          type: eventType,
+        } as any)
       } catch (err) {
         console.error('[DebugPanel] Failed to send event:', err)
       }
     },
     [actorRef],
   )
-
   const handleClear = useCallback(() => {
     store?.clear()
     setEvents([])
   }, [store])
-
   const stateLabel = formatStateValue(stateValue)
-
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[9999] flex max-h-[50vh] flex-col border-t border-neutral-300 bg-white shadow-2xl dark:border-neutral-700 dark:bg-neutral-900">
+    <div
+      className={
+        stylex.props(
+          styles.s5cee774,
+          styles.se911c76b,
+          styles.s808fc10e,
+          styles.s6c4ecf55,
+          styles.s2ffff9,
+          styles.s61fdcb43,
+          styles.s67e351ac,
+          styles.s7c401f13,
+          styles.sdddec04c,
+          styles.s605ce4a1,
+          styles.sc3182879,
+        ).className || ''
+      }
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-2 dark:border-neutral-700">
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+      <div
+        className={
+          stylex.props(
+            styles.s2ffff9,
+            styles.sc6ed1702,
+            styles.sc1a629cb,
+            styles.s7c401f01,
+            styles.sdddebc8b,
+            styles.s34b1af,
+            styles.s34b56e,
+          ).className || ''
+        }
+      >
+        <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb).className || ''}>
+          <span
+            className={
+              stylex.props(styles.sa173a9a1, styles.sab7cc6fa, styles.s62c182b1, styles.s61da2a92).className || ''
+            }
+          >
             Document Machine
           </span>
           <StateBadge label={stateLabel} />
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-400">Cmd+Shift+D</span>
+        <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb).className || ''}>
+          <span className={stylex.props(styles.sab7cc79b, styles.s61da1b8e).className || ''}>Cmd+Shift+D</span>
           <button
             onClick={onClose}
-            className="rounded p-1 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+            className={
+              stylex.props(
+                styles.s529492ad,
+                styles.s1aa14,
+                styles.s61da1f4f,
+                styles.sf7fb00e8,
+                styles.sb6071d61,
+                styles.s36c4c94f,
+              ).className || ''
+            }
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -189,31 +482,86 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
       </div>
 
       {/* Body */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className={stylex.props(styles.s2ffff9, styles.sb42feb5d, styles.s92852dd5).className || ''}>
         {/* Context panel */}
-        <div className="flex-1 overflow-auto border-r border-neutral-200 p-3 dark:border-neutral-700">
-          <h3 className="mb-2 font-mono text-xs font-semibold tracking-wider text-neutral-500 uppercase">Context</h3>
-          <div className="space-y-1">
+        <div
+          className={
+            stylex.props(styles.sb42feb5d, styles.s21707c9a, styles.s7c401f11, styles.sdddebc8b, styles.s1aa16)
+              .className || ''
+          }
+        >
+          <h3
+            className={
+              stylex.props(
+                styles.s3301fa,
+                styles.sa173a9a1,
+                styles.sab7cc79b,
+                styles.s62c182b1,
+                styles.sd52b2d2,
+                styles.s37483969,
+                styles.s61da1f4f,
+              ).className || ''
+            }
+          >
+            Context
+          </h3>
+          <div className={stylex.props(styles_2.sc7133e96).className || ''}>
             {Object.entries(debugCtx).map(([key, value]) => (
-              <div key={key} className="flex items-start gap-2 font-mono text-xs">
-                <span className="shrink-0 text-neutral-500">{key}:</span>
-                <span className="break-all text-neutral-800 dark:text-neutral-200">
-                  {value === null ? <span className="text-neutral-400">null</span> : String(value)}
+              <div
+                key={key}
+                className={
+                  stylex.props(styles.s2ffff9, styles.s93b5f015, styles.s5d936fb, styles.sa173a9a1, styles.sab7cc79b)
+                    .className || ''
+                }
+              >
+                <span className={stylex.props(styles.sf032ed6c, styles.s61da1f4f).className || ''}>{key}:</span>
+                <span className={stylex.props(styles.s8ecdafd3, styles.s61da2a92).className || ''}>
+                  {value === null ? (
+                    <span className={stylex.props(styles.s61da1b8e).className || ''}>null</span>
+                  ) : (
+                    String(value)
+                  )}
                 </span>
               </div>
             ))}
           </div>
 
           {/* Quick event sender */}
-          <h3 className="mt-4 mb-2 font-mono text-xs font-semibold tracking-wider text-neutral-500 uppercase">
+          <h3
+            className={
+              stylex.props(
+                styles.s3301fa,
+                styles.s33458e,
+                styles.sa173a9a1,
+                styles.sab7cc79b,
+                styles.s62c182b1,
+                styles.sd52b2d2,
+                styles.s37483969,
+                styles.s61da1f4f,
+              ).className || ''
+            }
+          >
             Send Event
           </h3>
-          <div className="flex flex-wrap gap-1">
+          <div className={stylex.props(styles.s2ffff9, styles.s9490059e, styles.s5d936fa).className || ''}>
             {['edit.start', 'edit.cancel', 'change', 'publish.start', 'reset.content'].map((eventType) => (
               <button
                 key={eventType}
                 onClick={() => handleSendEvent(eventType)}
-                className="rounded border border-neutral-300 px-2 py-0.5 font-mono text-xs text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                className={
+                  stylex.props(
+                    styles.s529492ad,
+                    styles.sad8c742c,
+                    styles.sdddec04c,
+                    styles.s34b1ad,
+                    styles.sc5dd1033,
+                    styles.sa173a9a1,
+                    styles.sab7cc79b,
+                    styles.s61da26d1,
+                    styles.sf7fb00e8,
+                    styles.sb6071d61,
+                  ).className || ''
+                }
               >
                 {eventType}
               </button>
@@ -222,36 +570,90 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
         </div>
 
         {/* Event log panel */}
-        <div className="flex w-80 flex-col overflow-hidden">
-          <div className="flex items-center justify-between border-b border-neutral-200 px-3 py-2 dark:border-neutral-700">
-            <h3 className="font-mono text-xs font-semibold tracking-wider text-neutral-500 uppercase">
+        <div
+          className={stylex.props(styles.s2ffff9, styles.s36c80e, styles.s67e351ac, styles.s92852dd5).className || ''}
+        >
+          <div
+            className={
+              stylex.props(
+                styles.s2ffff9,
+                styles.sc6ed1702,
+                styles.sc1a629cb,
+                styles.s7c401f01,
+                styles.sdddebc8b,
+                styles.s34b1ae,
+                styles.s34b56e,
+              ).className || ''
+            }
+          >
+            <h3
+              className={
+                stylex.props(
+                  styles.sa173a9a1,
+                  styles.sab7cc79b,
+                  styles.s62c182b1,
+                  styles.sd52b2d2,
+                  styles.s37483969,
+                  styles.s61da1f4f,
+                ).className || ''
+              }
+            >
               Event Log ({events.length})
             </h3>
             <button
               onClick={handleClear}
-              className="font-mono text-[10px] text-neutral-400 transition-colors hover:text-neutral-600"
+              className={
+                stylex.props(styles.sa173a9a1, styles.s55426dfb, styles.s61da1b8e, styles.sf7fb00e8, styles.s36c4c58e)
+                  .className || ''
+              }
             >
               clear
             </button>
           </div>
-          <div className="flex-1 overflow-auto">
+          <div className={stylex.props(styles.sb42feb5d, styles.s21707c9a).className || ''}>
             {events.length === 0 ? (
-              <p className="p-3 font-mono text-xs text-neutral-400">No events yet…</p>
+              <p
+                className={
+                  stylex.props(styles.s1aa16, styles.sa173a9a1, styles.sab7cc79b, styles.s61da1b8e).className || ''
+                }
+              >
+                No events yet…
+              </p>
             ) : (
               events.map((evt, i) => (
                 <div
                   key={`${evt.timestamp}-${i}`}
-                  className="flex items-center justify-between border-b border-neutral-100 px-3 py-1 dark:border-neutral-800"
+                  className={
+                    stylex.props(
+                      styles.s2ffff9,
+                      styles.sc6ed1702,
+                      styles.sc1a629cb,
+                      styles.s7c401f01,
+                      styles.sdddeb8ca,
+                      styles.s34b1ae,
+                      styles.s34b56d,
+                    ).className || ''
+                  }
                 >
-                  <div className="flex items-center gap-1.5">
+                  <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.sf4676641).className || ''}>
                     <EventTypeBadge type={evt.inspType} />
-                    <span className="font-mono text-xs text-neutral-800 dark:text-neutral-200">{evt.eventType}</span>
+                    <span
+                      className={stylex.props(styles.sa173a9a1, styles.sab7cc79b, styles.s61da2a92).className || ''}
+                    >
+                      {evt.eventType}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb).className || ''}>
                     {evt.stateValue != null && (
-                      <span className="font-mono text-[10px] text-neutral-500">{formatStateValue(evt.stateValue)}</span>
+                      <span
+                        className={stylex.props(styles.sa173a9a1, styles.s55426dfb, styles.s61da1f4f).className || ''}
+                      >
+                        {formatStateValue(evt.stateValue)}
+                      </span>
                     )}
-                    <span className="font-mono text-[10px] text-neutral-400">
+                    <span
+                      className={stylex.props(styles.sa173a9a1, styles.s55426dfb, styles.s61da1b8e).className || ''}
+                    >
                       {new Date(evt.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
@@ -265,11 +667,20 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
     </div>
   )
 }
-
 function StateBadge({label}: {label: string}) {
   return (
     <span
-      className="inline-block rounded-full px-2 py-0.5 font-mono text-xs font-medium"
+      className={
+        stylex.props(
+          styles.sd5276459,
+          styles.s775755af,
+          styles.s34b1ad,
+          styles.sc5dd1033,
+          styles.sa173a9a1,
+          styles.sab7cc79b,
+          styles.s129e46b3,
+        ).className || ''
+      }
       style={{
         backgroundColor: label.startsWith('error')
           ? '#fecaca'
@@ -285,7 +696,6 @@ function StateBadge({label}: {label: string}) {
     </span>
   )
 }
-
 function EventTypeBadge({type}: {type: string}) {
   const colors: Record<string, string> = {
     event: '#3b82f6',
@@ -294,8 +704,10 @@ function EventTypeBadge({type}: {type: string}) {
   }
   return (
     <span
-      className="inline-block size-1.5 rounded-full"
-      style={{backgroundColor: colors[type] ?? '#9ca3af'}}
+      className={stylex.props(styles.sd5276459, styles.s326929ec, styles.s775755af).className || ''}
+      style={{
+        backgroundColor: colors[type] ?? '#9ca3af',
+      }}
       title={type}
     />
   )

@@ -8,6 +8,17 @@ import {ShieldX} from '@shm/ui/icons'
 import {List} from '@shm/ui/list'
 import {SizableText} from '@shm/ui/text'
 import {Tooltip} from '@shm/ui/tooltip'
+const styles_2 = stylex.create({
+  sd8ffadfb: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: '600px',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+  },
+})
 const styles = stylex.create({
   s18c10: {
     height: 'calc(0.25rem * 5)',
@@ -29,7 +40,7 @@ export default function DeletedContent() {
       footer={<div className={stylex.props(styles.s18c10).className || ''} />}
       renderItem={({item}) => {
         return (
-          <div className="flex w-full max-w-[600px] items-center gap-2 px-4 py-1.5">
+          <div className={stylex.props(styles_2.sd8ffadfb).className || ''}>
             // @ts-expect-error
             <Tooltip
               content={`Reason: ${

@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {MainWrapper} from '@/components/main-wrapper'
 import {useSelectedAccountId} from '@/selected-account'
 import {client} from '@/trpc'
@@ -17,6 +18,11 @@ import {ReactNode} from 'react'
  * through the main process which resolves that host and signs with the
  * selected identity's key, delegated to the site account.
  */
+const styles = stylex.create({
+  sbac0e4f: {
+    backgroundColor: 'var(--surface)',
+  },
+})
 export default function SiteSettingsEmailsPage() {
   const route = useNavRoute()
   const routeAccountUid = route.key === 'site-settings-emails' ? route.accountUid : undefined
@@ -25,7 +31,6 @@ export default function SiteSettingsEmailsPage() {
   const {isSiteOwner, isLoading: isOwnershipLoading} = useIsSiteOwner(siteAccountUid)
   const account = useAccount(siteAccountUid)
   const siteUrl: string | undefined = account.data?.metadata?.siteUrl
-
   let content: ReactNode
   if (!selectedAccountUid || !siteAccountUid) {
     content = <SiteEmailSubscribersPanel message="Select an account to view its email subscribers." />
@@ -38,16 +43,14 @@ export default function SiteSettingsEmailsPage() {
   } else {
     content = <SiteEmailSubscribers siteUrl={siteUrl} siteAccountUid={siteAccountUid} signAs={selectedAccountUid} />
   }
-
   return (
-    <PanelContainer className="dark:bg-background bg-white">
+    <PanelContainer className={stylex.props(styles.sbac0e4f).className || ''}>
       <MainWrapper scrollable>
         <GeneralPageSurface>{content}</GeneralPageSurface>
       </MainWrapper>
     </PanelContainer>
   )
 }
-
 function SiteEmailSubscribers({
   siteUrl,
   siteAccountUid,
@@ -59,9 +62,13 @@ function SiteEmailSubscribers({
 }) {
   const subscribers = useQuery({
     queryKey: [queryKeys.SITE_EMAIL_SUBSCRIBERS, siteUrl ?? null, siteAccountUid, signAs],
-    queryFn: () => client.sites.getEmailSubscribers.query({siteUrl, accountUid: siteAccountUid, signAs}),
+    queryFn: () =>
+      client.sites.getEmailSubscribers.query({
+        siteUrl,
+        accountUid: siteAccountUid,
+        signAs,
+      }),
   })
-
   return (
     <SiteEmailSubscribersPanel
       subscribers={subscribers.data?.subscribers}

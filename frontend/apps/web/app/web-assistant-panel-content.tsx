@@ -11,6 +11,20 @@ import {X} from 'lucide-react'
 // Register the web platform adapter before any agents UI renders. This module only loads from the
 // panel's client-lazy chunk (and the /hm/agents pages register the same adapter — the call is
 // idempotent), so the registration never runs during SSR of other pages.
+const styles_2 = stylex.create({
+  s17784e3e: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    padding: 'calc(var(--spacing) * 1)',
+  },
+})
 const styles = stylex.create({
   s3b59b99: {
     display: 'flex',
@@ -95,7 +109,7 @@ function SignedOutPanel({onClose}: {onClose?: () => void}) {
         {onClose ? (
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground p-1"
+            className={stylex.props(styles_2.s17784e3e).className || ''}
             title="Close agents panel"
             aria-label="Close agents panel"
           >

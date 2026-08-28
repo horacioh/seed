@@ -13,6 +13,11 @@ import {Label} from './label'
  * settings), so the UX stays identical. An empty value falls back to the
  * server default.
  */
+const styles_2 = stylex.create({
+  s8c21f341: {
+    maxWidth: '440px',
+  },
+})
 const styles = stylex.create({
   s129e46b3: {
     fontWeight: '500',
@@ -95,7 +100,7 @@ export function NotificationServerDialog({
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[440px]">
+      <DialogContent className={stylex.props(styles_2.s8c21f341).className || ''}>
         <DialogHeader>
           <DialogTitle>Change Notify Server URL</DialogTitle>
           <DialogDescription>

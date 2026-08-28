@@ -5,6 +5,67 @@ import {useCallback, useEffect, useRef, useState} from 'react'
 import {Button} from './button'
 import {DraftBadge} from './draft-badge'
 import {OptionsDropdown} from './options-dropdown'
+const styles_2 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s7c401ed1: {
+    borderStyle: 'solid',
+    borderWidth: '2px',
+  },
+  s1ca68c72: {
+    borderStyle: 'dashed',
+  },
+  s7a26f4ee: {
+    borderColor: 'color-mix(in oklab, oklch(85.2% 0.199 91.936) 50%, transparent)',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s8a6c2a27: {
+    boxShadow: 'var(--shadow-sm)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  s29df1839: {
+    borderStyle: 'none',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+})
 const styles = stylex.create({
   s7091d227: {
     color: 'var(--muted-foreground)',
@@ -120,7 +181,22 @@ export function InlineDraftListItem({
         e.stopPropagation()
         openDraft()
       }}
-      className="group/item flex w-full cursor-pointer items-center rounded border-2 border-dashed border-yellow-400/50 bg-white px-4 py-2 shadow-sm dark:bg-black"
+      className={
+        stylex.props(
+          styles_2.s2ffff9,
+          styles_2.scdbaf625,
+          styles_2.sc7847ec6,
+          styles_2.sc6ed1702,
+          styles_2.s529492ad,
+          styles_2.s7c401ed1,
+          styles_2.s1ca68c72,
+          styles_2.s7a26f4ee,
+          styles_2.s605ce4a1,
+          styles_2.s34b1af,
+          styles_2.s34b56e,
+          styles_2.s8a6c2a27,
+        ).className || ''
+      }
     >
       <FileText className={stylex.props(styles.s7091d227).className || ''} />
       <div className={stylex.props(styles.se5fd4a4f).className || ''}>
@@ -133,7 +209,18 @@ export function InlineDraftListItem({
             onKeyDown={handleKeyDown}
             onClick={(e) => e.stopPropagation()}
             placeholder="Untitled document"
-            className="text-foreground w-full border-none bg-transparent font-sans text-sm font-bold outline-none placeholder:text-gray-400"
+            className={
+              stylex.props(
+                styles_2.sc05281e3,
+                styles_2.scdbaf625,
+                styles_2.s29df1839,
+                styles_2.s60f53bca,
+                styles_2.sa1762f51,
+                styles_2.sab7cc6fa,
+                styles_2.sa16ea943,
+                styles_2.sa602a1e3,
+              ).className || ''
+            }
           />
           <DraftBadge />
         </div>

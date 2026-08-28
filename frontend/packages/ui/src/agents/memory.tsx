@@ -34,6 +34,303 @@ import {
 import {useEffect, useMemo, useRef, useState} from 'react'
 
 /** Files above this size skip the inline preview fetch — pulling hundreds of MB stalls the UI. */
+const styles_5 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s158c30ef: {
+    maxHeight: 'calc(0.25rem * 56)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s7c401f01: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  saae5326: {
+    '@media ((min-width: 640px))': {
+      maxHeight: 'none',
+    },
+  },
+  s80d4f4f4: {
+    '@media ((min-width: 640px))': {
+      width: 'calc(0.25rem * 64)',
+    },
+  },
+  s94043d84: {
+    '@media ((min-width: 640px))': {
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '0px',
+    },
+  },
+  sf9c2bc31: {
+    '@media ((min-width: 640px))': {
+      borderRightStyle: 'solid',
+      borderRightWidth: '1px',
+    },
+  },
+  sc883a3d5: {
+    boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s46d743d4: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+  },
+  s46d743d9: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 15%, transparent)',
+  },
+  sc883a3d4: {
+    boxShadow: '0 0 0 1px var(--ring-color, currentcolor)',
+  },
+  s9c668528: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
+    },
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s8b2dd4f4: {
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_4 = stylex.create({
+  s948be48c: {
+    flex: 'none',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_3 = stylex.create({
+  s925cbdaf: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      flexWrap: 'nowrap',
+      alignItems: 'center',
+    },
+  },
+  s284af276: {
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  sf909be14: {
+    backgroundColor: 'var(--primary)',
+    height: '100%',
+    borderRadius: 'calc(infinity * 1px)',
+    transitionProperty: 'width',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+  },
+  s69f58106: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--card)',
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    '@media ((min-width: 640px))': {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+    },
+  },
+  s916f298e: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+  },
+  s4c0dae9c: {
+    ':focus': {
+      boxShadow: '0 0 0 2px currentcolor',
+    },
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    resize: 'none',
+    backgroundColor: 'transparent',
+    padding: 'calc(var(--spacing) * 3)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    outlineStyle: 'none',
+  },
+  s35e8f34e: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-sm)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 8)',
+  },
+  s5e13eb37: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    textAlign: 'left',
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  sc566ce12: {
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    textAlign: 'left',
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  s6548d595: {
+    color: 'color-mix(in oklab, var(--muted-foreground) 70%, transparent)',
+    marginLeft: 'auto',
+    flex: 'none',
+    paddingRight: 'calc(var(--spacing) * 1)',
+    fontSize: '10px',
+  },
+})
+const styles_2 = stylex.create({
+  sdc9fb26a: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    overflow: 'hidden',
+  },
+  s797b1794: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+  },
+  s5e669942: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s15930280: {
+    maxWidth: 'calc(0.25rem * 56)',
+  },
+  s60e2bfdc: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s5e981e19: {
+    maxWidth: '100%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+  },
+  s700ce289: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+  },
+  s9fd13fd5: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'auto',
+    padding: 'calc(0.25rem * 4)',
+  },
+  sc0f44c0: {
+    maxHeight: '100%',
+    maxWidth: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    objectFit: 'contain',
+  },
+  sb09d96e6: {
+    maxHeight: '100%',
+    maxWidth: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s82f80d11: {
+    width: '100%',
+    maxWidth: '28rem',
+  },
+  s9fd13fd7: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'auto',
+    padding: 'calc(0.25rem * 6)',
+  },
+})
 const styles = stylex.create({
   sa0238738: {
     display: 'flex',
@@ -466,9 +763,9 @@ export function AgentMemoryTab({
   const dirty = draftText !== null && draftText !== (file.data?.content ?? '')
   const selectedIpfsUrl = selectedPath ? ipfsUrls[selectedPath] : undefined
   return (
-    <section className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
-      <div className="flex flex-wrap items-start justify-between gap-2 sm:flex-nowrap sm:items-center">
-        <div className="flex min-w-0 flex-col">
+    <section className={stylex.props(styles_2.sdc9fb26a).className || ''}>
+      <div className={stylex.props(styles_3.s925cbdaf).className || ''}>
+        <div className={stylex.props(styles_2.s797b1794).className || ''}>
           <SizableText weight="bold">Memory</SizableText>
           <SizableText size="xs" color="muted">
             Private files this agent reads and writes across sessions.{' '}
@@ -500,7 +797,7 @@ export function AgentMemoryTab({
             <Button
               variant="outline"
               size="sm"
-              className="max-sm:min-h-10"
+              className={stylex.props(styles_3.s284af276).className || ''}
               onClick={() => uploadInputRef.current?.click()}
               disabled={writeFile.isLoading}
             >
@@ -509,7 +806,7 @@ export function AgentMemoryTab({
             <Button
               variant="outline"
               size="sm"
-              className="max-sm:min-h-10"
+              className={stylex.props(styles_3.s284af276).className || ''}
               onClick={() => setAddPanel((current) => (current === 'from-url' ? 'none' : 'from-url'))}
             >
               <Globe className={stylex.props(styles.sef1c143e).className || ''} /> From URL
@@ -517,7 +814,7 @@ export function AgentMemoryTab({
             <Button
               variant="outline"
               size="sm"
-              className="max-sm:min-h-10"
+              className={stylex.props(styles_3.s284af276).className || ''}
               onClick={() => setAddPanel((current) => (current === 'new-file' ? 'none' : 'new-file'))}
             >
               <FilePlus className={stylex.props(styles.sef1c143e).className || ''} /> New file
@@ -529,7 +826,7 @@ export function AgentMemoryTab({
       {uploadProgress ? (
         <div className={stylex.props(styles.s7b06a24b).className || ''}>
           <div className={stylex.props(styles.s1f027a3).className || ''}>
-            <span className="text-muted-foreground min-w-0 truncate">
+            <span className={stylex.props(styles_2.s5e669942).className || ''}>
               Uploading {uploadProgress.name}… {formatBytes(uploadProgress.sent)} of {formatBytes(uploadProgress.total)}
             </span>
             <span className={stylex.props(styles.sd934a9b1).className || ''}>
@@ -538,7 +835,7 @@ export function AgentMemoryTab({
           </div>
           <div className={stylex.props(styles.s8b97c16b).className || ''}>
             <div
-              className="bg-primary h-full rounded-full transition-[width] duration-200"
+              className={stylex.props(styles_3.sf909be14).className || ''}
               style={{
                 width: `${(uploadProgress.sent / Math.max(1, uploadProgress.total)) * 100}%`,
               }}
@@ -591,7 +888,7 @@ export function AgentMemoryTab({
             onChange={(event) => setWebPath(event.target.value)}
             placeholder="Optional path (media/file.png)"
             aria-label="Optional memory path for the download"
-            className="max-w-56"
+            className={stylex.props(styles_2.s15930280).className || ''}
           />
           <Button type="submit" size="sm" disabled={!webUrl.trim() || downloadFromWeb.isLoading}>
             {downloadFromWeb.isLoading ? 'Downloading…' : 'Download'}
@@ -602,11 +899,27 @@ export function AgentMemoryTab({
         </form>
       ) : null}
 
-      <div className="border-border bg-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border sm:flex-row">
+      <div className={stylex.props(styles_3.s69f58106).className || ''}>
         <div
-          className={`border-border flex max-h-56 w-full flex-none flex-col overflow-y-auto border-b p-2 sm:max-h-none sm:w-64 sm:border-r sm:border-b-0 ${
-            dropTarget === '' ? 'ring-primary/50 ring-2 ring-inset' : ''
-          }`}
+          className={
+            (stylex.props(
+              styles_5.s1a01a0ed,
+              styles_5.s2ffff9,
+              styles_5.s158c30ef,
+              styles_5.scdbaf625,
+              styles_5.s948be48c,
+              styles_5.s67e351ac,
+              styles_5.sac38f2ae,
+              styles_5.s7c401f01,
+              styles_5.s1aa15,
+              styles_5.saae5326,
+              styles_5.s80d4f4f4,
+              styles_5.s94043d84,
+              styles_5.sf9c2bc31,
+            ).className || '') +
+            ' ' +
+            (dropTarget === '' ? stylex.props(styles_5.sc883a3d5).className || '' : '')
+          }
           onDragOver={(event) => {
             if (readOnly || !hasDraggedFiles(event)) return
             event.preventDefault()
@@ -678,7 +991,7 @@ export function AgentMemoryTab({
           )}
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div className={stylex.props(styles_2.s60e2bfdc).className || ''}>
           {selectedPath === null ? (
             <div className={stylex.props(styles.sf48c8a4d).className || ''}>
               <SizableText size="sm" color="muted">
@@ -688,7 +1001,7 @@ export function AgentMemoryTab({
           ) : selectedTooLarge && selectedEntry ? (
             <div className={stylex.props(styles.sd231ed2c).className || ''}>
               <FileText className={stylex.props(styles.s3566be67).className || ''} />
-              <SizableText size="sm" weight="bold" className="max-w-full truncate font-mono">
+              <SizableText size="sm" weight="bold" className={stylex.props(styles_2.s5e981e19).className || ''}>
                 {selectedPath}
               </SizableText>
               <SizableText size="sm" color="muted">
@@ -720,7 +1033,7 @@ export function AgentMemoryTab({
             <>
               <div className={stylex.props(styles.saa4f1d10).className || ''}>
                 <FileText className={stylex.props(styles.s9cbc670f).className || ''} />
-                <SizableText size="sm" weight="bold" className="min-w-0 flex-1 truncate font-mono">
+                <SizableText size="sm" weight="bold" className={stylex.props(styles_2.s700ce289).className || ''}>
                   {selectedPath}
                 </SizableText>
                 <SizableText size="xs" color="muted" className={stylex.props(styles.s948be48c).className || ''}>
@@ -770,11 +1083,11 @@ export function AgentMemoryTab({
                 />
               </div>
               {selectedIpfsUrl ? (
-                <div className="border-border bg-muted/40 flex items-center gap-2 border-b px-3 py-1.5">
+                <div className={stylex.props(styles_3.s916f298e).className || ''}>
                   <SizableText size="xs" color="muted" className={stylex.props(styles.s948be48c).className || ''}>
                     IPFS:
                   </SizableText>
-                  <SizableText size="xs" className="min-w-0 flex-1 truncate font-mono">
+                  <SizableText size="xs" className={stylex.props(styles_2.s700ce289).className || ''}>
                     {selectedIpfsUrl}
                   </SizableText>
                   <Button
@@ -791,7 +1104,7 @@ export function AgentMemoryTab({
               {file.data.encoding === 'utf8' ? (
                 <textarea
                   aria-label={`Memory file ${selectedPath}`}
-                  className="focus:ring-primary/25 min-h-0 flex-1 resize-none bg-transparent p-3 font-mono text-sm outline-none focus:ring-2"
+                  className={stylex.props(styles_3.s4c0dae9c).className || ''}
                   value={draftText ?? file.data.content ?? ''}
                   onChange={(event) => setDraftText(event.currentTarget.value)}
                   readOnly={readOnly}
@@ -833,34 +1146,34 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
   const kind = file.mimeType?.split('/')[0]
   if (objectUrl && kind === 'image') {
     return (
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
-        <img src={objectUrl} alt={file.path} className="max-h-full max-w-full rounded-md object-contain" />
+      <div className={stylex.props(styles_2.s9fd13fd5).className || ''}>
+        <img src={objectUrl} alt={file.path} className={stylex.props(styles_2.sc0f44c0).className || ''} />
       </div>
     )
   }
   if (objectUrl && kind === 'video') {
     return (
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
-        <video src={objectUrl} controls className="max-h-full max-w-full rounded-md" />
+      <div className={stylex.props(styles_2.s9fd13fd5).className || ''}>
+        <video src={objectUrl} controls className={stylex.props(styles_2.sb09d96e6).className || ''} />
       </div>
     )
   }
   if (objectUrl && kind === 'audio') {
     return (
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
-        <audio src={objectUrl} controls className="w-full max-w-md" />
+      <div className={stylex.props(styles_2.s9fd13fd5).className || ''}>
+        <audio src={objectUrl} controls className={stylex.props(styles_2.s82f80d11).className || ''} />
       </div>
     )
   }
   const name = file.path.split('/').at(-1) || file.path
   return (
-    <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-6">
-      <div className="border-border bg-muted/30 flex w-full max-w-sm flex-col items-center gap-3 rounded-xl border border-dashed p-8">
+    <div className={stylex.props(styles_2.s9fd13fd7).className || ''}>
+      <div className={stylex.props(styles_3.s35e8f34e).className || ''}>
         <div className={stylex.props(styles.s8056ee4).className || ''}>
           <FileText className={stylex.props(styles.sca3de96b).className || ''} />
         </div>
         <div className={stylex.props(styles.s91654f6f).className || ''}>
-          <SizableText size="sm" weight="bold" className="max-w-full truncate font-mono">
+          <SizableText size="sm" weight="bold" className={stylex.props(styles_2.s5e981e19).className || ''}>
             {name}
           </SizableText>
           <SizableText size="xs" color="muted">
@@ -923,9 +1236,22 @@ function MemoryEntryRow({
   const name = entry.path.split('/').at(-1) || entry.path
   return (
     <div
-      className={`group flex items-center gap-1 rounded-md px-1 py-0.5 ${
-        selected ? 'bg-primary/10' : dropTargeted ? 'bg-primary/15 ring-primary/50 ring-1' : 'hover:bg-muted/60'
-      }`}
+      className={
+        (stylex.props(
+          styles_5.s2ffff9,
+          styles_5.sc6ed1702,
+          styles_5.s5d936fa,
+          styles_5.sf79988b7,
+          styles_5.s34b1ac,
+          styles_5.sc5dd1033,
+        ).className || '') +
+        ' ' +
+        (selected
+          ? stylex.props(styles_5.s46d743d4).className || ''
+          : dropTargeted
+            ? stylex.props(styles_5.s46d743d9, styles_5.sc883a3d4).className || ''
+            : stylex.props(styles_5.s9c668528).className || '')
+      }
       style={{
         paddingLeft: `${4 + depth * 14}px`,
       }}
@@ -935,24 +1261,22 @@ function MemoryEntryRow({
       {entry.type === 'dir' ? (
         <button
           type="button"
-          className="text-muted-foreground flex min-w-0 flex-1 items-center gap-1.5 py-0.5 text-left max-sm:min-h-10"
+          className={stylex.props(styles_3.s5e13eb37).className || ''}
           onClick={onToggle}
           aria-expanded={expanded}
           aria-label={`${expanded ? 'Collapse' : 'Expand'} ${entry.path}`}
         >
-          <ChevronRight className={`size-3 flex-none transition-transform ${expanded ? 'rotate-90' : ''}`} />
+          <ChevronRight
+            className={stylex.props(styles_5.sca3de967, styles_5.s948be48c, styles_5.s8b2dd4f4).className || ''}
+          />
           <Folder className={stylex.props(styles.se15ec85a).className || ''} />
           <span className={stylex.props(styles.scbdf1fe2).className || ''}>{name}</span>
         </button>
       ) : (
-        <button
-          type="button"
-          className="flex min-w-0 flex-1 items-center gap-1.5 py-0.5 text-left max-sm:min-h-10"
-          onClick={onSelect}
-        >
+        <button type="button" className={stylex.props(styles_3.sc566ce12).className || ''} onClick={onSelect}>
           <FileText className={stylex.props(styles.s2c60fcd5).className || ''} />
           <span className={stylex.props(styles.scbdf1fe2).className || ''}>{name}</span>
-          <span className="text-muted-foreground/70 ml-auto flex-none pr-1 text-[10px]">{formatBytes(entry.size)}</span>
+          <span className={stylex.props(styles_3.s6548d595).className || ''}>{formatBytes(entry.size)}</span>
         </button>
       )}
       {confirmingDelete ? (
@@ -969,7 +1293,7 @@ function MemoryEntryRow({
           variant="ghost"
           size="iconSm"
           aria-label={`Delete ${entry.path}`}
-          className="flex-none opacity-0 group-hover:opacity-100"
+          className={stylex.props(styles_4.s948be48c, styles_4.s765a26ee).className || ''}
           onClick={onRequestDelete}
         >
           <Trash2 className={stylex.props(styles.s3269316e).className || ''} />

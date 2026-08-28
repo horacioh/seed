@@ -9,6 +9,32 @@ import {
 } from '@seed-hypermedia/agents-protocol'
 import {Tooltip} from '@shm/ui/tooltip'
 import {Brain} from 'lucide-react'
+const styles_3 = stylex.create({
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+})
+const styles_2 = stylex.create({
+  sdb37c6ff: {
+    accentColor: 'var(--primary)',
+    height: 'calc(var(--spacing) * 4)',
+    width: '100%',
+    cursor: 'pointer',
+    ':disabled': {
+      cursor: 'not-allowed',
+      backgroundColor: 'var(--color-zinc-300)',
+      color: 'var(--color-zinc-400)',
+      borderColor: 'var(--color-zinc-100)',
+      opacity: '50%',
+    },
+  },
+  s50b2d8ba: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '10px',
+  },
+})
 const styles = stylex.create({
   sfbc6e28d: {
     display: 'flex',
@@ -96,9 +122,9 @@ export function ReasoningSlider({
         value={index}
         disabled={disabled}
         onChange={(event) => onChange(steps[Number(event.currentTarget.value)])}
-        className="accent-primary h-4 w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+        className={stylex.props(styles_2.sdb37c6ff).className || ''}
       />
-      <div className="text-muted-foreground flex justify-between text-[10px]">
+      <div className={stylex.props(styles_2.s50b2d8ba).className || ''}>
         {steps.map((step) => (
           <span key={step ?? OFF_VALUE}>{step ? REASONING_LEVEL_LABELS[step] : offLabel}</span>
         ))}
@@ -113,7 +139,7 @@ export function ReasoningSlider({
  * disc. Rendered inline inside the model tag; wrap in a Tooltip where hover
  * help is wanted.
  */
-export function ReasoningPie({level, className}: {level: ReasoningLevel | undefined; className?: string}) {
+export function ReasoningPie({level, className: _className}: {level: ReasoningLevel | undefined; className?: string}) {
   const rank = level && isReasoningLevel(level) ? REASONING_LEVELS.indexOf(level) + 1 : 0
   const fraction = rank / REASONING_LEVELS.length
   const label = level && isReasoningLevel(level) ? `Reasoning ${REASONING_LEVEL_LABELS[level]}` : 'Reasoning off'
@@ -133,7 +159,7 @@ export function ReasoningPie({level, className}: {level: ReasoningLevel | undefi
       height={12}
       role="img"
       aria-label={label}
-      className={`shrink-0 ${className ?? ''}`}
+      className={stylex.props(styles_3.sf032ed6c).className || ''}
     >
       <circle cx={c} cy={c} r={r} fill="none" stroke="currentColor" strokeWidth={1.25} opacity={0.45} />
       {fraction >= 1 ? (

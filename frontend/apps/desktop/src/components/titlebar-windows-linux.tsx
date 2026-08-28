@@ -8,6 +8,34 @@ import {NavigationButtons, NavMenuButton, Omnibar, PageActionButtons} from './ti
 import {TitlebarMainRow} from './titlebar-layout'
 import './titlebar-windows-linux.css'
 import {SystemMenu} from './windows-linux-titlebar'
+const styles_3 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+})
+const styles_2 = stylex.create({
+  s3f582e10: {
+    minHeight: 'calc(0.25rem * 0)',
+  },
+  title: {
+    marginInline: '1rem',
+  },
+})
 const styles = stylex.create({
   s783f19f3: {
     display: 'flex',
@@ -28,14 +56,18 @@ export default function TitleBarWindows(props: TitleBarProps) {
   const isSidebarLocked = !!useStream(sidebarContext.isLocked)
   if (props.clean) {
     return (
-      <TitlebarWrapper className="min-h-0">
-        <div className="window-drag flex px-2">
-          <div className="window-drag flex flex-1 items-center justify-center">
-            <TitleText marginHorizontal="$4" fontWeight="bold">
+      <TitlebarWrapper className={stylex.props(styles_2.s3f582e10).className || ''}>
+        <div className={stylex.props(styles_3.s2ffff9, styles_3.s34b1ad).className || ''}>
+          <div
+            className={
+              stylex.props(styles_3.s2ffff9, styles_3.sb42feb5d, styles_3.sc6ed1702, styles_3.sce22ca32).className || ''
+            }
+          >
+            <TitleText weight="bold" className={stylex.props(styles_2.title).className || ''}>
               {props.cleanTitle}
             </TitleText>
           </div>
-          <div className="no-window-drag flex">
+          <div className={stylex.props(styles_3.s2ffff9).className || ''}>
             <CloseButton />
           </div>
         </div>
@@ -67,7 +99,7 @@ export function WindowsLinuxTitleBar({content, platform}: {content: React.ReactN
         }}
       >
         <SystemMenu />
-        <div className="window-drag flex h-full flex-1" />
+        <div className={stylex.props(styles_3.s2ffff9, styles_3.sb42244d4, styles_3.sb42feb5d).className || ''} />
         <WindowsLinuxWindowControls />
       </div>
 

@@ -29,6 +29,123 @@ import {CreateAgentDialog, ManageAgentAccountsDialog, ModelProvidersDialog} from
 import {AgentsNoAccountPage} from './no-account'
 import {getAgentsPlatform} from './platform'
 import {AgentServersDialog} from './server-settings'
+const styles_6 = stylex.create({
+  sbe30145e: {
+    backgroundColor: 'color-mix(in oklab, var(--muted-foreground) 40%, transparent)',
+  },
+  s460ef3a3: {
+    backgroundColor: 'oklch(72.3% 0.219 149.579)',
+  },
+})
+const styles_5 = stylex.create({
+  sd5276459: {
+    display: 'inline-block',
+  },
+  s32692dad: {
+    width: 'calc(0.25rem * 2.5)',
+    height: 'calc(0.25rem * 2.5)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s43a3ad5d: {
+    verticalAlign: 'middle',
+  },
+  s5ac553fa: {
+    backgroundColor: 'var(--destructive)',
+  },
+})
+const styles_4 = stylex.create({
+  s2ae8e6d: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 11)',
+    height: 'calc(var(--spacing) * 11)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+  s883798c7: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--card)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      },
+    },
+    display: 'flex',
+    cursor: 'pointer',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s284af276: {
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  s718fede5: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+  },
+  sf8314d9d: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 9)',
+    height: 'calc(var(--spacing) * 9)',
+    flex: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+  },
+})
+const styles_3 = stylex.create({
+  scd6e56f9: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: '500',
+  },
+  scf771367: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+  },
+})
+const styles_2 = stylex.create({
+  sa4a9384c: {
+    maxWidth: '56rem',
+    gap: 'calc(0.25rem * 6)',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  sa4681c45: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   sac38f2ae: {
     overflowY: 'auto',
@@ -162,10 +279,10 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
   const createAgentDisabledReason = !serverUrls.length ? 'Configure an agent server before creating an agent.' : null
   return (
     <PanelContainer className={stylex.props(styles.sac38f2ae).className || ''}>
-      <Container className="max-w-4xl gap-6 py-8">
+      <Container className={stylex.props(styles_2.sa4a9384c).className || ''}>
         <div className={stylex.props(styles.s584ecc36).className || ''}>
           <div className={stylex.props(styles.s86ff3e5).className || ''}>
-            <div className="bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl">
+            <div className={stylex.props(styles_4.s2ae8e6d).className || ''}>
               <Bot className={stylex.props(styles.sca3de96a).className || ''} />
             </div>
             <SizableText size="2xl" weight="bold">
@@ -193,7 +310,7 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
             return (
               <AgentServerSubscription key={serverUrl} serverUrl={serverUrl} selectedAccountId={selectedAccountId}>
                 <div
-                  className="border-border bg-card hover:bg-muted/50 flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors"
+                  className={stylex.props(styles_4.s883798c7).className || ''}
                   onClick={() =>
                     navigate({
                       key: 'agent-server',
@@ -201,20 +318,32 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
                     })
                   }
                 >
-                  <div className="flex min-w-0 items-center gap-2">
-                    <SizableText size="xs" className={isLocal ? 'truncate font-medium' : 'truncate font-mono'}>
+                  <div className={stylex.props(styles_2.sa4681c45).className || ''}>
+                    <SizableText
+                      size="xs"
+                      className={stylex.props(isLocal ? styles_3.scd6e56f9 : styles_3.scf771367).className || ''}
+                    >
                       {isLocal ? LOCAL_AGENT_SERVER_LABEL : hostnameStripProtocol(serverUrl)}
                     </SizableText>
                     {showStatusDot ? (
                       <Tooltip content={status} asChild>
                         <span
-                          className={`inline-block size-2.5 rounded-full align-middle ${
-                            health?.isLoading
-                              ? 'bg-muted-foreground/40'
+                          data-testid="agent-server-status-dot"
+                          data-status={health?.isLoading ? 'loading' : health?.isError ? 'error' : 'online'}
+                          className={
+                            (stylex.props(
+                              styles_5.sd5276459,
+                              styles_5.s32692dad,
+                              styles_5.s775755af,
+                              styles_5.s43a3ad5d,
+                            ).className || '') +
+                            ' ' +
+                            (health?.isLoading
+                              ? stylex.props(styles_6.sbe30145e).className || ''
                               : health?.isError
-                                ? 'bg-destructive'
-                                : 'bg-green-500'
-                          } `}
+                                ? stylex.props(styles_5.s5ac553fa).className || ''
+                                : stylex.props(styles_6.s460ef3a3).className || '')
+                          }
                         />
                       </Tooltip>
                     ) : null}
@@ -223,7 +352,7 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="max-sm:min-h-10"
+                      className={stylex.props(styles_4.s284af276).className || ''}
                       onClick={(event) => {
                         event.stopPropagation()
                         manageAccountsDialog.open({
@@ -238,7 +367,7 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="max-sm:min-h-10"
+                      className={stylex.props(styles_4.s284af276).className || ''}
                       onClick={(event) => {
                         event.stopPropagation()
                         providersDialog.open({
@@ -268,9 +397,7 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
             <div className={stylex.props(styles.s86ff3e4).className || ''}>
               <Mail className={stylex.props(styles.s3566be63).className || ''} />
               <SizableText weight="bold">Invites</SizableText>
-              <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-bold">
-                {invites.length}
-              </span>
+              <span className={stylex.props(styles_4.s718fede5).className || ''}>{invites.length}</span>
             </div>
             <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               {invites.map((invite) => (
@@ -308,7 +435,7 @@ function AgentsListContent({selectedAccountId}: {selectedAccountId: string}) {
             <Tooltip content={createAgentDisabledReason || 'Create Agent'}>
               <span>
                 <Button
-                  className="max-sm:min-h-10"
+                  className={stylex.props(styles_4.s284af276).className || ''}
                   onClick={() =>
                     createAgentDialog.open({
                       serverUrls,
@@ -366,10 +493,10 @@ function AgentInviteRow({
   const pending = accept.isLoading || decline.isLoading
   return (
     <div className={stylex.props(styles.sf2f4c151).className || ''}>
-      <div className="bg-primary/10 text-primary flex size-9 flex-none items-center justify-center rounded-lg">
+      <div className={stylex.props(styles_4.sf8314d9d).className || ''}>
         <Bot className={stylex.props(styles.sca3de968).className || ''} />
       </div>
-      <div className="min-w-0 flex-1">
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>
         <SizableText weight="bold" className={stylex.props(styles.s12583799).className || ''}>
           {invite.agentName}
         </SizableText>

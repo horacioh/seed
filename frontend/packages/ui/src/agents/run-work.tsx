@@ -14,6 +14,392 @@ import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popove
 import type {ChatToolPart} from './chat-parts'
 import {Bot, Check, ChevronDown, ChevronRight, CircleDashed, Clock3, Loader2, Minus, Workflow, X} from 'lucide-react'
 import React, {useMemo, useState} from 'react'
+const styles_7 = stylex.create({
+  sabb465d2: {
+    minWidth: 'calc(0.25rem * 12)',
+  },
+  s36c735: {
+    width: 'calc(0.25rem * 10)',
+  },
+})
+const styles_6 = stylex.create({
+  s54a0b5ac: {
+    borderColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
+  },
+  s5d1fb7e0: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 5%, transparent)',
+  },
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sf4676641: {
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s46d743d9: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 15%, transparent)',
+  },
+  s18c0c: {
+    height: 'calc(0.25rem * 1)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sca3de967: {
+    width: 'calc(0.25rem * 3)',
+    height: 'calc(0.25rem * 3)',
+  },
+  s67e32c32: {
+    flex: '2',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s5542e25a: {
+    fontSize: '11px',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+})
+const styles_5 = stylex.create({
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s5f101360: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--destructive)',
+      },
+    },
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s63f771a: {
+    padding: 'calc(0.25rem * 0.5)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s79cfa1b2: {
+    ':focus-visible': {
+      opacity: '100%',
+    },
+  },
+  s16593988: {
+    '@media (hover: none)': {
+      opacity: '100%',
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+})
+const styles_4 = stylex.create({
+  sa32fbd43: {
+    flex: 'none',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+    fontVariantNumeric: '   tabular-nums ',
+  },
+  sd35787e3: {
+    backgroundColor: 'var(--primary)',
+    display: 'block',
+    height: '100%',
+    borderRadius: 'calc(infinity * 1px)',
+    transitionProperty: 'width',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '1000ms',
+    '@media (prefers-reduced-motion: reduce)': {
+      transitionProperty: 'none',
+    },
+  },
+  s5e8dc20c: {
+    color: 'var(--muted-foreground)',
+    flex: 'none',
+    fontSize: '10px',
+  },
+  scfb4fdc8: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '10px',
+  },
+  sa973cde5: {
+    color: 'var(--destructive)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+      },
+    },
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    cursor: 'pointer',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 0.5)',
+    textAlign: 'left',
+    fontSize: '10px',
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'dotted',
+    textUnderlineOffset: '2px',
+  },
+  s3d3a0ae7: {
+    display: 'flex',
+    width: '28rem',
+    maxWidth: '92vw',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+  sff6c3749: {
+    color: 'var(--destructive)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    flex: 'none',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+  },
+  s64915d9: {
+    color: 'var(--destructive)',
+    maxHeight: 'calc(var(--spacing) * 40)',
+    overflow: 'auto',
+    fontSize: '11px',
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+    WebkitUserSelect: 'text',
+    userSelect: 'text',
+  },
+  s9cb07d5b: {
+    color: 'var(--muted-foreground)',
+    fontSize: '10px',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+  },
+  s38a3143: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    maxHeight: 'calc(var(--spacing) * 32)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+    WebkitUserSelect: 'text',
+    userSelect: 'text',
+  },
+  s1f5ee927: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    maxHeight: 'calc(var(--spacing) * 32)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+    WebkitUserSelect: 'text',
+    userSelect: 'text',
+  },
+  s5c699e: {
+    color: 'var(--muted-foreground)',
+    maxHeight: 'calc(var(--spacing) * 24)',
+    overflow: 'auto',
+    fontSize: '10px',
+    WebkitUserSelect: 'text',
+    userSelect: 'text',
+  },
+  sa7e3a33c: {
+    borderColor: 'var(--border)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    alignSelf: 'flex-start',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    fontSize: '11px',
+  },
+  saa6e2814: {
+    color: 'var(--muted-foreground)',
+    flex: 'none',
+    fontSize: '10px',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+    opacity: '70%',
+  },
+  s54fa2ed8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    textAlign: 'left',
+  },
+  sf5080a13: {
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '2',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sc32a3912: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    textAlign: 'left',
+    fontSize: '11px',
+  },
+  s670d83df: {
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '11px',
+  },
+  sba564dce: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    alignSelf: 'flex-start',
+    fontSize: '11px',
+  },
+})
+const styles_3 = stylex.create({
+  s65fc2075: {
+    color: 'var(--destructive)',
+    fontWeight: '500',
+  },
+})
+const styles_2 = stylex.create({
+  s82e7c1b0: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb0422e15: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  sb21c636e: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  sfc58525: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    paddingInline: 'calc(0.25rem * 1)',
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s9c9141f4: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 0.5)',
+  },
+  s797b1794: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+  },
+})
 const styles = stylex.create({
   se6c9d13: {
     width: 'calc(0.25rem * 3)',
@@ -95,21 +481,45 @@ function TimerProgress({run, timer, wide = false}: {run: RunInfo; timer: RunTime
       data-testid={`run-timer-${run.id}`}
       aria-label={`${remainingLabel}; scheduled for ${wakeLabel}`}
       title={`Scheduled for ${wakeLabel}`}
-      className={`border-primary/20 bg-primary/5 text-primary flex min-w-0 items-center gap-1.5 rounded-full border px-2 py-0.5 ${
-        wide ? 'w-full' : 'flex-none'
-      }`}
+      className={
+        (stylex.props(
+          styles_6.s54a0b5ac,
+          styles_6.s5d1fb7e0,
+          styles_6.s1bfab962,
+          styles_6.s2ffff9,
+          styles_6.s3f58665f,
+          styles_6.sc6ed1702,
+          styles_6.sf4676641,
+          styles_6.s775755af,
+          styles_6.sad8c742c,
+          styles_6.s34b1ad,
+          styles_6.sc5dd1033,
+        ).className || '') +
+        ' ' +
+        (wide ? stylex.props(styles_6.scdbaf625).className || '' : stylex.props(styles_6.s948be48c).className || '')
+      }
     >
       <Clock3 className={stylex.props(styles.se6c9d13).className || ''} />
-      <span className="flex-none text-[10px] font-medium tabular-nums">{remainingLabel}</span>
-      <span className={`bg-primary/15 h-1 overflow-hidden rounded-full ${wide ? 'min-w-12 flex-1' : 'w-10'}`}>
+      <span className={stylex.props(styles_4.sa32fbd43).className || ''}>{remainingLabel}</span>
+      <span
+        className={
+          (stylex.props(styles_6.s46d743d9, styles_6.s18c0c, styles_6.s92852dd5, styles_6.s775755af).className || '') +
+          ' ' +
+          (wide
+            ? (stylex.props(styles_6.sb42feb5d).className || '') +
+              ' ' +
+              (stylex.props(styles_7.sabb465d2).className || '')
+            : stylex.props(styles_7.s36c735).className || '')
+        }
+      >
         <span
-          className="bg-primary block h-full rounded-full transition-[width] duration-1000 motion-reduce:transition-none"
+          className={stylex.props(styles_4.sd35787e3).className || ''}
           style={{
             width: `${elapsedFraction * 100}%`,
           }}
         />
       </span>
-      {wide ? <span className="text-muted-foreground flex-none text-[10px]">until {wakeLabel}</span> : null}
+      {wide ? <span className={stylex.props(styles_4.s5e8dc20c).className || ''}>until {wakeLabel}</span> : null}
     </div>
   )
 }
@@ -274,13 +684,6 @@ const STEP_ICONS = {
   failed: X,
   skipped: Minus,
 }
-const STEP_CLASSES = {
-  pending: 'text-muted-foreground',
-  running: 'text-primary',
-  done: 'text-emerald-600 dark:text-emerald-400',
-  failed: 'text-destructive',
-  skipped: 'text-muted-foreground line-through',
-}
 type StepStatus = keyof typeof STEP_ICONS
 
 /** How much of the plan's own account of itself to still believe (see run-card for the story). */
@@ -331,7 +734,7 @@ function ChildRunPresence({
       <KindIcon className={stylex.props(styles.s7d7b44e).className || ''} />
       {timer ? <TimerProgress run={run} timer={timer} /> : null}
       {live && activityDetail ? (
-        <span className="text-muted-foreground min-w-0 flex-1 truncate text-[10px]">{activityDetail}</span>
+        <span className={stylex.props(styles_4.scfb4fdc8).className || ''}>{activityDetail}</span>
       ) : null}
       {run.error ? (
         <RunErrorChip
@@ -393,7 +796,7 @@ export function RunErrorChip({
           role="button"
           tabIndex={0}
           title="Show full error"
-          className="text-destructive hover:bg-destructive/10 min-w-0 flex-1 cursor-pointer truncate rounded px-0.5 text-left text-[10px] underline decoration-dotted underline-offset-2"
+          className={stylex.props(styles_4.sa973cde5).className || ''}
           onClick={(event) => event.stopPropagation()}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === ' ') event.stopPropagation()
@@ -404,32 +807,29 @@ export function RunErrorChip({
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="flex w-[28rem] max-w-[92vw] flex-col gap-2"
+        className={stylex.props(styles_4.s3d3a0ae7).className || ''}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex min-w-0 items-center justify-between gap-2">
-          <span className="min-w-0 truncate text-xs font-medium">{runTitle(run)}</span>
-          <span className="text-destructive bg-destructive/10 flex-none rounded-full px-1.5 py-0.5 font-mono text-[10px]">
-            {error.code}
-          </span>
+        <div className={stylex.props(styles_2.s82e7c1b0).className || ''}>
+          <span className={stylex.props(styles_2.sb0422e15).className || ''}>{runTitle(run)}</span>
+          <span className={stylex.props(styles_4.sff6c3749).className || ''}>{error.code}</span>
         </div>
-        <pre className="text-destructive max-h-40 overflow-auto text-[11px] break-words whitespace-pre-wrap select-text">
-          {error.message}
-        </pre>
+        <pre className={stylex.props(styles_4.s64915d9).className || ''}>{error.message}</pre>
         {errorToolPart && renderToolPart ? (
-          <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">Failing tool call</span>
-            <div className="min-w-0 [&_.mr-6]:mr-0">{renderToolPart(errorToolPart)}</div>
+          <div className={stylex.props(styles_2.sb21c636e).className || ''}>
+            <span className={stylex.props(styles_4.s9cb07d5b).className || ''}>Failing tool call</span>
+            <div className={stylex.props(styles_5.s3f58665f).className || ''}>{renderToolPart(errorToolPart)}</div>
           </div>
         ) : null}
         {excerpt ? (
-          <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">
-              workflow source, line {errorLine}
-            </span>
-            <pre className="bg-muted/60 max-h-32 overflow-auto rounded-md p-2 text-[11px] select-text">
+          <div className={stylex.props(styles_2.sb21c636e).className || ''}>
+            <span className={stylex.props(styles_4.s9cb07d5b).className || ''}>workflow source, line {errorLine}</span>
+            <pre className={stylex.props(styles_4.s38a3143).className || ''}>
               {excerpt.map((line) => (
-                <div key={line.number} className={line.number === errorLine ? 'text-destructive font-medium' : ''}>
+                <div
+                  key={line.number}
+                  className={stylex.props(line.number === errorLine ? styles_3.s65fc2075 : null).className || ''}
+                >
                   {String(line.number).padStart(4)} {line.text}
                 </div>
               ))}
@@ -437,25 +837,21 @@ export function RunErrorChip({
           </div>
         ) : null}
         {error.detail !== undefined ? (
-          <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">Detail</span>
-            <pre className="bg-muted/60 max-h-32 overflow-auto rounded-md p-2 text-[11px] whitespace-pre-wrap select-text">
+          <div className={stylex.props(styles_2.sb21c636e).className || ''}>
+            <span className={stylex.props(styles_4.s9cb07d5b).className || ''}>Detail</span>
+            <pre className={stylex.props(styles_4.s1f5ee927).className || ''}>
               {JSON.stringify(error.detail, null, 2)}
             </pre>
           </div>
         ) : null}
         {error.stack ? (
-          <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">Stack</span>
-            <pre className="text-muted-foreground max-h-24 overflow-auto text-[10px] select-text">{error.stack}</pre>
+          <div className={stylex.props(styles_2.sb21c636e).className || ''}>
+            <span className={stylex.props(styles_4.s9cb07d5b).className || ''}>Stack</span>
+            <pre className={stylex.props(styles_4.s5c699e).className || ''}>{error.stack}</pre>
           </div>
         ) : null}
         {onOpen ? (
-          <button
-            type="button"
-            className="border-border hover:bg-muted self-start rounded-md border px-2 py-1 text-[11px]"
-            onClick={onOpen}
-          >
+          <button type="button" className={stylex.props(styles_4.sa7e3a33c).className || ''} onClick={onOpen}>
             Open sub-session
           </button>
         ) : null}
@@ -476,7 +872,18 @@ function CancelRunButton({run, onCancel, pending}: {run: RunInfo; onCancel: () =
       type="button"
       aria-label={`Cancel ${runTitle(run)}`}
       title={`Cancel ${runTitle(run)}`}
-      className="text-muted-foreground hover:text-destructive flex-none rounded p-0.5 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
+      className={
+        stylex.props(
+          styles_5.sf2718385,
+          styles_5.s5f101360,
+          styles_5.s948be48c,
+          styles_5.s529492ad,
+          styles_5.s63f771a,
+          styles_5.s765a26ee,
+          styles_5.s79cfa1b2,
+          styles_5.s16593988,
+        ).className || ''
+      }
       disabled={pending}
       onClick={onCancel}
     >
@@ -527,11 +934,13 @@ export function PlanStepRow({
   const childLive = child ? !isTerminalRun(child.status) && !ownerTerminal : false
   const body = (
     <>
-      <Icon className={`size-3 flex-none ${STEP_CLASSES[status]} ${status === 'running' ? 'animate-spin' : ''}`} />
+      <Icon className={stylex.props(styles_6.sca3de967, styles_6.s948be48c).className || ''} />
       {/* The label owns the row's space (2:1 over presence detail) and truncates only when the
           row genuinely runs out — percentage caps collapse inside shrink-wrapped ancestors and
           were cutting short labels at a fraction of the available width. */}
-      <span className={`min-w-0 flex-[2] truncate ${STEP_CLASSES[status]}`}>{step.label}</span>
+      <span className={stylex.props(styles_6.s3f58665f, styles_6.s67e32c32, styles_6.s6e724d66).className || ''}>
+        {step.label}
+      </span>
       {/* Who closed it. A step the runtime settled from finished sub-agents is still done — but the
           agent never said so, and a checklist that reads identically either way quietly attributes
           the runtime's bookkeeping to the agent's judgment. */}
@@ -539,7 +948,7 @@ export function PlanStepRow({
         <span
           data-testid="step-resolved-by-runtime"
           title="Settled by the runtime from completed sub-agent results"
-          className="text-muted-foreground flex-none text-[10px] tracking-wide uppercase opacity-70"
+          className={stylex.props(styles_4.saa6e2814).className || ''}
         >
           auto
         </span>
@@ -558,19 +967,25 @@ export function PlanStepRow({
     </>
   )
   return (
-    <div className={`group flex min-w-0 items-center gap-1 ${compact ? 'text-[11px]' : 'text-xs'}`}>
+    <div
+      className={
+        (stylex.props(styles_6.s2ffff9, styles_6.s3f58665f, styles_6.sc6ed1702, styles_6.s5d936fa).className || '') +
+        ' ' +
+        (compact ? stylex.props(styles_6.s5542e25a).className || '' : stylex.props(styles_6.sab7cc79b).className || '')
+      }
+    >
       {child && onOpen ? (
         <button
           type="button"
           aria-label={`Open ${runTitle(child)}`}
           title={`Open ${runTitle(child)}`}
-          className="hover:bg-muted flex min-w-0 flex-1 items-center gap-1.5 rounded px-1 py-0.5 text-left"
+          className={stylex.props(styles_4.s54fa2ed8).className || ''}
           onClick={onOpen}
         >
           {body}
         </button>
       ) : (
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1 py-0.5">{body}</div>
+        <div className={stylex.props(styles_2.sfc58525).className || ''}>{body}</div>
       )}
       {child && childLive && onCancel ? (
         <CancelRunButton run={child} onCancel={onCancel} pending={cancelPending} />
@@ -607,7 +1022,7 @@ export function RunChildRow({
     <>
       {/* The title owns the row's space (2:1 over presence detail) and truncates only when the
           row genuinely runs out; percentage caps collapsed in shrink-wrapped ancestors. */}
-      <span className="min-w-0 flex-[2] truncate">{runTitle(run)}</span>
+      <span className={stylex.props(styles_4.sf5080a13).className || ''}>{runTitle(run)}</span>
       <ChildRunPresence
         run={run}
         live={isLive}
@@ -620,17 +1035,17 @@ export function RunChildRow({
     </>
   )
   return (
-    <div className="group flex min-w-0 items-center gap-1">
+    <div
+      className={
+        stylex.props(styles_5.s2ffff9, styles_5.s3f58665f, styles_5.sc6ed1702, styles_5.s5d936fa).className || ''
+      }
+    >
       {onOpen ? (
-        <button
-          type="button"
-          className="hover:bg-muted flex min-w-0 flex-1 items-center gap-1.5 rounded px-1 py-0.5 text-left text-[11px]"
-          onClick={onOpen}
-        >
+        <button type="button" className={stylex.props(styles_4.sc32a3912).className || ''} onClick={onOpen}>
           {content}
         </button>
       ) : (
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1 py-0.5 text-[11px]">{content}</div>
+        <div className={stylex.props(styles_4.s670d83df).className || ''}>{content}</div>
       )}
       {isLive && onCancel ? <CancelRunButton run={run} onCancel={onCancel} pending={cancelPending} /> : null}
     </div>
@@ -743,9 +1158,9 @@ export function RunWorkHierarchy({
   // Nothing to say yet — and an empty flex column would still take vertical space in the card.
   if (!hasWork) return null
   return (
-    <div className="flex min-w-0 flex-col gap-1">
+    <div className={stylex.props(styles_2.sb21c636e).className || ''}>
       {plan?.steps.length || unattachedChildren.length ? (
-        <div className="flex min-w-0 flex-col gap-0.5">
+        <div data-testid="run-checklist" className={stylex.props(styles_2.s9c9141f4).className || ''}>
           {(plan?.steps ?? []).flatMap((step) => {
             const attached = childrenByStep.get(step.id) ?? []
             // One child: the step IS that child's row — clicking it opens the sub-session.
@@ -789,11 +1204,11 @@ export function RunWorkHierarchy({
       ) : null}
 
       {toolParts.length && renderToolPart ? (
-        <div className="flex min-w-0 flex-col">
+        <div className={stylex.props(styles_2.s797b1794).className || ''}>
           <button
             type="button"
             aria-expanded={showTools}
-            className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
+            className={stylex.props(styles_4.sba564dce).className || ''}
             onClick={() => setToolsOpen(!showTools)}
           >
             {showTools ? (
@@ -805,7 +1220,7 @@ export function RunWorkHierarchy({
             <span className={stylex.props(styles.s54eab7db).className || ''}>{toolParts.length}</span>
           </button>
           {showTools ? (
-            <div className="min-w-0 [&_.mr-6]:mr-0">
+            <div className={stylex.props(styles_5.s3f58665f).className || ''}>
               {toolParts.map((part) => (
                 <React.Fragment key={part.id}>{renderToolPart(part)}</React.Fragment>
               ))}

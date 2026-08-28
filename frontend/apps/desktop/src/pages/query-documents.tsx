@@ -41,6 +41,347 @@ import {
   Trash2,
 } from 'lucide-react'
 import {useEffect, useId, useMemo, useRef, useState, type ReactNode} from 'react'
+const styles_6 = stylex.create({
+  sc7133e96: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1)',
+  },
+  sc7133e97: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+})
+const styles_5 = stylex.create({
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_4 = stylex.create({
+  sffc515b6: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-6xl)',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+    paddingInline: 'calc(var(--spacing) * 5)',
+    paddingBlock: 'calc(var(--spacing) * 6)',
+    '@media ((min-width: 1024px))': {
+      paddingInline: 'calc(var(--spacing) * 8)',
+    },
+  },
+  sb5a1f499: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingBottom: 'calc(var(--spacing) * 5)',
+    '@media ((min-width: 640px))': {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+    },
+  },
+  s6185ff34: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+  },
+  s196aeaf: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 20%, transparent)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  s4ffa9207: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    '@media ((min-width: 640px))': {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+  },
+  sf54e12d9: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    gridTemplateColumns: 'auto minmax(0,1fr) auto',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      gridTemplateColumns: 'auto minmax(12rem,1fr) 10rem auto',
+    },
+  },
+  s18f67c04: {
+    gridColumn: 'span 2 / span 2',
+    width: '100%',
+    '@media ((min-width: 640px))': {
+      gridColumn: 'span 1 / span 1',
+    },
+  },
+  s496a170d: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        color: 'var(--foreground)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    borderRadius: 'calc(var(--radius) - 4px)',
+    padding: 'calc(var(--spacing) * 1)',
+    ':disabled': {
+      opacity: '30%',
+    },
+  },
+  se71b5546: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+        color: 'var(--destructive)',
+        opacity: '100%',
+      },
+    },
+    borderRadius: 'calc(var(--radius) - 4px)',
+    padding: 'calc(var(--spacing) * 1)',
+    ':disabled': {
+      opacity: '30%',
+    },
+  },
+  s269feb8c: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sfdbf1c0e: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    overflowX: 'auto',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'calc(var(--spacing) * 5)',
+  },
+  sa205e0c5: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    color: 'var(--muted-foreground)',
+    display: 'inline-flex',
+    maxWidth: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '11px',
+  },
+  s8def49e6: {
+    color: 'var(--muted-foreground)',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 2.5)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s86991cfd: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        color: 'var(--foreground)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    outlineStyle: 'none',
+  },
+  s3205deca: {
+    color: 'var(--muted-foreground)',
+    maxWidth: 'calc(var(--spacing) * 40)',
+    flexShrink: '0',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '11px',
+  },
+  s80a077ad: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    gridTemplateColumns: 'auto minmax(0,1fr)',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      gridTemplateColumns: 'auto minmax(10rem,1fr) 9rem 7rem minmax(9rem,1fr) auto',
+      alignItems: 'center',
+    },
+  },
+  s9925fe9: {
+    borderColor: 'color-mix(in oklab, var(--primary) 40%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--primary) 5%, transparent)',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  sd36f607c: {
+    '@media ((min-width: 640px))': {
+      gridColumn: 'span 2 / span 2',
+    },
+  },
+  s28c43d23: {
+    display: 'none',
+    '@media ((min-width: 640px))': {
+      display: 'block',
+    },
+  },
+  s552e5d41: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 20%, transparent)',
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 40)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 6)',
+    textAlign: 'center',
+  },
+  sffc13ed6: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 40%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
+  },
+})
+const styles_3 = stylex.create({
+  s46078cef: {
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  s856bab52: {
+    backgroundColor: 'var(--accent)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+})
+const styles_2 = stylex.create({
+  s545e01e8: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '36rem',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  sabad949c: {
+    minHeight: 'calc(0.25rem * 40)',
+  },
+  s4ac9df38: {
+    position: 'relative',
+    width: '100%',
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  s6e90c5ad: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--popover)',
+    position: 'absolute',
+    zIndex: '50',
+    marginTop: 'calc(0.25rem * 1)',
+    maxHeight: 'calc(0.25rem * 52)',
+    width: '100%',
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-lg)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sa9c17a13: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s2df23bad: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    maxWidth: '24rem',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 const styles = stylex.create({
   s3269316e: {
     width: 'calc(0.25rem * 3.5)',
@@ -113,8 +454,7 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: 'calc(1 / 0.75)',
     fontWeight: '500',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
   },
@@ -174,7 +514,7 @@ const styles = stylex.create({
     borderRadius: 'var(--radius)',
     borderStyle: 'solid',
     borderWidth: '1px',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+    boxShadow: 'var(--shadow-sm)',
   },
   s3b858bae: {
     animation: 'spin 1s linear infinite',
@@ -648,14 +988,14 @@ export default function QueryDocumentsPage() {
   return (
     <PanelContainer>
       <MainWrapper scrollable>
-        <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8">
-          <header className="border-border flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
-            <div className="space-y-1">
-              <div className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-[0.18em] uppercase">
+        <main className={stylex.props(styles_4.sffc515b6).className || ''}>
+          <header className={stylex.props(styles_4.sb5a1f499).className || ''}>
+            <div className={stylex.props(styles_6.sc7133e96).className || ''}>
+              <div className={stylex.props(styles_4.s6185ff34).className || ''}>
                 <Filter className={stylex.props(styles.s3269316e).className || ''} /> Document index
               </div>
               <h1 className={stylex.props(styles.sc3771bb1).className || ''}>Query Documents</h1>
-              <p className="text-muted-foreground max-w-xl text-sm">
+              <p className={stylex.props(styles_2.s545e01e8).className || ''}>
                 Explore visible document attributes without saving a search.
               </p>
             </div>
@@ -671,8 +1011,8 @@ export default function QueryDocumentsPage() {
             </div>
           </header>
 
-          <section className="border-border bg-muted/20 rounded-lg border shadow-sm">
-            <div className="border-border flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
+          <section className={stylex.props(styles_4.s196aeaf).className || ''}>
+            <div className={stylex.props(styles_4.s4ffa9207).className || ''}>
               <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                 <span className={stylex.props(styles.s7ceacacd).className || ''}>Quick scope</span>
                 <Button variant="outline" size="sm" onClick={applySelectedSpace} disabled={!selectedSpaceId}>
@@ -687,7 +1027,7 @@ export default function QueryDocumentsPage() {
               </span>
             </div>
 
-            <div className="space-y-3 p-4">
+            <div className={stylex.props(styles_5.s1aa17).className || ''}>
               <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                 <span className={stylex.props(styles.sd46c5b0e).className || ''}>Match</span>
                 <div className={stylex.props(styles.s10a6312).className || ''} role="group" aria-label="Condition mode">
@@ -698,7 +1038,7 @@ export default function QueryDocumentsPage() {
                       onClick={() => setMode(value)}
                       className={cn(
                         stylex.props(styles.s60699f3c).className || '',
-                        mode === value && 'bg-primary text-primary-foreground shadow-sm',
+                        stylex.props(mode === value && styles_3.s46078cef).className || '',
                       )}
                     >
                       {value === 'and' ? 'All' : 'Any'}
@@ -708,7 +1048,7 @@ export default function QueryDocumentsPage() {
                 <span className={stylex.props(styles.sa56e9200).className || ''}>conditions</span>
               </div>
 
-              <div className="space-y-2">
+              <div className={stylex.props(styles_6.sc7133e97).className || ''}>
                 {conditions.map((condition, index) => (
                   <ConditionRow
                     key={condition.id}
@@ -750,12 +1090,9 @@ export default function QueryDocumentsPage() {
                   Earlier rows have higher priority. Up to {maxSortRules} attributes.
                 </span>
               </div>
-              <div className="space-y-2">
+              <div className={stylex.props(styles_6.sc7133e97).className || ''}>
                 {sortRules.map((rule, index) => (
-                  <div
-                    key={rule.id}
-                    className="bg-background border-border grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-md border p-2 sm:grid-cols-[auto_minmax(12rem,1fr)_10rem_auto]"
-                  >
+                  <div key={rule.id} className={stylex.props(styles_4.sf54e12d9).className || ''}>
                     <span className={stylex.props(styles.s51bcccdb).className || ''}>
                       {String(index + 1).padStart(2, '0')}
                     </span>
@@ -782,7 +1119,7 @@ export default function QueryDocumentsPage() {
                       }
                       disabled={!rule.key.trim()}
                     >
-                      <SelectTrigger className="col-span-2 w-full sm:col-span-1">
+                      <SelectTrigger className={stylex.props(styles_4.s18f67c04).className || ''}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -793,7 +1130,7 @@ export default function QueryDocumentsPage() {
                     <div className={stylex.props(styles.sd36a4a47).className || ''}>
                       <button
                         type="button"
-                        className="text-muted-foreground hover:bg-accent hover:text-foreground rounded-sm p-1 disabled:opacity-30"
+                        className={stylex.props(styles_4.s496a170d).className || ''}
                         onClick={() => moveSortRule(index, -1)}
                         disabled={index === 0}
                         aria-label={`Move sort ${index + 1} up`}
@@ -802,7 +1139,7 @@ export default function QueryDocumentsPage() {
                       </button>
                       <button
                         type="button"
-                        className="text-muted-foreground hover:bg-accent hover:text-foreground rounded-sm p-1 disabled:opacity-30"
+                        className={stylex.props(styles_4.s496a170d).className || ''}
                         onClick={() => moveSortRule(index, 1)}
                         disabled={index === sortRules.length - 1}
                         aria-label={`Move sort ${index + 1} down`}
@@ -811,7 +1148,7 @@ export default function QueryDocumentsPage() {
                       </button>
                       <button
                         type="button"
-                        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-sm p-1 disabled:opacity-30"
+                        className={stylex.props(styles_4.se71b5546).className || ''}
                         onClick={() => setSortRules((current) => current.filter((item) => item.id !== rule.id))}
                         disabled={sortRules.length === 1}
                         aria-label={`Remove sort ${index + 1}`}
@@ -841,7 +1178,7 @@ export default function QueryDocumentsPage() {
 
           <section className={stylex.props(styles.se3172170).className || ''}>
             <button
-              className="text-muted-foreground hover:bg-muted/60 flex w-full items-center justify-between px-4 py-3 text-left text-xs font-medium tracking-wide uppercase transition-colors"
+              className={stylex.props(styles_4.s269feb8c).className || ''}
               type="button"
               onClick={() => setShowPreview((value) => !value)}
               aria-expanded={showPreview}
@@ -856,13 +1193,11 @@ export default function QueryDocumentsPage() {
               )}
             </button>
             {showPreview ? (
-              <pre className="border-border bg-muted/30 overflow-x-auto border-t p-4 text-xs leading-5">
-                {requestPreview}
-              </pre>
+              <pre className={stylex.props(styles_4.sfdbf1c0e).className || ''}>{requestPreview}</pre>
             ) : null}
           </section>
 
-          <section aria-live="polite" className="min-h-40">
+          <section aria-live="polite" className={stylex.props(styles_2.sabad949c).className || ''}>
             {isLoading && !result ? (
               <QueryState
                 icon={<Loader2 className={stylex.props(styles.s3b858bae).className || ''} />}
@@ -879,14 +1214,16 @@ export default function QueryDocumentsPage() {
               />
             ) : null}
             {result?.documents.length ? (
-              <div className="space-y-2">
+              <div className={stylex.props(styles_6.sc7133e97).className || ''}>
                 <div className={stylex.props(styles.sce049c4e).className || ''}>
                   <span>
                     {result.documents.length} result{result.documents.length === 1 ? '' : 's'}
                   </span>
                   <span>Open a document to inspect it.</span>
                 </div>
-                <div className="divide-border border-border divide-y rounded-lg border">
+                <div
+                  className={stylex.props(styles_5.s1a01a0ed, styles_5.sf799889b, styles_5.sad8c742c).className || ''}
+                >
                   {result.documents.map((document) => {
                     const item = prepareHMDocumentInfo(document)
                     return (
@@ -895,10 +1232,7 @@ export default function QueryDocumentsPage() {
                         {resultAttributeKeys.length ? (
                           <div className={stylex.props(styles.s4bed10d3).className || ''}>
                             {resultAttributeKeys.map((key) => (
-                              <span
-                                key={key}
-                                className="border-border bg-muted/40 text-muted-foreground inline-flex max-w-full items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[11px]"
-                              >
+                              <span key={key} className={stylex.props(styles_4.sa205e0c5).className || ''}>
                                 <span>{key}</span>
                                 <span className={stylex.props(styles.s120e1b03).className || ''}>
                                   {formatAttributeValue(item.metadata, key)}
@@ -1009,7 +1343,7 @@ function AutocompleteInput({
     setActiveIndex(null)
   }
   return (
-    <div className="relative w-full min-w-0">
+    <div className={[stylex.props(styles_2.s4ac9df38).className || '', className].filter(Boolean).join(' ')}>
       <Input
         value={value}
         inputMode={inputMode}
@@ -1053,13 +1387,13 @@ function AutocompleteInput({
         placeholder={placeholder}
         aria-label={ariaLabel}
       />
-      <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2" />
+      <ChevronDown className={stylex.props(styles_4.s8def49e6).className || ''} />
       {open && visibleSuggestions.length ? (
         <div
           ref={listRef}
           id={listId}
           role="listbox"
-          className="border-border bg-popover absolute z-50 mt-1 max-h-52 w-full overflow-y-auto overscroll-contain rounded-md border p-1 shadow-lg"
+          className={stylex.props(styles_2.s6e90c5ad).className || ''}
           onMouseDown={(event) => event.preventDefault()}
         >
           {visibleSuggestions.map((suggestion, index) => (
@@ -1070,13 +1404,13 @@ function AutocompleteInput({
               role="option"
               aria-selected={activeIndex === index}
               className={cn(
-                'hover:bg-accent flex w-full items-start justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm outline-none',
-                activeIndex === index && 'bg-accent',
+                stylex.props(styles_4.s86991cfd).className || '',
+                stylex.props(activeIndex === index && styles_3.s856bab52).className || '',
               )}
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => choose(suggestion)}
             >
-              <span className="min-w-0">
+              <span className={stylex.props(styles_2.s3f58665f).className || ''}>
                 <span className={stylex.props(styles.s12583799).className || ''}>
                   {suggestion.label ?? suggestion.value}
                 </span>
@@ -1085,7 +1419,7 @@ function AutocompleteInput({
                 ) : null}
               </span>
               {suggestion.meta ? (
-                <span className="text-muted-foreground max-w-40 shrink-0 truncate text-[11px]">{suggestion.meta}</span>
+                <span className={stylex.props(styles_4.s3205deca).className || ''}>{suggestion.meta}</span>
               ) : null}
             </button>
           ))}
@@ -1121,7 +1455,7 @@ function ConditionRow({
       ? comparisonOperators.filter(([label]) => label === '=' || label === '≠')
       : comparisonOperators
   return (
-    <div className="bg-background border-border grid grid-cols-[auto_minmax(0,1fr)] gap-2 rounded-md border p-2 sm:grid-cols-[auto_minmax(10rem,1fr)_9rem_7rem_minmax(9rem,1fr)_auto] sm:items-center">
+    <div className={stylex.props(styles_4.s80a077ad).className || ''}>
       <span className={stylex.props(styles.s51bcccdb).className || ''}>{String(index + 1).padStart(2, '0')}</span>
       <AutocompleteInput
         value={condition.key}
@@ -1148,7 +1482,7 @@ function ConditionRow({
             })
           }
         }}
-        className={cn(isBuiltIn && 'border-primary/40 bg-primary/5 font-medium')}
+        className={cn(stylex.props(isBuiltIn ? styles_4.s9925fe9 : null).className || '')}
         suggestions={[
           {
             value: spaceField,
@@ -1191,7 +1525,10 @@ function ConditionRow({
             }
           }}
         >
-          <SelectTrigger className="sm:col-span-2" aria-label={`Condition ${index + 1} built-in operator`}>
+          <SelectTrigger
+            className={stylex.props(styles_4.sd36f607c).className || ''}
+            aria-label={`Condition ${index + 1} built-in operator`}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -1243,7 +1580,7 @@ function ConditionRow({
               </SelectContent>
             </Select>
           ) : (
-            <span className="hidden sm:block" />
+            <span className={stylex.props(styles_4.s28c43d23).className || ''} />
           )}
         </>
       )}
@@ -1303,7 +1640,7 @@ function ConditionValue({
   }))
   if (condition.kind === 'comparison') {
     return (
-      <div className="flex min-w-0 gap-2">
+      <div className={stylex.props(styles_2.sa9c17a13).className || ''}>
         <Select
           value={condition.valueKind}
           onValueChange={(valueKind: ValueKind) => {
@@ -1420,15 +1757,20 @@ function QueryState({icon, title, detail, tone}: {icon: ReactNode; title: string
   return (
     <div
       className={cn(
-        'border-border bg-muted/20 flex min-h-40 flex-col items-center justify-center rounded-lg border p-6 text-center',
-        tone === 'error' && 'border-destructive/40 bg-destructive/5',
+        stylex.props(styles_4.s552e5d41).className || '',
+        stylex.props(tone === 'error' ? styles_4.sffc13ed6 : null).className || '',
       )}
     >
-      <span className={cn(stylex.props(styles.s5bf2d9b6).className || '', tone === 'error' && 'text-destructive')}>
+      <span
+        className={cn(
+          stylex.props(styles.s5bf2d9b6).className || '',
+          stylex.props(tone === 'error' && styles_3.s8a2570e2).className || '',
+        )}
+      >
         {icon}
       </span>
       <h2 className={stylex.props(styles.s9d4b128d).className || ''}>{title}</h2>
-      <p className="text-muted-foreground mt-1 max-w-sm text-sm">{detail}</p>
+      <p className={stylex.props(styles_2.s2df23bad).className || ''}>{detail}</p>
     </div>
   )
 }

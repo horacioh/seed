@@ -5,6 +5,54 @@ import {useState} from 'react'
 import {Button} from './button'
 import {Input} from './components/input'
 import {cn} from './utils'
+const styles_3 = stylex.create({
+  sb42feb5d: {
+    flex: '1',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s2daecf89: {
+    color: '#fff',
+  },
+})
+const styles_2 = stylex.create({
+  s5dffd66f: {
+    marginInline: 'auto',
+    marginBlock: 'calc(var(--spacing) * 6)',
+    maxWidth: 'var(--container-2xl)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-green-200)',
+    backgroundColor: 'var(--tone-green-50)',
+    paddingInline: 'calc(var(--spacing) * 6)',
+    paddingBlock: 'calc(var(--spacing) * 5)',
+  },
+  s34803560: {
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-green-800)',
+  },
+  se56a8f2: {
+    marginInline: 'auto',
+    marginBlock: 'calc(var(--spacing) * 6)',
+    maxWidth: 'var(--container-2xl)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-yellow-200-2)',
+    backgroundColor: 'var(--tone-yellow-50-2)',
+    paddingInline: 'calc(var(--spacing) * 6)',
+    paddingBlock: 'calc(var(--spacing) * 5)',
+  },
+  sebc127e2: {
+    marginBottom: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-red-600)',
+  },
+})
 const styles = stylex.create({
   s62c182b1: {
     fontWeight: '600',
@@ -59,13 +107,8 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
   }
   if (successEmail) {
     return (
-      <div
-        className={cn(
-          'mx-auto my-6 max-w-2xl rounded-lg border border-green-200 bg-green-50 px-6 py-5 dark:border-green-800 dark:bg-green-950',
-          className,
-        )}
-      >
-        <p className="text-sm text-green-800 dark:text-green-200">
+      <div className={cn(stylex.props(styles_2.s5dffd66f).className || '', className)}>
+        <p className={stylex.props(styles_2.s34803560).className || ''}>
           <span className={stylex.props(styles.s62c182b1).className || ''}>{successEmail}</span> will be notified when{' '}
           <span className={stylex.props(styles.s62c182b1).className || ''}>{accountMeta?.name || 'this space'}</span> is
           updated.
@@ -74,16 +117,11 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
     )
   }
   return (
-    <div
-      className={cn(
-        'mx-auto my-6 max-w-2xl rounded-lg border border-yellow-200 bg-yellow-50 px-6 py-5 dark:border-yellow-200/30 dark:bg-yellow-50/10',
-        className,
-      )}
-    >
+    <div className={cn(stylex.props(styles_2.se56a8f2).className || '', className)}>
       <p className={stylex.props(styles.s8d8eae3a).className || ''}>
         Do you like what you are reading? Subscribe to receive updates.
       </p>
-      {error && <p className="mb-2 text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className={stylex.props(styles_2.sebc127e2).className || ''}>{error}</p>}
       <div className={stylex.props(styles.se658ac14).className || ''}>
         <Input
           type="email"
@@ -91,7 +129,7 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
           value={email}
           onChangeText={setEmail}
           disabled={isPending}
-          className="flex-1 bg-white dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-400"
+          className={stylex.props(styles_3.sb42feb5d, styles_3.s605ce4a1).className || ''}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleSubscribe()
           }}
@@ -101,7 +139,7 @@ export function InlineSubscribeBox({accountId, notifyServiceHost, accountMeta, c
           size="sm"
           onClick={handleSubscribe}
           disabled={!email.trim() || isPending}
-          className="plausible-event-name=inline-subscribe text-white"
+          className={stylex.props(styles_3.s2daecf89).className || ''}
         >
           {isPending ? 'Subscribing…' : 'Subscribe'}
         </Button>

@@ -8,6 +8,28 @@ import {UIAvatar, UIAvatarProps} from './avatar'
 import {useImageUrl} from './get-file-url'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_3 = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s3f582e15: {
+    minHeight: 'calc(0.25rem * 5)',
+  },
+  s3f586664: {
+    minWidth: 'calc(0.25rem * 5)',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+})
+const styles_2 = stylex.create({
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+})
 const styles = stylex.create({
   s41a93db5: {
     flex: 'none',
@@ -79,7 +101,7 @@ function HMIconImpl({
         // We want home documents and profiles to have round icons,
         // and normal documents to have square icons.
         // This should help differentiate between "people" and "documents".
-        isHomeDocument || isProfileDocument ? 'rounded-full' : 'rounded-sm',
+        stylex.props(isHomeDocument || isProfileDocument ? styles_2.s775755af : styles_2.sf799897a).className || '',
         className,
       )}
       {...props}
@@ -113,7 +135,9 @@ export function LinkIcon({
   return (
     <Tooltip content={getMetadataName(metadata) || abbreviateUid(id.uid)}>
       <a
-        className="no-window-drag relative min-h-5 min-w-5 p-0"
+        className={
+          stylex.props(styles_3.sdef3facc, styles_3.s3f582e15, styles_3.s3f586664, styles_3.s1aa13).className || ''
+        }
         {...linkProps}
         style={
           {

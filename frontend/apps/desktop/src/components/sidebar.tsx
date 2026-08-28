@@ -52,6 +52,168 @@ import React, {memo} from 'react'
 import {CreateDocumentButton} from './create-doc-button'
 import {isSiteDocumentsActiveRoute} from './sidebar-active'
 import {GenericSidebarContainer} from './sidebar-base'
+const styles_7 = stylex.create({
+  sf0c6c83c: {
+    ':is([data-active="true"])': {
+      ':hover': {
+        backgroundColor: 'color-mix(in oklab, var(--accent) 90%, transparent)',
+      },
+    },
+  },
+  s7aeb6cce: {
+    ':is([data-active="true"])': {
+      ':hover': {
+        color: 'var(--accent-foreground)',
+      },
+    },
+  },
+})
+const styles_6 = stylex.create({
+  s4679c48: {
+    ':is([data-active="true"])': {
+      backgroundColor: 'var(--accent)',
+    },
+  },
+  s6c18e050: {
+    ':is([data-active="true"])': {
+      color: 'var(--accent-foreground)',
+    },
+  },
+})
+const styles_5 = stylex.create({
+  s981479f6: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--border)',
+      },
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  seda6d856: {
+    textTransform: 'none',
+  },
+  sa2be5cbd: {
+    letterSpacing: '0em',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s96c27eec: {
+    textTransform: 'capitalize',
+  },
+})
+const styles_4 = stylex.create({
+  s169c5600: {
+    minHeight: 'calc(var(--spacing) * 12)',
+    width: '100%',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-neutral-400)',
+    backgroundColor: 'var(--surface-hover-neutral)',
+    color: 'var(--text-neutral)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--tone-neutral-600)',
+        backgroundColor: 'transparent',
+      },
+    },
+  },
+  s62ed7cb6: {
+    borderColor: 'var(--border)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--sidebar-accent)',
+        color: 'var(--sidebar-accent-foreground)',
+      },
+    },
+    marginBlock: 'calc(var(--spacing) * 2)',
+    display: 'flex',
+    cursor: 'pointer',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    paddingRight: 'calc(var(--spacing) * 8)',
+  },
+  s6e63d7e9: {
+    borderColor: 'var(--accent)',
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--accent) 90%, transparent)',
+      },
+    },
+  },
+  scc7bc43a: {
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 2)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    translate: '0 -50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-10)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sa16ea943: {
+    fontWeight: '700',
+  },
+})
+const styles_2 = stylex.create({
+  s761cb219: {
+    minHeight: 'calc(0.25rem * 10)',
+    alignItems: 'flex-start',
+    paddingRight: 'calc(0.25rem * 8)',
+  },
+  s60e2bfdc: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  s74256bea: {
+    minHeight: 'calc(0.25rem * 10)',
+    alignItems: 'center',
+    paddingRight: 'calc(0.25rem * 8)',
+  },
+})
 const styles = stylex.create({
   s7813486c: {
     gap: 'calc(0.25rem * 0)',
@@ -185,7 +347,7 @@ export function MainAppSidebar() {
                   }}
                   title="Get Started with Seed"
                   bold
-                  className="min-h-12 w-full border border-dashed border-neutral-400 bg-transparent py-2 hover:border-neutral-600 hover:bg-transparent dark:border-neutral-600 dark:hover:border-neutral-400 dark:hover:bg-transparent"
+                  className={stylex.props(styles_4.s169c5600).className || ''}
                   icon={<span className={stylex.props(styles.s236d7cfe).className || ''} />}
                   rightHover={[]}
                 />
@@ -248,7 +410,20 @@ function SidebarSection({
     <SidebarGroup className={stylex.props(styles.s33458e).className || ''}>
       <div className={stylex.props(styles.sd48792d9).className || ''}>
         <SidebarGroupLabel
-          className="group/header hover:bg-border flex w-full cursor-pointer items-center gap-1 rounded-lg px-2 tracking-normal normal-case"
+          className={
+            stylex.props(
+              styles_5.s981479f6,
+              styles_5.s2ffff9,
+              styles_5.scdbaf625,
+              styles_5.sc7847ec6,
+              styles_5.sc6ed1702,
+              styles_5.s5d936fa,
+              styles_5.sf799889b,
+              styles_5.s34b1ad,
+              styles_5.seda6d856,
+              styles_5.sa2be5cbd,
+            ).className || ''
+          }
           onClick={() => {
             setCollapsed(!collapsed)
           }}
@@ -257,7 +432,7 @@ function SidebarSection({
             weight="bold"
             size="xs"
             color="muted"
-            className="group-hover/header:text-foreground flex-1 capitalize select-none"
+            className={stylex.props(styles_5.sb42feb5d, styles_5.sa145969, styles_5.s96c27eec).className || ''}
           >
             {title}
           </SizableText>
@@ -452,9 +627,12 @@ function JoinedSiteListItem({
       <SidebarMenuButton
         isActive={active}
         className={cn(
-          'min-h-10 items-start pr-8',
-          active &&
-            'data-[active=true]:bg-accent data-[active=true]:text-accent-foreground data-[active=true]:hover:bg-accent/90 data-[active=true]:hover:text-accent-foreground',
+          stylex.props(styles_2.s761cb219).className || '',
+          active
+            ? (stylex.props(styles_6.s4679c48, styles_6.s6c18e050).className || '') +
+                ' ' +
+                (stylex.props(styles_7.sf0c6c83c, styles_7.s7aeb6cce).className || '')
+            : '',
         )}
         onClick={linkProps.onClick}
       >
@@ -465,8 +643,13 @@ function JoinedSiteListItem({
           size={20}
           className={stylex.props(styles.sc3a8ad31).className || ''}
         />
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <span className={cn(stylex.props(styles.sa2f29310).className || '', isUnread && 'font-bold')}>
+        <div className={stylex.props(styles_2.s60e2bfdc).className || ''}>
+          <span
+            className={cn(
+              stylex.props(styles.sa2f29310).className || '',
+              stylex.props(isUnread && styles_3.sa16ea943).className || '',
+            )}
+          >
             {metadata?.name || 'Untitled'}
           </span>
           {activitySummary && (
@@ -615,7 +798,11 @@ function FollowingListItem({
   })
   return (
     <>
-      <SidebarMenuButton isActive={active} className="min-h-10 items-center pr-8" onClick={linkProps.onClick}>
+      <SidebarMenuButton
+        isActive={active}
+        className={stylex.props(styles_2.s74256bea).className || ''}
+        onClick={linkProps.onClick}
+      >
         <HMIcon
           id={id}
           name={metadata?.name}
@@ -623,7 +810,7 @@ function FollowingListItem({
           size={20}
           className={stylex.props(styles.sf032ed6c).className || ''}
         />
-        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div className={stylex.props(styles_2.s60e2bfdc).className || ''}>
           <span className={stylex.props(styles.s80a876f3).className || ''}>{metadata?.name || 'Untitled'}</span>
         </div>
       </SidebarMenuButton>
@@ -667,8 +854,8 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
         <div className={stylex.props(styles.sdef3facc).className || ''}>
           <div
             className={cn(
-              'border-border hover:bg-sidebar-accent my-2 flex cursor-pointer items-center gap-2 rounded-lg border p-2 pr-8',
-              active && 'border-accent bg-accent text-accent-foreground hover:bg-accent/90',
+              stylex.props(styles_4.s62ed7cb6).className || '',
+              stylex.props(active ? styles_4.s6e63d7e9 : null).className || '',
             )}
             onClick={() =>
               navigate({
@@ -692,7 +879,7 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
             button={
               <button
                 aria-label="My space options"
-                className="absolute top-1/2 right-2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+                className={stylex.props(styles_4.scc7bc43a).className || ''}
                 onClick={(e) => e.stopPropagation()}
               >
                 <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />

@@ -14,6 +14,14 @@ import {Button} from './button'
 import {FeedFilters} from './feed-filters'
 import {Text} from './text'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s983ab9a2: {
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+    backgroundColor: 'var(--surface)',
+  },
+})
 const styles = stylex.create({
   s9be30442: {
     display: 'flex',
@@ -166,7 +174,7 @@ export function PanelLayout({
               className={stylex.props(styles.s7c401f0b).className || ''}
             >
               <div className={stylex.props(styles.se5d80f67).className || ''}>
-                <div className={cn('dark:bg-background flex h-full flex-col bg-white')}>
+                <div className={cn(stylex.props(styles_2.s983ab9a2).className || '')}>
                   <div className={stylex.props(styles.sfcd0c593).className || ''}>
                     <div className={stylex.props(styles.sbbe27b4f).className || ''}>
                       <Text weight="semibold" size="lg" className={stylex.props(styles.sb42feb5d).className || ''}>

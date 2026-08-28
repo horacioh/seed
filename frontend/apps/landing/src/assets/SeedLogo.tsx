@@ -1,7 +1,17 @@
-export default function SeedLogo({className = 'size-6 text-gray-400', ...props}) {
+import * as stylex from '@stylexjs/stylex'
+
+const styles = stylex.create({
+  icon: {
+    width: 24,
+    height: 24,
+    color: 'var(--color-gray-400)',
+  },
+})
+
+export default function SeedLogo({className, ...props}) {
   return (
     <svg
-      className={className}
+      className={className ?? stylex.props(styles.icon).className}
       width="19"
       height="26"
       viewBox="0 0 19 26"

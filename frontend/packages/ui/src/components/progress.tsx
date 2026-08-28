@@ -2,6 +2,16 @@ import * as stylex from '@stylexjs/stylex'
 import * as ProgressPrimitive from '@radix-ui/react-progress'
 import * as React from 'react'
 import {cn} from '../utils'
+const styles_2 = stylex.create({
+  sbd58bedb: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
+    position: 'relative',
+    height: 'calc(var(--spacing) * 2)',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
 const styles = stylex.create({
   s151ddbb7: {
     backgroundColor: 'var(--primary)',
@@ -17,7 +27,7 @@ function Progress({className, value, ...props}: React.ComponentProps<typeof Prog
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
-      className={cn('bg-primary/20 relative h-2 w-full overflow-hidden rounded-full', className)}
+      className={cn(stylex.props(styles_2.sbd58bedb).className || '', className)}
       {...props}
     >
       <ProgressPrimitive.Indicator

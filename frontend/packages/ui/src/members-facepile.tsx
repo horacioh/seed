@@ -5,10 +5,35 @@ import {useRouteLink} from '@shm/shared/routing'
 import {useMemo} from 'react'
 import {HMIcon} from './hm-icon'
 import {cn} from './utils'
+const styles_3 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+})
+const styles_2 = stylex.create({
+  s83c92e9b: {
+    backgroundColor: 'var(--muted)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 80%, transparent)',
+      },
+    },
+    display: 'flex',
+    cursor: 'pointer',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(var(--spacing) * 5)',
+    paddingBlock: 'calc(var(--spacing) * 4)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
 const styles = stylex.create({
   s36b147d4: {
     borderRadius: 'calc(infinity * 1px)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000,  0 0 0 calc(2px + 0px) var(--muted), 0 0 #0000',
+    boxShadow: '0 0 0 2px var(--muted)',
   },
   sa56e915f: {
     color: 'var(--muted-foreground)',
@@ -37,14 +62,8 @@ export function MembersFacepile({members, siteId, description, className}: Membe
   })
   if (totalCount === 0) return null
   return (
-    <a
-      {...peopleLinkProps}
-      className={cn(
-        'bg-muted hover:bg-muted/80 flex cursor-pointer items-center gap-3 rounded-lg px-5 py-4 transition-colors',
-        className,
-      )}
-    >
-      <div className="flex -space-x-2">
+    <a {...peopleLinkProps} className={cn(stylex.props(styles_2.s83c92e9b).className || '', className)}>
+      <div className={stylex.props(styles_3.s2ffff9).className || ''}>
         {displayUids.map((uid, idx) => {
           const member = members[idx]
           if (!member) return null

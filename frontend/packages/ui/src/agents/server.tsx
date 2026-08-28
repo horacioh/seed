@@ -18,6 +18,40 @@ import {AgentListRow} from './agent-row'
 import {CreateAgentDialog, ManageAgentAccountsDialog, ModelProvidersDialog} from './dialogs'
 import {AgentBreadcrumb} from './header'
 import {AgentsNoAccountPage} from './no-account'
+const styles_3 = stylex.create({
+  s691ad09: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 9)',
+    height: 'calc(var(--spacing) * 9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+  },
+  s284af276: {
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  sb7febe18: {
+    maxWidth: '56rem',
+    gap: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 8)',
+  },
+  s51bd7649: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'flex-start',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+})
 const styles = stylex.create({
   sac38f2ae: {
     overflowY: 'auto',
@@ -91,13 +125,13 @@ function AgentServerContent({routeServerUrl, selectedAccountId}: {routeServerUrl
   useAgentWebSocketSubscription(serverUrl, selectedAccountId, `account/${selectedAccountId}`)
   return (
     <PanelContainer className={stylex.props(styles.sac38f2ae).className || ''}>
-      <Container className="max-w-4xl gap-4 pt-4 pb-8">
+      <Container className={stylex.props(styles_2.sb7febe18).className || ''}>
         <AgentBreadcrumb serverUrl={serverUrl} />
         <header className={stylex.props(styles.s584ecc36).className || ''}>
-          <div className="flex min-w-0 items-start gap-3">
-            <div className="min-w-0">
+          <div className={stylex.props(styles_2.s51bd7649).className || ''}>
+            <div className={stylex.props(styles_2.s3f58665f).className || ''}>
               <div className={stylex.props(styles.s86ff3e4).className || ''}>
-                <div className="bg-primary/10 text-primary flex size-9 items-center justify-center rounded-lg">
+                <div className={stylex.props(styles_3.s691ad09).className || ''}>
                   <Bot className={stylex.props(styles.sca3de969).className || ''} />
                 </div>
                 <SizableText size="2xl" weight="bold">
@@ -113,7 +147,7 @@ function AgentServerContent({routeServerUrl, selectedAccountId}: {routeServerUrl
             <Tooltip content="Create Agent">
               <span>
                 <Button
-                  className="max-sm:min-h-10"
+                  className={stylex.props(styles_3.s284af276).className || ''}
                   onClick={() =>
                     createAgentDialog.open({
                       serverUrls: [serverUrl],
@@ -128,7 +162,7 @@ function AgentServerContent({routeServerUrl, selectedAccountId}: {routeServerUrl
             </Tooltip>
             <Button
               variant="outline"
-              className="max-sm:min-h-10"
+              className={stylex.props(styles_3.s284af276).className || ''}
               onClick={() =>
                 manageAccountsDialog.open({
                   serverUrl,
@@ -141,7 +175,7 @@ function AgentServerContent({routeServerUrl, selectedAccountId}: {routeServerUrl
             </Button>
             <Button
               variant="outline"
-              className="max-sm:min-h-10"
+              className={stylex.props(styles_3.s284af276).className || ''}
               onClick={() =>
                 providersDialog.open({
                   serverUrl,

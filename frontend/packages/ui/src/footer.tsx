@@ -1,5 +1,14 @@
 import * as stylex from '@stylexjs/stylex'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s89613ca9: {
+    minHeight: 'calc(0.25rem * 6)',
+    flex: 'none',
+    alignItems: 'center',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+})
 const styles = stylex.create({
   s7a93f9df: {
     marginInline: 'calc(0.25rem * -1)',
@@ -20,7 +29,7 @@ export function FooterWrapper({children, className}: FooterWrapperProps) {
     <div
       className={cn(
         stylex.props(styles.s7a93f9df).className || '',
-        'min-h-6 flex-none items-center select-none',
+        stylex.props(styles_2.s89613ca9).className || '',
         className,
       )}
     >

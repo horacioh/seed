@@ -28,6 +28,112 @@ import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
 
 /** Platform callbacks injected by the host (desktop or web). */
+const styles_4 = stylex.create({
+  s2ad763d: {
+    marginInline: 'calc(0.25rem * -2)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56f: {
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+})
+const styles_3 = stylex.create({
+  s683f9adf: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'var(--tone-neutral-800)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    color: 'var(--color-white)',
+    '@media ((min-width: 640px))': {
+      paddingInline: 'calc(var(--spacing) * 3)',
+    },
+  },
+  s1d8df87e: {
+    display: 'none',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    '@media ((min-width: 640px))': {
+      display: 'inline',
+    },
+  },
+  s3f9fd033: {
+    height: 'calc(var(--spacing) * 10)',
+    borderColor: 'var(--overlay-10-20)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sc04d6692: {
+    backgroundColor: 'var(--overlay-10)',
+  },
+  s721ef839: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    marginInline: 'calc(var(--spacing) * -3)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s1c1e215c: {
+    backgroundColor: 'var(--tone-neutral-100)',
+    color: 'var(--tone-neutral-500)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-neutral-100)',
+      },
+    },
+    ':disabled': {
+      opacity: '100%',
+    },
+  },
+  s187aad5: {
+    backgroundColor: 'var(--tone-neutral-100)',
+    color: 'var(--tone-neutral-500)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-neutral-100)',
+      },
+    },
+  },
+  s105c899b: {
+    width: '26rem',
+    maxWidth: 'calc(100vw - 2rem)',
+    padding: 'calc(var(--spacing) * 6)',
+  },
+})
+const styles_2 = stylex.create({
+  s7dbe9813: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 const styles = stylex.create({
   sca3de967: {
     width: 'calc(0.25rem * 3)',
@@ -193,9 +299,9 @@ export function SaveIndicator() {
       <Check className={stylex.props(styles.sca3de967).className || ''} />
     )
   return (
-    <div className="flex items-center gap-1.5 rounded-full bg-neutral-800 px-2 py-1 text-white sm:px-3 dark:bg-neutral-700">
+    <div className={stylex.props(styles_3.s683f9adf).className || ''}>
       {icon}
-      <span className="hidden text-xs sm:inline">{label}</span>
+      <span className={stylex.props(styles_3.s1d8df87e).className || ''}>{label}</span>
     </div>
   )
 }
@@ -290,7 +396,7 @@ export function PublishPopoverBody({
         {documentUrl ? (
           <div className={stylex.props(styles.s86ff3e5).className || ''}>
             <span
-              className="text-muted-foreground min-w-0 flex-1 text-sm"
+              className={stylex.props(styles_2.s7dbe9813).className || ''}
               style={{
                 direction: 'rtl',
                 textAlign: 'left',
@@ -339,7 +445,7 @@ export function PublishPopoverBody({
                 }
               }}
               placeholder="/document-path"
-              className="h-10 border-black/10 text-sm dark:border-white/20"
+              className={stylex.props(styles_3.s3f9fd033).className || ''}
             />
             {isPrivate ? (
               <p className={stylex.props(styles.sa56e915f).className || ''}>
@@ -350,7 +456,7 @@ export function PublishPopoverBody({
         )}
       </div>
 
-      <Separator className="bg-black/10 dark:bg-white/10" />
+      <Separator className={stylex.props(styles_3.sc04d6692).className || ''} />
 
       {/* Last published row — clickable only when onGoToVersions provided */}
       {!!publishedDoc?.version ? (
@@ -362,7 +468,7 @@ export function PublishPopoverBody({
               onGoToVersions(docId)
             }}
             title={absoluteTime}
-            className="hover:bg-muted -mx-3 flex items-center gap-3 rounded px-3 py-2.5 text-left text-sm"
+            className={stylex.props(styles_3.s721ef839).className || ''}
           >
             <Clock className={stylex.props(styles.s3566be64).className || ''} />
             <span className={stylex.props(styles.sb42feb5d).className || ''}>
@@ -400,7 +506,18 @@ export function PublishPopoverBody({
       </div>
 
       {unpublishedChildCount > 0 ? (
-        <div className="border-warning bg-warning/10 text-warning-foreground -mx-2 rounded-md border px-4 py-3 text-sm">
+        <div
+          className={
+            stylex.props(
+              styles_4.s2ad763d,
+              styles_4.sf79988b7,
+              styles_4.sad8c742c,
+              styles_4.s34b1af,
+              styles_4.s34b56f,
+              styles_4.sab7cc6fa,
+            ).className || ''
+          }
+        >
           <p className={stylex.props(styles.s129e46b3).className || ''}>
             {unpublishedChildCount === 1
               ? 'This document embeds an unpublished draft.'
@@ -412,7 +529,7 @@ export function PublishPopoverBody({
         </div>
       ) : null}
 
-      <Separator className="bg-black/10 dark:bg-white/10" />
+      <Separator className={stylex.props(styles_3.sc04d6692).className || ''} />
 
       <div className={stylex.props(styles.sb7e18fa).className || ''}>
         <Button
@@ -420,8 +537,7 @@ export function PublishPopoverBody({
           variant={publishDisabled ? 'ghost' : 'brand'}
           className={cn(
             stylex.props(styles.sfc33e6c7).className || '',
-            publishDisabled &&
-              'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 disabled:opacity-100 dark:bg-neutral-800 dark:text-neutral-400',
+            stylex.props(publishDisabled ? styles_3.s1c1e215c : null).className || '',
           )}
           disabled={publishDisabled}
           onClick={() => {
@@ -469,7 +585,7 @@ const PublishTrigger = forwardRef<
       variant={canPublish ? 'green' : 'ghost'}
       className={cn(
         stylex.props(styles.sf4676641).className || '',
-        !canPublish && 'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400',
+        stylex.props(!canPublish ? styles_3.s187aad5 : null).className || '',
       )}
       onClick={onClick}
     >
@@ -556,7 +672,7 @@ export function PublishButtonWithPopover({
         <PopoverAnchor asChild>
           <PublishTrigger canPublish={canPublish} onClick={handlePublishTriggerClick} />
         </PopoverAnchor>
-        <PopoverContent align="end" className="w-[26rem] max-w-[calc(100vw-2rem)] p-6">
+        <PopoverContent align="end" className={stylex.props(styles_3.s105c899b).className || ''}>
           <PublishPopoverBody
             docId={docId}
             changeCount={changeCount}

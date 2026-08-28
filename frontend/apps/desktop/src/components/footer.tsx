@@ -27,6 +27,76 @@ import {OnlineIndicator} from './indicator'
 import {useNetworkDialog} from './network-dialog'
 
 /** Renders the desktop app footer and status actions. */
+const styles_6 = stylex.create({
+  s323bcf6d: {
+    backgroundColor: 'var(--muted-foreground)',
+  },
+  s460ef3a3: {
+    backgroundColor: 'oklch(72.3% 0.219 149.579)',
+  },
+})
+const styles_5 = stylex.create({
+  s2c8b4ee7: {
+    color: 'var(--brand)',
+  },
+  s5ac553fa: {
+    backgroundColor: 'var(--destructive)',
+  },
+})
+const styles_4 = stylex.create({
+  s597359d5: {
+    backgroundColor: 'var(--link)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--link-hover)',
+      },
+    },
+  },
+  s5ac553fa: {
+    backgroundColor: 'var(--destructive)',
+  },
+  s43cb25fe: {
+    color: 'var(--foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s67b8c9a3: {
+    color: 'color-mix(in oklab, var(--muted-foreground) 70%, transparent)',
+  },
+  sc2089fa4: {
+    color: 'color-mix(in oklab, var(--muted-foreground) 70%, transparent)',
+    flexShrink: '0',
+    fontSize: '10px',
+  },
+})
+const styles_3 = stylex.create({
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+  s5ac553fa: {
+    backgroundColor: 'var(--destructive)',
+  },
+})
+const styles_2 = stylex.create({
+  s7b569988: {
+    display: 'flex',
+    maxHeight: 'calc(0.25rem * 64)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+    overflowY: 'auto',
+  },
+})
 const styles = stylex.create({
   s948be48c: {
     flex: 'none',
@@ -189,7 +259,7 @@ export default function Footer({
               variant={'ghost'}
               className={cn(
                 stylex.props(styles.s34b1ad).className || '',
-                assistantOpen && 'text-brand hover:text-brand-hover',
+                assistantOpen ? stylex.props(styles_5.s2c8b4ee7).className || '' : '',
               )}
               onClick={onToggleAssistant}
               aria-label="Toggle assistant"
@@ -232,7 +302,10 @@ export function FooterButton({
     <Button
       size="sm"
       variant={active ? 'default' : 'ghost'}
-      className={cn(stylex.props(styles.s34b1ad).className || '', active && 'bg-link hover:bg-link-hover')}
+      className={cn(
+        stylex.props(styles.s34b1ad).className || '',
+        stylex.props(active ? styles_4.s597359d5 : null).className || '',
+      )}
       onClick={onPress}
     >
       {icon}
@@ -248,7 +321,10 @@ function FooterNetworkingButton() {
     <div className={stylex.props(styles.s86ff3e4).className || ''}>
       <Button
         size="xs"
-        className={cn(stylex.props(styles.s34b1ad).className || '', route.key == 'contacts' && 'text-primary')}
+        className={cn(
+          stylex.props(styles.s34b1ad).className || '',
+          stylex.props(route.key == 'contacts' && styles_3.s1bfab962).className || '',
+        )}
         onClick={() => networkDialog.open(true)}
       >
         <OnlineIndicator online={summary.online} />
@@ -304,18 +380,18 @@ function SubscriptionItem({subscriptionKey}: {subscriptionKey: string}) {
           className={cn(
             stylex.props(styles.sba46caf).className || '',
             discoveryState?.isTombstone
-              ? 'bg-destructive'
+              ? stylex.props(styles_5.s5ac553fa).className || ''
               : discoveryState?.isNotFound
-                ? 'bg-muted-foreground'
-                : 'bg-green-500',
+                ? stylex.props(styles_6.s323bcf6d).className || ''
+                : stylex.props(styles_6.s460ef3a3).className || '',
           )}
         />
       )}
-      <a {...linkProps} className="text-foreground hover:text-foreground min-w-0 flex-1 truncate hover:underline">
+      <a {...linkProps} className={stylex.props(styles_4.s43cb25fe).className || ''}>
         {name || fallbackName}
-        {suffix && <span className="text-muted-foreground/70">{suffix}</span>}
+        {suffix && <span className={stylex.props(styles_4.s67b8c9a3).className || ''}>{suffix}</span>}
       </a>
-      <span className="text-muted-foreground/70 shrink-0 text-[10px]">{syncLabel}</span>
+      <span className={stylex.props(styles_4.sc2089fa4).className || ''}>{syncLabel}</span>
     </div>
   )
 }
@@ -357,7 +433,7 @@ function SubscriptionsPanel() {
           <SizableText size="sm" className={stylex.props(styles.s129e46b3).className || ''}>
             Watching {count} Resources
           </SizableText>
-          <div className="flex max-h-64 flex-col gap-1.5 overflow-y-auto">
+          <div className={stylex.props(styles_2.s7b569988).className || ''}>
             {subscriptionKeys.map((key) => (
               <SubscriptionItem key={key} subscriptionKey={key} />
             ))}

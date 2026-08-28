@@ -61,6 +61,107 @@ import {createWebDocumentDraft, createWebDocumentDraftFromMarkdownFile} from './
 import {getVaultAccountSettingsUrl} from './vault-links'
 import {useCreateSpaceDialog, useHasExistingSpace} from './web-create-space-dialog'
 import {useWebNotificationInbox, useWebNotificationReadState} from './web-notifications'
+const styles_3 = stylex.create({
+  s8b831e85: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    textAlign: 'left',
+  },
+  s9ed34d40: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    textAlign: 'left',
+    ':disabled': {
+      opacity: '50%',
+    },
+  },
+  sacd2f2b6: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    textAlign: 'left',
+    color: 'var(--tone-green-600)',
+  },
+  seaeff283: {
+    color: 'var(--destructive)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    textAlign: 'left',
+  },
+  sf51e136d: {
+    minWidth: '200px',
+  },
+  sc04d6692: {
+    backgroundColor: 'var(--overlay-10)',
+  },
+  sd76ff002: {
+    color: 'var(--tone-green-600)',
+    ':focus': {
+      color: 'var(--tone-green-600)',
+    },
+  },
+  s9a62e4f3: {
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    color: 'var(--tone-green-600)',
+  },
+  scc11e8f6: {
+    backgroundColor: 'var(--surface-hover)',
+  },
+  s92ffee34: {
+    display: 'flex',
+    height: 'calc(var(--spacing) * 5)',
+    minWidth: 'calc(var(--spacing) * 5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--color-red-500)',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    fontSize: '12px',
+    fontWeight: 'var(--font-weight-bold)',
+    color: 'var(--color-white)',
+  },
+})
+const styles_2 = stylex.create({
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -129,7 +230,7 @@ const styles = stylex.create({
     display: 'flex',
     cursor: 'pointer',
     borderRadius: 'calc(infinity * 1px)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+    boxShadow: 'var(--shadow-lg)',
   },
   s8fc7e6c6: {
     display: 'flex',
@@ -518,7 +619,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
   const menuItems = (
     <>
       <button
-        className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
+        className={stylex.props(styles_3.s8b831e85).className || ''}
         onClick={() => {
           if (accountId) {
             navigate({
@@ -536,7 +637,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
       </button>
       <div className={stylex.props(styles.s69a761ef).className || ''} />
       <button
-        className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left disabled:opacity-50"
+        className={stylex.props(styles_3.s9ed34d40).className || ''}
         onClick={() => {
           if (vaultAccountSettingsUrl) {
             window.open(vaultAccountSettingsUrl, '_blank')
@@ -552,7 +653,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
         <>
           <div className={stylex.props(styles.s69a761ef).className || ''} />
           <button
-            className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
+            className={stylex.props(styles_3.s8b831e85).className || ''}
             onClick={() => {
               setMobileMenuOpen(false)
               assistantPanel.toggle()
@@ -568,7 +669,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
       <div className={stylex.props(styles.s69a761ef).className || ''} />
       {canCreateSpace ? (
         <button
-          className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left text-green-600 dark:text-green-500"
+          className={stylex.props(styles_3.sacd2f2b6).className || ''}
           onClick={() => {
             setMobileMenuOpen(false)
             openCreateSpaceDialog()
@@ -581,7 +682,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
         <>
           <div className={stylex.props(styles.s40a3db72).className || ''}>My space</div>
           <button
-            className="hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
+            className={stylex.props(styles_3.s8b831e85).className || ''}
             onClick={() => {
               setMobileMenuOpen(false)
               goToMySite()
@@ -595,7 +696,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
       )}
       <div className={stylex.props(styles.s69a761ef).className || ''} />
       <button
-        className="text-destructive hover:bg-accent flex w-full items-center gap-3 px-4 py-3 text-left"
+        className={stylex.props(styles_3.seaeff283).className || ''}
         onClick={() => {
           setMobileMenuOpen(false)
           logoutDialog.open({})
@@ -618,7 +719,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
           <MobilePanelSheet isOpen={mobileMenuOpen} title="" onClose={() => setMobileMenuOpen(false)}>
             <div className={stylex.props(styles.s8fc7e6c6).className || ''}>
               {avatarIcon}
-              <div className="min-w-0">
+              <div className={stylex.props(styles_2.s3f58665f).className || ''}>
                 <p className={stylex.props(styles.s59c17cd3).className || ''}>{account?.metadata?.name || 'Account'}</p>
               </div>
             </div>
@@ -633,16 +734,16 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
             <DropdownMenuTrigger asChild>
               <button className={stylex.props(styles.s4113cfca).className || ''}>{avatarIcon}</button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" align="end" className="min-w-[200px]">
+            <DropdownMenuContent side="bottom" align="end" className={stylex.props(styles_3.sf51e136d).className || ''}>
               <div className={stylex.props(styles.s8c5e3586).className || ''}>
                 {avatarIcon}
-                <div className="min-w-0">
+                <div className={stylex.props(styles_2.s3f58665f).className || ''}>
                   <p className={stylex.props(styles.s59c17cd3).className || ''}>
                     {account?.metadata?.name || 'Account'}
                   </p>
                 </div>
               </div>
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+              <DropdownMenuSeparator className={stylex.props(styles_3.sc04d6692).className || ''} />
               <DropdownMenuItem
                 onClick={() => {
                   if (accountId) {
@@ -671,20 +772,20 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
               </DropdownMenuItem>
               {hasSiteAgents ? (
                 <>
-                  <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+                  <DropdownMenuSeparator className={stylex.props(styles_3.sc04d6692).className || ''} />
                   <DropdownMenuItem onClick={assistantPanel.toggle}>
                     <Bot className={stylex.props(styles.sca3de968).className || ''} />
                     {assistantPanel.isOpen ? 'Close Agents' : 'Agents'}
                   </DropdownMenuItem>
                 </>
               ) : null}
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+              <DropdownMenuSeparator className={stylex.props(styles_3.sc04d6692).className || ''} />
               {canCreateSpace ? (
                 <DropdownMenuItem
                   onClick={openCreateSpaceDialog}
-                  className="text-green-600 focus:text-green-600 dark:text-green-500 dark:focus:text-green-500"
+                  className={stylex.props(styles_3.sd76ff002).className || ''}
                 >
-                  <Plus className="size-4 text-green-600 dark:text-green-500" />
+                  <Plus className={stylex.props(styles_3.s9a62e4f3).className || ''} />
                   Create my space
                 </DropdownMenuItem>
               ) : (
@@ -697,7 +798,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
                   </DropdownMenuItem>
                 </>
               )}
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+              <DropdownMenuSeparator className={stylex.props(styles_3.sc04d6692).className || ''} />
               <DropdownMenuItem variant="destructive" onClick={() => logoutDialog.open({})}>
                 <LogOut className={stylex.props(styles.sca3de968).className || ''} />
                 Log out
@@ -754,7 +855,10 @@ function NotifsButton() {
   return (
     <Tooltip content="Notifications" asChild>
       <ButtonLink
-        className={cn(stylex.props(styles.s24831944).className || '', isActive && 'dark:bg-muted bg-black/5')}
+        className={cn(
+          stylex.props(styles.s24831944).className || '',
+          stylex.props(isActive ? styles_3.scc11e8f6 : null).className || '',
+        )}
         variant="ghost"
         size="icon"
         aria-current={isActive ? 'page' : undefined}
@@ -762,7 +866,7 @@ function NotifsButton() {
       >
         <Bell className={stylex.props(styles.sca3de968).className || ''} />
         {unreadCount > 0 ? (
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-lg bg-red-500 px-1 text-[12px] font-bold text-white">
+          <span className={stylex.props(styles_3.s92ffee34).className || ''}>
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         ) : null}

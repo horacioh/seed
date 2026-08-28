@@ -9,6 +9,39 @@ import {Spinner} from './spinner'
 import {SizableText, Text} from './text'
 
 /** NotificationFilter controls whether all notifications or only unread notifications are shown. */
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_3 = stylex.create({
+  sddcba976: {
+    display: 'flex',
+    height: '60vh',
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+})
+const styles_2 = stylex.create({
+  sb5bbb4ea: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '32rem',
+    textAlign: 'center',
+  },
+})
 const styles = stylex.create({
   s72a2b24b: {
     backgroundColor: 'var(--muted)',
@@ -62,7 +95,7 @@ export function NotificationPageEmptyState({
   titleSize?: 'xl' | '2xl'
 }) {
   return (
-    <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4">
+    <div className={stylex.props(styles_3.sddcba976).className || ''}>
       <div className={stylex.props(styles.s72a2b24b).className || ''}>
         <Bell size={50} className={stylex.props(styles.sf2718385).className || ''} />
       </div>
@@ -73,7 +106,7 @@ export function NotificationPageEmptyState({
       ) : (
         <SizableText size="xl">{title}</SizableText>
       )}
-      <p className="text-muted-foreground max-w-lg text-center">{description}</p>
+      <p className={stylex.props(styles_2.sb5bbb4ea).className || ''}>{description}</p>
     </div>
   )
 }
@@ -153,7 +186,11 @@ export function NotificationsPageContent({
       ) : filteredNotifications.length === 0 ? (
         <NotificationPageEmptyState title="All caught up" description="No unread notifications." />
       ) : (
-        <div className="divide-border flex flex-col divide-y rounded-lg border">
+        <div
+          className={
+            stylex.props(styles_4.s2ffff9, styles_4.s67e351ac, styles_4.sf799889b, styles_4.sad8c742c).className || ''
+          }
+        >
           {filteredNotifications.map((item) => {
             const isRead = isNotificationRead(item)
             return (

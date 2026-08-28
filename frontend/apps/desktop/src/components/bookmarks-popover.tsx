@@ -15,6 +15,194 @@ import {AlertCircle, Bookmark, Folder, History, Lock, MessageSquare, Quote, User
 import React, {useState, type ElementType, type KeyboardEvent, type MouseEvent, type ReactNode} from 'react'
 
 /** Return a copy of the stored bookmark list ordered from newest to oldest. */
+const styles_5 = stylex.create({
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+})
+const styles_4 = stylex.create({
+  s18c13: {
+    height: 'calc(0.25rem * 8)',
+  },
+  s1c462: {
+    width: 'calc(0.25rem * 8)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+  s9c668528: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
+    },
+  },
+  sbe4cb2e9: {
+    ':focus-visible': {
+      backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    },
+  },
+  sf8e1b8f0: {
+    ':focus-visible': {},
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sabad9443: {
+    minHeight: 'calc(0.25rem * 14)',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  s7c401f01: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  s4779fbc8: {
+    ':lastChild': {
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '0px',
+    },
+  },
+  sc1942972: {
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+    },
+  },
+  s22d8ea5d: {
+    ':focus-visible': {},
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  se1b1d596: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+      },
+    },
+  },
+  sd914ee97: {
+    ':focus-visible': {
+      backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    },
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_3 = stylex.create({
+  s7f5653f2: {
+    borderColor: 'var(--overlay-15)',
+    backgroundColor: 'var(--overlay-10)',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--overlay-20)',
+        backgroundColor: 'var(--overlay-15)',
+      },
+    },
+  },
+  sc5a0131: {
+    borderColor: 'transparent',
+  },
+  s6e3f8196: {
+    width: '100vw',
+    maxWidth: 'none',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-8-10)',
+    backgroundColor: 'var(--surface-contrast)',
+    padding: 'calc(var(--spacing) * 0)',
+    boxShadow: 'var(--shadow-xl)',
+    '@media ((min-width: 640px))': {
+      width: '360px',
+      maxWidth: '360px',
+    },
+  },
+  s6c8e26f1: {
+    maxHeight: '75vh',
+    overflowY: 'auto',
+    '@media ((min-width: 640px))': {
+      maxHeight: '50vh',
+    },
+  },
+  sf222097f: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+    color: 'var(--muted-foreground)',
+    marginBottom: 'calc(var(--spacing) * 5)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 14)',
+    height: 'calc(var(--spacing) * 14)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius-2xl)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_2 = stylex.create({
+  s67fe302f: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 72)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingInline: 'calc(0.25rem * 6)',
+    paddingBlock: 'calc(0.25rem * 10)',
+    textAlign: 'center',
+  },
+  sdd4d6178: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 2)',
+    maxWidth: 'calc(0.25rem * 64)',
+    fontSize: '0.875rem',
+    lineHeight: '1.625',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -129,26 +317,23 @@ export function BookmarksPopover() {
             aria-label="Bookmarks"
             aria-expanded={open}
             className={cn(
-              'window-no-drag h-8 w-8 rounded-full border p-0',
-              open
-                ? 'border-black/15 bg-black/10 shadow-xs hover:border-black/20 hover:bg-black/15 dark:border-white/15 dark:bg-white/10 dark:hover:border-white/20 dark:hover:bg-white/15'
-                : 'border-transparent',
+              stylex.props(styles_4.s18c13, styles_4.s1c462, styles_4.s775755af, styles_4.sad8c742c, styles_4.s1aa13)
+                .className || '',
+              'window-no-drag',
+              stylex.props(open ? styles_3.s7f5653f2 : styles_3.sc5a0131).className || '',
             )}
           >
             <Bookmark className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </PopoverTrigger>
       </Tooltip>
-      <PopoverContent
-        align="end"
-        className="w-screen max-w-none overflow-hidden rounded-xl border border-black/8 bg-white p-0 shadow-xl sm:w-[360px] sm:max-w-[360px] dark:border-white/10 dark:bg-black"
-      >
+      <PopoverContent align="end" className={stylex.props(styles_3.s6e3f8196).className || ''}>
         <div className={stylex.props(styles.sba77648c).className || ''}>
           <h2 className={stylex.props(styles.saf49316c).className || ''}>Bookmarks</h2>
           <span className={stylex.props(styles.sd3cabf4b).className || ''}>{bookmarks.length}</span>
         </div>
         {bookmarks.length ? (
-          <div className="max-h-[75vh] overflow-y-auto sm:max-h-[50vh]">
+          <div className={stylex.props(styles_3.s6c8e26f1).className || ''}>
             {bookmarks.map((bookmark, index) => {
               const entity = bookmarkEntities[index]
               const deleting = removeBookmark.isLoading && removeBookmark.variables === bookmark.url
@@ -159,7 +344,7 @@ export function BookmarksPopover() {
                     key={bookmark.url}
                     bookmark={bookmark}
                     title="Error"
-                    titleClassName="text-destructive"
+                    titleClassName={stylex.props(styles_5.s8a2570e2).className || ''}
                     icon={<AlertCircle className={stylex.props(styles.s51ab7e67).className || ''} />}
                     deleting={deleting}
                     onRemove={() => removeBookmark.mutate(bookmark.url)}
@@ -194,12 +379,12 @@ export function BookmarksPopover() {
             })}
           </div>
         ) : (
-          <div className="flex min-h-72 flex-col items-center justify-center px-6 py-10 text-center">
-            <div className="bg-muted/50 text-muted-foreground mb-5 flex size-14 items-center justify-center rounded-2xl border">
+          <div className={stylex.props(styles_2.s67fe302f).className || ''}>
+            <div className={stylex.props(styles_3.sf222097f).className || ''}>
               <Bookmark className={stylex.props(styles.sca3de96a).className || ''} />
             </div>
             <p className={stylex.props(styles.sebff7442).className || ''}>No bookmarks yet</p>
-            <p className="text-muted-foreground mt-2 max-w-64 text-sm leading-relaxed">
+            <p className={stylex.props(styles_2.sdd4d6178).className || ''}>
               Bookmark documents, profiles, and views to find them quickly here.
             </p>
           </div>
@@ -250,7 +435,24 @@ function BookmarkRow({
     <div
       role="link"
       tabIndex={0}
-      className="group hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-ring flex min-h-14 cursor-pointer items-center gap-3 border-b px-4 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-inset"
+      className={
+        stylex.props(
+          styles_4.s9c668528,
+          styles_4.sbe4cb2e9,
+          styles_4.sf8e1b8f0,
+          styles_4.s2ffff9,
+          styles_4.sabad9443,
+          styles_4.sc7847ec6,
+          styles_4.sc6ed1702,
+          styles_4.s5d936fc,
+          styles_4.s7c401f01,
+          styles_4.s34b1af,
+          styles_4.sa602a1e3,
+          styles_4.s4779fbc8,
+          styles_4.sc1942972,
+          styles_4.s22d8ea5d,
+        ).className || ''
+      }
       onClick={navigate}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -260,7 +462,7 @@ function BookmarkRow({
       }}
     >
       {icon}
-      <span className="min-w-0 flex-1">
+      <span className={stylex.props(styles_2.se30fd43e).className || ''}>
         <span className={cn(stylex.props(styles.s6c074f86).className || '', titleClassName)} title={title}>
           {title}
         </span>
@@ -272,7 +474,20 @@ function BookmarkRow({
         <Button
           aria-label={`Remove ${title} from Bookmarks`}
           disabled={deleting}
-          className="text-destructive hover:bg-destructive/10 focus-visible:bg-destructive/10 size-8 shrink-0 rounded-lg bg-transparent p-0 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+          className={
+            stylex.props(
+              styles_4.s8a2570e2,
+              styles_4.se1b1d596,
+              styles_4.sd914ee97,
+              styles_4.sca3de96c,
+              styles_4.sf032ed6c,
+              styles_4.sf799889b,
+              styles_4.s60f53bca,
+              styles_4.s1aa13,
+              styles_4.s765a26ee,
+              styles_4.s83442393,
+            ).className || ''
+          }
           onClick={(event) => {
             event.preventDefault()
             event.stopPropagation()

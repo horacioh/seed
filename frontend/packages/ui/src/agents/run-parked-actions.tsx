@@ -18,6 +18,47 @@ import {toast} from '@shm/ui/toast'
 import {useState} from 'react'
 
 /** The signal that releases a budget pause; the server accepts any name for that wait. */
+const styles_3 = stylex.create({
+  sb18cc063: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    fontSize: '11px',
+    textUnderlineOffset: '2px',
+  },
+  sd88547c: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '11px',
+  },
+  s8ef3b5b7: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '11px',
+  },
+})
+const styles_2 = stylex.create({
+  s9c9145b5: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+})
 const styles = stylex.create({
   sc250396c: {
     display: 'flex',
@@ -108,7 +149,7 @@ export function ParkedRunActions({
     send(payload)
   }
   return (
-    <div className="flex min-w-0 flex-col gap-1.5">
+    <div className={stylex.props(styles_2.s9c9145b5).className || ''}>
       <div className={stylex.props(styles.sc250396c).className || ''}>
         <Button size="sm" disabled={signalRun.isPending} onClick={() => (payloadOpen ? sendTypedPayload() : send())}>
           {signalRun.isPending ? 'Sending…' : ask.kind === 'resume' ? 'Resume' : 'Answer'}
@@ -116,14 +157,14 @@ export function ParkedRunActions({
         {ask.kind === 'answer' ? (
           <button
             type="button"
-            className="text-muted-foreground hover:text-foreground text-[11px] underline-offset-2 hover:underline"
+            className={stylex.props(styles_3.sb18cc063).className || ''}
             onClick={() => setPayloadOpen((open) => !open)}
           >
             {payloadOpen ? 'Just answer' : 'Answer with data'}
           </button>
         ) : null}
         {ask.kind === 'answer' && run.wait?.label ? (
-          <span className="text-muted-foreground min-w-0 truncate text-[11px]">{run.wait.label}</span>
+          <span className={stylex.props(styles_3.sd88547c).className || ''}>{run.wait.label}</span>
         ) : null}
       </div>
       {payloadOpen && ask.kind === 'answer' ? (
@@ -133,7 +174,7 @@ export function ParkedRunActions({
           placeholder='JSON the run will receive, e.g. {"approved": true}'
           rows={3}
           spellCheck={false}
-          className="bg-background/60 min-w-0 rounded-md border p-2 font-mono text-[11px]"
+          className={stylex.props(styles_3.s8ef3b5b7).className || ''}
         />
       ) : null}
     </div>

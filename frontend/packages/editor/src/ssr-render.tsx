@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 /**
  * Server-side rendering of document content as REAL editor markup.
  *
@@ -51,9 +52,25 @@ import {CodeBlockScroller} from './tiptap-extension-code-block/code-block-view'
 import {getHighlightRuns} from './tiptap-extension-code-block/lowlight-plugin'
 
 /** LRU-ish cap; keys include a query-results fingerprint so entries churn. */
+const styles = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+})
 const HTML_CACHE_MAX_ENTRIES = 500
 const htmlCache = new Map<string, string>()
-
 export type SSRRenderOpts = {
   /** Cache key: must include doc version AND a fingerprint of any data that
    * affects rendered output independently of the version (query results). */
@@ -92,7 +109,12 @@ function getServerDocument(): Document {
  * server-side.
  */
 function createEditorStub(editorWidth?: number) {
-  const state = {selection: {}, doc: {descendants: () => {}}}
+  const state = {
+    selection: {},
+    doc: {
+      descendants: () => {},
+    },
+  }
   return {
     renderType: 'embed',
     disableTrailingNode: true,
@@ -100,17 +122,25 @@ function createEditorStub(editorWidth?: number) {
     commentEditor: false,
     _tiptapEditor: {
       state,
-      view: {state, hasFocus: () => false},
+      view: {
+        state,
+        hasFocus: () => false,
+      },
       on: () => {},
       off: () => {},
     },
     // Media blocks measure the mounted editor to size px-width media; give
     // the stub the width the document will actually render at.
-    domElement: editorWidth ? {firstElementChild: {clientWidth: editorWidth}} : undefined,
+    domElement: editorWidth
+      ? {
+          firstElementChild: {
+            clientWidth: editorWidth,
+          },
+        }
+      : undefined,
     getBlock: () => undefined,
   } as any
 }
-
 let ssrSchema: Schema | null = null
 function getSSRSchema(): Schema {
   if (!ssrSchema) {
@@ -131,13 +161,11 @@ function getSSRSchema(): Schema {
 
 export function renderDocumentToHTML(blocks: HMBlockNode[], opts: SSRRenderOpts): string | null {
   if (!blocks || blocks.length === 0) return null
-
   const key = opts.cacheKey
   if (key) {
     const cached = htmlCache.get(key)
     if (cached) return cached
   }
-
   try {
     // Content-view embeds recurse through the same pipeline (registry avoids
     // the schema↔embed import cycle). Depth-capped like the live editor.
@@ -146,7 +174,11 @@ export function renderDocumentToHTML(blocks: HMBlockNode[], opts: SSRRenderOpts)
       if (embedDepth >= 3) return null
       embedDepth++
       try {
-        return renderUncached(embedBlocks, {...opts, cacheKey: undefined, rootChildrenType})
+        return renderUncached(embedBlocks, {
+          ...opts,
+          cacheKey: undefined,
+          rootChildrenType,
+        })
       } finally {
         embedDepth--
       }
@@ -167,7 +199,6 @@ export function renderDocumentToHTML(blocks: HMBlockNode[], opts: SSRRenderOpts)
     setSSREmbedRenderer(null)
   }
 }
-
 function renderUncached(blocks: HMBlockNode[], opts: SSRRenderOpts): string | null {
   const schema = getSSRSchema()
   const doc = getServerDocument()
@@ -182,7 +213,9 @@ function renderUncached(blocks: HMBlockNode[], opts: SSRRenderOpts): string | nu
     undefined,
     schema.node(
       'blockChildren',
-      {listType: opts.rootChildrenType || 'Group'},
+      {
+        listType: opts.rootChildrenType || 'Group',
+      },
       editorBlocks.map((b) => blockToNode(b as any, schema)),
     ),
   )
@@ -196,7 +229,13 @@ function renderUncached(blocks: HMBlockNode[], opts: SSRRenderOpts): string | nu
   const prevDocument = (globalThis as any).document
   ;(globalThis as any).document = doc
   try {
-    DOMSerializer.fromSchema(schema).serializeFragment(pmDoc.content, {document: doc}, target)
+    DOMSerializer.fromSchema(schema).serializeFragment(
+      pmDoc.content,
+      {
+        document: doc,
+      },
+      target,
+    )
   } finally {
     if (hadDocument) (globalThis as any).document = prevDocument
     else delete (globalThis as any).document
@@ -232,8 +271,12 @@ function renderUncached(blocks: HMBlockNode[], opts: SSRRenderOpts): string | nu
 // React node-view blocks
 // ---------------------------------------------------------------------------
 
-type EditorBlockLike = {id?: string; type?: string; props?: Record<string, any>; children?: EditorBlockLike[]}
-
+type EditorBlockLike = {
+  id?: string
+  type?: string
+  props?: Record<string, any>
+  children?: EditorBlockLike[]
+}
 function indexEditorBlocks(blocks: EditorBlockLike[]): Map<string, EditorBlockLike> {
   const map = new Map<string, EditorBlockLike>()
   const walk = (list: EditorBlockLike[]) => {
@@ -267,18 +310,18 @@ function createSSRNavigation() {
     routeIndex: 0,
     lastAction: 'replace',
   } as any)
-  return {state, dispatch: () => {}}
+  return {
+    state,
+    dispatch: () => {},
+  }
 }
-
 function renderReactBlocks(target: Element, blockById: Map<string, EditorBlockLike>, opts: SSRRenderOpts) {
   const doc = getServerDocument()
   const editorStub = createEditorStub(opts.editorWidth)
   const navigation = createSSRNavigation()
-
   for (const [type, spec] of Object.entries(hmBlockSchema)) {
     const Render = (spec as any).render as ((props: {block: any; editor: any}) => ReactNode) | undefined
     if (!Render) continue
-
     const containers = Array.from(target.querySelectorAll(`div[data-content-type="${type}"]`))
     for (const container of containers) {
       const blockNodeEl = container.closest('[data-node-type="blockNode"]')
@@ -289,7 +332,6 @@ function renderReactBlocks(target: Element, blockById: Map<string, EditorBlockLi
       // Serialized inline content (caption) lives in the container's inner
       // contentDOM div; capture it before replacing.
       const serializedInline = container.firstElementChild?.innerHTML ?? ''
-
       let componentHTML = ''
       try {
         componentHTML = renderToString(
@@ -317,7 +359,6 @@ function renderReactBlocks(target: Element, blockById: Map<string, EditorBlockLi
         container.setAttribute('data-ssr-error', String(e?.message || e).slice(0, 300))
         continue
       }
-
       replaceWithNodeView(container, type, componentHTML, serializedInline)
     }
   }
@@ -369,11 +410,9 @@ function replaceWithNodeView(container: Element, type: string, componentHTML: st
 // ---------------------------------------------------------------------------
 
 const ssrLowlight = createLowlight(common)
-
 function escapeHTML(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
-
 function renderCodeBlocks(target: Element, blockById: Map<string, EditorBlockLike>) {
   for (const container of Array.from(target.querySelectorAll('[data-content-type="code-block"]'))) {
     // Guard against re-processing (the replacement wrapper also carries the
@@ -417,12 +456,28 @@ function renderCodeBlocks(target: Element, blockById: Map<string, EditorBlockLik
     if (text.endsWith('\n')) {
       highlighted += '<br class="ProseMirror-trailingBreak">'
     }
-
     const componentHTML = renderToString(
-      <div className="relative flex min-w-0 flex-col overflow-hidden">
+      <div
+        className={
+          stylex.props(styles.sdef3facc, styles.s2ffff9, styles.s3f58665f, styles.s67e351ac, styles.s92852dd5)
+            .className || ''
+        }
+      >
         <CodeBlockScroller language={language || 'plaintext'}>
-          <div data-node-view-content="" style={{whiteSpace: 'pre'}}>
-            <div style={{whiteSpace: 'inherit'}} dangerouslySetInnerHTML={{__html: highlighted}} />
+          <div
+            data-node-view-content=""
+            style={{
+              whiteSpace: 'pre',
+            }}
+          >
+            <div
+              style={{
+                whiteSpace: 'inherit',
+              }}
+              dangerouslySetInnerHTML={{
+                __html: highlighted,
+              }}
+            />
           </div>
         </CodeBlockScroller>
       </div>,

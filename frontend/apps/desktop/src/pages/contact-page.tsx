@@ -32,6 +32,143 @@ import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {Panel, PanelGroup, PanelResizeHandle} from 'react-resizable-panels'
 import {z} from 'zod'
+const styles_5 = stylex.create({
+  s1bd1f072: {
+    visibility: 'visible',
+  },
+  s335490: {
+    marginInline: 'calc(0.25rem * 2)',
+  },
+  sb41ffff4: {
+    height: 'auto',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s13588c5b: {
+    overflowWrap: 'break-word',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+})
+const styles_4 = stylex.create({
+  se7760e0d: {
+    display: 'inline-block',
+    flexShrink: '0',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '3px',
+    padding: 'calc(var(--spacing) * 4)',
+    whiteSpace: 'nowrap',
+    color: 'var(--text-strong)',
+  },
+  s48408425: {
+    borderColor: 'var(--primary)',
+    borderRadius: '0',
+    fontWeight: 'var(--font-weight-bold)',
+    color: 'var(--color-black)',
+  },
+  sfe731f15: {
+    borderRadius: '0',
+    borderColor: 'transparent',
+    color: 'var(--color-gray-600)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--color-gray-800)',
+      },
+    },
+  },
+  se63f3915: {
+    color: 'var(--primary-scheme)',
+  },
+  se6fabf9a: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--surface-app)',
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-lg)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 7)',
+  },
+  sd6fb1733: {
+    fontSize: 'var(--text-2xl)',
+    lineHeight: 'var(--text-2xl--line-height)',
+    color: 'var(--tone-gray-600)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--hover-gray-600)',
+      },
+    },
+  },
+  s30d14126: {
+    borderColor: 'var(--border)',
+    marginTop: 'calc(var(--spacing) * 4)',
+    alignSelf: 'stretch',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--surface)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  s3474df65: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    padding: 'calc(var(--spacing) * 2)',
+    color: 'var(--tone-gray-700)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--contrast)',
+      },
+    },
+  },
+  s45da9ba: {
+    color: 'var(--tone-gray-500-2)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--hover-gray-500)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s48408425: {
+    borderColor: 'var(--primary)',
+    borderRadius: '0',
+    fontWeight: '700',
+    color: '#000',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_2 = stylex.create({
+  sc920e66a: {
+    display: 'flex',
+    minHeight: '100%',
+    flex: '1',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    padding: 'calc(0.25rem * 4)',
+  },
+})
 const styles = stylex.create({
   s1bc0c969: {
     display: 'flex',
@@ -148,7 +285,7 @@ export function ContactListPage({contactId}: {contactId?: UnpackedHypermediaId |
         <Panel defaultSize={30} minSize={20} maxSize={40}>
           <ContactPageSidebar contactId={contactId} />
         </Panel>
-        <PanelResizeHandle className="panel-resize-handle visible" />
+        <PanelResizeHandle className={stylex.props(styles_5.s1bd1f072).className || ''} />
         <Panel>{contactId ? <ContactPageMain contactId={contactId} /> : null}</Panel>
       </PanelGroup>
     </PanelContainer>
@@ -158,10 +295,8 @@ function Tab({label, isActive, onPress}: {label: string; isActive: boolean; onPr
   return (
     <button
       className={cn(
-        'inline-block flex-shrink-0 border-b-3 p-4 whitespace-nowrap dark:text-white',
-        isActive
-          ? 'border-primary rounded-none font-bold text-black'
-          : 'rounded-none border-transparent text-gray-600 hover:text-gray-800',
+        stylex.props(styles_4.se7760e0d).className || '',
+        stylex.props(isActive ? styles_4.s48408425 : styles_4.sfe731f15).className || '',
       )}
       onClick={onPress}
       role="tab"
@@ -216,7 +351,10 @@ function ContactListItem({
   const id = hmId(account.id, {})
   return (
     <Button
-      className="group mx-2 h-auto items-center gap-1 py-2"
+      className={
+        stylex.props(styles_5.s335490, styles_5.sb41ffff4, styles_5.sc6ed1702, styles_5.s5d936fa, styles_5.s34b56e)
+          .className || ''
+      }
       variant={active ? 'brand-12' : 'ghost'}
       onClick={() => {
         navigate({
@@ -235,8 +373,8 @@ function ContactListItem({
       <ShieldCheck
         className={cn(
           stylex.props(styles.sca3de968).className || '',
-          'text-primary dark:text-brand-5',
-          !savedContact && 'opacity-0',
+          stylex.props(styles_4.se63f3915).className || '',
+          stylex.props(!savedContact && styles_3.s765a26ee).className || '',
         )}
       />
     </Button>
@@ -266,15 +404,15 @@ function ContactPageMain({contactId}: {contactId: UnpackedHypermediaId}) {
   }
   return (
     <div className={stylex.props(styles.sfa3acb62).className || ''}>
-      <div className="flex min-h-full flex-1 flex-row justify-center p-4">
-        <div className="border-border bg-background mx-auto flex w-full max-w-lg flex-col items-center gap-3 rounded-lg border p-4 py-7 dark:bg-black">
+      <div className={stylex.props(styles_2.sc920e66a).className || ''}>
+        <div className={stylex.props(styles_4.se6fabf9a).className || ''}>
           <HMIcon id={contactId} name={contact.data?.metadata?.name} icon={contact.data?.metadata?.icon} size={80} />
           <Tooltip content={primaryTooltip}>
             <h2 className={stylex.props(styles.s20d4515d).className || ''}>{primaryTitle}</h2>
           </Tooltip>
           {secondaryTitle && (
             <Tooltip content={secondaryTooltip}>
-              <h3 className="text-2xl text-gray-600 dark:text-gray-300">{secondaryTitle}</h3>
+              <h3 className={stylex.props(styles_4.sd6fb1733).className || ''}>{secondaryTitle}</h3>
             </Tooltip>
           )}
           {contact.data ? <ContactEdgeNames contact={contact.data} accounts={accounts.data?.accountsMetadata} /> : null}
@@ -438,8 +576,8 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
   })
   const navigate = useNavigate()
   return (
-    <div className="border-border dark:bg-background mt-4 self-stretch rounded-md border bg-white p-2">
-      <h3 className="text-l p-3 font-bold break-words">
+    <div className={stylex.props(styles_4.s30d14126).className || ''}>
+      <h3 className={stylex.props(styles_5.s13588c5b, styles_5.s1aa16, styles_5.sa16ea943).className || ''}>
         {contact.contacts?.length ? `${ownerLabel}'s Contacts` : `${ownerLabel} has no Contacts`}
       </h3>
       <div className={stylex.props(styles.s783f19f3).className || ''}>
@@ -451,7 +589,7 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
           const subjectName = subjectAccount?.type === 'document' ? subjectAccount.document?.metadata?.name : undefined
           return (
             <div
-              className="flex flex-row items-center gap-2 p-2 text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
+              className={stylex.props(styles_4.s3474df65).className || ''}
               onClick={() => {
                 navigate({
                   key: 'contact',
@@ -473,7 +611,7 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
                 {isDiscovering ? 'Loading…' : subjectName}
               </span>
               {subjectName !== contactName ? (
-                <span className="text-gray-500 dark:text-gray-300">| {contactName}</span>
+                <span className={stylex.props(styles_4.s45da9ba).className || ''}>| {contactName}</span>
               ) : null}
             </div>
           )

@@ -40,6 +40,45 @@ import {WindowTitle} from '../components/window-title'
 import {BaseLoading, NotFoundPage} from './base'
 import {DocumentPlaceholder} from './document-placeholder'
 import './polyfills'
+const styles_3 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s478fb0bf: {
+    right: 'calc(0.25rem * 0)',
+  },
+  s696c5b8: {
+    top: 'calc(0.25rem * 0)',
+  },
+  sa3eb8e62: {
+    width: '26px',
+    height: '26px',
+  },
+})
+const styles_2 = stylex.create({
+  sbef04fbc: {
+    backgroundColor: 'var(--surface-app)',
+    height: 'calc(var(--spacing) * 8)',
+    minHeight: 'calc(var(--spacing) * 8)',
+  },
+  s76d648b8: {
+    backgroundColor: 'var(--surface-app)',
+    height: 'calc(var(--spacing) * 6)',
+    minHeight: 'calc(var(--spacing) * 6)',
+  },
+})
 const styles = stylex.create({
   s112d13d8: {
     textAlign: 'center',
@@ -232,8 +271,12 @@ export default function Main({className}: {className?: string}) {
     sidebar = <AppSidebar />
   } else if (windowType === 'settings') {
     titlebar = (
-      <TitlebarWrapper className="bg-background h-8 min-h-8 dark:bg-black">
-        <div className="window-drag flex w-full items-center justify-center">
+      <TitlebarWrapper className={stylex.props(styles_2.sbef04fbc).className || ''}>
+        <div
+          className={
+            stylex.props(styles_3.s2ffff9, styles_3.scdbaf625, styles_3.sc6ed1702, styles_3.sce22ca32).className || ''
+          }
+        >
           <TitleText className={stylex.props(styles.s112d13d8).className || ''}>Settings</TitleText>
           {platform !== 'darwin' && <WindowClose />}
         </div>
@@ -273,8 +316,12 @@ export default function Main({className}: {className?: string}) {
     )
   } else if (windowType === 'deleted-content') {
     titlebar = (
-      <TitlebarWrapper className="bg-background h-6 min-h-6 dark:bg-black">
-        <div className="window-drag flex w-full items-center justify-center">
+      <TitlebarWrapper className={stylex.props(styles_2.s76d648b8).className || ''}>
+        <div
+          className={
+            stylex.props(styles_3.s2ffff9, styles_3.scdbaf625, styles_3.sc6ed1702, styles_3.sce22ca32).className || ''
+          }
+        >
           <TitleText className={stylex.props(styles.s112d13d8).className || ''}>Review Deleted Content</TitleText>
           {platform !== 'darwin' && <WindowClose />}
         </div>
@@ -578,7 +625,18 @@ function getPageComponent(navRoute: NavRoute) {
 }
 function WindowClose() {
   return (
-    <div className="no-window-drag absolute top-0 right-0 size-[26px] items-center justify-center">
+    <div
+      className={
+        stylex.props(
+          styles_3.s67010d77,
+          styles_3.s478fb0bf,
+          styles_3.s696c5b8,
+          styles_3.sa3eb8e62,
+          styles_3.sc6ed1702,
+          styles_3.sce22ca32,
+        ).className || ''
+      }
+    >
       <CloseButton />
     </div>
   )

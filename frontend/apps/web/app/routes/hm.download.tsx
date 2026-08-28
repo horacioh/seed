@@ -17,6 +17,91 @@ import {SizableText} from '@shm/ui/text'
 import {useEffect, useState} from 'react'
 import {z} from 'zod'
 import {Container} from '../ui/container'
+const styles_4 = stylex.create({
+  s1aa1b: {
+    padding: 'calc(0.25rem * 8)',
+  },
+  s2f77d9f6: {
+    alignSelf: 'center',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+})
+const styles_3 = stylex.create({
+  s88b3b93e: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    paddingTop: 'var(--site-header-h)',
+    '@media ((min-width: 640px))': {
+      paddingTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+  saf87fe0e: {
+    display: 'flex',
+    minHeight: '45vh',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 'calc(var(--spacing) * 8)',
+  },
+  sfadecc62: {
+    textAlign: 'center',
+    fontSize: 'var(--text-4xl)',
+    lineHeight: 'var(--text-4xl--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    '@media ((min-width: 768px))': {
+      fontSize: 'var(--text-5xl)',
+      lineHeight: 'var(--text-5xl--line-height)',
+    },
+  },
+  sae80c57d: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+    padding: 'calc(var(--spacing) * 4)',
+    '@media ((min-width: 640px))': {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-end',
+    },
+  },
+  sc617585a: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--surface-contrast)',
+    padding: 'calc(var(--spacing) * 4)',
+    boxShadow: 'var(--shadow-xl)',
+    '@media ((min-width: 640px))': {
+      width: 'auto',
+      minWidth: 'var(--container-3xs)',
+    },
+  },
+  sa421322c: {
+    width: '60px',
+    height: '60px',
+  },
+})
+const styles_2 = stylex.create({
+  sca3de96a: {
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 const styles = stylex.create({
   s610350de: {
     backgroundSize: 'cover',
@@ -183,10 +268,10 @@ export default function DownloadPage() {
           document={document}
           origin={origin}
         />
-        <NavigationLoadingContent className="flex flex-1 flex-col pt-[var(--site-header-h)] sm:pt-0">
-          <div className="flex min-h-[45vh] flex-col items-center justify-center py-8">
+        <NavigationLoadingContent className={stylex.props(styles_3.s88b3b93e).className || ''}>
+          <div className={stylex.props(styles_3.saf87fe0e).className || ''}>
             <Container className={stylex.props(styles.s912a40f4).className || ''}>
-              <h1 className="text-center text-4xl font-bold md:text-5xl">Download Seed Hypermedia Today!</h1>
+              <h1 className={stylex.props(styles_3.sfadecc62).className || ''}>Download Seed Hypermedia Today!</h1>
               <SizableText size="xl" className={stylex.props(styles.s65e234f5).className || ''}>
                 Start writing and collaborating with your peers.
               </SizableText>
@@ -201,7 +286,7 @@ export default function DownloadPage() {
                 Download Seed Hypermedia {stableRelease.name}
               </SizableText>
             </div>
-            <div className="flex flex-col items-center justify-center gap-4 p-4 sm:flex-row">
+            <div className={stylex.props(styles_3.sae80c57d).className || ''}>
               {stableRelease.assets?.macos && (
                 <PlatformItem label="MacOS" icon={Macos} assets={stableRelease.assets.macos} />
               )}
@@ -235,8 +320,8 @@ function PlatformItem({
       url: (asset as z.infer<typeof assetSchema>).download_url,
     }))
   return (
-    <div className="border-border flex w-full flex-col items-center gap-3 rounded-md border bg-white p-4 shadow-xl sm:w-auto sm:min-w-3xs dark:bg-black">
-      <Icon size={60} className="size-[60px]" />
+    <div className={stylex.props(styles_3.sc617585a).className || ''}>
+      <Icon size={60} className={stylex.props(styles_3.sa421322c).className || ''} />
       <SizableText size="lg" weight="bold">
         {label}
       </SizableText>
@@ -247,7 +332,7 @@ function PlatformItem({
               <Button
                 key={asset.label}
                 variant="link"
-                className={`plausible-event-name=download plausible-event-os=${asset.url.split('.').pop()}`}
+                className={'plausible-event-name=download plausible-event-os=' + ' ' + asset.url.split('.').pop()}
                 size="sm"
                 asChild
               >
@@ -274,16 +359,18 @@ function ReleaseEntry({label, asset, large}: {label: string; asset?: z.infer<typ
     <Button
       asChild
       variant="default"
-      className={`plausible-event-name=download p-8 plausible-event-os=${asset.download_url
-        .split('.')
-        .pop()} self-center rounded-md`}
+      className={
+        (stylex.props(styles_4.s1aa1b).className || '') +
+        ' ' +
+        (stylex.props(styles_4.s2f77d9f6, styles_4.sf79988b7).className || '')
+      }
       style={{
         textDecoration: 'none',
       }}
       size={large ? 'lg' : 'default'}
     >
       <a href={asset.download_url}>
-        <Download className={large ? 'size-6' : 'size-4'} />{' '}
+        <Download className={stylex.props(large ? styles_2.sca3de96a : styles_2.sca3de968).className || ''} />{' '}
         <span className={stylex.props(styles.sab7cc794).className || ''}>{label}</span>
       </a>
     </Button>

@@ -38,6 +38,74 @@ import {toast} from '@shm/ui/toast'
 import {useMutation} from '@tanstack/react-query'
 import {useDebounce} from '@shm/shared/utils/use-debounce'
 import {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
+const styles_4 = stylex.create({
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+  s18c12: {
+    height: 'calc(0.25rem * 7)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s626516e5: {
+    justifyContent: 'flex-start',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  saa53335b: {
+    textUnderlineOffset: '4px',
+  },
+  sd30dd60e: {
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+})
+const styles_3 = stylex.create({
+  sd52b2d2: {
+    textTransform: 'uppercase',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s7c401f13: {
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  s34a2a8: {
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+})
+const styles_2 = stylex.create({
+  sbecb6545: {
+    ':focus': {
+      outlineStyle: 'none',
+    },
+  },
+  sf76faf2b: {
+    maxHeight: '200px',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    overflowY: 'auto',
+  },
+})
 const styles = stylex.create({
   s24134196: {
     marginBlock: 'calc(0.25rem * 4)',
@@ -370,7 +438,7 @@ export const SearchInput = forwardRef<
       {isDisplayingRecents ? (
         <>
           {recentItems.length ? (
-            <SizableText size="xs" color="muted" className="text-sans! uppercase">
+            <SizableText size="xs" color="muted" className={stylex.props(styles_3.sd52b2d2).className || ''}>
               RECENT DOCUMENTS
             </SizableText>
           ) : null}
@@ -385,7 +453,11 @@ export const SearchInput = forwardRef<
             onMouseEnter: () => setFocusedIndex(activeItemIndex),
           }
           return (
-            <div ref={(el) => (itemRefs.current[activeItemIndex] = el)} key={item.key} className="focus:outline-none">
+            <div
+              ref={(el) => (itemRefs.current[activeItemIndex] = el)}
+              key={item.key}
+              className={stylex.props(styles_2.sbecb6545).className || ''}
+            >
               {isDisplayingRecents ? (
                 <RecentSearchResultItem
                   item={{
@@ -421,7 +493,11 @@ export const SearchInput = forwardRef<
     </>
   )
   const searchFooter = (
-    <div className="border-border space-y-1 border-t px-1 pt-1">
+    <div
+      className={
+        stylex.props(styles_3.s1a01a0ed, styles_3.s7c401f13, styles_3.s34b1ac, styles_3.s34a2a8).className || ''
+      }
+    >
       {footerItems.map((item, index) => {
         const activeItemIndex = resultItems.length + index
         return (
@@ -429,9 +505,21 @@ export const SearchInput = forwardRef<
             <Button
               variant="ghost"
               size="sm"
-              className={`text-primary h-7 w-full justify-start px-2 text-xs font-medium underline-offset-4 hover:underline ${
-                focusedIndex === activeItemIndex ? 'bg-muted' : ''
-              }`}
+              className={
+                (stylex.props(
+                  styles_4.s1bfab962,
+                  styles_4.s18c12,
+                  styles_4.scdbaf625,
+                  styles_4.s626516e5,
+                  styles_4.s34b1ad,
+                  styles_4.sab7cc79b,
+                  styles_4.s129e46b3,
+                  styles_4.saa53335b,
+                  styles_4.sd30dd60e,
+                ).className || '') +
+                ' ' +
+                (focusedIndex === activeItemIndex ? stylex.props(styles_4.s5fd609e3).className || '' : '')
+              }
               onFocus={() => setFocusedIndex(activeItemIndex)}
               onMouseEnter={() => setFocusedIndex(activeItemIndex)}
               onClick={() => {
@@ -451,7 +539,7 @@ export const SearchInput = forwardRef<
   if (hideInput) {
     return (
       <div className={stylex.props(styles.se978af5d).className || ''}>
-        <div className="max-h-[200px] min-h-0 flex-1 overflow-y-auto">{content || <p>working…</p>}</div>
+        <div className={stylex.props(styles_2.sf76faf2b).className || ''}>{content || <p>working…</p>}</div>
         {searchFooter}
       </div>
     )

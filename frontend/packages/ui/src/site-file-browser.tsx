@@ -17,6 +17,95 @@ import {Spinner} from './spinner'
 import {cn} from './utils'
 
 /** Props for the shared site document browser. */
+const styles_6 = stylex.create({
+  sf32a13e5: {
+    minWidth: '100%',
+  },
+})
+const styles_5 = stylex.create({
+  s3f582e10: {
+    minHeight: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+})
+const styles_4 = stylex.create({
+  s778a6a92: {
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flexDirection: 'column',
+    backgroundColor: 'var(--surface)',
+  },
+  s6f7c6ca7: {
+    color: 'var(--muted-foreground)',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 3)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  sf6d60a73: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--accent) 60%, transparent)',
+      },
+    },
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px currentcolor',
+      outlineStyle: 'none',
+    },
+    display: 'flex',
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 0)',
+    outlineStyle: 'none',
+  },
+  sbc3d0456: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--accent) 60%, transparent)',
+      },
+    },
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px currentcolor',
+      outlineStyle: 'none',
+    },
+    display: 'flex',
+    height: 'calc(var(--spacing) * 6)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    outlineStyle: 'none',
+  },
+})
+const styles_3 = stylex.create({
+  s1e65f214: {
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+  },
+})
+const styles_2 = stylex.create({
+  s85d861ad: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+})
 const styles = stylex.create({
   s898dc4ca: {
     borderColor: 'var(--border)',
@@ -113,10 +202,10 @@ export function SiteFileBrowser({siteId, activeDocumentId, onNavigate, onPrefetc
     })
   }
   return (
-    <div className="dark:bg-background flex h-full min-h-0 flex-col bg-white">
+    <div className={stylex.props(styles_4.s778a6a92).className || ''}>
       <div className={stylex.props(styles.s898dc4ca).className || ''}>
         <div className={stylex.props(styles.sdef3facc).className || ''}>
-          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <Search className={stylex.props(styles_4.s6f7c6ca7).className || ''} />
           <Input
             aria-label="Filter documents"
             value={query}
@@ -127,7 +216,14 @@ export function SiteFileBrowser({siteId, activeDocumentId, onNavigate, onPrefetc
         </div>
       </div>
 
-      <ScrollArea className="scroll-area-full-height min-h-0 flex-1" viewportClassName="[&>div]:!block">
+      <ScrollArea
+        className={
+          (stylex.props(styles_5.s3f582e10, styles_5.sb42feb5d).className || '') +
+          ' ' +
+          (stylex.props(styles_6.sf32a13e5).className || '')
+        }
+        viewportClassName="[&>div]:!block"
+      >
         <div className={stylex.props(styles.s1aa15).className || ''}>
           {directory.isLoading ? (
             <div className={stylex.props(styles.s3e98fb7e).className || ''} aria-label="Loading documents">
@@ -160,14 +256,14 @@ export function SiteFileBrowser({siteId, activeDocumentId, onNavigate, onPrefetc
                       paddingLeft: isFiltered ? 0 : (row?.depth ?? 0) * 16,
                     }}
                     className={cn(
-                      'flex min-w-0 items-center rounded-md',
-                      isActive && 'bg-accent text-accent-foreground',
+                      stylex.props(styles_2.s85d861ad).className || '',
+                      stylex.props(isActive && styles_3.s1e65f214).className || '',
                     )}
                   >
                     {!isFiltered && row?.hasChildren ? (
                       <button
                         type="button"
-                        className="hover:bg-accent/60 focus-visible:ring-ring flex size-6 shrink-0 items-center justify-center rounded-md p-0 outline-none focus-visible:ring-2"
+                        className={stylex.props(styles_4.sf6d60a73).className || ''}
                         aria-label={isExpanded ? `Collapse ${titleOf(doc)}` : `Expand ${titleOf(doc)}`}
                         onClick={() => toggle(row.pathKey)}
                       >
@@ -186,7 +282,7 @@ export function SiteFileBrowser({siteId, activeDocumentId, onNavigate, onPrefetc
                       onPointerEnter={() => onPrefetch?.(doc.id)}
                       onFocus={() => onPrefetch?.(doc.id)}
                       onClick={() => onNavigate(doc.id)}
-                      className="hover:bg-accent/60 focus-visible:ring-ring flex h-6 min-w-0 flex-1 items-center gap-1.5 rounded-md px-1.5 text-left text-sm outline-none focus-visible:ring-2"
+                      className={stylex.props(styles_4.sbc3d0456).className || ''}
                     >
                       {doc.visibility === 'PRIVATE' ? (
                         <Lock aria-label="Private document" className={stylex.props(styles.s4a58805).className || ''} />

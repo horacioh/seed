@@ -27,6 +27,46 @@ import {
 import {cloneElement, isValidElement, useRef, useState} from 'react'
 import {PageTab} from './page-tabs'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s1238120d: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    opacity: '0%',
+    '@media ((min-width: 768px))': {
+      gap: 'calc(var(--spacing) * 4)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+  scb1fc43d: {
+    height: 'auto',
+    padding: 'calc(var(--spacing) * 0)',
+  },
+  s738758f0: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    padding: 'calc(var(--spacing) * 1)',
+    '@media ((min-width: 768px))': {
+      gap: 'calc(var(--spacing) * 4)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+  s88a47024: {
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    padding: 'calc(var(--spacing) * 1)',
+    '@media ((min-width: 768px))': {
+      gap: 'calc(var(--spacing) * 4)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+})
 const styles = stylex.create({
   sfb5e9ae0: {
     display: 'flex',
@@ -320,11 +360,7 @@ export function DocumentTools({
   const tabButtons = (
     <>
       {/* Hidden measurement container with labels always visible */}
-      <div
-        ref={measureRef}
-        className="pointer-events-none absolute flex items-center gap-2 opacity-0 md:gap-4"
-        aria-hidden="true"
-      >
+      <div ref={measureRef} className={stylex.props(styles_2.s1238120d).className || ''} aria-hidden="true">
         {buttons.map((button) => (
           <PageTab
             key={button.label}
@@ -368,15 +404,21 @@ export function DocumentTools({
             className={cn(wrapperProps.className, stylex.props(styles.sb162303e).className || '')}
             style={wrapperProps.style}
           >
-            <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto !p-0')} />
+            <div
+              {...sidebarProps}
+              className={cn(sidebarProps.className, stylex.props(styles_2.scb1fc43d).className || '')}
+            />
             <div
               {...mainContentProps}
               ref={containerRef}
-              className={cn(mainContentProps.className, 'flex items-center gap-2 p-1 md:gap-4 md:p-2')}
+              className={cn(mainContentProps.className, stylex.props(styles_2.s738758f0).className || '')}
             >
               {tabButtons}
             </div>
-            <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto !p-0')} />
+            <div
+              {...sidebarProps}
+              className={cn(sidebarProps.className, stylex.props(styles_2.scb1fc43d).className || '')}
+            />
           </div>
         </div>
       )
@@ -389,7 +431,7 @@ export function DocumentTools({
           <div
             {...mainContentProps}
             ref={containerRef}
-            className={cn(mainContentProps.className, 'flex items-center gap-2 p-1 md:gap-4 md:p-2')}
+            className={cn(mainContentProps.className, stylex.props(styles_2.s738758f0).className || '')}
           >
             {tabButtons}
           </div>
@@ -399,7 +441,7 @@ export function DocumentTools({
   }
   return (
     <div className={stylex.props(styles.sfb5e9ae0).className || ''}>
-      <div ref={containerRef} className="flex min-w-0 flex-1 items-center gap-2 p-1 md:gap-4 md:p-2">
+      <div ref={containerRef} className={stylex.props(styles_2.s88a47024).className || ''}>
         {tabButtons}
       </div>
     </div>

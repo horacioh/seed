@@ -20,6 +20,28 @@ import {CreateAccountDialogContent, type CreateAccountDialogSubmit} from '@shm/u
 import {toast} from '@shm/ui/toast'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react'
+const styles_3 = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s9315a7f3: {
+    maxWidth: '36rem',
+  },
+})
+const styles_2 = stylex.create({
+  sd66d801a: {
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-base)',
+      lineHeight: 'var(--text-base--line-height)',
+    },
+  },
+  s652f45e3: {
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-sm)',
+      lineHeight: 'var(--text-sm--line-height)',
+    },
+  },
+})
 const styles = stylex.create({
   sb3b0ca3b: {
     color: 'var(--muted-foreground)',
@@ -182,8 +204,12 @@ function DesktopAuthDialogContent({
   if (browserUrl && connectError) {
     return (
       <>
-        <DialogTitle className="max-sm:text-base">Sign-in could not be completed</DialogTitle>
-        <DialogDescription className="max-sm:text-sm">{connectErrorGuidance(connectError)}</DialogDescription>
+        <DialogTitle className={stylex.props(styles_2.sd66d801a).className || ''}>
+          Sign-in could not be completed
+        </DialogTitle>
+        <DialogDescription className={stylex.props(styles_2.s652f45e3).className || ''}>
+          {connectErrorGuidance(connectError)}
+        </DialogDescription>
         <p className={stylex.props(styles.sb3b0ca3b).className || ''}>{connectError}</p>
         <div className={stylex.props(styles.s96a43180).className || ''}>
           <Button
@@ -212,8 +238,10 @@ function DesktopAuthDialogContent({
   if (browserUrl) {
     return (
       <>
-        <DialogTitle className="max-sm:text-base">Your browser will open to finish setup</DialogTitle>
-        <DialogDescription className="max-sm:text-sm">
+        <DialogTitle className={stylex.props(styles_2.sd66d801a).className || ''}>
+          Your browser will open to finish setup
+        </DialogTitle>
+        <DialogDescription className={stylex.props(styles_2.s652f45e3).className || ''}>
           Complete your identity creation there, then come back to Seed app.
         </DialogDescription>
         <div className={stylex.props(styles.s96a43180).className || ''}>
@@ -255,7 +283,7 @@ function DesktopAuthDialogContent({
 /** Returns the shared desktop identity auth dialog used by onboarding and account menus. */
 export function useDesktopAuthDialog() {
   return useAppDialog(DesktopAuthDialogContent, {
-    className: 'w-full sm:max-w-xl',
+    className: stylex.props(styles_3.scdbaf625, styles_3.s9315a7f3).className || '',
     showCloseButton: (input) => !input.initialSubmit,
     preventClose: (input) => !!input.initialSubmit,
   })

@@ -14,6 +14,96 @@ import {cn} from '@shm/ui/utils'
 import {Plus, Settings} from 'lucide-react'
 import {useEffect, useState} from 'react'
 import {dispatchOnboardingDialog} from './onboarding'
+const styles_5 = stylex.create({
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s99df37d7: {
+    ':active': {
+      backgroundColor: 'var(--muted)',
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+})
+const styles_4 = stylex.create({
+  s2695158b: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    marginBottom: '1px',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'var(--ease-in-out)',
+    transitionDuration: '200ms',
+  },
+  s121241b3: {
+    zIndex: '51',
+    display: 'flex',
+    height: '100%',
+    maxHeight: '500px',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    gap: 'calc(var(--spacing) * 2)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  s6c9281ff: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--sidebar-accent)',
+        color: 'var(--sidebar-accent-foreground)',
+      },
+    },
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+})
+const styles_3 = stylex.create({
+  s6438c2e3: {
+    backgroundColor: 'var(--sidebar-accent)',
+  },
+})
+const styles_2 = stylex.create({
+  s4cce74fd: {
+    display: 'flex',
+    width: '100%',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 'calc(0.25rem * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    paddingInline: 'calc(0.25rem * 1)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    paddingRight: 'calc(0.25rem * 3)',
+  },
+})
 const styles = stylex.create({
   sc5dbf391: {
     display: 'flex',
@@ -25,7 +115,7 @@ const styles = stylex.create({
     borderRadius: 'calc(var(--radius) - 4px)',
     backgroundColor: '#fff',
     padding: 'calc(0.25rem * 1)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+    boxShadow: 'var(--shadow-sm)',
   },
   s51378f89: {
     overflow: 'hidden',
@@ -91,10 +181,10 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
     )
   }
   return (
-    <div className="dark:bg-background border-border bg-background mb-px flex w-full items-center rounded-md border transition-all duration-200 ease-in-out">
+    <div className={stylex.props(styles_4.s2695158b).className || ''}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger
-          className="flex w-full min-w-0 items-center justify-start gap-2 rounded-md bg-transparent px-1 py-1 pr-3"
+          className={stylex.props(styles_2.s4cce74fd).className || ''}
           {...highlighter(hmId(selectedIdentityValue))}
         >
           <>
@@ -113,19 +203,16 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
             </p>
           </>
         </PopoverTrigger>
-        <PopoverContent
-          side="right"
-          className="z-[51] flex h-full max-h-[500px] flex-col items-stretch gap-2 p-2"
-          align="end"
-        >
+        <PopoverContent side="right" className={stylex.props(styles_4.s121241b3).className || ''} align="end">
           <ScrollArea className={stylex.props(styles.sb832f4b7).className || ''}>
             {accountOptions?.map((option) =>
               option ? (
                 <div
                   key={option.id.uid}
                   className={cn(
-                    'hover:bg-sidebar-accent flex flex-row items-center gap-4 rounded-md p-2',
-                    selectedAccountData?.id?.uid === option.id.uid ? 'bg-sidebar-accent' : '',
+                    stylex.props(styles_4.s6c9281ff).className || '',
+                    stylex.props(selectedAccountData?.id?.uid === option.id.uid ? styles_3.s6438c2e3 : null)
+                      .className || '',
                   )}
                   onClick={() => {
                     setSelectedIdentity?.(option.id.uid || null)
@@ -166,7 +253,17 @@ function AppSettingsButton() {
     <Tooltip content="App Settings">
       <Button
         size="icon"
-        className="hover:bg-muted active:bg-muted shrink-none flex size-8 items-center justify-center rounded-md"
+        className={
+          stylex.props(
+            styles_5.s37120a61,
+            styles_5.s99df37d7,
+            styles_5.s2ffff9,
+            styles_5.sca3de96c,
+            styles_5.sc6ed1702,
+            styles_5.sce22ca32,
+            styles_5.sf79988b7,
+          ).className || ''
+        }
         onClick={(e) => {
           e.preventDefault()
           navigate({

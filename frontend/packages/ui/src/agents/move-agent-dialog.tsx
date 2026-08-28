@@ -26,6 +26,20 @@ import {ProviderSelect} from './provider-select'
  * what the destination can honor (reachability, a model provider for the agent), spells out what
  * moves and what stays, and then runs the copy-then-delete orchestration with live progress.
  */
+const styles_2 = stylex.create({
+  s12326f23: {
+    display: 'flex',
+    minWidth: '420px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  sb0b9c8a0: {
+    display: 'flex',
+    minWidth: '460px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+  },
+})
 const styles = stylex.create({
   s9141e77: {
     display: 'flex',
@@ -145,7 +159,7 @@ export function MoveAgentDialog({
   }
   if (serverUrls.data && !targetUrls.length) {
     return (
-      <div className="flex min-w-[420px] flex-col gap-4">
+      <div className={stylex.props(styles_2.s12326f23).className || ''}>
         <DialogTitle>Move “{input.agentName}”</DialogTitle>
         <DialogDescription>
           This is the only agent server configured. Add another server from the Agents page, then move the agent there.
@@ -159,7 +173,7 @@ export function MoveAgentDialog({
     )
   }
   return (
-    <div className="flex min-w-[460px] flex-col gap-5">
+    <div className={stylex.props(styles_2.sb0b9c8a0).className || ''}>
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <DialogTitle>Move “{input.agentName}” to another server</DialogTitle>
         <DialogDescription>

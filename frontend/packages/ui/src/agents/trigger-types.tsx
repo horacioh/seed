@@ -23,6 +23,141 @@ import React, {useMemo, useState} from 'react'
  * stay in sync. The session UI renders {@link TriggerContextView} instead of the raw `<trigger_context>`
  * block that is sent to the model.
  */
+const styles_4 = stylex.create({
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  sd30dd60e: {
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s93ff291a: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  s943f2834: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    textAlign: 'left',
+  },
+  sdc3fca4e: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    marginRight: 'calc(var(--spacing) * 6)',
+    marginLeft: 'calc(var(--spacing) * 6)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s863380b5: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'var(--foreground)',
+    maxHeight: 'calc(var(--spacing) * 72)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  s8c95c59e: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'var(--foreground)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  se477dfeb: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    marginTop: 'calc(var(--spacing) * 1.5)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+  },
+})
+const styles_2 = stylex.create({
+  sc7fb7e12: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--popover)',
+    position: 'absolute',
+    top: '100%',
+    right: 'calc(0.25rem * 0)',
+    left: 'calc(0.25rem * 0)',
+    zIndex: '20',
+    marginTop: 'calc(0.25rem * 1)',
+    maxHeight: 'calc(0.25rem * 64)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-lg)',
+  },
+  s95a555ef: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--input)',
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 9)',
+    alignItems: 'center',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s11c50038: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    columnGap: 'calc(0.25rem * 1.5)',
+  },
+  s5e669942: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   sd1c4c9a2: {
     display: 'grid',
@@ -257,7 +392,7 @@ export function TriggerSourceFields({
         {trailing}
       </div>
       {source.type === 'document-comment' ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className={stylex.props(styles_3.s93ff291a).className || ''}>
           <DocumentAutocompleteField
             label="Document"
             value={source.resource}
@@ -300,7 +435,7 @@ export function TriggerSourceFields({
         </div>
       ) : null}
       {source.type === 'site-update' ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className={stylex.props(styles_3.s93ff291a).className || ''}>
           <AccountAutocompleteField
             label="Resource/space prefix"
             value={source.resourcePrefix}
@@ -396,7 +531,7 @@ function ScheduleTriggerFields({
         />
       </label>
       {schedule.kind === 'interval' ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className={stylex.props(styles_3.s93ff291a).className || ''}>
           <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Every
@@ -461,7 +596,7 @@ function ScheduleTriggerFields({
               </label>
             ))}
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className={stylex.props(styles_3.s93ff291a).className || ''}>
             <label className={stylex.props(styles.sfbc6e28d).className || ''}>
               <SizableText size="sm" weight="bold">
                 Time of day
@@ -495,7 +630,7 @@ function ScheduleTriggerFields({
         </div>
       ) : null}
       {schedule.kind === 'once' ? (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className={stylex.props(styles_3.s93ff291a).className || ''}>
           <label className={stylex.props(styles.sfbc6e28d).className || ''}>
             <SizableText size="sm" weight="bold">
               Date and time
@@ -564,14 +699,14 @@ function DocumentAutocompleteField({
         placeholder={placeholder}
       />
       {focused && documents.length ? (
-        <div className="border-border bg-popover absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-auto rounded-md border p-1 shadow-lg">
+        <div className={stylex.props(styles_2.sc7fb7e12).className || ''}>
           {documents.map((document) => {
             const nextValue = packHmId(document.id)
             return (
               <button
                 key={document.id.id}
                 type="button"
-                className="hover:bg-muted flex w-full flex-col rounded px-2 py-2 text-left"
+                className={stylex.props(styles_3.s943f2834).className || ''}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
                   onChange(nextValue)
@@ -627,14 +762,14 @@ function AccountAutocompleteField({
         placeholder={placeholder}
       />
       {focused && accounts.length ? (
-        <div className="border-border bg-popover absolute top-full right-0 left-0 z-20 mt-1 max-h-64 overflow-auto rounded-md border p-1 shadow-lg">
+        <div className={stylex.props(styles_2.sc7fb7e12).className || ''}>
           {accounts.map((account) => {
             const nextValue = valueFormat === 'hm-url' ? `hm://${account.id.uid}` : account.id.uid
             return (
               <button
                 key={`${account.id.id}:${account.type}`}
                 type="button"
-                className="hover:bg-muted flex w-full flex-col rounded px-2 py-2 text-left"
+                className={stylex.props(styles_3.s943f2834).className || ''}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
                   onChange(nextValue)
@@ -672,7 +807,7 @@ function MentionedAccountsField({accounts, onChange}: {accounts: string[]; onCha
       <SizableText size="sm" weight="bold">
         Mentioned accounts
       </SizableText>
-      <div className="border-border bg-input flex min-h-9 items-center overflow-hidden rounded-md border">
+      <div className={stylex.props(styles_2.s95a555ef).className || ''}>
         <AccountSearchInput
           label="Mentioned accounts"
           placeholder="Search or paste accounts"
@@ -789,8 +924,8 @@ export function TriggerContextView({
       }
     : null
   return (
-    <div className="bg-muted/40 mr-6 ml-6 rounded-lg border px-3 py-2 text-xs">
-      <div className="flex min-w-0 flex-wrap items-center gap-x-1.5">
+    <div className={stylex.props(styles_3.sdc3fca4e).className || ''}>
+      <div className={stylex.props(styles_2.s11c50038).className || ''}>
         <Icon className={stylex.props(styles.s8bf4c15d).className || ''} />
         <span className={stylex.props(styles.sf032ed6c).className || ''}>Triggered by</span>
         <ContextLink
@@ -805,7 +940,7 @@ export function TriggerContextView({
           route={activityRoute}
           onNavigate={navigate}
           title="Open the comment, document, or update that started this session"
-          className="text-muted-foreground min-w-0 truncate"
+          className={stylex.props(styles_2.s5e669942).className || ''}
         >
           {context.activitySummary}
         </ContextLink>
@@ -817,15 +952,13 @@ export function TriggerContextView({
       </div>
       {context.error ? <div className={stylex.props(styles.sa75e0209).className || ''}>{context.error}</div> : null}
       <TriggerDisclosure label="Activity details">
-        <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
+        <pre className={stylex.props(styles_3.s863380b5).className || ''}>
           {JSON.stringify(context.activity, null, 2)}
         </pre>
       </TriggerDisclosure>
       {instructions ? (
         <TriggerDisclosure label="Trigger instructions">
-          <p className="bg-background/60 text-foreground rounded-md border p-2 text-[11px] whitespace-pre-wrap">
-            {instructions}
-          </p>
+          <p className={stylex.props(styles_3.s8c95c59e).className || ''}>{instructions}</p>
         </TriggerDisclosure>
       ) : null}
     </div>
@@ -852,7 +985,7 @@ function ContextLink({
       type="button"
       title={title}
       onClick={() => onNavigate(route)}
-      className={`hover:text-foreground text-left hover:underline ${className ?? ''}`}
+      className={stylex.props(styles_4.sae6a97a5, styles_4.sbf63b0a7, styles_4.sd30dd60e).className || ''}
     >
       {children}
     </button>
@@ -868,7 +1001,7 @@ function TriggerDisclosure({label, children}: {label: string; children: React.Re
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="text-muted-foreground hover:text-foreground mt-1.5 flex items-center gap-1"
+        className={stylex.props(styles_3.se477dfeb).className || ''}
       >
         {open ? (
           <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />

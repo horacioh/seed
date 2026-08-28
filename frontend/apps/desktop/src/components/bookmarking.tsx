@@ -10,6 +10,25 @@ import {cn} from '@shm/ui/utils'
 import {Bookmark} from 'lucide-react'
 import {ComponentProps} from 'react'
 import {useBookmark} from '../models/bookmarks'
+const styles_4 = stylex.create({
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_3 = stylex.create({
+  s725add18: {
+    stroke: 'var(--text-strong)',
+    color: 'var(--text-strong)',
+    width: 'calc(var(--spacing) * 3.5)',
+    height: 'calc(var(--spacing) * 3.5)',
+  },
+})
+const styles_2 = stylex.create({
+  s9594946f: {
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+  },
+})
 const styles = stylex.create({
   s55ac44a1: {
     width: 'calc(0.25rem * 3.5)',
@@ -18,7 +37,7 @@ const styles = stylex.create({
   },
   s9594946f: {
     backgroundColor: 'transparent',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000',
+    boxShadow: 'none',
   },
   s8c293c0c: {
     width: 'calc(0.25rem * 4)',
@@ -43,7 +62,7 @@ function RemoveBookmarkButton({
         variant={active ? 'default' : 'ghost'}
         {...hoverProps}
         onClick={onClick}
-        className={cn('no-window-drag', active && 'bg-transparent shadow-none', className)}
+        className={cn('no-window-drag', stylex.props(active && styles_2.s9594946f).className || '', className)}
       >
         <Bookmark className={stylex.props(styles.s55ac44a1).className || ''} />
       </Button>
@@ -87,7 +106,7 @@ export function BookmarkButton({
         variant={active ? 'default' : 'ghost'}
         className={cn(
           'no-window-drag',
-          hideUntilItemHover && 'opacity-0 group-hover:opacity-100',
+          hideUntilItemHover ? stylex.props(styles_4.s765a26ee).className || '' : '',
           stylex.props(styles.s9594946f).className || '',
           className,
         )}
@@ -96,7 +115,7 @@ export function BookmarkButton({
           bookmark.addBookmark()
         }}
       >
-        <Bookmark className="stroke-foreground text-foreground size-3.5 dark:stroke-white dark:text-white" />
+        <Bookmark className={stylex.props(styles_3.s725add18).className || ''} />
       </Button>
     </Tooltip>
   )

@@ -19,6 +19,68 @@ import {
  * thread. The call and its result land on the shared session log as actor-'user' events the agent
  * reads on its next turn — same verbs, same log, no side channel.
  */
+const styles_3 = stylex.create({
+  sabad945e: {
+    minHeight: 'calc(0.25rem * 20)',
+  },
+  sabad943f: {
+    minHeight: 'calc(0.25rem * 10)',
+  },
+  sabad9462: {
+    minHeight: 'calc(0.25rem * 24)',
+  },
+})
+const styles_2 = stylex.create({
+  s3731c254: {
+    '@media ((max-width: 639px))': {
+      width: 'calc(var(--spacing) * 10)',
+      height: 'calc(var(--spacing) * 10)',
+    },
+  },
+  s3471db8d: {
+    borderColor: 'color-mix(in oklab, var(--primary) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    marginBottom: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    fontSize: '11px',
+  },
+  s3b50288c: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s5c1b099e: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+  },
+  sadb58fa1: {
+    color: 'var(--muted-foreground)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+  },
+})
 const styles = stylex.create({
   s3269316e: {
     width: 'calc(0.25rem * 3.5)',
@@ -175,7 +237,7 @@ export function UserToolPalette({
         <Button
           size="sm"
           variant="ghost"
-          className="max-sm:size-10"
+          className={stylex.props(styles_2.s3731c254).className || ''}
           disabled={disabled || (!sessionId && !onStartSession)}
           title={
             sessionId || onStartSession
@@ -187,11 +249,7 @@ export function UserToolPalette({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className={stylex.props(styles.sf8684703).className || ''}>
-        {notice ? (
-          <div className="border-primary/30 bg-primary/10 text-primary mb-2 rounded-md border px-2 py-1.5 text-[11px]">
-            {notice}
-          </div>
-        ) : null}
+        {notice ? <div className={stylex.props(styles_2.s3471db8d).className || ''}>{notice}</div> : null}
         {selected === null ? (
           <div className={stylex.props(styles.s25987553).className || ''}>
             <SizableText size="xs" color="muted" className={stylex.props(styles.s374a31e2).className || ''}>
@@ -249,13 +307,9 @@ export function UserToolPalette({
 }
 function PaletteRow({label, hint, onPick}: {label: string; hint: string; onPick: () => void}) {
   return (
-    <button
-      type="button"
-      onClick={onPick}
-      className="hover:bg-accent flex items-baseline justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm"
-    >
+    <button type="button" onClick={onPick} className={stylex.props(styles_2.s3b50288c).className || ''}>
       <span className={stylex.props(styles.s129e46b3).className || ''}>{label}</span>
-      <span className="text-muted-foreground min-w-0 truncate font-mono text-[10px]">{hint}</span>
+      <span className={stylex.props(styles_2.s5c1b099e).className || ''}>{hint}</span>
     </button>
   )
 }
@@ -297,8 +351,27 @@ function FormShell({
     </form>
   )
 }
-const fieldClass =
-  'border-border bg-background w-full rounded-md border px-2 py-1.5 font-mono text-xs focus:outline-none'
+/** Shared input styling for the tool palette forms. */
+const fieldStyles = stylex.create({
+  field: {
+    width: '100%',
+    borderRadius: '0.375rem',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    paddingInline: '0.5rem',
+    paddingBlock: '0.375rem',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    outline: {
+      default: null,
+      ':focus': 'none',
+    },
+  },
+})
+const fieldClass = stylex.props(fieldStyles.field).className || ''
 function ReadForm({busy, onBack, onRun}: {busy: boolean; onBack: () => void; onRun: (input: unknown) => void}) {
   const [address, setAddress] = useState('')
   return (
@@ -361,13 +434,13 @@ function WriteForm({busy, onBack, onRun}: {busy: boolean; onBack: () => void; on
         onChange={(event) => setAddress(event.target.value)}
       />
       <textarea
-        className={`${fieldClass} min-h-20`}
+        className={stylex.props(styles_3.sabad945e).className || ''}
         placeholder="Content"
         value={content}
         onChange={(event) => setContent(event.target.value)}
       />
       <textarea
-        className={`${fieldClass} min-h-10`}
+        className={stylex.props(styles_3.sabad943f).className || ''}
         placeholder='Options JSON (optional), e.g. {"name": "My Doc"}'
         value={optionsJson}
         onChange={(event) => setOptionsJson(event.target.value)}
@@ -417,7 +490,7 @@ function CallableForm({
       >
         <textarea
           autoFocus
-          className={`${fieldClass} min-h-24`}
+          className={stylex.props(styles_3.sabad9462).className || ''}
           value={rawJson}
           onChange={(event) => setRawJson(event.target.value)}
         />
@@ -459,7 +532,7 @@ function CallableForm({
     >
       {Object.entries(properties).map(([key, prop], index) => (
         <label key={key} className={stylex.props(styles.sfbc6e28d).className || ''}>
-          <span className="text-muted-foreground font-mono text-[10px]">
+          <span className={stylex.props(styles_2.sadb58fa1).className || ''}>
             {key}
             {required.has(key) ? ' *' : ''}
             {numericErrors.includes(key) ? (

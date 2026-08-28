@@ -1,15 +1,53 @@
+import * as stylex from '@stylexjs/stylex'
 import {HMMetadata} from '@seed-hypermedia/client/hm-types'
 import {useIsomorphicLayoutEffect} from '@shm/shared/utils/use-isomorphic-layout-effect'
 import {forwardRef, useMemo, useRef, useState} from 'react'
 import {ScrollArea} from './components/scroll-area'
 import {useMedia} from './use-media'
-
-export const MainWrapper = forwardRef<any, {noScroll?: boolean; children?: React.ReactNode}>(function MainWrapper(
-  {children, noScroll = false, ...props},
-  ref,
-) {
+const styles_2 = stylex.create({
+  sb42feb5d: {
+    flex: '1',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s34a2ab: {
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s5574c491: {
+    marginInline: 'auto',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+})
+const styles = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
+export const MainWrapper = forwardRef<
+  any,
+  {
+    noScroll?: boolean
+    children?: React.ReactNode
+  }
+>(function MainWrapper({children, noScroll = false, ...props}, ref) {
   return (
-    <div ref={ref} className="content-wrapper flex flex-1 flex-col" {...props}>
+    <div
+      ref={ref}
+      className={stylex.props(styles.s2ffff9, styles.sb42feb5d, styles.s67e351ac).className || ''}
+      {...props}
+    >
       {noScroll ? (
         children
       ) : (
@@ -19,19 +57,16 @@ export const MainWrapper = forwardRef<any, {noScroll?: boolean; children?: React
     </div>
   )
 })
-
 export type LayoutMode = 'mobile' | 'tablet' | 'desktop'
 export type BreakpointConfig = {
   mobileBreakpoint: number
   tabletBreakpoint: number
 }
-
 export const widthValues = {
   S: 600,
   M: 700,
   L: 900,
 }
-
 export const useDocumentLayout = (
   config: Partial<
     BreakpointConfig & {
@@ -61,20 +96,17 @@ export const useDocumentLayout = (
 
   // Keep current width in ref for performance (no re-renders on every pixel change)
   const currentWidthRef = useRef<number>(contentMaxWidth)
-
   useIsomorphicLayoutEffect(() => {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') {
       console.log('useDocumentLayout: window undefined, skipping effect')
       return
     }
-
     let element = elementRef.current
 
     // Function to calculate and update layout if needed
     const updateLayoutIfNeeded = (width: number) => {
       currentWidthRef.current = width
-
       const newShowSidebars = Boolean(config.showSidebars && width > contentMaxWidth + 100)
       const newShowCollapsed = width < contentMaxWidth + 700
 
@@ -132,7 +164,6 @@ export const useDocumentLayout = (
     if (element) {
       resizeObserver.observe(element)
     }
-
     return () => {
       // Clean up both observers
       resizeObserver.disconnect()
@@ -145,24 +176,25 @@ export const useDocumentLayout = (
     () => ({
       elementRef,
       width: currentWidthRef,
-
       showSidebars: layoutState.showSidebars,
       showCollapsed: layoutState.showCollapsed,
       contentMaxWidth,
       sidebarProps: {
-        className: `document-aside flex-1 w-full pt-4 ${layoutState.showCollapsed ? 'px-2' : 'pr-10 pl-4'}`,
+        className: stylex.props(styles_2.sb42feb5d, styles_2.scdbaf625, styles_2.s34a2ab).className || '',
         style: {
           maxWidth: layoutState.showCollapsed ? 40 : 280,
         },
       },
       mainContentProps: {
-        className: 'w-full',
+        className: stylex.props(styles_2.scdbaf625).className || '',
         style: {
           maxWidth: contentMaxWidth,
         },
       },
       wrapperProps: {
-        className: 'flex mx-auto w-full justify-between flex-1',
+        className:
+          stylex.props(styles_2.s2ffff9, styles_2.s5574c491, styles_2.scdbaf625, styles_2.sc1a629cb, styles_2.sb42feb5d)
+            .className || '',
         style: {
           // The 44px adds room for the per-block comment/citation buttons on
           // wider viewports. For sidebar-less layouts (centered, e.g. home
@@ -182,7 +214,6 @@ export const useDocumentLayout = (
     [layoutState.showSidebars, layoutState.showCollapsed, contentMaxWidth, config.showSidebars, media.gtSm],
   )
 }
-
 function getContentWidth(contentWidth: HMMetadata['contentWidth']) {
   if (contentWidth === 'S') return widthValues.S
   if (contentWidth === 'M') return widthValues.M

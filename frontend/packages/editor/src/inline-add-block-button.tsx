@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Button} from '@shm/ui/button'
 import {cn} from '@shm/ui/utils'
 import {Plus} from 'lucide-react'
@@ -5,9 +6,80 @@ import {useEffect, useRef, useState} from 'react'
 import {createPortal} from 'react-dom'
 import {isSlashMenuEnabled, slashMenuPluginKey} from './blocknote/core/extensions/SlashMenu/SlashMenuPlugin'
 import type {HyperMediaEditor} from './types'
-
-type Position = {top: number; left: number}
-
+const styles_2 = stylex.create({
+  scad6aa7f: {
+    transform: 'scale(0.95, 0.95)',
+  },
+})
+const styles = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s53b5c178: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--primary)',
+      },
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sca3de96a: {
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+  },
+  s18c12: {
+    height: 'calc(0.25rem * 7)',
+  },
+  s1c461: {
+    width: 'calc(0.25rem * 7)',
+  },
+  s3f586665: {
+    minWidth: 'calc(0.25rem * 6)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s8880a929: {
+    transitionProperty: 'all',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sa042964f: {
+    ':hover': {
+      '@media (hover: hover)': {
+        scale: '110% 110%',
+      },
+    },
+  },
+  s25eca887: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: '#fff',
+      },
+    },
+  },
+  s4dfd873: {
+    ':active': {
+      scale: '95% 95%',
+    },
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
+type Position = {
+  top: number
+  left: number
+}
 function AddBlockButton({
   onClick,
   className,
@@ -22,14 +94,30 @@ function AddBlockButton({
       size="icon"
       variant="outline"
       className={cn(
-        'text-muted-foreground hover:bg-primary flex size-6 h-7 w-7 min-w-6 scale-95 items-center justify-center rounded-full transition-all hover:scale-110 hover:text-white active:scale-95',
+        stylex.props(
+          styles.sf2718385,
+          styles.s53b5c178,
+          styles.s2ffff9,
+          styles.sca3de96a,
+          styles.s18c12,
+          styles.s1c461,
+          styles.s3f586665,
+          styles.sc6ed1702,
+          styles.sce22ca32,
+          styles.s775755af,
+          styles.s8880a929,
+          styles.sa042964f,
+          styles.s25eca887,
+          styles.s4dfd873,
+        ).className || '',
+        stylex.props(styles_2.scad6aa7f).className || '',
         className,
       )}
       onClick={onClick}
       title={title}
       aria-label={title}
     >
-      <Plus className="size-4" />
+      <Plus className={stylex.props(styles.sca3de968).className || ''} />
     </Button>
   )
 }
@@ -43,11 +131,9 @@ export function InlineAddBlockButton({editor}: {editor: HyperMediaEditor}) {
   const [pos, setPos] = useState<Position | null>(null)
   // Track last placement to not rerender on every keystroke.
   const lastRef = useRef<Position | null>(null)
-
   useEffect(() => {
     const ttEditor = editor._tiptapEditor
     if (!ttEditor) return
-
     const computePos = (): Position | null => {
       if (!editor.isEditable) return null
       const view = ttEditor.view
@@ -88,7 +174,6 @@ export function InlineAddBlockButton({editor}: {editor: HyperMediaEditor}) {
         return null
       }
     }
-
     const measurePos = () => {
       const next = computePos()
       const last = lastRef.current
@@ -108,10 +193,8 @@ export function InlineAddBlockButton({editor}: {editor: HyperMediaEditor}) {
         measurePos()
       })
     }
-
     const resizeObserver = new ResizeObserver(measurePos)
     resizeObserver.observe(ttEditor.view.dom)
-
     const mutationObserver = new MutationObserver(measurePos)
     mutationObserver.observe(ttEditor.view.dom, {
       childList: true,
@@ -130,12 +213,10 @@ export function InlineAddBlockButton({editor}: {editor: HyperMediaEditor}) {
         measurePos()
       }, 80)
     }
-
     const onPmEvent = () => {
       scheduleUpdate()
       scheduleDelayedUpdate()
     }
-
     scheduleUpdate()
     ttEditor.on('selectionUpdate', onPmEvent)
     ttEditor.on('update', onPmEvent)
@@ -152,9 +233,7 @@ export function InlineAddBlockButton({editor}: {editor: HyperMediaEditor}) {
       window.removeEventListener('resize', scheduleUpdate)
     }
   }, [editor])
-
   if (!pos) return null
-
   return createPortal(
     <div
       style={{
@@ -173,7 +252,11 @@ export function InlineAddBlockButton({editor}: {editor: HyperMediaEditor}) {
           const view = editor._tiptapEditor.view
           view.focus()
           // Open the slash menu programmatically without inserting the trigger character.
-          view.dispatch(view.state.tr.scrollIntoView().setMeta(slashMenuPluginKey, {activate: true}))
+          view.dispatch(
+            view.state.tr.scrollIntoView().setMeta(slashMenuPluginKey, {
+              activate: true,
+            }),
+          )
         }}
       />
     </div>,

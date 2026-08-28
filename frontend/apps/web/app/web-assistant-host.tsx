@@ -14,6 +14,59 @@ import React, {Suspense, useCallback, useEffect, useRef, useState} from 'react'
 // The panel body pulls in the agents models and the rich editor. Like the /hm/agents pages and the
 // commenting editor, it is a separate client-only chunk that only loads once the panel opens, so
 // nothing agents-related enters the initial bundle.
+const styles_5 = stylex.create({
+  s1bd1f072: {
+    visibility: 'visible',
+  },
+  scad131e9: {
+    position: 'sticky',
+  },
+  s696c5b8: {
+    top: 'calc(0.25rem * 0)',
+  },
+  s5cf8731: {
+    height: '100dvh',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s760cfea1: {
+    alignSelf: 'flex-start',
+  },
+})
+const styles_4 = stylex.create({
+  s87a3738c: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    paddingTop: 'env(safe-area-inset-top)',
+  },
+  s40a14ed2: {
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    paddingBottom: 'env(safe-area-inset-bottom)',
+  },
+})
+const styles_3 = stylex.create({
+  s9cf2edc1: {
+    cursor: 'col-resize',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+})
+const styles_2 = stylex.create({
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   s1dd0bfd2: {
     display: 'flex',
@@ -152,15 +205,31 @@ export function WebAssistantHost({children}: {children: React.ReactNode}) {
   const showSidePanel = panel.isOpen && !isMobile
   const showFullScreen = panel.isOpen && isMobile
   return (
-    <div className={cn(stylex.props(styles.s1dd0bfd2).className || '', dragging && 'cursor-col-resize select-none')}>
-      <div className="min-w-0 flex-1">{children}</div>
+    <div
+      className={cn(
+        stylex.props(styles.s1dd0bfd2).className || '',
+        stylex.props(dragging && styles_3.s9cf2edc1).className || '',
+      )}
+    >
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>{children}</div>
       {showSidePanel ? (
         <>
           <div
             role="separator"
             aria-orientation="vertical"
             aria-label="Resize agents panel"
-            className={cn('panel-resize-handle visible sticky top-0 h-dvh shrink-0 self-start', dragging && 'active')}
+            className={cn(
+              stylex.props(
+                styles_5.s1bd1f072,
+                styles_5.scad131e9,
+                styles_5.s696c5b8,
+                styles_5.s5cf8731,
+                styles_5.sf032ed6c,
+                styles_5.s760cfea1,
+              ).className || '',
+              'panel-resize-handle',
+              dragging && 'active',
+            )}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -207,7 +276,7 @@ function FullScreenPanel({onBack}: {onBack: () => void}) {
       data-testid="web-assistant-panel-fullscreen"
       className={stylex.props(styles.sb03e17cd).className || ''}
     >
-      <div className="border-border flex shrink-0 items-center border-b px-1 py-1 pt-[env(safe-area-inset-top)]">
+      <div className={stylex.props(styles_4.s87a3738c).className || ''}>
         <Button
           variant="ghost"
           size="sm"
@@ -219,7 +288,7 @@ function FullScreenPanel({onBack}: {onBack: () => void}) {
           Back to page
         </Button>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom)]">
+      <div className={stylex.props(styles_4.s40a14ed2).className || ''}>
         <PanelBody />
       </div>
     </div>

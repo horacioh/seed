@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Node as ProseMirrorNode} from '@tiptap/pm/model'
 import {NodeView, ViewMutationRecord} from '@tiptap/pm/view'
 import {ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Heading, Trash2} from 'lucide-react'
@@ -6,6 +7,16 @@ import {createRoot, type Root} from 'react-dom/client'
 
 import styles from '../blocknote/core/extensions/Blocks/nodes/Block.module.css'
 import {TableActionsMenu, type TableMenuItem} from './TableActionsMenu'
+
+const menuStyles = stylex.create({
+  icon: {
+    width: '1rem',
+    height: '1rem',
+  },
+})
+
+/** Class applied to the lucide icons rendered inside the table row/column menus. */
+const menuIconClassName = stylex.props(menuStyles.icon).className || ''
 
 // Syncs the table's column widths from the PM nodes' colwidth attrs.
 export function updateColumns(
@@ -369,13 +380,13 @@ export class TableView implements NodeView {
         {
           key: 'insert-row-above',
           label: 'Insert row above',
-          icon: createElement(ArrowUp, {className: 'size-4'}),
+          icon: createElement(ArrowUp, {className: menuIconClassName}),
           onClick: () => this.runRowCommand('addRowBefore'),
         },
         {
           key: 'insert-row-below',
           label: 'Insert row below',
-          icon: createElement(ArrowDown, {className: 'size-4'}),
+          icon: createElement(ArrowDown, {className: menuIconClassName}),
           onClick: () => this.runRowCommand('addRowAfter'),
         },
       ]
@@ -384,7 +395,7 @@ export class TableView implements NodeView {
         items.push({
           key: 'toggle-header-row',
           label: 'Toggle header row',
-          icon: createElement(Heading, {className: 'size-4'}),
+          icon: createElement(Heading, {className: menuIconClassName}),
           onClick: () => this.runRowCommand('toggleHeaderRow'),
         })
       }
@@ -393,7 +404,7 @@ export class TableView implements NodeView {
         items.push({
           key: 'delete-row',
           label: 'Delete row',
-          icon: createElement(Trash2, {className: 'size-4'}),
+          icon: createElement(Trash2, {className: menuIconClassName}),
           onClick: () => this.runRowCommand('deleteRow'),
         })
       }
@@ -403,13 +414,13 @@ export class TableView implements NodeView {
       {
         key: 'insert-col-left',
         label: 'Insert column left',
-        icon: createElement(ArrowLeft, {className: 'size-4'}),
+        icon: createElement(ArrowLeft, {className: menuIconClassName}),
         onClick: () => this.runColCommand('addColumnBefore'),
       },
       {
         key: 'insert-col-right',
         label: 'Insert column right',
-        icon: createElement(ArrowRight, {className: 'size-4'}),
+        icon: createElement(ArrowRight, {className: menuIconClassName}),
         onClick: () => this.runColCommand('addColumnAfter'),
       },
     ]
@@ -417,7 +428,7 @@ export class TableView implements NodeView {
       items.push({
         key: 'toggle-header-col',
         label: 'Toggle header column',
-        icon: createElement(Heading, {className: 'size-4'}),
+        icon: createElement(Heading, {className: menuIconClassName}),
         onClick: () => this.runColCommand('toggleHeaderColumn'),
       })
     }
@@ -427,7 +438,7 @@ export class TableView implements NodeView {
       items.push({
         key: 'delete-col',
         label: 'Delete column',
-        icon: createElement(Trash2, {className: 'size-4'}),
+        icon: createElement(Trash2, {className: menuIconClassName}),
         onClick: () => this.runColCommand('deleteColumn'),
       })
     }

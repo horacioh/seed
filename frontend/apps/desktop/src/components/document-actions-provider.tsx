@@ -29,6 +29,22 @@ import {ResourceVisibility} from '@shm/shared/client/.generated/documents/v3alph
 import {buildRestoreVersionChanges, getRestoreVersionGeneration} from '@shm/shared/utils/restore-document-version'
 import {hmIdPathToEntityQueryPath} from '@shm/shared/utils/path-api'
 import {toast} from 'sonner'
+const styles_3 = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s9ccd4aa7: {
+    maxWidth: '42rem',
+  },
+})
+const styles_2 = stylex.create({
+  s3e87a91a: {
+    display: 'flex',
+    maxWidth: '700px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1.5)',
+  },
+})
 const styles = stylex.create({
   sead8181d: {
     textWrap: 'wrap',
@@ -51,7 +67,7 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
   const drafts = useAccountDraftList(selectedAccountId ?? undefined)
   const writableDocuments = useSelectedAccountWritableDocuments()
   const destinationDialog = useAppDialog(DocumentDestinationDialog, {
-    className: 'w-full max-w-2xl',
+    className: stylex.props(styles_3.scdbaf625, styles_3.s9ccd4aa7).className || '',
   })
   const deleteDialog = useDeleteDialog()
   const setBookmark = useMutation({
@@ -155,7 +171,7 @@ export function DesktopDocumentActionsProvider({children}: PropsWithChildren) {
       exportDocument(title, markdownContent, mediaFiles)
         .then((res) => {
           toast.success(
-            <div className="flex max-w-[700px] flex-col gap-1.5">
+            <div className={stylex.props(styles_2.s3e87a91a).className || ''}>
               <SizableText className={stylex.props(styles.sead8181d).className || ''}>
                 Successfully exported document &quot;{title}&quot; to: <b>{`${res}`}</b>.
               </SizableText>

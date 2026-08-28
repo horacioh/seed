@@ -3,6 +3,33 @@ import {getBlockInfoFromPos, slashMenuPluginKey} from '@shm/editor/blocknote/cor
 import type {HyperMediaEditor} from '@shm/editor/types'
 import {Button} from '@shm/ui/button'
 import {Plus} from 'lucide-react'
+const styles_2 = stylex.create({
+  s19a51244: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--primary)',
+        scale: '110% 110%',
+        color: 'var(--color-white)',
+      },
+    },
+    marginTop: 'calc(var(--spacing) * 2)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 7)',
+    height: 'calc(var(--spacing) * 7)',
+    minWidth: 'calc(var(--spacing) * 6)',
+    scale: '95% 95%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':active': {
+      scale: '95% 95%',
+    },
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -14,7 +41,7 @@ export function AddBlockAtEndButton({editor}: {editor: HyperMediaEditor}) {
     <Button
       size="icon"
       variant="outline"
-      className="text-muted-foreground hover:bg-primary mt-2 flex size-6 h-7 w-7 min-w-6 scale-95 items-center justify-center rounded-full transition-all hover:scale-110 hover:text-white active:scale-95"
+      className={stylex.props(styles_2.s19a51244).className || ''}
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()

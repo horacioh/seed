@@ -13,6 +13,35 @@ import {cn} from './utils'
  * scroll container on desktop, and sticks to the top of the viewport on mobile
  * once the site header scrolls away.
  */
+const styles_4 = stylex.create({
+  s608c79d2: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    height: 'calc(var(--spacing) * 12)',
+    width: '100%',
+    flexShrink: '0',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    backgroundColor: 'var(--surface)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+  },
+})
+const styles_3 = stylex.create({
+  sa44f2c8f: {
+    position: 'sticky',
+    top: 'calc(0.25rem * 0)',
+    zIndex: '30',
+  },
+})
+const styles_2 = stylex.create({
+  sdf91ad18: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   s7c401f01: {
     borderBottomStyle: 'solid',
@@ -53,12 +82,13 @@ export function DocumentTopBar({
     <div
       data-document-top-bar=""
       className={cn(
-        'border-border dark:bg-background flex h-12 w-full shrink-0 items-center gap-2 bg-white px-4', // The border is the only separator; nothing is elevated over the content.
+        stylex.props(styles_4.s608c79d2).className || '',
+        // The border is the only separator; nothing is elevated over the content.
         stylex.props(styles.s7c401f01).className || '',
-        isMobile && 'sticky top-0 z-30',
+        stylex.props(isMobile && styles_3.sa44f2c8f).className || '',
       )}
     >
-      <div className="flex min-w-0 flex-1 items-center gap-2">
+      <div className={stylex.props(styles_2.sdf91ad18).className || ''}>
         {canRevealFileBrowser ? (
           <Tooltip content="Show file explorer">
             <Button

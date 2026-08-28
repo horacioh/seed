@@ -1,39 +1,119 @@
 import {Slot} from '@radix-ui/react-slot'
-import {cva, type VariantProps} from 'class-variance-authority'
 import * as React from 'react'
 
 import {cn} from '../utils'
+import * as stylex from '@stylexjs/stylex'
 
-const badgeVariants = cva(
-  'inline-flex items-center justify-center rounded-md border px-1 py-0 font-sans text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden',
-  {
-    variants: {
-      variant: {
-        default: 'border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
-        secondary: 'border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
-        accent: 'border-transparent bg-accent text-accent-foreground [a&]:hover:bg-accent/90',
-        destructive:
-          'border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-        outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground',
-        warning:
-          'border-current bg-transparent text-yellow-500 focus-visible:ring-yellow-300 dark:focus-visible:ring-yellow-500/40 dark:border-yellow-500/60',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
+const styles = stylex.create({
+  base: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.25rem',
+    width: 'fit-content',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    borderRadius: '0.375rem',
+    border: '1px solid var(--border)',
+    padding: '0 0.25rem',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    fontWeight: 500,
+    overflow: 'hidden',
+    transitionProperty: 'color, box-shadow',
+    transitionDuration: '150ms',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent)',
     },
   },
-)
+  variantDefault: {
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    borderColor: 'transparent',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--primary) 90%, transparent)',
+    },
+  },
+  variantSecondary: {
+    backgroundColor: 'var(--secondary)',
+    color: 'var(--secondary-foreground)',
+    borderColor: 'transparent',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--secondary) 90%, transparent)',
+    },
+  },
+  variantAccent: {
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+    borderColor: 'transparent',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--accent) 90%, transparent)',
+    },
+  },
+  variantDestructive: {
+    backgroundColor: 'var(--destructive-surface)',
+    color: 'white',
+    borderColor: 'transparent',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--destructive) 90%, transparent)',
+    },
+    ':focus-visible': {
+      boxShadow: 'var(--ring-destructive)',
+    },
+  },
+  variantOutline: {
+    backgroundColor: 'transparent',
+    color: 'var(--foreground)',
+    ':hover': {
+      backgroundColor: 'var(--accent)',
+      color: 'var(--accent-foreground)',
+    },
+  },
+  variantWarning: {
+    backgroundColor: 'transparent',
+    color: 'var(--color-yellow-500)',
+    borderColor: 'var(--warning-border)',
+    ':focus-visible': {
+      boxShadow: 'var(--ring-warning)',
+    },
+  },
+})
 
-function Badge({
-  className,
-  variant,
-  asChild = false,
-  ...props
-}: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & {asChild?: boolean}) {
-  const Comp = asChild ? Slot : 'span'
+export type BadgeVariant = 'default' | 'secondary' | 'accent' | 'destructive' | 'outline' | 'warning'
 
-  return <Comp data-slot="badge" className={cn(badgeVariants({variant}), className)} {...props} />
+export interface BadgeProps extends React.ComponentProps<'span'> {
+  variant?: BadgeVariant
+  asChild?: boolean
 }
 
-export {Badge, badgeVariants}
+function badgeStyle(variant: BadgeVariant) {
+  switch (variant) {
+    case 'default':
+      return styles.variantDefault
+    case 'secondary':
+      return styles.variantSecondary
+    case 'accent':
+      return styles.variantAccent
+    case 'destructive':
+      return styles.variantDestructive
+    case 'outline':
+      return styles.variantOutline
+    case 'warning':
+      return styles.variantWarning
+  }
+}
+
+export function Badge({className, variant = 'default', asChild = false, ...props}: BadgeProps) {
+  const Comp = asChild ? Slot : 'span'
+
+  return (
+    <Comp
+      data-slot="badge"
+      className={cn(stylex.props(styles.base, badgeStyle(variant)).className, className)}
+      {...props}
+    />
+  )
+}

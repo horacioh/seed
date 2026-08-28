@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import type {DomainResolverFn} from '@seed-hypermedia/client'
 import type {EditorBlock} from '@seed-hypermedia/client/editor-types'
 import {HMBlockNode, HMMetadata} from '@seed-hypermedia/client/hm-types'
@@ -28,26 +29,219 @@ import {hmBlockSchema} from './schema'
 import {getSlashMenuItems} from './slash-menu-items'
 import {isMobileDevice, useMobile} from './use-mobile'
 import {createMediaBlock, handleDragMedia, selectAllEditorContent, serverBlockNodesFromEditorBlocks} from './utils'
-
+const styles_2 = stylex.create({
+  s8c33650b: {
+    ':is(.dark *)': {
+      borderColor: 'color-mix(in oklab, var(--muted-foreground) 20%, transparent)',
+    },
+  },
+})
+const styles = stylex.create({
+  s62a1961: {
+    borderColor: 'var(--destructive)',
+  },
+  s19482854: {
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sb63dd8f6: {
+    flexGrow: '0',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s99d96612: {
+    ':focus-within': {
+      borderColor: 'color-mix(in oklab, var(--ring) 60%, transparent)',
+    },
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s13fb6ae0: {
+    transitionProperty: 'filter, border-color, background-color',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sd273c872: {
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'color-mix(in oklab, #000 10%, transparent)',
+      },
+    },
+  },
+  sc406c202: {
+    ':hover': {
+      '@media (hover: hover)': {
+        filter: 'brightness(1.01) \n',
+      },
+    },
+  },
+  se04d40a4: {
+    ':active': {
+      filter: 'brightness(95%) \n',
+    },
+  },
+  s1ca68c72: {
+    borderStyle: 'dashed',
+  },
+  se45bb2cf: {
+    borderColor: 'color-mix(in oklab, #000 20%, transparent)',
+  },
+  s9b702119: {
+    backgroundColor: 'color-mix(in oklab, #000 3%, transparent)',
+  },
+  s7636ce75: {
+    filter: 'brightness(100%) \n',
+  },
+  sd71d1757: {
+    maxHeight: '160px',
+  },
+  sabad945e: {
+    minHeight: 'calc(0.25rem * 20)',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s2527420a: {
+    overflowX: 'hidden',
+  },
+  s2e59cf20: {
+    '@media ((min-width: 768px))': {
+      maxHeight: '100%',
+    },
+  },
+  s626516e5: {
+    justifyContent: 'flex-start',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s345f17: {
+    paddingBottom: 'calc(0.25rem * 2)',
+  },
+  s34a2a8: {
+    paddingTop: 'calc(0.25rem * 1)',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s19ed0: {
+    margin: 'calc(0.25rem * 0)',
+  },
+  sb41ffff4: {
+    height: 'auto',
+  },
+  s3f582e18: {
+    minHeight: 'calc(0.25rem * 8)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s7c401ecf: {
+    borderStyle: 'solid',
+    borderWidth: '0px',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  sbf5f1771: {
+    fontSize: '1rem',
+    lineHeight: 'var(--text-base--line-height)',
+  },
+  se48265c8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'transparent',
+      },
+    },
+  },
+  s6a9aaeac: {
+    ':focus': {
+      backgroundColor: 'transparent',
+    },
+  },
+  s335490: {
+    marginInline: 'calc(0.25rem * 2)',
+  },
+  s3301fa: {
+    marginBottom: 'calc(0.25rem * 2)',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s6044a01e: {
+    justifyContent: 'flex-end',
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 function crawlEditorBlocks(blocks: EditorBlock[], filter: (block: EditorBlock) => boolean): EditorBlock[] {
   const matchedChildren = blocks.flatMap((block) => crawlEditorBlocks(block.children, filter))
   return [...matchedChildren, ...blocks.filter(filter)]
 }
-
 function collectSerializedMediaRefs(blocks: EditorBlock[]) {
   const mediaRefs: Record<string, string> = {}
   const mediaBlocks = crawlEditorBlocks(blocks, (block) => !!(block.props as any)?.mediaRef)
-
   for (const block of mediaBlocks) {
     const mediaRef = (block.props as any).mediaRef
     mediaRefs[block.id] = typeof mediaRef === 'string' ? mediaRef : JSON.stringify(mediaRef)
   }
-
   return mediaRefs
 }
-
 const [setGwUrl, gwUrl] = writeableStateStream<string>('https://hyper.media')
-
 export function useCommentEditor(
   perspectiveAccountUid?: string | null | undefined,
   onSubmit?: () => void,
@@ -92,7 +286,6 @@ export function useCommentEditor(
   const editorRef = useRef<BlockNoteEditor<typeof hmBlockSchema> | null>(null)
   const submitOnEnterRef = useRef(submitOnEnter)
   submitOnEnterRef.current = submitOnEnter
-
   const editor = useBlockNote<typeof hmBlockSchema>({
     onEditorContentChange(editor: BlockNoteEditor<typeof hmBlockSchema>) {
       // console.log("editor content changed", editor.topLevelBlocks);
@@ -110,14 +303,16 @@ export function useCommentEditor(
           ed,
           {
             type: 'embed',
-            props: {url: resolvedHmUrl, view: 'Content'},
+            props: {
+              url: resolvedHmUrl,
+              view: 'Content',
+            },
           } as any,
           true,
         )
         return true
       },
     },
-
     // onEditorReady: (e) => {
     //   readyEditor.current = e;
     //   initDraft();
@@ -131,7 +326,11 @@ export function useCommentEditor(
         Extension.create({
           name: 'hypermedia-link',
           addProseMirrorPlugins() {
-            return [createHypermediaDocLinkPlugin({domainResolver}).plugin]
+            return [
+              createHypermediaDocLinkPlugin({
+                domainResolver,
+              }).plugin,
+            ]
           },
         }),
         Extension.create({
@@ -151,8 +350,16 @@ export function useCommentEditor(
               },
               Enter: ({editor}) => {
                 if (!submitOnEnterRef.current) return false
-                const slashState = slashMenuPluginKey.getState(editor.state) as {active?: boolean} | undefined
-                const mentionState = mentionSuggestionPluginKey.getState(editor.state) as {active?: boolean} | undefined
+                const slashState = slashMenuPluginKey.getState(editor.state) as
+                  | {
+                      active?: boolean
+                    }
+                  | undefined
+                const mentionState = mentionSuggestionPluginKey.getState(editor.state) as
+                  | {
+                      active?: boolean
+                    }
+                  | undefined
                 if (slashState?.active || mentionState?.active) return false
                 if (onSubmitRef.current) {
                   onSubmitRef.current()
@@ -174,33 +381,28 @@ export function useCommentEditor(
                 props: {
                   handleKeyDown(view, event) {
                     if (!isMobileDevice()) return false
-
                     if (event.key === '@' && onMobileMentionTriggerRef.current) {
                       const {selection} = view.state
                       const $from = selection.$from
                       const textBeforeCursor = $from.parent.textContent.substring(0, $from.parentOffset)
                       const isAtStart = textBeforeCursor.length === 0
                       const isAfterSpace = textBeforeCursor.endsWith(' ')
-
                       if (isAtStart || isAfterSpace) {
                         onMobileMentionTriggerRef.current()
                         return true
                       }
                     }
-
                     if (event.key === '/' && onMobileSlashTriggerRef.current) {
                       const {selection} = view.state
                       const $from = selection.$from
                       const textBeforeCursor = $from.parent.textContent.substring(0, $from.parentOffset)
                       const isAtStart = textBeforeCursor.length === 0
                       const isAfterSpace = textBeforeCursor.endsWith(' ')
-
                       if (isAtStart || isAfterSpace) {
                         onMobileSlashTriggerRef.current()
                         return true
                       }
                     }
-
                     return false
                   },
                 },
@@ -211,14 +413,11 @@ export function useCommentEditor(
       ],
     },
   })
-
   editorRef.current = editor
-
   return {
     editor,
   }
 }
-
 export interface CommentEditorProps {
   draft: Array<HMBlockNode>
   onSubmit: (content: Array<HMBlockNode>) => Promise<void>
@@ -265,15 +464,20 @@ export type CommentEditorSubmitHandle = {
   flush: () => void
   getContent: (
     prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-      blobs: {cid: string; data: Uint8Array}[]
+      blobs: {
+        cid: string
+        data: Uint8Array
+      }[]
       resultCIDs: string[]
     }>,
   ) => Promise<{
     blockNodes: HMBlockNode[]
-    blobs: {cid: string; data: Uint8Array}[]
+    blobs: {
+      cid: string
+      data: Uint8Array
+    }[]
   }>
 }
-
 export function CommentEditor({
   submitButton,
   handleSubmit,
@@ -300,23 +504,35 @@ export function CommentEditor({
     disabled?: boolean
     getContent: (
       prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-        blobs: {cid: string; data: Uint8Array}[]
+        blobs: {
+          cid: string
+          data: Uint8Array
+        }[]
         resultCIDs: string[]
       }>,
     ) => Promise<{
       blockNodes: HMBlockNode[]
-      blobs: {cid: string; data: Uint8Array}[]
+      blobs: {
+        cid: string
+        data: Uint8Array
+      }[]
     }>
   }) => JSX.Element
   handleSubmit: (
     getContent: (
       prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-        blobs: {cid: string; data: Uint8Array}[]
+        blobs: {
+          cid: string
+          data: Uint8Array
+        }[]
         resultCIDs: string[]
       }>,
     ) => Promise<{
       blockNodes: HMBlockNode[]
-      blobs: {cid: string; data: Uint8Array}[]
+      blobs: {
+        cid: string
+        data: Uint8Array
+      }[]
     }>,
     reset: () => void,
   ) => void
@@ -369,7 +585,6 @@ export function CommentEditor({
   const [isSlashDialogOpen, setIsSlashDialogOpen] = useState(false)
   const toolbarRef = useRef<HTMLDivElement>(null)
   const contextUniversalClient = useUniversalClient()
-
   const {editor} = useCommentEditor(
     perspectiveAccountUid,
     () => setSubmitTrigger((prev) => prev + 1),
@@ -410,21 +625,27 @@ export function CommentEditor({
   const dragDepthRef = useRef(0)
   const pendingDropRef = useRef<{
     files: File[]
-    dropTarget: 'append' | {clientX: number; clientY: number}
+    dropTarget:
+      | 'append'
+      | {
+          clientX: number
+          clientY: number
+        }
   } | null>(null)
-
   const reset = () => {
     editor.removeBlocks(editor.topLevelBlocks)
   }
-
-  const focusEditor = ({moveCursorToEnd = false}: {moveCursorToEnd?: boolean} = {}) => {
+  const focusEditor = ({
+    moveCursorToEnd = false,
+  }: {
+    moveCursorToEnd?: boolean
+  } = {}) => {
     if (moveCursorToEnd) {
       editor._tiptapEditor.chain().focus('end').run()
       return
     }
     editor._tiptapEditor.commands.focus()
   }
-
   const activateEditor = ({
     moveCursorToEnd = false,
     focusOnActivate = true,
@@ -436,7 +657,6 @@ export function CommentEditor({
     shouldMoveCursorToEndOnFocusRef.current = moveCursorToEnd
     setIsExpanded(true)
   }
-
   const getAppendInsertionPos = () => {
     return Math.max(0, editor._tiptapEditor.view.state.doc.content.size - 4)
   }
@@ -449,7 +669,6 @@ export function CommentEditor({
     clearTimeout(contentChangeTimeoutRef.current)
     contentChangeTimeoutRef.current = null
     if (!onContentChange) return
-
     try {
       // @ts-expect-error
       const editorBlocks: EditorBlock[] = editor.topLevelBlocks
@@ -463,17 +682,20 @@ export function CommentEditor({
       console.error('Failed to emit content change:', error)
     }
   }
-
   const insertDroppedFiles = async ({
     files,
     dropTarget,
   }: {
     files: File[]
-    dropTarget: 'append' | {clientX: number; clientY: number}
+    dropTarget:
+      | 'append'
+      | {
+          clientX: number
+          clientY: number
+        }
   }) => {
     const ttEditor = editor._tiptapEditor
     let insertionPos = getAppendInsertionPos()
-
     if (dropTarget !== 'append') {
       const posAtCoords = ttEditor.view.posAtCoords({
         left: dropTarget.clientX,
@@ -483,14 +705,11 @@ export function CommentEditor({
         insertionPos = posAtCoords.pos
       }
     }
-
     let lastId: string | undefined
-
     for (const file of files) {
       const props = await handleDragMedia(file, handleFileAttachment)
       const blockNode = createMediaBlock(file, props)
       if (!blockNode) continue
-
       if (lastId) {
         ;(editor as BlockNoteEditor).insertBlocks(
           // @ts-expect-error
@@ -501,7 +720,6 @@ export function CommentEditor({
         lastId = blockNode.id
         continue
       }
-
       const blockInfo = getBlockInfoFromPos(ttEditor.view.state, insertionPos)
       ;(editor as BlockNoteEditor).insertBlocks(
         // @ts-expect-error
@@ -511,18 +729,14 @@ export function CommentEditor({
       )
       lastId = blockNode.id
     }
-
     flushContentChange()
   }
-
   const isFileDrag = (dataTransfer: DataTransfer | null | undefined) => {
     return !!dataTransfer && Array.from(dataTransfer.types || []).includes('Files')
   }
-
   const getDraggedFiles = (dataTransfer: DataTransfer | null | undefined) => {
     const files: File[] = []
     if (!dataTransfer) return files
-
     if (dataTransfer.files.length) {
       for (let i = 0; i < dataTransfer.files.length; i++) {
         const file = dataTransfer.files[i]
@@ -530,17 +744,14 @@ export function CommentEditor({
       }
       return files
     }
-
     for (let i = 0; i < dataTransfer.items.length; i++) {
       const dataItem = dataTransfer.items[i]
       if (!dataItem) continue
       const item = dataItem.getAsFile()
       if (item) files.push(item)
     }
-
     return files
   }
-
   const isPointInsideEditor = (clientX: number, clientY: number) => {
     const editorRect = editor._tiptapEditor.view.dom.getBoundingClientRect()
     return (
@@ -558,9 +769,7 @@ export function CommentEditor({
       isInitializedRef.current = true
       return
     }
-
     isInitializedRef.current = true
-
     const initializeWithRehydration = async () => {
       try {
         const editorBlocks = hmBlocksToEditorContent(initialBlocks, {
@@ -584,7 +793,6 @@ export function CommentEditor({
                   console.error('Failed to parse mediaRef:', e)
                   continue
                 }
-
                 const {draftId, mediaId} = mediaRef
                 try {
                   const blob = await getDraftMediaBlob(draftId, mediaId)
@@ -606,14 +814,11 @@ export function CommentEditor({
               }
             }
           }
-
           await rehydrateEditorBlocks(editorBlocks)
         }
-
         if (hasLocalEditsRef.current) {
           return
         }
-
         isApplyingInitialBlocksRef.current = true
         editor.removeBlocks(editor.topLevelBlocks)
         // @ts-expect-error - EditorBlock type mismatch with BlockNote
@@ -624,7 +829,6 @@ export function CommentEditor({
         console.error('Failed to initialize editor with draft content:', error)
       }
     }
-
     initializeWithRehydration()
   }, [initialBlocks, editor, getDraftMediaBlob])
 
@@ -663,7 +867,6 @@ export function CommentEditor({
   // Notify parent of content changes, debounced (see flushContentChange)
   useEffect(() => {
     if (!onContentChange) return
-
     const handleChange = () => {
       if (!isApplyingInitialBlocksRef.current) {
         hasLocalEditsRef.current = true
@@ -673,18 +876,15 @@ export function CommentEditor({
       }
       contentChangeTimeoutRef.current = setTimeout(flushContentChange, 300)
     }
-
     editor._tiptapEditor.on('update', handleChange)
     // Flush when focus leaves the editor (e.g. tapping a save/submit button)
     editor._tiptapEditor.on('blur', flushContentChange)
-
     return () => {
       editor._tiptapEditor.off('update', handleChange)
       editor._tiptapEditor.off('blur', flushContentChange)
       flushContentChange()
     }
   }, [editor, onContentChange])
-
   useEffect(() => {
     if (hasDraftContent && !isExpanded) {
       shouldFocusOnActivateRef.current = false
@@ -692,43 +892,36 @@ export function CommentEditor({
       setIsExpanded(true)
     }
   }, [hasDraftContent, isExpanded])
-
   useEffect(() => {
     if (focusOnMount) {
       setIsExpanded(true)
       shouldFocusOnActivateRef.current = true
     }
   }, [focusOnMount])
-
   useLayoutEffect(() => {
     if (!isExpanded || !shouldFocusOnActivateRef.current) return
     shouldFocusOnActivateRef.current = false
-    focusEditor({moveCursorToEnd: shouldMoveCursorToEndOnFocusRef.current})
+    focusEditor({
+      moveCursorToEnd: shouldMoveCursorToEndOnFocusRef.current,
+    })
     shouldMoveCursorToEndOnFocusRef.current = false
   }, [editor, isExpanded])
-
   useEffect(() => {
     if (!isExpanded || !pendingDropRef.current) return
-
     const pendingDrop = pendingDropRef.current
     pendingDropRef.current = null
     const frameId = requestAnimationFrame(() => {
       void insertDroppedFiles(pendingDrop)
     })
-
     return () => cancelAnimationFrame(frameId)
   }, [editor, isExpanded])
-
   useEffect(() => {
     if (!onContentChange) return
-
     const editorDom = editor._tiptapEditor.view.dom
     const handleInsertedFileDrop = () => {
       flushContentChange()
     }
-
     editorDom.addEventListener(FILE_DROP_INSERTED_EVENT, handleInsertedFileDrop)
-
     return () => {
       editorDom.removeEventListener(FILE_DROP_INSERTED_EVENT, handleInsertedFileDrop)
     }
@@ -738,10 +931,8 @@ export function CommentEditor({
   useLayoutEffect(() => {
     if (!isMobile || !isExpanded || !toolbarRef.current) return
     if (typeof window === 'undefined' || !window.visualViewport) return
-
     const viewport = window.visualViewport
     let initialHeight = viewport.height
-
     const handleViewportResize = () => {
       // Detect keyboard opening (viewport shrinks significantly)
       const heightDiff = initialHeight - viewport.height
@@ -763,18 +954,18 @@ export function CommentEditor({
         })
       }
     }, 300)
-
     viewport.addEventListener('resize', handleViewportResize)
-
     return () => {
       clearTimeout(scrollTimeout)
       viewport.removeEventListener('resize', handleViewportResize)
     }
   }, [isMobile, isExpanded])
-
   const getContent = async (
     prepareAttachments: (binaries: Uint8Array[]) => Promise<{
-      blobs: {cid: string; data: Uint8Array}[]
+      blobs: {
+        cid: string
+        data: Uint8Array
+      }[]
       resultCIDs: string[]
     }>,
   ) => {
@@ -796,7 +987,6 @@ export function CommentEditor({
     // TODO: decide if this should be removed
     const binariesToUpload: Uint8Array[] = []
     const blockToIndexMap = new Map<any, number>()
-
     for (const block of blocksWithAttachments) {
       // @ts-expect-error
       if (block.props?.fileBinary) {
@@ -820,7 +1010,6 @@ export function CommentEditor({
           console.error('Failed to parse mediaRef:', e)
           continue
         }
-
         const {draftId, mediaId} = mediaRef
         try {
           const blob = await getDraftMediaBlob(draftId, mediaId)
@@ -861,7 +1050,6 @@ export function CommentEditor({
       // @ts-expect-error
       block.props.displaySrc = ''
     })
-
     const blocks = serverBlockNodesFromEditorBlocks(editor, editorBlocks)
     const blockNodes = blocks.map((b) => b.toJson()) as HMBlockNode[]
     return {
@@ -869,25 +1057,20 @@ export function CommentEditor({
       blobs,
     }
   }
-
   const handleImageClick = () => {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/*,video/*'
     input.multiple = true
-
     input.onchange = async (e) => {
       const files = Array.from((e.target as HTMLInputElement).files || [])
       if (files.length === 0) return
-
       const ttEditor = editor._tiptapEditor
       const pos = ttEditor.view.state.doc.content.size - 4
-
       for (const file of files) {
         const props = await handleDragMedia(file, handleFileAttachment)
         const blockNode = createMediaBlock(file, props)
         if (!blockNode) continue
-
         const blockInfo = getBlockInfoFromPos(ttEditor.view.state, pos)
         editor.insertBlocks(
           // @ts-expect-error
@@ -897,7 +1080,6 @@ export function CommentEditor({
         )
       }
     }
-
     input.click()
   }
 
@@ -922,71 +1104,93 @@ export function CommentEditor({
       submitCallbackRef.current?.()
     }
   }, [submitTrigger])
-
   useEffect(() => {
     return () => {
       if (submitHandleRef) submitHandleRef.current = null
     }
   }, [submitHandleRef])
-
   function onDrop(event: React.DragEvent<HTMLDivElement>) {
     if (!isFileDrag(event.dataTransfer)) return false
-
     const isDropInsideEditor = isExpanded && isPointInsideEditor(event.clientX, event.clientY)
     if (isDropInsideEditor) {
       dragDepthRef.current = 0
       setIsDraggingOver(false)
       return false
     }
-
     event.preventDefault()
     event.stopPropagation()
-
     dragDepthRef.current = 0
     setIsDraggingOver(false)
-
     const files = getDraggedFiles(event.dataTransfer)
     if (!files.length) return false
-
     if (!isExpanded) {
-      pendingDropRef.current = {files, dropTarget: 'append'}
-      activateEditor({focusOnActivate: false})
+      pendingDropRef.current = {
+        files,
+        dropTarget: 'append',
+      }
+      activateEditor({
+        focusOnActivate: false,
+      })
       return true
     }
-
-    void insertDroppedFiles({files, dropTarget: 'append'})
+    void insertDroppedFiles({
+      files,
+      dropTarget: 'append',
+    })
     return true
   }
-
   if (!editor) {
     console.error('CommentEditor: editor is null/undefined')
     return (
-      <div className="border-destructive bg-destructive/10 rounded border p-4">
-        <p className="text-destructive text-sm">Error: Editor failed to initialize. Check console for details.</p>
+      <div
+        className={
+          stylex.props(styles.s62a1961, styles.s19482854, styles.s529492ad, styles.sad8c742c, styles.s1aa17)
+            .className || ''
+        }
+      >
+        <p className={stylex.props(styles.s8a2570e2, styles.sab7cc6fa).className || ''}>
+          Error: Editor failed to initialize. Check console for details.
+        </p>
       </div>
     )
   }
-
   return (
     <>
-      <div className="flex w-full items-start gap-2">
+      <div
+        className={stylex.props(styles.s2ffff9, styles.scdbaf625, styles.s93b5f015, styles.s5d936fb).className || ''}
+      >
         {hideAvatar ? null : (
-          <div className="flex shrink-0 grow-0">
+          <div className={stylex.props(styles.s2ffff9, styles.sf032ed6c, styles.sb63dd8f6).className || ''}>
             {account?.metadata ? (
               <LinkIcon id={account.id} metadata={account.metadata} size={32} />
             ) : (
-              <UIAvatar url={avatarPlaceholder} size={32} onPress={onAvatarPress} className="rounded-full" />
+              <UIAvatar
+                url={avatarPlaceholder}
+                size={32}
+                onPress={onAvatarPress}
+                className={stylex.props(styles.s775755af).className || ''}
+              />
             )}
           </div>
         )}
         <div
           className={cn(
-            'bg-muted border-border dark:border-muted-foreground/20 focus-within:border-ring/60 w-full min-w-0 flex-1 rounded-lg border transition-[filter,border-color,background-color]',
-            isExpanded
-              ? ''
-              : 'hover:border-black/10 hover:brightness-[1.01] active:brightness-95 dark:hover:border-white/10',
-            isDraggingOver &&
-              'border-dashed border-black/20 bg-black/[0.03] brightness-100 dark:border-white/20 dark:bg-white/[0.04]',
+            stylex.props(
+              styles.s5fd609e3,
+              styles.s1a01a0ed,
+              styles.s99d96612,
+              styles.scdbaf625,
+              styles.s3f58665f,
+              styles.sb42feb5d,
+              styles.sf799889b,
+              styles.sad8c742c,
+              styles.s13fb6ae0,
+            ).className || '',
+            stylex.props(styles_2.s8c33650b).className || '',
+            isExpanded ? '' : stylex.props(styles.sd273c872, styles.sc406c202, styles.se04d40a4).className || '',
+            isDraggingOver
+              ? stylex.props(styles.s1ca68c72, styles.se45bb2cf, styles.s9b702119, styles.s7636ce75).className || ''
+              : '',
           )}
           onDragEnter={(event) => {
             if (!isFileDrag(event.dataTransfer)) return
@@ -1026,7 +1230,6 @@ export function CommentEditor({
           onDrop={onDrop}
           onMouseDown={(e) => {
             const target = e.target as HTMLElement
-
             if (
               target.closest(
                 'button, input, textarea, select, a, [role="button"], .ProseMirror, [contenteditable="true"]',
@@ -1034,22 +1237,35 @@ export function CommentEditor({
             ) {
               return
             }
-
             e.preventDefault()
             e.stopPropagation()
-
             if (isExpanded) {
-              focusEditor({moveCursorToEnd: true})
+              focusEditor({
+                moveCursorToEnd: true,
+              })
               return
             }
-
-            activateEditor({moveCursorToEnd: true})
+            activateEditor({
+              moveCursorToEnd: true,
+            })
           }}
         >
           <div
             className={cn(
-              'hm-prose is-comment comment-editor max-h-[160px] min-h-20 w-full min-w-0 flex-1 overflow-x-hidden overflow-y-auto md:max-h-full',
-              isExpanded ? 'justify-start px-3 pt-1 pb-2' : 'justify-center',
+              stylex.props(
+                styles.sd71d1757,
+                styles.sabad945e,
+                styles.scdbaf625,
+                styles.s3f58665f,
+                styles.sb42feb5d,
+                styles.sac38f2ae,
+                styles.s2527420a,
+                styles.s2e59cf20,
+              ).className || '',
+              'hm-prose is-comment comment-editor',
+              isExpanded
+                ? stylex.props(styles.s626516e5, styles.s34b1ae, styles.s345f17, styles.s34a2a8).className || ''
+                : stylex.props(styles.sce22ca32).className || '',
             )}
             // marginTop="$1"
 
@@ -1078,7 +1294,21 @@ export function CommentEditor({
                   activateEditor()
                 }}
                 className={cn(
-                  'text-muted-foreground m-0 h-auto min-h-8 w-full flex-1 items-center justify-start border-0 text-left text-base hover:bg-transparent focus:bg-transparent',
+                  stylex.props(
+                    styles.sf2718385,
+                    styles.s19ed0,
+                    styles.sb41ffff4,
+                    styles.s3f582e18,
+                    styles.scdbaf625,
+                    styles.sb42feb5d,
+                    styles.sc6ed1702,
+                    styles.s626516e5,
+                    styles.s7c401ecf,
+                    styles.sbf63b0a7,
+                    styles.sbf5f1771,
+                    styles.se48265c8,
+                    styles.s6a9aaeac,
+                  ).className || '',
                   'plausible-event-name=Comment+Box+Click',
                 )}
                 variant="ghost"
@@ -1089,24 +1319,47 @@ export function CommentEditor({
             )}
           </div>
           {!hideSubmitToolbar ? (
-            <div ref={toolbarRef} className={cn('mx-2 mb-2 flex gap-2', isMobile ? 'justify-between' : 'justify-end')}>
+            <div
+              ref={toolbarRef}
+              className={cn(
+                stylex.props(styles.s335490, styles.s3301fa, styles.s2ffff9, styles.s5d936fb).className || '',
+                isMobile
+                  ? stylex.props(styles.sc1a629cb).className || ''
+                  : stylex.props(styles.s6044a01e).className || '',
+              )}
+            >
               {isExpanded && isMobile && (
-                <div className="flex items-center gap-2">
-                  <Button size="icon" variant="ghost" className="size-8" onClick={() => setIsMentionsDialogOpen(true)}>
-                    <AtSignIcon className="size-4" />
+                <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb).className || ''}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={stylex.props(styles.sca3de96c).className || ''}
+                    onClick={() => setIsMentionsDialogOpen(true)}
+                  >
+                    <AtSignIcon className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
 
-                  <Button size="icon" variant="ghost" className="size-8" onClick={handleImageClick}>
-                    <ImageIcon className="size-4" />
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={stylex.props(styles.sca3de96c).className || ''}
+                    onClick={handleImageClick}
+                  >
+                    <ImageIcon className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
 
-                  <Button size="icon" variant="ghost" className="size-8" onClick={() => setIsSlashDialogOpen(true)}>
-                    <SlashSquareIcon className="size-4" />
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className={stylex.props(styles.sca3de96c).className || ''}
+                    onClick={() => setIsSlashDialogOpen(true)}
+                  >
+                    <SlashSquareIcon className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
                 </div>
               )}
 
-              <div className="flex gap-2">
+              <div className={stylex.props(styles.s2ffff9, styles.s5d936fb).className || ''}>
                 {submitButton({
                   reset,
                   disabled: !isExpanded,
@@ -1126,7 +1379,12 @@ export function CommentEditor({
             onClose={() => setIsMentionsDialogOpen(false)}
             onSelect={(mention) => {
               const {state, schema} = editor._tiptapEditor
-              const node = schema.nodes['inline-embed'].create({link: packReferenceUrl(mention.id)}, schema.text(' '))
+              const node = schema.nodes['inline-embed'].create(
+                {
+                  link: packReferenceUrl(mention.id),
+                },
+                schema.text(' '),
+              )
               editor._tiptapEditor.view.dispatch(state.tr.replaceSelectionWith(node).scrollIntoView())
               setIsMentionsDialogOpen(false)
               setTimeout(() => editor._tiptapEditor.commands.focus(), 100)

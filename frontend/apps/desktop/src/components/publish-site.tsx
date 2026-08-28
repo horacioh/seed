@@ -34,6 +34,204 @@ import {useAppDialog} from '@shm/ui/universal-dialog'
 import {cn} from '@shm/ui/utils'
 import {AlertTriangle, ArrowLeft, Plus} from 'lucide-react'
 import {CelebrationDotsLeft, CelebrationDotsRight, CongratsGraphic, WebPublishedGraphic} from './publish-graphics'
+const styles_6 = stylex.create({
+  s1aa13: {
+    padding: '0px',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+})
+const styles_5 = stylex.create({
+  s1e767afe: {
+    height: '90vh',
+  },
+  se46f4f49: {
+    maxHeight: '900px',
+  },
+  s4a3a1c3b: {
+    minHeight: '500px',
+  },
+  s34a81de0: {
+    width: '90vw',
+  },
+  s9471d058: {
+    maxWidth: '900px',
+  },
+})
+const styles_4 = stylex.create({
+  s29e9cf5d: {
+    color: 'color-mix(in oklab, var(--color-white) 90%, transparent)',
+  },
+  s6896e772: {
+    textAlign: 'center',
+    color: 'color-mix(in oklab, var(--color-white) 90%, transparent)',
+  },
+  s37514917: {
+    position: 'absolute',
+    top: 'calc(var(--spacing) * 20)',
+    bottom: 'calc(var(--spacing) * 0)',
+    left: 'calc(var(--spacing) * 0)',
+    transformOrigin: 'center',
+    scale: '125% 125%',
+    animation: 'superSlow',
+    animationDelay: '0ms',
+    animationDuration: '3000ms',
+    animationFillMode: 'both',
+    animationName: 'celebration-dots-left',
+    animationTimingFunction: 'ease-in-out',
+  },
+  s96ba1041: {
+    position: 'absolute',
+    top: 'calc(var(--spacing) * 20)',
+    right: 'calc(var(--spacing) * 0)',
+    bottom: 'calc(var(--spacing) * 0)',
+    transformOrigin: 'center',
+    scale: '125% 125%',
+    animation: 'superSlow',
+    animationDelay: '0ms',
+    animationDuration: '3000ms',
+    animationFillMode: 'both',
+    animationName: 'celebration-dots-right',
+    animationTimingFunction: 'ease-in-out',
+  },
+  sdae0eb64: {
+    scale: '100% 100%',
+    transform: 'translateY(0px)',
+    animation: 'bounce',
+    opacity: '100%',
+    animationDelay: '0ms',
+    animationDuration: '1000ms',
+    animationFillMode: 'both',
+  },
+  sb7118a4e: {
+    marginBottom: 'calc(var(--spacing) * 4)',
+    textAlign: 'center',
+    color: 'color-mix(in oklab, var(--color-white) 90%, transparent)',
+  },
+  saf201133: {
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    color: 'var(--tone-gray-500)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--hover-gray-500-200)',
+      },
+    },
+  },
+  s2a8ff184: {
+    display: 'flex',
+    maxWidth: '600px',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+  },
+  s25946b0e: {
+    display: 'flex',
+    minHeight: '100px',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'var(--color-blue-700)',
+    padding: 'calc(var(--spacing) * 3)',
+  },
+  s697673a8: {
+    color: 'color-mix(in oklab, var(--color-black) 80%, transparent)',
+  },
+  s8ad434fc: {
+    marginLeft: '38px',
+    display: 'flex',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    backgroundColor: 'var(--color-blue-50)',
+    padding: 'calc(var(--spacing) * 1)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+  },
+  sdc1cec07: {
+    width: 'calc(var(--spacing) * 3)',
+    height: 'calc(var(--spacing) * 3)',
+    color: 'color-mix(in oklab, var(--color-white) 60%, transparent)',
+  },
+  s29e9cf00: {
+    color: 'color-mix(in oklab, var(--color-white) 60%, transparent)',
+  },
+  s6896e753: {
+    textAlign: 'center',
+    color: 'color-mix(in oklab, var(--color-white) 80%, transparent)',
+  },
+  s29e9cf3e: {
+    color: 'color-mix(in oklab, var(--color-white) 80%, transparent)',
+  },
+  saf3fbfcc: {
+    color: 'var(--color-blue-300)',
+    textUnderlineOffset: '4px',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--color-blue-400)',
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s35f85648: {
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    color: 'color-mix(in oklab, var(--color-white) 60%, transparent)',
+  },
+  sfa694da5: {
+    margin: 'calc(var(--spacing) * 2)',
+    height: 'auto',
+    alignSelf: 'stretch',
+    color: 'color-mix(in oklab, var(--color-white) 60%, transparent)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--color-white)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s2048c84c: {
+    borderColor: 'var(--link-hover)',
+    backgroundColor: 'var(--link)',
+  },
+  s56cab6b3: {
+    cursor: 'default',
+    opacity: '50%',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_2 = stylex.create({
+  s93f58cc2: {
+    margin: 'auto',
+    display: 'flex',
+    maxWidth: '36rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 6)',
+  },
+  sac19d04a: {
+    display: 'flex',
+    maxWidth: '28rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s46c116c8: {
+    width: '100%',
+    maxWidth: '48rem',
+    borderRadius: '0.375rem',
+    backgroundColor: '#000',
+    padding: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   s2b00eca2: {
     display: 'flex',
@@ -345,8 +543,10 @@ const styles = stylex.create({
 })
 export function usePublishSite() {
   return useAppDialog(PublishSiteDialog, {
-    className: 'h-[90vh] max-h-[900px] min-h-[500px] w-[90vw] max-w-[900px]',
-    contentClassName: 'p-0 overflow-hidden',
+    className:
+      stylex.props(styles_5.s1e767afe, styles_5.se46f4f49, styles_5.s4a3a1c3b, styles_5.s34a81de0, styles_5.s9471d058)
+        .className || '',
+    contentClassName: stylex.props(styles_6.s1aa13, styles_6.s92852dd5).className || '',
   })
 }
 export function useRemoveSiteDialog() {
@@ -400,7 +600,7 @@ function PublishDialogContainer({
   backButton?: React.ReactNode
 }>) {
   return (
-    <div className="m-auto flex max-w-xl flex-col gap-6">
+    <div className={stylex.props(styles_2.s93f58cc2).className || ''}>
       {heading ? (
         <SizableText size="3xl" weight="bold" className={stylex.props(styles.s65e234f5).className || ''}>
           {heading}
@@ -415,7 +615,7 @@ function SeedHostHeader() {
   return (
     <div className={stylex.props(styles.s3fc16554).className || ''}>
       <SeedHost color="#ffffff" size={32} />
-      <Text weight="bold" size="lg" className="text-white/90">
+      <Text weight="bold" size="lg" className={stylex.props(styles_4.s29e9cf5d).className || ''}>
         Hosting by Seed Hypermedia
       </Text>
     </div>
@@ -437,7 +637,7 @@ function SeedHostContainer({
       {backButton ? <div className={stylex.props(styles.s44b652db).className || ''}>{backButton}</div> : null}
       <div className={stylex.props(styles.s5f2b48b4).className || ''}>
         {heading ? (
-          <Text weight="bold" size="lg" className="text-center text-white/90">
+          <Text weight="bold" size="lg" className={stylex.props(styles_4.s6896e772).className || ''}>
             {heading}
           </Text>
         ) : null}
@@ -459,21 +659,17 @@ function SeedHostCongratsContainer({
 }>) {
   return (
     <div className={stylex.props(styles.sdf8470a3).className || ''}>
-      <div className="absolute top-20 bottom-0 left-0 [transform-origin:center] scale-125 animate-[superSlow] [animation-delay:0ms] [animation-duration:3000ms] [animation-fill-mode:both] [animation-name:celebration-dots-left] [animation-timing-function:ease-in-out]">
+      <div className={stylex.props(styles_4.s37514917).className || ''}>
         <CelebrationDotsLeft />
       </div>
-      <div className="absolute top-20 right-0 bottom-0 [transform-origin:center] scale-125 animate-[superSlow] [animation-delay:0ms] [animation-duration:3000ms] [animation-fill-mode:both] [animation-name:celebration-dots-right] [animation-timing-function:ease-in-out]">
+      <div className={stylex.props(styles_4.s96ba1041).className || ''}>
         <CelebrationDotsRight />
       </div>
       <SeedHostHeader />
       <div className={stylex.props(styles.s5f2b48b5).className || ''}>
-        {graphic ? (
-          <div className="scale-100 [transform:translateY(0px)] animate-[bounce] opacity-100 [animation-delay:0ms] [animation-duration:1000ms] [animation-fill-mode:both]">
-            {graphic}
-          </div>
-        ) : null}
+        {graphic ? <div className={stylex.props(styles_4.sdae0eb64).className || ''}>{graphic}</div> : null}
         {heading ? (
-          <Text weight="bold" size="lg" className="mb-4 text-center text-white/90">
+          <Text weight="bold" size="lg" className={stylex.props(styles_4.sb7118a4e).className || ''}>
             {heading}
           </Text>
         ) : null}
@@ -538,7 +734,7 @@ function PublishSiteDialog({
   )
 }
 function DialogInner(props: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...props} className={cn(props.className, 'flex max-w-md flex-col gap-2')} />
+  return <div {...props} className={cn(props.className, stylex.props(styles_2.sac19d04a).className || '')} />
 }
 function BlueButton(props: ButtonProps) {
   return <Button {...props} variant="blue" />
@@ -581,7 +777,7 @@ function PublishOptionButton({
 function BackButton({onPress}: {onPress: () => void}) {
   return (
     <Button size="icon" onClick={onPress} variant="ghost">
-      <ArrowLeft className="size-4 text-gray-500 dark:text-gray-400" />
+      <ArrowLeft className={stylex.props(styles_4.saf201133).className || ''} />
     </Button>
   )
 }
@@ -594,7 +790,7 @@ function SeedHostInfo({info, onSubmit}: {info: HostInfoResponse; onSubmit: () =>
     )
   }
   return (
-    <div className="flex max-w-[600px] flex-col items-center justify-center gap-3">
+    <div className={stylex.props(styles_4.s2a8ff184).className || ''}>
       <SizableText className={stylex.props(styles.s236e44da).className || ''}>
         Seed offers free server hosting with a generous storage and bandwidth limit, perfect for getting started. If
         your needs grow beyond the free tier, you can easily purchase additional capacity to scale seamlessly.
@@ -672,8 +868,8 @@ function SelectPlanButton({
         onClick={onClick}
         className={cn(
           stylex.props(styles.s558e1da5).className || '',
-          active && 'border-link-hover bg-link',
-          disabled ? 'cursor-default opacity-50' : 'cursor-pointer',
+          stylex.props(active && styles_3.s2048c84c).className || '',
+          stylex.props(disabled ? styles_3.s56cab6b3 : styles_3.sc7847ec6).className || '',
         )}
         disabled={disabled}
       >
@@ -701,12 +897,7 @@ function siteCountLabel(count: number) {
   return `${count} Spaces`
 }
 const PlanHeading = ({className, ...props}: React.HTMLAttributes<HTMLDivElement>) => {
-  return (
-    <div
-      className={cn('flex min-h-[100px] flex-col items-center border-b border-blue-700 p-3', className)}
-      {...props}
-    />
-  )
+  return <div className={cn(stylex.props(styles_4.s25946b0e).className || '', className)} {...props} />
 }
 const PlanTitle = ({className, ...props}: TextProps) => {
   return (
@@ -753,7 +944,7 @@ function PlanFeature({label, plus}: {label: string; plus?: string}) {
       {plus ? (
         <PlusLabel>
           <Plus className={stylex.props(styles.sca3de968).className || ''} />
-          <FeatureText className="text-black/80">{plus}</FeatureText>
+          <FeatureText className={stylex.props(styles_4.s697673a8).className || ''}>{plus}</FeatureText>
         </PlusLabel>
       ) : null}
     </div>
@@ -766,7 +957,7 @@ const PlanFeatures = ({className, ...props}: React.HTMLAttributes<HTMLDivElement
   return <div className={cn(stylex.props(styles.se3416853).className || '', className)} {...props} />
 }
 const PlusLabel = ({className, ...props}: React.HTMLAttributes<HTMLDivElement>) => {
-  return <div className={cn('ml-[38px] flex gap-2 rounded-sm bg-blue-50 p-1 px-2', className)} {...props} />
+  return <div className={cn(stylex.props(styles_4.s8ad434fc).className || '', className)} {...props} />
 }
 const PlanContainer = ({className, ...props}: React.HTMLAttributes<HTMLDivElement>) => {
   return <div className={cn(stylex.props(styles.sffd1579).className || '', className)} {...props} />
@@ -875,8 +1066,8 @@ function SeedHostLogin({onAuthenticated, onBack}: {onAuthenticated: () => void; 
         backButton={<BackButton onPress={onBack} />}
         footer={
           <Button onClick={reset} size="sm" className={stylex.props(styles.s2f77d9f6).className || ''}>
-            <X className="size-3 text-white/60" />
-            <span className="text-white/60">Cancel Login</span>
+            <X className={stylex.props(styles_4.sdc1cec07).className || ''} />
+            <span className={stylex.props(styles_4.s29e9cf00).className || ''}>Cancel Login</span>
           </Button>
         }
       >
@@ -888,7 +1079,7 @@ function SeedHostLogin({onAuthenticated, onBack}: {onAuthenticated: () => void; 
             </>
           ) : (
             <>
-              <SizableText className="text-center text-white/80">
+              <SizableText className={stylex.props(styles_4.s6896e753).className || ''}>
                 We sent a verification link to {email}. Click on it, and you will be logged in here.
               </SizableText>
               <div className={stylex.props(styles.s9a378369).className || ''}>
@@ -980,7 +1171,7 @@ function SeedHostRegisterSubdomain({
       backButton={<BackButton onPress={onBack} />}
       footer={
         <div className={stylex.props(styles.s86ff3e2).className || ''}>
-          <SizableText size="sm" className="text-white/80">
+          <SizableText size="sm" className={stylex.props(styles_4.s29e9cf3e).className || ''}>
             Logged in as{' '}
           </SizableText>
 
@@ -989,7 +1180,7 @@ function SeedHostRegisterSubdomain({
               <Button
                 variant="link"
                 size="xs"
-                className="text-blue-300 underline-offset-4 hover:text-blue-400 hover:underline"
+                className={stylex.props(styles_4.saf3fbfcc).className || ''}
                 onClick={() => {
                   onLogout()
                   logout()
@@ -998,15 +1189,15 @@ function SeedHostRegisterSubdomain({
                 {email}
               </Button>
             </HoverCardTrigger>
-            <HoverCardContent className="dark w-full max-w-3xl rounded-lg bg-black p-2">
+            <HoverCardContent className={stylex.props(styles_2.s46c116c8).className || ''}>
               <div className={stylex.props(styles.s21672183).className || ''}>
-                <SizableText size="sm" className="text-white/80">
+                <SizableText size="sm" className={stylex.props(styles_4.s29e9cf3e).className || ''}>
                   Logged into{' '}
-                  <Text weight="bold" className="text-white/90">
+                  <Text weight="bold" className={stylex.props(styles_4.s29e9cf5d).className || ''}>
                     {hostnameStripProtocol(SEED_HOST_URL)}
                   </Text>{' '}
                   as{' '}
-                  <Text weight="bold" className="text-white/90">
+                  <Text weight="bold" className={stylex.props(styles_4.s29e9cf5d).className || ''}>
                     {email}
                   </Text>
                 </SizableText>
@@ -1058,7 +1249,7 @@ function SeedHostRegisterSubdomain({
   )
 }
 function AnimatedSpinner({isVisible}: {isVisible: boolean}) {
-  return <Spinner className={isVisible ? 'opacity-100' : 'opacity-0'} />
+  return <Spinner className={stylex.props(isVisible ? styles_3.s486c2d2f : styles_3.s765a26ee).className || ''} />
 }
 function ErrorBox({error}: {error: string | null}) {
   if (!error) return null
@@ -1086,12 +1277,14 @@ function SeedHostSubdomainPublished({
       graphic={<WebPublishedGraphic />}
       footer={
         <div className={stylex.props(styles.sfbc6e28f).className || ''}>
-          <SizableText className="text-white/80">Now you can publish the space to your own domain.</SizableText>
+          <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+            Now you can publish the space to your own domain.
+          </SizableText>
 
           <div className={stylex.props(styles.se658ac15).className || ''}>
             <Button onClick={onClose}>
-              <Check className="size-4 text-white/60" />
-              <span className="text-white/60">Close</span>
+              <Check className={stylex.props(styles_4.s35f85648).className || ''} />
+              <span className={stylex.props(styles_4.s29e9cf00).className || ''}>Close</span>
             </Button>
             <BlueButton onClick={onCustomDomain}>
               <ArrowRight className={stylex.props(styles.sca3de968).className || ''} />
@@ -1101,7 +1294,9 @@ function SeedHostSubdomainPublished({
         </div>
       }
     >
-      <SizableText className="text-white/80">Here is the link to your new space.</SizableText>
+      <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+        Here is the link to your new space.
+      </SizableText>
       <PublishedUrl url={host} />
     </SeedHostCongratsContainer>
   )
@@ -1130,7 +1325,7 @@ function PublishedUrl({url}: {url: string}) {
             <Button
               variant="ghost"
               size="icon"
-              className="m-2 h-auto self-stretch text-white/60 hover:text-white"
+              className={stylex.props(styles_4.sfa694da5).className || ''}
               onClick={() => {
                 copyTextToClipboard(url)
                 toast(`Copied ${url} URL`)
@@ -1152,8 +1347,10 @@ function PublishedUrl({url}: {url: string}) {
 const activelyWatchedDomainIds = new Set<string>()
 export function useSeedHostDialog() {
   const {open, content} = useAppDialog(SeedHostDomainPublishedDialog, {
-    className: 'h-[90vh] max-h-[900px] min-h-[500px] w-[90vw] max-w-[900px]',
-    contentClassName: 'p-0',
+    className:
+      stylex.props(styles_5.s1e767afe, styles_5.se46f4f49, styles_5.s4a3a1c3b, styles_5.s34a81de0, styles_5.s9471d058)
+        .className || '',
+    contentClassName: stylex.props(styles_6.s1aa13).className || '',
   })
   const {pendingDomains} = useHostSession()
   const watchingDomainsInProgress = useRef<
@@ -1219,7 +1416,9 @@ function SeedHostDomainPublishedDialog({
 function SeedHostDomainPublished({onClose, host, id}: {onClose: () => void; host: string; id: UnpackedHypermediaId}) {
   return (
     <SeedHostCongratsContainer heading={`Now Published to ${host}!`} graphic={<CongratsGraphic />}>
-      <SizableText className="text-white/80">Here is the link for your space.</SizableText>
+      <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+        Here is the link for your space.
+      </SizableText>
       <PublishedUrl url={`https://${host}`} />
       <div className={stylex.props(styles.s2ffff9).className || ''}>
         <BlueButton onClick={onClose}>
@@ -1305,14 +1504,20 @@ function SeedHostRegisterCustomDomain({
         </DialogInner>
       )
     } else if (pendingDomain?.status === 'initializing') {
-      pendingStatus = <SizableText className="text-white/80">Initializing your domain…</SizableText>
+      pendingStatus = (
+        <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+          Initializing your domain…
+        </SizableText>
+      )
     }
     return (
       <SeedHostContainer
         heading="Set Up Custom Domain"
         footer={
           <div className={stylex.props(styles.sfbc6e28f).className || ''}>
-            <SizableText className="text-white/80">You can close this dialog and keep using the app.</SizableText>
+            <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+              You can close this dialog and keep using the app.
+            </SizableText>
             <BlueButton onClick={onClose}>Close</BlueButton>
           </div>
         }
@@ -1335,8 +1540,10 @@ function SeedHostRegisterCustomDomain({
       {siteUrl ? (
         <>
           <DialogInner>
-            <SizableText className="text-white/80">You can now publish to a domain that you own.</SizableText>
-            <SizableText className="text-white/80">
+            <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+              You can now publish to a domain that you own.
+            </SizableText>
+            <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
               On the next step you will be asked to update your DNS settings to point to the Seed Host service.
             </SizableText>
             <form onSubmit={handleSubmit(onSubmit)} className={stylex.props(styles.sfbc6e290).className || ''}>
@@ -1371,7 +1578,9 @@ function SeedHostRegisterCustomDomain({
           </DialogInner>
         </>
       ) : (
-        <SizableText className="text-white/80">You need to publish your space first.</SizableText>
+        <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+          You need to publish your space first.
+        </SizableText>
       )}
     </SeedHostContainer>
   )
@@ -1380,18 +1589,20 @@ export function DNSInstructions({hostname, siteUrl}: {hostname: string; siteUrl:
   const isSubd = isSubdomain(hostname)
   return (
     <div className={stylex.props(styles.sfbc6e28f).className || ''}>
-      <SizableText className="text-white/80">Now is your time to change the DNS record for your domain.</SizableText>
-      <SizableText className="text-white/80">
+      <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
+        Now is your time to change the DNS record for your domain.
+      </SizableText>
+      <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
         Set the{' '}
-        <Text weight="bold" className="text-white/90">
+        <Text weight="bold" className={stylex.props(styles_4.s29e9cf5d).className || ''}>
           {hostname}
         </Text>{' '}
         {isSubd ? 'CNAME' : 'ALIAS'} record to{' '}
-        <Text weight="bold" className="text-white/90">
+        <Text weight="bold" className={stylex.props(styles_4.s29e9cf5d).className || ''}>
           {hostnameStripProtocol(siteUrl)}.
         </Text>
       </SizableText>
-      <SizableText className="text-white/80">
+      <SizableText className={stylex.props(styles_4.s29e9cf3e).className || ''}>
         Once you update the DNS, it usually takes 10 minutes to propagate. Keep the app open until then.
       </SizableText>
     </div>

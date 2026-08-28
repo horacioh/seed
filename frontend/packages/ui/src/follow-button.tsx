@@ -1,5 +1,25 @@
 import * as stylex from '@stylexjs/stylex'
 import {UserCheck, UserPlus} from 'lucide-react'
+const styles_2 = stylex.create({
+  s2369980f: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--surface-gray)',
+    padding: 'calc(var(--spacing) * 2)',
+    fontWeight: 'var(--font-weight-bold)',
+    boxShadow: 'var(--shadow-lg)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-gray-100)',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -18,11 +38,7 @@ export interface FollowButtonProps {
  */
 export function FollowButton({onClick, disabled, isFollowing}: FollowButtonProps) {
   return (
-    <button
-      className="flex items-center gap-2 rounded-lg bg-white p-2 font-bold shadow-lg transition-colors hover:bg-gray-100 dark:bg-gray-800"
-      onClick={onClick}
-      disabled={disabled}
-    >
+    <button className={stylex.props(styles_2.s2369980f).className || ''} onClick={onClick} disabled={disabled}>
       {isFollowing ? (
         <>
           <UserCheck className={stylex.props(styles.sca3de968).className || ''} />

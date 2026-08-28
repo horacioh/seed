@@ -27,6 +27,153 @@ import {Fragment} from '@tiptap/pm/model'
 import {NodeSelection, TextSelection} from 'prosemirror-state'
 import {FocusEvent, Profiler, useCallback, useEffect, useMemo, useState} from 'react'
 import {HMBlockSchema} from './schema'
+const styles_5 = stylex.create({
+  s67010d77: {
+    position: 'absolute',
+  },
+  sbe0abfea: {
+    left: 'calc(0.25rem * 0)',
+  },
+  s382471: {
+    zIndex: '20',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  s6044a01e: {
+    justifyContent: 'flex-end',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s3824af: {
+    zIndex: '40',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_4 = stylex.create({
+  s2ad763f: {
+    marginInline: 'calc(0.25rem * -4)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s11f8a88a: {
+    borderColor: 'var(--muted)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  sa832a59: {
+    left: 'calc(0.25rem * -2)',
+  },
+  s5360d9ad: {
+    top: 'calc(0.25rem * -2)',
+  },
+  s3824af: {
+    zIndex: '40',
+  },
+  sa49bd51f: {
+    height: '260px',
+  },
+  s5eeac68b: {
+    minHeight: '80%',
+  },
+  s2d275e4a: {
+    width: 'calc(100% + 16px)',
+  },
+  s92bcf7b9: {
+    maxWidth: '800px',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+})
+const styles_3 = stylex.create({
+  s3f5459e4: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--background)',
+      },
+    },
+    backgroundColor: 'var(--surface-contrast)',
+  },
+  s2130529a: {
+    backgroundColor: 'var(--background)',
+    zIndex: '30',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '350px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(var(--spacing) * 4)',
+    boxShadow: 'var(--shadow-lg)',
+  },
+  sb6c02e55: {
+    borderColor: 'var(--border)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--input)',
+      },
+    },
+    height: 'calc(var(--spacing) * 9)',
+    gap: 'calc(var(--spacing) * 2)',
+    overflow: 'hidden',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_2 = stylex.create({
+  sdfc9511e: {
+    maxWidth: '100%',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+  },
+})
 const styles = stylex.create({
   s533430e6: {
     backgroundColor: 'var(--muted)',
@@ -157,7 +304,9 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
   useEditorSelectionChange(editor, updateSelection)
   const assign = useCallback(
     (props: Partial<EditorQueryBlock['props']>) => {
-      editor.updateBlock(block.id, {props} as any)
+      editor.updateBlock(block.id, {
+        props,
+      } as any)
     },
     [editor, block.id],
   )
@@ -216,7 +365,10 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     <div
       // @ts-ignore
       contentEditable={false}
-      className={`group -mx-4 flex flex-col px-4 select-none`}
+      className={
+        stylex.props(styles_4.s2ad763f, styles_4.s2ffff9, styles_4.sa145969, styles_4.s67e351ac, styles_4.s34b1af)
+          .className || ''
+      }
       onFocusCapture={() => setIsFocusedWithin(true)}
       onBlurCapture={handleBlurCapture}
     >
@@ -327,9 +479,24 @@ function QuerySettings({
   return (
     <>
       <div
-        className={`query-settings editor-controls absolute left-0 z-20 flex h-full w-full items-start justify-end gap-2 p-2 ${
-          popoverState.open ? 'z-40 opacity-100' : 'z-20 opacity-0'
-        } group-hover:opacity-100`}
+        className={
+          (stylex.props(
+            styles_5.s67010d77,
+            styles_5.sbe0abfea,
+            styles_5.s382471,
+            styles_5.s2ffff9,
+            styles_5.sb42244d4,
+            styles_5.scdbaf625,
+            styles_5.s93b5f015,
+            styles_5.s6044a01e,
+            styles_5.s5d936fb,
+            styles_5.s1aa15,
+          ).className || '') +
+          ' ' +
+          (popoverState.open
+            ? stylex.props(styles_5.s3824af, styles_5.s486c2d2f).className || ''
+            : stylex.props(styles_5.s382471, styles_5.s765a26ee).className || '')
+        }
         onClick={
           popoverState.open
             ? (e) => {
@@ -346,7 +513,7 @@ function QuerySettings({
           <Button
             size="icon"
             variant="ghost"
-            className="hover:bg-background bg-white dark:bg-black"
+            className={stylex.props(styles_3.s3f5459e4).className || ''}
             onClick={() => popoverState.onOpenChange(!popoverState.open)}
           >
             <Pencil className={stylex.props(styles.sca3de968).className || ''} />
@@ -356,7 +523,7 @@ function QuerySettings({
         {popoverState.open ? (
           <>
             <div
-              className="bg-background z-30 flex w-full max-w-[350px] flex-col gap-4 rounded-lg p-4 shadow-lg"
+              className={stylex.props(styles_3.s2130529a).className || ''}
               onClick={(e) => {
                 e.stopPropagation()
               }}
@@ -627,14 +794,11 @@ export function QuerySearch({
   const [showSearch, setShowSearch] = useState(false)
   return (
     <div className={stylex.props(styles.sce47739f).className || ''}>
-      <Button
-        onClick={() => setShowSearch(true)}
-        className="border-border hover:bg-input h-9 gap-2 overflow-hidden border"
-      >
+      <Button onClick={() => setShowSearch(true)} className={stylex.props(styles_3.sb6c02e55).className || ''}>
         <Search className={stylex.props(styles.sf8eef924).className || ''} />
         <SizableText
           family="default"
-          className="max-w-full flex-1 truncate text-left"
+          className={stylex.props(styles_2.sdfc9511e).className || ''}
           style={{
             color: selectedDocName ? 'text-foreground' : 'muted-foreground',
           }}
@@ -645,7 +809,26 @@ export function QuerySearch({
       {showSearch ? (
         <>
           <div className={stylex.props(styles.sb344567b).className || ''} onClick={() => setShowSearch(false)} />
-          <div className="no-window-drag border-muted bg-background absolute -top-2 -left-2 z-40 h-[260px] min-h-[80%] w-[calc(100%+16px)] max-w-[800px] rounded-md border p-2 shadow-lg">
+          <div
+            className={
+              stylex.props(
+                styles_4.s11f8a88a,
+                styles_4.s436dc7b6,
+                styles_4.s67010d77,
+                styles_4.sa832a59,
+                styles_4.s5360d9ad,
+                styles_4.s3824af,
+                styles_4.sa49bd51f,
+                styles_4.s5eeac68b,
+                styles_4.s2d275e4a,
+                styles_4.s92bcf7b9,
+                styles_4.sf79988b7,
+                styles_4.sad8c742c,
+                styles_4.s1aa15,
+                styles_4.s8a6c2948,
+              ).className || ''
+            }
+          >
             <SearchInput
               onClose={() => setShowSearch(false)}
               allowWebURL={allowWebURL}

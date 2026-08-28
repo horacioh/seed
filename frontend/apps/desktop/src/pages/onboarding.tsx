@@ -14,6 +14,85 @@ import {GeneralPageSurface} from '@shm/ui/general-page'
 import {toast} from '@shm/ui/toast'
 import {Plus, Search, User} from 'lucide-react'
 import {useState} from 'react'
+const styles_3 = stylex.create({
+  sbac0e4f: {
+    backgroundColor: 'var(--surface)',
+  },
+  sf0a1ef1d: {
+    color: 'var(--muted-foreground)',
+    justifyContent: 'flex-start',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '0px',
+    backgroundColor: 'var(--tone-neutral-100)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--tone-neutral-200)',
+        borderColor: 'var(--tone-neutral-600)',
+      },
+    },
+  },
+  s5c4d64a: {
+    borderColor: 'var(--tone-emerald-600)',
+    color: 'var(--tone-emerald-700)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--tone-emerald-50)',
+        color: 'var(--tone-emerald-700)',
+      },
+    },
+  },
+  s940b6441: {
+    height: '1px',
+    flex: '1',
+    backgroundColor: 'var(--tone-neutral-200-2)',
+  },
+  s69ac63a7: {
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-neutral-400-2)',
+  },
+  s74f1f07e: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    boxShadow: 'var(--shadow-sm)',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        boxShadow: 'var(--shadow-lg)',
+      },
+    },
+  },
+})
+const styles_2 = stylex.create({
+  se584e8f4: {
+    marginInline: 'auto',
+    display: 'flex',
+    height: '100%',
+    maxWidth: '48rem',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 6)',
+    padding: 'calc(0.25rem * 8)',
+  },
+  sa13d15e9: {
+    backgroundColor: 'var(--brand-12)',
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 12)',
+    minWidth: 'calc(0.25rem * 12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+})
 const styles = stylex.create({
   s4ba75b90: {
     fontSize: '1.875rem',
@@ -35,7 +114,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     padding: 'calc(0.25rem * 4)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+    boxShadow: 'var(--shadow-sm)',
   },
   se99caecb: {
     display: 'flex',
@@ -120,10 +199,10 @@ export default function OnboardingPage() {
     }
   }
   return (
-    <PanelContainer className="dark:bg-background bg-white">
+    <PanelContainer className={stylex.props(styles_3.sbac0e4f).className || ''}>
       <MainWrapper scrollable>
         <GeneralPageSurface>
-          <div className="mx-auto flex h-full max-w-3xl flex-col justify-center gap-6 p-8">
+          <div className={stylex.props(styles_2.se584e8f4).className || ''}>
             <h1 className={stylex.props(styles.s4ba75b90).className || ''}>Welcome to Seed Hypermedia 👋</h1>
             <p>A place where people build spaces to share knowledge freely. Where would you like to start?</p>
 
@@ -142,7 +221,7 @@ export default function OnboardingPage() {
                 </div>
                 <Button
                   variant="ghost"
-                  className="text-muted-foreground justify-start gap-2 rounded-full border-0 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className={stylex.props(styles_3.sf0a1ef1d).className || ''}
                   onClick={() =>
                     triggerWindowEvent({
                       type: 'focus_omnibar',
@@ -157,7 +236,7 @@ export default function OnboardingPage() {
               {!hasSelectedSite ? (
                 <div className={stylex.props(styles.s620123df).className || ''}>
                   <div className={stylex.props(styles.se99caecb).className || ''}>
-                    <div className="bg-brand-12 flex min-h-12 min-w-12 items-center justify-center rounded-xl">
+                    <div className={stylex.props(styles_2.sa13d15e9).className || ''}>
                       <Plus className={stylex.props(styles.sca3de96a).className || ''} />
                     </div>
                     <div className={stylex.props(styles.s97dafe42).className || ''}>
@@ -169,7 +248,7 @@ export default function OnboardingPage() {
                   </div>
                   <Button
                     variant="outline"
-                    className="border-emerald-600 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-700 dark:border-emerald-500 dark:text-emerald-300 dark:hover:bg-emerald-950 dark:hover:text-emerald-300"
+                    className={stylex.props(styles_3.s5c4d64a).className || ''}
                     disabled={isCreatingSite}
                     onClick={() => createSiteIntent.requireAccount(createSite)}
                   >
@@ -181,13 +260,13 @@ export default function OnboardingPage() {
             {!selectedAccountId ? (
               <>
                 <div className={stylex.props(styles.scc9904d1).className || ''}>
-                  <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-                  <span className="text-sm text-neutral-400 dark:text-neutral-500">already have an identity?</span>
-                  <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
+                  <div className={stylex.props(styles_3.s940b6441).className || ''} />
+                  <span className={stylex.props(styles_3.s69ac63a7).className || ''}>already have an identity?</span>
+                  <div className={stylex.props(styles_3.s940b6441).className || ''} />
                 </div>
                 <button
                   onClick={() => createAccountDialog.open({})}
-                  className="flex items-center gap-4 rounded-lg border p-4 shadow-sm transition-all hover:shadow-lg"
+                  className={stylex.props(styles_3.s74f1f07e).className || ''}
                 >
                   <div className={stylex.props(styles.sa4ec7fbb).className || ''}>
                     <User className={stylex.props(styles.sf9aeb384).className || ''} />

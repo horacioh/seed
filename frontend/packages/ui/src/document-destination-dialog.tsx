@@ -35,6 +35,151 @@ import {Tooltip} from './tooltip'
 import {cn} from './utils'
 
 /** Destination action supported by the shared document destination dialog. */
+const styles_4 = stylex.create({
+  s9788c16e: {
+    color: 'var(--muted-foreground)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+  },
+  sd3cd2e30: {
+    color: 'var(--muted-foreground)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.16em',
+    textTransform: 'uppercase',
+  },
+  s7152e96b: {
+    color: 'var(--muted-foreground)',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 3)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s74492142: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s216c1c: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 70%, transparent)',
+      },
+    },
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px currentcolor',
+      outlineStyle: 'none',
+    },
+    borderColor: 'var(--border)',
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 14)',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 5)',
+    textAlign: 'left',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sf56212a1: {
+    fontWeight: 'var(--font-weight-medium)',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s73f81684: {
+    maxWidth: 'calc(var(--spacing) * 48)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: 'var(--font-weight-medium)',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  see0718a1: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 32)',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+})
+const styles_3 = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+})
+const styles_2 = stylex.create({
+  s4a34e15b: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 48)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  s2d9023a1: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 5)',
+  },
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sb04ea449: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 40)',
+    flexDirection: 'column',
+  },
+  s8d78a2bd: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'baseline',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+  },
+  s7fd19e27: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s2ad2210b: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+})
 const styles = stylex.create({
   s9c938e0: {
     display: 'flex',
@@ -299,7 +444,7 @@ export function DocumentDestinationDialog({
   }
   if (!isDraftSource && (isLoading || !document)) {
     return (
-      <div className="flex min-h-48 items-center justify-center">
+      <div className={stylex.props(styles_2.s4a34e15b).className || ''}>
         <Spinner />
       </div>
     )
@@ -330,26 +475,26 @@ export function DocumentDestinationDialog({
     }
   }
   return (
-    <div className="flex min-h-0 flex-col gap-5">
+    <div className={stylex.props(styles_2.s2d9023a1).className || ''}>
       <div className={stylex.props(styles.s9c938e0).className || ''}>
-        <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.18em] uppercase">
+        <SizableText className={stylex.props(styles_4.s9788c16e).className || ''}>
           {modeCopy[input.mode].eyebrow}
         </SizableText>
         <DialogTitle className={stylex.props(styles.sece0fd8a).className || ''}>
           <HMIcon id={sourceId} name={sourceTitle} icon={sourceIcon} size={30} />
-          <span className="min-w-0 truncate">{sourceTitle}</span>
+          <span className={stylex.props(styles_2.s64fb8207).className || ''}>{sourceTitle}</span>
         </DialogTitle>
       </div>
 
       <div className={stylex.props(styles.sfbc6e28f).className || ''}>
         <div className={stylex.props(styles.s25987914).className || ''}>
-          <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase">
+          <SizableText className={stylex.props(styles_4.sd3cd2e30).className || ''}>
             {targetParent ? 'Location' : 'Choose a space'}
           </SizableText>
           {targetParent ? <LocationBreadcrumb location={targetParent} onSelect={setTargetParent} /> : null}
         </div>
         <div className={stylex.props(styles.sdef3facc).className || ''}>
-          <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <SearchIcon className={stylex.props(styles_4.s7152e96b).className || ''} />
           <Input
             className={stylex.props(styles.sb1287830).className || ''}
             value={searchQuery}
@@ -378,9 +523,7 @@ export function DocumentDestinationDialog({
 
       <div className={stylex.props(styles.sfbc6e28e).className || ''}>
         <div className={stylex.props(styles.s86ff3e4).className || ''}>
-          <SizableText className="text-muted-foreground text-xs font-semibold tracking-[0.16em] uppercase">
-            URL Path
-          </SizableText>
+          <SizableText className={stylex.props(styles_4.sd3cd2e30).className || ''}>URL Path</SizableText>
           <Tooltip content="This edits only the final URL segment. Choose the parent location above.">
             <Help className={stylex.props(styles.s3566be63).className || ''} />
           </Tooltip>
@@ -401,7 +544,7 @@ export function DocumentDestinationDialog({
           <SizableText
             className={cn(
               stylex.props(styles.se20faa2d).className || '',
-              validationMessage ? 'text-muted-foreground' : 'text-primary',
+              stylex.props(validationMessage ? styles_3.sf2718385 : styles_3.s1bfab962).className || '',
             )}
           >
             {destinationUrl}
@@ -576,7 +719,7 @@ function ChildLocations({
     : null
   return (
     <LocationList emptyLabel={isLoading ? 'Loading locations…' : 'No subdocuments in this location.'}>
-      <div className="bg-muted/30 border-border border-b p-4">
+      <div className={stylex.props(styles_4.s74492142).className || ''}>
         <Button variant="outline" size="sm" onClick={() => (parentLocation ? onSelect(parentLocation) : onClear())}>
           <Back className={stylex.props(styles.sca3de968).className || ''} />
           Back
@@ -602,7 +745,7 @@ function LocationList({children, emptyLabel}: {children: React.ReactNode; emptyL
   const hasChildren = Array.isArray(children) ? children.length > 0 : !!children
   return (
     <ScrollArea className={stylex.props(styles.se6880e46).className || ''}>
-      <div className="flex min-h-40 flex-col">
+      <div className={stylex.props(styles_2.sb04ea449).className || ''}>
         {hasChildren ? (
           children
         ) : (
@@ -626,13 +769,9 @@ function LocationRow({
   onSelect: (location: UnpackedHypermediaId) => void
 }) {
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(id)}
-      className="hover:bg-muted/70 focus-visible:ring-ring border-border flex min-h-14 items-center gap-3 border-b px-5 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none"
-    >
+    <button type="button" onClick={() => onSelect(id)} className={stylex.props(styles_4.s216c1c).className || ''}>
       <HMIcon id={id} name={title} icon={icon} size={28} />
-      <div className="flex min-w-0 flex-1 items-baseline gap-2 overflow-hidden">
+      <div className={stylex.props(styles_2.s8d78a2bd).className || ''}>
         <SizableText className={stylex.props(styles.s37a2594a).className || ''}>{title}</SizableText>
         {suffix ? <SizableText className={stylex.props(styles.s2627021c).className || ''}>{suffix}</SizableText> : null}
       </div>
@@ -663,8 +802,12 @@ function LocationBreadcrumb({
   )
   const ancestors = useResources(ancestorIds)
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-sm">
-      <button type="button" className="font-medium hover:underline" onClick={() => onSelect(hmId(location.uid))}>
+    <div className={stylex.props(styles_2.s7fd19e27).className || ''}>
+      <button
+        type="button"
+        className={stylex.props(styles_4.sf56212a1).className || ''}
+        onClick={() => onSelect(hmId(location.uid))}
+      >
         {siteTitle}
       </button>
       {ancestors.map((ancestor, index) => {
@@ -672,11 +815,11 @@ function LocationBreadcrumb({
         const id = ancestorIds[index]
         if (!id) return null
         return (
-          <span key={id.id} className="flex min-w-0 items-center gap-1.5">
+          <span key={id.id} className={stylex.props(styles_2.s2ad2210b).className || ''}>
             <span className={stylex.props(styles.sf2718385).className || ''}>/</span>
             <button
               type="button"
-              className="max-w-48 truncate font-medium hover:underline"
+              className={stylex.props(styles_4.s73f81684).className || ''}
               onClick={() => onSelect(id)}
             >
               {doc ? getMetadataName(doc.metadata) : id.path?.at(-1)}
@@ -711,7 +854,7 @@ function useDestinationUrl(location: UnpackedHypermediaId | null) {
 }
 function DialogError({message}: {message: string}) {
   return (
-    <div className="border-destructive/30 bg-destructive/10 flex min-h-32 items-center gap-3 rounded-lg border p-4">
+    <div className={stylex.props(styles_4.see0718a1).className || ''}>
       <FileText className={stylex.props(styles.s51ab7e67).className || ''} />
       <SizableText className={stylex.props(styles.s11c1d1bc).className || ''}>{message}</SizableText>
     </div>

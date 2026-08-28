@@ -14,6 +14,25 @@ import {CommentEditorProps, computeHeaderData, PageWrapper} from './resource-pag
 import {Separator} from './separator'
 import {Spinner} from './spinner'
 import {useMedia} from './use-media'
+const styles_2 = stylex.create({
+  sa97a3ae0: {
+    position: 'absolute',
+    top: 'calc(var(--spacing) * 2)',
+    right: 'calc(var(--spacing) * 2)',
+    zIndex: '40',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    '@media ((min-width: 768px))': {
+      top: 'calc(var(--spacing) * 4)',
+      right: 'calc(var(--spacing) * 4)',
+    },
+  },
+})
 const styles = stylex.create({
   s22db9e54: {
     display: 'flex',
@@ -123,22 +142,14 @@ function FeedBody({
   if (isMobile) {
     return (
       <div className={stylex.props(styles.s6ac707c).className || ''}>
-        {actionButtons ? (
-          <div className="absolute top-2 right-2 z-40 flex items-center gap-1 rounded-sm transition-opacity md:top-4 md:right-4">
-            {actionButtons}
-          </div>
-        ) : null}
+        {actionButtons ? <div className={stylex.props(styles_2.sa97a3ae0).className || ''}>{actionButtons}</div> : null}
         {feedContent}
       </div>
     )
   }
   return (
     <div className={stylex.props(styles.sca000771).className || ''}>
-      {actionButtons ? (
-        <div className="absolute top-2 right-2 z-40 flex items-center gap-1 rounded-sm transition-opacity md:top-4 md:right-4">
-          {actionButtons}
-        </div>
-      ) : null}
+      {actionButtons ? <div className={stylex.props(styles_2.sa97a3ae0).className || ''}>{actionButtons}</div> : null}
       <ScrollArea className={stylex.props(styles.sb42244d4).className || ''}>{feedContent}</ScrollArea>
     </div>
   )

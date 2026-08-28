@@ -6,6 +6,107 @@ import {Button} from './button'
 import {Close} from './icons'
 import {Text} from './text'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  sd5b2c253: {
+    pointerEvents: 'auto',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_3 = stylex.create({
+  sd5b893dc: {
+    pointerEvents: 'none',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_2 = stylex.create({
+  scdba75bb: {
+    position: 'fixed',
+    inset: 'calc(var(--spacing) * 0)',
+    zIndex: '50',
+    display: 'flex',
+    height: '100dvh',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    backgroundColor: 'color-mix(in oklab, var(--color-black) 25%, transparent)',
+    paddingTop: 'calc(var(--spacing) * 10)',
+    WebkitBackdropFilter: 'blur(2px)',
+    backdropFilter: 'blur(2px)        ',
+  },
+  s411844c6: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'cubic-bezier(0.22,1,0.36,1)',
+    transitionDuration: '200ms',
+    '@media (prefers-reduced-motion: reduce)': {
+      transitionProperty: 'none',
+    },
+  },
+  s566ebbaa: {
+    pointerEvents: 'none',
+    opacity: '0%',
+  },
+  s24ced1d2: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    display: 'flex',
+    height: '90dvh',
+    maxHeight: '90dvh',
+    width: '100%',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    borderTopLeftRadius: 'var(--radius-3xl)',
+    borderTopRightRadius: 'var(--radius-3xl)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    boxShadow: '0 -20px 60px rgba(0,0,0,0.22)',
+  },
+  sce520b1d: {
+    willChange: 'transform',
+    '@media (prefers-reduced-motion: reduce)': {
+      transitionProperty: 'none',
+    },
+  },
+  s879a70b0: {
+    transitionProperty: 'none',
+  },
+  s7d993993: {
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'cubic-bezier(0.22,1,0.36,1)',
+    transitionDuration: '300ms',
+  },
+  s89d1ab86: {
+    cursor: 'grab',
+    touchAction: 'none',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 6)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    ':active': {
+      cursor: 'grabbing',
+    },
+  },
+  sa534fd37: {
+    backgroundColor: 'color-mix(in oklab, var(--muted-foreground) 30%, transparent)',
+    display: 'block',
+    height: 'calc(var(--spacing) * 1.5)',
+    width: 'calc(var(--spacing) * 12)',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sc231eb58: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
+    paddingBottom: 'env(safe-area-inset-bottom)',
+  },
+})
 const styles = stylex.create({
   sd7a601ea: {
     display: 'flex',
@@ -131,9 +232,15 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
       data-slot="mobile-panel-overlay"
       onClick={onClose}
       className={cn(
-        'fixed inset-0 z-50 flex h-dvh items-end justify-center overflow-hidden bg-black/25 pt-10 backdrop-blur-[2px]',
-        'transition-opacity duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
-        isOpen ? `pointer-events-auto ${isVisible ? 'opacity-100' : 'opacity-0'}` : 'pointer-events-none opacity-0',
+        stylex.props(styles_2.scdba75bb).className || '',
+        stylex.props(styles_2.s411844c6).className || '',
+        isOpen
+          ? (stylex.props(styles_4.sd5b2c253).className || '') +
+              ' ' +
+              (isVisible
+                ? stylex.props(styles_4.s486c2d2f).className || ''
+                : stylex.props(styles_4.s765a26ee).className || '')
+          : stylex.props(styles_3.sd5b893dc, styles_3.s765a26ee).className || '',
       )}
     >
       <div
@@ -146,9 +253,9 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
           transform: isOpen && isVisible ? `translateY(${dragY}px)` : 'translateY(2rem)',
         }}
         className={cn(
-          'bg-background border-border flex h-[90dvh] max-h-[90dvh] w-full flex-col overflow-hidden rounded-t-3xl border-t shadow-[0_-20px_60px_rgba(0,0,0,0.22)]',
-          'will-change-transform motion-reduce:transition-none',
-          isDragging ? 'transition-none' : 'transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]',
+          stylex.props(styles_2.s24ced1d2).className || '',
+          stylex.props(styles_2.sce520b1d).className || '',
+          stylex.props(isDragging ? styles_2.s879a70b0 : styles_2.s7d993993).className || '',
         )}
       >
         <div className={stylex.props(styles.sd7a601ea).className || ''}>
@@ -161,9 +268,9 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
             onPointerMove={handleDragMove}
             onPointerUp={handleDragEnd}
             onPointerCancel={handleDragEnd}
-            className="cursor-grab touch-none rounded-full px-6 py-2 active:cursor-grabbing"
+            className={stylex.props(styles_2.s89d1ab86).className || ''}
           >
-            <span aria-hidden="true" className="bg-muted-foreground/30 block h-1.5 w-12 rounded-full" />
+            <span aria-hidden="true" className={stylex.props(styles_2.sa534fd37).className || ''} />
           </button>
         </div>
 
@@ -185,9 +292,7 @@ export function MobilePanelSheet({isOpen, title, onClose, children}: MobilePanel
         </div>
 
         {/* Content */}
-        <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">
-          {children}
-        </div>
+        <div className={stylex.props(styles_2.sc231eb58).className || ''}>{children}</div>
       </div>
     </div>,
     document.body,

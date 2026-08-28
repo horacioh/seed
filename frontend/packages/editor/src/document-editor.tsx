@@ -1,6 +1,6 @@
+import * as stylex from '@stylexjs/stylex'
 import '@/blocknote/core/style.css'
 import '@/editor.css'
-
 import {hmBlocksToEditorContent} from '@seed-hypermedia/client/hmblock-to-editorblock'
 import {hypermediaUrlToHref, RenderResourceProvider, useOpenUrl, useUniversalAppContext} from '@shm/shared'
 import type {DocumentContentProps} from '@shm/shared/document-content-props'
@@ -54,13 +54,45 @@ import {useBlockBorderDebug} from './use-block-border-debug'
 import {useBlockHighlight} from './use-block-highlight'
 import {useReadOnlyClickToEdit} from './use-readonly-click-to-edit'
 import {selectAllEditorContent} from './utils'
-
+const styles = stylex.create({
+  s597c48d: {
+    display: 'block',
+  },
+  sa965d1f6: {
+    height: '500px',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s9faef944: {
+    cursor: 'text',
+  },
+  s67b03301: {
+    appearance: 'none',
+  },
+  s7c401ecf: {
+    borderStyle: 'solid',
+    borderWidth: '0px',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+})
 export type {DocumentContentProps}
 
 /** Return whether editor blocks changed compared to the previous serialized snapshot. */
 export function getEditorBlocksChange(previousKey: string | null, blocks: unknown[]) {
   const nextKey = JSON.stringify(blocks)
-  return {changed: previousKey !== null && previousKey !== nextKey, nextKey}
+  return {
+    changed: previousKey !== null && previousKey !== nextKey,
+    nextKey,
+  }
 }
 
 /** Block types (data-content-type values) that trigger edit mode on click. */
@@ -88,7 +120,6 @@ export function shouldRequirePublishForBlockAction({
   if (isBlockInPublishedVersion) return !isBlockInPublishedVersion(blockId)
   return !!isUnpublishedDraft
 }
-
 function setEditorRootChildrenType(
   editor: BlockNoteEditor<HMBlockSchema>,
   childrenType: DocumentContentProps['rootChildrenType'],
@@ -96,10 +127,8 @@ function setEditorRootChildrenType(
   const view = editor._tiptapEditor?.view
   const rootGroup = view?.state.doc.firstChild
   if (!view || rootGroup?.type.name !== 'blockChildren') return
-
   const listType = childrenType || 'Group'
   if (rootGroup.attrs.listType === listType) return
-
   view.dispatch(
     view.state.tr.setNodeMarkup(0, null, {
       ...rootGroup.attrs,
@@ -107,14 +136,15 @@ function setEditorRootChildrenType(
     }),
   )
 }
-
 function removeDeletedDocumentEmbedsFromEditorBlocks(
   blocks: any[],
-  input: {deletedDocumentId: string; removedBlockIds?: string[]},
+  input: {
+    deletedDocumentId: string
+    removedBlockIds?: string[]
+  },
 ) {
   const removed = new Set(input.removedBlockIds ?? [])
   const actualRemovedBlockIds: string[] = []
-
   const expandBlock = (block: any): any[] => {
     const children = Array.isArray(block?.children) ? block.children : []
     const url = block?.props?.url
@@ -125,15 +155,18 @@ function removeDeletedDocumentEmbedsFromEditorBlocks(
       if (block?.id) actualRemovedBlockIds.push(block.id)
       return children.flatMap(expandBlock)
     }
-    return [{...block, children: children.flatMap(expandBlock)}]
+    return [
+      {
+        ...block,
+        children: children.flatMap(expandBlock),
+      },
+    ]
   }
-
   return {
     content: blocks.flatMap(expandBlock),
     removedBlockIds: actualRemovedBlockIds,
   }
 }
-
 export function DocumentEditor({
   blocks,
   resourceId,
@@ -158,8 +191,16 @@ export function DocumentEditor({
   isBlockInPublishedVersion,
 }: DocumentContentProps) {
   const [publishRequiredDialog, setPublishRequiredDialog] = useState<
-    {open: false} | {open: true; intent: 'copy-link' | 'comment'}
-  >({open: false})
+    | {
+        open: false
+      }
+    | {
+        open: true
+        intent: 'copy-link' | 'comment'
+      }
+  >({
+    open: false,
+  })
   const openUrl = useOpenUrl()
   const {hmUrlHref, openRouteNewWindow, origin, originHomeId, experiments} = useUniversalAppContext()
   const getImageUrl = useImageUrl()
@@ -176,20 +217,20 @@ export function DocumentEditor({
       }) || url,
     [hmUrlHref, origin, originHomeId],
   )
-
   const canEditRef = useRef(canEdit)
   canEditRef.current = canEdit
   const citationFragmentClickRef = useRef(onCitationFragmentClick)
   citationFragmentClickRef.current = onCitationFragmentClick
-
   const onEditStart = useCallback(
     (cursorPosition?: EditCursorPosition | null) => {
       // console.log('[DocEditor] sending edit.start', {state: actorRef.getSnapshot().value})
-      actorRef.send({type: 'edit.start', cursorPosition})
+      actorRef.send({
+        type: 'edit.start',
+        cursorPosition,
+      })
     },
     [actorRef],
   )
-
   const onTextSelectionRef = useRef(onTextSelection)
   onTextSelectionRef.current = onTextSelection
 
@@ -213,7 +254,6 @@ export function DocumentEditor({
     frozenBlocksRef.current = null
   }
   const effectiveBlocks = frozenBlocksRef.current ?? blocks
-
   const initialContent = useMemo(() => {
     // Detect format: HMBlockNode has { block, children }, EditorBlock has { type, id } at top level.
     // Draft content is saved in EditorBlock format (editor.topLevelBlocks) and does NOT
@@ -222,10 +262,17 @@ export function DocumentEditor({
     const isEditorFormat = first != null && 'type' in first && !('block' in first)
     const editorBlocks = isEditorFormat
       ? (effectiveBlocks as any[])
-      : hmBlocksToEditorContent(effectiveBlocks, {childrenType: 'Group'})
-    return editorBlocks.length > 0 ? editorBlocks : [{type: 'paragraph' as const}]
+      : hmBlocksToEditorContent(effectiveBlocks, {
+          childrenType: 'Group',
+        })
+    return editorBlocks.length > 0
+      ? editorBlocks
+      : [
+          {
+            type: 'paragraph' as const,
+          },
+        ]
   }, [effectiveBlocks])
-
   const editor = useBlockNote<HMBlockSchema>(
     {
       editable: false,
@@ -234,14 +281,23 @@ export function DocumentEditor({
       blockSchema: hmBlockSchema,
       importWebFile: importWebFile as any,
       handleFileAttachment: handleFileAttachment as any,
-      getSlashMenuItems: () => getSlashMenuItems({docId: resourceId, onCreateInlineDraft}),
+      getSlashMenuItems: () =>
+        getSlashMenuItems({
+          docId: resourceId,
+          onCreateInlineDraft,
+        }),
       onEditorContentChange(editor) {
         if (suppressChangeRef.current) return
         const {changed, nextKey} = getEditorBlocksChange(lastEditorContentKeyRef.current, editor.topLevelBlocks)
         lastEditorContentKeyRef.current = nextKey
         if (!changed) return
-        actorRef.send({type: 'childDraftRefs.changed', draftIds: collectChildDraftIds(editor.topLevelBlocks)})
-        actorRef.send({type: 'change'})
+        actorRef.send({
+          type: 'childDraftRefs.changed',
+          draftIds: collectChildDraftIds(editor.topLevelBlocks),
+        })
+        actorRef.send({
+          type: 'change',
+        })
       },
       initialContent,
       rootChildrenType: rootChildrenType || 'Group',
@@ -263,7 +319,10 @@ export function DocumentEditor({
               ed,
               {
                 type: 'embed',
-                props: {url: resolvedHmUrl, view: 'Content'},
+                props: {
+                  url: resolvedHmUrl,
+                  view: 'Content',
+                },
               } as any,
               true,
             )
@@ -275,7 +334,11 @@ export function DocumentEditor({
           Extension.create({
             name: 'hypermedia-link',
             addProseMirrorPlugins() {
-              return [createHypermediaDocLinkPlugin({domainResolver: linkExtensionOptions?.domainResolver}).plugin]
+              return [
+                createHypermediaDocLinkPlugin({
+                  domainResolver: linkExtensionOptions?.domainResolver,
+                }).plugin,
+              ]
             },
           }),
           Extension.create({
@@ -296,7 +359,9 @@ export function DocumentEditor({
                         if ((event.metaKey || event.ctrlKey) && event.key === 'a') {
                           event.preventDefault()
                           event.stopPropagation()
-                          return selectAllEditorContent({view})
+                          return selectAllEditorContent({
+                            view,
+                          })
                         }
                         return false
                       },
@@ -312,7 +377,6 @@ export function DocumentEditor({
             addProseMirrorPlugins() {
               const pluginKey = new PluginKey('documentTextSelectionObserver')
               let lastSelectionKey: string | null = null
-
               return [
                 new Plugin({
                   key: pluginKey,
@@ -320,12 +384,10 @@ export function DocumentEditor({
                     update(view, prevState) {
                       const selection = view.state.selection
                       if (selection.eq(prevState.selection)) return
-
                       if (!(selection instanceof TextSelection)) {
                         lastSelectionKey = null
                         return
                       }
-
                       const selectionKey = getDocumentSelectionObserverKey(selection)
                       if (selectionKey === lastSelectionKey) return
                       lastSelectionKey = selectionKey
@@ -342,7 +404,9 @@ export function DocumentEditor({
             addKeyboardShortcuts() {
               return {
                 Escape: () => {
-                  actorRef.send({type: 'edit.cancel'})
+                  actorRef.send({
+                    type: 'edit.cancel',
+                  })
                   return true
                 },
               }
@@ -365,7 +429,9 @@ export function DocumentEditor({
                   const {from, to, empty} = view.state.selection
                   const hasLinkMark = view.state.doc.rangeHasMark(from, to, linkType)
                   if (!hasLinkMark && !empty) {
-                    editor.commands.toggleLink({href: ''})
+                    editor.commands.toggleLink({
+                      href: '',
+                    })
                   }
                   // Re-dispatch the current selection to trigger the
                   // hyperlink toolbar plugin's update cycle.
@@ -392,7 +458,10 @@ export function DocumentEditor({
                 const ids = Array.from(pending)
                 pending = new Set()
                 // console.log('[Rebase track] emit blockTouched', ids)
-                actorRef.send({type: 'rebase.blockTouched', blockIds: ids})
+                actorRef.send({
+                  type: 'rebase.blockTouched',
+                  blockIds: ids,
+                })
               }
               return [
                 new Plugin({
@@ -464,7 +533,6 @@ export function DocumentEditor({
   const onEditorReadyRef = useRef(onEditorReady)
   onEditorReadyRef.current = onEditorReady
   const handlersRef = useEditorHandlersRef()
-
   useEffect(() => {
     suppressChangeRef.current = true
     try {
@@ -481,9 +549,7 @@ export function DocumentEditor({
   // - Registers imperative handlers the machine calls when entering/exiting `editing`
   useEffect(() => {
     ;(editor as any)._suppressChangeRef = suppressChangeRef
-
     onEditorReadyRef.current?.(editor)
-
     handlersRef.current = {
       setEditable: (editable) => {
         if (editor.isEditable !== editable) {
@@ -516,7 +582,16 @@ export function DocumentEditor({
             if (lastBlock) {
               suppressChangeRef.current = true
               try {
-                editor.insertBlocks([{type: 'paragraph', content: ''}], lastBlock.id, 'after')
+                editor.insertBlocks(
+                  [
+                    {
+                      type: 'paragraph',
+                      content: '',
+                    },
+                  ],
+                  lastBlock.id,
+                  'after',
+                )
               } finally {
                 suppressChangeRef.current = false
               }
@@ -526,8 +601,14 @@ export function DocumentEditor({
             }
           }
         }
-        actorRef.send({type: 'editor.baselineUpdate', blocks: editor.topLevelBlocks as any})
-        actorRef.send({type: 'childDraftRefs.changed', draftIds: collectChildDraftIds(editor.topLevelBlocks)})
+        actorRef.send({
+          type: 'editor.baselineUpdate',
+          blocks: editor.topLevelBlocks as any,
+        })
+        actorRef.send({
+          type: 'childDraftRefs.changed',
+          draftIds: collectChildDraftIds(editor.topLevelBlocks),
+        })
       },
       getCurrentBlocks: () => editor.topLevelBlocks as any,
       replaceCurrentContent: (blocks) => {
@@ -538,13 +619,18 @@ export function DocumentEditor({
           suppressChangeRef.current = false
         }
         lastEditorContentKeyRef.current = JSON.stringify(editor.topLevelBlocks)
-        actorRef.send({type: 'editor.baselineUpdate', blocks: editor.topLevelBlocks as any})
-        actorRef.send({type: 'childDraftRefs.changed', draftIds: collectChildDraftIds(editor.topLevelBlocks)})
+        actorRef.send({
+          type: 'editor.baselineUpdate',
+          blocks: editor.topLevelBlocks as any,
+        })
+        actorRef.send({
+          type: 'childDraftRefs.changed',
+          draftIds: collectChildDraftIds(editor.topLevelBlocks),
+        })
       },
       applyDocumentCardCleanup: (input) => {
         const {content, removedBlockIds} = removeDeletedDocumentEmbedsFromEditorBlocks(editor.topLevelBlocks, input)
         if (!removedBlockIds.length) return
-
         suppressChangeRef.current = true
         try {
           editor.replaceBlocks(editor.topLevelBlocks, content)
@@ -552,15 +638,20 @@ export function DocumentEditor({
           suppressChangeRef.current = false
         }
         lastEditorContentKeyRef.current = JSON.stringify(editor.topLevelBlocks)
-        actorRef.send({type: 'editor.baselineUpdate', blocks: editor.topLevelBlocks as any})
-        actorRef.send({type: 'childDraftRefs.changed', draftIds: collectChildDraftIds(editor.topLevelBlocks)})
+        actorRef.send({
+          type: 'editor.baselineUpdate',
+          blocks: editor.topLevelBlocks as any,
+        })
+        actorRef.send({
+          type: 'childDraftRefs.changed',
+          draftIds: collectChildDraftIds(editor.topLevelBlocks),
+        })
       },
       placeCursor: (position) => {
         const view = editor._tiptapEditor?.view
         if (!view) {
           return
         }
-
         let pos: number | null
         if (position === 'end') {
           const lastBlock = editor.topLevelBlocks.at(-1)
@@ -568,7 +659,16 @@ export function DocumentEditor({
             if (TEXT_BLOCK_TYPES.has(lastBlock.type)) {
               editor.setTextCursorPosition(lastBlock, 'end')
             } else {
-              editor.insertBlocks([{type: 'paragraph', content: ''}], lastBlock.id, 'after')
+              editor.insertBlocks(
+                [
+                  {
+                    type: 'paragraph',
+                    content: '',
+                  },
+                ],
+                lastBlock.id,
+                'after',
+              )
               const insertedBlock = editor.topLevelBlocks.at(-1)
               if (insertedBlock) editor.setTextCursorPosition(insertedBlock, 'start')
             }
@@ -579,7 +679,6 @@ export function DocumentEditor({
         } else {
           pos = position ?? null
         }
-
         if (pos === null && draftCursorPositionRef.current != null) {
           pos = draftCursorPositionRef.current
         }
@@ -587,7 +686,6 @@ export function DocumentEditor({
         // Skip focus/scroll so we don't steal
         // focus from UI that triggered the transition.
         if (pos === null) return
-
         const applySelection = () => {
           const safePos = Math.min(Math.max(pos!, 0), view.state.doc.content.size)
           try {
@@ -595,11 +693,13 @@ export function DocumentEditor({
             view.dispatch(view.state.tr.setSelection(selection))
             const cursorDOM = view.domAtPos(safePos)
             const node = cursorDOM.node instanceof HTMLElement ? cursorDOM.node : cursorDOM.node.parentElement
-            node?.scrollIntoView({block: 'center', behavior: 'instant'})
+            node?.scrollIntoView({
+              block: 'center',
+              behavior: 'instant',
+            })
           } catch (err) {}
           view.focus()
         }
-
         applySelection()
         const appliedSelection = view.state.selection
         requestAnimationFrame(() => {
@@ -611,18 +711,15 @@ export function DocumentEditor({
         })
       },
     }
-
     if (actorRef.getSnapshot().matches('editing')) {
       handlersRef.current.setEditable(true)
       handlersRef.current.applyInitialContent()
       handlersRef.current.placeCursor()
     }
-
     return () => {
       handlersRef.current = null
     }
   }, [editor, actorRef, handlersRef])
-
   const focusEditorEnd = useCallback(() => {
     const view = editor._tiptapEditor?.view
     if (!view) return
@@ -633,12 +730,14 @@ export function DocumentEditor({
   useBlockBorderDebug()
 
   // Scroll-to-block highlight when focusBlockId / focusBlockRange changes
-  useBlockHighlight({editor, focusBlockId, focusBlockRange})
-
+  useBlockHighlight({
+    editor,
+    focusBlockId,
+    focusBlockRange,
+  })
   useEffect(() => {
     const view = editor._tiptapEditor?.view
     if (!view) return
-
     const tr = view.state.tr
       .setMeta(citationFragmentHighlightPluginKey, {
         type: citationFragmentHighlights?.length ? 'set' : 'clear',
@@ -646,48 +745,79 @@ export function DocumentEditor({
         interactive: !isEditing,
       })
       .setMeta('addToHistory', false)
-
     view.dispatch(tr)
   }, [editor, citationFragmentHighlights, isEditing])
 
   // DOM click listener for click-to-edit in read-only mode
-  useReadOnlyClickToEdit({editor, canEditRef, onEditStart, onTextSelectionRef})
-
+  useReadOnlyClickToEdit({
+    editor,
+    canEditRef,
+    onEditStart,
+    onTextSelectionRef,
+  })
   const editable = isEditing
-
   const fragmentActionsValue = useMemo<FragmentActions | null>(() => {
     if (!onBlockSelect && !onBlockCommentClick) return null
     const shouldIntercept = (blockId: string): boolean => {
-      return shouldRequirePublishForBlockAction({blockId, isUnpublishedDraft, isBlockInPublishedVersion})
+      return shouldRequirePublishForBlockAction({
+        blockId,
+        isUnpublishedDraft,
+        isBlockInPublishedVersion,
+      })
     }
     return {
       onCopyFragmentLink: (blockId, rangeStart, rangeEnd) => {
         if (shouldIntercept(blockId)) {
-          setPublishRequiredDialog({open: true, intent: 'copy-link'})
+          setPublishRequiredDialog({
+            open: true,
+            intent: 'copy-link',
+          })
           return
         }
-        onBlockSelect?.(blockId, {start: rangeStart, end: rangeEnd, copyToClipboard: true})
+        onBlockSelect?.(blockId, {
+          start: rangeStart,
+          end: rangeEnd,
+          copyToClipboard: true,
+        })
       },
       onComment: (blockId, rangeStart, rangeEnd) => {
         if (shouldIntercept(blockId)) {
-          setPublishRequiredDialog({open: true, intent: 'comment'})
+          setPublishRequiredDialog({
+            open: true,
+            intent: 'comment',
+          })
           return
         }
-        onBlockCommentClick?.(blockId, {start: rangeStart, end: rangeEnd}, true)
+        onBlockCommentClick?.(
+          blockId,
+          {
+            start: rangeStart,
+            end: rangeEnd,
+          },
+          true,
+        )
       },
       onCopyBlockLink: onBlockSelect
         ? (blockId) => {
             if (shouldIntercept(blockId)) {
-              setPublishRequiredDialog({open: true, intent: 'copy-link'})
+              setPublishRequiredDialog({
+                open: true,
+                intent: 'copy-link',
+              })
               return
             }
-            onBlockSelect(blockId, {copyToClipboard: true})
+            onBlockSelect(blockId, {
+              copyToClipboard: true,
+            })
           }
         : undefined,
       onCommentOnBlock: onBlockCommentClick
         ? (blockId) => {
             if (shouldIntercept(blockId)) {
-              setPublishRequiredDialog({open: true, intent: 'comment'})
+              setPublishRequiredDialog({
+                open: true,
+                intent: 'comment',
+              })
               return
             }
             onBlockCommentClick(blockId, undefined, true)
@@ -711,9 +841,13 @@ export function DocumentEditor({
     (p: FormattingToolbarProps<any>) => <HMFormattingToolbar {...p} docId={resourceId} />,
     [resourceId],
   )
-
   return (
-    <RenderResourceProvider resource={{kind: 'document', id: resourceId}}>
+    <RenderResourceProvider
+      resource={{
+        kind: 'document',
+        id: resourceId,
+      }}
+    >
       <FragmentActionsContext.Provider value={fragmentActionsValue}>
         <BlockNoteView editor={editor} className="hm-prose draft-editor">
           {/* Editing-only positioners — gated behind isEditing */}
@@ -751,13 +885,24 @@ export function DocumentEditor({
             onCopyFragmentLink={
               onBlockSelect
                 ? (blockId, rangeStart, rangeEnd) =>
-                    onBlockSelect(blockId, {start: rangeStart, end: rangeEnd, copyToClipboard: true})
+                    onBlockSelect(blockId, {
+                      start: rangeStart,
+                      end: rangeEnd,
+                      copyToClipboard: true,
+                    })
                 : undefined
             }
             onComment={
               onBlockCommentClick
                 ? (blockId, rangeStart, rangeEnd) =>
-                    onBlockCommentClick(blockId, {start: rangeStart, end: rangeEnd}, true)
+                    onBlockCommentClick(
+                      blockId,
+                      {
+                        start: rangeStart,
+                        end: rangeEnd,
+                      },
+                      true,
+                    )
                 : undefined
             }
           />
@@ -777,7 +922,19 @@ export function DocumentEditor({
             type="button"
             aria-label="Focus editor at end"
             tabIndex={-1}
-            className="block h-[500px] w-full cursor-text appearance-none border-0 bg-transparent p-0 text-left"
+            className={
+              stylex.props(
+                styles.s597c48d,
+                styles.sa965d1f6,
+                styles.scdbaf625,
+                styles.s9faef944,
+                styles.s67b03301,
+                styles.s7c401ecf,
+                styles.s60f53bca,
+                styles.s1aa13,
+                styles.sbf63b0a7,
+              ).className || ''
+            }
             onPointerDown={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -790,7 +947,10 @@ export function DocumentEditor({
           open={publishRequiredDialog.open}
           intent={publishRequiredDialog.open ? publishRequiredDialog.intent : 'copy-link'}
           onOpenChange={(open) => {
-            if (!open) setPublishRequiredDialog({open: false})
+            if (!open)
+              setPublishRequiredDialog({
+                open: false,
+              })
           }}
         />
       </FragmentActionsContext.Provider>

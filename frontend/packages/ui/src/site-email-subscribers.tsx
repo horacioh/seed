@@ -13,6 +13,42 @@ import {cn} from './utils'
  * Document-options menu entry that opens the site's email subscribers page.
  * Shared between the web and desktop document options menus.
  */
+const styles_4 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_3 = stylex.create({
+  sae1dd6a7: {
+    color: 'var(--muted-foreground)',
+    textDecorationLine: 'line-through',
+  },
+})
+const styles_2 = stylex.create({
+  sa3cf68aa: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '42rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -98,7 +134,7 @@ export function SiteEmailSubscribersPanel({
 }) {
   const tx = useTxString()
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
+    <div className={stylex.props(styles_2.sa3cf68aa).className || ''}>
       <SizableText size="2xl" weight="bold" asChild>
         <h1>{tx('Email Subscribers')}</h1>
       </SizableText>
@@ -151,13 +187,18 @@ export function SiteEmailSubscribersList({
       <SizableText size="sm" className={stylex.props(styles.sf2718385).className || ''}>
         {activeCount === 1 ? tx('1 subscriber') : `${activeCount} ${tx('subscribers')}`}
       </SizableText>
-      <div className="border-border flex flex-col divide-y rounded-md border">
+      <div
+        className={
+          stylex.props(styles_4.s1a01a0ed, styles_4.s2ffff9, styles_4.s67e351ac, styles_4.sf79988b7, styles_4.sad8c742c)
+            .className || ''
+        }
+      >
         {subscribers.map((subscriber) => (
           <div key={subscriber.email} className={stylex.props(styles.sf1007831).className || ''}>
             <div className={stylex.props(styles.s783f19f3).className || ''}>
               <SizableText
                 weight="medium"
-                className={cn(subscriber.isUnsubscribed && 'text-muted-foreground line-through')}
+                className={cn(stylex.props(subscriber.isUnsubscribed && styles_3.sae1dd6a7).className || '')}
               >
                 {subscriber.email}
               </SizableText>

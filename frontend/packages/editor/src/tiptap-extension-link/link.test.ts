@@ -13,7 +13,7 @@ describe('link DOM round-tripping', () => {
 
     expect(attrs.href).toBe('https://example.com/docs/page')
     expect(attrs['data-hm-link']).toBe('hm://uid1/docs/page')
-    expect(attrs.class).toContain('text-link')
+    expect(attrs.class).toContain('link')
   })
 
   it('prefers data-hm-link over rendered href while parsing', () => {

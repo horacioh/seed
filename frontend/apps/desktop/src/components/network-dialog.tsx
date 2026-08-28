@@ -18,6 +18,64 @@ import {Route} from 'lucide-react'
 import React from 'react'
 import {HMPeerInfo, useDomainsByPeerId, usePeers} from '../models/networking'
 import {AddConnectionDialog} from './contacts-prompt'
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f582e18: {
+    minHeight: 'calc(0.25rem * 8)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s335491: {
+    marginInline: 'calc(0.25rem * 3)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_3 = stylex.create({
+  s35a00fab: {
+    height: '500px',
+    overflow: 'hidden',
+  },
+})
+const styles_2 = stylex.create({
+  sa4681c45: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sa4681c44: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s3378d108: {
+    maxWidth: 'calc(0.25rem * 32)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   s9141e77: {
     display: 'flex',
@@ -78,7 +136,7 @@ export function NetworkDialog() {
           Add Connection
         </Button>
       </div>
-      <div className="h-[500px] overflow-hidden">
+      <div className={stylex.props(styles_3.s35a00fab).className || ''}>
         <ScrollArea>
           {peers.data && peers.data.length ? (
             peers.data.map((peer) => (
@@ -140,22 +198,38 @@ const PeerRow = React.memo(function PeerRow({
   }
   const isConnected = connectionStatus === ConnectionStatus.CONNECTED && protocol === myProtocol
   return (
-    <div className="group flex min-h-8 flex-1 items-center justify-between p-2">
-      <div className="flex min-w-0 items-center gap-2">
+    <div
+      className={
+        stylex.props(
+          styles_4.s2ffff9,
+          styles_4.s3f582e18,
+          styles_4.sb42feb5d,
+          styles_4.sc6ed1702,
+          styles_4.sc1a629cb,
+          styles_4.s1aa15,
+        ).className || ''
+      }
+    >
+      <div className={stylex.props(styles_2.sa4681c45).className || ''}>
         <Tooltip content={getPeerStatus(connectionStatus) + getProtocolMessage(peer, myProtocol)}>
           <div
             className={cn(stylex.props(styles.sb9cfe110).className || '', getPeerStatusIndicator(peer, myProtocol))}
           />
         </Tooltip>
-        <div className="flex min-w-0 items-center gap-2">
+        <div className={stylex.props(styles_2.sa4681c45).className || ''}>
           <Tooltip content="Copy Peer ID">
             <SizableText onClick={handleCopyPeerId}>{id.substring(id.length - 10)}</SizableText>
           </Tooltip>
           {domains.length ? (
             <Tooltip content={domains.join(', ')}>
-              <div className="flex min-w-0 items-center gap-1">
+              <div className={stylex.props(styles_2.sa4681c44).className || ''}>
                 {visibleDomains.map((domain) => (
-                  <SizableText key={domain} size="xs" color="muted" className="max-w-32 truncate">
+                  <SizableText
+                    key={domain}
+                    size="xs"
+                    color="muted"
+                    className={stylex.props(styles_2.s3378d108).className || ''}
+                  >
                     {domain}
                   </SizableText>
                 ))}
@@ -169,7 +243,11 @@ const PeerRow = React.memo(function PeerRow({
           ) : null}
         </div>
       </div>
-      <div className="group mx-3 flex shrink-0 gap-3">
+      <div
+        className={
+          stylex.props(styles_4.s335491, styles_4.s2ffff9, styles_4.sf032ed6c, styles_4.s5d936fc).className || ''
+        }
+      >
         {/* <XStack gap="$2">
           {account && !isSite ? (
             <UIAvatar
@@ -193,12 +271,12 @@ const PeerRow = React.memo(function PeerRow({
           </ButtonText>
          </XStack> */}
         {isConnected && (
-          <SizableText size="xs" color="muted" className="opacity-0 group-hover/item:opacity-100">
+          <SizableText size="xs" color="muted" className={stylex.props(styles_4.s765a26ee).className || ''}>
             Connected
           </SizableText>
         )}
         {peer.protocol && peer.protocol !== myProtocol && (
-          <SizableText size="xs" color="muted" className="opacity-0 group-hover/item:opacity-100">
+          <SizableText size="xs" color="muted" className={stylex.props(styles_4.s765a26ee).className || ''}>
             Protocol: {peer.protocol.slice(12)}
           </SizableText>
         )}
@@ -256,17 +334,50 @@ function getPeerStatus(status: ConnectionStatus) {
   if (status === ConnectionStatus.LIMITED) return 'Limited'
   return 'Unknown'
 }
+/** Dot styles reflecting a peer's connection status. */
+const peerStatusStyles = stylex.create({
+  differentProtocol: {
+    backgroundColor: 'var(--color-yellow-500)',
+  },
+  connected: {
+    backgroundColor: 'var(--color-green-500)',
+  },
+  canConnect: {
+    backgroundColor: 'transparent',
+    borderWidth: '1px',
+    borderStyle: 'dotted',
+    borderColor: 'var(--color-green-500)',
+  },
+  cannotConnect: {
+    backgroundColor: 'transparent',
+    borderWidth: '1px',
+    borderStyle: 'dotted',
+    borderColor: 'var(--color-red-500)',
+  },
+  limited: {
+    backgroundColor: 'transparent',
+    borderWidth: '1px',
+    borderStyle: 'dashed',
+    borderColor: 'var(--color-green-500)',
+  },
+  unknown: {
+    backgroundColor: 'var(--muted-foreground)',
+  },
+})
 function getPeerStatusIndicator(peer: HMPeerInfo, myProtocol: string): string {
-  if (peer.connectionStatus === ConnectionStatus.CONNECTED) {
-    if (peer.protocol && peer.protocol !== myProtocol) return 'bg-yellow-500'
-    return 'bg-green-500'
-  }
-  if (peer.connectionStatus === ConnectionStatus.CAN_CONNECT)
-    return 'bg-transparent border border-dotted border-green-500'
-  if (peer.connectionStatus === ConnectionStatus.CANNOT_CONNECT)
-    return 'bg-transparent border border-dotted border-red-500'
-  if (peer.connectionStatus === ConnectionStatus.LIMITED) return 'bg-transparent border border-dashed border-green-500'
-  return 'bg-muted-foreground'
+  const style =
+    peer.connectionStatus === ConnectionStatus.CONNECTED
+      ? peer.protocol && peer.protocol !== myProtocol
+        ? peerStatusStyles.differentProtocol
+        : peerStatusStyles.connected
+      : peer.connectionStatus === ConnectionStatus.CAN_CONNECT
+        ? peerStatusStyles.canConnect
+        : peer.connectionStatus === ConnectionStatus.CANNOT_CONNECT
+          ? peerStatusStyles.cannotConnect
+          : peer.connectionStatus === ConnectionStatus.LIMITED
+            ? peerStatusStyles.limited
+            : peerStatusStyles.unknown
+  return stylex.props(style).className || ''
 }
 function IndicationStatus({color}: {color: string}) {
   return (

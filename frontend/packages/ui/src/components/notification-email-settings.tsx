@@ -26,6 +26,31 @@ import {Switch} from './switch'
  * full parity — desktop should adopt the web's seed-signed registration model,
  * which requires a daemon API to sign notification requests with the account key.
  */
+const styles_2 = stylex.create({
+  sbb612813: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-amber-300)',
+    backgroundColor: 'var(--tone-amber-50)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-amber-900)',
+  },
+  sdcad9a82: {
+    width: '100%',
+    maxWidth: '400px',
+  },
+  s397bbe20: {
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-amber-600)',
+  },
+})
 const styles = stylex.create({
   sfbc6e28f: {
     display: 'flex',
@@ -149,7 +174,7 @@ export function NotificationEmailSettings({
   return (
     <div className={stylex.props(styles.sfbc6e28f).className || ''}>
       {needsVerification ? (
-        <div className="flex flex-col gap-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+        <div className={stylex.props(styles_2.sbb612813).className || ''}>
           <p>
             Notifications will be sent to{' '}
             <span className={stylex.props(styles.s129e46b3).className || ''}>{email}</span>.{' '}
@@ -178,7 +203,7 @@ export function NotificationEmailSettings({
       </div>
 
       <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
-        <DialogContent className="w-full max-w-[400px]">
+        <DialogContent className={stylex.props(styles_2.sdcad9a82).className || ''}>
           <form className={stylex.props(styles.sfbc6e290).className || ''} onSubmit={handleSubmit}>
             <DialogHeader>
               <DialogTitle>Email notifications</DialogTitle>
@@ -213,7 +238,9 @@ export function NotificationEmailSettings({
       ) : null}
 
       {connectionFailed && !loading ? (
-        <p className="text-sm text-amber-600 dark:text-amber-400">You are not connected to the notification server.</p>
+        <p className={stylex.props(styles_2.s397bbe20).className || ''}>
+          You are not connected to the notification server.
+        </p>
       ) : null}
 
       {statusMessage ? (

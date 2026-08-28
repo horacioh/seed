@@ -2,21 +2,84 @@ import * as stylex from '@stylexjs/stylex'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import * as React from 'react'
 import {cn} from '../utils'
+const styles_2 = stylex.create({
+  list: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    display: 'inline-flex',
+    height: 'calc(var(--spacing) * 9)',
+    width: 'fit-content',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+    padding: '3px',
+  },
+})
 const styles = stylex.create({
-  s783f19f3: {
+  root: {
     display: 'flex',
     flexDirection: 'column',
   },
-  sec3ba5c6: {
+  content: {
     flex: '1',
-    outlineStyle: 'none',
+    outline: 'none',
+  },
+  trigger: {
+    display: 'inline-flex',
+    height: 'calc(100% - 1px)',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.375rem',
+    borderRadius: '0.375rem',
+    border: '1px solid transparent',
+    backgroundColor: 'transparent',
+    padding: '0.25rem 0.5rem',
+    color: 'var(--text-dimmed)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    transitionProperty: 'color, box-shadow',
+    transitionDuration: '150ms',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    ':disabled': {
+      pointerEvents: 'none',
+      opacity: 0.5,
+    },
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+      outline: '1px solid var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent)',
+    },
+  },
+  // Active-tab chrome. In dark mode the active tab gets a visible border and tinted fill so it
+  // reads as a raised surface against the muted list background.
+  triggerActive: {
+    backgroundColor: {
+      default: null,
+      ':is([data-state="active"])': 'var(--background)',
+      ':is(.dark *):is([data-state="active"])': 'color-mix(in oklab, var(--input) 30%, transparent)',
+    },
+    color: {
+      default: 'var(--text-dimmed)',
+      ':is(.dark *):is([data-state="active"])': 'var(--foreground)',
+    },
+    borderColor: {
+      default: 'transparent',
+      ':is(.dark *):is([data-state="active"])': 'var(--input)',
+    },
+    boxShadow: {
+      default: null,
+      ':is([data-state="active"])': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    },
   },
 })
 function Tabs({className, ...props}: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      className={cn(stylex.props(styles.s783f19f3).className || '', className)}
+      className={cn(stylex.props(styles.root).className || '', className)}
       {...props}
     />
   )
@@ -25,10 +88,7 @@ function TabsList({className, ...props}: React.ComponentProps<typeof TabsPrimiti
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      className={cn(
-        'bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]',
-        className,
-      )}
+      className={cn(stylex.props(styles_2.list).className || '', className)}
       {...props}
     />
   )
@@ -37,10 +97,7 @@ function TabsTrigger({className, ...props}: React.ComponentProps<typeof TabsPrim
   return (
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
-      className={cn(
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
+      className={cn(stylex.props(styles.trigger, styles.triggerActive).className || '', className)}
       {...props}
     />
   )
@@ -49,7 +106,7 @@ function TabsContent({className, ...props}: React.ComponentProps<typeof TabsPrim
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn(stylex.props(styles.sec3ba5c6).className || '', className)}
+      className={cn(stylex.props(styles.content).className || '', className)}
       {...props}
     />
   )

@@ -23,6 +23,24 @@ import {DocumentListItem} from './document-list-item'
 import {Button} from './button'
 import {DraftBadge} from './draft-badge'
 import {SizableText} from './text'
+const styles_2 = stylex.create({
+  sb24cdc6d: {
+    height: 'auto',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderStyle: 'none',
+    backgroundColor: 'var(--surface-contrast)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    boxShadow: 'var(--shadow-sm)',
+    ':hover': {
+      '@media (hover: hover)': {
+        boxShadow: 'var(--shadow-md)',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   sa15101ca: {
     marginTop: 'calc(0.25rem * 8)',
@@ -136,11 +154,7 @@ function UnreferencedDraftListItem({draft}: {draft: HMListedDraftWithLocation | 
         },
   )
   return (
-    <Button
-      asChild
-      variant="ghost"
-      className="h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black"
-    >
+    <Button asChild variant="ghost" className={stylex.props(styles_2.sb24cdc6d).className || ''}>
       <a {...linkProps}>
         <div className={stylex.props(styles.sf2746014).className || ''}>
           <SizableText className={stylex.props(styles.s62d3095e).className || ''}>

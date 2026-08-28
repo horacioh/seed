@@ -18,6 +18,145 @@ import {ProviderIcon} from './provider-icons'
  * providers) without changing the active pair. Replaces the separate provider
  * dropdown + model dropdown in agent settings and agent creation.
  */
+const styles_4 = stylex.create({
+  s9dde61f: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'transparent',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    textAlign: 'left',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    transitionProperty: 'color, box-shadow, border-color',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    outlineStyle: 'none',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'color-mix(in oklab, var(--color-black) 10%, transparent)',
+      },
+    },
+  },
+  s1a523930: {
+    ':disabled': {
+      cursor: 'not-allowed',
+      backgroundColor: 'var(--color-zinc-300)',
+      color: 'var(--color-zinc-400)',
+      borderColor: 'var(--color-zinc-100)',
+      opacity: '50%',
+    },
+  },
+  sbbf724af: {
+    width: 'var(--radix-popover-trigger-width)',
+    minWidth: '320px',
+    padding: 'calc(var(--spacing) * 0)',
+  },
+  s1565db2: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  sbe39dfcb: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  se9ed621d: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    color: 'var(--muted-foreground)',
+    width: '100%',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+})
+const styles_3 = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  sbf6d1735: {
+    backgroundColor: 'var(--primary)',
+    borderColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+  },
+  s1ef74b5d: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'transparent',
+  },
+  s54eab79d: {
+    opacity: '50%',
+  },
+})
+const styles_2 = stylex.create({
+  sa4681c45: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb0abbfc8: {
+    maxHeight: 'calc(0.25rem * 80)',
+    overflowY: 'auto',
+    padding: 'calc(0.25rem * 1)',
+  },
+  s77ffb38b: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1.5)',
+    textAlign: 'left',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   sf8eef924: {
     width: 'calc(0.25rem * 4)',
@@ -150,18 +289,23 @@ export function ProviderModelSelect({
         type="button"
         disabled={disabled}
         className={cn(
-          'border-border flex w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-left text-sm transition-[color,box-shadow,border-color] outline-none hover:border-black/10',
-          'disabled:cursor-not-allowed disabled:opacity-50',
+          stylex.props(styles_4.s9dde61f).className || '',
+          stylex.props(styles_4.s1a523930).className || '',
         )}
       >
-        <span className="flex min-w-0 items-center gap-2">
+        <span className={stylex.props(styles_2.sa4681c45).className || ''}>
           {valueProvider ? (
             <ProviderIcon
               type={valueProvider.type as ModelProviderType}
               className={stylex.props(styles.sf8eef924).className || ''}
             />
           ) : null}
-          <span className={cn(stylex.props(styles.s6e724d66).className || '', !value.model && 'text-muted-foreground')}>
+          <span
+            className={cn(
+              stylex.props(styles.s6e724d66).className || '',
+              stylex.props(!value.model && styles_3.sf2718385).className || '',
+            )}
+          >
             {triggerLabel}
           </span>
           {value.model && (providers.data?.length ?? 0) > 1 ? (
@@ -172,7 +316,7 @@ export function ProviderModelSelect({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-[var(--radix-popover-trigger-width)] min-w-[320px] p-0"
+        className={stylex.props(styles_4.sbbf724af).className || ''}
         onOpenAutoFocus={(event) => event.preventDefault()}
       >
         <div className={stylex.props(styles.s898dc4c9).className || ''}>
@@ -183,7 +327,7 @@ export function ProviderModelSelect({
             placeholder="Search models…"
           />
         </div>
-        <div className="max-h-80 overflow-y-auto p-1">
+        <div className={stylex.props(styles_2.sb0abbfc8).className || ''}>
           {providers.isLoading ? (
             <div className={stylex.props(styles.s333ff802).className || ''}>
               <SizableText size="sm" color="muted">
@@ -220,7 +364,7 @@ export function ProviderModelSelect({
           <div className={stylex.props(styles.s8a8b6bda).className || ''}>
             <button
               type="button"
-              className="hover:bg-muted text-muted-foreground flex w-full items-center gap-1.5 rounded-sm px-2 py-1.5 text-left text-xs"
+              className={stylex.props(styles_4.s1565db2).className || ''}
               onClick={() => {
                 setOpen(false)
                 onAddProvider()
@@ -303,7 +447,10 @@ function ProviderModelSection({
           return (
             <div
               key={model.id}
-              className={cn('hover:bg-muted flex w-full items-center gap-1 rounded-sm', isActive && 'bg-muted')}
+              className={cn(
+                stylex.props(styles_4.sbe39dfcb).className || '',
+                stylex.props(isActive && styles_3.s5fd609e3).className || '',
+              )}
             >
               {onToggleModel ? (
                 <button
@@ -321,8 +468,8 @@ function ProviderModelSection({
                   disabled={isActive}
                   className={cn(
                     stylex.props(styles.s8e73fafa).className || '',
-                    isEnabled ? 'bg-primary border-primary text-primary-foreground' : 'border-border bg-transparent',
-                    isActive && 'opacity-50',
+                    stylex.props(isEnabled ? styles_3.sbf6d1735 : styles_3.s1ef74b5d).className || '',
+                    stylex.props(isActive && styles_3.s54eab79d).className || '',
                   )}
                   onClick={() =>
                     onToggleModel(
@@ -339,7 +486,7 @@ function ProviderModelSection({
               ) : null}
               <button
                 type="button"
-                className="flex min-w-0 flex-1 items-center justify-between gap-2 px-2 py-1.5 text-left text-sm"
+                className={stylex.props(styles_2.s77ffb38b).className || ''}
                 onClick={() =>
                   onSelect({
                     provider: provider.name,
@@ -347,7 +494,7 @@ function ProviderModelSection({
                   })
                 }
               >
-                <span className="min-w-0 truncate">{modelLabel(model)}</span>
+                <span className={stylex.props(styles_2.s64fb8207).className || ''}>{modelLabel(model)}</span>
                 {isActive ? <Check className={stylex.props(styles.sf8eef924).className || ''} /> : null}
               </button>
             </div>
@@ -357,7 +504,7 @@ function ProviderModelSection({
       {!query && curated.hasMore && !models.isLoading && !models.isError ? (
         <button
           type="button"
-          className="hover:bg-muted text-muted-foreground w-full rounded-sm px-2 py-1 text-left text-xs"
+          className={stylex.props(styles_4.se9ed621d).className || ''}
           onClick={() => setShowAll((current) => !current)}
         >
           {showAll ? 'Show fewer models' : `Show all ${curated.all.length} models`}

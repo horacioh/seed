@@ -60,6 +60,802 @@ import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popove
 import {Markdown} from './markdown'
 
 /** Renders a chat message bubble shared by the assistant panel and Agents session UI. */
+const styles_7 = stylex.create({
+  s4f3df6dd: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1.5)',
+  },
+  sc7133e98: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+  },
+  sc7133e97: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+  sc7133e96: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1)',
+  },
+})
+const styles_6 = stylex.create({
+  s5d2015cb: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 30%, transparent)',
+  },
+  sc43c4bd7: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 75%, transparent)',
+  },
+})
+const styles_5 = stylex.create({
+  sf8e652db: {
+    whiteSpace: 'nowrap',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sc5cefc73: {
+    paddingInline: 'calc(0.25rem * 1.5)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s2c0efab7: {
+    fontSize: '9px',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s19482854: {
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_4 = stylex.create({
+  sc0be8a17: {
+    marginBlock: 'calc(0.25rem * 1.5)',
+  },
+  s332788: {
+    marginLeft: 'calc(0.25rem * 6)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sa2f1e665: {
+    borderColor: 'oklch(90.1% 0.058 230.902)',
+  },
+  seefc51bd: {
+    backgroundColor: 'oklch(95.1% 0.026 236.824)',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s5543cb18: {
+    fontSize: '13px',
+  },
+  sba9051c0: {
+    color: 'oklch(12.9% 0.042 264.695)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s6386d33b: {
+    borderColor: 'color-mix(in oklab, var(--border) 70%, transparent)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sc0be8656: {
+    marginBlock: 'calc(0.25rem * 0.5)',
+  },
+  s6cb48df0: {
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '2px',
+  },
+  sc525e628: {
+    paddingLeft: 'calc(0.25rem * 2.5)',
+  },
+  s5542e25a: {
+    fontSize: '11px',
+  },
+  s4491c72d: {
+    lineHeight: 'calc(0.25rem * 4)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  sac0ab66: {
+    ':hover': {
+      '@media (hover: hover)': {},
+    },
+  },
+  sc07810d1: {
+    marginTop: 'calc(0.25rem * 0.5)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sca3de96b: {
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sc883a3d4: {
+    boxShadow: '0 0 0 1px var(--ring-color, currentcolor)',
+  },
+  s12e0bc98: {
+    transitionProperty: 'box-shadow',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  s33458b: {
+    marginTop: 'calc(0.25rem * 1)',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s17ac758d: {
+    ':focus': {
+      opacity: '100%',
+    },
+  },
+  s3f582e10: {
+    minHeight: 'calc(0.25rem * 0)',
+  },
+  s158c3129: {
+    maxHeight: 'calc(0.25rem * 72)',
+  },
+  s21707c9a: {
+    overflow: 'auto',
+  },
+  s333e0e: {
+    marginRight: 'calc(0.25rem * 6)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s9926ee50: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+      },
+    },
+  },
+  sc43c4bb3: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+  },
+  sc1af6c99: {
+    padding: 'calc(0.25rem * 0.75)',
+  },
+  s79cfa1b2: {
+    ':focus-visible': {
+      opacity: '100%',
+    },
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  s7c401f13: {
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  s34a2a9: {
+    paddingTop: 'calc(0.25rem * 2)',
+  },
+})
+const styles_3 = stylex.create({
+  s781ff332: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    color: 'var(--destructive)',
+    marginTop: 'calc(var(--spacing) * 1)',
+    marginRight: 'calc(var(--spacing) * 6)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  sbaaec112: {
+    backgroundColor: 'var(--muted)',
+    maxHeight: '50vh',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    whiteSpace: 'pre-wrap',
+  },
+  s9231e1d4: {
+    backgroundColor: 'var(--muted)',
+    maxHeight: '30vh',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    whiteSpace: 'pre-wrap',
+  },
+  s3ae9d250: {
+    color: 'var(--muted-foreground)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+  },
+  s3eff34e4: {
+    backgroundColor: 'var(--muted)',
+    display: 'grid',
+    columnGap: 'calc(var(--spacing) * 4)',
+    rowGap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  s1cf2a5e8: {
+    color: 'var(--destructive)',
+    marginBlock: 'calc(var(--spacing) * 1)',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s3d0401d7: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    color: 'var(--destructive)',
+    marginRight: 'calc(var(--spacing) * 6)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s95e47a31: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 75%, transparent)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--background)',
+      },
+    },
+    color: 'var(--foreground)',
+    marginTop: 'calc(var(--spacing) * 1.5)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.75)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':disabled': {
+      opacity: '60%',
+    },
+  },
+  sf5850062: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    marginTop: 'calc(var(--spacing) * 1.5)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'color-mix(in oklab, currentcolor 20%, transparent)',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '10px',
+    opacity: '80%',
+  },
+  s1371c9ec: {
+    width: 'calc(var(--spacing) * 96)',
+    maxWidth: '90vw',
+    padding: 'calc(var(--spacing) * 3)',
+  },
+  sdaea9368: {
+    backgroundColor: 'var(--muted)',
+    maxHeight: 'calc(var(--spacing) * 64)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  s81e6b647: {
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '9px',
+    letterSpacing: 'var(--tracking-wide)',
+    whiteSpace: 'nowrap',
+    opacity: '80%',
+  },
+  s672bfaa3: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    maxWidth: 'calc(var(--spacing) * 32)',
+    flexShrink: '0',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontSize: '10px',
+    textDecorationThickness: '1px',
+    textUnderlineOffset: '2px',
+  },
+  sf8a6c869: {
+    color: 'var(--foreground)',
+    fontWeight: 'var(--font-weight-medium)',
+    textDecorationThickness: '1px',
+    textUnderlineOffset: '2px',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s2eb9a4b1: {
+    color: 'var(--foreground)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontWeight: 'var(--font-weight-medium)',
+    textDecorationThickness: '1px',
+    textUnderlineOffset: '2px',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s86f9a095: {
+    maxHeight: '85vh',
+    width: 'min(44rem, calc(100vw - 2rem))',
+  },
+  s213e83d1: {
+    backgroundColor: 'var(--muted)',
+    maxHeight: 'calc(var(--spacing) * 64)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '11px',
+    whiteSpace: 'pre',
+  },
+  s588269ff: {
+    backgroundColor: 'var(--muted)',
+    maxHeight: 'calc(var(--spacing) * 48)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  sb9ba5908: {
+    backgroundColor: 'var(--muted)',
+    maxHeight: 'calc(var(--spacing) * 72)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  sa2a816c5: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'var(--foreground)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2.5)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+  s14bb1cf8: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 1.5)',
+    '@media ((min-width: 640px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  s12ce7de0: {
+    color: 'var(--muted-foreground)',
+    fontSize: '10px',
+  },
+  s775416b3: {
+    minWidth: 'calc(var(--spacing) * 0)',
+    fontSize: '12px',
+    overflowWrap: 'break-word',
+  },
+  s2f9793be: {
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  se3bbaeb8: {
+    color: 'color-mix(in oklab, var(--foreground) 80%, transparent)',
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    alignItems: 'baseline',
+    gap: 'calc(var(--spacing) * 1)',
+    overflow: 'hidden',
+  },
+  sbfaf0bc9: {
+    color: 'color-mix(in oklab, var(--foreground) 55%, transparent)',
+    flexShrink: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s25bf5c0e: {
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    alignItems: 'baseline',
+    gap: 'calc(var(--spacing) * 2)',
+    fontSize: '12px',
+  },
+  s3c4702: {
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+    fontSize: '10px',
+  },
+  s7c371803: {
+    color: 'color-mix(in oklab, var(--foreground) 80%, transparent)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sdf4eb27f: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    fontSize: '12px',
+  },
+  s7a3ad4ba: {
+    color: 'var(--tone-amber-700)',
+  },
+  s863380b5: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'var(--foreground)',
+    maxHeight: 'calc(var(--spacing) * 72)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  sc2368d83: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'var(--foreground)',
+    maxHeight: 'calc(var(--spacing) * 72)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '11px',
+    lineHeight: 'calc(var(--spacing) * 4)',
+    whiteSpace: 'pre-wrap',
+  },
+  sc46c6a3a: {
+    color: 'var(--tone-amber-800)',
+  },
+  sfc1757c9: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    fontSize: '11px',
+  },
+  s49d063c7: {
+    color: 'var(--primary)',
+    alignSelf: 'flex-start',
+    fontSize: '11px',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s12cef23f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '11px',
+  },
+  s1f64a9aa: {
+    color: 'var(--foreground)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: 'var(--font-weight-medium)',
+    textDecorationThickness: '1px',
+    textUnderlineOffset: '2px',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s49887e17: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        color: 'var(--foreground)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    borderRadius: '0.25rem',
+    padding: 'calc(var(--spacing) * 0.5)',
+  },
+  s3fc0193f: {
+    borderColor: 'color-mix(in oklab, var(--primary) 40%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    flexShrink: '0',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '9px',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+  },
+  s856620dd: {
+    color: 'color-mix(in oklab, var(--foreground) 75%, transparent)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  se0e25481: {
+    color: 'color-mix(in oklab, var(--foreground) 60%, transparent)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s805b39a: {
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+    fontSize: '10px',
+    opacity: '60%',
+  },
+  s89c91c60: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'color-mix(in oklab, var(--foreground) 80%, transparent)',
+    marginTop: 'calc(var(--spacing) * 1.5)',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+    lineHeight: 'calc(var(--spacing) * 4)',
+    wordBreak: 'break-all',
+    whiteSpace: 'pre-wrap',
+  },
+  s76c07427: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
+    color: 'var(--destructive)',
+    maxHeight: 'calc(var(--spacing) * 48)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+    whiteSpace: 'pre-wrap',
+  },
+  sbf5ee6dc: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+    color: 'var(--foreground)',
+    maxHeight: 'calc(var(--spacing) * 72)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2.5)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+})
+const styles_2 = stylex.create({
+  sdc08ba6c: {
+    width: '100%',
+    maxWidth: '42rem',
+  },
+  s14b4ec0d: {
+    backgroundColor: 'var(--muted)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    whiteSpace: 'nowrap',
+  },
+  s3b5869db: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: 'calc(0.25rem * 2)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s5a85cca3: {
+    minWidth: 'calc(0.25rem * 0)',
+    textAlign: 'right',
+    fontWeight: '500',
+    wordBreak: 'break-all',
+  },
+  s2ea9f018: {
+    backgroundColor: 'var(--muted)',
+    marginBlock: 'calc(0.25rem * 1)',
+    marginRight: 'calc(0.25rem * 6)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s236f3992: {
+    display: 'grid',
+    minHeight: 'calc(0.25rem * 0)',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s313025e3: {
+    maxHeight: 'calc(0.25rem * 72)',
+    overflow: 'auto',
+  },
+  sb21c636f: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sed07b71e: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    cursor: 'pointer',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s6bc772a2: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexShrink: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   se99caec8: {
     display: 'flex',
@@ -120,7 +916,7 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 'calc(infinity * 1px)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000,  0 0 0 calc(1px + 0px) var(--border), 0 0 #0000',
+    boxShadow: '0 0 0 1px var(--border)',
   },
   s3269316e: {
     width: 'calc(0.25rem * 3.5)',
@@ -221,7 +1017,10 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
   const rawMarkdown = message.rawMarkdown ?? message.content
   const resolvedBlocks = useAttachmentResolvedBlocks(serverUrl, message)
   return (
-    <div className="group/message my-1.5" data-message-kind={isSystem ? 'system' : isUser ? 'user' : 'assistant'}>
+    <div
+      className={stylex.props(styles_4.sc0be8a17).className || ''}
+      data-message-kind={isSystem ? 'system' : isUser ? 'user' : 'assistant'}
+    >
       {isSystem ? (
         <SystemMessageRow
           content={message.content || ''}
@@ -229,9 +1028,35 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
         />
       ) : isUser ? (
         <div className={stylex.props(styles.se99caec8).className || ''}>
-          <div className="ml-6 min-w-0 flex-1 rounded-lg border border-sky-200 bg-sky-100 px-3 py-2 text-[13px] text-slate-950 dark:border-sky-800 dark:bg-sky-950/60 dark:text-sky-50 [&_.ProseMirror]:!text-[13px] [&_.hm-prose]:!text-[13px]">
+          <div
+            className={
+              stylex.props(
+                styles_4.s332788,
+                styles_4.s3f58665f,
+                styles_4.sb42feb5d,
+                styles_4.sf799889b,
+                styles_4.sad8c742c,
+                styles_4.sa2f1e665,
+                styles_4.seefc51bd,
+                styles_4.s34b1ae,
+                styles_4.s34b56e,
+                styles_4.s5543cb18,
+                styles_4.sba9051c0,
+              ).className || ''
+            }
+          >
             {resolvedBlocks?.length ? (
-              <div className="text-foreground rounded-md bg-transparent px-1 py-0.5 [&_.ProseMirror]:!bg-transparent [&_.bn-container]:!bg-transparent [&_.bn-editor]:!bg-transparent [&_.hm-prose]:!font-sans [&_.hm-prose]:!text-base">
+              <div
+                className={
+                  stylex.props(
+                    styles_4.sc05281e3,
+                    styles_4.sf79988b7,
+                    styles_4.s60f53bca,
+                    styles_4.s34b1ac,
+                    styles_4.sc5dd1033,
+                  ).className || ''
+                }
+              >
                 <Suspense fallback={<Markdown>{message.content || ''}</Markdown>}>
                   <RichMessageBlocks blocks={resolvedBlocks} />
                 </Suspense>
@@ -256,7 +1081,7 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
         />
       )}
       {message.errorMessage ? (
-        <div className="border-destructive/30 bg-destructive/10 text-destructive mt-1 mr-6 rounded-lg border px-3 py-2 text-xs">
+        <div className={stylex.props(styles_3.s781ff332).className || ''}>
           <div className={stylex.props(styles.sd4fdc70c).className || ''}>Error</div>
           <p className={stylex.props(styles.sa4989684).className || ''}>{message.errorMessage}</p>
         </div>
@@ -265,7 +1090,7 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
         <Dialog open={showRawMarkdown} onOpenChange={setShowRawMarkdown}>
           {/* `w-full` is restated because passing a max-w overrides DialogContent's own; without a
               width the dialog shrink-to-fits its longest line and spills past a phone viewport. */}
-          <DialogContent className="w-full max-w-2xl">
+          <DialogContent className={stylex.props(styles_2.sdc08ba6c).className || ''}>
             <DialogHeader>
               <DialogTitle>Message details</DialogTitle>
               <DialogDescription>This is the exact markdown text represented by this message.</DialogDescription>
@@ -274,9 +1099,7 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
               <div className={stylex.props(styles.sfbc6e28e).className || ''}>
                 <div className={stylex.props(styles.sa56e9200).className || ''}>Share URL</div>
                 <div className={stylex.props(styles.se658ac14).className || ''}>
-                  <code className="bg-muted min-w-0 flex-1 overflow-auto rounded-md p-2 text-xs whitespace-nowrap">
-                    {message.shareUrl}
-                  </code>
+                  <code className={stylex.props(styles_2.s14b4ec0d).className || ''}>{message.shareUrl}</code>
                   <Button
                     size="sm"
                     variant="outline"
@@ -299,15 +1122,13 @@ export const ChatMessageBubble = React.memo(function ChatMessageBubble({
               ) : null}
             </div>
             <EventMetaSection meta={message.meta} />
-            <pre className="bg-muted max-h-[50vh] overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap">
-              {rawMarkdown}
-            </pre>
+            <pre className={stylex.props(styles_3.sbaaec112).className || ''}>{rawMarkdown}</pre>
             {message.contextLines?.length ? (
               <div className={stylex.props(styles.sfbc6e28e).className || ''}>
                 <div className={stylex.props(styles.sa56e9200).className || ''}>
                   Context shared with the agent (attached to this message, hidden from the chat)
                 </div>
-                <pre className="bg-muted max-h-[30vh] overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap">
+                <pre className={stylex.props(styles_3.s9231e1d4).className || ''}>
                   {message.contextLines.join('\n')}
                 </pre>
               </div>
@@ -336,7 +1157,21 @@ function SystemMessageRow({content, rawMarkdownButton}: {content: string; rawMar
     <div className={stylex.props(styles.se99caec8).className || ''}>
       <div
         data-testid="system-message"
-        className="border-border/70 text-muted-foreground my-0.5 ml-6 min-w-0 flex-1 border-l-2 py-0.5 pl-2.5 text-[11px] leading-4 [&_.hm-prose]:!text-[11px] [&_p]:!my-0"
+        className={
+          stylex.props(
+            styles_4.s6386d33b,
+            styles_4.sf2718385,
+            styles_4.sc0be8656,
+            styles_4.s332788,
+            styles_4.s3f58665f,
+            styles_4.sb42feb5d,
+            styles_4.s6cb48df0,
+            styles_4.sc5dd1033,
+            styles_4.sc525e628,
+            styles_4.s5542e25a,
+            styles_4.s4491c72d,
+          ).className || ''
+        }
       >
         <Markdown>{content}</Markdown>
       </div>
@@ -356,12 +1191,12 @@ function EventMetaSection({meta}: {meta?: SessionEventMeta}) {
   if (!rows.length) return null
   return (
     <div className={stylex.props(styles.s25987914).className || ''}>
-      <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Details</div>
-      <div className="bg-muted grid gap-x-4 gap-y-1 rounded-md p-2 sm:grid-cols-2">
+      <div className={stylex.props(styles_3.s3ae9d250).className || ''}>Details</div>
+      <div className={stylex.props(styles_3.s3eff34e4).className || ''}>
         {rows.map((row) => (
-          <div key={row.label} className="flex min-w-0 items-baseline justify-between gap-2 text-xs">
+          <div key={row.label} className={stylex.props(styles_2.s3b5869db).className || ''}>
             <span className={stylex.props(styles.s347a6fa7).className || ''}>{row.label}</span>
-            <span className="min-w-0 text-right font-medium break-all" title={row.value}>
+            <span className={stylex.props(styles_2.s5a85cca3).className || ''} title={row.value}>
               {row.value}
             </span>
           </div>
@@ -389,7 +1224,22 @@ function UserMessageOrigin({meta}: {meta?: SessionEventMeta}) {
   return meta?.accountId ? (
     <a
       {...linkProps}
-      className="ring-border bg-background hover:ring-primary/60 mt-0.5 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full ring-1 transition-shadow"
+      className={
+        stylex.props(
+          styles_4.s436dc7b6,
+          styles_4.sac0ab66,
+          styles_4.sc07810d1,
+          styles_4.s2ffff9,
+          styles_4.sca3de96b,
+          styles_4.sf032ed6c,
+          styles_4.sc7847ec6,
+          styles_4.sc6ed1702,
+          styles_4.sce22ca32,
+          styles_4.s775755af,
+          styles_4.sc883a3d4,
+          styles_4.s12e0bc98,
+        ).className || ''
+      }
       title={label}
       aria-label={`Open ${label}'s profile`}
     >
@@ -450,7 +1300,7 @@ export const AssistantMessageParts = React.memo(function AssistantMessageParts({
     const showCursor = isStreaming && index === parts.length - 1
     return (
       <div key={`text:${index}`} className={stylex.props(styles.se99caec8).className || ''}>
-        <div className="bg-muted my-1 mr-6 min-w-0 flex-1 rounded-lg px-3 py-2 text-sm">
+        <div className={stylex.props(styles_2.s2ea9f018).className || ''}>
           <Markdown enableGfm={!isStreaming}>{part.text}</Markdown>
           {showCursor && <span className={stylex.props(styles.s6c0acb04).className || ''} />}
         </div>
@@ -481,13 +1331,7 @@ export function AgentErrorRow({
   retryPending?: boolean
 }) {
   return (
-    <div
-      className={
-        compact
-          ? 'text-destructive my-1 rounded-lg px-3 py-2 text-xs'
-          : 'border-destructive/30 bg-destructive/10 text-destructive mr-6 rounded-lg border px-3 py-2 text-xs'
-      }
-    >
+    <div className={stylex.props(compact ? styles_3.s1cf2a5e8 : styles_3.s3d0401d7).className || ''}>
       {compact ? null : <div className={stylex.props(styles.sd4fdc70c).className || ''}>Error</div>}
       <p className={stylex.props(styles.sa4989684).className || ''}>{message}</p>
       {onRetry ? (
@@ -496,7 +1340,7 @@ export function AgentErrorRow({
           onClick={onRetry}
           disabled={retryPending}
           // Neutral inside the red frame: the error is the alarming part, retrying is not.
-          className="bg-background/75 hover:bg-background text-foreground mt-1.5 inline-flex items-center gap-1 rounded-full border px-2 py-0.75 text-[10px] font-medium transition-colors disabled:opacity-60"
+          className={stylex.props(styles_3.s95e47a31).className || ''}
         >
           {retryPending ? (
             <Loader2 className={stylex.props(styles.s5402efaf).className || ''} />
@@ -602,18 +1446,16 @@ function MessageContextInfo({lines}: {lines: string[]}) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="text-muted-foreground hover:text-foreground mt-1.5 flex items-center gap-1 rounded-full border border-current/20 px-1.5 py-0.5 text-[10px] opacity-80"
+          className={stylex.props(styles_3.sf5850062).className || ''}
           title="What the agent was told about your current window"
         >
           <Info className={stylex.props(styles.sca3de967).className || ''} />
           Context
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-96 max-w-[90vw] p-3">
+      <PopoverContent align="start" className={stylex.props(styles_3.s1371c9ec).className || ''}>
         <div className={stylex.props(styles.s111ee2c3).className || ''}>Context shared with the agent</div>
-        <pre className="bg-muted max-h-64 overflow-auto rounded-md p-2 font-mono text-[11px] whitespace-pre-wrap">
-          {lines.join('\n')}
-        </pre>
+        <pre className={stylex.props(styles_3.sdaea9368).className || ''}>{lines.join('\n')}</pre>
       </PopoverContent>
     </Popover>
   )
@@ -636,7 +1478,18 @@ function RawMarkdownButton({onClick}: {onClick: () => void}) {
     <button
       type="button"
       onClick={onClick}
-      className="text-muted-foreground hover:text-foreground mt-1 rounded p-1 opacity-0 transition-opacity group-hover/message:opacity-100 focus:opacity-100"
+      className={
+        stylex.props(
+          styles_4.sf2718385,
+          styles_4.sae6a97a5,
+          styles_4.s33458b,
+          styles_4.s529492ad,
+          styles_4.s1aa14,
+          styles_4.s765a26ee,
+          styles_4.s83442393,
+          styles_4.s17ac758d,
+        ).className || ''
+      }
       aria-label="Show markdown sent to the LLM"
       title="Show markdown sent to the LLM"
     >
@@ -666,11 +1519,25 @@ function formatToolDebugValue(value: unknown): string {
 function ToolChip({children, tone}: {children: React.ReactNode; tone?: 'error'}) {
   return (
     <span
-      className={`rounded-full border px-1.5 py-0.5 text-[9px] font-medium whitespace-nowrap ${
-        tone === 'error'
-          ? 'border-destructive/30 bg-destructive/10 text-destructive'
-          : 'bg-background/75 text-muted-foreground border'
-      }`}
+      className={
+        (stylex.props(
+          styles_5.sf8e652db,
+          styles_5.s775755af,
+          styles_5.sad8c742c,
+          styles_5.sc5cefc73,
+          styles_5.sc5dd1033,
+          styles_5.s2c0efab7,
+          styles_5.s129e46b3,
+        ).className || '') +
+        ' ' +
+        (tone === 'error'
+          ? (stylex.props(styles_5.s19482854, styles_5.s8a2570e2).className || '') +
+            ' ' +
+            (stylex.props(styles_6.s5d2015cb).className || '')
+          : (stylex.props(styles_5.sf2718385, styles_5.sad8c742c).className || '') +
+            ' ' +
+            (stylex.props(styles_6.sc43c4bd7).className || ''))
+      }
     >
       {children}
     </span>
@@ -683,11 +1550,7 @@ function ToolChip({children, tone}: {children: React.ReactNode; tone?: 'error'})
  * it is the thing you click.
  */
 function ToolSourceChip({children}: {children: React.ReactNode}) {
-  return (
-    <span className="text-muted-foreground shrink-0 font-mono text-[9px] tracking-wide whitespace-nowrap opacity-80">
-      {children}
-    </span>
-  )
+  return <span className={stylex.props(styles_3.s81e6b647).className || ''}>{children}</span>
 }
 
 /**
@@ -705,7 +1568,7 @@ function ToolResourceLink({url, label}: {url: string; label: string}) {
         event.stopPropagation()
         openUrl(url, event.metaKey || event.shiftKey)
       }}
-      className="text-muted-foreground hover:text-foreground max-w-32 shrink-0 truncate text-left text-[10px] decoration-1 underline-offset-2 hover:underline"
+      className={stylex.props(styles_3.s672bfaa3).className || ''}
     >
       {label}
     </button>
@@ -721,7 +1584,7 @@ function ToolTextLink({url, children}: {url: string; children: React.ReactNode})
         event.stopPropagation()
         openUrl(url, event.metaKey || event.shiftKey)
       }}
-      className="text-foreground font-medium decoration-1 underline-offset-2 hover:underline"
+      className={stylex.props(styles_3.sf8a6c869).className || ''}
     >
       {children}
     </button>
@@ -810,7 +1673,7 @@ function ToolLinkText({
   const {canOpen, open} = useToolLinkOpener()
   if (!canOpen(target)) {
     return (
-      <span title={title} className={cn('min-w-0 truncate', className)}>
+      <span title={title} className={cn(stylex.props(styles_2.s64fb8207).className || '', className)}>
         {label}
       </span>
     )
@@ -823,10 +1686,7 @@ function ToolLinkText({
         event.stopPropagation()
         open(target, event)
       }}
-      className={cn(
-        'text-foreground min-w-0 truncate text-left font-medium decoration-1 underline-offset-2 hover:underline',
-        className,
-      )}
+      className={cn(stylex.props(styles_3.s2eb9a4b1).className || '', className)}
     >
       {label}
     </button>
@@ -858,30 +1718,26 @@ function ToolCallDebugDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] w-[min(44rem,calc(100vw-2rem))]">
+      <DialogContent className={stylex.props(styles_3.s86f9a095).className || ''}>
         <DialogHeader>
           <DialogTitle>{item.name}</DialogTitle>
           <DialogDescription>Raw tool call payload captured during the assistant response.</DialogDescription>
         </DialogHeader>
-        <div className="grid min-h-0 gap-3">
+        <div className={stylex.props(styles_2.s236f3992).className || ''}>
           <EventMetaSection meta={item.meta} />
           {typeof item.args?.script === 'string' && item.args.script ? (
-            <div className="min-h-0 space-y-1">
-              <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Script</div>
-              <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 font-mono text-[11px] whitespace-pre">
-                {item.args.script}
-              </pre>
+            <div className={stylex.props(styles_4.s3f582e10).className || ''}>
+              <div className={stylex.props(styles_3.s3ae9d250).className || ''}>Script</div>
+              <pre className={stylex.props(styles_3.s213e83d1).className || ''}>{item.args.script}</pre>
             </div>
           ) : null}
-          <div className="min-h-0 space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Input</div>
-            <pre className="bg-muted max-h-48 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
-              {formatToolDebugValue(item.args)}
-            </pre>
+          <div className={stylex.props(styles_4.s3f582e10).className || ''}>
+            <div className={stylex.props(styles_3.s3ae9d250).className || ''}>Input</div>
+            <pre className={stylex.props(styles_3.s588269ff).className || ''}>{formatToolDebugValue(item.args)}</pre>
           </div>
-          <div className="min-h-0 space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Output</div>
-            <pre className="bg-muted max-h-72 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+          <div className={stylex.props(styles_4.s3f582e10).className || ''}>
+            <div className={stylex.props(styles_3.s3ae9d250).className || ''}>Output</div>
+            <pre className={stylex.props(styles_3.sb9ba5908).className || ''}>
               {formatToolDebugValue(item.rawOutput ?? item.result)}
             </pre>
           </div>
@@ -1167,23 +2023,23 @@ function getCommentLinks(item: ChatToolPart) {
 }
 function ToolDetailSection({label, children}: {label: string; children: React.ReactNode}) {
   return (
-    <div className="space-y-1.5">
-      <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">{label}</div>
+    <div className={stylex.props(styles_7.s4f3df6dd).className || ''}>
+      <div className={stylex.props(styles_3.s3ae9d250).className || ''}>{label}</div>
       {children}
     </div>
   )
 }
 function ToolDetailCard({children}: {children: React.ReactNode}) {
-  return <div className="bg-background/60 text-foreground rounded-md border px-2.5 py-2">{children}</div>
+  return <div className={stylex.props(styles_3.sa2a816c5).className || ''}>{children}</div>
 }
 function ToolDetailList({children}: {children: React.ReactNode}) {
-  return <div className="grid gap-1.5 sm:grid-cols-2">{children}</div>
+  return <div className={stylex.props(styles_3.s14bb1cf8).className || ''}>{children}</div>
 }
 function ToolDetailItem({label, children}: {label: string; children: React.ReactNode}) {
   return (
-    <div className="min-w-0 space-y-0.5">
-      <div className="text-muted-foreground text-[10px]">{label}</div>
-      <div className="min-w-0 text-[12px] break-words">{children}</div>
+    <div className={stylex.props(styles_4.s3f58665f).className || ''}>
+      <div className={stylex.props(styles_3.s12ce7de0).className || ''}>{label}</div>
+      <div className={stylex.props(styles_3.s775416b3).className || ''}>{children}</div>
     </div>
   )
 }
@@ -1200,8 +2056,15 @@ function ToolRenderedContent({
 }) {
   if (content.blocks?.length) {
     return (
-      <div className="text-foreground rounded-md bg-transparent px-1 py-0.5 [&_.ProseMirror]:!bg-transparent [&_.bn-container]:!bg-transparent [&_.bn-editor]:!bg-transparent [&_.hm-prose]:!font-sans [&_.hm-prose]:!text-base">
-        <Suspense fallback={<pre className="text-[11px] whitespace-pre-wrap">Loading rich content…</pre>}>
+      <div
+        className={
+          stylex.props(styles_4.sc05281e3, styles_4.sf79988b7, styles_4.s60f53bca, styles_4.s34b1ac, styles_4.sc5dd1033)
+            .className || ''
+        }
+      >
+        <Suspense
+          fallback={<pre className={stylex.props(styles_3.s2f9793be).className || ''}>Loading rich content…</pre>}
+        >
           <RichMessageBlocks blocks={content.blocks} />
         </Suspense>
       </div>
@@ -1219,10 +2082,12 @@ function ToolRenderedContent({
  */
 function AddressToolSummary({summary, override}: {summary: ToolRowSummary; override?: string}) {
   return (
-    <span className="text-foreground/80 flex min-w-0 flex-1 items-baseline gap-1 overflow-hidden">
+    <span className={stylex.props(styles_3.se3bbaeb8).className || ''}>
       {override ? null : <span className={stylex.props(styles.s2a511dff).className || ''}>{summary.verb}</span>}
       <ToolLinkText target={summary.target} label={override ?? summary.label} title={summary.title} />
-      {summary.detail ? <span className="text-foreground/55 shrink truncate">{summary.detail}</span> : null}
+      {summary.detail ? (
+        <span className={stylex.props(styles_3.sbfaf0bc9).className || ''}>{summary.detail}</span>
+      ) : null}
     </span>
   )
 }
@@ -1234,7 +2099,7 @@ function MemoryEntryLink({entry}: {entry: Record<string, unknown>}) {
   const isDir = entry.type === 'dir'
   const size = typeof entry.size === 'number' ? entry.size : undefined
   return (
-    <div className="flex min-w-0 items-baseline gap-2 text-[12px]">
+    <div className={stylex.props(styles_3.s25bf5c0e).className || ''}>
       <ToolLinkText
         target={{
           type: 'memory',
@@ -1245,7 +2110,7 @@ function MemoryEntryLink({entry}: {entry: Record<string, unknown>}) {
         className={stylex.props(styles.s14e67425).className || ''}
       />
       {size !== undefined && !isDir ? (
-        <span className="text-muted-foreground shrink-0 text-[10px]">{size} bytes</span>
+        <span className={stylex.props(styles_3.s3c4702).className || ''}>{size} bytes</span>
       ) : null}
     </div>
   )
@@ -1268,7 +2133,7 @@ function ReadToolDetails({item}: {item: ChatToolPart}) {
   const fileContent = markdown ? undefined : getToolString(output, 'content')
   const entries = getPathValues(output, 'entries[]').filter(isRecord)
   return (
-    <div className="space-y-3">
+    <div className={stylex.props(styles_7.sc7133e98).className || ''}>
       <ToolDetailSection label="Source">
         <ToolDetailCard>
           <ToolDetailList>
@@ -1298,7 +2163,7 @@ function ReadToolDetails({item}: {item: ChatToolPart}) {
       {entries.length ? (
         <ToolDetailSection label="Entries">
           <ToolDetailCard>
-            <div className="max-h-72 space-y-0.5 overflow-auto">
+            <div className={stylex.props(styles_4.s158c3129, styles_4.s21707c9a).className || ''}>
               {entries.map((entry) => (
                 <MemoryEntryLink key={String(entry.path)} entry={entry} />
               ))}
@@ -1309,7 +2174,7 @@ function ReadToolDetails({item}: {item: ChatToolPart}) {
       {markdown ? (
         <ToolDetailSection label="Content">
           <ToolDetailCard>
-            <div className="max-h-72 overflow-auto">
+            <div className={stylex.props(styles_2.s313025e3).className || ''}>
               <Markdown>{markdown}</Markdown>
             </div>
           </ToolDetailCard>
@@ -1338,7 +2203,7 @@ function WriteAddressDetails({item}: {item: ChatToolPart}) {
   const options = getFirstToolValue(item.args, ['options'])
   const content = getToolString(item.args, 'content')
   return (
-    <div className="space-y-3">
+    <div className={stylex.props(styles_7.sc7133e98).className || ''}>
       <ToolDetailSection label="Destination">
         <ToolDetailCard>
           <ToolDetailList>
@@ -1418,7 +2283,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
   switch (command) {
     case 'comment.create':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           {commentUrl ? (
             <ToolTextLink url={commentUrl}>New Comment</ToolTextLink>
           ) : (
@@ -1430,7 +2295,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     case 'comment.update':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Update comment</span>
           {targetUrl ? (
             <>
@@ -1442,7 +2307,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     case 'comment.delete':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Delete comment</span>
           {targetUrl ? (
             <>
@@ -1454,42 +2319,42 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     case 'document.create':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Create document:</span>{' '}
           <ToolEntityText url={documentUrl} label={documentName} />
         </span>
       )
     case 'document.update':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Update document:</span>{' '}
           <ToolEntityText url={documentUrl} label={documentName} />
         </span>
       )
     case 'document.delete':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Delete document:</span>{' '}
           <ToolEntityText url={documentUrl} label={documentName} />
         </span>
       )
     case 'document.fork':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Copy document:</span>{' '}
           <ToolEntityText url={destinationUrl || documentUrl} label={destinationName} />
         </span>
       )
     case 'document.ref':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Reference document:</span>{' '}
           <ToolEntityText url={destinationUrl || documentUrl} label={destinationName} />
         </span>
       )
     case 'document.move':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Move document:</span>{' '}
           <ToolEntityText url={sourceUrl} label={sourceName} /> →{' '}
           <ToolEntityText url={destinationUrl} label={destinationName} />
@@ -1497,7 +2362,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     case 'document.redirect':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Redirect document:</span>{' '}
           <ToolEntityText url={sourceUrl} label={sourceName} /> →{' '}
           <ToolEntityText url={destinationUrl} label={destinationName} />
@@ -1505,38 +2370,38 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     case 'draft.create':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Create draft:</span> {draftTitle}
         </span>
       )
     case 'draft.update':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Update draft:</span> {draftTitle}
         </span>
       )
     case 'draft.get':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Open draft:</span> {draftTitle}
         </span>
       )
     case 'draft.list':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>List drafts</span>
         </span>
       )
     case 'draft.delete':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Delete draft:</span>{' '}
           {draftTitle || draftId || 'Draft'}
         </span>
       )
     case 'draft.publish':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Publish draft:</span> {draftTitle}
           {documentUrl ? (
             <>
@@ -1548,34 +2413,34 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     case 'profile.update':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Update profile:</span>{' '}
           <ToolEntityText url={profileUrl} label={profileName} />
         </span>
       )
     case 'profile.alias':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Alias profile:</span> {alias}
         </span>
       )
     case 'contact.create':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Create contact:</span>{' '}
           <ToolEntityText url={contactSubjectUrl} label={contactName} />
         </span>
       )
     case 'contact.delete':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Delete contact:</span> {contactName}
         </span>
       )
     case 'capability.create':
     case 'capability.grant':
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>Grant {capabilityRole} capability</span>
           {capabilityDelegate ? (
             <>
@@ -1587,7 +2452,7 @@ function WriteCommandSummary({item}: {item: ChatToolPart}) {
       )
     default:
       return (
-        <span className="text-foreground/80 min-w-0 truncate">
+        <span className={stylex.props(styles_3.s7c371803).className || ''}>
           <span className={stylex.props(styles.s129e46b3).className || ''}>{command || 'Write'}</span>
           {documentUrl ? (
             <>
@@ -1647,14 +2512,14 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
   const authorName = getFirstToolString(output, ['authorName', 'signer.profileName']) || authorPublicKey || 'Author'
   const drafts = getPathValues(output, 'drafts[]').filter((draft) => isRecord(draft)) as Record<string, unknown>[]
   return (
-    <div className="space-y-3">
+    <div className={stylex.props(styles_7.sc7133e98).className || ''}>
       {dryRun || warning ? (
         <ToolDetailSection label="Status">
           <ToolDetailCard>
-            <div className="flex flex-wrap items-center gap-2 text-[12px]">
+            <div className={stylex.props(styles_3.sdf4eb27f).className || ''}>
               {dryRun ? <ToolChip>Dry run</ToolChip> : null}
               {status ? <ToolChip>{status}</ToolChip> : null}
-              {warning ? <span className="text-amber-700 dark:text-amber-300">{warning}</span> : null}
+              {warning ? <span className={stylex.props(styles_3.s7a3ad4ba).className || ''}>{warning}</span> : null}
             </div>
           </ToolDetailCard>
         </ToolDetailSection>
@@ -1739,7 +2604,7 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
 
       {command === 'draft.list' && drafts.length ? (
         <ToolDetailSection label="Drafts">
-          <div className="space-y-2">
+          <div className={stylex.props(styles_7.sc7133e97).className || ''}>
             {drafts.map((draft) => (
               <ToolDetailCard key={String(draft.id || draft.name || draft.title || Math.random())}>
                 <ToolDetailList>
@@ -1815,7 +2680,7 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
       {content ? (
         <ToolDetailSection label={content.label}>
           <ToolDetailCard>
-            <div className="max-h-72 overflow-auto">
+            <div className={stylex.props(styles_2.s313025e3).className || ''}>
               <ToolRenderedContent content={content} />
             </div>
           </ToolDetailCard>
@@ -1824,23 +2689,65 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
 
       {metadata && isRecord(metadata) && Object.keys(metadata).length > 0 ? (
         <ToolDetailSection label="Metadata">
-          <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
-            {formatToolDebugValue(metadata)}
-          </pre>
+          <pre className={stylex.props(styles_3.s863380b5).className || ''}>{formatToolDebugValue(metadata)}</pre>
         </ToolDetailSection>
       ) : null}
     </div>
   )
 }
-const toolColorClasses = {
-  sky: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300',
-  emerald: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
-  violet: 'border-violet-500/30 bg-violet-500/10 text-violet-700 dark:text-violet-300',
-  amber: 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300',
-  indigo: 'border-indigo-500/30 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300',
-  muted: 'border-border bg-muted/60 text-muted-foreground',
-  hidden: 'border-border bg-muted/60 text-muted-foreground',
-}
+/** Border/background/text colors for tool chips, keyed by the tool's palette color. */
+const toolColorStyles = stylex.create({
+  sky: {
+    borderColor: 'color-mix(in oklab, var(--color-sky-500) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--color-sky-500) 10%, transparent)',
+    color: {
+      default: 'var(--color-sky-700)',
+      ':is(.dark *)': 'var(--color-sky-300)',
+    },
+  },
+  emerald: {
+    borderColor: 'color-mix(in oklab, var(--color-emerald-500) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--color-emerald-500) 10%, transparent)',
+    color: {
+      default: 'var(--color-emerald-700)',
+      ':is(.dark *)': 'var(--color-emerald-300)',
+    },
+  },
+  violet: {
+    borderColor: 'color-mix(in oklab, var(--color-violet-500) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--color-violet-500) 10%, transparent)',
+    color: {
+      default: 'var(--color-violet-700)',
+      ':is(.dark *)': 'var(--color-violet-300)',
+    },
+  },
+  amber: {
+    borderColor: 'color-mix(in oklab, var(--color-amber-500) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--color-amber-500) 10%, transparent)',
+    color: {
+      default: 'var(--color-amber-700)',
+      ':is(.dark *)': 'var(--color-amber-300)',
+    },
+  },
+  indigo: {
+    borderColor: 'color-mix(in oklab, var(--color-indigo-500) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--color-indigo-500) 10%, transparent)',
+    color: {
+      default: 'var(--color-indigo-700)',
+      ':is(.dark *)': 'var(--color-indigo-300)',
+    },
+  },
+  muted: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    color: 'var(--muted-foreground)',
+  },
+  hidden: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+    color: 'var(--muted-foreground)',
+  },
+})
 const toolIcons = {
   search: Search,
   read: BookOpenText,
@@ -1863,16 +2770,7 @@ function formatDurationMs(ms: number): string {
   return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`
 }
 function ToolOutputPre({children, className}: {children: React.ReactNode; className?: string}) {
-  return (
-    <pre
-      className={cn(
-        'bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 font-mono text-[11px] leading-4 whitespace-pre-wrap',
-        className,
-      )}
-    >
-      {children}
-    </pre>
-  )
+  return <pre className={cn(stylex.props(styles_3.sc2368d83).className || '', className)}>{children}</pre>
 }
 
 /**
@@ -1899,7 +2797,7 @@ function ExecuteCodeDetails({item, liveTail}: {item: ChatToolPart; liveTail?: st
       }[])
     : []
   return (
-    <div className="space-y-3">
+    <div className={stylex.props(styles_7.sc7133e98).className || ''}>
       <ToolDetailSection label={language ? `Code · ${language}` : 'Code'}>
         <ToolOutputPre className={stylex.props(styles.saaddf753).className || ''}>{code || '(no code)'}</ToolOutputPre>
       </ToolDetailSection>
@@ -1917,7 +2815,7 @@ function ExecuteCodeDetails({item, liveTail}: {item: ChatToolPart; liveTail?: st
           ) : null}
           {stderr?.trim() ? (
             <ToolDetailSection label="Errors">
-              <ToolOutputPre className="text-amber-800 dark:text-amber-200">{stderr}</ToolOutputPre>
+              <ToolOutputPre className={stylex.props(styles_3.sc46c6a3a).className || ''}>{stderr}</ToolOutputPre>
             </ToolDetailSection>
           ) : null}
           <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
@@ -1977,11 +2875,11 @@ function DelegateWorkDetails({
   // Same for the transcript link: the child's session exists from the moment it spawns.
   const sessionId = getToolSessionId(item) ?? spawnedChild?.sessionId
   return (
-    <div className="flex min-w-0 flex-col gap-2">
+    <div className={stylex.props(styles_2.sb21c636f).className || ''}>
       {brief ? (
         <ToolDetailSection label="Brief">
           <ToolDetailCard>
-            <div className="max-h-72 overflow-auto">
+            <div className={stylex.props(styles_2.s313025e3).className || ''}>
               <Markdown>{brief}</Markdown>
             </div>
           </ToolDetailCard>
@@ -1991,7 +2889,7 @@ function DelegateWorkDetails({
       {serverUrl && signingAccount && runId ? (
         <DelegateRunView serverUrl={serverUrl} accountUid={signingAccount} runId={runId} seed={spawnedChild} />
       ) : isPending ? (
-        <div className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
+        <div className={stylex.props(styles_3.sfc1757c9).className || ''}>
           <Loader2 className={stylex.props(styles.sb7d2c3e9).className || ''} />
           {sessionId ? 'The child is working — open its transcript to watch.' : 'Starting the child…'}
         </div>
@@ -2016,7 +2914,7 @@ function OpenTranscriptLink({sessionId, serverUrl}: {sessionId: string; serverUr
   return (
     <button
       type="button"
-      className="text-primary self-start text-[11px] hover:underline"
+      className={stylex.props(styles_3.s49d063c7).className || ''}
       onClick={(event) =>
         clickNavigate(
           {
@@ -2102,10 +3000,12 @@ function DelegateRunView({
   const focus = seed ? runsById[seed.id] ?? seed : undefined
   const children = useMemo(() => (focus ? descendantsOf(runsById, focus.id) : []), [runsById, focus?.id])
   if (!focus) {
-    return direct.isLoading ? <div className="text-muted-foreground text-[11px]">Loading the child run…</div> : null
+    return direct.isLoading ? (
+      <div className={stylex.props(styles_3.s12cef23f).className || ''}>Loading the child run…</div>
+    ) : null
   }
   return (
-    <div className="flex min-w-0 flex-col gap-2">
+    <div className={stylex.props(styles_2.sb21c636f).className || ''}>
       {/* A delegated child can be the thing waiting on you, so it gets the same answer affordance. */}
       <ParkedRunActions run={focus} serverUrl={serverUrl} accountUid={accountUid} />
       <RunTimerProgress run={focus} journal={liveState.journal} wide />
@@ -2167,7 +3067,7 @@ function ToolRouteLink({
         event.stopPropagation()
         onOpen(event)
       }}
-      className="text-foreground min-w-0 truncate font-medium decoration-1 underline-offset-2 hover:underline"
+      className={stylex.props(styles_3.s1f64a9aa).className || ''}
     >
       {label}
     </button>
@@ -2229,7 +3129,7 @@ export function ToolCallLine({
     ? 'border-destructive/30 bg-destructive/5'
     : isTimerWorkflow
       ? 'border-primary/25 bg-primary/5'
-      : toolColorClasses[render?.color || 'muted']
+      : stylex.props(toolColorStyles[render?.color || 'muted']).className || ''
   const customView = getToolCustomView(item)
   const rowContext = useMemo(
     () => ({
@@ -2251,10 +3151,24 @@ export function ToolCallLine({
   const liveTailPreview = liveTool?.outputTail ? lastOutputLines(liveTool.outputTail, 10) : ''
   return (
     <ToolRowContext.Provider value={rowContext}>
-      <div className={cn('group/toolrow my-1.5 mr-6 rounded-lg border px-2 py-1.5 text-xs', colorClass)}>
+      <div
+        className={cn(
+          stylex.props(
+            styles_4.sc0be8a17,
+            styles_4.s333e0e,
+            styles_4.sf799889b,
+            styles_4.sad8c742c,
+            styles_4.s34b1ad,
+            styles_4.sc5dd13f4,
+            styles_4.sab7cc79b,
+          ).className || '',
+          'group/toolrow',
+          colorClass,
+        )}
+      >
         {/* The whole header row toggles expansion; inner links/buttons stop propagation. */}
         <div
-          className="flex min-w-0 cursor-pointer items-center gap-1.5 select-none"
+          className={stylex.props(styles_2.sed07b71e).className || ''}
           onClick={() => setExpanded((current) => !current)}
         >
           <button
@@ -2265,7 +3179,7 @@ export function ToolCallLine({
               event.stopPropagation()
               setExpanded((current) => !current)
             }}
-            className="hover:bg-background/70 rounded p-0.5"
+            className={stylex.props(styles_3.s49887e17).className || ''}
           >
             {expanded ? (
               <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
@@ -2278,11 +3192,7 @@ export function ToolCallLine({
           ) : (
             <Icon className={stylex.props(styles.s4a58805).className || ''} />
           )}
-          {item.actor === 'user' ? (
-            <span className="border-primary/40 bg-primary/10 text-primary shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-[9px] font-medium tracking-wide uppercase">
-              You
-            </span>
-          ) : null}
+          {item.actor === 'user' ? <span className={stylex.props(styles_3.s3fc0193f).className || ''}>You</span> : null}
           {/* Hypermedia writes keep their purpose-built phrasing (a comment, a move, a grant read
               nothing like "wrote"); every other address gets the resolved one-liner. */}
           {customView?.kind === 'write-command' && !item.summaryOverride ? (
@@ -2311,16 +3221,18 @@ export function ToolCallLine({
                     }
                   />
                 ) : (
-                  <span className="text-foreground/75 min-w-0 truncate">{summary}</span>
+                  <span className={stylex.props(styles_3.s856620dd).className || ''}>{summary}</span>
                 )
               ) : null}
-              {liveTool?.detail ? <span className="text-foreground/60 min-w-0 truncate">{liveTool.detail}</span> : null}
+              {liveTool?.detail ? (
+                <span className={stylex.props(styles_3.se0e25481).className || ''}>{liveTool.detail}</span>
+              ) : null}
               {/* One clipped line of text links: the strip shrinks before the summary does, and
                   whatever does not fit is cut rather than wrapped into a second row. */}
-              <div className="flex min-w-0 shrink items-center gap-1.5 overflow-hidden whitespace-nowrap">
+              <div className={stylex.props(styles_2.s6bc772a2).className || ''}>
                 {links.map((link, index) => (
                   <Fragment key={link.url}>
-                    {index ? <span className="text-muted-foreground shrink-0 text-[10px] opacity-60">·</span> : null}
+                    {index ? <span className={stylex.props(styles_3.s805b39a).className || ''}>·</span> : null}
                     <ToolResourceLink url={link.url} label={link.label} />
                   </Fragment>
                 ))}
@@ -2342,23 +3254,32 @@ export function ToolCallLine({
                 event.stopPropagation()
                 setDetailsOpen(true)
               }}
-              className="hover:bg-background/70 text-muted-foreground hover:text-foreground bg-background/60 rounded-full border p-0.75 opacity-0 transition-opacity group-hover/toolrow:opacity-100 focus-visible:opacity-100"
+              className={
+                stylex.props(
+                  styles_4.s9926ee50,
+                  styles_4.sf2718385,
+                  styles_4.sae6a97a5,
+                  styles_4.sc43c4bb3,
+                  styles_4.sc1af6c99,
+                  styles_4.s775755af,
+                  styles_4.sad8c742c,
+                  styles_4.s765a26ee,
+                  styles_4.s83442393,
+                  styles_4.s79cfa1b2,
+                ).className || ''
+              }
             >
               <Info className={stylex.props(styles.sca3de967).className || ''} />
             </button>
           </div>
         </div>
         {!expanded && liveTailPreview ? (
-          <pre className="bg-background/60 text-foreground/80 mt-1.5 overflow-hidden rounded-md border p-2 font-mono text-[10px] leading-4 break-all whitespace-pre-wrap">
-            {liveTailPreview}
-          </pre>
+          <pre className={stylex.props(styles_3.s89c91c60).className || ''}>{liveTailPreview}</pre>
         ) : null}
         {expanded ? (
-          <div className="mt-2 space-y-2 border-t pt-2">
+          <div className={stylex.props(styles_4.s33458c, styles_4.s7c401f13, styles_4.s34a2a9).className || ''}>
             {item.isError && item.result ? (
-              <pre className="border-destructive/30 bg-destructive/5 text-destructive max-h-48 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
-                {item.result}
-              </pre>
+              <pre className={stylex.props(styles_3.s76c07427).className || ''}>{item.result}</pre>
             ) : null}
             {isDelegateToolName(item.name) ? (
               <DelegateWorkDetails item={item} serverUrl={serverUrl} accountUid={accountUid} />
@@ -2374,12 +3295,13 @@ export function ToolCallLine({
             ) : (
               <>
                 {details.map((detail) => (
-                  <div key={`${detail.label}:${detail.path || detail.source}`} className="space-y-1">
-                    <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">
-                      {detail.label}
-                    </div>
+                  <div
+                    key={`${detail.label}:${detail.path || detail.source}`}
+                    className={stylex.props(styles_7.sc7133e96).className || ''}
+                  >
+                    <div className={stylex.props(styles_3.s3ae9d250).className || ''}>{detail.label}</div>
                     {detail.format === 'markdown' && typeof detail.value === 'string' ? (
-                      <div className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border px-2.5 py-2">
+                      <div className={stylex.props(styles_3.sbf5ee6dc).className || ''}>
                         <Markdown>{detail.value}</Markdown>
                       </div>
                     ) : typeof detail.value === 'string' && detailLinkTarget(detail.value) ? (
@@ -2388,7 +3310,7 @@ export function ToolCallLine({
                         <ToolDetailText value={detail.value} />
                       </ToolDetailCard>
                     ) : (
-                      <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
+                      <pre className={stylex.props(styles_3.s863380b5).className || ''}>
                         {formatToolDebugValue(detail.value)}
                       </pre>
                     )}

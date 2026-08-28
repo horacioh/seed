@@ -31,15 +31,22 @@ const FALLBACK_ICONS: Partial<Record<ModelProviderType, ComponentType<{className
   custom: Boxes,
 }
 
-export function ProviderIcon({type, className = 'size-4'}: {type: ModelProviderType; className?: string}) {
+export function ProviderIcon({type, className}: {type: ModelProviderType; className?: string}) {
   const path = BRAND_PATHS[type]
   if (path) {
     return (
-      <svg viewBox="0 0 24 24" className={className} fill="currentColor" role="img" aria-hidden="true">
+      <svg
+        data-slot="provider-icon"
+        viewBox="0 0 24 24"
+        className={className}
+        fill="currentColor"
+        role="img"
+        aria-hidden="true"
+      >
         <path d={path} />
       </svg>
     )
   }
   const Fallback = FALLBACK_ICONS[type] ?? Boxes
-  return <Fallback className={className} />
+  return <Fallback data-slot="provider-fallback" className={className} />
 }

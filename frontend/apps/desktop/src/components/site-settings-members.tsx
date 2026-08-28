@@ -17,6 +17,72 @@ import {toast} from '@shm/ui/toast'
 import {cn} from '@shm/ui/utils'
 import {useQuery} from '@tanstack/react-query'
 import {type ReactNode, useMemo, useState} from 'react'
+const styles_4 = stylex.create({
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_3 = stylex.create({
+  s78ce1b99: {
+    borderColor: 'var(--brand)',
+    color: 'var(--brand-2)',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  sce3543c7: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    borderColor: 'transparent',
+  },
+})
+const styles_2 = stylex.create({
+  s78ce1b99: {
+    borderColor: 'var(--brand)',
+    color: 'var(--brand-2)',
+    fontWeight: '500',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
 const styles = stylex.create({
   s4c9e7ebc: {
     display: 'flex',
@@ -41,8 +107,7 @@ const styles = stylex.create({
     paddingBlock: 'calc(0.25rem * 2)',
     fontSize: '0.875rem',
     lineHeight: 'calc(1.25 / 0.875)',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
   },
@@ -191,9 +256,7 @@ export function MembersSettings({siteId, activeTab}: {siteId: UnpackedHypermedia
               }
               className={cn(
                 stylex.props(styles.scd81614b).className || '',
-                active
-                  ? 'border-brand text-brand-2 font-medium'
-                  : 'text-muted-foreground hover:text-foreground border-transparent',
+                stylex.props(active ? styles_3.s78ce1b99 : styles_3.sce3543c7).className || '',
               )}
             >
               {t.label}
@@ -306,16 +369,31 @@ function MemberRow({member, account, action}: {member: HMSiteMember; account?: H
   const metadata = account?.metadata
   const name = metadata?.name || `${member.account.uid.slice(0, 10)}…`
   return (
-    <div className="group hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
+    <div
+      className={
+        stylex.props(
+          styles_4.s37120a61,
+          styles_4.s2ffff9,
+          styles_4.sc6ed1702,
+          styles_4.s5d936fc,
+          styles_4.sf79988b7,
+          styles_4.s1aa16,
+          styles_4.sf7fb00e8,
+        ).className || ''
+      }
+    >
       <HMIcon id={member.account} name={metadata?.name} icon={metadata?.icon} size={32} />
       <SizableText
         size="sm"
-        className={cn(stylex.props(styles.sb136bac9).className || '', metadata?.name ? '' : 'text-muted-foreground')}
+        className={cn(
+          stylex.props(styles.sb136bac9).className || '',
+          stylex.props(metadata?.name ? null : styles_2.sf2718385).className || '',
+        )}
       >
         {name}
       </SizableText>
       {action && member.role === 'member' ? (
-        <div className="opacity-0 transition-opacity group-hover:opacity-100">{action}</div>
+        <div className={stylex.props(styles_4.s765a26ee, styles_4.s83442393).className || ''}>{action}</div>
       ) : null}
       <SizableText size="xs" color="muted" className={stylex.props(styles.sf032ed6c).className || ''}>
         {roleLabel(member.role)}

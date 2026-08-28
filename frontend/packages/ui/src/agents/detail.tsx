@@ -125,6 +125,507 @@ import {AgentsNoAccountPage} from './no-account'
 import {agentAccessCanChat, agentAccessCanWrite} from './access'
 import {AgentRichMessageComposer} from './rich-message-composer'
 import {type AgentsRichEditorSubmitHandle} from './platform'
+const styles_7 = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s9ccd4e68: {
+    maxWidth: '48rem',
+  },
+})
+const styles_6 = stylex.create({
+  s18c0f: {
+    height: 'calc(0.25rem * 4)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  sf28e7398: {
+    backgroundColor: 'var(--card)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf7998a14: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56f: {
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  s54eab7bc: {
+    opacity: '60%',
+  },
+  s2cc20399: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--accent) 20%, transparent)',
+      },
+    },
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+})
+const styles_5 = stylex.create({
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s3731c254: {
+    '@media ((max-width: 639px))': {
+      width: 'calc(0.25rem * 10)',
+      height: 'calc(0.25rem * 10)',
+    },
+  },
+  sd5830f98: {
+    '@media ((max-width: 639px))': {
+      opacity: '100%',
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sf4676641: {
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s5f101360: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--destructive)',
+      },
+    },
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sf4676280: {
+    gap: 'calc(0.25rem * 0.5)',
+  },
+})
+const styles_4 = stylex.create({
+  sf182d248: {
+    borderColor: 'var(--input)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    color: 'var(--muted-foreground)',
+    minHeight: 'calc(var(--spacing) * 80)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    whiteSpace: 'pre-wrap',
+  },
+  s93ff291a: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  sfdf82496: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+  },
+  s15fae92f: {
+    display: 'flex',
+    maxHeight: '78vh',
+    width: '100%',
+    maxWidth: 'var(--container-3xl)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    overflowY: 'auto',
+  },
+  s454f5715: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+    '@media ((min-width: 640px))': {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+    },
+  },
+  s7862b5a6: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1.5)',
+    '@media ((min-width: 640px))': {
+      width: 'calc(var(--spacing) * 40)',
+    },
+  },
+  s95e7623f: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s1f22c98c: {
+    display: 'flex',
+    maxHeight: '70vh',
+    minWidth: 'calc(var(--spacing) * 0)',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    overflowY: 'auto',
+  },
+  s709ffd81: {
+    borderColor: 'color-mix(in oklab, var(--border) 60%, transparent)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(var(--spacing) * 3)',
+  },
+  sa112639a: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    flexShrink: '0',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+  },
+  s3c9d925b: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--destructive)',
+        opacity: '100%',
+      },
+    },
+  },
+  sb06f525c: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 3)',
+  },
+  s90532d8c: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    minHeight: 'calc(var(--spacing) * 40)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    whiteSpace: 'pre-wrap',
+  },
+  s15b067b5: {
+    borderColor: 'var(--border)',
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(var(--spacing) * 5)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    },
+  },
+  s5f7fffe: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
+    },
+    display: 'flex',
+    cursor: 'pointer',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    textAlign: 'left',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sda0606fa: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8ebd925d: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 0.5)',
+    textAlign: 'left',
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  s239b1dd5: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    marginTop: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+  },
+})
+const styles_3 = stylex.create({
+  s26068628: {
+    borderColor: 'var(--border)',
+    flex: 'none',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  sde2f5b1a: {
+    display: 'contents',
+  },
+  sb7febe14: {
+    maxWidth: '56rem',
+    gap: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 4)',
+  },
+  s70333b2b: {
+    minHeight: 'calc(0.25rem * 0)',
+    maxWidth: '56rem',
+    flex: '1',
+    gap: 'calc(0.25rem * 4)',
+    paddingTop: 'calc(0.25rem * 4)',
+    paddingBottom: 'calc(0.25rem * 0)',
+  },
+})
+const styles_2 = stylex.create({
+  s4fcd49d8: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  s7d7fb0a5: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    overflowY: 'auto',
+    paddingRight: 'calc(0.25rem * 1)',
+  },
+  s7a8d2b4: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 3)',
+  },
+  s35cc9ee: {
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflowY: 'auto',
+    paddingRight: 'calc(0.25rem * 1)',
+    paddingBottom: 'calc(0.25rem * 4)',
+  },
+  s7bb98069: {
+    display: 'flex',
+    maxWidth: '42rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+  },
+  s1c7eef48: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s945d5f9e: {
+    minHeight: 'calc(0.25rem * 24)',
+    resize: 'vertical',
+  },
+  sc2c0d05b: {
+    minHeight: 'calc(0.25rem * 56)',
+    resize: 'vertical',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s9c9145b5: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  s7b12fa98: {
+    minHeight: 'calc(0.25rem * 48)',
+    resize: 'vertical',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  scfc6b2f2: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingTop: 'calc(0.25rem * 3)',
+  },
+  s2b96d687: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1.5)',
+    paddingBlock: 'calc(0.25rem * 0.5)',
+    paddingRight: 'calc(0.25rem * 2)',
+    paddingLeft: 'calc(0.25rem * 0.5)',
+  },
+  sb2646ddb: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    maxWidth: '48rem',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 4)',
+    overflowY: 'auto',
+    paddingRight: 'calc(0.25rem * 1)',
+  },
+  sdf91ad19: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 3)',
+  },
+  sa4681c45: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sc95eeaf4: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    columnGap: 'calc(0.25rem * 3)',
+    rowGap: 'calc(0.25rem * 1)',
+    paddingLeft: 'calc(0.25rem * 1)',
+  },
+  s8fe12dbc: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    textAlign: 'left',
+  },
+  sb96da372: {
+    marginInline: 'auto',
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+    maxWidth: '56rem',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 5)',
+    overflowY: 'auto',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  s32572229: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: '100%',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 5)',
+  },
+  s10483f08: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   s6ebbda8: {
     display: 'flex',
@@ -835,10 +1336,8 @@ function AgentDetailPage({
     : undefined
   return (
     <PanelContainer className={stylex.props(styles.s6ebbda8).className || ''}>
-      <div className={isTriggerDetail ? 'border-border flex-none border-b' : 'contents'}>
-        <Container
-          className={isTriggerDetail ? 'max-w-4xl gap-4 pt-4 pb-4' : 'min-h-0 max-w-4xl flex-1 gap-4 pt-4 pb-0'}
-        >
+      <div className={stylex.props(isTriggerDetail ? styles_3.s26068628 : styles_3.sde2f5b1a).className || ''}>
+        <Container className={stylex.props(isTriggerDetail ? styles_3.sb7febe14 : styles_3.s70333b2b).className || ''}>
           {agent.isLoading ? (
             <div className={stylex.props(styles.s3b59b99).className || ''}>
               <Spinner size="large" className={stylex.props(styles.sf2718385).className || ''} />
@@ -946,8 +1445,8 @@ function AgentDetailPage({
               {editNameDialog.content}
 
               {tab === 'sessions' ? (
-                <section className="flex min-h-0 flex-1 flex-col">
-                  <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
+                <section className={stylex.props(styles_2.s4fcd49d8).className || ''}>
+                  <div className={stylex.props(styles_2.s7d7fb0a5).className || ''}>
                     {!topLevelSessions.length ? <SizableText color="muted">No sessions yet.</SizableText> : null}
                     {topLevelSessions.map((session) => (
                       <SessionListItem
@@ -1089,7 +1588,7 @@ function AgentDetailPage({
               ) : null}
 
               {tab === 'prompt' ? (
-                <section className="flex min-h-0 flex-1 flex-col gap-3">
+                <section className={stylex.props(styles_2.s7a8d2b4).className || ''}>
                   <div>
                     <SizableText weight="bold">System prompt</SizableText>
                     <SizableText size="sm" color="muted" className={stylex.props(styles.s597c48d).className || ''}>
@@ -1107,13 +1606,13 @@ function AgentDetailPage({
                     </SizableText>
                   </div>
                   {promptEditorDisabled ? (
-                    <pre className="border-input bg-muted/40 text-muted-foreground min-h-80 rounded-lg border p-4 text-sm whitespace-pre-wrap">
+                    <pre className={stylex.props(styles_4.sf182d248).className || ''}>
                       {!canWrite
                         ? promptBlocksToMarkdown(systemPrompt) || 'No system prompt configured.'
                         : 'Connect to the agent server to edit this prompt.'}
                     </pre>
                   ) : (
-                    <div className="min-h-0 flex-1 overflow-y-auto pr-1 pb-4">
+                    <div className={stylex.props(styles_2.s35cc9ee).className || ''}>
                       <AgentPromptEditor
                         key={promptEditorKey}
                         initialBlocks={systemPrompt}
@@ -1142,8 +1641,8 @@ function AgentDetailPage({
               ) : null}
 
               {tab === 'settings' ? (
-                <section className="flex max-w-2xl flex-col gap-4">
-                  <div className="grid gap-3 md:grid-cols-2">
+                <section className={stylex.props(styles_2.s7bb98069).className || ''}>
+                  <div className={stylex.props(styles_4.s93ff291a).className || ''}>
                     <label className={stylex.props(styles.sfbc6e28d).className || ''}>
                       <SizableText size="sm" weight="bold">
                         Model
@@ -1212,7 +1711,11 @@ function AgentDetailPage({
                   <div className={stylex.props(styles.sfbc6e28e).className || ''}>
                     <SizableText
                       size="xs"
-                      className={`h-4 ${settingsSaveState === 'error' ? 'text-destructive' : ''}`}
+                      className={
+                        (stylex.props(styles_6.s18c0f).className || '') +
+                        ' ' +
+                        (settingsSaveState === 'error' ? stylex.props(styles_6.s8a2570e2).className || '' : '')
+                      }
                       color={settingsSaveState === 'error' ? undefined : 'muted'}
                     >
                       {settingsSaveState === 'saving'
@@ -1327,7 +1830,7 @@ function AgentCollaboratorsTab({
     }
   }
   return (
-    <section className="flex max-w-2xl flex-col gap-4">
+    <section className={stylex.props(styles_2.s7bb98069).className || ''}>
       {isOwner ? (
         <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <div className={stylex.props(styles.s82587a56).className || ''}>
@@ -1509,13 +2012,18 @@ function AgentCollaboratorRow({
     <div className={stylex.props(styles.sadecf8c8).className || ''}>
       <HMIcon id={hmId(member.accountId)} name={metadata?.name} icon={metadata?.icon} size={32} />
       <div className={stylex.props(styles.s95536c4e).className || ''}>
-        <SizableText size="sm" className={`truncate ${metadata?.name ? '' : 'text-muted-foreground'}`}>
+        <SizableText
+          size="sm"
+          className={
+            (stylex.props(styles_6.s6e724d66).className || '') +
+            ' ' +
+            (metadata?.name ? '' : stylex.props(styles_6.sf2718385).className || '')
+          }
+        >
           {metadata?.name || abbreviateUid(member.accountId)}
         </SizableText>
         {member.status === 'pending' ? (
-          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
-            Pending
-          </span>
+          <span className={stylex.props(styles_4.sfdf82496).className || ''}>Pending</span>
         ) : null}
         {canManage ? (
           <span className={stylex.props(styles.se0969a8c).className || ''}>
@@ -1673,7 +2181,7 @@ function AuthoredToolDialog({
     }
   }
   return (
-    <form className="flex max-h-[78vh] w-full max-w-3xl min-w-0 flex-col gap-4 overflow-y-auto" onSubmit={handleSave}>
+    <form className={stylex.props(styles_4.s15fae92f).className || ''} onSubmit={handleSave}>
       <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <DialogTitle>{tool ? 'Edit authored tool' : 'Add authored tool'}</DialogTitle>
         <DialogDescription>
@@ -1682,8 +2190,8 @@ function AuthoredToolDialog({
         </DialogDescription>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+      <div className={stylex.props(styles_4.s454f5715).className || ''}>
+        <label className={stylex.props(styles_2.s1c7eef48).className || ''}>
           <SizableText size="sm" weight="bold">
             Name
           </SizableText>
@@ -1700,7 +2208,7 @@ function AuthoredToolDialog({
             autoFocus={!tool}
           />
         </label>
-        <label className="flex flex-col gap-1.5 sm:w-40">
+        <label className={stylex.props(styles_4.s7862b5a6).className || ''}>
           <SizableText size="sm" weight="bold">
             Runtime
           </SizableText>
@@ -1734,7 +2242,7 @@ function AuthoredToolDialog({
           Description sent to the model
         </SizableText>
         <Textarea
-          className="min-h-24 resize-y"
+          className={stylex.props(styles_2.s945d5f9e).className || ''}
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           placeholder="Explain what the tool does and when to call it."
@@ -1748,7 +2256,7 @@ function AuthoredToolDialog({
           Source
         </SizableText>
         <Textarea
-          className="min-h-56 resize-y font-mono text-xs"
+          className={stylex.props(styles_2.sc2c0d05b).className || ''}
           value={source}
           onChange={(event) => setSource(event.target.value)}
           spellCheck={false}
@@ -1757,13 +2265,13 @@ function AuthoredToolDialog({
         />
       </label>
 
-      <div className="grid gap-3 md:grid-cols-2">
-        <label className="flex min-w-0 flex-col gap-1.5">
+      <div className={stylex.props(styles_4.s93ff291a).className || ''}>
+        <label className={stylex.props(styles_2.s9c9145b5).className || ''}>
           <SizableText size="sm" weight="bold">
             Input schema
           </SizableText>
           <Textarea
-            className="min-h-48 resize-y font-mono text-xs"
+            className={stylex.props(styles_2.s7b12fa98).className || ''}
             value={inputSchema}
             onChange={(event) => setInputSchema(event.target.value)}
             spellCheck={false}
@@ -1771,12 +2279,12 @@ function AuthoredToolDialog({
             disabled={readOnly || saveTool.isLoading}
           />
         </label>
-        <label className="flex min-w-0 flex-col gap-1.5">
+        <label className={stylex.props(styles_2.s9c9145b5).className || ''}>
           <SizableText size="sm" weight="bold">
             Output schema <span className={stylex.props(styles.sd272840a).className || ''}>(optional)</span>
           </SizableText>
           <Textarea
-            className="min-h-48 resize-y font-mono text-xs"
+            className={stylex.props(styles_2.s7b12fa98).className || ''}
             value={outputSchema}
             onChange={(event) => setOutputSchema(event.target.value)}
             placeholder="Leave blank for any output"
@@ -1787,13 +2295,13 @@ function AuthoredToolDialog({
       </div>
 
       {tool ? (
-        <div className="border-border flex min-w-0 flex-col gap-1 border-t pt-3">
+        <div className={stylex.props(styles_2.scfc6b2f2).className || ''}>
           <SizableText size="xs" color="muted">
             Current version
           </SizableText>
           <button
             type="button"
-            className="text-muted-foreground hover:text-foreground truncate text-left font-mono text-xs"
+            className={stylex.props(styles_4.s95e7623f).className || ''}
             title="Copy content address"
             onClick={() => {
               copyTextToClipboard(tool.cid)
@@ -1892,7 +2400,7 @@ function ToolInfoDialog({
     )
   }
   return (
-    <div className="flex max-h-[70vh] min-w-0 flex-col gap-4 overflow-y-auto">
+    <div className={stylex.props(styles_4.s1f22c98c).className || ''}>
       <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         <DialogTitle>{meta.label}</DialogTitle>
         <SizableText size="xs" color="muted" className={stylex.props(styles.sa173a9a1).className || ''}>
@@ -1961,8 +2469,29 @@ const AGENT_TOOL_OPTIONS: {
     infoTool: 'write',
   },
 ]
-const AUTHOR_CHIP_CLASS =
-  'hover:bg-accent/40 flex min-w-0 cursor-pointer items-center gap-1.5 rounded-full py-0.5 pr-2 pl-0.5 disabled:cursor-default disabled:hover:bg-transparent'
+/** Layout and hover styling for the "Author as" identity chip. */
+const authorChipStyles = stylex.create({
+  chip: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: '0.375rem',
+    borderRadius: '9999px',
+    paddingBlock: '0.125rem',
+    paddingRight: '0.5rem',
+    paddingLeft: '0.125rem',
+    cursor: {
+      default: 'pointer',
+      ':disabled': 'default',
+    },
+    backgroundColor: {
+      default: null,
+      ':hover': 'color-mix(in oklab, var(--accent) 40%, transparent)',
+      ':disabled:hover': 'transparent',
+    },
+  },
+})
+const AUTHOR_CHIP_CLASS = stylex.props(authorChipStyles.chip).className || ''
 
 /** One "Author as" identity chip. Owners get a dropdown (open / edit profile); everyone else gets a
  * plain profile link. Key-only identities with no account have no profile to open. */
@@ -2027,7 +2556,7 @@ function AuthorIdentityChip({
   }
   if (!profileRoute) {
     return (
-      <div className="flex min-w-0 items-center gap-1.5 py-0.5 pr-2 pl-0.5" title={displayName}>
+      <div className={stylex.props(styles_2.s2b96d687).className || ''} title={displayName}>
         {content}
       </div>
     )
@@ -2069,7 +2598,7 @@ function AgentToolsTab({
 }) {
   const toolInfoDialog = useAppDialog(ToolInfoDialog)
   const authoredToolDialog = useAppDialog(AuthoredToolDialog, {
-    className: 'w-full max-w-3xl',
+    className: stylex.props(styles_7.scdbaf625, styles_7.s9ccd4e68).className || '',
   })
   const deleteAuthoredToolDialog = useAppDialog(DeleteAuthoredToolDialog, {
     isAlert: true,
@@ -2135,7 +2664,7 @@ function AgentToolsTab({
   const grantedIdentities = identities.filter((identity) => signingKeys.includes(identity.name))
   const ungrantedIdentities = identities.filter((identity) => !signingKeys.includes(identity.name))
   return (
-    <section className="flex min-h-0 max-w-3xl flex-1 flex-col gap-4 overflow-y-auto pr-1">
+    <section className={stylex.props(styles_2.sb2646ddb).className || ''}>
       <div>
         <SizableText weight="bold">Tools</SizableText>
       </div>
@@ -2153,12 +2682,24 @@ function AgentToolsTab({
           return (
             <div
               key={group.names.join('|')}
-              className={`group/tool border-border bg-card flex flex-col gap-3 rounded-xl border px-4 py-3 ${
-                groupAvailable || setupAction ? '' : 'opacity-60'
-              }`}
+              className={
+                (stylex.props(
+                  styles_6.s1a01a0ed,
+                  styles_6.sf28e7398,
+                  styles_6.s2ffff9,
+                  styles_6.s67e351ac,
+                  styles_6.s5d936fc,
+                  styles_6.sf7998a14,
+                  styles_6.sad8c742c,
+                  styles_6.s34b1af,
+                  styles_6.s34b56f,
+                ).className || '') +
+                ' ' +
+                (groupAvailable || setupAction ? '' : stylex.props(styles_6.s54eab7bc).className || '')
+              }
             >
               <div className={stylex.props(styles.s86ff3e5).className || ''}>
-                <label className="flex min-w-0 flex-1 items-center gap-3">
+                <label className={stylex.props(styles_2.sdf91ad19).className || ''}>
                   <input
                     type="checkbox"
                     className={stylex.props(styles.sca3de968).className || ''}
@@ -2181,7 +2722,7 @@ function AgentToolsTab({
                     {group.title}
                   </SizableText>
                   {!groupAvailable ? (
-                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                    <span className={stylex.props(styles_4.sfdf82496).className || ''}>
                       {setupAction ? 'Setup required' : 'Unavailable'}
                     </span>
                   ) : null}
@@ -2189,7 +2730,7 @@ function AgentToolsTab({
                 <Button
                   variant="ghost"
                   size="iconSm"
-                  className="opacity-0 group-hover/tool:opacity-100 max-sm:size-10 max-sm:opacity-100"
+                  className={stylex.props(styles_5.s765a26ee, styles_5.s3731c254, styles_5.sd5830f98).className || ''}
                   aria-label={`About ${group.title}`}
                   onClick={() =>
                     toolInfoDialog.open({
@@ -2215,17 +2756,23 @@ function AgentToolsTab({
                 </SizableText>
               ) : null}
               {isPublishGroup && checked ? (
-                <div className="border-border/60 flex flex-col gap-2 border-t pt-3">
-                  <div className="flex min-w-0 items-center gap-2">
+                <div className={stylex.props(styles_4.s709ffd81).className || ''}>
+                  <div className={stylex.props(styles_2.sa4681c45).className || ''}>
                     <KeyRound className={stylex.props(styles.sf0768e89).className || ''} />
                     <SizableText size="sm" weight="bold" className={stylex.props(styles.sf032ed6c).className || ''}>
                       Author as:
                     </SizableText>
-                    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 pl-1">
+                    <div className={stylex.props(styles_2.sc95eeaf4).className || ''}>
                       {grantedIdentities.map((identity) => {
                         const displayName = identity.label || identity.accountId || identity.name
                         return (
-                          <div key={identity.id} className="group/identity flex min-w-0 items-center gap-1.5">
+                          <div
+                            key={identity.id}
+                            className={
+                              stylex.props(styles_5.s2ffff9, styles_5.s3f58665f, styles_5.sc6ed1702, styles_5.sf4676641)
+                                .className || ''
+                            }
+                          >
                             <AuthorIdentityChip
                               identity={identity}
                               displayName={displayName}
@@ -2242,7 +2789,10 @@ function AgentToolsTab({
                               <Button
                                 variant="ghost"
                                 size="iconSm"
-                                className="text-muted-foreground hover:text-destructive opacity-0 group-hover/identity:opacity-100"
+                                className={
+                                  stylex.props(styles_5.sf2718385, styles_5.s5f101360, styles_5.s765a26ee).className ||
+                                  ''
+                                }
                                 aria-label={`Remove ${displayName}`}
                                 disabled={saving || identitiesLoading}
                                 onClick={() =>
@@ -2336,13 +2886,26 @@ function AgentToolsTab({
         {authoredTools.map((tool) => (
           <div
             key={tool.name}
-            className={`group/tool border-border bg-card hover:bg-accent/20 flex items-center gap-2 rounded-xl border px-4 py-2 ${
-              tool.enabled ? '' : 'opacity-60'
-            }`}
+            className={
+              (stylex.props(
+                styles_6.s1a01a0ed,
+                styles_6.sf28e7398,
+                styles_6.s2cc20399,
+                styles_6.s2ffff9,
+                styles_6.sc6ed1702,
+                styles_6.s5d936fb,
+                styles_6.sf7998a14,
+                styles_6.sad8c742c,
+                styles_6.s34b1af,
+                styles_6.s34b56e,
+              ).className || '') +
+              ' ' +
+              (tool.enabled ? '' : stylex.props(styles_6.s54eab7bc).className || '')
+            }
           >
             <button
               type="button"
-              className="flex min-w-0 flex-1 items-center gap-2 py-1 text-left"
+              className={stylex.props(styles_2.s8fe12dbc).className || ''}
               onClick={() =>
                 authoredToolDialog.open({
                   serverUrl,
@@ -2356,20 +2919,28 @@ function AgentToolsTab({
               <SizableText size="sm" weight="bold" className={stylex.props(styles.s8e4be3ed).className || ''}>
                 {tool.name}
               </SizableText>
-              <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+              <span className={stylex.props(styles_4.sa112639a).className || ''}>
                 {tool.runtime === 'python' ? 'Python' : 'TypeScript'}
               </span>
               {!tool.enabled ? (
-                <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
-                  Disabled
-                </span>
+                <span className={stylex.props(styles_4.sa112639a).className || ''}>Disabled</span>
               ) : null}
               <SizableText size="sm" color="muted" className={stylex.props(styles.s6e724d66).className || ''}>
                 {tool.summary}
               </SizableText>
             </button>
             {!readOnly ? (
-              <div className="flex shrink-0 items-center gap-0.5 opacity-0 group-hover/tool:opacity-100">
+              <div
+                className={
+                  stylex.props(
+                    styles_5.s2ffff9,
+                    styles_5.sf032ed6c,
+                    styles_5.sc6ed1702,
+                    styles_5.sf4676280,
+                    styles_5.s765a26ee,
+                  ).className || ''
+                }
+              >
                 <Button
                   variant="ghost"
                   size="iconSm"
@@ -2388,7 +2959,7 @@ function AgentToolsTab({
                 <Button
                   variant="ghost"
                   size="iconSm"
-                  className="text-muted-foreground hover:text-destructive"
+                  className={stylex.props(styles_4.s3c9d925b).className || ''}
                   aria-label={`Delete ${tool.name}`}
                   onClick={() =>
                     deleteAuthoredToolDialog.open({
@@ -2715,7 +3286,7 @@ function AgentTriggersTab({
             ) : null
           }
         />
-        <div className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col gap-5 overflow-y-auto px-4 py-4">
+        <div className={stylex.props(styles_2.sb96da372).className || ''}>
           {trigger.isLoading ? <SizableText color="muted">Loading trigger…</SizableText> : null}
           {trigger.isError ? (
             <SizableText className={stylex.props(styles.s8a2570e2).className || ''}>
@@ -2726,7 +3297,7 @@ function AgentTriggersTab({
             <>
               {readOnly ? (
                 <div className={stylex.props(styles.sd1c4c9a3).className || ''}>
-                  <div className="border-border bg-muted/40 rounded-lg border p-3">
+                  <div className={stylex.props(styles_4.sb06f525c).className || ''}>
                     <SizableText size="sm" weight="bold" className={stylex.props(styles.s597c48d).className || ''}>
                       Source
                     </SizableText>
@@ -2738,7 +3309,7 @@ function AgentTriggersTab({
                     <SizableText size="sm" weight="bold">
                       Prompt
                     </SizableText>
-                    <pre className="border-border bg-muted/40 min-h-40 rounded-lg border p-3 text-sm whitespace-pre-wrap">
+                    <pre className={stylex.props(styles_4.s90532d8c).className || ''}>
                       {promptBlocksToMarkdown(prompt) || 'No prompt configured.'}
                     </pre>
                   </div>
@@ -2826,7 +3397,7 @@ function AgentTriggersTab({
                   />
                 ))}
               </div>
-              <div className="border-border grid gap-3 border-t pt-5 text-sm md:grid-cols-3">
+              <div className={stylex.props(styles_4.s15b067b5).className || ''}>
                 <TriggerMeta label="Last checked" value={selected.lastCheckedAt} />
                 <TriggerMeta label="Last fired" value={selected.lastFiredAt} />
                 {source.type === 'schedule' ? <TriggerMeta label="Next fire" value={nextScheduledFire} /> : null}
@@ -2859,7 +3430,7 @@ function AgentTriggersTab({
       {triggers.map((item) => (
         <button
           key={item.id}
-          className="hover:bg-muted/60 flex cursor-pointer flex-col items-start rounded-lg px-3 py-2 text-left transition-colors"
+          className={stylex.props(styles_4.s5f7fffe).className || ''}
           onClick={() =>
             navigate({
               key: 'agent',
@@ -2939,7 +3510,7 @@ function CreateAgentTriggerDialog({
     }
   }
   return (
-    <div className="flex w-full max-w-full min-w-0 flex-col gap-5">
+    <div className={stylex.props(styles_2.s32572229).className || ''}>
       <div>
         <DialogTitle>New trigger</DialogTitle>
         <DialogDescription>Start a new agent session when matching Seed activity appears.</DialogDescription>
@@ -3084,11 +3655,11 @@ function SessionListItem({
   onOpenTrigger?: () => void
 }) {
   return (
-    <div className="hover:bg-muted flex flex-col items-start rounded-lg px-3 py-2 transition-colors">
-      <button type="button" className="flex w-full flex-col gap-0.5 text-left max-sm:min-h-10" onClick={onOpen}>
+    <div className={stylex.props(styles_4.sda0606fa).className || ''}>
+      <button type="button" className={stylex.props(styles_4.s8ebd925d).className || ''} onClick={onOpen}>
         <span className={stylex.props(styles.scc9904d2).className || ''}>
           <SessionStatusDot status={session.status} />
-          <SizableText weight="bold" className="min-w-0 flex-1 truncate">
+          <SizableText weight="bold" className={stylex.props(styles_2.s10483f08).className || ''}>
             {session.title || 'Untitled session'}
           </SizableText>
           <SizableText size="sm" color="muted" className={stylex.props(styles.s6b2af047).className || ''}>
@@ -3104,7 +3675,7 @@ function SessionListItem({
       {session.startedByTrigger ? (
         <button
           type="button"
-          className="bg-primary/10 text-primary mt-2 rounded-full px-2 py-0.5 text-xs font-bold"
+          className={stylex.props(styles_4.s239b1dd5).className || ''}
           onClick={(event) => {
             event.stopPropagation()
             onOpenTrigger?.()

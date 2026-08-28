@@ -1,79 +1,138 @@
 import * as stylex from '@stylexjs/stylex'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
-import {cva, VariantProps} from 'class-variance-authority'
 import {CheckIcon} from 'lucide-react'
 import * as React from 'react'
 import {HTMLAttributes} from 'react'
 import {cn} from '../utils'
 import {Label} from './label'
 const styles = stylex.create({
-  sedb714c0: {
+  indicator: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     color: 'currentcolor',
     transitionProperty: 'none',
   },
-  s3269316e: {
+  checkIcon: {
     width: 'calc(0.25rem * 3.5)',
     height: 'calc(0.25rem * 3.5)',
   },
-  s86ff3e5: {
+  field: {
     display: 'flex',
     alignItems: 'center',
     gap: 'calc(0.25rem * 3)',
   },
-})
-const checkboxVariants = cva(
-  'peer ring ring-px ring-border bg-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        primary:
-          'data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary',
-        brand:
-          'data-[state=checked]:bg-brand-5 data-[state=checked]:text-white dark:data-[state=checked]:bg-brand-5 data-[state=checked]:border-brand-5',
-        destructive:
-          'data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground dark:data-[state=checked]:bg-destructive data-[state=checked]:border-destructive',
-        secondary:
-          'data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground dark:data-[state=checked]:bg-secondary data-[state=checked]:border-secondary',
-        accent:
-          'data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground dark:data-[state=checked]:bg-accent data-[state=checked]:border-accent',
-      },
-      size: {
-        default: 'size-4',
-        sm: 'size-3',
-        lg: 'size-5',
-      },
+  base: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '1rem',
+    height: '1rem',
+    flexShrink: 0,
+    borderRadius: '4px',
+    border: '1px solid var(--border)',
+    backgroundColor: 'var(--input-surface)',
+    boxShadow: '0 0 0 1px var(--border), var(--shadow-xs)',
+    outline: 'none',
+    transitionProperty: 'box-shadow, background-color, border-color, color',
+    transitionDuration: '150ms',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    ':disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.5,
     },
-    defaultVariants: {
-      variant: 'brand',
-      size: 'default',
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent)',
     },
   },
-)
-export function Checkbox({className, variant = 'brand', ...props}: CheckboxProps) {
+  sizeSm: {
+    width: '0.75rem',
+    height: '0.75rem',
+  },
+  sizeLg: {
+    width: '1.25rem',
+    height: '1.25rem',
+  },
+  checkedPrimary: {
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    borderColor: 'var(--primary)',
+  },
+  checkedBrand: {
+    backgroundColor: 'var(--brand-5)',
+    color: 'white',
+    borderColor: 'var(--brand-5)',
+  },
+  checkedDestructive: {
+    backgroundColor: 'var(--destructive)',
+    color: 'var(--destructive-foreground)',
+    borderColor: 'var(--destructive)',
+  },
+  checkedSecondary: {
+    backgroundColor: 'var(--secondary)',
+    color: 'var(--secondary-foreground)',
+    borderColor: 'var(--secondary)',
+  },
+  checkedAccent: {
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+    borderColor: 'var(--accent)',
+  },
+})
+const ariaFallback =
+  'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
+export type CheckboxVariant = 'primary' | 'brand' | 'destructive' | 'secondary' | 'accent'
+export type CheckboxSize = 'default' | 'sm' | 'lg'
+function checkedStyle(variant: CheckboxVariant) {
+  switch (variant) {
+    case 'primary':
+      return styles.checkedPrimary
+    case 'brand':
+      return styles.checkedBrand
+    case 'destructive':
+      return styles.checkedDestructive
+    case 'secondary':
+      return styles.checkedSecondary
+    case 'accent':
+      return styles.checkedAccent
+  }
+}
+function sizeStyle(size: CheckboxSize) {
+  switch (size) {
+    case 'sm':
+      return styles.sizeSm
+    case 'lg':
+      return styles.sizeLg
+    default:
+      return undefined
+  }
+}
+export interface CheckboxProps extends React.ComponentProps<typeof CheckboxPrimitive.Root> {
+  variant?: CheckboxVariant
+  size?: CheckboxSize
+}
+export function Checkbox({className, variant = 'brand', size = 'default', checked, ...props}: CheckboxProps) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        checkboxVariants({
-          variant,
-        }),
+        stylex.props(styles.base, sizeStyle(size), checked && checkedStyle(variant)).className,
+        ariaFallback,
         className,
       )}
+      checked={checked}
       {...props}
     >
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className={stylex.props(styles.sedb714c0).className || ''}
+        className={stylex.props(styles.indicator).className || ''}
       >
-        <CheckIcon className={stylex.props(styles.s3269316e).className || ''} />
+        <CheckIcon className={stylex.props(styles.checkIcon).className || ''} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )
 }
-export type CheckboxProps = React.ComponentProps<typeof CheckboxPrimitive.Root> & VariantProps<typeof checkboxVariants>
 export function CheckboxField({
   checked,
   onCheckedChange,
@@ -82,6 +141,7 @@ export function CheckboxField({
   id,
   className,
   variant = 'primary',
+  size = 'default',
 }: {
   checked: boolean
   onCheckedChange: (value: boolean) => void
@@ -89,10 +149,10 @@ export function CheckboxField({
   children: React.ReactNode | string
   id: string
 } & HTMLAttributes<HTMLDivElement> &
-  CheckboxProps) {
+  Pick<CheckboxProps, 'variant' | 'size'>) {
   return (
-    <div className={cn(stylex.props(styles.s86ff3e5).className || '', className)}>
-      <Checkbox checked={checked} onCheckedChange={onCheckedChange} variant={variant} />
+    <div className={cn(stylex.props(styles.field).className || '', className)}>
+      <Checkbox checked={checked} onCheckedChange={onCheckedChange} variant={variant} size={size} />
       <Label htmlFor={id} {...labelProps}>
         {children}
       </Label>

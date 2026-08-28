@@ -43,6 +43,223 @@ import {Tooltip} from './tooltip'
 import {cn} from './utils'
 
 /** Builds the DocumentCard inline menu items */
+const styles_9 = stylex.create({
+  s95afba94: {
+    ':hover': {
+      backgroundColor: 'var(--accent)',
+    },
+  },
+  s59794290: {
+    ':is(.dark *)': {
+      ':hover': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+  s74bfe3fb: {
+    ':is(.dark *)': {
+      backgroundColor: '#000',
+    },
+  },
+})
+const styles_8 = stylex.create({
+  sf9dd9441: {
+    containerType: 'inline-size',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s8a6c2964: {
+    boxShadow: 'var(--shadow-md)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8c909dba: {
+    transitionDuration: '300ms',
+  },
+  sf7998a14: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+  s966497bf: {
+    minHeight: '240px',
+  },
+  sc29d56a7: {
+    minHeight: '280px',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  s426adf6a: {
+    lineHeight: '1.25',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  sc41b2606: {
+    fontSize: '1.5rem',
+    lineHeight: 'var(--text-2xl--line-height)',
+  },
+  s3cc0cac7: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitboxOrient: 'vertical',
+    WebkitlineClamp: '2',
+  },
+  sab7cc61b: {
+    fontSize: '1.125rem',
+    lineHeight: 'var(--text-lg--line-height)',
+  },
+})
+const styles_7 = stylex.create({
+  s2db0a4cc: {
+    width: 'calc(0.25rem * 14)',
+    height: 'calc(0.25rem * 14)',
+  },
+})
+const styles_6 = stylex.create({
+  sf92c36b0: {
+    margin: 'calc(0.25rem * 3)',
+  },
+  s77be7ef7: {
+    height: 'auto',
+  },
+  s5f86341b: {
+    width: '50%',
+  },
+  s2c5f2b38: {
+    width: 'calc(0.25rem * 32)',
+  },
+  sbdde5449: {
+    flexDirection: 'row',
+  },
+  sb22307c5: {
+    alignItems: 'center',
+  },
+  sfa6c1995: {
+    alignItems: 'stretch',
+  },
+})
+const styles_5 = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s19ed3: {
+    margin: 'calc(0.25rem * 3)',
+  },
+  s2ff5c7: {
+    height: 'calc(0.25rem * 24)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sd91e9c32: {
+    aspectRatio: '1 / 1',
+  },
+  s7d7f436d: {
+    width: 'calc(0.25rem * 12)',
+    height: 'calc(0.25rem * 12)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s13bc8d40: {
+    backgroundColor: 'oklch(95% 0.052 163.051)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sfcf3a2ae: {
+    maxWidth: '100%',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+})
+const styles_4 = stylex.create({
+  sfde10673: {
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    color: 'var(--tone-emerald-700-2)',
+  },
+  sf7a6dc56: {
+    maxWidth: '100%',
+    cursor: 'pointer',
+    textDecorationLine: 'none',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
+const styles_2 = stylex.create({
+  se0accc2: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -306,9 +523,23 @@ export function documentCardContainerClassName({
   hasCover?: boolean
 } = {}) {
   return cn(
-    'group/item hover:bg-accent dark:hover:bg-accent @container flex w-full overflow-hidden rounded-lg border border-border bg-white shadow-md transition-colors duration-300 dark:bg-black',
-    banner && hasCover && 'rounded-xl md:min-h-[240px] lg:min-h-[280px]',
-    banner && !hasCover && 'rounded-xl',
+    stylex.props(
+      styles_8.sf9dd9441,
+      styles_8.s2ffff9,
+      styles_8.scdbaf625,
+      styles_8.s92852dd5,
+      styles_8.sf799889b,
+      styles_8.sad8c742c,
+      styles_8.s1a01a0ed,
+      styles_8.s605ce4a1,
+      styles_8.s8a6c2964,
+      styles_8.sf7fb00e8,
+      styles_8.s8c909dba,
+    ).className || '',
+    stylex.props(styles_9.s95afba94, styles_9.s59794290, styles_9.s74bfe3fb).className || '',
+    'group/item',
+    banner && hasCover ? stylex.props(styles_8.sf7998a14, styles_8.s966497bf, styles_8.sc29d56a7).className || '' : '',
+    banner && !hasCover ? stylex.props(styles_8.sf7998a14).className || '' : '',
   )
 }
 
@@ -330,8 +561,16 @@ export function DocumentCardThumbnail({
     return (
       <div
         className={cn(
-          'relative m-3 h-24 shrink-0 overflow-hidden rounded-md @md:m-3 @md:h-auto',
-          banner ? '@md:w-1/2' : '@md:w-32',
+          stylex.props(
+            styles_5.sdef3facc,
+            styles_5.s19ed3,
+            styles_5.s2ff5c7,
+            styles_5.sf032ed6c,
+            styles_5.s92852dd5,
+            styles_5.sf79988b7,
+          ).className || '',
+          stylex.props(styles_6.sf92c36b0, styles_6.s77be7ef7).className || '',
+          banner ? stylex.props(styles_6.s5f86341b).className || '' : stylex.props(styles_6.s2c5f2b38).className || '',
         )}
       >
         <img className={stylex.props(styles.s66f9345d).className || ''} src={imageUrl(coverImage, 'L')} alt="" />
@@ -342,15 +581,48 @@ export function DocumentCardThumbnail({
     // No cover, but the doc has an icon — render it as a square
     // thumbnail aligned top-left next to the title.
     return (
-      <div className="bg-muted m-3 flex aspect-square size-12 shrink-0 items-center justify-center overflow-hidden rounded-md @md:size-14">
+      <div
+        className={
+          (stylex.props(
+            styles_5.s5fd609e3,
+            styles_5.s19ed3,
+            styles_5.s2ffff9,
+            styles_5.sd91e9c32,
+            styles_5.s7d7f436d,
+            styles_5.sf032ed6c,
+            styles_5.sc6ed1702,
+            styles_5.sce22ca32,
+            styles_5.s92852dd5,
+            styles_5.sf79988b7,
+          ).className || '') +
+          ' ' +
+          (stylex.props(styles_7.s2db0a4cc).className || '')
+        }
+      >
         <img src={imageUrl(iconImage, 'S')} alt="" className={stylex.props(styles.s5d7ceece).className || ''} />
       </div>
     )
   }
   // Neither cover nor icon — green doc-icon placeholder.
   return (
-    <div className="m-3 flex aspect-square size-12 shrink-0 items-center justify-center rounded-md bg-emerald-100 @md:size-14 dark:bg-emerald-900/30">
-      <FileText className="size-6 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
+    <div
+      className={
+        (stylex.props(
+          styles_5.s19ed3,
+          styles_5.s2ffff9,
+          styles_5.sd91e9c32,
+          styles_5.s7d7f436d,
+          styles_5.sf032ed6c,
+          styles_5.sc6ed1702,
+          styles_5.sce22ca32,
+          styles_5.sf79988b7,
+          styles_5.s13bc8d40,
+        ).className || '') +
+        ' ' +
+        (stylex.props(styles_7.s2db0a4cc).className || '')
+      }
+    >
+      <FileText className={stylex.props(styles_4.sfde10673).className || ''} strokeWidth={1.5} />
     </div>
   )
 }
@@ -380,16 +652,16 @@ export function DocumentCardShell({
   return (
     <div
       className={cn(
-        'flex max-w-full min-w-0 flex-1 flex-col @md:flex-row',
-        interactive && 'cursor-pointer',
-        // Stack items vertically in narrow containers like grid items.
-        // Switch to horizontal once the card has room.
-        '@md:items-center',
-        hasCover && '@md:items-stretch',
+        stylex.props(styles_5.s2ffff9, styles_5.s3f58665f, styles_5.sfcf3a2ae, styles_5.sb42feb5d, styles_5.s67e351ac)
+          .className || '',
+        stylex.props(styles_6.sbdde5449).className || '',
+        stylex.props(interactive && styles_3.sc7847ec6).className || '',
+        stylex.props(styles_6.sb22307c5).className || '',
+        hasCover ? stylex.props(styles_6.sfa6c1995).className || '' : '',
       )}
     >
       {thumbnail}
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-between">
+      <div className={stylex.props(styles_2.se0accc2).className || ''}>
         <div className={stylex.props(styles.s1aa16).className || ''}>
           {title}
           {summary}
@@ -526,8 +798,10 @@ export function DocumentCard({
     }),
   }
   const titleClassName = cn(
-    'text-foreground font-sans leading-tight! font-bold',
-    banner ? 'block text-2xl' : 'line-clamp-2 text-lg',
+    stylex.props(styles_8.sc05281e3, styles_8.sa1762f51, styles_8.s426adf6a, styles_8.sa16ea943).className || '',
+    banner
+      ? stylex.props(styles_8.s597c48d, styles_8.sc41b2606).className || ''
+      : stylex.props(styles_8.s3cc0cac7, styles_8.sab7cc61b).className || '',
   )
   const title = resolvedMetadata?.name
   const content = (
@@ -546,7 +820,7 @@ export function DocumentCard({
               e.stopPropagation()
               routeOnClick?.(e)
             }}
-            className={cn(titleClassName, 'max-w-full cursor-pointer no-underline hover:underline')}
+            className={cn(titleClassName, stylex.props(styles_4.sf7a6dc56).className || '')}
           >
             {title}
           </a>
@@ -556,7 +830,14 @@ export function DocumentCard({
       }
       summary={
         textContent ? (
-          <p className={cn(stylex.props(styles.se4b59c31).className || '', !banner && 'text-sm')}>{textContent}</p>
+          <p
+            className={cn(
+              stylex.props(styles.se4b59c31).className || '',
+              stylex.props(!banner && styles_3.sab7cc6fa).className || '',
+            )}
+          >
+            {textContent}
+          </p>
         ) : null
       }
       badges={
@@ -597,7 +878,7 @@ export function DocumentCard({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="no-window-drag flex items-center gap-1"
+                  className={stylex.props(styles_5.s2ffff9, styles_5.sc6ed1702, styles_5.s5d936fa).className || ''}
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()

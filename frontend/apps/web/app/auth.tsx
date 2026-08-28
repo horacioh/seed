@@ -35,6 +35,80 @@ import {
 } from './local-db'
 import {reportError} from './report-error'
 import {getVaultAccountSettingsUrl} from './vault-links'
+const styles_3 = stylex.create({
+  sd66d801a: {
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-base)',
+      lineHeight: 'var(--text-base--line-height)',
+    },
+  },
+  s652f45e3: {
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-sm)',
+      lineHeight: 'var(--text-sm--line-height)',
+    },
+  },
+  s940b6441: {
+    height: '1px',
+    flex: '1',
+    backgroundColor: 'var(--tone-neutral-200-2)',
+  },
+  s3380dfe6: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    color: 'var(--tone-neutral-400-2)',
+  },
+  sf6cdab72: {
+    textAlign: 'center',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-neutral-500)',
+  },
+  s1051718: {
+    cursor: 'pointer',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--tone-neutral-700)',
+      },
+    },
+  },
+  sfda526d2: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-neutral-200-2)',
+    padding: 'calc(var(--spacing) * 3)',
+  },
+  se10942cf: {
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    backgroundColor: 'var(--surface-neutral-900)',
+  },
+  sb3edcf34: {
+    display: 'flex',
+    gap: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      justifyContent: 'stretch',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s5f316a0c: {
+    display: 'flex',
+    maxWidth: '100%',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   s86ff3e4: {
     display: 'flex',
@@ -295,21 +369,87 @@ export async function updateProfile({
 type CreateAccountDialogInput = {
   source?: 'join' | 'login'
 }
+/**
+ * Sizing for the create-account dialog. On small screens the dialog is pinned near the top and
+ * shrinks when the mobile keyboard is open so the form stays reachable.
+ */
+const createAccountDialogStyles = stylex.create({
+  dialog: {
+    width: {
+      default: '100%',
+      '@media (max-width: 39.9375rem)': 'calc(100% - 1.5rem)',
+    },
+    maxWidth: {
+      default: null,
+      '@media (min-width: 40rem)': '36rem',
+    },
+    transform: {
+      default: null,
+      '@media (max-width: 39.9375rem)': 'translateY(0)',
+    },
+  },
+  dialogKeyboardOpen: {
+    top: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '1.5vh',
+    },
+    maxHeight: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '55vh',
+    },
+  },
+  dialogDefault: {
+    top: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '4vh',
+    },
+    maxHeight: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '85vh',
+    },
+  },
+  content: {
+    scrollPaddingBlock: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '1rem',
+    },
+  },
+  contentKeyboardOpen: {
+    gap: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '0.75rem',
+    },
+    padding: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '1rem',
+    },
+  },
+  contentDefault: {
+    gap: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '1rem',
+    },
+    padding: {
+      default: null,
+      '@media (max-width: 39.9375rem)': '1.25rem',
+    },
+  },
+})
 export function useCreateAccount(options?: {onClose?: () => void}) {
   const userKeyPair = useLocalKeyPair()
   const isMobileKeyboardOpen = useIsMobileKeyboardOpen()
   const createAccountDialog = useAppDialog(CreateAccountDialog, {
     onClose: options?.onClose,
-    className: [
-      'w-full sm:max-w-xl',
-      'max-sm:w-[calc(100%-1.5rem)]',
-      'max-sm:translate-y-0',
-      isMobileKeyboardOpen ? 'max-sm:top-[1.5vh] max-sm:max-h-[55vh]' : 'max-sm:top-[4vh] max-sm:max-h-[85vh]',
-    ].join(' '),
-    contentClassName: [
-      'max-sm:scroll-py-4',
-      isMobileKeyboardOpen ? 'max-sm:gap-3 max-sm:p-4' : 'max-sm:gap-4 max-sm:p-5',
-    ].join(' '),
+    className:
+      stylex.props(
+        createAccountDialogStyles.dialog,
+        isMobileKeyboardOpen ? createAccountDialogStyles.dialogKeyboardOpen : createAccountDialogStyles.dialogDefault,
+      ).className || '',
+    contentClassName:
+      stylex.props(
+        createAccountDialogStyles.content,
+        isMobileKeyboardOpen ? createAccountDialogStyles.contentKeyboardOpen : createAccountDialogStyles.contentDefault,
+      ).className || '',
   })
   return {
     canCreateAccount: !userKeyPair,
@@ -400,7 +540,7 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
         </div>
         <span className={stylex.props(styles.s62c182b1).className || ''}>Hypermedia</span>
       </div>
-      <DialogTitle className="max-sm:text-base">
+      <DialogTitle className={stylex.props(styles_3.sd66d801a).className || ''}>
         {isJoin
           ? tx('join_site', ({siteName}) => `Join ${siteName}`, {
               siteName,
@@ -408,7 +548,7 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
           : tx('sign_in', 'Sign in')}
       </DialogTitle>
 
-      <DialogDescription className="max-sm:text-sm">
+      <DialogDescription className={stylex.props(styles_3.s652f45e3).className || ''}>
         {isJoin
           ? tx(
               'join_site_description',
@@ -444,9 +584,9 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
       </Button>
 
       <div className={stylex.props(styles.s86ff3e4).className || ''}>
-        <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-        <span className="text-xs text-neutral-400 dark:text-neutral-500">Or</span>
-        <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
+        <div className={stylex.props(styles_3.s940b6441).className || ''} />
+        <span className={stylex.props(styles_3.s3380dfe6).className || ''}>Or</span>
+        <div className={stylex.props(styles_3.s940b6441).className || ''} />
       </div>
 
       <Button
@@ -458,10 +598,10 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
         {tx('Already have a Hypermedia identity')}
       </Button>
 
-      <div className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+      <div className={stylex.props(styles_3.sf6cdab72).className || ''}>
         <button
           type="button"
-          className="cursor-pointer hover:text-neutral-700 dark:hover:text-neutral-300"
+          className={stylex.props(styles_3.s1051718).className || ''}
           onClick={() => setShowCustomVaultInput(true)}
         >
           {tx('I have a different identity domain')}
@@ -469,13 +609,13 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
       </div>
 
       {showCustomVaultInput && (
-        <div className="flex flex-col gap-2 rounded-md border border-neutral-200 p-3 dark:border-neutral-700">
+        <div className={stylex.props(styles_3.sfda526d2).className || ''}>
           <SizableText size="sm" className={stylex.props(styles.s129e46b3).className || ''}>
             Identity Domain
           </SizableText>
           <input
             ref={customVaultInputRef}
-            className="rounded border px-2 py-1.5 text-sm dark:bg-neutral-900"
+            className={stylex.props(styles_3.se10942cf).className || ''}
             value={customVaultUrl}
             onChange={(e) => setCustomVaultUrl(e.target.value)}
             placeholder={defaultVaultUrl}
@@ -613,7 +753,7 @@ export function LogoutDialog({onClose}: {onClose: () => void}) {
               "This account key isn't saved anywhere else, so you'll lose access to this identity forever. You can always create a new account later.",
             )}
       </DialogDescription>
-      <div className="flex gap-2 sm:justify-stretch">
+      <div className={stylex.props(styles_3.sb3edcf34).className || ''}>
         <Button
           variant="outline"
           size="lg"
@@ -740,7 +880,7 @@ export function AccountFooterActions() {
   const editProfileDialog = useAppDialog(EditProfileDialog)
   if (!userKeyPair) return null
   return (
-    <div className="flex max-w-full flex-wrap justify-end gap-2">
+    <div className={stylex.props(styles_2.s5f316a0c).className || ''}>
       {logoutDialog.content}
       {editProfileDialog.content}
     </div>

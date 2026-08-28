@@ -5,7 +5,45 @@ import {useResource} from '@shm/shared/models/entity'
 import {useRouteLink} from '@shm/shared/routing'
 import {HMIcon} from './hm-icon'
 import {HoverCard, HoverCardContent, HoverCardTrigger} from './hover-card'
-import {cn} from './utils'
+const styles_2 = stylex.create({
+  s280d302a: {
+    width: '100%',
+    maxWidth: 'calc(0.25rem * 100)',
+    padding: 'calc(0.25rem * 0)',
+  },
+})
+const styles_3 = stylex.create({
+  base: {
+    display: 'inline',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    whiteSpace: 'normal',
+    backgroundColor: 'var(--color-gray-100)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--border)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-gray-200)',
+      },
+    },
+    ':is(.dark *)': {
+      backgroundColor: 'var(--color-gray-800)',
+      ':hover': {
+        '@media (hover: hover)': {
+          color: '#fff',
+        },
+      },
+    },
+  },
+  preview: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    whiteSpace: 'nowrap',
+    paddingInline: 'var(--spacing)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+})
 const styles = stylex.create({
   s76a06a6d: {
     marginRight: 'calc(0.25rem * 1)',
@@ -52,28 +90,25 @@ export function ResourceToken({
     !id.path?.length || displayMetadata?.icon ? (
       <HMIcon size={20} id={id} name={displayMetadata?.name} icon={displayMetadata?.icon} />
     ) : null
-  const baseClassName =
-    'inline text-sm whitespace-normal bg-gray-100 border hover:dark:text-white dark:bg-gray-800 hover:bg-gray-200'
-  const previewTriggerClassName = 'inline-block align-middle whitespace-nowrap px-1 rounded-md'
   if (ResourcePreview) {
     return (
       <HoverCard>
         <HoverCardTrigger asChild>
-          <a {...linkProps} className={cn(baseClassName, previewTriggerClassName)}>
+          <a {...linkProps} className={stylex.props(styles_3.base, styles_3.preview).className || ''}>
             {icon ? <span className={stylex.props(styles.s76a06a6d).className || ''}>{icon}</span> : null}
             <span className={stylex.props(styles.sd7369eb8).className || ''}>
               {displayMetadata?.name || 'Untitled Resource'}
             </span>
           </a>
         </HoverCardTrigger>
-        <HoverCardContent className="w-full max-w-100 p-0" align="end">
+        <HoverCardContent className={stylex.props(styles_2.s280d302a).className || ''} align="end">
           <ResourcePreview metadata={displayMetadata} id={id} />
         </HoverCardContent>
       </HoverCard>
     )
   }
   return (
-    <a {...linkProps} className={baseClassName}>
+    <a {...linkProps} className={stylex.props(styles_3.base).className || ''}>
       {icon ? <span className={stylex.props(styles.s76a06a6d).className || ''}>{icon}</span> : null}
       {displayMetadata?.name || 'Untitled Resource'}
     </a>

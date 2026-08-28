@@ -13,6 +13,23 @@ import {Spinner} from '@shm/ui/spinner'
 import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {useMemo, useState} from 'react'
+const styles_2 = stylex.create({
+  s9dae8284: {
+    display: 'flex',
+    minHeight: '100vh',
+    width: '100%',
+    justifyContent: 'flex-end',
+    backgroundColor: 'var(--scrim)',
+  },
+  se80b762a: {
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '440px',
+    flexDirection: 'column',
+    boxShadow: 'var(--shadow-xl)',
+  },
+})
 const styles = stylex.create({
   sf48c8a4d: {
     display: 'flex',
@@ -39,8 +56,8 @@ const styles = stylex.create({
 })
 function Panel({children}: {children: React.ReactNode}) {
   return (
-    <div className="flex min-h-screen w-full justify-end bg-black/5 dark:bg-black/30">
-      <div className="bg-background flex w-full max-w-[440px] flex-col shadow-xl">{children}</div>
+    <div className={stylex.props(styles_2.s9dae8284).className || ''}>
+      <div className={stylex.props(styles_2.se80b762a).className || ''}>{children}</div>
     </div>
   )
 }
@@ -61,7 +78,6 @@ export default function CreateSiteRoute() {
 
   // When signed in, check whether this account already has a space.
   const existingSpace = useHasExistingSpace(accountUid)
-
   if (!keyPairLoaded) {
     return (
       <Panel>

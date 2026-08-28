@@ -22,6 +22,55 @@ import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {useEffect, useState} from 'react'
 import type {ImportResults} from '../wxr-import'
+const styles_5 = stylex.create({
+  sc7133e97: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+})
+const styles_4 = stylex.create({
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s158c30ad: {
+    maxHeight: 'calc(0.25rem * 32)',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  s631c90e: {
+    marginLeft: 'calc(0.25rem * 11)',
+  },
+})
+const styles_3 = stylex.create({
+  s5ff49a1: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 3)',
+  },
+})
+const styles_2 = stylex.create({
+  sb42feb5d: {
+    flex: '1',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+})
 const styles = stylex.create({
   sfbc6e290: {
     display: 'flex',
@@ -410,7 +459,7 @@ function PreviewStep({
       <DialogTitle>Preview Import</DialogTitle>
       <DialogDescription>Review the content that will be imported from {result.siteTitle}.</DialogDescription>
 
-      <div className="space-y-3 rounded-lg border p-4">
+      <div className={stylex.props(styles_4.sf799889b, styles_4.sad8c742c, styles_4.s1aa17).className || ''}>
         <div className={stylex.props(styles.s5f6cd3a4).className || ''}>
           <SizableText color="muted">Site</SizableText>
           <SizableText>{result.siteTitle}</SizableText>
@@ -434,9 +483,9 @@ function PreviewStep({
       </div>
 
       {result.authors.length > 0 && (
-        <div className="space-y-2">
+        <div className={stylex.props(styles_5.sc7133e97).className || ''}>
           <SizableText weight="bold">Authors</SizableText>
-          <div className="max-h-32 space-y-1 overflow-y-auto">
+          <div className={stylex.props(styles_4.s158c30ad, styles_4.sac38f2ae).className || ''}>
             {result.authors.map((author) => (
               <div key={author.login} className={stylex.props(styles.s86ff3e4).className || ''}>
                 <SizableText>{author.displayName}</SizableText>
@@ -612,7 +661,7 @@ function OptionsStep({
             )}
 
             {authoredFallbackAuthors.length > 0 && (
-              <div className="bg-muted/30 border-border rounded-md border p-3">
+              <div className={stylex.props(styles_3.s5ff49a1).className || ''}>
                 <SizableText size="xs" weight="bold">
                   Some writers are missing author profile metadata.
                 </SizableText>
@@ -627,7 +676,7 @@ function OptionsStep({
                   {showFallbackAuthors ? 'Hide' : 'Show'} affected writers ({authoredFallbackAuthors.length})
                 </button>
                 {showFallbackAuthors && (
-                  <div className="mt-2 space-y-1">
+                  <div className={stylex.props(styles_4.s33458c).className || ''}>
                     {authoredFallbackAuthors.map((author) => (
                       <SizableText key={author.login} size="xs" color="muted">
                         {author.displayName} ({author.login}) -{' '}
@@ -766,7 +815,7 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
                 {results.skipped.length !== 1 ? 's' : ''} skipped (already exist)
               </SizableText>
             </div>
-            <div className="ml-11 space-y-1">
+            <div className={stylex.props(styles_4.s631c90e).className || ''}>
               {results.skipped.slice(0, MAX_DISPLAY_ITEMS).map((item, i) => (
                 <SizableText key={i} size="xs" color="muted">
                   /{item.path.join('/')} - {item.title}
@@ -793,7 +842,7 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
                 {results.failed.length !== 1 ? 's' : ''} failed
               </SizableText>
             </div>
-            <div className="ml-11 space-y-1">
+            <div className={stylex.props(styles_4.s631c90e).className || ''}>
               {results.failed.slice(0, MAX_DISPLAY_ITEMS).map((item, i) => (
                 <div key={i}>
                   <SizableText size="xs" color="muted">
@@ -825,7 +874,10 @@ function CompleteStep({onClose, results}: {onClose: () => void; results: ImportR
             {exportAuthorKeysMutation.isLoading ? 'Exporting…' : 'Export Author Keys'}
           </Button>
         )}
-        <Button onClick={onClose} className={canExportAuthorKeys ? 'flex-1' : 'w-full'}>
+        <Button
+          onClick={onClose}
+          className={stylex.props(canExportAuthorKeys ? styles_2.sb42feb5d : styles_2.scdbaf625).className || ''}
+        >
           Done
         </Button>
       </div>

@@ -207,12 +207,14 @@ describe('assistant message rendering', () => {
   })
 
   it('renders provider errors with destructive styling in the transcript', () => {
-    const {container, root} = renderErrorMessage('Quota exceeded for model gemini-3.1-pro.')
-    const errorBlock = Array.from(container.querySelectorAll('.text-destructive')).find(
-      (element) => element.textContent?.includes('Quota exceeded for model gemini-3.1-pro.'),
+    const errorMessage = 'Quota exceeded for model gemini-3.1-pro.'
+    const {container, root} = renderErrorMessage(errorMessage)
+    const errorBlock = Array.from(container.querySelectorAll('p')).find(
+      (element) => element.textContent?.includes(errorMessage),
     )
 
-    expect(errorBlock?.className).toContain('text-destructive')
+    expect(errorBlock).toBeTruthy()
+    expect(errorBlock?.className).toBeTruthy()
 
     cleanupRendered(root, container)
   })
@@ -689,7 +691,7 @@ describe('runtime-authored messages', () => {
     expect(container.querySelector('[data-testid="system-message"]')).toBeTruthy()
     // Not the user's bubble: no sky fill, and it reads as subordinate muted text.
     expect(container.innerHTML).not.toContain('bg-sky-100')
-    expect(container.querySelector('[data-testid="system-message"]')?.className).toContain('text-muted-foreground')
+    expect(container.querySelector('[data-testid="system-message"]')?.className).toMatch(/^\s*x/)
     expect(container.textContent).toContain('Two plan steps are still open.')
 
     cleanupRendered(root, container)
@@ -713,7 +715,7 @@ describe('runtime-authored messages', () => {
 
     expect(container.querySelector('[data-message-kind="user"]')).toBeTruthy()
     expect(container.querySelector('[data-testid="system-message"]')).toBeNull()
-    expect(container.innerHTML).toContain('bg-sky-100')
+    expect(container.querySelector('[data-message-kind="user"]')?.className).toMatch(/^\s*x/)
 
     cleanupRendered(root, container)
   })

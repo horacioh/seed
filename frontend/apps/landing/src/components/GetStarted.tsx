@@ -1,35 +1,120 @@
-import * as stylex from '@stylexjs/stylex'
-import {Download} from 'lucide-react'
+import * as stylex from '@stylexjs/stylex';
+import { Download } from 'lucide-react';
+const styles_3 = stylex.create({
+  s767065e6: {
+    "backgroundColor": "var(--brand-4)"
+  },
+  s6eae3ee3: {
+    ":hover": {
+      "@media (hover: hover)": {
+        "backgroundColor": "var(--brand-3)"
+      }
+    }
+  },
+  s9b8736ad: {
+    "display": "inline-flex"
+  },
+  sc6ed1702: {
+    "alignItems": "center"
+  },
+  sf79988b7: {
+    "borderRadius": "calc(var(--radius) - 2px)"
+  },
+  s34b1b0: {
+    "paddingInline": "calc(0.25rem * 5)"
+  },
+  s34b56e: {
+    "paddingBlock": "calc(0.25rem * 2)"
+  },
+  s2daecf89: {
+    "color": "#fff"
+  },
+  s993b6d55: {
+    "transitionProperty": "color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events",
+    "transitionTimingFunction": "var(--default-transition-timing-function)",
+    "transitionDuration": "var(--default-transition-duration)"
+  }
+});
+const styles_2 = stylex.create({
+  s5574c491: {
+    "marginInline": "auto"
+  },
+  s9ccd59ab: {
+    "maxWidth": "72rem"
+  },
+  s34b1b1: {
+    "paddingInline": "calc(0.25rem * 6)"
+  },
+  s62d3d59: {
+    "marginBottom": "calc(0.25rem * 12)"
+  },
+  s2ffff9: {
+    "display": "flex"
+  },
+  s67e351ac: {
+    "flexDirection": "column"
+  },
+  sc6ed1702: {
+    "alignItems": "center"
+  },
+  sc1a629cb: {
+    "justifyContent": "space-between"
+  },
+  s5d936fd: {
+    "gap": "calc(0.25rem * 4)"
+  },
+  sd174fc89: {
+    "@media ((min-width: 768px))": {
+      "flexDirection": "row"
+    }
+  },
+  scdbaf625: {
+    "width": "100%"
+  },
+  sbf63b0a7: {
+    "textAlign": "left"
+  },
+  sc41b2606: {
+    "fontSize": "1.5rem",
+    "lineHeight": "var(--text-2xl--line-height)"
+  },
+  sa16ea943: {
+    "fontWeight": "700"
+  },
+  saf5bb22f: {
+    "color": "oklch(21% 0.034 264.665)"
+  },
+  s7efae888: {
+    "@media ((min-width: 768px))": {
+      "width": "auto"
+    }
+  },
+  s2dac9c4a: {
+    "@media ((min-width: 768px))": {
+      "fontSize": "1.875rem",
+      "lineHeight": "var(--text-3xl--line-height)"
+    }
+  }
+});
 const styles = stylex.create({
   s7a47e1da: {
     width: '100%',
     paddingBlock: 'calc(0.25rem * 20)',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   s333e0a: {
-    marginRight: 'calc(0.25rem * 2)',
-  },
-})
+    marginRight: 'calc(0.25rem * 2)'
+  }
+});
 export default function GetStarted() {
-  return (
-    <section className={stylex.props(styles.s7a47e1da).className || ''}>
-      <div className="mx-auto max-w-6xl px-6">
+  return <section className={stylex.props(styles.s7a47e1da).className || ''}>
+      <div className={stylex.props(styles_2.s5574c491, styles_2.s9ccd59ab, styles_2.s34b1b1).className || ""}>
         {/* Heading and button */}
-        <div className="mb-12 flex flex-col items-center justify-between gap-4 md:flex-row">
-          <h2 className="w-full text-left text-2xl font-bold text-gray-900 md:w-auto md:text-3xl">
+        <div className={stylex.props(styles_2.s62d3d59, styles_2.s2ffff9, styles_2.s67e351ac, styles_2.sc6ed1702, styles_2.sc1a629cb, styles_2.s5d936fd, styles_2.sd174fc89).className || ""}>
+          <h2 className={stylex.props(styles_2.scdbaf625, styles_2.sbf63b0a7, styles_2.sc41b2606, styles_2.sa16ea943, styles_2.saf5bb22f, styles_2.s7efae888, styles_2.s2dac9c4a).className || ""}>
             It's Time To Get Started!
           </h2>
-          <a
-            href="https://seed.hyper.media/hm/download"
-            target="_blank"
-            className={`bg-brand-4 hover:bg-brand-3 plausible-event-name=download inline-flex items-center rounded-md px-5 py-2 text-white transition plausible-event-os=${
-              navigator.platform.toLowerCase().includes('mac')
-                ? 'macos'
-                : navigator.platform.toLowerCase().includes('win')
-                  ? 'windows'
-                  : 'linux'
-            }`}
-          >
+          <a href="https://seed.hyper.media/hm/download" target="_blank" className={stylex.props(styles_3.s767065e6, styles_3.s6eae3ee3, styles_3.s9b8736ad, styles_3.sc6ed1702, styles_3.sf79988b7, styles_3.s34b1b0, styles_3.s34b56e, styles_3.s2daecf89, styles_3.s993b6d55).className || ""}>
             <Download size={17} className={stylex.props(styles.s333e0a).className || ''} />
             Download the Seed App
           </a>
@@ -37,50 +122,5 @@ export default function GetStarted() {
 
         {/* <ResourceCards /> */}
       </div>
-    </section>
-  )
+    </section>;
 }
-
-// function ResourceCards() {
-//   // This should be fetching real documents
-//   const cards = new Array(4).fill(null);
-
-//   return (
-//     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-//       {cards.map((_, i) => (
-//         <div
-//           key={i}
-//           className="flex flex-col overflow-hidden bg-white border border-gray-200 rounded-lg shadow-md"
-//         >
-//           {/* Image placeholder */}
-//           <div className="w-full bg-gray-200 h-28" />
-
-//           {/* Text content */}
-//           <div className="flex flex-col justify-between flex-1 p-4 text-left">
-//             <div>
-//               <p className="text-sm font-semibold text-gray-800">
-//                 Title Of Document
-//               </p>
-//               <p className="mt-1 text-xs text-gray-500 line-clamp-3">
-//                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-//                 eiusmod tempor incididunt ut labore et dolore magna aliqua.
-//               </p>
-//             </div>
-//           </div>
-
-//           {/* Footer */}
-//           <div className="flex items-center justify-between px-4 py-2 text-xs text-gray-500 bg-gray-100">
-//             <span>Last Updated</span>
-//             <div className="flex -space-x-2">
-//               <div className="w-5 h-5 bg-gray-300 border border-white rounded-full" />
-//               <div className="w-5 h-5 bg-gray-300 border border-white rounded-full" />
-//               <div className="w-5 h-5 bg-black rounded-full text-[10px] text-white flex items-center justify-center font-medium">
-//                 +1
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }

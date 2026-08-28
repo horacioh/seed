@@ -8,6 +8,48 @@ import {usePublishSite, useRemoveSiteDialog, useSeedHostDialog} from './publish-
 
 // Mock data for testing - create proper UnpackedHypermediaId
 // Using a valid-looking UID that matches the expected format
+const styles_2 = stylex.create({
+  sb6aaf570: {
+    opacity: '30%',
+    ':hover': {
+      '@media (hover: hover)': {
+        opacity: '100%',
+      },
+    },
+  },
+  s1a68aad2: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 95%, transparent)',
+    position: 'fixed',
+    right: 'calc(var(--spacing) * 4)',
+    bottom: 'calc(var(--spacing) * 20)',
+    zIndex: '50',
+    display: 'flex',
+    maxWidth: 'var(--container-xs)',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    boxShadow: 'var(--shadow-lg)',
+    WebkitBackdropFilter: 'blur(8px)',
+    backdropFilter: 'blur(8px)        ',
+  },
+  sffeecbec: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 95%, transparent)',
+    position: 'fixed',
+    top: 'calc(var(--spacing) * 20)',
+    right: 'calc(var(--spacing) * 4)',
+    zIndex: '50',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    boxShadow: 'var(--shadow-lg)',
+    WebkitBackdropFilter: 'blur(8px)',
+    backdropFilter: 'blur(8px)        ',
+  },
+})
 const styles = stylex.create({
   s1e2b1ef7: {
     position: 'fixed',
@@ -79,7 +121,12 @@ export function DebugDialogs() {
   if (!showDebug) {
     return IS_PROD_DESKTOP ? null : (
       <div className={stylex.props(styles.s1e2b1ef7).className || ''}>
-        <Button size="sm" variant="ghost" onClick={() => setShowDebug(true)} className="opacity-30 hover:opacity-100">
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => setShowDebug(true)}
+          className={stylex.props(styles_2.sb6aaf570).className || ''}
+        >
           Debug Dialogs
         </Button>
       </div>
@@ -87,7 +134,7 @@ export function DebugDialogs() {
   }
   return (
     <>
-      <div className="bg-background/95 fixed right-4 bottom-20 z-50 flex max-w-xs flex-col gap-2 rounded-lg border p-4 shadow-lg backdrop-blur">
+      <div className={stylex.props(styles_2.s1a68aad2).className || ''}>
         <div className={stylex.props(styles.s97ff1ece).className || ''}>
           <span className={stylex.props(styles.s28a873c2).className || ''}>Debug Dialogs</span>
           <Button
@@ -224,7 +271,7 @@ export function DebugPublishStates() {
   ]
   if (IS_PROD_DESKTOP) return null
   return (
-    <div className="bg-background/95 fixed top-20 right-4 z-50 rounded-lg border p-4 shadow-lg backdrop-blur">
+    <div className={stylex.props(styles_2.sffeecbec).className || ''}>
       <div className={stylex.props(styles.s83251ef7).className || ''}>Test Publish States</div>
       <div className={stylex.props(styles.sfbc6e28d).className || ''}>
         {modes.map((mode) => (

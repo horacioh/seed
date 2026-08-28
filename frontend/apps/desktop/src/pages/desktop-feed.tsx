@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {renderDesktopInlineEditor, triggerCommentDraftFocus} from '@/components/commenting'
 import {useCopyReferenceUrl} from '@/components/copy-reference-url'
 import {DesktopDocumentActionsProvider} from '@/components/document-actions-provider'
@@ -17,27 +18,35 @@ import {createCopyLinkMenuItem} from '@shm/ui/copy-link-menu'
 import {FeedPage} from '@shm/ui/feed-page-common'
 import {MenuItemType} from '@shm/ui/options-dropdown'
 import {useCallback, useMemo} from 'react'
-
+const styles = stylex.create({
+  s6c491e12: {
+    height: '100%',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: '#fff',
+  },
+})
 export default function DesktopFeedPage() {
   const route = useNavRoute()
   const navigate = useNavigate()
   const replace = useNavigate('replace')
   const experiments = useUniversalAppContext().experiments
-
   if (route.key !== 'feed') throw new Error('Not a feed route')
   const docId = route.id
-
   const gwUrl = useGatewayUrl().data || DEFAULT_GATEWAY_URL
-  const siteHomeResource = useResource(hmId(docId.uid), {subscribed: true})
+  const siteHomeResource = useResource(hmId(docId.uid), {
+    subscribed: true,
+  })
   const siteUrl =
     siteHomeResource.data?.type === 'document' ? siteHomeResource.data.document?.metadata?.siteUrl : undefined
-
   const [copyGatewayContent, onCopyGateway] = useCopyReferenceUrl(gwUrl)
   const [copySiteUrlContent, onCopySiteUrl] = useCopyReferenceUrl(
     siteUrl || gwUrl,
     siteUrl ? hmId(docId.uid) : undefined,
   )
-
   const menuItems: MenuItemType[] = useMemo(() => {
     return [
       createCopyLinkMenuItem({
@@ -58,7 +67,6 @@ export default function DesktopFeedPage() {
       }),
     ]
   }, [siteUrl, gwUrl, route, onCopySiteUrl, onCopyGateway, experiments?.advancedCopyLinkOptions, docId])
-
   const onReplyClick = useCallback(
     (replyComment: HMComment) => {
       const replyVersionData = {
@@ -97,7 +105,6 @@ export default function DesktopFeedPage() {
     },
     [route, docId, navigate, replace],
   )
-
   const onReplyCountClick = useCallback(
     (replyComment: HMComment) => {
       const targetRoute = isRouteEqualToCommentTarget({
@@ -127,9 +134,8 @@ export default function DesktopFeedPage() {
     },
     [route, docId, navigate, replace],
   )
-
   return (
-    <div className="h-full max-h-full overflow-hidden rounded-lg border bg-white">
+    <div className={stylex.props(styles.s6c491e12).className || ''}>
       <CommentsProvider
         useHackyAuthorsSubscriptions={useHackyAuthorsSubscriptions}
         onReplyClick={onReplyClick}

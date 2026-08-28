@@ -17,6 +17,13 @@ import {
  * (and on failure, so the error toast has context); the caller performs the
  * logout in `onLogOut` and closes the dialog on success.
  */
+const styles_2 = stylex.create({
+  s1f4d03a8: {
+    '@media ((min-width: 640px))': {
+      justifyContent: 'stretch',
+    },
+  },
+})
 const styles = stylex.create({
   sb42feb5d: {
     flex: '1',
@@ -42,7 +49,7 @@ export function LogoutVaultDialog({
             Your identity will no longer be active on this device. You can sign back in at any time.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="sm:justify-stretch">
+        <AlertDialogFooter className={stylex.props(styles_2.s1f4d03a8).className || ''}>
           <AlertDialogCancel size="lg" className={stylex.props(styles.sb42feb5d).className || ''} disabled={busy}>
             Cancel
           </AlertDialogCancel>

@@ -2,12 +2,254 @@ import * as stylex from '@stylexjs/stylex'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import {CheckIcon, ChevronDownIcon, ChevronUpIcon} from 'lucide-react'
 import * as React from 'react'
+import {floatingContent} from './animation-keyframes'
 import {cn} from './utils'
+const styles_6 = stylex.create({
+  sdc685e61: {
+    ':is([aria-invalid="true"])': {
+      '--ring-color': 'color-mix(in oklab, var(--destructive) 20%, transparent)',
+    },
+  },
+  s71984e23: {
+    ':is(.dark *)': {
+      ':is([aria-invalid="true"])': {
+        '--ring-color': 'color-mix(in oklab, var(--destructive) 40%, transparent)',
+      },
+    },
+  },
+})
+const styles_5 = stylex.create({
+  sa2132d46: {
+    ':is(.dark *)': {
+      backgroundColor: 'color-mix(in oklab, var(--input) 30%, transparent)',
+    },
+  },
+  s7c330746: {
+    ':is(.dark *)': {
+      ':hover': {
+        backgroundColor: 'color-mix(in oklab, var(--input) 50%, transparent)',
+      },
+    },
+  },
+})
+const styles_4 = stylex.create({
+  s5f46764d: {
+    ':is([data-placeholder])': {
+      color: 'var(--muted-foreground)',
+    },
+  },
+  s56db4708: {
+    ':is([aria-invalid="true"])': {
+      borderColor: 'var(--destructive)',
+    },
+  },
+  sd2ef703a: {
+    ':is([data-size="default"])': {
+      height: 'calc(0.25rem * 9)',
+    },
+  },
+  scc0e4c78: {
+    ':is([data-size="sm"])': {
+      height: 'calc(0.25rem * 8)',
+    },
+  },
+  s1b9ca3e8: {
+    ':is([data-side="bottom"])': {
+      translate: '0 0.25rem',
+    },
+  },
+  sd0b7e9a2: {
+    ':is([data-side="left"])': {
+      translate: 'calc(0.25rem * -1) 0',
+    },
+  },
+  s7725a3f2: {
+    ':is([data-side="right"])': {
+      translate: '0.25rem 0',
+    },
+  },
+  s4a6f9b55: {
+    ':is([data-side="top"])': {
+      translate: '0 calc(0.25rem * -1)',
+    },
+  },
+  sdca6904b: {
+    ':is([data-disabled])': {
+      pointerEvents: 'none',
+    },
+  },
+  s56ed324e: {
+    ':is([data-disabled])': {
+      opacity: '50%',
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s5b4447b4: {
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+    },
+  },
+  sa391181a: {
+    ':focus-visible': {},
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s6a2edbb: {
+    width: 'fit-content',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf8e652db: {
+    whiteSpace: 'nowrap',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  s1d40ae1d: {
+    transitionProperty: 'color, box-shadow, border-color',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sd273c872: {
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'color-mix(in oklab, #000 10%, transparent)',
+      },
+    },
+  },
+  s21f8c65d: {
+    ':focus-visible': {
+      boxShadow: '0 0 0 3px var(--ring-color, currentcolor)',
+    },
+  },
+  s8b5b6275: {
+    ':disabled': {
+      cursor: 'not-allowed',
+    },
+  },
+  s8658d75b: {
+    ':disabled': {
+      opacity: '50%',
+    },
+  },
+  s56bd391d: {
+    backgroundColor: 'var(--popover)',
+  },
+  s9a29c60b: {
+    color: 'var(--popover-foreground)',
+  },
+  se9bda75c: {
+    maxHeight: 'var(--radix-select-content-available-height)',
+  },
+  sd9a79307: {
+    transformOrigin: 'var(--radix-select-content-transform-origin)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s3824ce: {
+    zIndex: '50',
+  },
+  s94be9ef1: {
+    minWidth: '8rem',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s2527420a: {
+    overflowX: 'hidden',
+  },
+  s8a6c2964: {
+    boxShadow: 'var(--shadow-md)',
+  },
+  s3e3e7330: {
+    ':focus': {
+      backgroundColor: 'var(--accent)',
+    },
+  },
+  s758c8268: {
+    ':focus': {
+      color: 'var(--accent-foreground)',
+    },
+  },
+  s254b9195: {
+    outlineStyle: 'none',
+    '@media (forced-colors: active)': {
+      outline: '2px solid transparent',
+      outlineOffset: '2px',
+    },
+  },
+  s3b7916ca: {
+    cursor: 'default',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s3484a1: {
+    paddingLeft: 'calc(0.25rem * 2)',
+  },
+  s349b2d: {
+    paddingRight: 'calc(0.25rem * 8)',
+  },
+})
+const styles_2 = stylex.create({
+  s7fc21f1c: {
+    height: 'var(--radix-select-trigger-height)',
+    width: '100%',
+    minWidth: 'var(--radix-select-trigger-width)',
+    scrollMarginBlock: 'calc(var(--spacing) * 1)',
+  },
+})
 const styles = stylex.create({
   s1ed2b555: {
     width: 'calc(0.25rem * 4)',
     height: 'calc(0.25rem * 4)',
     opacity: '50%',
+    color: 'var(--muted-foreground)',
+    pointerEvents: 'none',
+    flexShrink: 0,
   },
   s1aa14: {
     padding: 'calc(0.25rem * 1)',
@@ -31,6 +273,24 @@ const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
     height: 'calc(0.25rem * 4)',
+    pointerEvents: 'none',
+    flexShrink: 0,
+  },
+  sselectValue: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sitemText: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    minWidth: 0,
+    flex: '1 1 0%',
   },
   s2fe88ac9: {
     backgroundColor: 'var(--border)',
@@ -53,8 +313,14 @@ function Select({...props}: React.ComponentProps<typeof SelectPrimitive.Root>) {
 function SelectGroup({...props}: React.ComponentProps<typeof SelectPrimitive.Group>) {
   return <SelectPrimitive.Group data-slot="select-group" {...props} />
 }
-function SelectValue({...props}: React.ComponentProps<typeof SelectPrimitive.Value>) {
-  return <SelectPrimitive.Value data-slot="select-value" {...props} />
+function SelectValue({className, ...props}: React.ComponentProps<typeof SelectPrimitive.Value>) {
+  return (
+    <SelectPrimitive.Value
+      data-slot="select-value"
+      className={cn(stylex.props(styles.sselectValue).className || '', className)}
+      {...props}
+    />
+  )
 }
 function SelectTrigger({
   className,
@@ -69,7 +335,33 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "border-border data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap transition-[color,box-shadow,border-color] outline-none hover:border-black/10 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        stylex.props(
+          styles_3.s1a01a0ed,
+          styles_3.s5b4447b4,
+          styles_3.sa391181a,
+          styles_3.s2ffff9,
+          styles_3.s6a2edbb,
+          styles_3.scdbaf625,
+          styles_3.sc6ed1702,
+          styles_3.sc1a629cb,
+          styles_3.s5d936fb,
+          styles_3.sf8e652db,
+          styles_3.sf79988b7,
+          styles_3.sad8c742c,
+          styles_3.s60f53bca,
+          styles_3.s34b1ae,
+          styles_3.s34b56e,
+          styles_3.sab7cc6fa,
+          styles_3.sa602a1e3,
+          styles_3.s1d40ae1d,
+          styles_3.sd273c872,
+          styles_3.s21f8c65d,
+          styles_3.s8b5b6275,
+          styles_3.s8658d75b,
+        ).className || '',
+        stylex.props(styles_4.s5f46764d, styles_4.s56db4708, styles_4.sd2ef703a, styles_4.scc0e4c78).className || '',
+        stylex.props(styles_5.sa2132d46, styles_5.s7c330746).className || '',
+        stylex.props(styles_6.sdc685e61, styles_6.s71984e23).className || '',
         className,
       )}
       {...props}
@@ -92,9 +384,29 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border shadow-md',
-          position === 'popper' &&
-            'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
+          stylex.props(
+            styles_3.s56bd391d,
+            styles_3.s9a29c60b,
+            styles_3.se9bda75c,
+            styles_3.sd9a79307,
+            styles_3.sdef3facc,
+            styles_3.s3824ce,
+            styles_3.s94be9ef1,
+            styles_3.sac38f2ae,
+            styles_3.s2527420a,
+            styles_3.sf79988b7,
+            styles_3.sad8c742c,
+            styles_3.s8a6c2964,
+            floatingContent.base,
+            floatingContent.bottom,
+            floatingContent.left,
+            floatingContent.right,
+            floatingContent.top,
+          ).className || '',
+          position === 'popper'
+            ? stylex.props(styles_4.s1b9ca3e8, styles_4.sd0b7e9a2, styles_4.s7725a3f2, styles_4.s4a6f9b55).className ||
+                ''
+            : '',
           className,
         )}
         position={position}
@@ -104,8 +416,7 @@ function SelectContent({
         <SelectPrimitive.Viewport
           className={cn(
             stylex.props(styles.s1aa14).className || '',
-            position === 'popper' &&
-              'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1',
+            stylex.props(position === 'popper' ? styles_2.s7fc21f1c : null).className || '',
           )}
         >
           {children}
@@ -129,7 +440,24 @@ function SelectItem({className, children, ...props}: React.ComponentProps<typeof
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        stylex.props(
+          styles_3.s3e3e7330,
+          styles_3.s758c8268,
+          styles_3.s254b9195,
+          styles_3.sdef3facc,
+          styles_3.s2ffff9,
+          styles_3.scdbaf625,
+          styles_3.s3b7916ca,
+          styles_3.sa145969,
+          styles_3.sc6ed1702,
+          styles_3.s5d936fb,
+          styles_3.sf799897a,
+          styles_3.sc5dd13f4,
+          styles_3.s3484a1,
+          styles_3.s349b2d,
+          styles_3.sab7cc6fa,
+        ).className || '',
+        stylex.props(styles_4.sdca6904b, styles_4.s56ed324e).className || '',
         className,
       )}
       {...props}
@@ -139,7 +467,9 @@ function SelectItem({className, children, ...props}: React.ComponentProps<typeof
           <CheckIcon className={stylex.props(styles.sca3de968).className || ''} />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      <span className={stylex.props(styles.sitemText).className || ''}>
+        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      </span>
     </SelectPrimitive.Item>
   )
 }

@@ -1,5 +1,52 @@
 import * as stylex from '@stylexjs/stylex'
 import {type InputHTMLAttributes, useEffect, useRef, useState} from 'react'
+const styles_3 = stylex.create({
+  sf6d7961: {
+    borderColor: 'var(--primary)',
+  },
+  s54a0b609: {
+    borderColor: 'color-mix(in oklab, var(--primary) 50%, transparent)',
+  },
+})
+const styles_2 = stylex.create({
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s2ff5a8: {
+    height: 'calc(0.25rem * 14)',
+  },
+  s36c737: {
+    width: 'calc(0.25rem * 12)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s65e234f5: {
+    textAlign: 'center',
+  },
+  sc41b2606: {
+    fontSize: '1.5rem',
+    lineHeight: 'var(--text-2xl--line-height)',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sc883a3d5: {
+    boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+})
 const styles = stylex.create({
   s4c15bd54: {
     display: 'flex',
@@ -108,9 +155,29 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
             onKeyDown={(e) => handleKeyDown(i, e)}
             onFocus={() => handleFocus(i)}
             onBlur={() => setFocusedIndex(null)}
-            className={`bg-background h-14 w-12 rounded-md border text-center text-2xl font-semibold transition-colors ${
-              focusedIndex === i ? 'border-primary ring-primary/20 ring-2' : 'border-border hover:border-primary/50'
-            } ${value[i] ? 'border-primary/50' : ''} ${className || ''}`}
+            className={
+              (stylex.props(
+                styles_2.s436dc7b6,
+                styles_2.s2ff5a8,
+                styles_2.s36c737,
+                styles_2.sf79988b7,
+                styles_2.sad8c742c,
+                styles_2.s65e234f5,
+                styles_2.sc41b2606,
+                styles_2.s62c182b1,
+                styles_2.sf7fb00e8,
+              ).className || '') +
+              ' ' +
+              (focusedIndex === i
+                ? (stylex.props(styles_2.sc883a3d5).className || '') +
+                  ' ' +
+                  (stylex.props(styles_3.sf6d7961).className || '')
+                : stylex.props(styles_2.s1a01a0ed).className || '') +
+              ' ' +
+              (value[i] ? stylex.props(styles_3.s54a0b609).className || '' : '') +
+              ' ' +
+              (className || '')
+            }
             aria-label={`Digit ${i + 1} of ${length}`}
             {...props}
           />

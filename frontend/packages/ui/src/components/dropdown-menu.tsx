@@ -2,7 +2,163 @@ import * as stylex from '@stylexjs/stylex'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import {CheckIcon, ChevronRightIcon, CircleIcon} from 'lucide-react'
 import * as React from 'react'
+import {floatingContent} from '../animation-keyframes'
 import {cn} from '../utils'
+const styles_4 = stylex.create({
+  s107d54c6: {
+    ':is(.dark *)': {
+      ':is([data-variant="destructive"])': {
+        ':focus': {
+          backgroundColor: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
+        },
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sb5495d44: {
+    ':is([data-state="open"])': {
+      opacity: '100%',
+    },
+  },
+  s8c130211: {
+    ':is([data-variant="destructive"])': {
+      color: 'var(--destructive)',
+    },
+  },
+  sabf0be23: {
+    ':is([data-variant="destructive"])': {
+      ':focus': {
+        backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+      },
+    },
+  },
+  sfa3b6533: {
+    ':is([data-variant="destructive"])': {
+      ':focus': {
+        color: 'var(--destructive)',
+      },
+    },
+  },
+  sdca6904b: {
+    ':is([data-disabled])': {
+      pointerEvents: 'none',
+    },
+  },
+  s2a9f2309: {
+    ':is([data-inset])': {
+      paddingLeft: 'calc(0.25rem * 8)',
+    },
+  },
+  s56ed324e: {
+    ':is([data-disabled])': {
+      opacity: '50%',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s56bd391d: {
+    backgroundColor: 'var(--popover)',
+  },
+  s9a29c60b: {
+    color: 'var(--popover-foreground)',
+  },
+  s5217f915: {
+    maxHeight: 'var(--radix-dropdown-menu-content-available-height)',
+  },
+  s9ce4c292: {
+    transformOrigin: 'var(--radix-dropdown-menu-content-transform-origin)',
+  },
+  s3824ce: {
+    zIndex: '50',
+  },
+  s94be9ef1: {
+    minWidth: '8rem',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s2527420a: {
+    overflowX: 'hidden',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s8a6c2964: {
+    boxShadow: 'var(--shadow-md)',
+  },
+  s3e3e7330: {
+    ':focus': {
+      backgroundColor: 'var(--accent)',
+    },
+  },
+  s758c8268: {
+    ':focus': {
+      color: 'var(--accent-foreground)',
+    },
+  },
+  s254b9195: {
+    outlineStyle: 'none',
+    '@media (forced-colors: active)': {
+      outline: '2px solid transparent',
+      outlineOffset: '2px',
+    },
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3b7916ca: {
+    cursor: 'default',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s3484a7: {
+    paddingLeft: 'calc(0.25rem * 8)',
+  },
+  s349b27: {
+    paddingRight: 'calc(0.25rem * 2)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+})
 const styles = stylex.create({
   scca54036: {
     pointerEvents: 'none',
@@ -17,11 +173,15 @@ const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
     height: 'calc(0.25rem * 4)',
+    pointerEvents: 'none',
+    flexShrink: 0,
   },
   s70543fa9: {
     width: 'calc(0.25rem * 2)',
     height: 'calc(0.25rem * 2)',
     fill: 'currentcolor',
+    pointerEvents: 'none',
+    flexShrink: 0,
   },
   s2b9c850d: {
     backgroundColor: 'var(--border)',
@@ -40,6 +200,9 @@ const styles = stylex.create({
     marginLeft: 'auto',
     width: 'calc(0.25rem * 4)',
     height: 'calc(0.25rem * 4)',
+    color: 'var(--muted-foreground)',
+    pointerEvents: 'none',
+    flexShrink: 0,
   },
 })
 function DropdownMenu({...props}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
@@ -52,7 +215,7 @@ function DropdownMenuTrigger({className, ...props}: React.ComponentProps<typeof 
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
-      className={cn('data-[state=open]:opacity-100', className)}
+      className={cn(stylex.props(styles_3.sb5495d44).className || '', className)}
       {...props}
     />
   )
@@ -65,7 +228,25 @@ function DropdownMenuContent({className, sideOffset = 4, ...props}: DropdownMenu
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md',
+          stylex.props(
+            styles_2.s56bd391d,
+            styles_2.s9a29c60b,
+            styles_2.s5217f915,
+            styles_2.s9ce4c292,
+            styles_2.s3824ce,
+            styles_2.s94be9ef1,
+            styles_2.sac38f2ae,
+            styles_2.s2527420a,
+            styles_2.sf79988b7,
+            styles_2.sad8c742c,
+            styles_2.s1aa14,
+            styles_2.s8a6c2964,
+            floatingContent.base,
+            floatingContent.bottom,
+            floatingContent.left,
+            floatingContent.right,
+            floatingContent.top,
+          ).className || '',
           className,
         )}
         {...props}
@@ -91,7 +272,30 @@ function DropdownMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        stylex.props(
+          styles_2.s3e3e7330,
+          styles_2.s758c8268,
+          styles_2.s254b9195,
+          styles_2.sdef3facc,
+          styles_2.s2ffff9,
+          styles_2.s3b7916ca,
+          styles_2.sa145969,
+          styles_2.sc6ed1702,
+          styles_2.s5d936fb,
+          styles_2.sf799897a,
+          styles_2.s34b1ad,
+          styles_2.sc5dd13f4,
+          styles_2.sab7cc6fa,
+        ).className || '',
+        stylex.props(
+          styles_3.s8c130211,
+          styles_3.sabf0be23,
+          styles_3.sfa3b6533,
+          styles_3.sdca6904b,
+          styles_3.s2a9f2309,
+          styles_3.s56ed324e,
+        ).className || '',
+        stylex.props(styles_4.s107d54c6).className || '',
         className,
       )}
       {...props}
@@ -108,7 +312,23 @@ function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       data-slot="dropdown-menu-checkbox-item"
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        stylex.props(
+          styles_2.s3e3e7330,
+          styles_2.s758c8268,
+          styles_2.s254b9195,
+          styles_2.sdef3facc,
+          styles_2.s2ffff9,
+          styles_2.s3b7916ca,
+          styles_2.sa145969,
+          styles_2.sc6ed1702,
+          styles_2.s5d936fb,
+          styles_2.sf799897a,
+          styles_2.sc5dd13f4,
+          styles_2.s3484a7,
+          styles_2.s349b27,
+          styles_2.sab7cc6fa,
+        ).className || '',
+        stylex.props(styles_3.sdca6904b, styles_3.s56ed324e).className || '',
         className,
       )}
       checked={checked}
@@ -135,7 +355,23 @@ function DropdownMenuRadioItem({
     <DropdownMenuPrimitive.RadioItem
       data-slot="dropdown-menu-radio-item"
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground relative flex cursor-default items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        stylex.props(
+          styles_2.s3e3e7330,
+          styles_2.s758c8268,
+          styles_2.s254b9195,
+          styles_2.sdef3facc,
+          styles_2.s2ffff9,
+          styles_2.s3b7916ca,
+          styles_2.sa145969,
+          styles_2.sc6ed1702,
+          styles_2.s5d936fb,
+          styles_2.sf799897a,
+          styles_2.sc5dd13f4,
+          styles_2.s3484a7,
+          styles_2.s349b27,
+          styles_2.sab7cc6fa,
+        ).className || '',
+        stylex.props(styles_3.sdca6904b, styles_3.s56ed324e).className || '',
         className,
       )}
       {...props}
@@ -160,7 +396,11 @@ function DropdownMenuLabel({
     <DropdownMenuPrimitive.Label
       data-slot="dropdown-menu-label"
       data-inset={inset}
-      className={cn('px-2 py-1.5 text-sm font-medium data-[inset]:pl-8', className)}
+      className={cn(
+        stylex.props(styles_2.s34b1ad, styles_2.sc5dd13f4, styles_2.sab7cc6fa, styles_2.s129e46b3).className || '',
+        stylex.props(styles_3.s2a9f2309).className || '',
+        className,
+      )}
       {...props}
     />
   )
@@ -199,7 +439,30 @@ function DropdownMenuSubTrigger({
       data-slot="dropdown-menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 dark:data-[variant=destructive]:focus:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        stylex.props(
+          styles_2.s3e3e7330,
+          styles_2.s758c8268,
+          styles_2.s254b9195,
+          styles_2.sdef3facc,
+          styles_2.s2ffff9,
+          styles_2.s3b7916ca,
+          styles_2.sa145969,
+          styles_2.sc6ed1702,
+          styles_2.s5d936fb,
+          styles_2.sf799897a,
+          styles_2.s34b1ad,
+          styles_2.sc5dd13f4,
+          styles_2.sab7cc6fa,
+        ).className || '',
+        stylex.props(
+          styles_3.s8c130211,
+          styles_3.sabf0be23,
+          styles_3.sfa3b6533,
+          styles_3.sdca6904b,
+          styles_3.s2a9f2309,
+          styles_3.s56ed324e,
+        ).className || '',
+        stylex.props(styles_4.s107d54c6).className || '',
         className,
       )}
       {...props}
@@ -214,7 +477,23 @@ function DropdownMenuSubContent({className, ...props}: React.ComponentProps<type
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg',
+        stylex.props(
+          styles_2.s56bd391d,
+          styles_2.s9a29c60b,
+          styles_2.s9ce4c292,
+          styles_2.s3824ce,
+          styles_2.s94be9ef1,
+          styles_2.s92852dd5,
+          styles_2.sf79988b7,
+          styles_2.sad8c742c,
+          styles_2.s1aa14,
+          styles_2.s8a6c2948,
+          floatingContent.base,
+          floatingContent.bottom,
+          floatingContent.left,
+          floatingContent.right,
+          floatingContent.top,
+        ).className || '',
         className,
       )}
       {...props}

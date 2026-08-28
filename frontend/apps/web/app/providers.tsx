@@ -23,6 +23,33 @@ import {createContext, useContext, useEffect, useMemo, useState} from 'react'
 import {keyPairStore} from './auth'
 import {webUniversalClient} from './universal-client'
 import {isPerfEnabled, markNavEnd, markNavStart} from './web-perf-marks'
+const styles_3 = stylex.create({
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8c9099f9: {
+    transitionDuration: '200ms',
+  },
+  sd5b893dc: {
+    pointerEvents: 'none',
+  },
+  s54eab79d: {
+    opacity: '50%',
+  },
+})
+const styles_2 = stylex.create({
+  s72e15982: {
+    position: 'fixed',
+    right: 'calc(var(--spacing) * 4)',
+    bottom: 'calc(var(--spacing) * 16)',
+    zIndex: '50',
+    '@media ((min-width: 640px))': {
+      bottom: 'calc(var(--spacing) * 4)',
+    },
+  },
+})
 const styles = stylex.create({
   s14990dc4: {
     position: 'fixed',
@@ -153,7 +180,7 @@ function NavigationLoadingProvider({children}: {children: React.ReactNode}) {
     <NavigationLoadingContext.Provider value={showLoading}>
       {children}
       {showLoading && (
-        <div className="fixed right-4 bottom-16 z-50 sm:bottom-4">
+        <div className={stylex.props(styles_2.s72e15982).className || ''}>
           <Spinner size="small" />
         </div>
       )}
@@ -164,9 +191,13 @@ export function NavigationLoadingContent({children, className}: {children: React
   const isLoading = useIsNavigationLoading()
   return (
     <div
-      className={`transition-opacity duration-200 ${isLoading ? 'pointer-events-none opacity-50' : ''} ${
-        className || ''
-      }`}
+      className={
+        (stylex.props(styles_3.s83442393, styles_3.s8c9099f9).className || '') +
+        ' ' +
+        (isLoading ? stylex.props(styles_3.sd5b893dc, styles_3.s54eab79d).className || '' : '') +
+        ' ' +
+        (className || '')
+      }
     >
       {children}
     </div>

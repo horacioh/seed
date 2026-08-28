@@ -2,6 +2,18 @@ import * as stylex from '@stylexjs/stylex'
 import isEqual from 'lodash/isEqual'
 import {Button, ButtonProps} from './button'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s57ab1d06: {
+    borderColor: 'var(--overlay-15)',
+    backgroundColor: 'var(--overlay-10)',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--overlay-20)',
+        backgroundColor: 'var(--overlay-15)',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   s6558a016: {
     marginInline: 'calc(0.25rem * -1)',
@@ -19,8 +31,7 @@ export function FeedFilters({filterEventType, onFilterChange}: {onFilterChange: 
     <div className={stylex.props(styles.s6558a016).className || ''}>
       <PredefinedFilter
         className={cn(
-          (!filterEventType || filterEventType.length === 0) &&
-            'border-black/15 bg-black/10 hover:border-black/20 hover:bg-black/15 dark:border-white/15 dark:bg-white/10 dark:hover:border-white/20 hover:dark:bg-white/15',
+          stylex.props(!filterEventType || filterEventType.length === 0 ? styles_2.s57ab1d06 : null).className || '',
         )}
         onClick={() =>
           onFilterChange({
@@ -31,10 +42,7 @@ export function FeedFilters({filterEventType, onFilterChange}: {onFilterChange: 
         All
       </PredefinedFilter>
       <PredefinedFilter
-        className={cn(
-          isEqual(filterEventType, ['Comment']) &&
-            'border-black/15 bg-black/10 hover:border-black/20 hover:bg-black/15 dark:border-white/15 dark:bg-white/10 dark:hover:border-white/20 hover:dark:bg-white/15',
-        )}
+        className={cn(stylex.props(isEqual(filterEventType, ['Comment']) ? styles_2.s57ab1d06 : null).className || '')}
         onClick={() =>
           onFilterChange({
             filterEventType: ['Comment'],
@@ -44,10 +52,7 @@ export function FeedFilters({filterEventType, onFilterChange}: {onFilterChange: 
         Comments
       </PredefinedFilter>
       <PredefinedFilter
-        className={cn(
-          isEqual(filterEventType, ['Ref']) &&
-            'border-black/15 bg-black/10 hover:border-black/20 hover:bg-black/15 dark:border-white/15 dark:bg-white/10 dark:hover:border-white/20 hover:dark:bg-white/15',
-        )}
+        className={cn(stylex.props(isEqual(filterEventType, ['Ref']) ? styles_2.s57ab1d06 : null).className || '')}
         onClick={() =>
           onFilterChange({
             filterEventType: ['Ref'],
@@ -58,8 +63,11 @@ export function FeedFilters({filterEventType, onFilterChange}: {onFilterChange: 
       </PredefinedFilter>
       <PredefinedFilter
         className={cn(
-          isEqual(filterEventType, ['comment/Embed', 'doc/Embed', 'doc/Link', 'doc/Button']) &&
-            'border-black/15 bg-black/10 hover:border-black/20 hover:bg-black/15 dark:border-white/15 dark:bg-white/10 dark:hover:border-white/20 hover:dark:bg-white/15',
+          stylex.props(
+            isEqual(filterEventType, ['comment/Embed', 'doc/Embed', 'doc/Link', 'doc/Button'])
+              ? styles_2.s57ab1d06
+              : null,
+          ).className || '',
         )}
         onClick={() =>
           onFilterChange({

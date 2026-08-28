@@ -5,6 +5,44 @@ import {SizableText} from '@shm/ui/text'
 import {X} from 'lucide-react'
 import {ChangeEvent} from 'react'
 import appError from '../errors'
+const styles_2 = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdb8b145: {
+    width: 'auto',
+  },
+  s815a054e: {
+    alignItems: 'flex-end',
+  },
+  s27b18d84: {
+    alignSelf: 'stretch',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s478fb0bf: {
+    right: 'calc(0.25rem * 0)',
+  },
+  s696c5b8: {
+    top: 'calc(0.25rem * 0)',
+  },
+  s3824ce: {
+    zIndex: '50',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
 const styles = stylex.create({
   s5af07b88: {
     backgroundColor: 'var(--muted)',
@@ -109,7 +147,19 @@ export function ImageForm({
   ) : null
   if (!onImageUpload) return image
   return (
-    <div className="group group-icon relative flex w-auto items-end self-stretch overflow-hidden rounded-md">
+    <div
+      className={
+        stylex.props(
+          styles_2.sdef3facc,
+          styles_2.s2ffff9,
+          styles_2.scdb8b145,
+          styles_2.s815a054e,
+          styles_2.s27b18d84,
+          styles_2.s92852dd5,
+          styles_2.sf79988b7,
+        ).className || ''
+      }
+    >
       <div
         className={stylex.props(styles.s7d53a800).className || ''}
         style={{
@@ -146,7 +196,15 @@ export function ImageForm({
       {onRemove && url ? (
         <Button
           size="icon"
-          className="absolute top-0 right-0 z-50 opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
+          className={
+            stylex.props(
+              styles_2.s67010d77,
+              styles_2.s478fb0bf,
+              styles_2.s696c5b8,
+              styles_2.s3824ce,
+              styles_2.s765a26ee,
+            ).className || ''
+          }
           onClick={(e) => {
             e.preventDefault()
             e.stopPropagation()

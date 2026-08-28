@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Link, MessageSquare} from 'lucide-react'
 import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {BlockNoteEditor} from '../../core/BlockNoteEditor'
@@ -8,7 +9,66 @@ import {
 } from '../../core/extensions/BlockHoverActions/BlockHoverActionsPlugin'
 import {BlockSchema} from '../../core/extensions/Blocks/api/blockTypes'
 import {getReferenceableRevisionByBlockId} from '../../core/extensions/BlockRevision/BlockRevisionInvalidation'
-
+const styles = stylex.create({
+  s56bd391d: {
+    backgroundColor: 'var(--popover)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s8a6c2a27: {
+    boxShadow: 'var(--shadow-sm)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s95afba94: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  sf4676280: {
+    gap: 'calc(0.25rem * 0.5)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s8075599f: {
+    lineHeight: '1',
+  },
+})
 const HOVER_BG_CLASS = 'bn-block-hover-highlight'
 const CARD_OVERLAP_PX = 0
 const HORIZONTAL_NUDGE_PX = 8
@@ -71,7 +131,6 @@ function getPublishedBlockRevision<BSchema extends BlockSchema>(
 ): string {
   return getReferenceableRevisionByBlockId(editor.prosemirrorView.state?.doc, blockId)
 }
-
 export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockSchema>({
   editor,
   onCopyBlockLink,
@@ -92,14 +151,11 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
 
   // Track the currently-highlighted DOM element so we can remove the class.
   const highlightedElRef = useRef<HTMLElement | null>(null)
-
   useEffect(() => {
     const plugin = editor.blockHoverActions
-
     if (!plugin) {
       return
     }
-
     return plugin.onUpdate((state) => {
       rectRef.current = state.referenceRect
       setHoverState(state)
@@ -110,7 +166,6 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
         prev.classList.remove(HOVER_BG_CLASS)
         highlightedElRef.current = null
       }
-
       if (state.show && state.blockId) {
         const el = editor.prosemirrorView.dom.querySelector(`[data-id="${state.blockId}"]`) as HTMLElement | null
         if (el) {
@@ -134,7 +189,6 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
   // (e.g. the desktop ScrollArea viewport), rAF-throttled.
   useEffect(() => {
     if (!hoverState.show) return
-
     let raf = 0
     const reposition = () => {
       if (raf) return
@@ -143,11 +197,16 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
         editor.blockHoverActions?.refresh()
       })
     }
-    window.addEventListener('scroll', reposition, {capture: true, passive: true})
+    window.addEventListener('scroll', reposition, {
+      capture: true,
+      passive: true,
+    })
     window.addEventListener('resize', reposition)
     return () => {
       if (raf) cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', reposition, {capture: true})
+      window.removeEventListener('scroll', reposition, {
+        capture: true,
+      })
       window.removeEventListener('resize', reposition)
     }
   }, [hoverState.show, editor])
@@ -162,7 +221,6 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
     if (isBlockReferenceable) return isBlockReferenceable(hoverState.blockId)
     return !!getPublishedBlockRevision(editor, hoverState.blockId)
   }, [hoverState.blockId, editor, isBlockReferenceable])
-
   const supernumberBadge = useMemo(() => {
     if (!hoverState.blockId) return undefined
     const dom = editor.prosemirrorView?.dom
@@ -171,18 +229,15 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
       (badge) => badge instanceof HTMLElement && badge.dataset.blockId === hoverState.blockId,
     ) as HTMLElement | undefined
   }, [hoverState.blockId, editor])
-
   if (!hasActions || !hoverState.show || !hoverState.referenceRect || !hoverState.blockId) {
     return null
   }
-
   const rect = hoverState.referenceRect
   const blockId = hoverState.blockId
   if (!canReferenceBlock) {
     return null
   }
   const commentCount = getCommentCount?.(blockId) ?? 0
-
   const hasSupernumberBadge = !!supernumberBadge?.isConnected
   const anchorRect = hasSupernumberBadge ? supernumberBadge.getBoundingClientRect() : rect
 
@@ -205,7 +260,6 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
         left: anchorLeft,
         zIndex: 50,
       }
-
   return (
     <div
       data-bn-block-hover-actions="true"
@@ -228,13 +282,30 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
         highlightedElRef.current = null
       }}
     >
-      <div className="bg-popover flex flex-col items-center gap-1 rounded-md border p-1 shadow-sm">
+      <div
+        className={
+          stylex.props(
+            styles.s56bd391d,
+            styles.s2ffff9,
+            styles.s67e351ac,
+            styles.sc6ed1702,
+            styles.s5d936fa,
+            styles.sf79988b7,
+            styles.sad8c742c,
+            styles.s1aa14,
+            styles.s8a6c2a27,
+          ).className || ''
+        }
+      >
         {onCopyBlockLink && (
           <button
             type="button"
             aria-label="Copy block link"
             title="Copy block link"
-            className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+            className={
+              stylex.props(styles.sf2718385, styles.s95afba94, styles.sae6a97a5, styles.s529492ad, styles.s1aa14)
+                .className || ''
+            }
             onClick={(e) => {
               e.stopPropagation()
               onCopyBlockLink(blockId)
@@ -244,12 +315,19 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
           </button>
         )}
         {onStartComment && (
-          <div className="flex flex-col items-center gap-0.5">
+          <div
+            className={
+              stylex.props(styles.s2ffff9, styles.s67e351ac, styles.sc6ed1702, styles.sf4676280).className || ''
+            }
+          >
             <button
               type="button"
               aria-label="Start comment"
               title="Start comment"
-              className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+              className={
+                stylex.props(styles.sf2718385, styles.s95afba94, styles.sae6a97a5, styles.s529492ad, styles.s1aa14)
+                  .className || ''
+              }
               onClick={(e) => {
                 e.stopPropagation()
                 onStartComment(blockId)
@@ -258,7 +336,10 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
               <MessageSquare size={14} />
             </button>
             {commentCount > 0 ? (
-              <span className="text-muted-foreground text-xs leading-none" aria-label={`${commentCount} comments`}>
+              <span
+                className={stylex.props(styles.sf2718385, styles.sab7cc79b, styles.s8075599f).className || ''}
+                aria-label={`${commentCount} comments`}
+              >
                 {commentCount}
               </span>
             ) : null}

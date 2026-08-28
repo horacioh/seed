@@ -10,6 +10,16 @@ import {useEffect, useState} from 'react'
  * elapsed time, and token count. Callers hide it while a pending tool-call row is
  * showing its own live progress, so only one spinner is visible at a time.
  */
+const styles_2 = stylex.create({
+  s7877e496: {
+    maxWidth: 'calc(0.25rem * 64)',
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    opacity: '75%',
+  },
+})
 const styles = stylex.create({
   seb2f4560: {
     color: 'var(--muted-foreground)',
@@ -61,7 +71,9 @@ export function AgentRunStatusBar({
     <div className={cn(stylex.props(styles.seb2f4560).className || '', className)} aria-live="polite">
       <Loader2 className={stylex.props(styles.sd8333cb0).className || ''} />
       <span className={stylex.props(styles.s129e46b3).className || ''}>{activityLabel(activity)}</span>
-      {activity?.detail ? <span className="max-w-64 min-w-0 truncate opacity-75">{activity.detail}</span> : null}
+      {activity?.detail ? (
+        <span className={stylex.props(styles_2.s7877e496).className || ''}>{activity.detail}</span>
+      ) : null}
       <span className={stylex.props(styles.s99d6bfaf).className || ''}>
         <span aria-label="Elapsed time">{formatElapsed(elapsed)}</span>
         {usage && usage.total > 0 ? <span aria-label="Tokens used">{formatTokenCount(usage.total)} tokens</span> : null}

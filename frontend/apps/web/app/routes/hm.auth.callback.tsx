@@ -21,6 +21,52 @@ import {Spinner} from '@shm/ui/spinner'
 import {SizableText} from '@shm/ui/text'
 import {XCircle} from 'lucide-react'
 import {useEffect, useState} from 'react'
+const styles_4 = stylex.create({
+  s65e234f5: {
+    textAlign: 'center',
+  },
+})
+const styles_3 = stylex.create({
+  s2f56e43d: {
+    display: 'flex',
+    minHeight: '50vh',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  saa482fbf: {
+    display: 'flex',
+    width: 'calc(var(--spacing) * 12)',
+    height: 'calc(var(--spacing) * 12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'var(--tone-red-100)',
+  },
+  se4bdb68c: {
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    color: 'var(--tone-red-600)',
+  },
+})
+const styles_2 = stylex.create({
+  sa0408b54: {
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '24rem',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 6)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 8)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+})
 const styles = stylex.create({
   s9ecf71fb: {
     display: 'flex',
@@ -208,13 +254,13 @@ export default function AuthCallbackRoute() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [origin, navigate])
   return (
-    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
+    <div className={stylex.props(styles_3.s2f56e43d).className || ''}>
       {error ? (
-        <div className="bg-card text-card-foreground flex w-full max-w-sm flex-col items-center gap-6 rounded-xl border p-8 shadow-sm">
-          <div className="flex size-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-            <XCircle className="size-6 text-red-600 dark:text-red-400" />
+        <div className={stylex.props(styles_2.sa0408b54).className || ''}>
+          <div className={stylex.props(styles_3.saa482fbf).className || ''}>
+            <XCircle className={stylex.props(styles_3.se4bdb68c).className || ''} />
           </div>
-          <div className="space-y-2 text-center">
+          <div className={stylex.props(styles_4.s65e234f5).className || ''}>
             <SizableText size="lg" weight="bold">
               Authentication Failed
             </SizableText>

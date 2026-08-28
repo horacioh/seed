@@ -57,6 +57,229 @@ import {Tooltip} from './tooltip'
 import {useAppDialog} from './universal-dialog'
 import {useCopyHmLink} from './use-copy-hm-link'
 import {cn} from './utils'
+const styles_5 = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s349b27: {
+    paddingRight: 'calc(0.25rem * 2)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s4e079f: {
+    '@media (hover: hover)': {
+      opacity: '0%',
+    },
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8c9099f9: {
+    transitionDuration: '200ms',
+  },
+  sea6c7565: {
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  },
+})
+const styles_4 = stylex.create({
+  sfb15ffde: {
+    position: 'relative',
+    maxHeight: '50%',
+    paddingBlock: 'calc(var(--spacing) * 4)',
+  },
+  s66c152d7: {
+    backgroundColor: 'var(--border)',
+    position: 'absolute',
+    top: '-40px',
+    left: '50%',
+    height: '40px',
+    width: '1px',
+  },
+  sb90e4174: {
+    outlineColor: 'var(--secondary)',
+    ':hover': {
+      '@media (hover: hover)': {
+        outlineColor: 'var(--secondary)',
+      },
+    },
+  },
+  s2e150a16: {
+    outlineColor: 'var(--surface)',
+    ':hover': {
+      '@media (hover: hover)': {
+        outlineColor: 'var(--surface)',
+      },
+    },
+  },
+  sd1cf9c25: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    color: 'var(--foreground)',
+    height: 'calc(var(--spacing) * 5)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  se3333c05: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--muted-foreground)',
+      },
+    },
+    ':active': {
+      color: 'var(--muted-foreground)',
+    },
+  },
+  s1d5aa410: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'calc(var(--spacing) * 1)',
+    cursor: 'pointer',
+    fontSize: '11px',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s7e96ac50: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    textAlign: 'left',
+    ':lastChild': {
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '0px',
+    },
+  },
+  s2095c15c: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '10px',
+    lineHeight: '1',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  s3a424312: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-red-300)',
+    backgroundColor: 'var(--tone-red-50)',
+  },
+  s24785745: {
+    fontFamily: 'var(--font-sans)',
+    color: 'var(--tone-red-800)',
+  },
+  s8db1a980: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-yellow-300)',
+    backgroundColor: 'var(--tone-yellow-50)',
+  },
+  s58b19665: {
+    fontFamily: 'var(--font-sans)',
+    color: 'var(--tone-yellow-800)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--surface-yellow-900)',
+      },
+    },
+  },
+  s7215215d: {
+    width: 'calc(var(--spacing) * 6)',
+    height: 'calc(var(--spacing) * 6)',
+    color: 'var(--tone-yellow-800)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--tone-yellow-200)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  saa9e18d4: {
+    borderColor: 'var(--border)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s856bab52: {
+    backgroundColor: 'var(--accent)',
+  },
+  s3301fa: {
+    marginBottom: 'calc(0.25rem * 2)',
+  },
+})
+const styles_2 = stylex.create({
+  sf6ea0bae: {
+    position: 'relative',
+    marginTop: 'calc(0.25rem * 0.5)',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 5)',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  sedf193d4: {
+    maxHeight: 'calc(0.25rem * 80)',
+    overflowY: 'auto',
+  },
+})
 const styles = stylex.create({
   sad7857bb: {
     backgroundColor: 'var(--border)',
@@ -343,7 +566,7 @@ export function CommentDiscussions({
     })
   }, [showParents, commentId])
   const commentEditorSlot = commentEditor ? (
-    <div className="relative max-h-1/2 py-4">
+    <div className={stylex.props(styles_4.sfb15ffde).className || ''}>
       <div
         className={stylex.props(styles.sad7857bb).className || ''}
         style={{
@@ -435,7 +658,7 @@ export function CommentDiscussions({
               key={comment.id}
               className={cn(
                 stylex.props(styles.s1aa15).className || '',
-                index != list.length - 1 && 'border-border border-b',
+                stylex.props(index != list.length - 1 && styles_3.saa9e18d4).className || '',
               )}
             >
               <Comment
@@ -904,16 +1127,21 @@ export const Comment = memo(function Comment({
   return (
     <>
       {deleteCommentDialog.content}
-      <div className={cn('group relative flex gap-1 rounded-lg p-2', isEntirelyHighlighted && 'bg-accent')}>
+      <div
+        className={cn(
+          stylex.props(styles_5.sdef3facc, styles_5.s2ffff9, styles_5.s5d936fa, styles_5.sf799889b, styles_5.s1aa15)
+            .className || '',
+          'group',
+          stylex.props(isEntirelyHighlighted && styles_3.s856bab52).className || '',
+        )}
+      >
         {heading ? null : (
-          <div className="relative mt-0.5 flex min-w-5 flex-col items-center">
-            {isFirst ? null : <div className="bg-border absolute top-[-40px] left-1/2 h-[40px] w-px" />}
+          <div className={stylex.props(styles_2.sf6ea0bae).className || ''}>
+            {isFirst ? null : <div className={stylex.props(styles_4.s66c152d7).className || ''} />}
             <div
               className={cn(
                 stylex.props(styles.s3811bb5f).className || '',
-                isEntirelyHighlighted
-                  ? 'outline-secondary hover:outline-secondary'
-                  : 'dark:outline-background dark:hover:outline-background outline-white hover:outline-white',
+                stylex.props(isEntirelyHighlighted ? styles_4.sb90e4174 : styles_4.s2e150a16).className || '',
               )}
               {...authorLink}
             />
@@ -929,7 +1157,18 @@ export const Comment = memo(function Comment({
         )}
 
         <div className={stylex.props(styles.sda0311b5).className || ''}>
-          <div className="group flex items-center justify-between gap-2 overflow-hidden pr-2">
+          <div
+            className={
+              stylex.props(
+                styles_5.s2ffff9,
+                styles_5.sc6ed1702,
+                styles_5.sc1a629cb,
+                styles_5.s5d936fb,
+                styles_5.s92852dd5,
+                styles_5.s349b27,
+              ).className || ''
+            }
+          >
             {heading ? (
               <div className={stylex.props(styles.sb96da299).className || ''}>{heading}</div>
             ) : (
@@ -948,10 +1187,7 @@ export const Comment = memo(function Comment({
                 {externalTarget ? (
                   <>
                     <span>on</span>{' '}
-                    <button
-                      {...externalTargetLink}
-                      className="hover:bg-accent text-foreground h-5 truncate rounded px-1 text-sm font-bold transition-colors"
-                    >
+                    <button {...externalTargetLink} className={stylex.props(styles_4.sd1cf9c25).className || ''}>
                       {externalTarget.metadata?.name}
                     </button>
                   </>
@@ -969,7 +1205,15 @@ export const Comment = memo(function Comment({
                     // size="icon"
                     size="xs"
                     variant="ghost"
-                    className="text-muted-foreground hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
+                    className={
+                      stylex.props(
+                        styles_5.sf2718385,
+                        styles_5.s4e079f,
+                        styles_5.s83442393,
+                        styles_5.s8c9099f9,
+                        styles_5.sea6c7565,
+                      ).className || ''
+                    }
                     onClick={() => {
                       if (!docId) return
                       const routeLatest =
@@ -998,7 +1242,10 @@ export const Comment = memo(function Comment({
                   side="bottom"
                   size="xs"
                   align="end"
-                  className="hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
+                  className={
+                    stylex.props(styles_5.s4e079f, styles_5.s83442393, styles_5.s8c9099f9, styles_5.sea6c7565)
+                      .className || ''
+                  }
                   menuItems={options}
                 />
               ) : null}
@@ -1030,15 +1277,17 @@ export const Comment = memo(function Comment({
           )}
 
           {!isEntirelyHighlighted && !isEditing && (
-            <div className={cn(stylex.props(styles.sd5589519).className || '', !heading && 'mb-2')}>
+            <div
+              className={cn(
+                stylex.props(styles.sd5589519).className || '',
+                stylex.props(!heading && styles_3.s3301fa).className || '',
+              )}
+            >
               {enableReplies || commentsContext.onReplyClick ? (
                 <Button
                   variant="ghost"
                   size="xs"
-                  className={cn(
-                    'text-muted-foreground hover:text-muted-foreground active:text-muted-foreground',
-                    'plausible-event-name=Reply+Click',
-                  )}
+                  className={cn(stylex.props(styles_4.se3333c05).className || '', 'plausible-event-name=Reply+Click')}
                   onClick={() => {
                     if (commentsContext.onReplyClick) {
                       commentsContext.onReplyClick(comment)
@@ -1177,12 +1426,12 @@ export function QuotedDocBlock({
   // should not trigger fragment highlighting.
   const fragmentRange = blockRange && 'start' in blockRange ? blockRange : undefined
   return (
-    <div className="bg-brand-50 dark:bg-brand-950 rounded-lg">
+    <div className={stylex.props(styles_5.sf799889b).className || ''}>
       <div className={stylex.props(styles.s8694781e).className || ''}>
         <div className={stylex.props(styles.s91eacb54).className || ''}>
           <BlockQuote size={23} />
         </div>
-        <div className="min-w-0 flex-1">
+        <div className={stylex.props(styles_2.se30fd43e).className || ''}>
           {blockContent && Viewer && (
             <Viewer
               blocks={[blockContent]}
@@ -1244,7 +1493,7 @@ function EditedIndicator({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="text-muted-foreground ml-1 cursor-pointer text-[11px] hover:underline">(edited)</button>
+        <button className={stylex.props(styles_4.s1d5aa410).className || ''}>(edited)</button>
       </PopoverTrigger>
       <PopoverContent side="bottom" align="start" className={stylex.props(styles.sf6cf9d64).className || ''}>
         {open ? (
@@ -1288,7 +1537,7 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
           Edited {editCount} {editCount === 1 ? 'time' : 'times'}
         </SizableText>
       </div>
-      <div className="max-h-80 overflow-y-auto">
+      <div className={stylex.props(styles_2.sedf193d4).className || ''}>
         {data.versions.map((version, index) => {
           const versionNumber = data.versions.length - index
           const isCurrent = index === 0
@@ -1296,14 +1545,12 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
             return (
               <button
                 key={version.version || index}
-                className="hover:bg-accent border-border flex w-full items-center justify-between border-b px-3 py-2 text-left last:border-b-0"
+                className={stylex.props(styles_4.s7e96ac50).className || ''}
                 onClick={() => onSelect(null)}
               >
                 <div className={stylex.props(styles.s86ff3e4).className || ''}>
                   <SizableText size="xs">Version {versionNumber}</SizableText>
-                  <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-[10px] leading-none font-medium">
-                    current
-                  </span>
+                  <span className={stylex.props(styles_4.s2095c15c).className || ''}>current</span>
                 </div>
                 <SizableText size="xs" color="muted">
                   {version.updateTime ? formattedDateShort(version.updateTime) : ''}
@@ -1314,7 +1561,7 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
           return (
             <button
               key={version.version || index}
-              className="hover:bg-accent border-border flex w-full items-center justify-between border-b px-3 py-2 text-left last:border-b-0"
+              className={stylex.props(styles_4.s7e96ac50).className || ''}
               onClick={() => onSelect(version)}
             >
               <SizableText size="xs">Version {versionNumber}</SizableText>
@@ -1332,9 +1579,9 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
 /** Red inline banner showing the content of a deleted comment (pre-deletion version from history). */
 function DeletedCommentPreview({comment}: {comment: HMComment}) {
   return (
-    <div className="rounded-md border border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950">
+    <div className={stylex.props(styles_4.s3a424312).className || ''}>
       <div className={stylex.props(styles.s3e28d4cf).className || ''}>
-        <SizableText size="xs" className="font-sans text-red-800 dark:text-red-200">
+        <SizableText size="xs" className={stylex.props(styles_4.s24785745).className || ''}>
           This comment was deleted
           {comment.updateTime ? ` · ${formattedDateShort(comment.updateTime)}` : ''}
         </SizableText>
@@ -1354,15 +1601,15 @@ function DeletedCommentPreview({comment}: {comment: HMComment}) {
 /** Yellow inline banner showing a previous version of the comment in place of the current content. */
 function VersionPreview({version, onDismiss}: {version: HMComment; onDismiss: () => void}) {
   return (
-    <div className="rounded-md border border-yellow-300 bg-yellow-50 dark:border-yellow-700 dark:bg-yellow-950">
+    <div className={stylex.props(styles_4.s8db1a980).className || ''}>
       <div className={stylex.props(styles.s9994dffa).className || ''}>
-        <SizableText size="xs" className="font-sans text-yellow-800 dark:text-yellow-200">
+        <SizableText size="xs" className={stylex.props(styles_4.s58b19665).className || ''}>
           Viewing previous version {version.updateTime ? `\u00b7 ${formattedDateShort(version.updateTime)}` : ''}
         </SizableText>
         <Button
           variant="ghost"
           size="icon"
-          className="size-6 text-yellow-800 hover:bg-yellow-200 dark:text-yellow-200 dark:hover:bg-yellow-900"
+          className={stylex.props(styles_4.s7215215d).className || ''}
           onClick={onDismiss}
         >
           <X className={stylex.props(styles.s3269316e).className || ''} />

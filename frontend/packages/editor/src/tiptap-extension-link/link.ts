@@ -152,7 +152,7 @@ export const Link = Mark.create<LinkOptions>({
       protocols: [],
       HTMLAttributes: {
         rel: 'noopener noreferrer nofollow',
-        class: 'link text-link hover:text-link-hover',
+        class: 'link',
       },
       validate: undefined,
       checkWebUrl: () => Promise.resolve(),

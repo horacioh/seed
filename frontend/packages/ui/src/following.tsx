@@ -7,6 +7,29 @@ import {Spinner} from './spinner'
 import {SizableText} from './text'
 
 /** Shows accounts that this account is following (contacts with profile subscription). */
+const styles_3 = stylex.create({
+  s57f1f153: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(var(--spacing) * 3)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_2 = stylex.create({
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   s65917ffb: {
     display: 'flex',
@@ -99,9 +122,9 @@ function FollowingItem({
         },
   )
   return (
-    <a {...linkProps} className="hover:bg-muted flex items-center gap-3 rounded-lg p-3 transition-colors">
+    <a {...linkProps} className={stylex.props(styles_3.s57f1f153).className || ''}>
       <HMIcon id={hmId(accountUid)} size={40} icon={metadata?.icon} name={metadata?.name} />
-      <div className="min-w-0 flex-1">
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>
         <SizableText weight="medium" className={stylex.props(styles.s6e724d66).className || ''}>
           {metadata?.name || 'Untitled'}
         </SizableText>

@@ -2,6 +2,17 @@ import * as stylex from '@stylexjs/stylex'
 import {useWindowUtils} from '@/app-context'
 import {Button} from '@shm/ui/button'
 import {X} from 'lucide-react'
+const styles_2 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s349b28: {
+    paddingRight: 'calc(0.25rem * 3)',
+  },
+})
 const styles = stylex.create({
   sca3de967: {
     width: 'calc(0.25rem * 3)',
@@ -73,7 +84,7 @@ function ButtonWrapper(props: any) {
 }
 export function WindowsLinuxWindowControls() {
   return (
-    <div className="no-window-drag flex gap-1 pr-3">
+    <div className={stylex.props(styles_2.s2ffff9, styles_2.s5d936fa, styles_2.s349b28).className || ''}>
       <MinimizeButton />
       <MaximizeOrRestoreButton />
       <CloseButton />

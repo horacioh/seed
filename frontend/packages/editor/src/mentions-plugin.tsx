@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {hmId, hypermediaUrlToHref, useUniversalAppContext} from '@shm/shared'
 import {getContactMetadata, getDocumentTitle} from '@shm/shared/content'
@@ -12,6 +13,24 @@ import {NodeViewWrapper, ReactNodeViewRenderer} from '@tiptap/react'
 import './inline-embed.css'
 
 /** Fallback text used when serializing an inline embed to the clipboard. */
+const styles = stylex.create({
+  sbf63c09a: {
+    color: 'var(--link)',
+  },
+  s28e3580b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--link-hover)',
+      },
+    },
+  },
+  sc5cef8b2: {
+    paddingInline: 'calc(0.25rem * 0.5)',
+  },
+  sc498f39c: {
+    paddingBottom: 'calc(0.25rem * 0.5)',
+  },
+})
 export function inlineEmbedClipboardText(link: string): string {
   return link || ''
 }
@@ -29,7 +48,11 @@ export function createInlineEmbedNode() {
     renderHTML({node, HTMLAttributes}) {
       return [
         'a',
-        {...HTMLAttributes, href: HTMLAttributes.link, 'data-inline-embed': HTMLAttributes.link},
+        {
+          ...HTMLAttributes,
+          href: HTMLAttributes.link,
+          'data-inline-embed': HTMLAttributes.link,
+        },
         inlineEmbedClipboardText(node.attrs.link),
       ]
     },
@@ -44,7 +67,9 @@ export function createInlineEmbedNode() {
           getAttrs: (dom) => {
             if (dom instanceof HTMLElement) {
               var value = dom.getAttribute('data-inline-embed')
-              return {link: value}
+              return {
+                link: value,
+              }
             }
             return false
           },
@@ -55,7 +80,9 @@ export function createInlineEmbedNode() {
           getAttrs: (dom) => {
             if (dom instanceof HTMLElement) {
               var value = dom.getAttribute('data-inline-embed')
-              return {link: value}
+              return {
+                link: value,
+              }
             }
             return false
           },
@@ -92,10 +119,8 @@ export function createInlineEmbedNode() {
       ]
     },
   })
-
   return InlineEmbedNode
 }
-
 function InlineEmbedNodeComponent(props: any) {
   const {hmUrlHref, origin, originHomeId} = useUniversalAppContext()
   const renderedHref =
@@ -105,12 +130,15 @@ function InlineEmbedNodeComponent(props: any) {
       originHomeId,
     }) || props.node.attrs.link
   const isEditable = props.editor?.isEditable
-  const wrapperProps = isEditable ? {} : {href: renderedHref}
-
+  const wrapperProps = isEditable
+    ? {}
+    : {
+        href: renderedHref,
+      }
   return (
     <NodeViewWrapper
       as={isEditable ? 'span' : 'a'}
-      className={`inline-embed-token ${props.selected ? 'selected' : ''}`}
+      className={'inline-embed-token ' + ' ' + (props.selected ? 'selected' : '')}
       data-inline-embed={props.node.attrs.link}
       {...wrapperProps}
     >
@@ -118,11 +146,9 @@ function InlineEmbedNodeComponent(props: any) {
     </NodeViewWrapper>
   )
 }
-
 export function MentionToken(props: {value: string; selected?: boolean}) {
   const unpackedRef = unpackHmId(props.value)
   const profileAccountUid = unpackedRef?.path?.[0] === ':profile' ? unpackedRef.path[1] || unpackedRef.uid : null
-
   if (profileAccountUid) {
     return <ContactMention accountUid={profileAccountUid} highlightId={hmId(profileAccountUid)} {...props} />
   } else if (unpackedRef && unpackedRef.path && unpackedRef.path.length > 0) {
@@ -134,9 +160,10 @@ export function MentionToken(props: {value: string; selected?: boolean}) {
     return <MentionText>ERROR</MentionText>
   }
 }
-
 function DocumentMention({unpackedRef, selected}: {unpackedRef: UnpackedHypermediaId; selected?: boolean}) {
-  const entity = useResource(unpackedRef, {subscribed: true})
+  const entity = useResource(unpackedRef, {
+    subscribed: true,
+  })
   const actions = useDocumentActions()
   const highlight = useHighlighter()
   const draft = actions.getDraft?.(unpackedRef)
@@ -149,7 +176,6 @@ function DocumentMention({unpackedRef, selected}: {unpackedRef: UnpackedHypermed
     </MentionText>
   )
 }
-
 function ContactMention({
   accountUid,
   highlightId,
@@ -161,21 +187,21 @@ function ContactMention({
 }) {
   const {contacts} = useUniversalAppContext()
   const highlight = useHighlighter()
-  const entity = useAccount(accountUid, {subscribe: true})
+  const entity = useAccount(accountUid, {
+    subscribe: true,
+  })
   const meta = getContactMetadata(accountUid, entity.data?.metadata, contacts)
-
   return (
     <MentionText selected={selected} {...highlight(highlightId)}>
       {meta.name}
     </MentionText>
   )
 }
-
 export function MentionText(props: any) {
   return (
     <SizableText
       weight="bold"
-      className="mention-text link text-link hover:text-link-hover px-0.5 pb-0.5"
+      className={stylex.props(styles.sbf63c09a, styles.s28e3580b, styles.sc5cef8b2, styles.sc498f39c).className || ''}
       style={{
         fontSize: 'inherit',
         fontFamily: 'inherit',

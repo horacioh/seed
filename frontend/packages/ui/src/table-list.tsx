@@ -5,6 +5,66 @@ import {Copy, ExternalLink} from './icons'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  s30e7b11: {
+    borderColor: 'var(--tone-gray-200)',
+    backgroundColor: 'var(--tone-gray-50)',
+  },
+  s80d181ae: {
+    '@media ((min-width: 640px))': {
+      marginInline: 'calc(var(--spacing) * 0)',
+    },
+  },
+  s21a21bfe: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    backgroundColor: 'var(--tone-gray-200-2)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+  s70da49d8: {
+    backgroundColor: 'var(--tone-gray-50)',
+  },
+  s8720a404: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--tone-gray-100-2)',
+      },
+    },
+  },
+  s456bb598: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'var(--tone-gray-200)',
+    backgroundColor: 'var(--surface-black)',
+    ':lastChild': {
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '0px',
+    },
+  },
+  sbeccbc50: {
+    color: 'var(--muted-foreground)',
+    width: '140px',
+    minWidth: '140px',
+    flex: 'none',
+  },
+})
+const styles_3 = stylex.create({
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_2 = stylex.create({
+  sdecc81f3: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+  },
+})
 const styles = stylex.create({
   sc1d20b39: {
     cursor: 'default',
@@ -75,8 +135,8 @@ export function TableList({
     <div
       className={cn(
         stylex.props(styles.sc1d20b39).className || '',
-        'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-black',
-        'sm:mx-0',
+        stylex.props(styles_4.s30e7b11).className || '',
+        stylex.props(styles_4.s80d181ae).className || '',
         className,
       )}
       {...props}
@@ -95,7 +155,7 @@ function TableHeader({
   } & ComponentProps<'div'>
 >) {
   return (
-    <div className={cn('flex items-center gap-3 bg-gray-200 px-4 py-2 dark:bg-gray-800', className)} {...props}>
+    <div className={cn(stylex.props(styles_4.s21a21bfe).className || '', className)} {...props}>
       {children}
     </div>
   )
@@ -113,9 +173,9 @@ function TableItem({
     <div
       className={cn(
         stylex.props(styles.s44461b98).className || '',
-        'bg-gray-50 dark:bg-black',
-        'hover:bg-gray-100 dark:hover:bg-gray-900',
-        'border-b border-gray-200 last:border-b-0 dark:border-gray-700',
+        stylex.props(styles_4.s70da49d8).className || '',
+        stylex.props(styles_4.s8720a404).className || '',
+        stylex.props(styles_4.s456bb598).className || '',
         className,
       )}
       {...props}
@@ -147,10 +207,10 @@ export function InfoListItem({
   const {hover, ...hoverProps} = useHover()
   return (
     <TableList.Item {...hoverProps}>
-      <SizableText size="xs" className="text-muted-foreground w-[140px] min-w-[140px] flex-none">
+      <SizableText size="xs" className={stylex.props(styles_4.sbeccbc50).className || ''}>
         {label}:
       </SizableText>
-      <div className="min-w-0 flex-1 overflow-hidden">
+      <div className={stylex.props(styles_2.sdecc81f3).className || ''}>
         {values.map((value, index) => (
           <SizableText key={index} size="xs" className={stylex.props(styles.s633c2d5d).className || ''}>
             {value}
@@ -162,7 +222,10 @@ export function InfoListItem({
           <Button
             variant="ghost"
             size="sm"
-            className={cn(stylex.props(styles.s5b6a7ac3).className || '', hover ? 'opacity-100' : 'opacity-0')}
+            className={cn(
+              stylex.props(styles.s5b6a7ac3).className || '',
+              stylex.props(hover ? styles_3.s486c2d2f : styles_3.s765a26ee).className || '',
+            )}
             onClick={onCopy}
           >
             <Copy />
@@ -174,7 +237,10 @@ export function InfoListItem({
           <Button
             variant="ghost"
             size="sm"
-            className={cn(stylex.props(styles.s5b6a7ac3).className || '', hover ? 'opacity-100' : 'opacity-0')}
+            className={cn(
+              stylex.props(styles.s5b6a7ac3).className || '',
+              stylex.props(hover ? styles_3.s486c2d2f : styles_3.s765a26ee).className || '',
+            )}
             onClick={onOpen}
           >
             <ExternalLink />

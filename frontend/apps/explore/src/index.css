@@ -1,4 +1,4 @@
-@import '@shm/ui/residual.css';
+@import '@shm/ui/stylex.css';
 
 :root {
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;

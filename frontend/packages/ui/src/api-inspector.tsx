@@ -26,6 +26,455 @@ import {
 } from '@shm/shared/api-lab'
 import DataViewer from './data-viewer'
 import {cn} from './utils'
+const styles_8 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f582e10: {
+    minHeight: '0px',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
+const styles_7 = stylex.create({
+  sc7133e99: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  sc7133e9a: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+  },
+  sc7133e97: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+})
+const styles_6 = stylex.create({
+  s18d815cb: {
+    borderColor: 'oklch(87.1% 0.006 286.286)',
+  },
+  s4e1b8250: {
+    backgroundColor: 'oklch(96.7% 0.001 286.375)',
+  },
+  s9df2e12d: {
+    color: 'oklch(44.2% 0.017 285.786)',
+  },
+  s9df2d5ea: {
+    color: 'oklch(87.1% 0.006 286.286)',
+  },
+  s5d5bba5c: {
+    backgroundColor: 'oklch(98.5% 0 none)',
+  },
+  s9df2ed0b: {
+    color: 'oklch(14.1% 0.005 285.823)',
+  },
+  s9df2dd6c: {
+    color: 'oklch(55.2% 0.016 285.938)',
+  },
+})
+const styles_5 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf7998a14: {
+    borderRadius: 'calc(var(--radius) + 4px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56f: {
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  s993b6d55: {
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s18d8120a: {
+    borderColor: 'oklch(92% 0.004 286.32)',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s33458b: {
+    marginTop: 'calc(0.25rem * 1)',
+  },
+  s18c0f: {
+    height: 'calc(0.25rem * 4)',
+  },
+  s1c45e: {
+    width: 'calc(0.25rem * 4)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s62c182b1: {
+    fontWeight: '600',
+  },
+  s8a6c2ac8: {
+    boxShadow: 'var(--shadow-xs)',
+  },
+  s9b8736ad: {
+    display: 'inline-flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sd52b2d2: {
+    textTransform: 'uppercase',
+  },
+  sbad092cd: {
+    letterSpacing: '0.16em',
+  },
+  sc5cf0034: {
+    paddingInline: 'calc(0.25rem * 2.5)',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  s55426dfb: {
+    fontSize: '10px',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  s5542e25a: {
+    fontSize: '11px',
+  },
+  sbacfaa0f: {
+    letterSpacing: '0.14em',
+  },
+})
+const styles_4 = stylex.create({
+  s345f19: {
+    paddingBottom: 'calc(0.25rem * 4)',
+  },
+  s33458e: {
+    marginTop: 'calc(0.25rem * 4)',
+  },
+})
+const styles_3 = stylex.create({
+  sff8f1a60: {
+    display: 'grid',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    gap: 'calc(var(--spacing) * 4)',
+    '@media ((min-width: 1280px))': {
+      gridTemplateColumns: '20rem minmax(0,1fr)',
+    },
+  },
+  sadfa990e: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 4)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+    color: 'var(--color-zinc-400)',
+  },
+  s81e9186b: {
+    width: '100%',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--color-zinc-200)',
+    backgroundColor: 'var(--color-white)',
+    paddingInline: 'calc(var(--spacing) * 11)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--color-zinc-900)',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    outlineStyle: 'none',
+    ':focus': {
+      borderColor: 'var(--color-zinc-400)',
+      boxShadow: '0 0 0 4px currentcolor',
+    },
+  },
+  s93ff291b: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 3)',
+    '@media ((min-width: 768px))': {
+      gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    },
+  },
+  s3b628783: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 4)',
+    '@media ((min-width: 1536px))': {
+      gridTemplateColumns: 'minmax(0,1.15fr) minmax(20rem,0.85fr)',
+    },
+  },
+  s25d912ff: {
+    minHeight: '24rem',
+    width: '100%',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'color-mix(in oklab, var(--color-zinc-900) 10%, transparent)',
+    backgroundColor: 'var(--color-zinc-950)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 4)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'calc(var(--spacing) * 6)',
+    color: 'var(--color-zinc-100)',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    outlineStyle: 'none',
+    ':focus': {
+      borderColor: 'var(--color-zinc-400)',
+      boxShadow: '0 0 0 4px currentcolor',
+    },
+  },
+  s1032c15: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'var(--color-zinc-900)',
+    paddingInline: 'calc(var(--spacing) * 5)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    color: 'var(--color-white)',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-zinc-800)',
+      },
+    },
+    ':disabled': {
+      cursor: 'not-allowed',
+      backgroundColor: 'var(--color-zinc-300)',
+      color: 'var(--color-zinc-500)',
+      borderColor: 'var(--color-zinc-100)',
+    },
+  },
+  s9e30e4d6: {
+    display: 'grid',
+    gap: 'calc(var(--spacing) * 4)',
+    '@media ((min-width: 1280px))': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  sb2919a5a: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.24em',
+    color: 'var(--color-zinc-500)',
+    textTransform: 'uppercase',
+  },
+  se2a13966: {
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'var(--color-rose-100)',
+    paddingInline: 'calc(var(--spacing) * 2.5)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.16em',
+    color: 'var(--color-rose-700)',
+    textTransform: 'uppercase',
+  },
+  s3e1fe971: {
+    marginTop: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    letterSpacing: '0.18em',
+    color: 'var(--color-zinc-500)',
+    textTransform: 'uppercase',
+  },
+  sea7985bd: {
+    marginBottom: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.2em',
+    color: 'var(--color-zinc-500)',
+    textTransform: 'uppercase',
+  },
+  s3ba25e7c: {
+    overflow: 'hidden',
+    borderRadius: 'var(--radius-2xl)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--color-zinc-200)',
+    backgroundColor: 'var(--color-white)',
+    padding: 'calc(var(--spacing) * 4)',
+    '@media ((min-width: 640px))': {
+      padding: 'calc(var(--spacing) * 6)',
+    },
+  },
+  s28557fb9: {
+    marginBottom: 'calc(var(--spacing) * 5)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'var(--color-zinc-100)',
+    paddingBottom: 'calc(var(--spacing) * 5)',
+    '@media ((min-width: 640px))': {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+    },
+  },
+  s75d5b7d6: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.28em',
+    color: 'var(--color-zinc-500)',
+    textTransform: 'uppercase',
+  },
+  s34adeb3: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--color-zinc-200)',
+    backgroundColor: 'var(--color-white)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-zinc-700)',
+    transitionProperty:
+      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--color-zinc-300)',
+        backgroundColor: 'var(--color-zinc-50)',
+      },
+    },
+    ':disabled': {
+      cursor: 'not-allowed',
+      backgroundColor: 'var(--color-zinc-300)',
+      color: 'var(--color-zinc-400)',
+      borderColor: 'var(--color-zinc-100)',
+    },
+  },
+  s68f952f8: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.2em',
+    color: 'var(--color-zinc-500)',
+    textTransform: 'uppercase',
+  },
+  sfea8a514: {
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.18em',
+    color: 'var(--color-zinc-500)',
+    textTransform: 'uppercase',
+  },
+  sb18494ac: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+  },
+})
+const styles_2 = stylex.create({
+  s5e9c6c57: {
+    marginInline: 'auto',
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+    maxWidth: '80rem',
+    flexDirection: 'column',
+  },
+  s3f582e10: {
+    minHeight: 'calc(0.25rem * 0)',
+  },
+  sb04cd461: {
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+  },
+  sef2be82b: {
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflowY: 'auto',
+    paddingRight: 'calc(0.25rem * 1)',
+  },
+  sa11c0168: {
+    minHeight: 'calc(0.25rem * 0)',
+    overflowY: 'auto',
+    paddingRight: 'calc(0.25rem * 1)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+})
 const styles = stylex.create({
   sd63a8a39: {
     position: 'relative',
@@ -543,28 +992,33 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
     navigator.clipboard.writeText(preview.url)
   }
   return (
-    <div className="mx-auto flex h-full min-h-0 w-full max-w-7xl flex-col">
-      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[20rem_minmax(0,1fr)]">
-        <aside className="min-h-0">
-          <Panel className="flex h-full min-h-0 flex-col" contentClassName="flex min-h-0 flex-1 flex-col">
+    <div className={stylex.props(styles_2.s5e9c6c57).className || ''}>
+      <div className={stylex.props(styles_3.sff8f1a60).className || ''}>
+        <aside className={stylex.props(styles_2.s3f582e10).className || ''}>
+          <Panel
+            className={stylex.props(styles_2.sb04cd461).className || ''}
+            contentClassName={
+              stylex.props(styles_8.s2ffff9, styles_8.s3f582e10, styles_8.sb42feb5d, styles_8.s67e351ac).className || ''
+            }
+          >
             <label className={stylex.props(styles.sd63a8a39).className || ''}>
-              <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-zinc-400" />
+              <Search className={stylex.props(styles_3.sadfa990e).className || ''} />
               <input
                 type="search"
                 value={routeFilter}
                 onChange={(event) => setRouteFilter(event.target.value)}
                 placeholder="Filter by key or path"
-                className="w-full rounded-xl border border-zinc-200 bg-white px-11 py-3 text-sm text-zinc-900 transition outline-none focus:border-zinc-400 focus:ring-4 focus:ring-zinc-200"
+                className={stylex.props(styles_3.s81e9186b).className || ''}
               />
             </label>
 
-            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <div className={stylex.props(styles_2.sef2be82b).className || ''}>
               {isIndexLoading ? (
                 <MutedState message="Loading /api/schema…" />
               ) : indexError ? (
                 <ErrorState message={indexError} />
               ) : filteredRoutes.length ? (
-                <div className="space-y-4">
+                <div className={stylex.props(styles_7.sc7133e99).className || ''}>
                   <RouteGroup
                     title="Queries"
                     routes={filteredRoutes.filter((route) => route.kind === 'query')}
@@ -585,8 +1039,8 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
           </Panel>
         </aside>
 
-        <main className="min-h-0 overflow-y-auto pr-1">
-          <div className="space-y-4 pb-4">
+        <main className={stylex.props(styles_2.sa11c0168).className || ''}>
+          <div className={stylex.props(styles_4.s345f19).className || ''}>
             {selectedDefinition ? (
               <>
                 <Panel
@@ -601,7 +1055,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                     </div>
                   }
                 >
-                  <div className="grid gap-3 md:grid-cols-3">
+                  <div className={stylex.props(styles_3.s93ff291b).className || ''}>
                     <MetaBlock label="Method" value={selectedDefinition.method} />
                     <MetaBlock label="Request Body" value={selectedDefinition.inputEncoding} />
                     <MetaBlock
@@ -611,7 +1065,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                   </div>
                 </Panel>
 
-                <div className="grid gap-4 2xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
+                <div className={stylex.props(styles_3.s3b628783).className || ''}>
                   <Panel
                     eyebrow="Request Composer"
                     title="Input JSON"
@@ -642,7 +1096,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                         setRunError(null)
                       }}
                       spellCheck={false}
-                      className="min-h-[24rem] w-full rounded-xl border border-zinc-900/10 bg-zinc-950 px-4 py-4 font-mono text-sm leading-6 text-zinc-100 transition outline-none focus:border-zinc-400 focus:ring-4 focus:ring-zinc-200"
+                      className={stylex.props(styles_3.s25d912ff).className || ''}
                     />
 
                     {previewError ? <InlineAlert title="Preview unavailable" message={previewError} /> : null}
@@ -653,7 +1107,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                         type="button"
                         onClick={handleRunRequest}
                         disabled={!preview || isRunning}
-                        className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-300 disabled:text-zinc-500"
+                        className={stylex.props(styles_3.s1032c15).className || ''}
                       >
                         {isRunning ? (
                           <RefreshCw className={stylex.props(styles.s2b64fb66).className || ''} />
@@ -682,7 +1136,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                     }
                   >
                     {preview ? (
-                      <div className="space-y-5">
+                      <div className={stylex.props(styles_7.sc7133e9a).className || ''}>
                         <div className={stylex.props(styles.s46c30091).className || ''}>
                           <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                             <StatusPill label={preview.method} tone="slate" />
@@ -746,7 +1200,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                   ) : definitionError ? (
                     <ErrorState message={definitionError} />
                   ) : activeSchema ? (
-                    <div className="space-y-4">
+                    <div className={stylex.props(styles_7.sc7133e99).className || ''}>
                       <SchemaNodeView
                         rootSchema={activeSchema}
                         schema={activeSchema}
@@ -772,7 +1226,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                   subtitle="Status, raw payload, and decoded output from the last request for this endpoint."
                 >
                   {selectedResult ? (
-                    <div className="space-y-5">
+                    <div className={stylex.props(styles_7.sc7133e9a).className || ''}>
                       <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
                         <StatusPill
                           label={`${selectedResult.status} ${selectedResult.statusText}`.trim()}
@@ -791,7 +1245,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
                         }))}
                       />
 
-                      <div className="grid gap-4 xl:grid-cols-2">
+                      <div className={stylex.props(styles_3.s9e30e4d6).className || ''}>
                         <ResponseBlock
                           title="Raw Body"
                           content={
@@ -846,13 +1300,13 @@ function RouteGroup({
     return null
   }
   return (
-    <section className="space-y-2">
+    <section className={stylex.props(styles_7.sc7133e97).className || ''}>
       <div className={stylex.props(styles.s78289774).className || ''}>
-        <h2 className="text-xs font-semibold tracking-[0.24em] text-zinc-500 uppercase">{title}</h2>
+        <h2 className={stylex.props(styles_3.sb2919a5a).className || ''}>{title}</h2>
         <span className={stylex.props(styles.sb399e9e6).className || ''}>{routes.length}</span>
       </div>
 
-      <div className="space-y-2">
+      <div className={stylex.props(styles_7.sc7133e97).className || ''}>
         {routes.map((route) => {
           const isSelected = route.key === selectedKey
           return (
@@ -860,13 +1314,27 @@ function RouteGroup({
               key={route.key}
               type="button"
               onClick={() => onSelect(route)}
-              className={`group flex w-full items-start justify-between gap-3 rounded-xl border px-4 py-3 text-left transition ${
-                isSelected
-                  ? 'border-zinc-300 bg-zinc-100'
-                  : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50'
-              }`}
+              className={
+                (stylex.props(
+                  styles_5.s2ffff9,
+                  styles_5.scdbaf625,
+                  styles_5.s93b5f015,
+                  styles_5.sc1a629cb,
+                  styles_5.s5d936fc,
+                  styles_5.sf7998a14,
+                  styles_5.sad8c742c,
+                  styles_5.s34b1af,
+                  styles_5.s34b56f,
+                  styles_5.sbf63b0a7,
+                  styles_5.s993b6d55,
+                ).className || '') +
+                ' ' +
+                (isSelected
+                  ? stylex.props(styles_6.s18d815cb, styles_6.s4e1b8250).className || ''
+                  : stylex.props(styles_5.s18d8120a, styles_5.s605ce4a1).className || '')
+              }
             >
-              <div className="min-w-0">
+              <div className={stylex.props(styles_2.s3f58665f).className || ''}>
                 <div className={stylex.props(styles.s86ff3e4).className || ''}>
                   <span className={stylex.props(styles.s79b4711b).className || ''}>{route.key}</span>
                   <StatusPill label={route.method} tone={route.kind === 'query' ? 'sky' : 'amber'} compact />
@@ -874,9 +1342,19 @@ function RouteGroup({
                 <p className={stylex.props(styles.sc2fd7247).className || ''}>{route.path}</p>
               </div>
               <ChevronRight
-                className={`mt-1 h-4 w-4 shrink-0 transition ${
-                  isSelected ? 'text-zinc-600' : 'text-zinc-300 group-hover:text-zinc-500'
-                }`}
+                className={
+                  (stylex.props(
+                    styles_5.s33458b,
+                    styles_5.s18c0f,
+                    styles_5.s1c45e,
+                    styles_5.sf032ed6c,
+                    styles_5.s993b6d55,
+                  ).className || '') +
+                  ' ' +
+                  (isSelected
+                    ? stylex.props(styles_6.s9df2e12d).className || ''
+                    : stylex.props(styles_6.s9df2d5ea).className || '')
+                }
               />
             </button>
           )
@@ -902,14 +1380,18 @@ function SchemaNodeView({
   const schemaType = getSchemaType(resolvedSchema)
   const variants = resolvedSchema.oneOf ?? resolvedSchema.anyOf
   return (
-    <div className={`rounded-xl border border-zinc-200 ${isRoot ? 'bg-white' : 'bg-zinc-50'} p-4`}>
+    <div
+      className={
+        (stylex.props(styles_5.sf7998a14, styles_5.sad8c742c, styles_5.s18d8120a).className || '') +
+        ' ' +
+        (isRoot ? stylex.props(styles_5.s605ce4a1).className || '' : stylex.props(styles_6.s5d5bba5c).className || '') +
+        ' ' +
+        (stylex.props(styles_5.s1aa17).className || '')
+      }
+    >
       <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
         {name ? <code className={stylex.props(styles.sf8d612f7).className || ''}>{name}</code> : null}
-        {required ? (
-          <span className="rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-rose-700 uppercase">
-            required
-          </span>
-        ) : null}
+        {required ? <span className={stylex.props(styles_3.se2a13966).className || ''}>required</span> : null}
         {schemaType ? <SchemaBadge label={schemaType} tone="slate" /> : null}
         {resolvedSchema['x-js-type'] ? <SchemaBadge label={resolvedSchema['x-js-type']} tone="amber" /> : null}
         {resolvedSchema.contentEncoding ? (
@@ -930,7 +1412,7 @@ function SchemaNodeView({
       ) : null}
 
       {resolvedSchema.default !== undefined ? (
-        <p className="mt-3 text-xs tracking-[0.18em] text-zinc-500 uppercase">
+        <p className={stylex.props(styles_3.s3e1fe971).className || ''}>
           Default{' '}
           <span className={stylex.props(styles.sd71515ff).className || ''}>
             {formatInlineValue(resolvedSchema.default)}
@@ -939,10 +1421,10 @@ function SchemaNodeView({
       ) : null}
 
       {variants?.length ? (
-        <div className="mt-4 space-y-3">
+        <div className={stylex.props(styles_4.s33458e).className || ''}>
           {variants.map((variant, index) => (
             <div key={`variant-${index}`} className={stylex.props(styles.s3a19df69).className || ''}>
-              <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">Option {index + 1}</p>
+              <p className={stylex.props(styles_3.sea7985bd).className || ''}>Option {index + 1}</p>
               <SchemaNodeView rootSchema={rootSchema} schema={variant} name={undefined} />
             </div>
           ))}
@@ -950,7 +1432,7 @@ function SchemaNodeView({
       ) : null}
 
       {(schemaType === 'object' || (!schemaType && resolvedSchema.properties)) && resolvedSchema.properties ? (
-        <div className="mt-4 space-y-3">
+        <div className={stylex.props(styles_4.s33458e).className || ''}>
           {Object.entries(resolvedSchema.properties).map(([propertyName, propertySchema]) => (
             <SchemaNodeView
               key={propertyName}
@@ -965,7 +1447,7 @@ function SchemaNodeView({
 
       {schemaType === 'array' ? (
         <div className={stylex.props(styles.sd432b4bb).className || ''}>
-          <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">Array Items</p>
+          <p className={stylex.props(styles_3.sea7985bd).className || ''}>Array Items</p>
           {Array.isArray(resolvedSchema.items) ? (
             resolvedSchema.items.map((itemSchema, index) => (
               <SchemaNodeView
@@ -985,7 +1467,7 @@ function SchemaNodeView({
 
       {resolvedSchema.additionalProperties && typeof resolvedSchema.additionalProperties === 'object' ? (
         <div className={stylex.props(styles.sd432b4bb).className || ''}>
-          <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">Additional Properties</p>
+          <p className={stylex.props(styles_3.sea7985bd).className || ''}>Additional Properties</p>
           <SchemaNodeView rootSchema={rootSchema} schema={resolvedSchema.additionalProperties} name="*" />
         </div>
       ) : null}
@@ -1021,20 +1503,18 @@ function Panel({
   contentClassName?: string
 }) {
   return (
-    <section className={cn('overflow-hidden rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6', className)}>
+    <section className={cn(stylex.props(styles_3.s3ba25e7c).className || '', className)}>
       {eyebrow || title || subtitle ? (
-        <div className="mb-5 flex flex-col gap-4 border-b border-zinc-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className={stylex.props(styles_3.s28557fb9).className || ''}>
           <div>
-            {eyebrow ? (
-              <p className="text-xs font-semibold tracking-[0.28em] text-zinc-500 uppercase">{eyebrow}</p>
-            ) : null}
+            {eyebrow ? <p className={stylex.props(styles_3.s75d5b7d6).className || ''}>{eyebrow}</p> : null}
             {title ? <h2 className={stylex.props(styles.s2b839648).className || ''}>{title}</h2> : null}
             {subtitle ? <p className={stylex.props(styles.sb7a80442).className || ''}>{subtitle}</p> : null}
           </div>
           {actions ? <div className={stylex.props(styles.sf032ed6c).className || ''}>{actions}</div> : null}
         </div>
       ) : null}
-      <div className={cn('space-y-4', contentClassName)}>{children}</div>
+      <div className={cn(stylex.props(styles_7.sc7133e99).className || '', contentClassName)}>{children}</div>
     </section>
   )
 }
@@ -1052,7 +1532,7 @@ function ActionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:border-zinc-100 disabled:text-zinc-400"
+      className={stylex.props(styles_3.s34adeb3).className || ''}
     >
       {children}
     </button>
@@ -1063,9 +1543,22 @@ function SchemaTabButton({label, isActive, onClick}: {label: string; isActive: b
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-        isActive ? 'bg-white text-zinc-950 shadow-xs' : 'text-zinc-500 hover:text-zinc-900'
-      }`}
+      className={
+        (stylex.props(
+          styles_5.s775755af,
+          styles_5.s34b1af,
+          styles_5.s34b56e,
+          styles_5.sab7cc6fa,
+          styles_5.s62c182b1,
+          styles_5.s993b6d55,
+        ).className || '') +
+        ' ' +
+        (isActive
+          ? (stylex.props(styles_5.s8a6c2ac8, styles_5.s605ce4a1).className || '') +
+            ' ' +
+            (stylex.props(styles_6.s9df2ed0b).className || '')
+          : stylex.props(styles_6.s9df2dd6c).className || '')
+      }
     >
       {label}
     </button>
@@ -1073,7 +1566,7 @@ function SchemaTabButton({label, isActive, onClick}: {label: string; isActive: b
 }
 function StatusPill({
   label,
-  tone,
+  tone: _tone,
   compact = false,
 }: {
   label: string
@@ -1082,20 +1575,39 @@ function StatusPill({
 }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full font-semibold tracking-[0.16em] uppercase ${getPillClasses(
-        tone,
-      )} ${compact ? 'px-2.5 py-1 text-[10px]' : 'px-3 py-1.5 text-[11px]'}`}
+      className={
+        (stylex.props(
+          styles_5.s9b8736ad,
+          styles_5.sc6ed1702,
+          styles_5.s775755af,
+          styles_5.s62c182b1,
+          styles_5.sd52b2d2,
+          styles_5.sbad092cd,
+        ).className || '') +
+        ' ' +
+        (compact
+          ? stylex.props(styles_5.sc5cf0034, styles_5.s34b56d, styles_5.s55426dfb).className || ''
+          : stylex.props(styles_5.s34b1ae, styles_5.sc5dd13f4, styles_5.s5542e25a).className || '')
+      }
     >
       {label}
     </span>
   )
 }
-function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'slate' | 'emerald'}) {
+function SchemaBadge({label, tone: _tone}: {label: string; tone: 'amber' | 'sky' | 'slate' | 'emerald'}) {
   return (
     <span
-      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase ${getPillClasses(
-        tone,
-      )}`}
+      className={
+        stylex.props(
+          styles_5.s775755af,
+          styles_5.sc5cf0034,
+          styles_5.s34b56d,
+          styles_5.s5542e25a,
+          styles_5.s62c182b1,
+          styles_5.sd52b2d2,
+          styles_5.sbacfaa0f,
+        ).className || ''
+      }
     >
       {label}
     </span>
@@ -1104,7 +1616,7 @@ function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'sla
 function MetaBlock({label, value}: {label: string; value: string}) {
   return (
     <div className={stylex.props(styles.s46c30091).className || ''}>
-      <p className="text-xs font-semibold tracking-[0.2em] text-zinc-500 uppercase">{label}</p>
+      <p className={stylex.props(styles_3.s68f952f8).className || ''}>{label}</p>
       <p className={stylex.props(styles.s85de826b).className || ''}>{value}</p>
     </div>
   )
@@ -1128,10 +1640,10 @@ function KeyValueList({
         {title}
       </div>
       {rows.length ? (
-        <div className="mt-4 space-y-2">
+        <div className={stylex.props(styles_4.s33458e).className || ''}>
           {rows.map((row) => (
             <div key={`${row.key}-${row.value}`} className={stylex.props(styles.s2c815aea).className || ''}>
-              <p className="text-[11px] font-semibold tracking-[0.18em] text-zinc-500 uppercase">{row.key}</p>
+              <p className={stylex.props(styles_3.sfea8a514).className || ''}>{row.key}</p>
               <p className={stylex.props(styles.sbb5ba128).className || ''}>{row.value}</p>
             </div>
           ))}
@@ -1156,7 +1668,7 @@ function InlineAlert({title, message}: {title: string; message: string}) {
 function ErrorState({message}: {message: string}) {
   return (
     <div className={stylex.props(styles.se6fec38).className || ''}>
-      <div className="flex items-center gap-2 text-sm font-semibold tracking-[0.18em] uppercase">
+      <div className={stylex.props(styles_3.sb18494ac).className || ''}>
         <Unplug className={stylex.props(styles.sca3de968).className || ''} />
         Error
       </div>
@@ -1188,20 +1700,6 @@ function prettyRawBody(rawBody: string): string {
 }
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
-}
-function getPillClasses(tone: 'amber' | 'sky' | 'slate' | 'emerald' | 'rose'): string {
-  switch (tone) {
-    case 'amber':
-      return 'bg-amber-100 text-amber-800'
-    case 'sky':
-      return 'bg-sky-100 text-sky-800'
-    case 'emerald':
-      return 'bg-emerald-100 text-emerald-800'
-    case 'rose':
-      return 'bg-rose-100 text-rose-800'
-    case 'slate':
-      return 'bg-zinc-200 text-zinc-800'
-  }
 }
 function getSchemaType(schema: JSONSchemaNode): string | undefined {
   if (Array.isArray(schema.type)) {

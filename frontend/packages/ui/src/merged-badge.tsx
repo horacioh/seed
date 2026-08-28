@@ -2,6 +2,15 @@ import * as stylex from '@stylexjs/stylex'
 import {Merge} from 'lucide-react'
 import {Badge} from './components/badge'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s55426dfb: {
+    fontSize: '10px',
+  },
+  sab7cc79b: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+})
 const styles = stylex.create({
   see592ce5: {
     color: 'var(--muted-foreground)',
@@ -15,7 +24,7 @@ export function MergedBadge({count, size = 'md', className}: {count: number; siz
       variant="outline"
       className={cn(
         stylex.props(styles.see592ce5).className || '',
-        size === 'sm' ? 'text-[10px]' : 'text-xs',
+        stylex.props(size === 'sm' ? styles_2.s55426dfb : styles_2.sab7cc79b).className || '',
         className,
       )}
     >

@@ -203,7 +203,7 @@ export function DropZoneOverlay({
         onDrop={(e) => handleDrop(e, 'main')}
       >
         {activeZone === 'main' && (
-          <span className="pointer-events-none text-sm font-medium text-blue-600 select-none dark:text-blue-400">
+          <span className="pointer-events-none select-none text-sm font-medium text-blue-600 dark:text-blue-400">
             Open as main view
           </span>
         )}
@@ -221,7 +221,7 @@ export function DropZoneOverlay({
       >
         <span
           className={cn(
-            'pointer-events-none text-sm font-medium select-none',
+            'pointer-events-none select-none text-sm font-medium',
             activeZone === 'panel' ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground/50',
           )}
         >

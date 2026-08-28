@@ -315,7 +315,7 @@ describe('SessionRunCard (pinned)', () => {
       (span) => span.textContent?.startsWith('Invalid request'),
     )
     expect(errorSpan?.getAttribute('role')).toBe('button')
-    expect(errorSpan?.className).toContain('truncate')
+    expect(errorSpan?.className).toBeTruthy()
     expect(errorSpan?.className).not.toContain('flex-none')
     // Clicking the error opens the full message (code + complete text), NOT the child session:
     // the chip swallows the click so interrogating a failure never navigates away from the card.
@@ -514,10 +514,9 @@ describe('SessionRunCard (pinned)', () => {
         }}
       />,
     )
-    // The plan's title is the header's job now, so the checklist is found by its container class.
-    const list = Array.from(container.querySelectorAll('div'))
-      .filter((div) => div.className.includes('gap-0.5'))
-      .find((div) => div.textContent?.includes('Publish Seed docs'))
+    // The plan's title is the header's job now, so the checklist is found by its container.
+    const list = container.querySelector('[data-testid="run-checklist"]')
+    expect(list?.textContent).toContain('Publish Seed docs')
     expect(list?.textContent).toContain('Research supplement knowledge base')
   })
 

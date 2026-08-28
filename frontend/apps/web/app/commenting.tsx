@@ -47,6 +47,12 @@ import {EmailNotificationsForm} from './email-notifications'
 import {hasPromptedEmailNotifications, setHasPromptedEmailNotifications, setPendingIntent} from './local-db'
 import {processPendingIntent} from './pending-intent'
 import {isPerfEnabled, markCommentSubmitEnd, markCommentSubmitStart, markEditorLoadEnd} from './web-perf-marks'
+const styles_2 = stylex.create({
+  s5e066a6: {
+    cursor: 'not-allowed',
+    opacity: '50%',
+  },
+})
 const styles = stylex.create({
   scdbaf625: {
     width: '100%',
@@ -522,7 +528,7 @@ export default function WebCommenting({
                   }),
                   publishButtonEventClass,
                   stylex.props(styles.s4a27d806).className || '',
-                  (isSubmitting || disabled) && 'cursor-not-allowed opacity-50',
+                  stylex.props((isSubmitting || disabled) && styles_2.s5e066a6).className || '',
                 )}
                 onClick={() => handleSubmit(getContent, reset)}
               >

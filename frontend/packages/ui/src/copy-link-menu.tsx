@@ -1,6 +1,18 @@
+import * as stylex from '@stylexjs/stylex'
 import {Globe, Link, Link2} from 'lucide-react'
 import {DEFAULT_GATEWAY_URL} from '@shm/shared/constants'
 import type {MenuItemType} from './options-dropdown'
+
+const styles = stylex.create({
+  icon: {
+    width: '1rem',
+    height: '1rem',
+  },
+  iconSm: {
+    width: '0.875rem',
+    height: '0.875rem',
+  },
+})
 
 type CopyAction = (() => Promise<void> | void) | null | undefined
 
@@ -27,7 +39,7 @@ export function getWebCopyLinkHostname(origin?: string | null) {
 export type CopyLinkMenuOptions = {
   advanced?: boolean
   label?: string
-  iconClassName?: string
+  iconSize?: 'default' | 'sm'
   canonical?: CopyChoice | null
   gateway?: CopyChoice | null
   hypermedia: {
@@ -64,11 +76,12 @@ export async function copyBestAvailableLink({
 export function createCopyLinkMenuItem({
   advanced,
   label = 'Copy Link',
-  iconClassName = 'size-4',
+  iconSize = 'default',
   canonical,
   gateway,
   hypermedia,
 }: CopyLinkMenuOptions): MenuItemType {
+  const iconClassName = stylex.props(iconSize === 'sm' ? styles.iconSm : styles.icon).className || ''
   const canonicalCopy = canonical?.copy
   const gatewayCopy = gateway?.copy
   const hypermediaCopy = hypermedia.copy

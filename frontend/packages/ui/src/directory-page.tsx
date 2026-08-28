@@ -28,6 +28,54 @@ import {useScrollRestoration} from './use-scroll-restoration'
  * This is the first implementation of the panel-to-page pattern.
  * Can be used standalone (page) or wrapped in AccessoryLayout (panel).
  */
+const styles_2 = stylex.create({
+  s7152e96b: {
+    color: 'var(--muted-foreground)',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 3)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  sb789ef1: {
+    borderColor: 'color-mix(in oklab, var(--border) 70%, transparent)',
+    color: 'var(--muted-foreground)',
+    marginLeft: 'calc(var(--spacing) * 5)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    paddingLeft: 'calc(var(--spacing) * 5)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  scb4c14c5: {
+    borderColor: 'color-mix(in oklab, var(--border) 70%, transparent)',
+    marginLeft: 'calc(var(--spacing) * 5)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+    paddingLeft: 'calc(var(--spacing) * 5)',
+  },
+  sb24cdc6d: {
+    height: 'auto',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderStyle: 'none',
+    backgroundColor: 'var(--surface-contrast)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    boxShadow: 'var(--shadow-sm)',
+    ':hover': {
+      '@media (hover: hover)': {
+        boxShadow: 'var(--shadow-md)',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   sf48c8a4f: {
     display: 'flex',
@@ -134,7 +182,7 @@ export function DirectoryPageContent({
   const searchBox =
     showSearch && items.length > 0 ? (
       <div className={stylex.props(styles.s1170e5f9).className || ''}>
-        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <Search className={stylex.props(styles_2.s7152e96b).className || ''} />
         <Input
           placeholder="Filter documents…"
           value={searchQuery}
@@ -362,7 +410,7 @@ function DirectoryDocumentChildren({docId}: {docId: UnpackedHypermediaId}) {
   const {items, accountsMetadata, isInitialLoading} = useDirectoryDataWithActivity(docId)
   if (isInitialLoading) {
     return (
-      <div className="border-border/70 text-muted-foreground ml-5 flex items-center gap-2 border-l py-2 pl-5 text-xs">
+      <div className={stylex.props(styles_2.sb789ef1).className || ''}>
         <Spinner className={stylex.props(styles.s3269316e).className || ''} />
         Loading children…
       </div>
@@ -370,7 +418,7 @@ function DirectoryDocumentChildren({docId}: {docId: UnpackedHypermediaId}) {
   }
   if (!items.length) return null
   return (
-    <div className="border-border/70 ml-5 border-l pl-5">
+    <div className={stylex.props(styles_2.scb4c14c5).className || ''}>
       <DirectoryListViewWithActivity items={items} accountsMetadata={accountsMetadata} />
     </div>
   )
@@ -381,11 +429,7 @@ function DraftListItem({draftId, metadata}: {draftId: string; metadata: HMMetada
     id: draftId,
   })
   return (
-    <Button
-      asChild
-      variant="ghost"
-      className="h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black"
-    >
+    <Button asChild variant="ghost" className={stylex.props(styles_2.sb24cdc6d).className || ''}>
       <a {...linkProps}>
         <div className={stylex.props(styles.sf2746014).className || ''}>
           <SizableText className={stylex.props(styles.s62d3095e).className || ''}>

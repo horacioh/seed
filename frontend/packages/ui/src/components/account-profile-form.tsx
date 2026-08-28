@@ -6,6 +6,28 @@ import {SizableText} from '../text'
 import {Input} from './input'
 import {Label} from './label'
 import {Textarea} from './textarea'
+const styles_2 = stylex.create({
+  s291e7520: {
+    backgroundColor: 'var(--muted)',
+    ':focus-within': {
+      boxShadow: '0 0 0 2px currentcolor',
+    },
+    position: 'relative',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 16)',
+    height: 'calc(var(--spacing) * 16)',
+    flexShrink: '0',
+    cursor: 'pointer',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderRadius: '0.25rem',
+  },
+  s65d7e593: {
+    minHeight: '80px',
+    resize: 'none',
+  },
+})
 const styles = stylex.create({
   sfbc6e290: {
     display: 'flex',
@@ -202,7 +224,7 @@ export function AccountProfileForm({
 
         <div className={stylex.props(styles.sfbc6e28e).className || ''}>
           <div className={stylex.props(styles.s86ff3e5).className || ''}>
-            <div className="bg-muted focus-within:ring-primary relative flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded focus-within:ring-2 focus-within:ring-offset-2">
+            <div className={stylex.props(styles_2.s291e7520).className || ''}>
               {previewUrl ? (
                 <img src={previewUrl} className={stylex.props(styles.s5d7ceece).className || ''} alt="" />
               ) : (
@@ -232,7 +254,7 @@ export function AccountProfileForm({
               value={description}
               onChange={(event) => setDescription(event.target.value.slice(0, 512))}
               placeholder="A short bio or description"
-              className="min-h-[80px] resize-none"
+              className={stylex.props(styles_2.s65d7e593).className || ''}
               disabled={loading}
             />
             <SizableText size="xs" color="muted" className={stylex.props(styles.s2d68c57c).className || ''}>

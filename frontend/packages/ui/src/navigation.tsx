@@ -22,6 +22,23 @@ import {PrivateBadge} from './private-badge'
 import {useMedia} from './use-media'
 import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s8706abad: {
+    height: '100%',
+    maxHeight: '80vh',
+    width: '100%',
+    overflow: 'auto',
+  },
+  s8097fc7a: {
+    backgroundColor: 'color-mix(in oklab, var(--muted-foreground) 40%, transparent)',
+    height: 'calc(var(--spacing) * 0.5)',
+    width: '100%',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s1589f20c: {
+    paddingLeft: '3px',
+  },
+})
 const styles = stylex.create({
   s86ff3e3: {
     display: 'flex',
@@ -371,7 +388,7 @@ export function DocNavigationWrapper({
           }}
           className={stylex.props(styles.s2aed43c2).className || ''}
         >
-          <div className="h-full max-h-[80vh] w-full overflow-auto">{children}</div>
+          <div className={stylex.props(styles_2.s8706abad).className || ''}>{children}</div>
         </HoverCardContent>
       </HoverCard>
     </div>
@@ -393,9 +410,14 @@ function CollapsedOutlineNode({node, level = 1}: {node: NodeOutline; level?: num
         : node.children.slice(0, 8)
   return (
     <>
-      <div key={node.id} className="bg-muted-foreground/40 h-0.5 w-full rounded-full" />
+      <div key={node.id} className={stylex.props(styles_2.s8097fc7a).className || ''} />
       {nodes ? (
-        <div className={cn(stylex.props(styles.sfbc6e28f).className || '', level < 3 && 'pl-[3px]')}>
+        <div
+          className={cn(
+            stylex.props(styles.sfbc6e28f).className || '',
+            stylex.props(level < 3 ? styles_2.s1589f20c : null).className || '',
+          )}
+        >
           {nodes.map((child) => (
             <CollapsedOutlineNode key={child.id} node={child} level={level + 1} />
           ))}

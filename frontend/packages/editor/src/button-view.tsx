@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useOpenUrl} from '@shm/shared'
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
 import {Button} from '@shm/ui/button'
@@ -9,7 +10,64 @@ import type {Block} from './blocknote/core/extensions/Blocks/api/blockTypes'
 import {BlockSelectionWrapper} from './block-selection-wrapper'
 import {selectBlockNodeById} from './block-utils'
 import type {HMBlockSchema} from './schema'
-
+const styles_2 = stylex.create({
+  s46fb46da: {
+    alignSelf: 'flex-end',
+  },
+})
+const styles = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sfcf3a2ae: {
+    maxWidth: '100%',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  scdb8b145: {
+    width: 'auto',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s29df1839: {
+    borderStyle: 'none',
+  },
+  sc5a0131: {
+    borderColor: 'transparent',
+  },
+  s65e234f5: {
+    textAlign: 'center',
+  },
+  s2f77d9f6: {
+    alignSelf: 'center',
+  },
+  s760cfea1: {
+    alignSelf: 'flex-start',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  s2daecf89: {
+    color: '#fff',
+  },
+})
 type ButtonAlignment = 'flex-start' | 'center' | 'flex-end'
 
 /**
@@ -53,11 +111,9 @@ export function ButtonBlockView({
   // Navigate when the document is being viewed (read-only). In edit mode the
   // click should select/focus the block instead, mirroring `embed-block.tsx`.
   const navigateOnClick = !canEdit || !isEditing
-
   useEffect(() => {
     setAlignment(block.props.alignment as ButtonAlignment)
   }, [block.props.alignment])
-
   const url = block.props.url
   // In read/view mode navigate to the URL. In edit mode the <button> face
   // swallows the mousedown before ProseMirror (tiptap NodeView.stopEvent), so
@@ -67,11 +123,13 @@ export function ButtonBlockView({
       ? () => openUrl(url)
       : undefined
     : () => selectBlockNodeById(editor, block.id)
-
   return (
     <BlockSelectionWrapper editor={editor} block={block} selectOnMouseDown>
       <div
-        className="flex w-full max-w-full flex-col select-none"
+        className={
+          stylex.props(styles.s2ffff9, styles.scdbaf625, styles.sfcf3a2ae, styles.sa145969, styles.s67e351ac)
+            .className || ''
+        }
         style={{
           justifyContent: alignment || 'flex-start',
         }}
@@ -80,12 +138,30 @@ export function ButtonBlockView({
           variant="brand"
           size="lg"
           className={cn(
-            'w-auto max-w-full justify-center border-none border-transparent text-center select-none',
-            alignment == 'center' ? 'self-center' : alignment == 'flex-end' ? 'self-end' : 'self-start',
+            stylex.props(
+              styles.scdb8b145,
+              styles.sfcf3a2ae,
+              styles.sa145969,
+              styles.sce22ca32,
+              styles.s29df1839,
+              styles.sc5a0131,
+              styles.s65e234f5,
+            ).className || '',
+            alignment == 'center'
+              ? stylex.props(styles.s2f77d9f6).className || ''
+              : alignment == 'flex-end'
+                ? stylex.props(styles_2.s46fb46da).className || ''
+                : stylex.props(styles.s760cfea1).className || '',
           )}
           onClick={handleClick}
         >
-          <SizableText size="lg" className="truncate text-center font-sans font-bold text-white">
+          <SizableText
+            size="lg"
+            className={
+              stylex.props(styles.s6e724d66, styles.s65e234f5, styles.sa1762f51, styles.sa16ea943, styles.s2daecf89)
+                .className || ''
+            }
+          >
             {block.props.name || 'Button Text'}
           </SizableText>
         </Button>

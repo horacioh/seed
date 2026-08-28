@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useOpenUrl} from '@shm/shared'
 import {generateInstagramEmbedHtml, loadInstagramScript, loadTwitterScript} from '@shm/shared/utils/web-embed-scripts'
 import {TwitterXIcon} from '@shm/ui/icons'
@@ -14,7 +15,26 @@ import {MediaContainer} from './media-container'
 import {DisplayComponentProps, MediaRender, MediaType} from './media-render'
 import {HMBlockSchema} from './schema'
 import {isValidUrl} from './utils'
-
+const styles = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s1aa1a: {
+    padding: 'calc(0.25rem * 7)',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+})
 export const WebEmbed = createReactBlockSpec({
   type: 'web-embed',
   propSchema: {
@@ -33,10 +53,8 @@ export const WebEmbed = createReactBlockSpec({
   // the invisible-content merge/caret traps.
   containsInlineContent: false,
   selectable: true,
-
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
-
   parseHTML: [
     {
       tag: 'div[data-content-type=web-embed]',
@@ -47,14 +65,15 @@ export const WebEmbed = createReactBlockSpec({
     },
   ],
 })
-
 const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) => {
   const submitWebEmbedLink = (url: string, assign: any, setFileName: any) => {
     if (!isValidUrl(url)) {
-      setFileName({name: 'The provided URL is invalid.', color: 'red'})
+      setFileName({
+        name: 'The provided URL is invalid.',
+        color: 'red',
+      })
       return
     }
-
     if (!url.includes('twitter') && !url.includes('x.com') && !url.includes('instagram.com')) {
       setFileName({
         name: 'Only Twitter/X and Instagram embeds are supported.',
@@ -62,15 +81,26 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       })
       return
     }
-
-    assign({props: {url: url}} as MediaType)
-
+    assign({
+      props: {
+        url: url,
+      },
+    } as MediaType)
     const cursorPosition = editor.getTextCursorPosition()
     editor.focus()
     if (cursorPosition.block.id === block.id) {
       if (cursorPosition.nextBlock) editor.setTextCursorPosition(cursorPosition.nextBlock, 'start')
       else {
-        editor.insertBlocks([{type: 'paragraph', content: ''}], block.id, 'after')
+        editor.insertBlocks(
+          [
+            {
+              type: 'paragraph',
+              content: '',
+            },
+          ],
+          block.id,
+          'after',
+        )
         editor.setTextCursorPosition(editor.getTextCursorPosition().nextBlock!, 'start')
       }
     }
@@ -87,12 +117,10 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     />
   )
 }
-
 const WebEmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const openUrl = useOpenUrl()
-
   const containerRef = useRef(null)
   const isInitialized = useRef(false)
   // Snapshot whether the block was already node-selected when the press began.
@@ -100,7 +128,6 @@ const WebEmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   // so we must capture the pre-click state at mousedown to distinguish the
   // first click (select only) from a click on an already-selected embed (open).
   const wasSelectedAtMouseDown = useRef(false)
-
   const url = block.props.url
   // @ts-ignore
   const isTwitter = /(?:twitter\.com|x\.com)/.test(url)
@@ -108,9 +135,7 @@ const WebEmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   const isInstagram = /instagram\.com/.test(url)
   // @ts-ignore
   const tweetId = url.split('/').pop()?.split('?')[0]
-
   const createdTweets = useRef(new Set())
-
   useEffect(() => {
     const initEmbed = async () => {
       setLoading(true)
@@ -153,14 +178,11 @@ const WebEmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
         setLoading(false)
       }
     }
-
     initEmbed()
-
     return () => {
       isInitialized.current = false
     }
   }, [url])
-
   return (
     <MediaContainer
       editor={editor}
@@ -190,15 +212,20 @@ const WebEmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
         width="100%" // Set width to be responsive
         height="auto"
         style={{border: 'none', overflow: 'hidden'}}
-      ></iframe> */}
+       ></iframe> */}
       {loading && (
-        <div className="flex items-center justify-center">
+        <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.sce22ca32).className || ''}>
           <Spinner />
         </div>
       )}
       {error && (
-        <div className="flex flex-col items-center justify-center p-7">
-          <SizableText color="destructive" className="p-1">
+        <div
+          className={
+            stylex.props(styles.s2ffff9, styles.s67e351ac, styles.sc6ed1702, styles.sce22ca32, styles.s1aa1a)
+              .className || ''
+          }
+        >
+          <SizableText color="destructive" className={stylex.props(styles.s1aa14).className || ''}>
             Error loading embed, please check the link!
           </SizableText>
         </div>

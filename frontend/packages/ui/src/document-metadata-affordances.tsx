@@ -5,6 +5,162 @@ import {ChangeEvent, useCallback, useEffect, useRef, useState} from 'react'
 import {Button} from './button'
 import {MenuItemType, OptionsDropdown} from './options-dropdown'
 import {cn} from './utils'
+const styles_5 = stylex.create({
+  s454e1135: {
+    '--ring-color': 'transparent',
+  },
+})
+const styles_4 = stylex.create({
+  sa0080bc5: {
+    boxShadow: 'none',
+  },
+})
+const styles_3 = stylex.create({
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc9aa04b1: {
+    resize: 'none',
+  },
+  s29df1839: {
+    borderStyle: 'none',
+  },
+  sc5a0131: {
+    borderColor: 'transparent',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  sc41b2606: {
+    fontSize: '1.5rem',
+    lineHeight: 'var(--text-2xl--line-height)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  sc883a3d3: {
+    boxShadow: '0 0 0 0px var(--ring-color, currentcolor)',
+  },
+  s4a7318b5: {
+    ':focus': {
+      boxShadow: '0 0 0 0px var(--ring-color, currentcolor)',
+    },
+  },
+  sbf4d903d: {
+    '@media ((max-width: 767px))': {
+      lineHeight: '1.25',
+    },
+  },
+  s2daca00b: {
+    '@media ((min-width: 768px))': {
+      fontSize: '2.25rem',
+      lineHeight: 'var(--text-4xl--line-height)',
+    },
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s8d519a7f: {
+    fontFamily: 'var(--font-serif)',
+  },
+  sab7cc794: {
+    fontSize: '1.25rem',
+    lineHeight: 'var(--text-xl--line-height)',
+  },
+  s14e67425: {
+    fontWeight: '400',
+  },
+})
+const styles_2 = stylex.create({
+  s68b0d4ed: {
+    '@media ((min-width: 768px))': {
+      display: 'none',
+    },
+  },
+  s96f9d721: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'var(--overlay-5-10)',
+        opacity: '100%',
+      },
+    },
+    height: 'calc(var(--spacing) * 7)',
+    flexShrink: '0',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    opacity: '80%',
+    ':active': {
+      scale: '0.98',
+    },
+  },
+  s46d9a5a5: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+    '@media (prefers-reduced-motion: reduce)': {
+      transitionProperty: 'none',
+    },
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s3500d61e: {
+    position: 'absolute',
+    bottom: '100%',
+    left: 'calc(var(--spacing) * 0)',
+    zIndex: '10',
+    marginBottom: 'calc(var(--spacing) * 1)',
+    marginLeft: 'calc(var(--spacing) * -2)',
+    '@media ((max-width: 767px))': {
+      display: 'none',
+    },
+  },
+  s6067231c: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingTop: 'calc(var(--spacing) * 5)',
+    '@media ((min-width: 640px))': {
+      paddingInline: 'calc(var(--spacing) * 6)',
+    },
+  },
+  s95dbea35: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'var(--overlay-5-10)',
+        opacity: '100%',
+      },
+    },
+    height: 'calc(var(--spacing) * 7)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    opacity: '80%',
+    ':active': {
+      scale: '0.98',
+    },
+  },
+})
 const styles = stylex.create({
   s3269316e: {
     width: 'calc(0.25rem * 3.5)',
@@ -29,6 +185,27 @@ const styles = stylex.create({
   },
 })
 type MetadataAffordanceKey = 'icon' | 'cover'
+/** Visibility states for the metadata affordance row: always shown, hover-revealed, or mobile-only. */
+const visibilityStyles = stylex.create({
+  visible: {
+    opacity: 1,
+  },
+  hover: {
+    pointerEvents: 'none',
+    opacity: 0,
+  },
+  mobileVisible: {
+    opacity: {
+      default: 1,
+      '@media (min-width: 48rem)': 0,
+    },
+    pointerEvents: {
+      default: null,
+      '@media (min-width: 48rem)': 'none',
+    },
+  },
+})
+
 export type DocumentMetadataAffordanceButtonsProps = {
   metadata?: Pick<HMMetadata, 'icon' | 'cover' | 'summary'> | null
   visible: boolean
@@ -95,9 +272,7 @@ export function DocumentMetadataAffordanceButtons({
   const showIconButton = !hasIcon && !!fileUpload
   const showSummaryButton = showSummary && !hideSummaryButton && (!hasSummary || keepSummaryButtonVisible)
   const showCoverButton = !hasCover && !!fileUpload
-  const hiddenClass = alwaysVisibleOnMobile
-    ? 'opacity-100 md:pointer-events-none md:opacity-0'
-    : 'pointer-events-none opacity-0'
+  const visibility = visible ? 'visible' : alwaysVisibleOnMobile ? 'mobile-visible' : 'hover'
   const rowIsAccessible = visible || alwaysVisibleOnMobile
   const tabIndex = rowIsAccessible ? undefined : -1
   async function handleFileChange(field: MetadataAffordanceKey, event: ChangeEvent<HTMLInputElement>) {
@@ -153,7 +328,7 @@ export function DocumentMetadataAffordanceButtons({
         : null,
     ]
     return (
-      <div className="md:hidden">
+      <div className={[stylex.props(styles_2.s68b0d4ed).className || '', className].filter(Boolean).join(' ')}>
         {showIconButton ? (
           <input
             ref={iconInputRef}
@@ -185,7 +360,7 @@ export function DocumentMetadataAffordanceButtons({
               type="button"
               variant="ghost"
               size="xs"
-              className="text-muted-foreground hover:text-foreground h-7 shrink-0 rounded-full px-2 text-xs font-medium opacity-80 hover:bg-black/5 hover:opacity-100 active:scale-[0.98] dark:hover:bg-white/10"
+              className={stylex.props(styles_2.s96f9d721).className || ''}
               aria-label="Add document metadata"
             >
               <Plus className={stylex.props(styles.s3269316e).className || ''} />
@@ -206,9 +381,16 @@ export function DocumentMetadataAffordanceButtons({
   return (
     <div
       data-document-metadata-affordances
+      data-visibility={visibility}
       className={cn(
-        'flex flex-wrap items-center gap-1.5 transition-opacity duration-200 motion-reduce:transition-none',
-        visible ? 'opacity-100' : hiddenClass,
+        stylex.props(styles_2.s46d9a5a5).className || '',
+        stylex.props(
+          visibility === 'visible'
+            ? visibilityStyles.visible
+            : visibility === 'mobile-visible'
+              ? visibilityStyles.mobileVisible
+              : visibilityStyles.hover,
+        ).className || '',
         className,
       )}
       aria-hidden={!rowIsAccessible}
@@ -359,7 +541,7 @@ export function EditableDocumentMetadataFields({
         metadata={metadata}
         visible={showAffordances}
         fileUpload={fileUpload}
-        className="absolute bottom-full left-0 z-10 mb-1 -ml-2 max-md:hidden"
+        className={stylex.props(styles_2.s3500d61e).className || ''}
         onBeforeMetadataChange={onBeginEdit}
         onMetadata={onMetadata}
         onRequestSummary={requestSummary}
@@ -372,7 +554,22 @@ export function EditableDocumentMetadataFields({
         rows={1}
         aria-label="Document title"
         className={cn(
-          'w-full resize-none border-none border-transparent bg-transparent text-2xl font-bold shadow-none ring-0 ring-transparent outline-none focus:ring-0 max-md:leading-tight md:text-4xl',
+          stylex.props(
+            styles_3.scdbaf625,
+            styles_3.sc9aa04b1,
+            styles_3.s29df1839,
+            styles_3.sc5a0131,
+            styles_3.s60f53bca,
+            styles_3.sc41b2606,
+            styles_3.sa16ea943,
+            styles_3.sa602a1e3,
+            styles_3.sc883a3d3,
+            styles_3.s4a7318b5,
+            styles_3.sbf4d903d,
+            styles_3.s2daca00b,
+          ).className || '',
+          stylex.props(styles_4.sa0080bc5).className || '',
+          stylex.props(styles_5.s454e1135).className || '',
           titleClassName,
         )}
         value={name}
@@ -402,7 +599,22 @@ export function EditableDocumentMetadataFields({
           rows={1}
           aria-label="Document summary"
           className={cn(
-            'text-muted-foreground w-full resize-none border-none border-transparent bg-transparent font-serif text-xl font-normal shadow-none ring-0 ring-transparent outline-none focus:ring-0',
+            stylex.props(
+              styles_3.sf2718385,
+              styles_3.scdbaf625,
+              styles_3.sc9aa04b1,
+              styles_3.s29df1839,
+              styles_3.sc5a0131,
+              styles_3.s60f53bca,
+              styles_3.s8d519a7f,
+              styles_3.sab7cc794,
+              styles_3.s14e67425,
+              styles_3.sa602a1e3,
+              styles_3.sc883a3d3,
+              styles_3.s4a7318b5,
+            ).className || '',
+            stylex.props(styles_4.sa0080bc5).className || '',
+            stylex.props(styles_5.s454e1135).className || '',
             summaryClassName,
           )}
           value={summaryText}
@@ -456,7 +668,10 @@ export function HomeDocumentMetadataAffordanceBar({
 }: HomeDocumentMetadataAffordanceBarProps) {
   const showAffordances = true
   return (
-    <div data-home-document-metadata-affordances className={cn('flex flex-col gap-2 px-4 pt-5 sm:px-6', className)}>
+    <div
+      data-home-document-metadata-affordances
+      className={cn(stylex.props(styles_2.s6067231c).className || '', className)}
+    >
       <DocumentMetadataAffordanceButtons
         metadata={metadata}
         visible={showAffordances}
@@ -482,7 +697,7 @@ function MetadataHintButton({
       type="button"
       variant="ghost"
       size="xs"
-      className="text-muted-foreground hover:text-foreground h-7 rounded-full px-2 text-xs font-medium opacity-80 hover:bg-black/5 hover:opacity-100 active:scale-[0.98] dark:hover:bg-white/10"
+      className={stylex.props(styles_2.s95dbea35).className || ''}
       {...props}
     >
       {icon}

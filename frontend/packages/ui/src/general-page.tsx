@@ -7,6 +7,22 @@ import {Text} from './text'
 import {cn} from './utils'
 
 /** GeneralPageSurface provides the shared page background for feed-like pages. */
+const styles_3 = stylex.create({
+  s1a992feb: {
+    display: 'flex',
+    flex: '1',
+    flexDirection: 'column',
+    backgroundColor: 'var(--surface)',
+  },
+})
+const styles_2 = stylex.create({
+  sa4681c45: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   se290a8f0: {
     display: 'flex',
@@ -34,7 +50,7 @@ const styles = stylex.create({
   },
 })
 export function GeneralPageSurface({className, ...props}: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn('dark:bg-background flex flex-1 flex-col bg-white', className)} {...props} />
+  return <div className={cn(stylex.props(styles_3.s1a992feb).className || '', className)} {...props} />
 }
 
 /** GeneralPageContainer constrains and spaces feed-like page content. */
@@ -68,7 +84,7 @@ export function GeneralPageHeader({
 }) {
   return (
     <div className={cn(stylex.props(styles.sbbe27b51).className || '', className)}>
-      <div className="flex min-w-0 items-center gap-2">
+      <div className={stylex.props(styles_2.sa4681c45).className || ''}>
         {typeof title === 'string' ? (
           <Text weight="bold" size="3xl" className={stylex.props(styles.s6e724d66).className || ''}>
             {title}

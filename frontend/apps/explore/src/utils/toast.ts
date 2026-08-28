@@ -1,8 +1,43 @@
+import * as stylex from '@stylexjs/stylex'
+
+const styles = stylex.create({
+  toast: {
+    position: 'fixed',
+    bottom: 16,
+    right: 16,
+    zIndex: 50,
+    maxWidth: {default: 320, '@media (width >= 40rem)': 384},
+    paddingInline: 16,
+    paddingBlock: 12,
+    color: '#fff',
+    backgroundColor: {
+      default: 'color-mix(in oklab, oklch(21% 0.034 264.665) 90%, transparent)',
+      ':hover': 'color-mix(in oklab, oklch(27.8% 0.033 256.848) 90%, transparent)',
+    },
+    backdropFilter: 'blur(4px)',
+    borderRadius: 12,
+    boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+    cursor: 'pointer',
+    transitionProperty: 'all',
+    transitionDuration: '500ms',
+    transitionTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
+  },
+  hidden: {
+    opacity: 0,
+    transform: 'translateY(100%) scale(0.95)',
+  },
+  visible: {
+    opacity: 1,
+    transform: {default: 'translateY(0) scale(1)', ':hover': 'translateY(0) scale(1.05)'},
+  },
+})
+
 export function showToast(message: string, duration = 3000) {
   // Create toast element
   const toast = document.createElement('div')
-  toast.className =
-    'fixed px-4 py-3 text-white transition-all duration-500 ease-out transform translate-y-full scale-95 bg-gray-900/90 backdrop-blur-sm rounded-xl shadow-2xl opacity-0 bottom-4 right-4 z-50 max-w-xs sm:max-w-sm cursor-pointer hover:scale-105 hover:bg-gray-800/90'
+  const hiddenClass = stylex.props(styles.toast, styles.hidden).className ?? ''
+  const visibleClass = stylex.props(styles.toast, styles.visible).className ?? ''
+  toast.className = hiddenClass
   toast.textContent = message
 
   // Add subtle border and better typography with text wrapping
@@ -45,7 +80,8 @@ export function showToast(message: string, duration = 3000) {
   }
 
   function dismissToast() {
-    toast.classList.add('translate-y-full', 'scale-95', 'opacity-0')
+    toast.style.transform = ''
+    toast.className = hiddenClass
     setTimeout(() => {
       if (document.body.contains(toast)) {
         document.body.removeChild(toast)
@@ -56,8 +92,7 @@ export function showToast(message: string, duration = 3000) {
   // Entrance animation with slight delay for better effect
   requestAnimationFrame(() => {
     setTimeout(() => {
-      toast.classList.remove('translate-y-full', 'scale-95', 'opacity-0')
-      toast.classList.add('translate-y-0', 'scale-100', 'opacity-100')
+      toast.className = visibleClass
 
       // Add a subtle bounce effect
       setTimeout(() => {

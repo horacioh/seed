@@ -1,67 +1,91 @@
-import * as stylex from '@stylexjs/stylex'
-import React, {useEffect, useState} from 'react'
-import '../App.css'
-import type {PerformanceReport, ScenarioResult} from '../types'
-import {loadPerformanceReports, loadReportById} from '../utils/data'
+import * as stylex from '@stylexjs/stylex';
+import React, { useEffect, useState } from 'react';
+import '../App.css';
+import type { PerformanceReport, ScenarioResult } from '../types';
+import { loadPerformanceReports, loadReportById } from '../utils/data';
 
 // Type for SVG icon props
+const styles_3 = stylex.create({
+  sc7133e9b: {
+    "display": "flex",
+    "flexDirection": "column",
+    "gap": "calc(var(--spacing) * 6)"
+  }
+});
+const styles_2 = stylex.create({
+  s2ffff9: {
+    "display": "flex"
+  },
+  s7e44f615: {
+    "minHeight": "50vh"
+  },
+  sc6ed1702: {
+    "alignItems": "center"
+  },
+  sce22ca32: {
+    "justifyContent": "center"
+  },
+  s5d936fb: {
+    "gap": "calc(0.25rem * 2)"
+  }
+});
 const styles = stylex.create({
   saf5ba32b: {
-    color: 'oklch(55.1% 0.027 264.364)',
+    color: 'oklch(55.1% 0.027 264.364)'
   },
   s4957c1e5: {
     padding: 'calc(0.25rem * 4)',
     backgroundColor: 'oklch(97.1% 0.013 17.38)',
-    borderRadius: 'var(--radius)',
+    borderRadius: 'var(--radius)'
   },
   s6f33fc9b: {
-    color: 'oklch(50.5% 0.213 27.518)',
+    color: 'oklch(50.5% 0.213 27.518)'
   },
   scc5e4477: {
     color: 'oklch(57.7% 0.245 27.325)',
     fontSize: '0.875rem',
     lineHeight: 'calc(1.25 / 0.875)',
-    marginTop: 'calc(0.25rem * 1)',
+    marginTop: 'calc(0.25rem * 1)'
   },
   sc11f8f26: {
     padding: 'calc(0.25rem * 4)',
     backgroundColor: 'oklch(98.7% 0.026 102.212)',
-    borderRadius: 'var(--radius)',
+    borderRadius: 'var(--radius)'
   },
   s27ec6fff: {
-    color: 'oklch(47.6% 0.114 61.907)',
+    color: 'oklch(47.6% 0.114 61.907)'
   },
   sdadb7393: {
     color: 'oklch(55.4% 0.135 66.442)',
     fontSize: '0.875rem',
     lineHeight: 'calc(1.25 / 0.875)',
-    marginTop: 'calc(0.25rem * 1)',
+    marginTop: 'calc(0.25rem * 1)'
   },
   saad3fdd5: {
     backgroundColor: '#fff',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow)',
+    boxShadow: 'var(--shadow)',
     borderRadius: 'var(--radius)',
-    padding: 'calc(0.25rem * 6)',
+    padding: 'calc(0.25rem * 6)'
   },
   s6869e2e0: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 'calc(0.25rem * 6)',
+    marginBottom: 'calc(0.25rem * 6)'
   },
   s3fc6ee28: {
     fontSize: '1.25rem',
     lineHeight: 'calc(1.75 / 1.25)',
     fontWeight: '600',
     color: 'oklch(21% 0.034 264.665)',
-    marginBottom: 'calc(0.25rem * 4)',
+    marginBottom: 'calc(0.25rem * 4)'
   },
   s22c891d3: {
     color: 'oklch(55.1% 0.027 264.364)',
-    marginBottom: 'calc(0.25rem * 6)',
+    marginBottom: 'calc(0.25rem * 6)'
   },
   saf5ba6ec: {
-    color: 'oklch(44.6% 0.03 256.802)',
+    color: 'oklch(44.6% 0.03 256.802)'
   },
   s82ff3a5: {
     borderStyle: 'solid',
@@ -70,11 +94,11 @@ const styles = stylex.create({
     paddingBlock: 'calc(0.25rem * 1)',
     paddingInline: 'calc(0.25rem * 2)',
     fontSize: '0.875rem',
-    lineHeight: 'calc(1.25 / 0.875)',
-  },
-})
+    lineHeight: 'calc(1.25 / 0.875)'
+  }
+});
 interface IconProps extends React.SVGProps<SVGSVGElement> {
-  size?: number
+  size?: number;
 }
 
 // Module-scoped Intl formatters reused across renders
@@ -82,64 +106,45 @@ const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
   hour: 'numeric',
-  minute: 'numeric',
-})
+  minute: 'numeric'
+});
 const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
   year: 'numeric',
   hour: 'numeric',
   minute: 'numeric',
-  hour12: true,
-})
+  hour12: true
+});
 
 // Utility functions
 // Format bytes into human-readable format
 const formatBytes = (bytes: number, decimals = 2): string => {
-  if (bytes === 0) return '0 Bytes'
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};
 
 // Simple icon components with SVG to replace lucide-react
 const Icons = {
   Activity: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-    )
+      </svg>;
   },
   Cpu: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
         <rect x="9" y="9" width="6" height="6"></rect>
         <line x1="9" y1="1" x2="9" y2="4"></line>
@@ -150,359 +155,279 @@ const Icons = {
         <line x1="20" y1="14" x2="23" y2="14"></line>
         <line x1="1" y1="9" x2="4" y2="9"></line>
         <line x1="1" y1="14" x2="4" y2="14"></line>
-      </svg>
-    )
+      </svg>;
   },
   HardDrive: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <line x1="22" y1="12" x2="2" y2="12"></line>
         <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
         <line x1="6" y1="16" x2="6.01" y2="16"></line>
         <line x1="10" y1="16" x2="10.01" y2="16"></line>
-      </svg>
-    )
+      </svg>;
   },
   Clock: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <circle cx="12" cy="12" r="10"></circle>
         <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-    )
+      </svg>;
   },
   Gauge: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <path d="M12 2v2"></path>
         <path d="M12 14l4-4"></path>
         <circle cx="12" cy="14" r="8"></circle>
-      </svg>
-    )
+      </svg>;
   },
   LayoutPanelLeft: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
         <line x1="9" y1="3" x2="9" y2="21"></line>
-      </svg>
-    )
+      </svg>;
   },
   AlertTriangle: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
         <line x1="12" y1="9" x2="12" y2="13"></line>
         <line x1="12" y1="17" x2="12.01" y2="17"></line>
-      </svg>
-    )
+      </svg>;
   },
   Zap: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-      </svg>
-    )
+      </svg>;
   },
   Calendar: (props: IconProps) => {
-    const {size = 24, ...rest} = props
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        {...rest}
-      >
+    const {
+      size = 24,
+      ...rest
+    } = props;
+    return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...rest}>
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
         <line x1="16" y1="2" x2="16" y2="6"></line>
         <line x1="8" y1="2" x2="8" y2="6"></line>
         <line x1="3" y1="10" x2="21" y2="10"></line>
-      </svg>
-    )
-  },
-}
+      </svg>;
+  }
+};
 
 // MetricHeatmap component to display performance metrics across reports in a heatmap
-const MetricHeatmap = ({reports, activeReportId}: {reports: PerformanceReport[]; activeReportId: string | null}) => {
-  const [reportData, setReportData] = useState<PerformanceReport[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedMetric, setSelectedMetric] = useState<string>('percentCPUUsage')
-  const [scenarioNames, setScenarioNames] = useState<string[]>([])
-  const [metricOptions, setMetricOptions] = useState<
-    {
-      name: string
-      displayName: string
-    }[]
-  >([])
+const MetricHeatmap = ({
+  reports,
+  activeReportId
+}: {
+  reports: PerformanceReport[];
+  activeReportId: string | null;
+}) => {
+  const [reportData, setReportData] = useState<PerformanceReport[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedMetric, setSelectedMetric] = useState<string>('percentCPUUsage');
+  const [scenarioNames, setScenarioNames] = useState<string[]>([]);
+  const [metricOptions, setMetricOptions] = useState<{
+    name: string;
+    displayName: string;
+  }[]>([]);
 
   // Load full report data for all reports
   useEffect(() => {
-    if (!reports || reports.length === 0) return
+    if (!reports || reports.length === 0) return;
     const fetchAllReports = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         // Fetch full report data for each report
-        const fullReports = await Promise.all(
-          reports.map(async (report) => {
-            const fullReport = await loadReportById(report.id)
-            return fullReport
-          }),
-        )
+        const fullReports = await Promise.all(reports.map(async report => {
+          const fullReport = await loadReportById(report.id);
+          return fullReport;
+        }));
 
         // Filter out null reports
-        const validReports = fullReports.filter(Boolean) as PerformanceReport[]
+        const validReports = fullReports.filter(Boolean) as PerformanceReport[];
         if (validReports.length > 0) {
           // Get all unique scenario names across all reports
-          const allScenarioNames = new Set<string>()
+          const allScenarioNames = new Set<string>();
 
           // Get all unique metric names for the dropdown
-          const allMetricNames = new Set<string>()
-          const metricDisplayNames: Record<string, string> = {}
-          validReports.forEach((report) => {
-            report.scenarios.forEach((scenario) => {
-              allScenarioNames.add(scenario.name)
-              scenario.metrics.forEach((metric) => {
-                allMetricNames.add(metric.name)
+          const allMetricNames = new Set<string>();
+          const metricDisplayNames: Record<string, string> = {};
+          validReports.forEach(report => {
+            report.scenarios.forEach(scenario => {
+              allScenarioNames.add(scenario.name);
+              scenario.metrics.forEach(metric => {
+                allMetricNames.add(metric.name);
                 // Create a display name from the metric name
-                metricDisplayNames[metric.name] = metric.name
-                  .replace(/([A-Z])/g, ' $1')
-                  .replace(/^./, (str) => str.toUpperCase())
-                  .replace(/([a-z])([A-Z])/g, '$1 $2')
-              })
-            })
-          })
-          setScenarioNames(Array.from(allScenarioNames).sort())
+                metricDisplayNames[metric.name] = metric.name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2');
+              });
+            });
+          });
+          setScenarioNames(Array.from(allScenarioNames).sort());
 
           // Create metric options for the dropdown
-          const options = Array.from(allMetricNames).map((name) => ({
+          const options = Array.from(allMetricNames).map(name => ({
             name,
-            displayName: metricDisplayNames[name] || name,
-          }))
+            displayName: metricDisplayNames[name] || name
+          }));
 
           // Sort options by display name
-          options.sort((a, b) => a.displayName.localeCompare(b.displayName))
-          setMetricOptions(options)
+          options.sort((a, b) => a.displayName.localeCompare(b.displayName));
+          setMetricOptions(options);
 
           // If current selected metric is not in the list, set to first available metric
           if (options.length > 0 && !allMetricNames.has(selectedMetric)) {
-            setSelectedMetric(options[0].name)
+            setSelectedMetric(options[0].name);
           }
         }
-        setReportData(validReports)
+        setReportData(validReports);
       } catch (error) {
-        console.error('Error loading full report data:', error)
+        console.error('Error loading full report data:', error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchAllReports()
-  }, [reports, selectedMetric])
+    };
+    fetchAllReports();
+  }, [reports, selectedMetric]);
 
   // Get the maximum and minimum values for the selected metric across all reports
   const getMetricMinMax = () => {
-    let min = Number.MAX_VALUE
-    let max = Number.MIN_VALUE
-    reportData.forEach((report) => {
-      report.scenarios.forEach((scenario) => {
-        const metric = scenario.metrics.find((m) => m.name === selectedMetric)
+    let min = Number.MAX_VALUE;
+    let max = Number.MIN_VALUE;
+    reportData.forEach(report => {
+      report.scenarios.forEach(scenario => {
+        const metric = scenario.metrics.find(m => m.name === selectedMetric);
         if (metric) {
-          min = Math.min(min, metric.value)
-          max = Math.max(max, metric.value)
+          min = Math.min(min, metric.value);
+          max = Math.max(max, metric.value);
         }
-      })
-    })
+      });
+    });
 
     // If we didn't find any metrics, return default values
-    if (min === Number.MAX_VALUE) min = 0
-    if (max === Number.MIN_VALUE) max = 100
+    if (min === Number.MAX_VALUE) min = 0;
+    if (max === Number.MIN_VALUE) max = 100;
     return {
       min,
-      max,
-    }
-  }
+      max
+    };
+  };
 
   // Calculate color for a metric value
   const getColorForValue = (value: number, min: number, max: number, metricName: string) => {
     // For most metrics, lower is better
-    let normalizedValue = (value - min) / (max - min || 1)
+    let normalizedValue = (value - min) / (max - min || 1);
 
     // For some metrics, higher is better (e.g. performanceScore)
-    const higherIsBetter = ['performanceScore'].includes(metricName)
+    const higherIsBetter = ['performanceScore'].includes(metricName);
     if (higherIsBetter) {
-      normalizedValue = 1 - normalizedValue
+      normalizedValue = 1 - normalizedValue;
     }
 
     // Clamp to [0, 1]
-    normalizedValue = Math.max(0, Math.min(1, normalizedValue))
+    normalizedValue = Math.max(0, Math.min(1, normalizedValue));
 
     // Generate color from green (good) to red (bad)
-    const r = Math.round(255 * normalizedValue)
-    const g = Math.round(255 * (1 - normalizedValue))
-    const b = 0
-    return `rgb(${r}, ${g}, ${b})`
-  }
+    const r = Math.round(255 * normalizedValue);
+    const g = Math.round(255 * (1 - normalizedValue));
+    const b = 0;
+    return `rgb(${r}, ${g}, ${b})`;
+  };
 
   // Format metric value for display
   const formatMetricValue = (value: number, unit?: string): string => {
-    if (!unit) return value.toLocaleString()
+    if (!unit) return value.toLocaleString();
 
     // Special case for bytes - convert to KB, MB, GB as appropriate
     if (unit === 'bytes') {
-      return formatBytes(value)
+      return formatBytes(value);
     }
 
     // For percentages, format with fixed decimal places
     if (unit === '%') {
-      return `${value.toFixed(1)}${unit}`
+      return `${value.toFixed(1)}${unit}`;
     }
 
     // For time measurements (ms), format appropriately
     if (unit === 'ms') {
       if (value < 1) {
-        return `${(value * 1000).toFixed(2)}μs`
+        return `${(value * 1000).toFixed(2)}μs`;
       }
       if (value >= 1000) {
-        return `${(value / 1000).toFixed(2)}s`
+        return `${(value / 1000).toFixed(2)}s`;
       }
-      return `${Math.round(value)}${unit}`
+      return `${Math.round(value)}${unit}`;
     }
 
     // Default formatting - add the unit to the value
-    return `${value.toLocaleString()}${unit}`
-  }
+    return `${value.toLocaleString()}${unit}`;
+  };
 
   // Format scenario name for display
   const formatScenarioName = (name: string): string => {
-    return name
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
-  }
+    return name.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
 
   // Format date for display
   const formatDate = (dateString: string): string => {
-    return shortDateFormatter.format(new Date(dateString))
-  }
+    return shortDateFormatter.format(new Date(dateString));
+  };
 
   // Get the unit for the selected metric
   const getMetricUnit = (): string => {
     for (const report of reportData) {
       for (const scenario of report.scenarios) {
-        const metric = scenario.metrics.find((m) => m.name === selectedMetric)
+        const metric = scenario.metrics.find(m => m.name === selectedMetric);
         if (metric && metric.unit) {
-          return metric.unit
+          return metric.unit;
         }
       }
     }
-    return ''
-  }
+    return '';
+  };
 
   // If loading, show loading indicator
   if (isLoading) {
-    return <div className="metrics-heatmap-loading">Loading metrics data…</div>
+    return <div className="metrics-heatmap-loading">Loading metrics data…</div>;
   }
 
   // If no report data, show message
   if (reportData.length === 0) {
-    return <div className="metrics-heatmap-empty">No performance data available</div>
+    return <div className="metrics-heatmap-empty">No performance data available</div>;
   }
 
   // Get min and max values for the selected metric
-  const {min, max} = getMetricMinMax()
-  const metricUnit = getMetricUnit()
-  return (
-    <div className="metrics-heatmap-container">
+  const {
+    min,
+    max
+  } = getMetricMinMax();
+  const metricUnit = getMetricUnit();
+  return <div className="metrics-heatmap-container">
       <div className="metrics-heatmap-controls">
         <label htmlFor="metric-select">Metric:</label>
-        <select
-          id="metric-select"
-          value={selectedMetric}
-          onChange={(e) => setSelectedMetric(e.target.value)}
-          className="metric-select"
-        >
-          {metricOptions.map((option) => (
-            <option key={option.name} value={option.name}>
+        <select id="metric-select" value={selectedMetric} onChange={e => setSelectedMetric(e.target.value)} className="metric-select">
+          {metricOptions.map(option => <option key={option.name} value={option.name}>
               {option.displayName}
-            </option>
-          ))}
+            </option>)}
         </select>
 
         <div className="heatmap-legend">
@@ -520,132 +445,95 @@ const MetricHeatmap = ({reports, activeReportId}: {reports: PerformanceReport[];
           <thead>
             <tr>
               <th className="heatmap-scenario-header">Scenario</th>
-              {reportData.map((report) => (
-                <th
-                  key={report.id}
-                  className={`heatmap-date-header ${report.id === activeReportId ? 'active-report' : ''}`}
-                >
+              {reportData.map(report => <th key={report.id} className={"heatmap-date-header " + " " + (report.id === activeReportId ? 'active-report' : '')}>
                   {formatDate(report.date)}
-                </th>
-              ))}
+                </th>)}
             </tr>
           </thead>
           <tbody>
-            {scenarioNames.map((scenarioName) => (
-              <tr key={scenarioName}>
+            {scenarioNames.map(scenarioName => <tr key={scenarioName}>
                 <td className="heatmap-scenario-name">{formatScenarioName(scenarioName)}</td>
-                {reportData.map((report) => {
-                  const scenario = report.scenarios.find((s) => s.name === scenarioName)
-                  const metric = scenario?.metrics.find((m) => m.name === selectedMetric)
-                  return (
-                    <td
-                      key={`${report.id}-${scenarioName}`}
-                      className={`heatmap-cell ${report.id === activeReportId ? 'active-report' : ''}`}
-                      style={
-                        metric
-                          ? {
-                              backgroundColor: getColorForValue(metric.value, min, max, selectedMetric),
-                              color: metric.value > (min + max) / 2 ? 'white' : 'black',
-                            }
-                          : {}
-                      }
-                      title={
-                        metric
-                          ? `${formatScenarioName(scenarioName)}\n${
-                              metricOptions.find((m) => m.name === selectedMetric)?.displayName || selectedMetric
-                            }: ${formatMetricValue(metric.value, metric.unit)}`
-                          : 'No data'
-                      }
-                    >
+                {reportData.map(report => {
+              const scenario = report.scenarios.find(s => s.name === scenarioName);
+              const metric = scenario?.metrics.find(m => m.name === selectedMetric);
+              return <td key={`${report.id}-${scenarioName}`} className={"heatmap-cell " + " " + (report.id === activeReportId ? 'active-report' : '')} style={metric ? {
+                backgroundColor: getColorForValue(metric.value, min, max, selectedMetric),
+                color: metric.value > (min + max) / 2 ? 'white' : 'black'
+              } : {}} title={metric ? `${formatScenarioName(scenarioName)}\n${metricOptions.find(m => m.name === selectedMetric)?.displayName || selectedMetric}: ${formatMetricValue(metric.value, metric.unit)}` : 'No data'}>
                       {metric ? formatMetricValue(metric.value, metric.unit) : 'N/A'}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
+                    </td>;
+            })}
+              </tr>)}
           </tbody>
         </table>
       </div>
-    </div>
-  )
-}
+    </div>;
+};
 
 // PerformanceChangeDashboard component to display performance changes between reports
 const PerformanceChangeDashboard = ({
   reports,
-  activeReportId,
+  activeReportId
 }: {
-  reports: PerformanceReport[]
-  activeReportId: string | null
+  reports: PerformanceReport[];
+  activeReportId: string | null;
 }) => {
-  const [reportData, setReportData] = useState<PerformanceReport[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [baselineReportId, setBaselineReportId] = useState<string | null>(null)
-  const [keyMetrics] = useState<string[]>([
-    'percentCPUUsage',
-    'jsHeapUsedSize',
-    'appStartupTime',
-    'timeToInteractive',
-    'scriptDuration',
-    'layoutDuration',
-  ])
+  const [reportData, setReportData] = useState<PerformanceReport[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [baselineReportId, setBaselineReportId] = useState<string | null>(null);
+  const [keyMetrics] = useState<string[]>(['percentCPUUsage', 'jsHeapUsedSize', 'appStartupTime', 'timeToInteractive', 'scriptDuration', 'layoutDuration']);
 
   // Load full report data for all reports
   useEffect(() => {
-    if (!reports || reports.length < 2) return
+    if (!reports || reports.length < 2) return;
     const fetchAllReports = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         // Fetch full report data for each report
-        const fullReports = await Promise.all(
-          reports.map(async (report) => {
-            const fullReport = await loadReportById(report.id)
-            return fullReport
-          }),
-        )
+        const fullReports = await Promise.all(reports.map(async report => {
+          const fullReport = await loadReportById(report.id);
+          return fullReport;
+        }));
 
         // Filter out null reports
-        const validReports = fullReports.filter(Boolean) as PerformanceReport[]
+        const validReports = fullReports.filter(Boolean) as PerformanceReport[];
         if (validReports.length > 0) {
           // Sort reports by date (newest first)
-          validReports.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          validReports.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
           // Set a default baseline if needed - pick the next report after the active one
           // or if the active report is the baseline, pick the first non-active report
           if (validReports.length > 1 && !baselineReportId) {
             // Find the index of the active report
-            const activeIndex = validReports.findIndex((r) => r.id === activeReportId)
+            const activeIndex = validReports.findIndex(r => r.id === activeReportId);
             if (activeIndex === -1 || activeIndex === validReports.length - 1) {
               // If active report not found or is the last one, use the first report as baseline
-              setBaselineReportId(validReports[0].id !== activeReportId ? validReports[0].id : validReports[1].id)
+              setBaselineReportId(validReports[0].id !== activeReportId ? validReports[0].id : validReports[1].id);
             } else {
               // Use the next report in the list as baseline
-              setBaselineReportId(validReports[activeIndex + 1].id)
+              setBaselineReportId(validReports[activeIndex + 1].id);
             }
           }
         }
-        setReportData(validReports)
+        setReportData(validReports);
       } catch (error) {
-        console.error('Error loading full report data:', error)
+        console.error('Error loading full report data:', error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchAllReports()
-  }, [reports, baselineReportId, activeReportId])
+    };
+    fetchAllReports();
+  }, [reports, baselineReportId, activeReportId]);
 
   // Format date for display
   const formatDate = (dateString: string): string => {
-    return shortDateFormatter.format(new Date(dateString))
-  }
+    return shortDateFormatter.format(new Date(dateString));
+  };
 
   // Format scenario name for display
   const formatScenarioName = (name: string): string => {
-    return name
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
-  }
+    return name.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
 
   // Format metric name for display
   const formatMetricName = (name: string): string => {
@@ -658,91 +546,84 @@ const PerformanceChangeDashboard = ({
       scriptDuration: 'Script Duration',
       layoutDuration: 'Layout Duration',
       recalcStyleDuration: 'Style Recalc Duration',
-      paintDuration: 'Paint Duration',
-    }
-    return (
-      metricNames[name] ||
-      name
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, (str) => str.toUpperCase())
-        .replace(/([a-z])([A-Z])/g, '$1 $2')
-    )
-  }
+      paintDuration: 'Paint Duration'
+    };
+    return metricNames[name] || name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2');
+  };
 
   // Format percent change
   const formatChange = (change: number): string => {
-    const prefix = change > 0 ? '+' : ''
-    return `${prefix}${change.toFixed(1)}%`
-  }
+    const prefix = change > 0 ? '+' : '';
+    return `${prefix}${change.toFixed(1)}%`;
+  };
 
   // Get color based on change value and metric type
   const getChangeColor = (change: number, metricName: string): string => {
     // For most metrics, negative change is good (lower is better)
-    let isImprovement = change < 0
+    let isImprovement = change < 0;
 
     // For some metrics, higher is better
-    const higherIsBetter = ['performanceScore'].includes(metricName)
+    const higherIsBetter = ['performanceScore'].includes(metricName);
     if (higherIsBetter) {
-      isImprovement = change > 0
+      isImprovement = change > 0;
     }
 
     // Determine severity of change
-    const absChange = Math.abs(change)
+    const absChange = Math.abs(change);
     if (isImprovement) {
       // Improvement: green with varying intensity
-      if (absChange < 5) return '#4caf50' // Light green
-      if (absChange < 15) return '#2e7d32' // Medium green
-      return '#1b5e20' // Dark green (significant improvement)
+      if (absChange < 5) return '#4caf50'; // Light green
+      if (absChange < 15) return '#2e7d32'; // Medium green
+      return '#1b5e20'; // Dark green (significant improvement)
     } else {
       // Regression: amber to red
-      if (absChange < 5) return '#ffca28' // Amber (slight regression)
-      if (absChange < 15) return '#f57c00' // Orange (moderate regression)
-      return '#d32f2f' // Red (significant regression)
+      if (absChange < 5) return '#ffca28'; // Amber (slight regression)
+      if (absChange < 15) return '#f57c00'; // Orange (moderate regression)
+      return '#d32f2f'; // Red (significant regression)
     }
-  }
+  };
 
   // Calculate change between two values
   const calculateChange = (current: number, baseline: number): number => {
-    if (baseline === 0) return 0
-    return ((current - baseline) / baseline) * 100
-  }
+    if (baseline === 0) return 0;
+    return (current - baseline) / baseline * 100;
+  };
 
   // Get the current report based on activeReportId
   const getCurrentReport = (): PerformanceReport | null => {
-    if (!activeReportId || reportData.length === 0) return null
-    return reportData.find((report) => report.id === activeReportId) || null
-  }
+    if (!activeReportId || reportData.length === 0) return null;
+    return reportData.find(report => report.id === activeReportId) || null;
+  };
 
   // Get the baseline report
   const getBaselineReport = (): PerformanceReport | null => {
-    if (!baselineReportId || reportData.length === 0) return null
-    return reportData.find((report) => report.id === baselineReportId) || null
-  }
+    if (!baselineReportId || reportData.length === 0) return null;
+    return reportData.find(report => report.id === baselineReportId) || null;
+  };
 
   // If loading, show loading indicator
   if (isLoading) {
-    return <div className="performance-change-loading">Loading performance data...</div>
+    return <div className="performance-change-loading">Loading performance data...</div>;
   }
 
   // If no report data or insufficient data, show message
   if (reportData.length < 2) {
-    return <div className="performance-change-empty">Need at least two performance reports to compare changes</div>
+    return <div className="performance-change-empty">Need at least two performance reports to compare changes</div>;
   }
-  const currentReport = getCurrentReport()
-  const baselineReport = getBaselineReport()
+  const currentReport = getCurrentReport();
+  const baselineReport = getBaselineReport();
   if (!currentReport || !baselineReport) {
-    return <div className="performance-change-empty">Unable to compare reports</div>
+    return <div className="performance-change-empty">Unable to compare reports</div>;
   }
 
   // Get all unique scenario names from both reports
-  const scenarioNames = new Set<string>()
-  currentReport.scenarios.forEach((scenario) => scenarioNames.add(scenario.name))
-  baselineReport.scenarios.forEach((scenario) => scenarioNames.add(scenario.name))
+  const scenarioNames = new Set<string>();
+  currentReport.scenarios.forEach(scenario => scenarioNames.add(scenario.name));
+  baselineReport.scenarios.forEach(scenario => scenarioNames.add(scenario.name));
 
   // Create a list of possible baseline reports (excluding the current report)
-  const baselineOptions = reportData.filter((report) => report.id !== activeReportId)
-  return (
-    <div className="performance-change-container">
+  const baselineOptions = reportData.filter(report => report.id !== activeReportId);
+  return <div className="performance-change-container">
       <div className="performance-change-header">
         <div className="change-report-info">
           <div className="current-report">
@@ -752,201 +633,175 @@ const PerformanceChangeDashboard = ({
           <div className="vs-indicator">vs</div>
           <div className="baseline-selector">
             <label htmlFor="baseline-select">Baseline:</label>
-            <select
-              id="baseline-select"
-              value={baselineReportId || ''}
-              onChange={(e) => setBaselineReportId(e.target.value)}
-              className="baseline-select"
-            >
-              {baselineOptions.map((report) => (
-                <option key={report.id} value={report.id}>
+            <select id="baseline-select" value={baselineReportId || ''} onChange={e => setBaselineReportId(e.target.value)} className="baseline-select">
+              {baselineOptions.map(report => <option key={report.id} value={report.id}>
                   {formatDate(report.date)}
-                </option>
-              ))}
+                </option>)}
             </select>
           </div>
         </div>
         <div className="change-legend">
           <div className="change-legend-item">
-            <span
-              className="legend-color"
-              style={{
-                backgroundColor: '#1b5e20',
-              }}
-            ></span>
+            <span className="legend-color" style={{
+            backgroundColor: '#1b5e20'
+          }}></span>
             <span className="legend-label">Better</span>
           </div>
           <div className="change-legend-item">
-            <span
-              className="legend-color"
-              style={{
-                backgroundColor: '#ffca28',
-              }}
-            ></span>
+            <span className="legend-color" style={{
+            backgroundColor: '#ffca28'
+          }}></span>
             <span className="legend-label">Slight Regression</span>
           </div>
           <div className="change-legend-item">
-            <span
-              className="legend-color"
-              style={{
-                backgroundColor: '#d32f2f',
-              }}
-            ></span>
+            <span className="legend-color" style={{
+            backgroundColor: '#d32f2f'
+          }}></span>
             <span className="legend-label">Significant Regression</span>
           </div>
         </div>
       </div>
 
       <div className="performance-changes-grid">
-        {Array.from(scenarioNames)
-          .sort()
-          .map((scenarioName) => {
-            const currentScenario = currentReport.scenarios.find((s) => s.name === scenarioName)
-            const baselineScenario = baselineReport.scenarios.find((s) => s.name === scenarioName)
+        {Array.from(scenarioNames).sort().map(scenarioName => {
+        const currentScenario = currentReport.scenarios.find(s => s.name === scenarioName);
+        const baselineScenario = baselineReport.scenarios.find(s => s.name === scenarioName);
 
-            // Skip if scenario doesn't exist in either report
-            if (!currentScenario || !baselineScenario) return null
-            return (
-              <div key={scenarioName} className="scenario-change-card">
+        // Skip if scenario doesn't exist in either report
+        if (!currentScenario || !baselineScenario) return null;
+        return <div key={scenarioName} className="scenario-change-card">
                 <h3 className="scenario-change-name">{formatScenarioName(scenarioName)}</h3>
                 <div className="metric-changes">
-                  {keyMetrics.map((metricName) => {
-                    const currentMetric = currentScenario.metrics.find((m) => m.name === metricName)
-                    const baselineMetric = baselineScenario.metrics.find((m) => m.name === metricName)
+                  {keyMetrics.map(metricName => {
+              const currentMetric = currentScenario.metrics.find(m => m.name === metricName);
+              const baselineMetric = baselineScenario.metrics.find(m => m.name === metricName);
 
-                    // Skip if metric doesn't exist in either scenario
-                    if (!currentMetric || !baselineMetric) return null
-                    const change = calculateChange(currentMetric.value, baselineMetric.value)
-                    const changeColor = getChangeColor(change, metricName)
+              // Skip if metric doesn't exist in either scenario
+              if (!currentMetric || !baselineMetric) return null;
+              const change = calculateChange(currentMetric.value, baselineMetric.value);
+              const changeColor = getChangeColor(change, metricName);
 
-                    // Format the values based on unit
-                    const formatValue = (value: number, unit: string): string => {
-                      if (unit === 'bytes') return formatBytes(value)
-                      if (unit === '%') return `${value.toFixed(1)}${unit}`
-                      if (unit === 'ms') {
-                        if (value < 1) return `${(value * 1000).toFixed(2)}μs`
-                        if (value >= 1000) return `${(value / 1000).toFixed(2)}s`
-                        return `${Math.round(value)}${unit}`
-                      }
-                      return `${value.toLocaleString()}${unit}`
-                    }
-                    return (
-                      <div key={metricName} className="metric-change-item">
+              // Format the values based on unit
+              const formatValue = (value: number, unit: string): string => {
+                if (unit === 'bytes') return formatBytes(value);
+                if (unit === '%') return `${value.toFixed(1)}${unit}`;
+                if (unit === 'ms') {
+                  if (value < 1) return `${(value * 1000).toFixed(2)}μs`;
+                  if (value >= 1000) return `${(value / 1000).toFixed(2)}s`;
+                  return `${Math.round(value)}${unit}`;
+                }
+                return `${value.toLocaleString()}${unit}`;
+              };
+              return <div key={metricName} className="metric-change-item">
                         <div className="metric-change-name">{formatMetricName(metricName)}</div>
                         <div className="metric-values">
                           <div className="metric-current-value">
                             {formatValue(currentMetric.value, currentMetric.unit)}
                           </div>
-                          <div
-                            className="metric-change-indicator"
-                            style={{
-                              color: changeColor,
-                            }}
-                          >
+                          <div className="metric-change-indicator" style={{
+                    color: changeColor
+                  }}>
                             {formatChange(change)}
                           </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      </div>;
+            })}
                 </div>
-              </div>
-            )
-          })}
+              </div>;
+      })}
       </div>
-    </div>
-  )
-}
+    </div>;
+};
 function App() {
-  const [reports, setReports] = useState<PerformanceReport[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [activeReportId, setActiveReportId] = useState<string | null>(null)
-  const [activeReport, setActiveReport] = useState<PerformanceReport | null>(null)
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'overview' | 'memory' | 'performance' | 'heatmap' | 'changes'>('overview')
+  const [reports, setReports] = useState<PerformanceReport[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeReportId, setActiveReportId] = useState<string | null>(null);
+  const [activeReport, setActiveReport] = useState<PerformanceReport | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'memory' | 'performance' | 'heatmap' | 'changes'>('overview');
 
   // Load reports
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        setIsLoading(true)
-        const fetchedReports = await loadPerformanceReports()
-        setReports(fetchedReports)
+        setIsLoading(true);
+        const fetchedReports = await loadPerformanceReports();
+        setReports(fetchedReports);
 
         // Auto-select most recent report
         if (fetchedReports.length > 0) {
-          setActiveReportId(fetchedReports[0].id)
+          setActiveReportId(fetchedReports[0].id);
         }
       } catch (err) {
-        setError('Failed to load performance reports')
-        console.error(err)
+        setError('Failed to load performance reports');
+        console.error(err);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchReports()
-  }, [])
+    };
+    fetchReports();
+  }, []);
 
   // Load active report when ID changes
   useEffect(() => {
     const fetchReport = async () => {
-      if (!activeReportId) return
+      if (!activeReportId) return;
       try {
-        setIsLoading(true)
-        const report = await loadReportById(activeReportId)
-        setActiveReport(report)
+        setIsLoading(true);
+        const report = await loadReportById(activeReportId);
+        setActiveReport(report);
 
         // Auto-select first scenario
         if (report && report.scenarios.length > 0) {
-          setSelectedScenario(report.scenarios[0].name)
+          setSelectedScenario(report.scenarios[0].name);
         }
       } catch (err) {
-        setError(`Failed to load report ${activeReportId}`)
-        console.error(err)
+        setError(`Failed to load report ${activeReportId}`);
+        console.error(err);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchReport()
-  }, [activeReportId])
+    };
+    fetchReport();
+  }, [activeReportId]);
 
   // Format a date in a readable way
   const formatDate = (dateString: string): string => {
-    return fullDateFormatter.format(new Date(dateString))
-  }
+    return fullDateFormatter.format(new Date(dateString));
+  };
 
   // Format metric values with appropriate units
   const formatMetricValue = (value: number, unit: string): string => {
     // Special case for bytes - convert to KB, MB, GB as appropriate
     if (unit === 'bytes') {
-      return formatBytes(value)
+      return formatBytes(value);
     }
 
     // For percentages, format with fixed decimal places
     if (unit === '%') {
-      return `${value.toFixed(1)}${unit}`
+      return `${value.toFixed(1)}${unit}`;
     }
 
     // For time measurements (ms), format appropriately
     if (unit === 'ms') {
       if (value < 1) {
-        return `${(value * 1000).toFixed(2)}μs`
+        return `${(value * 1000).toFixed(2)}μs`;
       }
       if (value >= 1000) {
-        return `${(value / 1000).toFixed(2)}s`
+        return `${(value / 1000).toFixed(2)}s`;
       }
-      return `${Math.round(value)}${unit}`
+      return `${Math.round(value)}${unit}`;
     }
 
     // Default formatting - add the unit to the value
     if (unit) {
-      return `${value.toLocaleString()}${unit}`
+      return `${value.toLocaleString()}${unit}`;
     }
 
     // Just return the value if no unit
-    return value.toLocaleString()
-  }
+    return value.toLocaleString();
+  };
 
   // Helper function to determine if a metric value should be considered concerning
   const isConcerningMetric = (metricName: string, value: number): boolean => {
@@ -961,11 +816,11 @@ function App() {
       // ms
       jsHeapUsedSize: 50 * 1024 * 1024,
       // 50MB in bytes
-      percentCPUUsage: 50, // percent
-    }
-    if (!(metricName in thresholds)) return false
-    return value > thresholds[metricName]
-  }
+      percentCPUUsage: 50 // percent
+    };
+    if (!(metricName in thresholds)) return false;
+    return value > thresholds[metricName];
+  };
 
   // Transform metrics data for the dashboard
   const transformMetricsData = () => {
@@ -974,66 +829,62 @@ function App() {
         sections: [],
         memoryData: [],
         cpuData: [],
-        scriptData: [],
-      }
+        scriptData: []
+      };
     }
-    const sections = activeReport.scenarios.map((scenario) => scenario.name)
+    const sections = activeReport.scenarios.map(scenario => scenario.name);
 
     // Memory chart data
-    const memoryData = activeReport.scenarios.map((scenario) => {
-      const heapUsed = scenario.metrics.find((m) => m.name === 'jsHeapUsedSize')?.value || 0
-      const heapTotal = scenario.metrics.find((m) => m.name === 'jsHeapTotalSize')?.value || 0
+    const memoryData = activeReport.scenarios.map(scenario => {
+      const heapUsed = scenario.metrics.find(m => m.name === 'jsHeapUsedSize')?.value || 0;
+      const heapTotal = scenario.metrics.find(m => m.name === 'jsHeapTotalSize')?.value || 0;
       return {
         name: formatScenarioName(scenario.name),
         memory: heapUsed,
-        total: heapTotal,
-      }
-    })
+        total: heapTotal
+      };
+    });
 
     // CPU chart data
-    const cpuData = activeReport.scenarios.map((scenario) => {
-      const cpuUsage = scenario.metrics.find((m) => m.name === 'percentCPUUsage')?.value || 0
+    const cpuData = activeReport.scenarios.map(scenario => {
+      const cpuUsage = scenario.metrics.find(m => m.name === 'percentCPUUsage')?.value || 0;
       return {
         name: formatScenarioName(scenario.name),
-        cpu: cpuUsage,
-      }
-    })
+        cpu: cpuUsage
+      };
+    });
 
     // Script, layout, and style data
-    const scriptData = activeReport.scenarios.map((scenario) => {
-      const scriptDuration = scenario.metrics.find((m) => m.name === 'scriptDuration')?.value || 0
-      const layoutDuration = scenario.metrics.find((m) => m.name === 'layoutDuration')?.value || 0
-      const styleDuration =
-        scenario.metrics.find((m) => m.name === 'recalcStyleDuration' || 'styleRecalcDuration')?.value || 0
+    const scriptData = activeReport.scenarios.map(scenario => {
+      const scriptDuration = scenario.metrics.find(m => m.name === 'scriptDuration')?.value || 0;
+      const layoutDuration = scenario.metrics.find(m => m.name === 'layoutDuration')?.value || 0;
+      const styleDuration = scenario.metrics.find(m => m.name === 'recalcStyleDuration' || 'styleRecalcDuration')?.value || 0;
       return {
         name: formatScenarioName(scenario.name),
         script: scriptDuration * 1000,
         // Convert to ms
         layout: layoutDuration * 1000,
-        style: styleDuration * 1000,
-      }
-    })
+        style: styleDuration * 1000
+      };
+    });
     return {
       sections,
       memoryData,
       cpuData,
-      scriptData,
-    }
-  }
+      scriptData
+    };
+  };
 
   // Helper to format scenario names for display
   const formatScenarioName = (name: string): string => {
-    return name
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ')
-  }
+    return name.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
 
   // Get all metrics for a given scenario
   const getScenarioMetrics = (scenarioName: string): ScenarioResult | null => {
-    if (!activeReport) return null
-    return activeReport.scenarios.find((s) => s.name === scenarioName) || null
-  }
+    if (!activeReport) return null;
+    return activeReport.scenarios.find(s => s.name === scenarioName) || null;
+  };
 
   // Get average values for key metrics across all scenarios
   const getAverageMetrics = () => {
@@ -1043,88 +894,85 @@ function App() {
         avgCpuUsage: 0,
         maxMemoryUsage: 0,
         maxTotalMemory: 0,
-        avgMemoryPercentage: 0,
-      }
+        avgMemoryPercentage: 0
+      };
     }
-    let totalMemory = 0
-    let totalCpu = 0
-    let maxMemory = 0
-    let maxTotal = 0
-    let count = 0
-    activeReport.scenarios.forEach((scenario) => {
-      const memoryMetric = scenario.metrics.find((m) => m.name === 'jsHeapUsedSize')
-      const totalMemoryMetric = scenario.metrics.find((m) => m.name === 'jsHeapTotalSize')
-      const cpuMetric = scenario.metrics.find((m) => m.name === 'percentCPUUsage')
+    let totalMemory = 0;
+    let totalCpu = 0;
+    let maxMemory = 0;
+    let maxTotal = 0;
+    let count = 0;
+    activeReport.scenarios.forEach(scenario => {
+      const memoryMetric = scenario.metrics.find(m => m.name === 'jsHeapUsedSize');
+      const totalMemoryMetric = scenario.metrics.find(m => m.name === 'jsHeapTotalSize');
+      const cpuMetric = scenario.metrics.find(m => m.name === 'percentCPUUsage');
       if (memoryMetric) {
-        totalMemory += memoryMetric.value
-        maxMemory = Math.max(maxMemory, memoryMetric.value)
-        count++
+        totalMemory += memoryMetric.value;
+        maxMemory = Math.max(maxMemory, memoryMetric.value);
+        count++;
       }
       if (totalMemoryMetric) {
-        maxTotal = Math.max(maxTotal, totalMemoryMetric.value)
+        maxTotal = Math.max(maxTotal, totalMemoryMetric.value);
       }
       if (cpuMetric) {
-        totalCpu += cpuMetric.value
+        totalCpu += cpuMetric.value;
       }
-    })
-    const avgMemory = count > 0 ? totalMemory / count : 0
-    const avgCpu = count > 0 ? totalCpu / count : 0
-    const avgMemoryPercentage = maxTotal > 0 ? (avgMemory / maxTotal) * 100 : 0
+    });
+    const avgMemory = count > 0 ? totalMemory / count : 0;
+    const avgCpu = count > 0 ? totalCpu / count : 0;
+    const avgMemoryPercentage = maxTotal > 0 ? avgMemory / maxTotal * 100 : 0;
     return {
       avgMemoryUsage: avgMemory,
       avgCpuUsage: avgCpu,
       maxMemoryUsage: maxMemory,
       maxTotalMemory: maxTotal,
-      avgMemoryPercentage,
-    }
-  }
+      avgMemoryPercentage
+    };
+  };
 
   // Get startup-specific metrics
   const getStartupMetrics = () => {
-    if (!activeReport) return null
-    const startupScenario = activeReport.scenarios.find((s) => s.name === 'app-startup')
-    if (!startupScenario) return null
+    if (!activeReport) return null;
+    const startupScenario = activeReport.scenarios.find(s => s.name === 'app-startup');
+    if (!startupScenario) return null;
 
     // Map of metric names to values
-    const metrics: Record<
-      string,
-      {
-        value: number
-        unit: string
-      }
-    > = {}
-    startupScenario.metrics.forEach((metric) => {
+    const metrics: Record<string, {
+      value: number;
+      unit: string;
+    }> = {};
+    startupScenario.metrics.forEach(metric => {
       metrics[metric.name] = {
         value: metric.value,
-        unit: metric.unit,
-      }
-    })
-    return metrics
-  }
+        unit: metric.unit
+      };
+    });
+    return metrics;
+  };
 
   // Get concerning metrics across scenarios
   const getConcerningMetrics = () => {
-    if (!activeReport) return []
+    if (!activeReport) return [];
     const concerns: {
-      scenario: string
-      metric: string
-      value: number
-      unit: string
-    }[] = []
-    activeReport.scenarios.forEach((scenario) => {
-      scenario.metrics.forEach((metric) => {
+      scenario: string;
+      metric: string;
+      value: number;
+      unit: string;
+    }[] = [];
+    activeReport.scenarios.forEach(scenario => {
+      scenario.metrics.forEach(metric => {
         if (isConcerningMetric(metric.name, metric.value)) {
           concerns.push({
             scenario: scenario.name,
             metric: metric.name,
             value: metric.value,
-            unit: metric.unit,
-          })
+            unit: metric.unit
+          });
         }
-      })
-    })
-    return concerns
-  }
+      });
+    });
+    return concerns;
+  };
 
   // Find the most appropriate icon for a metric
   const getMetricIcon = (metricName: string) => {
@@ -1136,10 +984,10 @@ function App() {
       jsHeapUsedSize: <Icons.HardDrive size={20} />,
       percentCPUUsage: <Icons.Cpu size={20} />,
       taskDuration: <Icons.Activity size={20} />,
-      performanceScore: <Icons.Gauge size={20} />,
-    }
-    return iconMap[metricName] || <Icons.Activity size={20} />
-  }
+      performanceScore: <Icons.Gauge size={20} />
+    };
+    return iconMap[metricName] || <Icons.Activity size={20} />;
+  };
 
   // Get formatted display name for a metric
   const getMetricDisplayName = (metricName: string): string => {
@@ -1154,59 +1002,50 @@ function App() {
       styleRecalcDuration: 'Style Recalc Duration',
       recalcStyleDuration: 'Style Recalc Duration',
       paintDuration: 'Paint Duration',
-      performanceScore: 'Performance Score',
-    }
-    return (
-      displayNames[metricName] ||
-      metricName
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, (str) => str.toUpperCase())
-        .replace(/([a-z])([A-Z])/g, '$1 $2')
-    )
-  }
+      performanceScore: 'Performance Score'
+    };
+    return displayNames[metricName] || metricName.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace(/([a-z])([A-Z])/g, '$1 $2');
+  };
 
   // Render loading state
   if (isLoading && !activeReport) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
+    return <div className={stylex.props(styles_2.s2ffff9, styles_2.s7e44f615, styles_2.sc6ed1702, styles_2.sce22ca32).className || ""}>
         <div className={stylex.props(styles.saf5ba32b).className || ''}>Loading Electron performance data...</div>
-      </div>
-    )
+      </div>;
   }
 
   // Render error state
   if (error && !activeReport) {
-    return (
-      <div className={stylex.props(styles.s4957c1e5).className || ''}>
+    return <div className={stylex.props(styles.s4957c1e5).className || ''}>
         <div className={stylex.props(styles.s6f33fc9b).className || ''}>{error}</div>
         <div className={stylex.props(styles.scc5e4477).className || ''}>
           Check that performance test results exist and are accessible.
         </div>
-      </div>
-    )
+      </div>;
   }
 
   // Case where no reports are found
   if (reports.length === 0) {
-    return (
-      <div className={stylex.props(styles.sc11f8f26).className || ''}>
+    return <div className={stylex.props(styles.sc11f8f26).className || ''}>
         <div className={stylex.props(styles.s27ec6fff).className || ''}>
           No electron performance test results found.
         </div>
         <div className={stylex.props(styles.sdadb7393).className || ''}>
           Run performance tests to generate data for the dashboard.
         </div>
-      </div>
-    )
+      </div>;
   }
 
   // Get our transformed data for the dashboard
-  const {memoryData, cpuData, scriptData} = transformMetricsData()
-  const averages = getAverageMetrics()
-  const startupMetrics = getStartupMetrics()
-  const concerningMetrics = getConcerningMetrics()
-  return (
-    <div className="space-y-6">
+  const {
+    memoryData,
+    cpuData,
+    scriptData
+  } = transformMetricsData();
+  const averages = getAverageMetrics();
+  const startupMetrics = getStartupMetrics();
+  const concerningMetrics = getConcerningMetrics();
+  return <div className={stylex.props(styles_3.sc7133e9b).className || ""}>
       <div className={stylex.props(styles.saad3fdd5).className || ''}>
         <div className={stylex.props(styles.s6869e2e0).className || ''}>
           <div>
@@ -1215,65 +1054,40 @@ function App() {
               Latest results from {new Date(reports[0].date).toLocaleString()}
             </p>
           </div>
-          {reports.length > 0 && (
-            <div className="report-selector flex items-center gap-2">
+          {reports.length > 0 && <div className={stylex.props(styles_2.s2ffff9, styles_2.sc6ed1702, styles_2.s5d936fb).className || ""}>
               <label htmlFor="report-select" className={stylex.props(styles.saf5ba6ec).className || ''}>
                 Report:
               </label>
-              <select
-                id="report-select"
-                value={activeReportId || ''}
-                onChange={(e) => setActiveReportId(e.target.value)}
-                className={stylex.props(styles.s82ff3a5).className || ''}
-              >
-                {reports.map((report) => (
-                  <option key={report.id} value={report.id}>
+              <select id="report-select" value={activeReportId || ''} onChange={e => setActiveReportId(e.target.value)} className={stylex.props(styles.s82ff3a5).className || ''}>
+                {reports.map(report => <option key={report.id} value={report.id}>
                     {formatDate(report.date)}
-                  </option>
-                ))}
+                  </option>)}
               </select>
-            </div>
-          )}
+            </div>}
         </div>
 
         <main className="dashboard-content">
           <div className="tabs">
             <div className="tabs-header">
-              <button
-                className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => setActiveTab('overview')}
-              >
+              <button className={"tab-button " + " " + (activeTab === 'overview' ? 'active' : '')} onClick={() => setActiveTab('overview')}>
                 Overview
               </button>
-              <button
-                className={`tab-button ${activeTab === 'memory' ? 'active' : ''}`}
-                onClick={() => setActiveTab('memory')}
-              >
+              <button className={"tab-button " + " " + (activeTab === 'memory' ? 'active' : '')} onClick={() => setActiveTab('memory')}>
                 Memory
               </button>
-              <button
-                className={`tab-button ${activeTab === 'performance' ? 'active' : ''}`}
-                onClick={() => setActiveTab('performance')}
-              >
+              <button className={"tab-button " + " " + (activeTab === 'performance' ? 'active' : '')} onClick={() => setActiveTab('performance')}>
                 Performance
               </button>
-              <button
-                className={`tab-button ${activeTab === 'heatmap' ? 'active' : ''}`}
-                onClick={() => setActiveTab('heatmap')}
-              >
+              <button className={"tab-button " + " " + (activeTab === 'heatmap' ? 'active' : '')} onClick={() => setActiveTab('heatmap')}>
                 Heatmap
               </button>
-              <button
-                className={`tab-button ${activeTab === 'changes' ? 'active' : ''}`}
-                onClick={() => setActiveTab('changes')}
-              >
+              <button className={"tab-button " + " " + (activeTab === 'changes' ? 'active' : '')} onClick={() => setActiveTab('changes')}>
                 Changes
               </button>
             </div>
 
             {/* Overview Tab */}
-            {activeTab === 'overview' && (
-              <div className="tab-content">
+            {activeTab === 'overview' && <div className="tab-content">
                 {/* Key Metrics Card Row */}
                 <div className="metric-summary">
                   <div className="metric-card">
@@ -1287,13 +1101,10 @@ function App() {
                       </div>
                     </div>
                     <div className="metric-card-progress">
-                      <div
-                        className="metric-card-progress-bar"
-                        style={{
-                          width: `${Math.min(100, averages.avgCpuUsage)}%`,
-                          backgroundColor: averages.avgCpuUsage > 70 ? 'var(--color-danger)' : 'var(--color-primary)',
-                        }}
-                      ></div>
+                      <div className="metric-card-progress-bar" style={{
+                    width: `${Math.min(100, averages.avgCpuUsage)}%`,
+                    backgroundColor: averages.avgCpuUsage > 70 ? 'var(--color-danger)' : 'var(--color-primary)'
+                  }}></div>
                     </div>
                   </div>
 
@@ -1310,19 +1121,14 @@ function App() {
                       </div>
                     </div>
                     <div className="metric-card-progress">
-                      <div
-                        className="metric-card-progress-bar"
-                        style={{
-                          width: `${Math.min(100, averages.avgMemoryPercentage)}%`,
-                          backgroundColor:
-                            averages.avgMemoryPercentage > 70 ? 'var(--color-danger)' : 'var(--color-primary)',
-                        }}
-                      ></div>
+                      <div className="metric-card-progress-bar" style={{
+                    width: `${Math.min(100, averages.avgMemoryPercentage)}%`,
+                    backgroundColor: averages.avgMemoryPercentage > 70 ? 'var(--color-danger)' : 'var(--color-primary)'
+                  }}></div>
                     </div>
                   </div>
 
-                  {startupMetrics && startupMetrics.appStartupTime && (
-                    <div className="metric-card">
+                  {startupMetrics && startupMetrics.appStartupTime && <div className="metric-card">
                       <div className="metric-card-content">
                         <div className="metric-card-icon">
                           <Icons.Zap />
@@ -1335,19 +1141,12 @@ function App() {
                         </div>
                       </div>
                       <div className="metric-card-progress">
-                        <div
-                          className="metric-card-progress-bar"
-                          style={{
-                            width: `${Math.min(100, (startupMetrics.appStartupTime.value / 1000) * 100)}%`,
-                            backgroundColor:
-                              startupMetrics.appStartupTime.value > 500
-                                ? 'var(--color-danger)'
-                                : 'var(--color-primary)',
-                          }}
-                        ></div>
+                        <div className="metric-card-progress-bar" style={{
+                    width: `${Math.min(100, startupMetrics.appStartupTime.value / 1000 * 100)}%`,
+                    backgroundColor: startupMetrics.appStartupTime.value > 500 ? 'var(--color-danger)' : 'var(--color-primary)'
+                  }}></div>
                       </div>
-                    </div>
-                  )}
+                    </div>}
 
                   <div className="metric-card">
                     <div className="metric-card-content">
@@ -1363,16 +1162,14 @@ function App() {
                 </div>
 
                 {/* Performance Concerns */}
-                {concerningMetrics.length > 0 && (
-                  <div className="dashboard-card issues-card">
+                {concerningMetrics.length > 0 && <div className="dashboard-card issues-card">
                     <h2 className="card-title">
                       <Icons.AlertTriangle size={20} className="card-title-icon" />
                       Performance Concerns
                     </h2>
                     <div className="card-content">
                       <div className="issues-list">
-                        {concerningMetrics.map((issue, index) => (
-                          <div key={index} className="issue-item">
+                        {concerningMetrics.map((issue, index) => <div key={index} className="issue-item">
                             <div className="issue-content">
                               <div className="issue-scenario">{formatScenarioName(issue.scenario)}</div>
                               <div className="issue-metric">
@@ -1380,12 +1177,10 @@ function App() {
                                 <span className="issue-value">{formatMetricValue(issue.value, issue.unit)}</span>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
-                  </div>
-                )}
+                  </div>}
 
                 {/* Scenarios Overview */}
                 <div className="dashboard-card">
@@ -1395,45 +1190,30 @@ function App() {
                   </h2>
                   <div className="card-content">
                     <div className="scenarios-grid">
-                      {activeReport &&
-                        activeReport.scenarios.map((scenario) => (
-                          <div
-                            key={scenario.name}
-                            className="scenario-card"
-                            onClick={() => {
-                              setSelectedScenario(scenario.name)
-                              setActiveTab('performance')
-                            }}
-                          >
+                      {activeReport && activeReport.scenarios.map(scenario => <div key={scenario.name} className="scenario-card" onClick={() => {
+                    setSelectedScenario(scenario.name);
+                    setActiveTab('performance');
+                  }}>
                             <h3 className="scenario-name">{formatScenarioName(scenario.name)}</h3>
                             <div className="scenario-metrics">
-                              {scenario.metrics.slice(0, 4).map((metric) => (
-                                <div key={metric.name} className="scenario-metric-item">
+                              {scenario.metrics.slice(0, 4).map(metric => <div key={metric.name} className="scenario-metric-item">
                                   <div className="scenario-metric-info">
                                     <span className="scenario-metric-icon">{getMetricIcon(metric.name)}</span>
                                     <span className="scenario-metric-name">{getMetricDisplayName(metric.name)}</span>
                                   </div>
-                                  <span
-                                    className={`scenario-metric-value ${
-                                      isConcerningMetric(metric.name, metric.value) ? 'value-danger' : ''
-                                    }`}
-                                  >
+                                  <span className={"scenario-metric-value " + " " + (isConcerningMetric(metric.name, metric.value) ? 'value-danger' : '')}>
                                     {formatMetricValue(metric.value, metric.unit)}
                                   </span>
-                                </div>
-                              ))}
+                                </div>)}
                             </div>
-                          </div>
-                        ))}
+                          </div>)}
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Memory Tab */}
-            {activeTab === 'memory' && (
-              <div className="tab-content">
+            {activeTab === 'memory' && <div className="tab-content">
                 <div className="dashboard-card">
                   <h2 className="card-title">
                     <Icons.HardDrive className="card-title-icon" />
@@ -1462,20 +1242,15 @@ function App() {
                     <div className="memory-chart">
                       {/* Memory Data Visualization */}
                       <div className="memory-bars">
-                        {memoryData.map((item, index) => (
-                          <div key={index} className="memory-bar-container">
+                        {memoryData.map((item, index) => <div key={index} className="memory-bar-container">
                             <div className="memory-bar-label">{item.name}</div>
                             <div className="memory-bar-wrapper">
-                              <div
-                                className="memory-bar"
-                                style={{
-                                  width: `${(item.memory / averages.maxTotalMemory) * 100}%`,
-                                }}
-                              ></div>
+                              <div className="memory-bar" style={{
+                          width: `${item.memory / averages.maxTotalMemory * 100}%`
+                        }}></div>
                             </div>
                             <div className="memory-bar-value">{formatBytes(item.memory)}</div>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </div>
@@ -1489,61 +1264,40 @@ function App() {
                   <div className="card-content">
                     <div className="cpu-chart">
                       <div className="cpu-bars">
-                        {cpuData.map((item, index) => (
-                          <div key={index} className="cpu-bar-container">
+                        {cpuData.map((item, index) => <div key={index} className="cpu-bar-container">
                             <div className="cpu-bar-label">{item.name}</div>
                             <div className="cpu-bar-wrapper">
-                              <div
-                                className="cpu-bar"
-                                style={{
-                                  width: `${Math.min(100, item.cpu)}%`,
-                                  backgroundColor: item.cpu > 70 ? 'var(--color-danger)' : 'var(--color-primary)',
-                                }}
-                              ></div>
+                              <div className="cpu-bar" style={{
+                          width: `${Math.min(100, item.cpu)}%`,
+                          backgroundColor: item.cpu > 70 ? 'var(--color-danger)' : 'var(--color-primary)'
+                        }}></div>
                             </div>
                             <div className="cpu-bar-value">{item.cpu.toFixed(1)}%</div>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Performance Tab */}
-            {activeTab === 'performance' && (
-              <div className="tab-content">
+            {activeTab === 'performance' && <div className="tab-content">
                 <div className="dashboard-card">
                   <div className="scenario-selector">
                     <h2 className="card-title">
                       <Icons.Activity className="card-title-icon" />
                       Scenario Details
                     </h2>
-                    <select
-                      className="scenario-select"
-                      value={selectedScenario || ''}
-                      onChange={(e) => setSelectedScenario(e.target.value)}
-                    >
-                      {activeReport &&
-                        activeReport.scenarios.map((scenario) => (
-                          <option key={scenario.name} value={scenario.name}>
+                    <select className="scenario-select" value={selectedScenario || ''} onChange={e => setSelectedScenario(e.target.value)}>
+                      {activeReport && activeReport.scenarios.map(scenario => <option key={scenario.name} value={scenario.name}>
                             {formatScenarioName(scenario.name)}
-                          </option>
-                        ))}
+                          </option>)}
                     </select>
                   </div>
                   <div className="card-content">
-                    {selectedScenario && getScenarioMetrics(selectedScenario) && (
-                      <div className="selected-scenario-metrics">
+                    {selectedScenario && getScenarioMetrics(selectedScenario) && <div className="selected-scenario-metrics">
                         <div className="metric-grid">
-                          {getScenarioMetrics(selectedScenario)?.metrics.map((metric) => (
-                            <div
-                              key={metric.name}
-                              className={`detailed-metric-card ${
-                                isConcerningMetric(metric.name, metric.value) ? 'metric-concerning' : 'metric-ok'
-                              }`}
-                            >
+                          {getScenarioMetrics(selectedScenario)?.metrics.map(metric => <div key={metric.name} className={"detailed-metric-card " + " " + (isConcerningMetric(metric.name, metric.value) ? 'metric-concerning' : 'metric-ok')}>
                               <div className="detailed-metric-header">
                                 <div className="detailed-metric-icon">{getMetricIcon(metric.name)}</div>
                                 <div className="detailed-metric-name">{getMetricDisplayName(metric.name)}</div>
@@ -1551,14 +1305,10 @@ function App() {
                               <div className="detailed-metric-value">
                                 {formatMetricValue(metric.value, metric.unit)}
                               </div>
-                              {metric.description && (
-                                <div className="detailed-metric-description">{metric.description}</div>
-                              )}
-                            </div>
-                          ))}
+                              {metric.description && <div className="detailed-metric-description">{metric.description}</div>}
+                            </div>)}
                         </div>
-                      </div>
-                    )}
+                      </div>}
                   </div>
                 </div>
 
@@ -1570,8 +1320,7 @@ function App() {
                   <div className="card-content">
                     <div className="duration-chart">
                       <div className="duration-bars">
-                        {scriptData.map((item, index) => (
-                          <div key={index} className="duration-section">
+                        {scriptData.map((item, index) => <div key={index} className="duration-section">
                             <div className="duration-section-header">
                               <div className="duration-section-title">{item.name}</div>
                             </div>
@@ -1579,52 +1328,40 @@ function App() {
                               <div className="duration-metric">
                                 <div className="duration-metric-name">Script</div>
                                 <div className="duration-bar-wrapper">
-                                  <div
-                                    className="duration-bar script-bar"
-                                    style={{
-                                      width: `${Math.min(100, item.script / 10)}%`,
-                                    }}
-                                  ></div>
+                                  <div className="duration-bar script-bar" style={{
+                              width: `${Math.min(100, item.script / 10)}%`
+                            }}></div>
                                 </div>
                                 <div className="duration-metric-value">{item.script.toFixed(2)}ms</div>
                               </div>
                               <div className="duration-metric">
                                 <div className="duration-metric-name">Layout</div>
                                 <div className="duration-bar-wrapper">
-                                  <div
-                                    className="duration-bar layout-bar"
-                                    style={{
-                                      width: `${Math.min(100, item.layout / 10)}%`,
-                                    }}
-                                  ></div>
+                                  <div className="duration-bar layout-bar" style={{
+                              width: `${Math.min(100, item.layout / 10)}%`
+                            }}></div>
                                 </div>
                                 <div className="duration-metric-value">{item.layout.toFixed(2)}ms</div>
                               </div>
                               <div className="duration-metric">
                                 <div className="duration-metric-name">Style</div>
                                 <div className="duration-bar-wrapper">
-                                  <div
-                                    className="duration-bar style-bar"
-                                    style={{
-                                      width: `${Math.min(100, item.style / 10)}%`,
-                                    }}
-                                  ></div>
+                                  <div className="duration-bar style-bar" style={{
+                              width: `${Math.min(100, item.style / 10)}%`
+                            }}></div>
                                 </div>
                                 <div className="duration-metric-value">{item.style.toFixed(2)}ms</div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Heatmap Tab */}
-            {activeTab === 'heatmap' && (
-              <div className="tab-content">
+            {activeTab === 'heatmap' && <div className="tab-content">
                 <div className="tab-header">
                   <h2 className="tab-title">Performance Metrics Heatmap</h2>
                   <p className="tab-description">
@@ -1634,12 +1371,10 @@ function App() {
                   </p>
                 </div>
                 <MetricHeatmap reports={reports} activeReportId={activeReportId} />
-              </div>
-            )}
+              </div>}
 
             {/* Changes Tab */}
-            {activeTab === 'changes' && (
-              <div className="tab-content">
+            {activeTab === 'changes' && <div className="tab-content">
                 <div className="tab-header">
                   <h2 className="tab-title">Performance Changes Dashboard</h2>
                   <p className="tab-description">
@@ -1649,8 +1384,7 @@ function App() {
                   </p>
                 </div>
                 <PerformanceChangeDashboard reports={reports} activeReportId={activeReportId} />
-              </div>
-            )}
+              </div>}
           </div>
         </main>
 
@@ -1660,7 +1394,6 @@ function App() {
           </div>
         </footer>
       </div>
-    </div>
-  )
+    </div>;
 }
-export default App
+export default App;

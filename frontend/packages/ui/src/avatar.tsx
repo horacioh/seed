@@ -3,6 +3,24 @@ import * as jdenticon from 'jdenticon'
 import {memo, useEffect, useRef} from 'react'
 import {SizableText} from './text'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  s356a30: {
+    boxShadow: '0 0 0 1px var(--ring-color, currentcolor)',
+  },
+})
+const styles_3 = stylex.create({
+  se7f994a4: {
+    minHeight: '100%',
+    minWidth: '100%',
+    backgroundColor: 'var(--color1)',
+    objectFit: 'cover',
+  },
+})
+const styles_2 = stylex.create({
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+})
 const styles = stylex.create({
   s606bb034: {
     position: 'relative',
@@ -77,8 +95,8 @@ export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvat
     <div
       className={cn(
         stylex.props(styles.s606bb034).className || '',
-        onPress && 'cursor-pointer',
-        !url && 'ring-px ring-border ring',
+        stylex.props(onPress && styles_2.sc7847ec6).className || '',
+        !url ? stylex.props(styles_4.s356a30).className || '' : '',
         className,
       )}
       style={{
@@ -92,7 +110,7 @@ export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvat
       ) : url ? (
         <img
           src={url}
-          className="min-h-full min-w-full bg-[var(--color1)] object-cover"
+          className={stylex.props(styles_3.se7f994a4).className || ''}
           alt={label || id || 'Account Avatar'}
         />
       ) : (

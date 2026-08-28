@@ -48,6 +48,8 @@ export default defineConfig(({isSsrBuild}) => {
       // route, so we force all atomic StyleX CSS into the global `root-*.css` asset
       // that the Remix root route loads for every page.
       stylex.vite({
+        // Minify the atomic CSS StyleX appends; Vite's own minifier never sees it.
+        lightningcssOptions: {minify: true},
         cssInjectionTarget: (fileName: string) => /(^|\/)root(-[A-Za-z0-9_.-]+)?\.css$/.test(fileName),
       }),
       remix(),

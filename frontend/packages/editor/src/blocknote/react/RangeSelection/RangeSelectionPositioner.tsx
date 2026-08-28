@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useHideOnDocumentScroll} from '@shm/shared/models/use-document-machine'
 import {Link, MessageSquare} from 'lucide-react'
 import {TextSelection} from 'prosemirror-state'
@@ -14,6 +15,64 @@ import {
  * will be present.  The optional cast lets us detect the absence at runtime
  * without a TypeScript error.
  */
+const styles = stylex.create({
+  s56bd391d: {
+    backgroundColor: 'var(--popover)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s8a6c2964: {
+    boxShadow: 'var(--shadow-md)',
+  },
+  s8880a929: {
+    transitionProperty: 'all',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8c9096d3: {
+    transitionDuration: '150ms',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s95afba94: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+})
 type EditorWithRangeSelection<BSchema extends BlockSchema> = BlockNoteEditor<BSchema> & {
   rangeSelection?: RangeSelectionProsemirrorPlugin<BSchema> | null
 }
@@ -80,17 +139,13 @@ export function RangeSelectionPositioner<BSchema extends BlockSchema = BlockSche
     rangeEnd: null,
     referenceRect: null,
   })
-
   const rectRef = useRef<DOMRect | null>(null)
   const lastTouchActionAtRef = useRef(0)
-
   useEffect(() => {
     const plugin = editor.rangeSelection
-
     if (!plugin) {
       return
     }
-
     return plugin.onUpdate((state) => {
       rectRef.current = state.referenceRect
       setSelectionState(state)
@@ -100,7 +155,13 @@ export function RangeSelectionPositioner<BSchema extends BlockSchema = BlockSche
   // Hide the bubble on document scroll.
   useHideOnDocumentScroll(
     useCallback(() => {
-      setSelectionState({show: false, blockId: null, rangeStart: null, rangeEnd: null, referenceRect: null})
+      setSelectionState({
+        show: false,
+        blockId: null,
+        rangeStart: null,
+        rangeEnd: null,
+        referenceRect: null,
+      })
     }, []),
   )
 
@@ -111,14 +172,19 @@ export function RangeSelectionPositioner<BSchema extends BlockSchema = BlockSche
     const vv = window.visualViewport
     if (!vv) return
     const handle = () => {
-      setSelectionState({show: false, blockId: null, rangeStart: null, rangeEnd: null, referenceRect: null})
+      setSelectionState({
+        show: false,
+        blockId: null,
+        rangeStart: null,
+        rangeEnd: null,
+        referenceRect: null,
+      })
     }
     vv.addEventListener('resize', handle)
     return () => {
       vv.removeEventListener('resize', handle)
     }
   }, [])
-
   if (
     !selectionState.show ||
     !selectionState.referenceRect ||
@@ -128,11 +194,16 @@ export function RangeSelectionPositioner<BSchema extends BlockSchema = BlockSche
   ) {
     return null
   }
-
   const rect = selectionState.referenceRect
   const {blockId, rangeStart, rangeEnd} = selectionState
   const clearTextSelection = () => {
-    setSelectionState({show: false, blockId: null, rangeStart: null, rangeEnd: null, referenceRect: null})
+    setSelectionState({
+      show: false,
+      blockId: null,
+      rangeStart: null,
+      rangeEnd: null,
+      referenceRect: null,
+    })
     clearEditorTextSelection(editor)
   }
   const runCopyFragmentLink = () => {
@@ -168,16 +239,33 @@ export function RangeSelectionPositioner<BSchema extends BlockSchema = BlockSche
     transform: 'translate(-50%, -100%)',
     zIndex: 50,
   }
-
   return (
     <div style={bubbleStyle} onMouseDown={stopPropagation} onTouchStart={stopPropagationTouch}>
-      <div className="bg-popover flex items-center gap-1 rounded-md border p-1 shadow-md transition-all duration-150">
+      <div
+        className={
+          stylex.props(
+            styles.s56bd391d,
+            styles.s2ffff9,
+            styles.sc6ed1702,
+            styles.s5d936fa,
+            styles.sf79988b7,
+            styles.sad8c742c,
+            styles.s1aa14,
+            styles.s8a6c2964,
+            styles.s8880a929,
+            styles.s8c9096d3,
+          ).className || ''
+        }
+      >
         {onCopyFragmentLink && (
           <button
             type="button"
             aria-label="Copy link to selection"
             title="Copy Link"
-            className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-2"
+            className={
+              stylex.props(styles.sf2718385, styles.s95afba94, styles.sae6a97a5, styles.s529492ad, styles.s1aa15)
+                .className || ''
+            }
             onMouseDown={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -206,7 +294,10 @@ export function RangeSelectionPositioner<BSchema extends BlockSchema = BlockSche
             type="button"
             aria-label="Comment on selection"
             title="Comment"
-            className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-2"
+            className={
+              stylex.props(styles.sf2718385, styles.s95afba94, styles.sae6a97a5, styles.s529492ad, styles.s1aa15)
+                .className || ''
+            }
             onMouseDown={(e) => {
               e.preventDefault()
               e.stopPropagation()
@@ -265,7 +356,6 @@ function clearEditorTextSelection<BSchema extends BlockSchema>(editor: EditorWit
       // Ignore invalid positions; clearing the native selection below is still useful.
     }
   }
-
   if (typeof window !== 'undefined') {
     window.getSelection()?.removeAllRanges()
   }

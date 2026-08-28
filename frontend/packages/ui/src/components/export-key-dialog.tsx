@@ -12,6 +12,11 @@ import {Label} from './label'
  * vault builds a blob and triggers a download) — and may throw to surface an
  * error inline. An empty password means an unencrypted export.
  */
+const styles_2 = stylex.create({
+  s8c05c43f: {
+    maxWidth: '420px',
+  },
+})
 const styles = stylex.create({
   sfbc6e290: {
     display: 'flex',
@@ -69,7 +74,7 @@ export function ExportKeyDialog({
   }
   return (
     <Dialog open={open} onOpenChange={(next) => !busy && onOpenChange(next)}>
-      <DialogContent className="max-w-[420px]">
+      <DialogContent className={stylex.props(styles_2.s8c05c43f).className || ''}>
         <DialogHeader>
           <DialogTitle>Export Key File</DialogTitle>
           <DialogDescription>Choose whether to protect the exported key file with a password.</DialogDescription>

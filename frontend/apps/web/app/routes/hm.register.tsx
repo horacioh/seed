@@ -1,6 +1,23 @@
 import * as stylex from '@stylexjs/stylex'
 import {defaultPageMeta} from '@/meta'
 import {SizableText} from '@shm/ui/text'
+const styles_2 = stylex.create({
+  s248b4f1c: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-lg)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--surface)',
+    padding: 'calc(var(--spacing) * 6)',
+    boxShadow: 'var(--shadow-lg)',
+  },
+})
 const styles = stylex.create({
   sceaed122: {
     display: 'flex',
@@ -25,7 +42,7 @@ export default function RegisterPage() {
   return (
     <div className={stylex.props(styles.sceaed122).className || ''}>
       <div className={stylex.props(styles.se6224f5b).className || ''}>
-        <div className="border-border dark:bg-background flex w-full max-w-lg flex-1 flex-col gap-4 rounded-lg border bg-white p-6 shadow-lg">
+        <div className={stylex.props(styles_2.s248b4f1c).className || ''}>
           <SizableText size="5xl">🚀</SizableText>
           <SizableText size="2xl" weight="bold">
             Secret Space Setup Link

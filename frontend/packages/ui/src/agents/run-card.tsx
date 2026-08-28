@@ -31,6 +31,270 @@ import React, {useEffect, useMemo, useRef, useState} from 'react'
  * keeps its title: the child rows below already show what is running, and a "waiting on N" line
  * would be one more spinner saying the same thing.
  */
+const styles_6 = stylex.create({
+  s63f7e9c: {
+    padding: 'calc(0.25rem * 2.5)',
+  },
+})
+const styles_5 = stylex.create({
+  s948be48c: {
+    flex: 'none',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sc5cefc73: {
+    paddingInline: 'calc(0.25rem * 1.5)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  s55426dfb: {
+    fontSize: '10px',
+  },
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  sc5cef8b2: {
+    paddingInline: 'calc(0.25rem * 0.5)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  sf28e7398: {
+    backgroundColor: 'var(--card)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s335490: {
+    marginInline: 'calc(0.25rem * 2)',
+  },
+  s3301f9: {
+    marginBottom: 'calc(0.25rem * 1)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s3301fa: {
+    marginBottom: 'calc(0.25rem * 2)',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+})
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s9926ee50: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+      },
+    },
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  sc43c4bb3: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 60%, transparent)',
+  },
+  sc1af6c99: {
+    padding: 'calc(0.25rem * 0.75)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s79cfa1b2: {
+    ':focus-visible': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sc8799f62: {
+    color: 'var(--muted-foreground)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    fontSize: '11px',
+  },
+  s4dcd84ff: {
+    fontSize: '10px',
+    color: 'var(--tone-amber-700)',
+  },
+  s12cef23f: {
+    color: 'var(--muted-foreground)',
+    fontSize: '11px',
+  },
+  sf909c1d5: {
+    backgroundColor: 'var(--primary)',
+    height: '100%',
+    borderRadius: 'calc(infinity * 1px)',
+    transitionProperty: 'width',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '300ms',
+  },
+  s86f9a095: {
+    maxHeight: '85vh',
+    width: 'min(44rem, calc(100vw - 2rem))',
+  },
+  s5a8a4e5d: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'auto',
+    fontSize: '10px',
+  },
+  sba564dce: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    alignSelf: 'flex-start',
+    fontSize: '11px',
+  },
+  s95470d06: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    marginTop: 'calc(var(--spacing) * 1)',
+    maxHeight: 'calc(var(--spacing) * 40)',
+    overflowY: 'auto',
+    borderRadius: '0.25rem',
+    padding: 'calc(var(--spacing) * 1.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+    lineHeight: 'calc(var(--spacing) * 4)',
+  },
+  sce02dbff: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 80%, transparent)',
+    marginBlock: 'calc(var(--spacing) * 0.5)',
+    maxHeight: 'calc(var(--spacing) * 40)',
+    overflow: 'auto',
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 1.5)',
+    whiteSpace: 'pre-wrap',
+  },
+  s12ce7de0: {
+    color: 'var(--muted-foreground)',
+    fontSize: '10px',
+  },
+  sb7d5d124: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    maxHeight: 'calc(var(--spacing) * 64)',
+    overflow: 'auto',
+    borderRadius: '0.25rem',
+    padding: 'calc(var(--spacing) * 1.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '10px',
+    lineHeight: 'calc(var(--spacing) * 4)',
+    whiteSpace: 'pre',
+  },
+  sba2034f1: {
+    color: 'var(--muted-foreground)',
+    flex: 'none',
+    fontSize: '10px',
+    fontVariantNumeric: '   tabular-nums ',
+  },
+})
+const styles_2 = stylex.create({
+  sb7676096: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+    fontWeight: '500',
+  },
+  s19dfa8ea: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+  },
+  s3a419cb2: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1.5)',
+    overflowY: 'auto',
+  },
+  s9c9141f4: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 0.5)',
+  },
+})
 const styles = stylex.create({
   s77d4c9c4: {
     borderColor: 'var(--border)',
@@ -170,13 +434,6 @@ const RUN_STATUS_LABELS: Record<RunStatus, string> = {
   failed: 'Failed',
   canceled: 'Canceled',
 }
-function runStatusClass(status: RunStatus): string {
-  if (status === 'failed') return 'border-destructive/30 bg-destructive/10 text-destructive'
-  if (status === 'succeeded') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
-  if (status === 'canceled') return 'border-border bg-muted text-muted-foreground'
-  return 'border-primary/30 bg-primary/10 text-primary'
-}
-
 /**
  * The live progress card pinned above the composer.
  *
@@ -304,7 +561,7 @@ export function RunRecordCard({
   const focus = seed ? runsById[seed.id] ?? seed : undefined
   const children = useMemo(() => (focus ? descendantsOf(runsById, focus.id) : []), [runsById, focus?.id])
   if (!focus) {
-    return run.isLoading ? <div className="text-muted-foreground py-1 text-[11px]">Loading run…</div> : null
+    return run.isLoading ? <div className={stylex.props(styles_3.sc8799f62).className || ''}>Loading run…</div> : null
   }
   return (
     // Same shell as the pinned card: this IS that card, frozen where the run finished.
@@ -388,16 +645,20 @@ function RunCardBody({
   const headerTitle = (isParked ? parkedLabel(run) : undefined) ?? cardTitle(run, plan, childRuns)
   return (
     <>
-      <div className="group/runhead flex min-w-0 items-center gap-2">
+      <div
+        className={
+          stylex.props(styles_4.s2ffff9, styles_4.s3f58665f, styles_4.sc6ed1702, styles_4.s5d936fb).className || ''
+        }
+      >
         {showRunControls ? <Loader2 className={stylex.props(styles.s3b87a119).className || ''} /> : null}
-        <span className="min-w-0 flex-1 truncate text-xs font-medium" title={headerTitle}>
+        <span className={stylex.props(styles_2.sb7676096).className || ''} title={headerTitle}>
           {headerTitle}
         </span>
         {/* Technical details live behind the same info bubble every tool row uses, live or done —
             and like those, the bubble shows itself only while the row is hovered. */}
         <span className={stylex.props(styles.s255e9b3e).className || ''}>
           {isCompletedTranscript && issueCount ? (
-            <span className="text-[10px] text-amber-700 dark:text-amber-300">
+            <span className={stylex.props(styles_3.s4dcd84ff).className || ''}>
               {issueCount} recovered issue{issueCount === 1 ? '' : 's'}
             </span>
           ) : null}
@@ -406,7 +667,20 @@ function RunCardBody({
             title="Run details"
             aria-label="Run details"
             onClick={() => setDetailsOpen(true)}
-            className="hover:bg-background/70 text-muted-foreground hover:text-foreground bg-background/60 rounded-full border p-0.75 opacity-0 transition-opacity group-hover/runhead:opacity-100 focus-visible:opacity-100"
+            className={
+              stylex.props(
+                styles_4.s9926ee50,
+                styles_4.sf2718385,
+                styles_4.sae6a97a5,
+                styles_4.sc43c4bb3,
+                styles_4.sc1af6c99,
+                styles_4.s775755af,
+                styles_4.sad8c742c,
+                styles_4.s765a26ee,
+                styles_4.s83442393,
+                styles_4.s79cfa1b2,
+              ).className || ''
+            }
           >
             <Info className={stylex.props(styles.sca3de967).className || ''} />
           </button>
@@ -441,7 +715,7 @@ function RunCardBody({
       </div>
 
       {run.error ? (
-        <div className="flex min-w-0 items-center">
+        <div className={stylex.props(styles_2.s19dfa8ea).className || ''}>
           <RunErrorChip
             run={run}
             error={run.error}
@@ -460,11 +734,13 @@ function RunCardBody({
 
       {progress && !isTerminal ? (
         <div className={stylex.props(styles.sfbc6e28d).className || ''}>
-          {progress.label ? <span className="text-muted-foreground text-[11px]">{progress.label}</span> : null}
+          {progress.label ? (
+            <span className={stylex.props(styles_3.s12cef23f).className || ''}>{progress.label}</span>
+          ) : null}
           {progress.fraction !== undefined ? (
             <div className={stylex.props(styles.s6bbccae4).className || ''}>
               <div
-                className="bg-primary h-full rounded-full transition-[width] duration-300"
+                className={stylex.props(styles_3.sf909c1d5).className || ''}
                 style={{
                   width: `${Math.min(100, Math.max(0, progress.fraction * 100))}%`,
                 }}
@@ -499,12 +775,12 @@ function RunCardBody({
       )}
 
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-h-[85vh] w-[min(44rem,calc(100vw-2rem))]">
+        <DialogContent className={stylex.props(styles_3.s86f9a095).className || ''}>
           <DialogHeader>
             <DialogTitle>Run details</DialogTitle>
             <DialogDescription>{headerTitle}</DialogDescription>
           </DialogHeader>
-          <div className="flex min-h-0 flex-col gap-1.5 overflow-y-auto">
+          <div className={stylex.props(styles_2.s3a419cb2).className || ''}>
             <RunWorkHierarchy
               run={run}
               childRuns={childRuns}
@@ -525,9 +801,16 @@ function RunCardBody({
       {/* Status and elapsed time anchor the card's bottom-left; cost keeps the opposite corner. */}
       <div className={stylex.props(styles.s438f8b66).className || ''}>
         <span
-          className={`flex-none rounded-full border px-1.5 py-0.5 text-[10px] ${runStatusClass(
-            isCompletedTranscript && !isTerminal ? 'succeeded' : run.status,
-          )}`}
+          className={
+            stylex.props(
+              styles_5.s948be48c,
+              styles_5.s775755af,
+              styles_5.sad8c742c,
+              styles_5.sc5cefc73,
+              styles_5.sc5dd1033,
+              styles_5.s55426dfb,
+            ).className || ''
+          }
         >
           {/* A budget pause is the one wait a person has to end, so it does not hide behind "Waiting". */}
           {isCompletedTranscript && !isTerminal
@@ -538,7 +821,9 @@ function RunCardBody({
         </span>
         <RunElapsed run={run} />
         {!compact && usageTotal > 0 ? (
-          <span className="text-muted-foreground ml-auto text-[10px]">{formatTokenCount(usageTotal)} tokens</span>
+          <span className={stylex.props(styles_3.s5a8a4e5d).className || ''}>
+            {formatTokenCount(usageTotal)} tokens
+          </span>
         ) : null}
       </div>
     </>
@@ -650,7 +935,7 @@ function RunActivityDrawer({journal}: {journal: RunJournalEntryInfo[]}) {
       <button
         type="button"
         aria-expanded={open}
-        className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
+        className={stylex.props(styles_3.sba564dce).className || ''}
         onClick={() => setOpen((current) => !current)}
       >
         {open ? (
@@ -662,11 +947,7 @@ function RunActivityDrawer({journal}: {journal: RunJournalEntryInfo[]}) {
         <span className={stylex.props(styles.s54eab7db).className || ''}>{lines.length}</span>
       </button>
       {open ? (
-        <div
-          ref={scrollRef}
-          aria-label="Run activity"
-          className="bg-muted/40 mt-1 max-h-40 overflow-y-auto rounded p-1.5 font-mono text-[10px] leading-4"
-        >
+        <div ref={scrollRef} aria-label="Run activity" className={stylex.props(styles_3.s95470d06).className || ''}>
           {lines.map((line) => (
             <ActivityLineRow key={line.key} line={line} />
           ))}
@@ -682,21 +963,29 @@ function RunActivityDrawer({journal}: {journal: RunJournalEntryInfo[]}) {
  */
 function ActivityLineRow({line}: {line: ActivityLine}) {
   const [open, setOpen] = useState(false)
-  const toneClass =
-    line.tone === 'error' ? 'text-destructive' : line.tone === 'warn' ? 'text-amber-700 dark:text-amber-300' : ''
   return (
     <div>
       <button
         type="button"
         aria-expanded={open}
         title={open ? 'Hide full entry' : 'Show full entry'}
-        className={`hover:bg-muted block w-full truncate rounded px-0.5 text-left ${toneClass}`}
+        className={
+          stylex.props(
+            styles_5.s37120a61,
+            styles_5.s597c48d,
+            styles_5.scdbaf625,
+            styles_5.s6e724d66,
+            styles_5.s529492ad,
+            styles_5.sc5cef8b2,
+            styles_5.sbf63b0a7,
+          ).className || ''
+        }
         onClick={() => setOpen((current) => !current)}
       >
         {line.text}
       </button>
       {open ? (
-        <pre className="bg-background/80 my-0.5 max-h-40 overflow-auto rounded border p-1.5 whitespace-pre-wrap">
+        <pre className={stylex.props(styles_3.sce02dbff).className || ''}>
           {JSON.stringify(line.entry.entry, null, 2)}
         </pre>
       ) : null}
@@ -719,7 +1008,7 @@ function RunSourceDrawer({runs}: {runs: RunInfo[]}) {
       <button
         type="button"
         aria-expanded={open}
-        className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
+        className={stylex.props(styles_3.sba564dce).className || ''}
         onClick={() => setOpen((current) => !current)}
       >
         {open ? (
@@ -732,10 +1021,12 @@ function RunSourceDrawer({runs}: {runs: RunInfo[]}) {
       {open
         ? sources.map((run) => (
             <div key={run.id} className={stylex.props(styles.s257f847e).className || ''}>
-              {sources.length > 1 ? <span className="text-muted-foreground text-[10px]">{runTitle(run)}</span> : null}
+              {sources.length > 1 ? (
+                <span className={stylex.props(styles_3.s12ce7de0).className || ''}>{runTitle(run)}</span>
+              ) : null}
               <pre
                 aria-label={`Workflow source: ${runTitle(run)}`}
-                className="bg-muted/40 max-h-64 overflow-auto rounded p-1.5 font-mono text-[10px] leading-4 whitespace-pre"
+                className={stylex.props(styles_3.sb7d5d124).className || ''}
               >
                 {run.sourceText}
               </pre>
@@ -750,9 +1041,25 @@ function RunSourceDrawer({runs}: {runs: RunInfo[]}) {
 function RunCardShell({children, compact, column}: {children: React.ReactNode; compact?: boolean; column?: boolean}) {
   return (
     <div
-      className={`border-border bg-card flex flex-none gap-2 rounded-lg border ${
-        compact ? 'mx-2 mb-1 p-2' : 'mb-2 p-2.5'
-      } ${column ? 'flex-col' : 'items-center'}`}
+      className={
+        (stylex.props(
+          styles_5.s1a01a0ed,
+          styles_5.sf28e7398,
+          styles_5.s2ffff9,
+          styles_5.s948be48c,
+          styles_5.s5d936fb,
+          styles_5.sf799889b,
+          styles_5.sad8c742c,
+        ).className || '') +
+        ' ' +
+        (compact
+          ? stylex.props(styles_5.s335490, styles_5.s3301f9, styles_5.s1aa15).className || ''
+          : (stylex.props(styles_5.s3301fa).className || '') +
+            ' ' +
+            (stylex.props(styles_6.s63f7e9c).className || '')) +
+        ' ' +
+        (column ? stylex.props(styles_5.s67e351ac).className || '' : stylex.props(styles_5.sc6ed1702).className || '')
+      }
     >
       {children}
     </div>
@@ -772,7 +1079,7 @@ function RunElapsed({run}: {run: RunInfo}) {
   const startedAt = run.startedAt ?? run.createdAt
   const endedAt = isTerminal ? run.finishedAt ?? run.updatedAt : now
   return (
-    <span className="text-muted-foreground flex-none text-[10px] tabular-nums" aria-label="Elapsed time">
+    <span className={stylex.props(styles_3.sba2034f1).className || ''} aria-label="Elapsed time">
       {formatElapsed(Math.max(0, endedAt - startedAt))}
     </span>
   )
@@ -785,7 +1092,7 @@ function RunElapsed({run}: {run: RunInfo}) {
  */
 function RunPlanSteps({plan, compact, settle = 'live'}: {plan: RunPlan; compact?: boolean; settle?: PlanSettle}) {
   return (
-    <div className="flex min-w-0 flex-col gap-0.5">
+    <div className={stylex.props(styles_2.s9c9141f4).className || ''}>
       {plan.steps.map((step) => (
         <PlanStepRow key={step.id} step={step} compact={compact} settle={settle} />
       ))}

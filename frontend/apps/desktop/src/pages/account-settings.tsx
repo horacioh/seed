@@ -74,6 +74,35 @@ import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {Key, Vault} from 'lucide-react'
 import {useEffect, useRef, useState} from 'react'
+const styles_3 = stylex.create({
+  se985d8e7: {
+    display: 'flex',
+    minHeight: '200px',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
+const styles_2 = stylex.create({
+  seb92103f: {
+    marginInline: 'auto',
+    display: 'flex',
+    minHeight: '100%',
+    width: '100%',
+    maxWidth: '42rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 6)',
+    padding: 'calc(0.25rem * 6)',
+  },
+  s2ecc4840: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '42rem',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 6)',
+    padding: 'calc(0.25rem * 6)',
+  },
+})
 const styles = stylex.create({
   s2c2347c6: {
     display: 'flex',
@@ -450,13 +479,13 @@ function VaultSettings() {
   }
   const remoteVaultHost = remoteVaultUrl ? new URL(remoteVaultUrl).host : null
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-6 p-6">
+    <div className={stylex.props(styles_2.seb92103f).className || ''}>
       <SizableText size="2xl" weight="bold">
         Identity Settings
       </SizableText>
 
       {vaultStatus.isLoading && !data ? (
-        <div className="flex min-h-[200px] items-center justify-center">
+        <div className={stylex.props(styles_3.se985d8e7).className || ''}>
           <Spinner />
         </div>
       ) : (
@@ -596,7 +625,7 @@ function AccountSettingsDetail({accountUid, tab}: {accountUid: string; tab: Acco
   const replace = useNavigate('replace')
   const navigate = useNavigate()
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
+    <div className={stylex.props(styles_2.s2ecc4840).className || ''}>
       <AccountSettingsHeader
         activeTab={tab}
         onTabChange={(nextTab) =>
@@ -726,7 +755,7 @@ function DevicesTab({accountUid}: {accountUid: string}) {
   )
   if (capabilities.isLoading && !capabilities.data) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
+      <div className={stylex.props(styles_3.se985d8e7).className || ''}>
         <Spinner />
       </div>
     )

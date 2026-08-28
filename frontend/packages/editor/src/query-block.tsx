@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {EditorQueryBlock} from '@seed-hypermedia/client/editor-types'
 import {HMBlockQuery, HMQueryTableConfig, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {entityQueryPathToHmIdPath} from '@shm/shared'
@@ -27,9 +28,168 @@ import {createReactBlockSpec} from './blocknote/react'
 import {buildSlotItems} from './query-block-draft-items'
 import {useQuerySearchInput} from './query-search-context'
 import {HMBlockSchema} from './schema'
-
 import {defaultQueryIncludes, defaultQuerySort, getQueryBlockInput} from './query-block-input'
-
+const styles_2 = stylex.create({
+  s68b465f8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--background)',
+      },
+    },
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s2ad763f: {
+    marginInline: 'calc(0.25rem * -4)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s6044a01e: {
+    justifyContent: 'flex-end',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s5cee774: {
+    position: 'fixed',
+  },
+  s3824af: {
+    zIndex: '40',
+  },
+  s5645174c: {
+    width: '350px',
+  },
+  s7867cc29: {
+    maxWidth: '90vw',
+  },
+  s5d936fd: {
+    gap: 'calc(0.25rem * 4)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s2ad6738: {
+    marginTop: 'calc(0.25rem * -1)',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s7c401f13: {
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  s36d670c0: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--input)',
+      },
+    },
+  },
+  s18c14: {
+    height: 'calc(0.25rem * 9)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sfcf3a2ae: {
+    maxWidth: '100%',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  s74a79380: {
+    inset: 'calc(0.25rem * 0)',
+  },
+  s11f8a88a: {
+    borderColor: 'var(--muted)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  sa832a59: {
+    left: 'calc(0.25rem * -2)',
+  },
+  s5360d9ad: {
+    top: 'calc(0.25rem * -2)',
+  },
+  sa49bd51f: {
+    height: '260px',
+  },
+  s5eeac68b: {
+    minHeight: '80%',
+  },
+  s2d275e4a: {
+    width: 'calc(100% + 16px)',
+  },
+  s92bcf7b9: {
+    maxWidth: '800px',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+})
 export const QueryBlock = createReactBlockSpec({
   type: 'query',
   propSchema: {
@@ -64,10 +224,8 @@ export const QueryBlock = createReactBlockSpec({
   },
   containsInlineContent: false,
   selectable: true,
-
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
-
   parseHTML: [
     {
       tag: 'div[data-content-type=query]',
@@ -78,20 +236,16 @@ export const QueryBlock = createReactBlockSpec({
     },
   ],
 })
-
 type HMQueryBlockIncludes = HMBlockQuery['attributes']['query']['includes']
 type HMQueryBlockSort = NonNullable<HMBlockQuery['attributes']['query']['sort']>
-
 function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) {
   const client = useUniversalClient()
   const queryIncludes: HMQueryBlockIncludes = useMemo(() => {
     return JSON.parse(block.props.queryIncludes || defaultQueryIncludes)
   }, [block.props.queryIncludes])
-
   const querySort = useMemo(() => {
     return JSON.parse(block.props.querySort || defaultQuerySort)
   }, [block.props.querySort])
-
   const banner = block.props.banner === 'true'
   const queryTargetId = useMemo<UnpackedHypermediaId | null>(() => {
     const include = queryIncludes?.[0]
@@ -104,20 +258,19 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
   const queryBlockInput = useMemo(() => getQueryBlockInput(block.props), [block.props])
   const queryBlock = useQuery(queryQueryBlock(client, queryBlockInput))
   const sortedItems = queryBlock.data?.results ?? []
-
   const {canEdit, beginEditIfNeeded} = useEditorGate()
   const [isSelected, setIsSelected] = useState(false)
   const [isFocusedWithin, setIsFocusedWithin] = useState(false)
-
   const assign = useCallback(
     (props: Partial<EditorQueryBlock['props']>) => {
       beginEditIfNeeded()
       // @ts-ignore
-      editor.updateBlock(block.id, {props})
+      editor.updateBlock(block.id, {
+        props: props as any,
+      })
     },
     [editor, block.id, beginEditIfNeeded],
   )
-
   const interactionSummaries = queryBlock.data?.interactionSummaries ?? {}
   const itemContributors = useMemo(() => {
     const contributors: Record<string, string[]> = {}
@@ -128,7 +281,6 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     })
     return contributors
   }, [sortedItems, interactionSummaries])
-
   const accountsMetadata = queryBlock.data?.accountsMetadata ?? {}
   const style = block.props.style as 'Card' | 'List' | 'Table'
   const tableConfig = useMemo<HMQueryTableConfig | undefined>(() => {
@@ -136,7 +288,6 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     return JSON.parse(block.props.tableConfig)
   }, [block.props.tableConfig])
   const {DraftSlot} = useQueryBlockDrafts()
-
   const renderContent = (slot: QueryBlockDraftSlotData | null) => {
     const {prependItems, bannerContent} = buildSlotItems(
       slot,
@@ -164,7 +315,11 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
         // Selecting the query block still works via its padding/frame.
         navigateCards
         tableConfig={tableConfig}
-        onTableConfigChange={(config) => assign({tableConfig: JSON.stringify(config)})}
+        onTableConfigChange={(config) =>
+          assign({
+            tableConfig: JSON.stringify(config),
+          })
+        }
         onTableSortingChange={(sorting) => {
           const first = sorting[0]
           const terms: Record<string, HMQueryBlockSort[number]['term']> = {
@@ -174,12 +329,19 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
             updated: 'UpdateTime',
           }
           const term = first ? terms[first.id] : undefined
-          if (term) assign({querySort: JSON.stringify([{term, reverse: first?.desc ?? false}])})
+          if (term)
+            assign({
+              querySort: JSON.stringify([
+                {
+                  term,
+                  reverse: first?.desc ?? false,
+                },
+              ]),
+            })
         }}
       />
     )
   }
-
   const isActive = isSelected || isFocusedWithin
   const {onRender} = useQueryBlockFrontendPerf({
     source: 'editor',
@@ -193,17 +355,24 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     data: queryBlock.data,
     error: queryBlock.error,
   })
-
   const handleBlurCapture = (e: FocusEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
       setIsFocusedWithin(false)
     }
   }
-
   return (
     <BlockSelectionWrapper editor={editor} block={block} onSelectionChange={setIsSelected} selectOnMouseDown>
       <div
-        className="group relative -mx-4 flex flex-col px-4 select-none"
+        className={
+          stylex.props(
+            styles.sdef3facc,
+            styles.s2ad763f,
+            styles.s2ffff9,
+            styles.sa145969,
+            styles.s67e351ac,
+            styles.s34b1af,
+          ).className || ''
+        }
         onFocusCapture={() => setIsFocusedWithin(true)}
         onBlurCapture={handleBlurCapture}
       >
@@ -239,7 +408,6 @@ function Render(block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     </BlockSelectionWrapper>
   )
 }
-
 function QuerySettings({
   queryDocName = '',
   block,
@@ -267,8 +435,10 @@ function QuerySettings({
   // render above it regardless of z-index.
   const triggerRef = useRef<HTMLButtonElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
-  const [popoverRect, setPopoverRect] = useState<{top: number; right: number} | null>(null)
-
+  const [popoverRect, setPopoverRect] = useState<{
+    top: number
+    right: number
+  } | null>(null)
   useEffect(() => {
     if (!popoverState.open || !triggerRef.current) return
     const update = () => {
@@ -276,7 +446,10 @@ function QuerySettings({
       const rect = triggerRef.current.getBoundingClientRect()
       // Pin top to just below the trigger and right to the trigger's right
       // edge so the popover hangs off the right side.
-      setPopoverRect({top: rect.bottom + 4, right: window.innerWidth - rect.right})
+      setPopoverRect({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      })
     }
     update()
     window.addEventListener('scroll', update, true)
@@ -316,21 +489,24 @@ function QuerySettings({
       view.focus()
     }
   }, [popoverState.open, editor, block.id])
-
   return (
     <>
-      <div className="relative flex justify-end py-1">
+      <div className={stylex.props(styles.sdef3facc, styles.s2ffff9, styles.s6044a01e, styles.s34b56d).className || ''}>
         <Tooltip content="Edit Query">
           <Button
             ref={triggerRef}
             size="icon"
             variant="ghost"
-            className={`hover:bg-background bg-white transition-opacity dark:bg-black ${
-              popoverState.open ? 'opacity-100' : 'opacity-0'
-            } group-hover:opacity-100`}
+            className={
+              (stylex.props(styles_2.s68b465f8, styles_2.s605ce4a1, styles_2.s83442393).className || '') +
+              ' ' +
+              (popoverState.open
+                ? stylex.props(styles_2.s486c2d2f).className || ''
+                : stylex.props(styles_2.s765a26ee).className || '')
+            }
             onClick={() => popoverState.onOpenChange(!popoverState.open)}
           >
-            <Pencil className="size-4" />
+            <Pencil className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </Tooltip>
 
@@ -339,8 +515,25 @@ function QuerySettings({
           createPortal(
             <div
               ref={popoverRef}
-              className="bg-background fixed z-40 flex w-[350px] max-w-[90vw] flex-col gap-4 rounded-lg p-4 shadow-lg"
-              style={{top: popoverRect.top, right: popoverRect.right}}
+              className={
+                stylex.props(
+                  styles.s436dc7b6,
+                  styles.s5cee774,
+                  styles.s3824af,
+                  styles.s2ffff9,
+                  styles.s5645174c,
+                  styles.s7867cc29,
+                  styles.s67e351ac,
+                  styles.s5d936fd,
+                  styles.sf799889b,
+                  styles.s1aa17,
+                  styles.s8a6c2948,
+                ).className || ''
+              }
+              style={{
+                top: popoverRect.top,
+                right: popoverRect.right,
+              }}
               // Prevent ProseMirror from intercepting focus-stealing events when
               // the editor is still read-only. Without this the search input
               // below cannot be focused until the doc is in edit mode.
@@ -390,8 +583,14 @@ function QuerySettings({
                 }}
                 id="showChildren"
                 options={[
-                  {label: 'Show only Direct Children', value: 'Children'},
-                  {label: 'Show all Descendants', value: 'AllDescendants'},
+                  {
+                    label: 'Show only Direct Children',
+                    value: 'Children',
+                  },
+                  {
+                    label: 'Show all Descendants',
+                    value: 'AllDescendants',
+                  },
                 ]}
               />
 
@@ -400,15 +599,27 @@ function QuerySettings({
                 onValue={(value) => {
                   onValuesChange({
                     id: null,
-                    props: {...block.props, style: value as 'Card' | 'List' | 'Table'},
+                    props: {
+                      ...block.props,
+                      style: value as 'Card' | 'List' | 'Table',
+                    },
                   })
                 }}
                 label="View"
                 id="view"
                 options={[
-                  {label: 'Card', value: 'Card'},
-                  {label: 'List', value: 'List'},
-                  {label: 'Table', value: 'Table'},
+                  {
+                    label: 'Card',
+                    value: 'Card',
+                  },
+                  {
+                    label: 'List',
+                    value: 'List',
+                  },
+                  {
+                    label: 'Table',
+                    value: 'Table',
+                  },
                 ]}
               />
               <SelectField
@@ -432,11 +643,26 @@ function QuerySettings({
                 label="Sort by"
                 id="sort"
                 options={[
-                  {label: 'Update time', value: 'UpdateTime'},
-                  {label: 'Create time', value: 'CreateTime'},
-                  {label: 'Display time', value: 'DisplayTime'},
-                  {label: 'Latest activity', value: 'ActivityTime'},
-                  {label: 'By Title', value: 'Title'},
+                  {
+                    label: 'Update time',
+                    value: 'UpdateTime',
+                  },
+                  {
+                    label: 'Create time',
+                    value: 'CreateTime',
+                  },
+                  {
+                    label: 'Display time',
+                    value: 'DisplayTime',
+                  },
+                  {
+                    label: 'Latest activity',
+                    value: 'ActivityTime',
+                  },
+                  {
+                    label: 'By Title',
+                    value: 'Title',
+                  },
                 ]}
               />
               {block.props.style == 'Card' ? (
@@ -455,9 +681,18 @@ function QuerySettings({
                     label="Columns"
                     id="columns"
                     options={[
-                      {label: '1', value: '1'},
-                      {label: '2', value: '2'},
-                      {label: '3', value: '3'},
+                      {
+                        label: '1',
+                        value: '1',
+                      },
+                      {
+                        label: '2',
+                        value: '2',
+                      },
+                      {
+                        label: '3',
+                        value: '3',
+                      },
                     ]}
                   />
                   <SwitchField
@@ -531,8 +766,19 @@ function QuerySettings({
                   placeholder="Item Count"
                 />
               ) : null}
-              <div className="border-border -mt-1 flex flex-col gap-2 border-t">
-                <div className="flex justify-end">
+              <div
+                className={
+                  stylex.props(
+                    styles.s1a01a0ed,
+                    styles.s2ad6738,
+                    styles.s2ffff9,
+                    styles.s67e351ac,
+                    styles.s5d936fb,
+                    styles.s7c401f13,
+                  ).className || ''
+                }
+              >
+                <div className={stylex.props(styles.s2ffff9, styles.s6044a01e).className || ''}>
                   <Button
                     size="icon"
                     onClick={() => {
@@ -540,7 +786,7 @@ function QuerySettings({
                       editor.removeBlocks([block.id])
                     }}
                   >
-                    <Trash className="size-4" />
+                    <Trash className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
                 </div>
               </div>
@@ -551,7 +797,6 @@ function QuerySettings({
     </>
   )
 }
-
 function QuerySearch({
   selectedDocName = '',
   onSelect,
@@ -565,9 +810,8 @@ function QuerySearch({
 }) {
   const SearchInputComponent = useQuerySearchInput()
   const [showSearch, setShowSearch] = useState(false)
-
   return (
-    <div className="relative flex flex-col">
+    <div className={stylex.props(styles.sdef3facc, styles.s2ffff9, styles.s67e351ac).className || ''}>
       <Button
         onClick={() => {
           // Flip the editor to editable before the search input mounts so
@@ -575,12 +819,23 @@ function QuerySearch({
           beginEditIfNeeded?.()
           setShowSearch(true)
         }}
-        className="border-border hover:bg-input h-9 gap-2 overflow-hidden border"
+        className={
+          stylex.props(
+            styles.s1a01a0ed,
+            styles.s36d670c0,
+            styles.s18c14,
+            styles.s5d936fb,
+            styles.s92852dd5,
+            styles.sad8c742c,
+          ).className || ''
+        }
       >
-        <Search className="size-4 shrink-0" />
+        <Search className={stylex.props(styles.sca3de968, styles.sf032ed6c).className || ''} />
         <SizableText
           family="default"
-          className="max-w-full flex-1 truncate text-left"
+          className={
+            stylex.props(styles.sfcf3a2ae, styles.sb42feb5d, styles.s6e724d66, styles.sbf63b0a7).className || ''
+          }
           style={{
             color: selectedDocName ? 'text-foreground' : 'muted-foreground',
           }}
@@ -590,8 +845,30 @@ function QuerySearch({
       </Button>
       {showSearch && SearchInputComponent ? (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowSearch(false)} />
-          <div className="no-window-drag border-muted bg-background absolute -top-2 -left-2 z-40 h-[260px] min-h-[80%] w-[calc(100%+16px)] max-w-[800px] rounded-md border p-2 shadow-lg">
+          <div
+            className={stylex.props(styles.s5cee774, styles.s74a79380, styles.s3824af).className || ''}
+            onClick={() => setShowSearch(false)}
+          />
+          <div
+            className={
+              stylex.props(
+                styles.s11f8a88a,
+                styles.s436dc7b6,
+                styles.s67010d77,
+                styles.sa832a59,
+                styles.s5360d9ad,
+                styles.s3824af,
+                styles.sa49bd51f,
+                styles.s5eeac68b,
+                styles.s2d275e4a,
+                styles.s92bcf7b9,
+                styles.sf79988b7,
+                styles.sad8c742c,
+                styles.s1aa15,
+                styles.s8a6c2948,
+              ).className || ''
+            }
+          >
             <SearchInputComponent
               onClose={() => setShowSearch(false)}
               allowWebURL={allowWebURL}

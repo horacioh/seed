@@ -38,6 +38,80 @@ import {
 } from './models'
 
 /** Manages the configured agent servers: add, remove, and pick the default. */
+const styles_5 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sd5830f98: {
+    '@media ((max-width: 639px))': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_4 = stylex.create({
+  s18a7e3b9: {
+    maxWidth: '500px',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  s667df653: {
+    display: 'flex',
+    maxHeight: '78vh',
+    width: '100%',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1)',
+    overflowY: 'auto',
+  },
+})
+const styles_3 = stylex.create({
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_2 = stylex.create({
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   sd330460: {
     display: 'flex',
@@ -215,15 +289,33 @@ function AgentServerSettingsRow({
 }) {
   const health = useAgentServerHealth(serverUrl)
   return (
-    <div className="group border-border bg-background flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
-      <div className="min-w-0 flex-1">
+    <div
+      className={
+        stylex.props(
+          styles_5.s1a01a0ed,
+          styles_5.s436dc7b6,
+          styles_5.s2ffff9,
+          styles_5.sc6ed1702,
+          styles_5.sc1a629cb,
+          styles_5.s5d936fc,
+          styles_5.sf799889b,
+          styles_5.sad8c742c,
+          styles_5.s34b1ae,
+          styles_5.s34b56e,
+        ).className || ''
+      }
+    >
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>
         <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
             {isLocal ? LOCAL_AGENT_SERVER_LABEL : serverUrl}
           </SizableText>
           {isDefault ? <Badge variant="secondary">Default</Badge> : null}
         </div>
-        <SizableText size="xs" className={health.isError ? 'text-destructive' : 'text-muted-foreground'}>
+        <SizableText
+          size="xs"
+          className={stylex.props(health.isError ? styles_3.s8a2570e2 : styles_3.sf2718385).className || ''}
+        >
           {health.isLoading
             ? 'Checking…'
             : health.isError
@@ -237,7 +329,7 @@ function AgentServerSettingsRow({
             variant="outline"
             size="sm"
             onClick={onMakeDefault}
-            className="opacity-0 transition-opacity group-hover:opacity-100 max-sm:opacity-100"
+            className={stylex.props(styles_5.s765a26ee, styles_5.s83442393, styles_5.sd5830f98).className || ''}
           >
             Make default
           </Button>
@@ -253,7 +345,7 @@ function AgentServerSettingsRow({
               </AlertDialogTrigger>
             </Tooltip>
             <AlertDialogPortal>
-              <AlertDialogContent className="max-w-[500px] gap-4">
+              <AlertDialogContent className={stylex.props(styles_4.s18a7e3b9).className || ''}>
                 <AlertDialogTitle className={stylex.props(styles.s38dca3a9).className || ''}>
                   Remove Agent Server
                 </AlertDialogTitle>
@@ -285,7 +377,7 @@ function AgentServerSettingsRow({
  */
 export function AgentServersDialog({}: {input: true; onClose: () => void}) {
   return (
-    <div className="flex max-h-[78vh] w-full flex-col gap-1 overflow-y-auto">
+    <div className={stylex.props(styles_4.s667df653).className || ''}>
       <DialogTitle>Agent Servers</DialogTitle>
       <AgentServersSettings />
     </div>

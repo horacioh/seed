@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 // @ts-expect-error
 import {Block, BlockNoteEditor, HMBlockSchema} from '@'
 import {updateGroup} from '../../../../../block-utils'
@@ -19,7 +20,14 @@ import {CopyLinkToBlockButton} from './DefaultButtons/CopyLinkToBlockButton'
 import {RemoveBlockButton} from './DefaultButtons/RemoveBlockButton'
 import {DragHandleMenu, DragHandleMenuProps} from './DragHandleMenu'
 import {DragHandleMenuItem} from './DragHandleMenuItem'
-
+const styles = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 export const DefaultDragHandleMenu = <BSchema extends HMBlockSchema>(props: DragHandleMenuProps<BSchema>) => (
   <DragHandleMenu>
     <RemoveBlockButton {...props}>Delete</RemoveBlockButton>
@@ -27,12 +35,9 @@ export const DefaultDragHandleMenu = <BSchema extends HMBlockSchema>(props: Drag
     <CopyLinkToBlockButton {...props} />
   </DragHandleMenu>
 )
-
 function TurnIntoMenu(props: DragHandleMenuProps<HMBlockSchema>) {
   const [opened, setOpened] = useState(false)
-
   const menuCloseTimer = useRef<NodeJS.Timeout | undefined>()
-
   const startMenuCloseTimer = useCallback(() => {
     if (menuCloseTimer.current) {
       clearTimeout(menuCloseTimer.current)
@@ -41,21 +46,17 @@ function TurnIntoMenu(props: DragHandleMenuProps<HMBlockSchema>) {
       setOpened(false)
     }, 250)
   }, [])
-
   const stopMenuCloseTimer = useCallback(() => {
     if (menuCloseTimer.current) {
       clearTimeout(menuCloseTimer.current)
     }
     setOpened(true)
   }, [])
-
   const groups = groupBy(turnIntoItems, (i) => i.group)
   const renderedItems: any[] = []
   let index = 0
-
   forEach(groups, (groupedItems) => {
     renderedItems.push(<Menu.Label key={groupedItems[0]?.group}>{groupedItems[0]?.group}</Menu.Label>)
-
     for (const item of groupedItems) {
       renderedItems.push(
         <Menu.Item
@@ -72,31 +73,45 @@ function TurnIntoMenu(props: DragHandleMenuProps<HMBlockSchema>) {
       index++
     }
   })
-
   if (!props.block.type) {
     return null
   }
-
   return (
     <DragHandleMenuItem onMouseOver={stopMenuCloseTimer} onMouseLeave={startMenuCloseTimer}>
       <Menu opened={opened} position="right">
         <Menu.Target>
-          <div className="flex gap-2">
+          <div className={stylex.props(styles.s2ffff9, styles.s5d936fb).className || ''}>
             <RefreshCcw size={14} />
-            <div style={{flex: 1}}>Turn into</div>
-            <Box style={{display: 'flex', alignItems: 'center'}}>
+            <div
+              style={{
+                flex: 1,
+              }}
+            >
+              Turn into
+            </div>
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               <Forward size={12} />
             </Box>
           </div>
         </Menu.Target>
-        <Menu.Dropdown onMouseLeave={startMenuCloseTimer} onMouseOver={stopMenuCloseTimer} style={{marginLeft: '5px'}}>
+        <Menu.Dropdown
+          onMouseLeave={startMenuCloseTimer}
+          onMouseOver={stopMenuCloseTimer}
+          style={{
+            marginLeft: '5px',
+          }}
+        >
           {renderedItems}
         </Menu.Dropdown>
       </Menu>
     </DragHandleMenuItem>
   )
 }
-
 var turnIntoItems = [
   {
     label: 'Paragraph',
@@ -182,7 +197,6 @@ var turnIntoItems = [
       updateGroup(editor, block, 'Group')
     },
   },
-
   {
     label: 'Blockquote item',
     group: 'Group operations',

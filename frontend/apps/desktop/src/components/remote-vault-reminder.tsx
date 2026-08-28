@@ -18,7 +18,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     padding: 'calc(0.25rem * 4)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+    boxShadow: 'var(--shadow-sm)',
   },
   sfbc6e28d: {
     display: 'flex',

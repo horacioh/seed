@@ -117,9 +117,8 @@ function cleanupRendered(root: Root, container: HTMLDivElement) {
   container.remove()
 }
 
-/** Status dots are the only fully-rounded 2.5-size spans in the server rows. */
 function statusDots(container: HTMLElement) {
-  return Array.from(container.querySelectorAll('span.rounded-full.size-2\\.5, span.size-2\\.5.rounded-full'))
+  return Array.from(container.querySelectorAll('[data-testid="agent-server-status-dot"]'))
 }
 
 describe('agents list — local server presentation', () => {
@@ -179,7 +178,7 @@ describe('agents list — local server presentation', () => {
 
     const dots = statusDots(container)
     expect(dots).toHaveLength(1)
-    expect(dots[0]!.className).toContain('bg-green-500')
+    expect(dots[0]!.getAttribute('data-status')).toBe('online')
 
     cleanupRendered(root, container)
   })
@@ -195,7 +194,7 @@ describe('agents list — local server presentation', () => {
 
     const dots = statusDots(container)
     expect(dots).toHaveLength(2)
-    expect(dots.some((dot) => dot.className.includes('bg-destructive'))).toBe(true)
+    expect(dots.some((dot) => dot.getAttribute('data-status') === 'error')).toBe(true)
 
     cleanupRendered(root, container)
   })

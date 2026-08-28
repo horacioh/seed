@@ -47,6 +47,500 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from './s
 import {cn} from './utils'
 
 /** Highlights query terms in text without interpreting them as a regular expression. */
+const styles_5 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_4 = stylex.create({
+  sec52090b: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    color: 'var(--muted-foreground)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s3e751ad3: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s1c2156eb: {
+    color: 'var(--muted-foreground)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-medium)',
+    textTransform: 'uppercase',
+  },
+  s8f6ed295: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    borderRadius: '0.25rem',
+    padding: 'calc(var(--spacing) * 1)',
+  },
+  s47aed50f: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    fontSize: '11px',
+  },
+  s28be15b8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  sffc515b6: {
+    marginInline: 'auto',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-6xl)',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 5)',
+    paddingInline: 'calc(var(--spacing) * 5)',
+    paddingBlock: 'calc(var(--spacing) * 6)',
+    '@media ((min-width: 1024px))': {
+      paddingInline: 'calc(var(--spacing) * 8)',
+    },
+  },
+  s1fa02c08: {
+    color: 'var(--muted-foreground)',
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase',
+  },
+  sc731bffd: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2.5)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sc4a3833e: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    paddingInline: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s9f6fc75f: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    color: 'var(--tone-amber-700)',
+  },
+  s180f435a: {
+    borderColor: 'var(--foreground)',
+    color: 'var(--foreground)',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  sce3543c7: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    borderColor: 'transparent',
+  },
+  sacf3fbd8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  sbc6aa5c0: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 10%, transparent)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  sfd476430: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 10%, transparent)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s418b62ed: {
+    color: 'var(--muted-foreground)',
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: '0.18em',
+    textTransform: 'uppercase',
+  },
+  s889eda3b: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(var(--spacing) * 2)',
+    overflow: 'auto',
+    fontSize: '11px',
+  },
+  sc65561ab: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s44828117: {
+    borderColor: 'var(--input)',
+    backgroundColor: 'var(--background)',
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 2px currentcolor',
+    },
+    height: 'calc(var(--spacing) * 8)',
+    width: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    outlineStyle: 'none',
+  },
+  s7804e73: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    ':focus': {
+      backgroundColor: 'var(--accent)',
+    },
+    width: '100%',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    outlineStyle: 'none',
+  },
+  s662f878d: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    color: 'var(--muted-foreground)',
+  },
+  s899a5760: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px currentcolor',
+      outlineStyle: 'none',
+    },
+    outlineStyle: 'none',
+  },
+  s3b7916ca: {
+    cursor: 'default',
+  },
+  s2dc5299d: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 20%, transparent)',
+      },
+    },
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    ':lastChild': {
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '0px',
+    },
+  },
+  s30a15a48: {
+    color: 'var(--foreground)',
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px currentcolor',
+      outlineStyle: 'none',
+    },
+    borderRadius: '0.25rem',
+    textAlign: 'left',
+    outlineStyle: 'none',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  sb30c8f14: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 20%, transparent)',
+      },
+    },
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+    ':lastChild': {
+      borderBottomStyle: 'solid',
+      borderBottomWidth: '0px',
+    },
+  },
+  s1325ab8d: {
+    color: 'var(--muted-foreground)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-semibold)',
+    letterSpacing: 'var(--tracking-widest)',
+    textTransform: 'uppercase',
+  },
+  s505fb8b: {
+    backgroundColor: 'var(--muted)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '11px',
+  },
+  s67840439: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 20%, transparent)',
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 48)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 6)',
+    textAlign: 'center',
+  },
+  sffc13ed6: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 40%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
+  },
+})
+const styles_3 = stylex.create({
+  s180f435a: {
+    borderColor: 'var(--foreground)',
+    color: 'var(--foreground)',
+    fontWeight: '500',
+  },
+  s856bab52: {
+    backgroundColor: 'var(--accent)',
+  },
+  s3b7916ca: {
+    cursor: 'default',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+})
+const styles_2 = stylex.create({
+  se2dabf6f: {
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    position: 'absolute',
+    top: '100%',
+    right: 'calc(0.25rem * 0)',
+    zIndex: '30',
+    marginTop: 'calc(0.25rem * 2)',
+    minWidth: 'calc(0.25rem * 48)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-md)',
+  },
+  sf26f97cb: {
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    position: 'absolute',
+    top: '100%',
+    right: 'calc(0.25rem * 24)',
+    zIndex: '30',
+    marginTop: 'calc(0.25rem * 2)',
+    minWidth: 'calc(0.25rem * 48)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-md)',
+  },
+  s244b0b8c: {
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    position: 'absolute',
+    top: '100%',
+    right: 'calc(0.25rem * 0)',
+    zIndex: '30',
+    marginTop: 'calc(0.25rem * 2)',
+    minWidth: 'calc(0.25rem * 56)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-md)',
+  },
+  s10483f08: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sabad94a4: {
+    minHeight: 'calc(0.25rem * 48)',
+  },
+  s48338369: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--popover)',
+    position: 'absolute',
+    top: 'calc(0.25rem * 10)',
+    left: 'calc(0.25rem * 0)',
+    zIndex: '10',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 44)',
+    flexDirection: 'column',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-md)',
+  },
+  sdb36c0db: {
+    height: 'calc(0.25rem * 8)',
+    minWidth: 'calc(0.25rem * 32)',
+    flex: '1',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s4e12b012: {
+    position: 'relative',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  sf757653: {
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    zIndex: '50',
+    maxHeight: 'calc(0.25rem * 48)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 1)',
+    boxShadow: 'var(--shadow-md)',
+  },
+  s6997be87: {
+    width: '100%',
+    minWidth: 'max-content',
+    borderCollapse: 'collapse',
+    textAlign: 'left',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  saf406c44: {
+    maxWidth: 'calc(0.25rem * 80)',
+    paddingInline: 'calc(0.25rem * 3)',
+    paddingBlock: 'calc(0.25rem * 2)',
+    verticalAlign: 'top',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  s2df23bad: {
+    color: 'var(--muted-foreground)',
+    marginTop: 'calc(0.25rem * 1)',
+    maxWidth: '24rem',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+})
 const styles = stylex.create({
   s8ba11029: {
     backgroundColor: 'var(--brand-10)',
@@ -154,8 +648,7 @@ const styles = stylex.create({
     paddingBlock: 'calc(0.25rem * 2)',
     fontSize: '0.875rem',
     lineHeight: 'calc(1.25 / 0.875)',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
   },
@@ -465,11 +958,7 @@ function ExploreScopePill({
 }) {
   const [open, setOpen] = useState(false)
   if (!onChange) {
-    return (
-      <span className="border-border bg-muted/30 text-muted-foreground rounded-md border px-3 py-2 text-xs">
-        {contextLabel}
-      </span>
-    )
+    return <span className={stylex.props(styles_4.sec52090b).className || ''}>{contextLabel}</span>
   }
   const scopeLabel = context.type === 'node' ? 'Whole node' : context.id.uid
   return (
@@ -479,10 +968,10 @@ function ExploreScopePill({
         <ChevronDown className={stylex.props(styles.s75f4ad6b).className || ''} aria-hidden />
       </Button>
       {open ? (
-        <div className="bg-popover text-popover-foreground absolute top-full right-0 z-30 mt-2 min-w-48 rounded-md border p-1 shadow-md">
+        <div className={stylex.props(styles_2.se2dabf6f).className || ''}>
           <button
             type="button"
-            className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
+            className={stylex.props(styles_4.s3e751ad3).className || ''}
             onClick={() => {
               onChange({
                 type: 'node',
@@ -501,7 +990,7 @@ function ExploreScopePill({
             <button
               key={account.value}
               type="button"
-              className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
+              className={stylex.props(styles_4.s3e751ad3).className || ''}
               onClick={() => {
                 onChange({
                   type: 'site',
@@ -533,13 +1022,13 @@ function ExploreColumnsMenu({
   onToggle: (column: string) => void
 }) {
   return (
-    <div className="bg-popover text-popover-foreground absolute top-full right-24 z-30 mt-2 min-w-48 rounded-md border p-1 shadow-md">
-      <p className="text-muted-foreground px-2 py-1.5 text-[11px] font-medium uppercase">Columns</p>
+    <div className={stylex.props(styles_2.sf26f97cb).className || ''}>
+      <p className={stylex.props(styles_4.s1c2156eb).className || ''}>Columns</p>
       {columns.map((column) => (
         <button
           type="button"
           key={column}
-          className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
+          className={stylex.props(styles_4.s3e751ad3).className || ''}
           onClick={() => onToggle(column)}
         >
           {selected.includes(column) ? (
@@ -568,14 +1057,14 @@ function ExploreSortMenu({
 }) {
   const activeKeys = new Set(rules.map((rule) => rule.key))
   return (
-    <div className="bg-popover text-popover-foreground absolute top-full right-0 z-30 mt-2 min-w-56 rounded-md border p-1 shadow-md">
-      <p className="text-muted-foreground px-2 py-1.5 text-[11px] font-medium uppercase">Sort order</p>
+    <div className={stylex.props(styles_2.s244b0b8c).className || ''}>
+      <p className={stylex.props(styles_4.s1c2156eb).className || ''}>Sort order</p>
       {rules.length
         ? rules.map((rule) => (
             <div key={rule.key} className={stylex.props(styles.s7f7d213).className || ''}>
               <button
                 type="button"
-                className="hover:bg-accent rounded p-1"
+                className={stylex.props(styles_4.s8f6ed295).className || ''}
                 onClick={() => onCycleDirection(rule.key)}
                 aria-label={`Change ${rule.key} sort direction`}
               >
@@ -585,10 +1074,10 @@ function ExploreSortMenu({
                   <ArrowDown className={stylex.props(styles.s3269316e).className || ''} />
                 )}
               </button>
-              <span className="min-w-0 flex-1 truncate">{rule.key}</span>
+              <span className={stylex.props(styles_2.s10483f08).className || ''}>{rule.key}</span>
               <button
                 type="button"
-                className="text-muted-foreground hover:text-foreground rounded px-1 text-[11px]"
+                className={stylex.props(styles_4.s47aed50f).className || ''}
                 onClick={() => onRemove(rule.key)}
                 aria-label={`Remove ${rule.key} sort`}
               >
@@ -598,14 +1087,14 @@ function ExploreSortMenu({
           ))
         : null}
       <div className={stylex.props(styles.s514b5fd3).className || ''}>
-        <p className="text-muted-foreground px-2 py-1.5 text-[11px] font-medium uppercase">Add attribute sort</p>
+        <p className={stylex.props(styles_4.s1c2156eb).className || ''}>Add attribute sort</p>
         {availableKeys
           .filter((key) => !activeKeys.has(key))
           .map((key) => (
             <button
               key={key}
               type="button"
-              className="hover:bg-accent flex w-full items-center rounded px-2 py-1.5 text-left text-xs"
+              className={stylex.props(styles_4.s28be15b8).className || ''}
               onClick={() => onAdd(key)}
             >
               {key}
@@ -756,11 +1245,11 @@ export function ExplorePage(props: ExplorePageProps) {
   }
   const tableMode = props.parsed.presentation.view === 'table' && activeTab !== 'block' && activeTab !== 'comment'
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8">
+    <main className={stylex.props(styles_4.sffc515b6).className || ''}>
       <header className={stylex.props(styles.s261b6cd6).className || ''}>
         <div className={stylex.props(styles.sbbe27b50).className || ''}>
           <div>
-            <div className="text-muted-foreground text-[11px] font-semibold tracking-[0.2em] uppercase">Explore</div>
+            <div className={stylex.props(styles_4.s1fa02c08).className || ''}>Explore</div>
             <h1 className={stylex.props(styles.s95e874dc).className || ''}>Advanced search</h1>
           </div>
           <ExploreScopePill
@@ -871,7 +1360,7 @@ export function ExplorePage(props: ExplorePageProps) {
                 key={chip.id}
                 type="button"
                 onClick={() => updateQuery(serializeExploreQuery(removeExploreQueryChip(props.parsed, chip.id)))}
-                className="border-border bg-muted/40 hover:bg-muted inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-mono text-xs transition-colors"
+                className={stylex.props(styles_4.sc731bffd).className || ''}
               >
                 {chip.label}
                 <X className={stylex.props(styles.sca3de967).className || ''} aria-hidden />
@@ -879,7 +1368,7 @@ export function ExplorePage(props: ExplorePageProps) {
             ))}
             <button
               type="button"
-              className="text-muted-foreground hover:text-foreground px-2 text-xs"
+              className={stylex.props(styles_4.sc4a3833e).className || ''}
               onClick={() => updateQuery('')}
             >
               Clear all
@@ -887,7 +1376,7 @@ export function ExplorePage(props: ExplorePageProps) {
           </div>
         ) : null}
         {props.diagnostics?.map((diagnostic, index) => (
-          <p key={`${diagnostic.start}:${index}`} className="text-xs text-amber-700 dark:text-amber-300">
+          <p key={`${diagnostic.start}:${index}`} className={stylex.props(styles_4.s9f6fc75f).className || ''}>
             {diagnostic.message}
           </p>
         ))}
@@ -919,9 +1408,7 @@ export function ExplorePage(props: ExplorePageProps) {
             onClick={() => setActiveTab(tab.id)}
             className={cn(
               stylex.props(styles.s337d6708).className || '',
-              activeTab === tab.id
-                ? 'border-foreground text-foreground font-medium'
-                : 'text-muted-foreground hover:text-foreground border-transparent',
+              stylex.props(activeTab === tab.id ? styles_4.s180f435a : styles_4.sce3543c7).className || '',
             )}
           >
             {tab.label} <span className={stylex.props(styles.sc5f26018).className || ''}>{props.counts[tab.id]}</span>
@@ -941,7 +1428,7 @@ export function ExplorePage(props: ExplorePageProps) {
         </span>
       </div>
 
-      <section aria-live="polite" className="min-h-48">
+      <section aria-live="polite" className={stylex.props(styles_2.sabad94a4).className || ''}>
         {props.isLoading || props.intersectionPending || props.isRefetching ? (
           visibleResults.length ? (
             <p className={stylex.props(styles.s4318b0f5).className || ''}>
@@ -984,7 +1471,17 @@ export function ExplorePage(props: ExplorePageProps) {
             onOpen={props.onOpenResult}
           />
         ) : visibleResults.length ? (
-          <div className="border-border divide-border bg-background overflow-hidden rounded-lg border">
+          <div
+            className={
+              stylex.props(
+                styles_5.s1a01a0ed,
+                styles_5.s436dc7b6,
+                styles_5.s92852dd5,
+                styles_5.sf799889b,
+                styles_5.sad8c742c,
+              ).className || ''
+            }
+          >
             {visibleResults.map((result) => (
               <ExploreResultRow
                 key={
@@ -1032,15 +1529,15 @@ function ExploreFilterMenu({
   onToggle: (predicate: string) => void
 }) {
   return (
-    <div className="border-border bg-popover absolute top-10 left-0 z-10 flex min-w-44 flex-col rounded-md border p-1 shadow-md">
+    <div className={stylex.props(styles_2.s48338369).className || ''}>
       {options.length ? (
         options.map((option) => (
           <button
             key={option}
             type="button"
             className={cn(
-              'hover:bg-muted rounded px-2 py-1.5 text-left font-mono text-xs',
-              activeTokens.includes(option) && 'bg-accent',
+              stylex.props(styles_4.sacf3fbd8).className || '',
+              stylex.props(activeTokens.includes(option) && styles_3.s856bab52).className || '',
             )}
             onClick={() => onToggle(option)}
           >
@@ -1241,16 +1738,16 @@ function ExploreBuilder({
 }) {
   if (!ast) {
     return (
-      <section className="border-border bg-muted/10 rounded-lg border p-4">
+      <section className={stylex.props(styles_4.sbc6aa5c0).className || ''}>
         <BuilderToolbar onAdd={(node) => onChange(node)} />
       </section>
     )
   }
   return (
-    <section className="border-border bg-muted/10 flex flex-col gap-4 rounded-lg border p-4">
+    <section className={stylex.props(styles_4.sfd476430).className || ''}>
       <div className={stylex.props(styles.s78289774).className || ''}>
         <div>
-          <p className="text-muted-foreground text-[11px] font-semibold tracking-[0.18em] uppercase">Query builder</p>
+          <p className={stylex.props(styles_4.s418b62ed).className || ''}>Query builder</p>
           <p className={stylex.props(styles.sabdedac1).className || ''}>
             Edit document conditions without losing text or presentation directives.
           </p>
@@ -1271,7 +1768,7 @@ function ExploreBuilder({
       <BuilderToolbar onAdd={(node) => onChange(appendExploreNode(ast, node))} />
       <details className={stylex.props(styles.s5d77118).className || ''}>
         <summary className={stylex.props(styles.s76945554).className || ''}>Request preview</summary>
-        <pre className="text-muted-foreground mt-2 overflow-auto text-[11px]">
+        <pre className={stylex.props(styles_4.s889eda3b).className || ''}>
           {JSON.stringify(
             new QueryDocumentsRequest({
               filter: compileExploreQuery(
@@ -1355,7 +1852,7 @@ function BuilderNodeEditor({
 }) {
   const replace = (next: ExploreQueryNode | null) => onChange(next)
   if (node.kind === 'text') {
-    return <div className="bg-muted/40 rounded-md px-3 py-2 font-mono text-xs">Text: {node.value || '(empty)'}</div>
+    return <div className={stylex.props(styles_4.sc65561ab).className || ''}>Text: {node.value || '(empty)'}</div>
   }
   if (node.kind === 'predicate') {
     const draft = predicateToDraft(node.predicate)
@@ -1644,7 +2141,7 @@ function BuilderCondition({
             })
           }
           placeholder="value"
-          className="h-8 min-w-32 flex-1 text-xs"
+          className={stylex.props(styles_2.sdb36c0db).className || ''}
         />
       ) : null}
       <Button size="iconSm" variant="ghost" aria-label="Remove condition" onClick={onRemove}>
@@ -1675,30 +2172,27 @@ function ExploreAutocomplete({
   const query = value.trim().toLocaleLowerCase()
   const suggestions = options.filter((option) => !query || option.toLocaleLowerCase().includes(query)).slice(0, 50)
   return (
-    <div className="relative min-w-0 flex-1">
+    <div className={[stylex.props(styles_2.s4e12b012).className || '', className].filter(Boolean).join(' ')}>
       <Ariakit.Combobox
         store={store}
         value={value}
         onChange={(event) => onChange(event.currentTarget.value)}
         onFocus={onFocus}
         placeholder={placeholder}
-        className={cn(
-          'border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-8 w-full rounded-md border px-2 text-xs outline-none focus-visible:ring-2',
-          className,
-        )}
+        className={cn(stylex.props(styles_4.s44828117).className || '', className)}
       />
       <Ariakit.ComboboxPopover
         store={store}
         gutter={4}
         sameWidth
-        className="bg-popover text-popover-foreground z-50 max-h-48 overflow-auto rounded-md border p-1 shadow-md"
+        className={stylex.props(styles_2.sf757653).className || ''}
       >
         {suggestions.map((suggestion) => (
           <Ariakit.ComboboxItem
             key={suggestion}
             store={store}
             value={suggestion}
-            className="hover:bg-accent focus:bg-accent w-full rounded px-2 py-1 text-left text-xs outline-none"
+            className={[stylex.props(styles_4.s7804e73).className || '', className].filter(Boolean).join(' ')}
           />
         ))}
       </Ariakit.ComboboxPopover>
@@ -1747,8 +2241,8 @@ function ExploreTable({
 }) {
   return (
     <div className={stylex.props(styles.s2fb76463).className || ''}>
-      <table className="w-full min-w-max border-collapse text-left text-sm">
-        <thead className="bg-muted/40 text-muted-foreground">
+      <table className={stylex.props(styles_2.s6997be87).className || ''}>
+        <thead className={stylex.props(styles_4.s662f878d).className || ''}>
           <tr>
             {columns.map((column) => {
               const sort = sortRules.find((rule) => rule.key === column)
@@ -1759,9 +2253,7 @@ function ExploreTable({
                     type="button"
                     className={cn(
                       stylex.props(styles.s4f7ac506).className || '',
-                      sortable
-                        ? 'hover:bg-muted focus-visible:ring-ring outline-none focus-visible:ring-2'
-                        : 'cursor-default',
+                      stylex.props(sortable ? styles_4.s899a5760 : styles_4.s3b7916ca).className || '',
                     )}
                     disabled={!sortable}
                     onClick={() => onSort(column)}
@@ -1781,13 +2273,13 @@ function ExploreTable({
         </thead>
         <tbody>
           {results.map((result) => (
-            <tr key={exploreDocumentKey(result.id)} className="hover:bg-muted/20 border-b last:border-b-0">
+            <tr key={exploreDocumentKey(result.id)} className={stylex.props(styles_4.s2dc5299d).className || ''}>
               {columns.map((column) => (
-                <td key={column} className="max-w-80 px-3 py-2 align-top">
+                <td key={column} className={stylex.props(styles_2.saf406c44).className || ''}>
                   {column === 'title' ? (
                     <button
                       type="button"
-                      className="text-foreground focus-visible:ring-ring rounded text-left outline-none hover:underline focus-visible:ring-2"
+                      className={stylex.props(styles_4.s30a15a48).className || ''}
                       onClick={() => onOpen(result)}
                     >
                       {tableCellValue(result, column)}
@@ -1826,17 +2318,15 @@ function ExploreResultRow({
       : result.breadcrumb?.at(-1) || (result.type === 'comment' ? 'Conversation' : 'Text block')
   const Icon = result.type === 'document' ? FileText : result.type === 'block' ? Pilcrow : MessageSquare
   return (
-    <article className="hover:bg-muted/20 border-b p-4 last:border-b-0">
+    <article className={stylex.props(styles_4.sb30c8f14).className || ''}>
       <button type="button" className={stylex.props(styles.sbdcf888f).className || ''} onClick={() => onOpen(result)}>
         <span className={stylex.props(styles.s87a7d048).className || ''}>
           <Icon className={stylex.props(styles.sca3de968).className || ''} />
         </span>
-        <span className="min-w-0 flex-1">
+        <span className={stylex.props(styles_2.se30fd43e).className || ''}>
           <span className={stylex.props(styles.s86ff3e4).className || ''}>
             <span className={stylex.props(styles.sf56ac00b).className || ''}>{highlightExploreText(title, terms)}</span>
-            <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
-              {result.type}
-            </span>
+            <span className={stylex.props(styles_4.s1325ab8d).className || ''}>{result.type}</span>
           </span>
           <span className={stylex.props(styles.sd45be9ae).className || ''}>
             {result.breadcrumb?.join(' · ') || 'Explore result'}
@@ -1850,7 +2340,7 @@ function ExploreResultRow({
           {result.matchedFields?.length ? (
             <span className={stylex.props(styles.sd44866c).className || ''}>
               {result.matchedFields.map((field) => (
-                <span key={field.label} className="bg-muted rounded px-2 py-1 font-mono text-[11px]">
+                <span key={field.label} className={stylex.props(styles_4.s505fb8b).className || ''}>
                   {field.label} {field.value}
                 </span>
               ))}
@@ -1884,15 +2374,20 @@ function ExploreState({icon, title, detail, tone}: {icon: ReactNode; title: stri
   return (
     <div
       className={cn(
-        'border-border bg-muted/20 flex min-h-48 flex-col items-center justify-center rounded-lg border p-6 text-center',
-        tone === 'error' && 'border-destructive/40 bg-destructive/5',
+        stylex.props(styles_4.s67840439).className || '',
+        stylex.props(tone === 'error' ? styles_4.sffc13ed6 : null).className || '',
       )}
     >
-      <span className={cn(stylex.props(styles.s5bf2d9b6).className || '', tone === 'error' && 'text-destructive')}>
+      <span
+        className={cn(
+          stylex.props(styles.s5bf2d9b6).className || '',
+          stylex.props(tone === 'error' && styles_3.s8a2570e2).className || '',
+        )}
+      >
         {icon}
       </span>
       <h2 className={stylex.props(styles.s9d4b128d).className || ''}>{title}</h2>
-      <p className="text-muted-foreground mt-1 max-w-sm text-sm">{detail}</p>
+      <p className={stylex.props(styles_2.s2df23bad).className || ''}>{detail}</p>
     </div>
   )
 }

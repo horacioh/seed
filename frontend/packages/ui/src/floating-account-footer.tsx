@@ -1,6 +1,19 @@
+import * as stylex from '@stylexjs/stylex'
 import {ReactNode, useEffect, useState} from 'react'
 import {cn} from './utils'
-
+const styles = stylex.create({
+  s65deecf0: {
+    position: 'fixed',
+    left: 'calc(var(--spacing) * 4)',
+    zIndex: '30',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    transitionProperty: 'bottom',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+  },
+})
 export interface FloatingAccountFooterProps {
   children?: ReactNode
   /** The floating button content (account avatar or join button) */
@@ -22,31 +35,25 @@ export function FloatingAccountFooter({
   liftForPageFooter = false,
 }: FloatingAccountFooterProps) {
   const [footerLiftPx, setFooterLiftPx] = useState(0)
-
   useEffect(() => {
     if (!liftForPageFooter || typeof window === 'undefined') {
       setFooterLiftPx(0)
       return
     }
-
     let pageFooter: HTMLElement | null = null
     let intersectionObserver: IntersectionObserver | null = null
     let resizeObserver: ResizeObserver | null = null
-
     const cleanupObservers = () => {
       intersectionObserver?.disconnect()
       resizeObserver?.disconnect()
       intersectionObserver = null
       resizeObserver = null
     }
-
     const attachToFooter = () => {
       const nextFooter = document.querySelector<HTMLElement>('[data-page-footer="true"]')
       if (!nextFooter || nextFooter === pageFooter) return
-
       cleanupObservers()
       pageFooter = nextFooter
-
       const updateLift = (isVisible: boolean) => {
         if (!pageFooter || !isVisible) {
           setFooterLiftPx(0)
@@ -55,13 +62,11 @@ export function FloatingAccountFooter({
         // Keep the floating account button above the currently visible footer.
         setFooterLiftPx(Math.ceil(pageFooter.getBoundingClientRect().height) + 8)
       }
-
       intersectionObserver = new IntersectionObserver((entries) => {
         const entry = entries[0]
         updateLift(!!entry?.isIntersecting)
       })
       intersectionObserver.observe(pageFooter)
-
       resizeObserver = new ResizeObserver(() => {
         const rect = pageFooter?.getBoundingClientRect()
         if (!rect) return
@@ -71,26 +76,27 @@ export function FloatingAccountFooter({
       })
       resizeObserver.observe(pageFooter)
     }
-
     attachToFooter()
-
     const mutationObserver = new MutationObserver(() => {
       attachToFooter()
     })
-    mutationObserver.observe(document.body, {childList: true, subtree: true})
-
+    mutationObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    })
     return () => {
       mutationObserver.disconnect()
       cleanupObservers()
     }
   }, [liftForPageFooter])
-
   return (
     <>
       {children}
       <div
-        style={{bottom: `calc(1rem + ${footerLiftPx}px)`}}
-        className={cn('fixed left-4 z-30 flex items-center gap-2 transition-[bottom] duration-200')}
+        style={{
+          bottom: `calc(1rem + ${footerLiftPx}px)`,
+        }}
+        className={cn(stylex.props(styles.s65deecf0).className || '')}
       >
         {floatingButton}
       </div>

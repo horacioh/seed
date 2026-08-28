@@ -44,6 +44,47 @@ import {
   usePublishResource,
   usePushResource,
 } from '../models/documents'
+const styles_5 = stylex.create({
+  s62a6b518: {
+    borderColor: 'oklch(63.7% 0.237 25.331)',
+  },
+})
+const styles_4 = stylex.create({
+  s18c13: {
+    height: 'calc(0.25rem * 8)',
+  },
+  se45bb2b0: {
+    borderColor: 'color-mix(in oklab, #000 10%, transparent)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+})
+const styles_3 = stylex.create({
+  sc04d6692: {
+    backgroundColor: 'var(--overlay-10)',
+  },
+  s2f8e3ab2: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'var(--tone-neutral-800)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    color: 'var(--color-white)',
+  },
+})
+const styles_2 = stylex.create({
+  s7dbe98b4: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 const styles = stylex.create({
   s36c80e: {
     width: 'calc(0.25rem * 80)',
@@ -537,7 +578,7 @@ export default function PublishDraftButton() {
               {documentUrl ? (
                 <div className={stylex.props(styles.s86ff3e4).className || ''}>
                   <span
-                    className="text-muted-foreground min-w-0 flex-1 text-xs"
+                    className={stylex.props(styles_2.s7dbe98b4).className || ''}
                     style={{
                       direction: 'rtl',
                       textAlign: 'left',
@@ -595,9 +636,11 @@ export default function PublishDraftButton() {
                       }
                     }}
                     placeholder="/document-path"
-                    className={`h-8 border-black/10 text-xs dark:border-white/20 ${
-                      publishError ? 'border-red-500 dark:border-red-500' : ''
-                    }`}
+                    className={
+                      (stylex.props(styles_4.s18c13, styles_4.se45bb2b0, styles_4.sab7cc79b).className || '') +
+                      ' ' +
+                      (publishError ? stylex.props(styles_5.s62a6b518).className || '' : '')
+                    }
                   />
                   {isPrivate ? (
                     <p className={stylex.props(styles.sa56e9200).className || ''}>
@@ -609,7 +652,7 @@ export default function PublishDraftButton() {
               )}
             </div>
 
-            <Separator className="bg-black/10 dark:bg-white/10" />
+            <Separator className={stylex.props(styles_3.sc04d6692).className || ''} />
 
             <div className={stylex.props(styles.sfbc6e28d).className || ''}>
               <Button size="sm" variant="brand" onClick={handlePublishPress}>
@@ -658,7 +701,7 @@ function SaveIndicatorStatus() {
       <Check size={12} color="currentColor" />
     )
   return (
-    <div className="flex items-center gap-1.5 rounded-full bg-neutral-800 px-3 py-1 text-white dark:bg-neutral-700">
+    <div className={stylex.props(styles_3.s2f8e3ab2).className || ''}>
       {icon}
       <span className={stylex.props(styles.sab7cc79b).className || ''}>{label}</span>
     </div>

@@ -45,6 +45,11 @@ import {useForm} from 'react-hook-form'
 import {z} from 'zod'
 import {ImportedDocument, useImportConfirmDialog} from './import-doc-dialog'
 import {useWXRImportDialog} from './wxr-import-dialog'
+const styles_2 = stylex.create({
+  s5305ac91: {
+    width: '180px',
+  },
+})
 const styles = stylex.create({
   sfbc6e290: {
     display: 'flex',
@@ -500,7 +505,7 @@ function WebImportInProgress({
         <SizableText>{result.posts.length} posts ready for import</SizableText>
         {selectedAccount && (
           <Select value={selectedAccount} onValueChange={setSelectedAccount}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className={stylex.props(styles_2.s5305ac91).className || ''}>
               <SelectValue placeholder="Select Account" />
             </SelectTrigger>
             <SelectContent>

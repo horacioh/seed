@@ -11,6 +11,162 @@ import {Tooltip} from './tooltip'
 import {useMedia} from './use-media'
 
 /** Collapse state of the inline file browser, shared with the page chrome below it. */
+const styles_4 = stylex.create({
+  s33458d: {
+    marginTop: 'calc(0.25rem * 3)',
+  },
+})
+const styles_3 = stylex.create({
+  sdd15d0ce: {
+    borderColor: 'var(--border)',
+    display: 'none',
+    height: '100%',
+    width: 'calc(var(--spacing) * 72)',
+    flexShrink: '0',
+    flexDirection: 'column',
+    borderRightStyle: 'solid',
+    borderRightWidth: '1px',
+    backgroundColor: 'var(--surface)',
+    '@media ((min-width: 768px))': {
+      display: 'flex',
+    },
+  },
+  s7924883e: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    height: 'calc(var(--spacing) * 9)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s54d5e841: {
+    backgroundColor: 'var(--muted)',
+    height: 'calc(var(--spacing) * 4)',
+    width: 'calc(3/4 * 100%)',
+    borderRadius: '0.25rem',
+  },
+  s2bacc67f: {
+    backgroundColor: 'var(--muted)',
+    height: 'calc(var(--spacing) * 4)',
+    width: 'calc(2/3 * 100%)',
+    borderRadius: '0.25rem',
+  },
+  s283a4bd: {
+    backgroundColor: 'var(--muted)',
+    height: 'calc(var(--spacing) * 4)',
+    width: '50%',
+    borderRadius: '0.25rem',
+  },
+  s5d90b3e0: {
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    backgroundColor: 'var(--surface)',
+  },
+  s5f75a25a: {
+    '@media (prefers-reduced-motion: no-preference)': {
+      animation: 'enter .15sease0s1normalnone',
+      transitionDuration: '200ms',
+      transitionTimingFunction: 'var(--ease-out)',
+    },
+    display: 'flex',
+    height: '100dvh',
+    width: '80dvw',
+    maxWidth: '80dvw',
+    flexShrink: '0',
+    flexDirection: 'column',
+    backgroundColor: 'var(--surface)',
+    boxShadow: 'var(--shadow-2xl)',
+  },
+  s2d2b1042: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    flexShrink: '0',
+    alignItems: 'center',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingTop: 'max(0.5rem, env(safe-area-inset-top))',
+    paddingBottom: 'calc(var(--spacing) * 2)',
+  },
+  sa92aabdd: {
+    minHeight: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    paddingBottom: 'env(safe-area-inset-bottom)',
+  },
+  s622651f1: {
+    '@media (prefers-reduced-motion: no-preference)': {
+      animation: 'enter .15sease0s1normalnone',
+      transitionDuration: '200ms',
+      transitionTimingFunction: 'var(--ease-out)',
+    },
+    height: '100dvh',
+    flex: '1',
+    backgroundColor: 'color-mix(in oklab, var(--color-black) 45%, transparent)',
+  },
+  scf14577c: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'column',
+    borderRightStyle: 'solid',
+    borderRightWidth: '1px',
+    backgroundColor: 'var(--surface)',
+  },
+  se10fba45: {
+    position: 'relative',
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(var(--spacing) * 0)',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    backgroundColor: 'var(--surface)',
+  },
+  s992e3277: {
+    position: 'absolute',
+    top: 'calc(var(--spacing) * 2)',
+    left: 'calc(var(--spacing) * 2)',
+    zIndex: '50',
+    '@media ((min-width: 768px))': {
+      top: 'calc(var(--spacing) * 4)',
+      right: 'calc(var(--spacing) * 4)',
+      left: 'calc(var(--spacing) * 4)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s3d026a74: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  s76addcf3: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '600',
+  },
+  s3680eae3: {
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+    padding: 'calc(0.25rem * 3)',
+  },
+  s92c2336d: {
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   s3e9812dd: {
     borderColor: 'var(--border)',
@@ -147,30 +303,28 @@ export function SiteFileBrowserLayout({
   }, [isMobile])
   if (!isClient) {
     return (
-      <div className="flex min-h-0 flex-1">
-        <aside className="border-border dark:bg-background hidden h-full w-72 shrink-0 flex-col border-r bg-white md:flex">
+      <div className={stylex.props(styles_2.s3d026a74).className || ''}>
+        <aside className={stylex.props(styles_3.sdd15d0ce).className || ''}>
           <div className={stylex.props(styles.s3e9812dd).className || ''}>
-            <p className="min-w-0 flex-1 truncate text-sm font-semibold">Documents</p>
+            <p className={stylex.props(styles_2.s76addcf3).className || ''}>Documents</p>
           </div>
-          <div className="min-h-0 flex-1 p-3">
-            <div className="border-border bg-muted/40 h-9 rounded-md border" />
-            <div className="mt-3 space-y-2">
-              <div className="bg-muted h-4 w-3/4 rounded" />
-              <div className="bg-muted h-4 w-2/3 rounded" />
-              <div className="bg-muted h-4 w-1/2 rounded" />
+          <div className={stylex.props(styles_2.s3680eae3).className || ''}>
+            <div className={stylex.props(styles_3.s7924883e).className || ''} />
+            <div className={stylex.props(styles_4.s33458d).className || ''}>
+              <div className={stylex.props(styles_3.s54d5e841).className || ''} />
+              <div className={stylex.props(styles_3.s2bacc67f).className || ''} />
+              <div className={stylex.props(styles_3.s283a4bd).className || ''} />
             </div>
           </div>
         </aside>
-        <div className="dark:bg-background flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-white">
-          {children}
-        </div>
+        <div className={stylex.props(styles_3.s5d90b3e0).className || ''}>{children}</div>
       </div>
     )
   }
   if (isMobile) {
     return (
       <>
-        <div className="min-h-0 flex-1">{children}</div>
+        <div className={stylex.props(styles_2.s92c2336d).className || ''}>{children}</div>
         {mobileOpen
           ? createPortal(
               <div
@@ -179,9 +333,9 @@ export function SiteFileBrowserLayout({
                 aria-modal="true"
                 aria-label="File browser"
               >
-                <aside className="dark:bg-background motion-safe:animate-in motion-safe:slide-in-from-left flex h-dvh w-[80dvw] max-w-[80dvw] shrink-0 flex-col bg-white shadow-2xl motion-safe:duration-200 motion-safe:ease-out">
-                  <div className="border-border flex shrink-0 items-center border-b px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2">
-                    <div className="min-w-0 flex-1">
+                <aside className={stylex.props(styles_3.s5f75a25a).className || ''}>
+                  <div className={stylex.props(styles_3.s2d2b1042).className || ''}>
+                    <div className={stylex.props(styles_2.se30fd43e).className || ''}>
                       <p className={stylex.props(styles.s62c182b1).className || ''}>Files</p>
                       <p className={stylex.props(styles.s2627021c).className || ''}>{siteName}</p>
                     </div>
@@ -194,12 +348,12 @@ export function SiteFileBrowserLayout({
                       <X className={stylex.props(styles.sca3de968).className || ''} />
                     </Button>
                   </div>
-                  <div className="min-h-0 flex-1 pb-[env(safe-area-inset-bottom)]">{browser}</div>
+                  <div className={stylex.props(styles_3.sa92aabdd).className || ''}>{browser}</div>
                 </aside>
                 <button
                   type="button"
                   aria-label="Close file browser"
-                  className="motion-safe:animate-in motion-safe:fade-in h-dvh flex-1 bg-black/45 motion-safe:duration-200"
+                  className={stylex.props(styles_3.s622651f1).className || ''}
                   onClick={() => onMobileOpenChange(false)}
                 />
               </div>,
@@ -211,8 +365,8 @@ export function SiteFileBrowserLayout({
   }
   return (
     <SiteFileBrowserContext.Provider value={controls}>
-      <div ref={desktopContainerRef} className="flex min-h-0 flex-1">
-        <PanelGroup direction="horizontal" className="min-h-0 flex-1">
+      <div ref={desktopContainerRef} className={stylex.props(styles_2.s3d026a74).className || ''}>
+        <PanelGroup direction="horizontal" className={stylex.props(styles_2.s92c2336d).className || ''}>
           {!collapsed ? (
             <>
               <Panel
@@ -223,9 +377,9 @@ export function SiteFileBrowserLayout({
                 minSize={minimumPercent}
                 maxSize={40}
               >
-                <aside className="border-border dark:bg-background flex h-full flex-col border-r bg-white">
+                <aside className={stylex.props(styles_3.scf14577c).className || ''}>
                   <div className={stylex.props(styles.s3e9812dd).className || ''}>
-                    <p className="min-w-0 flex-1 truncate text-sm font-semibold">Documents</p>
+                    <p className={stylex.props(styles_2.s76addcf3).className || ''}>Documents</p>
                     <Tooltip content="Hide file explorer">
                       <Button
                         variant="ghost"
@@ -237,16 +391,16 @@ export function SiteFileBrowserLayout({
                       </Button>
                     </Tooltip>
                   </div>
-                  <div className="min-h-0 flex-1">{browser}</div>
+                  <div className={stylex.props(styles_2.s92c2336d).className || ''}>{browser}</div>
                 </aside>
               </Panel>
               <PanelResizeHandle className="panel-resize-handle" />
             </>
           ) : null}
           <Panel id="site-main-content" order={2} minSize={60}>
-            <div className="dark:bg-background relative flex h-full min-h-0 flex-col overflow-hidden bg-white">
+            <div className={stylex.props(styles_3.se10fba45).className || ''}>
               {collapsed && revealClaims === 0 ? (
-                <div className="absolute top-2 left-2 z-50 md:top-4 md:left-4">
+                <div className={stylex.props(styles_3.s992e3277).className || ''}>
                   <Tooltip content="Show file explorer">
                     <Button
                       variant="ghost"

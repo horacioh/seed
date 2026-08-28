@@ -3,6 +3,40 @@ import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area'
 import * as React from 'react'
 import {forwardRef} from 'react'
 import {cn} from '../utils'
+const styles_3 = stylex.create({
+  s3e1d8f65: {
+    ':focus-visible': {
+      boxShadow: '0 0 0 3px currentcolor',
+      outlineStyle: 'solid',
+      outlineWidth: '1px',
+    },
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    flex: '1',
+    borderRadius: 'inherit',
+    transitionProperty: 'color, box-shadow',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    outlineStyle: 'none',
+  },
+})
+const styles_2 = stylex.create({
+  s975679fc: {
+    height: '100%',
+    width: 'calc(0.25rem * 2.5)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '1px',
+    borderLeftColor: 'transparent',
+  },
+  sebe30c1d: {
+    height: 'calc(0.25rem * 2.5)',
+    flexDirection: 'column',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    borderTopColor: 'transparent',
+  },
+})
 const styles = stylex.create({
   s7d2ace5d: {
     position: 'relative',
@@ -13,8 +47,7 @@ const styles = stylex.create({
     display: 'flex',
     touchAction: 'none',
     padding: '1px',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
     WebkitUserSelect: 'none',
@@ -91,10 +124,7 @@ function ScrollAreaImpl(
       <ScrollAreaPrimitive.Viewport
         ref={handleViewportRef}
         data-slot="scroll-area-viewport"
-        className={cn(
-          'focus-visible:ring-ring/50 relative size-full h-full flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1',
-          viewportClassName,
-        )}
+        className={cn(stylex.props(styles_3.s3e1d8f65).className || '', viewportClassName)}
         style={{
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
@@ -120,8 +150,8 @@ function ScrollBar({
       orientation={orientation}
       className={cn(
         stylex.props(styles.sdd09b949).className || '',
-        orientation === 'vertical' && 'h-full w-2.5 border-l border-l-transparent',
-        orientation === 'horizontal' && 'h-2.5 flex-col border-t border-t-transparent',
+        stylex.props(orientation === 'vertical' && styles_2.s975679fc).className || '',
+        stylex.props(orientation === 'horizontal' && styles_2.sebe30c1d).className || '',
         className,
       )}
       {...props}

@@ -9,6 +9,58 @@ import {MenuItemType, OptionsDropdown} from './options-dropdown'
 import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  sb41ffff4: {
+    height: 'auto',
+  },
+  s3f582e18: {
+    minHeight: 'calc(0.25rem * 8)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_3 = stylex.create({
+  s239b4cca: {
+    whiteSpace: 'normal',
+  },
+  itemTextBase: {
+    textAlign: 'left',
+    userSelect: 'none',
+  },
+  itemTextTruncate: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  itemTextMultiline: {
+    display: '-webkit-box',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 2,
+    overflow: 'hidden',
+  },
+})
+const styles_2 = stylex.create({
+  s1e65f214: {
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+})
 const styles = stylex.create({
   sca3de967: {
     width: 'calc(0.25rem * 3)',
@@ -91,9 +143,9 @@ export function SmallListItem({
   return (
     <Button
       className={cn(
-        'user-select-none group h-auto min-h-8 w-full text-left outline-none',
-        active && 'bg-accent text-accent-foreground',
-        multiline && 'whitespace-normal!',
+        stylex.props(styles_4.sb41ffff4, styles_4.s3f582e18, styles_4.scdbaf625, styles_4.sbf63b0a7, styles_4.sa602a1e3)
+          .className || '',
+        stylex.props(active && styles_2.s1e65f214).className || '',
         props.className,
       )}
       size="sm"
@@ -111,10 +163,11 @@ export function SmallListItem({
             <SizableText
               size="sm"
               className={cn(
-                `${
-                  multiline ? 'line-clamp-2' : 'truncate whitespace-nowrap'
-                } mobile-menu-item-label text-left select-none`.trim(),
-                bold && 'font-bold',
+                stylex.props(
+                  styles_3.itemTextBase,
+                  multiline ? styles_3.itemTextMultiline : styles_3.itemTextTruncate,
+                  bold && styles_2.sa16ea943,
+                ).className || '',
                 textClass,
               )}
               style={{
@@ -148,7 +201,9 @@ export function SmallListItem({
 
       {iconAfter || rightHover || menuItems ? (
         <>
-          {rightHover ? <div className="flex opacity-0 group-hover:opacity-100">{rightHover}</div> : null}
+          {rightHover ? (
+            <div className={stylex.props(styles_4.s2ffff9, styles_4.s765a26ee).className || ''}>{rightHover}</div>
+          ) : null}
           {menuItems ? <OptionsDropdown hiddenUntilItemHover menuItems={menuItems} /> : null}
         </>
       ) : null}

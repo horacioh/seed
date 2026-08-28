@@ -15,6 +15,95 @@ import {Button} from '@shm/ui/button'
 import {SwitchField} from '@shm/ui/form-fields'
 import {HMIcon} from '@shm/ui/hm-icon'
 import {Spinner} from '@shm/ui/spinner'
+const styles_3 = stylex.create({
+  sc7133e9b: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 6)',
+  },
+  sc7133e97: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+  sc7133e98: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+  },
+})
+const styles_2 = stylex.create({
+  s5ff7227c: {
+    backgroundColor: 'var(--panel)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s49d86571: {
+    height: '100vh',
+  },
+  s8d9813ba: {
+    maxHeight: '100vh',
+  },
+  sca05f445: {
+    minHeight: '100svh',
+  },
+  s600a0682: {
+    width: '100vw',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s5d936fd: {
+    gap: 'calc(0.25rem * 4)',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s34b1b1: {
+    paddingInline: 'calc(0.25rem * 6)',
+  },
+  s34b574: {
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  s9ccd4aa7: {
+    maxWidth: '42rem',
+  },
+  s5d936ff: {
+    gap: 'calc(0.25rem * 6)',
+  },
+  s33458d: {
+    marginTop: 'calc(0.25rem * 3)',
+  },
+  s7c401f13: {
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+  },
+  s34a2ab: {
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s3484a3: {
+    paddingLeft: 'calc(0.25rem * 4)',
+  },
+})
 const styles = stylex.create({
   se5fa5a2e: {
     display: 'flex',
@@ -164,9 +253,35 @@ function NotifySiteHeader() {
 }
 function NotifySiteContainer({children}: {children: React.ReactNode}) {
   return (
-    <div className="bg-panel flex h-screen max-h-screen min-h-svh w-screen flex-col overflow-hidden">
+    <div
+      className={
+        stylex.props(
+          styles_2.s5ff7227c,
+          styles_2.s2ffff9,
+          styles_2.s49d86571,
+          styles_2.s8d9813ba,
+          styles_2.sca05f445,
+          styles_2.s600a0682,
+          styles_2.s67e351ac,
+          styles_2.s92852dd5,
+        ).className || ''
+      }
+    >
       <NotifySiteHeader />
-      <div className="dark:bg-background flex flex-1 gap-4 overflow-hidden overflow-y-auto bg-white px-6 py-8">
+      <div
+        className={
+          stylex.props(
+            styles_2.s2ffff9,
+            styles_2.sb42feb5d,
+            styles_2.s5d936fd,
+            styles_2.s92852dd5,
+            styles_2.sac38f2ae,
+            styles_2.s605ce4a1,
+            styles_2.s34b1b1,
+            styles_2.s34b574,
+          ).className || ''
+        }
+      >
         <div className={stylex.props(styles.sfbc6e290).className || ''}>
           <div className={stylex.props(styles.s1093d590).className || ''}>{children}</div>
         </div>
@@ -200,7 +315,11 @@ export function EmailNotificationsContent() {
     )
   }
   return (
-    <div className="flex max-w-2xl flex-col gap-6">
+    <div
+      className={
+        stylex.props(styles_2.s2ffff9, styles_2.s9ccd4aa7, styles_2.s67e351ac, styles_2.s5d936ff).className || ''
+      }
+    >
       {notifSettings ? (
         <>
           <div className={stylex.props(styles.sfbc6e28d).className || ''}>
@@ -214,7 +333,7 @@ export function EmailNotificationsContent() {
                 <SizableText className={stylex.props(styles.sb6e3e6ee).className || ''}>
                   You were subscribed to:
                 </SizableText>
-                <div className="mt-3 space-y-2">
+                <div className={stylex.props(styles_2.s33458d).className || ''}>
                   {notifSettings.subscriptions.map((sub) => (
                     <LoadedAccountTitle key={sub.id} id={hmId(sub.id)} />
                   ))}
@@ -232,7 +351,7 @@ export function EmailNotificationsContent() {
             </>
           ) : (
             <>
-              <div className="space-y-6">
+              <div className={stylex.props(styles_3.sc7133e9b).className || ''}>
                 {notifSettings.subscriptions.length ? (
                   notifSettings.subscriptions.map((sub) => (
                     <EmailNotificationSubscription key={sub.id} subscription={sub} token={token} />
@@ -275,12 +394,12 @@ function MyNotificationsSection({
 }) {
   if (!myNotifications.length) return null
   return (
-    <div className="space-y-3 border-t pt-4">
+    <div className={stylex.props(styles_2.s7c401f13, styles_2.s34a2ab).className || ''}>
       <h4 className={stylex.props(styles.sd1949a51).className || ''}>My Notifications</h4>
       <p className={stylex.props(styles.s4204e446).className || ''}>
         These accounts are configured via signed account settings and receive immediate mention/reply notifications.
       </p>
-      <div className="space-y-2">
+      <div className={stylex.props(styles_3.sc7133e97).className || ''}>
         {myNotifications.map((config) => (
           <MyNotificationConfigRow
             key={`notification-config-${config.accountId}`}
@@ -299,7 +418,12 @@ function MyNotificationConfigRow({accountId, token}: {accountId: string; token: 
   const displayName = account?.metadata?.name || abbreviateUid(displayId.uid)
   return (
     <div className={stylex.props(styles.se8fe7171).className || ''}>
-      <div className="flex min-w-0 flex-1 items-center gap-2">
+      <div
+        className={
+          stylex.props(styles_2.s2ffff9, styles_2.s3f58665f, styles_2.sb42feb5d, styles_2.sc6ed1702, styles_2.s5d936fb)
+            .className || ''
+        }
+      >
         <HMIcon size={24} id={displayId} icon={account?.metadata?.icon} />
         <p className={stylex.props(styles.s7af13144).className || ''}>{displayName}</p>
       </div>
@@ -347,15 +471,15 @@ function EmailNotificationSubscription({
         <AccountTitle accountId={account.id} metadata={account.document?.metadata} />
       </div>
 
-      <div className="space-y-6">
-        <div className="space-y-3">
+      <div className={stylex.props(styles_3.sc7133e9b).className || ''}>
+        <div className={stylex.props(styles_3.sc7133e98).className || ''}>
           <h4 className={stylex.props(styles.sd1949a51).className || ''}>Space Activity</h4>
           <p className={stylex.props(styles.s4204e446).className || ''}>
             Get notified when something happens in {account.document?.metadata?.name}. Emails will be sent every 4 hours
             at most.
           </p>
           <p className={stylex.props(styles.s4204e446).className || ''}>Notify me when:</p>
-          <div className="space-y-3 pl-4">
+          <div className={stylex.props(styles_2.s3484a3).className || ''}>
             <AccountValueSwitch
               token={token}
               label="A Document is Created or Updated"

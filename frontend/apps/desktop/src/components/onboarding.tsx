@@ -64,6 +64,305 @@ import {
   FullLogoIcon,
   PublishIcon,
 } from './onboarding-icons'
+const styles_5 = stylex.create({
+  s5d936f9: {
+    gap: '0px',
+  },
+  s1aa13: {
+    padding: '0px',
+  },
+})
+const styles_4 = stylex.create({
+  s1e767afe: {
+    height: '90vh',
+  },
+  se46f4f49: {
+    maxHeight: '900px',
+  },
+  s4a3a1c3b: {
+    minHeight: '500px',
+  },
+  s34a81de0: {
+    width: '90vw',
+  },
+  s9471d058: {
+    maxWidth: '900px',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fd: {
+    gap: 'calc(0.25rem * 4)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s8be9953d: {
+    maxWidth: '400px',
+  },
+  s34a2ab: {
+    paddingTop: 'calc(0.25rem * 4)',
+  },
+  s2f77d9f6: {
+    alignSelf: 'center',
+  },
+  s334592: {
+    marginTop: 'calc(0.25rem * 8)',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  sc51978d2: {
+    opacity: '100%',
+  },
+  sc9aa04b1: {
+    resize: 'none',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+  s8c05c43f: {
+    maxWidth: '420px',
+  },
+  s65e234f5: {
+    textAlign: 'center',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s478fb0c3: {
+    right: 'calc(0.25rem * 4)',
+  },
+  s696c5bc: {
+    top: 'calc(0.25rem * 4)',
+  },
+  s3824af: {
+    zIndex: '40',
+  },
+  sda323b8f: {
+    maxHeight: '300px',
+  },
+  s55fea1c7: {
+    width: '300px',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s54eab7fa: {
+    opacity: '80%',
+  },
+  s8a6c2948: {
+    boxShadow: 'var(--shadow-lg)',
+  },
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+  s5b77e87a: {
+    backgroundColor: 'var(--primary)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  sab1aaa95: {
+    height: '600px',
+  },
+  s5b1d2ba4: {
+    width: '600px',
+  },
+  s5d936ff: {
+    gap: 'calc(0.25rem * 6)',
+  },
+  s34d3daa: {
+    left: 'calc(0.25rem * 15)',
+  },
+  scc41f197: {
+    top: 'calc(0.25rem * 10)',
+  },
+  s808fc112: {
+    bottom: 'calc(0.25rem * 4)',
+  },
+  s665a770e: {
+    left: '50%',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s9ba3c2d7: {
+    bottom: 'calc(0.25rem * 2.5)',
+  },
+  sa2668a48: {
+    right: 'calc(0.25rem * 2.5)',
+  },
+})
+const styles_3 = stylex.create({
+  s1cbfcb5c: {
+    display: 'flex',
+    width: '200px',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  s7414e440: {
+    display: 'flex',
+    minHeight: '100px',
+    width: '100%',
+    maxWidth: '100px',
+    minWidth: '100px',
+    flex: 'none',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+  s2572fbd8: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '520px',
+    textAlign: 'center',
+  },
+  s9f675995: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: '520px',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    paddingTop: 'calc(var(--spacing) * 4)',
+  },
+  s392c3e3c: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s835dd77d: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s8940018d: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s218f9d94: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: '420px',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    paddingTop: 'calc(var(--spacing) * 4)',
+  },
+  seefaa4fb: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+  s112f1dd6: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: '400px',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    paddingTop: 'calc(var(--spacing) * 4)',
+  },
+  s1550f449: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '360px',
+  },
+  sac9de943: {
+    display: 'flex',
+    height: 'auto',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--color-blue-200)',
+    padding: 'calc(var(--spacing) * 4)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--color-blue-300)',
+      },
+    },
+  },
+  s578137d0: {
+    backgroundColor: 'var(--brand-tint)',
+    display: 'flex',
+    height: 'auto',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 4)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_2 = stylex.create({
+  s1ad53cdb: {
+    width: '100%',
+    height: '100%',
+  },
+  sf121320d: {
+    color: 'oklch(52.7% 0.154 150.069)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s5b77e87a: {
+    backgroundColor: 'var(--primary)',
+  },
+  s5f844f91: {
+    backgroundColor: 'oklch(87.2% 0.01 258.338)',
+  },
+})
 const styles = stylex.create({
   s28ee3cbb: {
     display: 'flex',
@@ -205,7 +504,7 @@ const styles = stylex.create({
     gap: 'calc(0.25rem * 4)',
     borderRadius: 'var(--radius)',
     padding: 'calc(0.25rem * 4)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+    boxShadow: 'var(--shadow-lg)',
   },
 })
 interface OnboardingProps {
@@ -235,8 +534,16 @@ export function OnboardingDialog() {
       <DialogPortal>
         <DialogOverlay />
         <DialogContent
-          className="no-window-drag h-[90vh] max-h-[900px] min-h-[500px] w-[90vw] max-w-[900px]"
-          contentClassName="gap-0 p-0"
+          className={
+            stylex.props(
+              styles_4.s1e767afe,
+              styles_4.se46f4f49,
+              styles_4.s4a3a1c3b,
+              styles_4.s34a81de0,
+              styles_4.s9471d058,
+            ).className || ''
+          }
+          contentClassName={stylex.props(styles_5.s5d936f9, styles_5.s1aa13).className || ''}
           showCloseButton={false}
         >
           <Onboarding
@@ -536,7 +843,13 @@ export function Onboarding({onComplete, modal = false}: OnboardingProps) {
     }
   }
   return (
-    <div className={cn('bg-background window-drag flex flex-1 flex-col', !modal && 'size-full')}>
+    <div
+      className={cn(
+        stylex.props(styles_4.s436dc7b6, styles_4.s2ffff9, styles_4.sb42feb5d, styles_4.s67e351ac).className || '',
+        'window-drag',
+        stylex.props(!modal && styles_2.s1ad53cdb).className || '',
+      )}
+    >
       {currentStep === 'welcome' && <WelcomeStep onNext={handleNext} />}
       {currentStep === 'profile' && <ProfileStep onSkip={handleSkip} onNext={handleNext} onPrev={handlePrev} />}
       {currentStep === 'vault' && (
@@ -608,7 +921,7 @@ function WelcomeStep({onNext}: {onNext: () => void}) {
       <FullLogoIcon />
       <StepTitle>WELCOME TO THE OPEN WEB</StepTitle>
       <div className={stylex.props(styles.s28ee3cbb).className || ''}>
-        <div className="flex w-[200px] flex-1 flex-col items-center justify-start gap-4 rounded-lg p-2">
+        <div className={stylex.props(styles_3.s1cbfcb5c).className || ''}>
           <div className={stylex.props(styles.sefb6846e).className || ''}>
             <CollabIcon />
           </div>
@@ -619,7 +932,7 @@ function WelcomeStep({onNext}: {onNext: () => void}) {
           </div>
         </div>
 
-        <div className="flex w-[200px] flex-1 flex-col items-center justify-start gap-4 rounded-lg p-2">
+        <div className={stylex.props(styles_3.s1cbfcb5c).className || ''}>
           <div className={stylex.props(styles.sefb6846e).className || ''}>
             <PublishIcon />
           </div>
@@ -630,7 +943,7 @@ function WelcomeStep({onNext}: {onNext: () => void}) {
           </div>
         </div>
 
-        <div className="flex w-[200px] flex-1 flex-col items-center justify-start gap-4 rounded-lg p-2">
+        <div className={stylex.props(styles_3.s1cbfcb5c).className || ''}>
           <div className={stylex.props(styles.sefb6846e).className || ''}>
             <ArchiveIcon />
           </div>
@@ -642,7 +955,11 @@ function WelcomeStep({onNext}: {onNext: () => void}) {
         </div>
       </div>
 
-      <div className="no-window-drag flex flex-col items-center gap-4">
+      <div
+        className={
+          stylex.props(styles_4.s2ffff9, styles_4.s67e351ac, styles_4.sc6ed1702, styles_4.s5d936fd).className || ''
+        }
+      >
         {/* <Button
           variant="outlined"
           onPress={() => openUrl('https://seed.hyper.media')}
@@ -730,9 +1047,30 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
           e.preventDefault()
           onNext()
         }}
-        className="no-window-drag flex w-full max-w-[400px] flex-1 flex-col gap-4 pt-4"
+        className={
+          stylex.props(
+            styles_4.s2ffff9,
+            styles_4.scdbaf625,
+            styles_4.s8be9953d,
+            styles_4.sb42feb5d,
+            styles_4.s67e351ac,
+            styles_4.s5d936fd,
+            styles_4.s34a2ab,
+          ).className || ''
+        }
       >
-        <div className="no-window-drag flex w-full flex-1 flex-col gap-4 pt-4">
+        <div
+          className={
+            stylex.props(
+              styles_4.s2ffff9,
+              styles_4.scdbaf625,
+              styles_4.sb42feb5d,
+              styles_4.s67e351ac,
+              styles_4.s5d936fd,
+              styles_4.s34a2ab,
+            ).className || ''
+          }
+        >
           <div className={stylex.props(styles.s783f19f3).className || ''}>
             <Label htmlFor="account-name">Account Name</Label>
             <Input
@@ -748,7 +1086,7 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
             />
           </div>
 
-          <div className="flex min-h-[100px] w-full max-w-[100px] min-w-[100px] flex-none flex-col gap-2">
+          <div className={stylex.props(styles_3.s7414e440).className || ''}>
             <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               Space Icon
             </Text>
@@ -767,8 +1105,22 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
             />
           </div>
         </div>
-        <div className="no-window-drag flex flex-col gap-4 self-center">
-          <div className="no-window-drag mt-8 flex items-center justify-center gap-4">
+        <div
+          className={
+            stylex.props(styles_4.s2ffff9, styles_4.s67e351ac, styles_4.s5d936fd, styles_4.s2f77d9f6).className || ''
+          }
+        >
+          <div
+            className={
+              stylex.props(
+                styles_4.s334592,
+                styles_4.s2ffff9,
+                styles_4.sc6ed1702,
+                styles_4.sce22ca32,
+                styles_4.s5d936fd,
+              ).className || ''
+            }
+          >
             {onSkip && (
               <Button type="button" onClick={onSkip} variant="link" id="profile-skip">
                 SKIP
@@ -890,13 +1242,13 @@ function VaultStep({
   return (
     <StepWrapper onPrev={onPrev}>
       <StepTitle>CHOOSE YOUR VAULT</StepTitle>
-      <Text size="lg" className="text-muted-foreground max-w-[520px] text-center">
+      <Text size="lg" className={stylex.props(styles_3.s2572fbd8).className || ''}>
         First choose where Seed should keep your encrypted vault. After that you can create a new account, restore from
         an existing recovery phrase, or import a key file.
       </Text>
 
-      <div className="flex w-full max-w-[520px] flex-1 flex-col gap-4 pt-4">
-        <div className="border-border bg-background/70 flex flex-col gap-3 rounded-lg border p-4">
+      <div className={stylex.props(styles_3.s9f675995).className || ''}>
+        <div className={stylex.props(styles_3.s392c3e3c).className || ''}>
           <label className={stylex.props(styles.s6667179e).className || ''}>
             <input
               type="radio"
@@ -930,7 +1282,7 @@ function VaultStep({
         </div>
 
         {selectedMode === 'remote' ? (
-          <div className="border-border bg-background/70 flex flex-col gap-4 rounded-lg border p-4">
+          <div className={stylex.props(styles_3.s835dd77d).className || ''}>
             <div className={stylex.props(styles.sfbc6e28e).className || ''}>
               <Label htmlFor="onboarding-vault-url">Remote Vault URL</Label>
               <Input
@@ -955,7 +1307,10 @@ function VaultStep({
               ) : null}
               <Text
                 size="sm"
-                className={cn(connectionState === 'connected' ? 'text-green-700' : 'text-muted-foreground')}
+                className={cn(
+                  stylex.props(connectionState === 'connected' ? styles_2.sf121320d : styles_2.sf2718385).className ||
+                    '',
+                )}
               >
                 {connectionState === 'connected' ? 'Remote vault connected.' : 'Waiting for connection.'}
               </Text>
@@ -967,7 +1322,7 @@ function VaultStep({
             ) : null}
           </div>
         ) : (
-          <div className="border-border bg-background/70 rounded-lg border p-4">
+          <div className={stylex.props(styles_3.s8940018d).className || ''}>
             <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
               You can add remote sync later from Settings.
             </Text>
@@ -1048,8 +1403,8 @@ function ImportKeyStep({
         which reads the key file directly from disk.
       </Text>
 
-      <form onSubmit={handleSubmit} className="flex w-full max-w-[420px] flex-1 flex-col gap-4 pt-4">
-        <div className="border-border bg-background/70 flex flex-col gap-2 rounded-lg border p-4">
+      <form onSubmit={handleSubmit} className={stylex.props(styles_3.s218f9d94).className || ''}>
+        <div className={stylex.props(styles_3.seefaa4fb).className || ''}>
           <Text size="sm" className={stylex.props(styles.s8c7183dc).className || ''}>
             Leave password empty for plaintext exports. Enter a password only if the key file was exported with
             encryption.
@@ -1191,7 +1546,7 @@ function RestoreFromPhraseStep({
         Add the keys to your existing space.
       </Text>
 
-      <form onSubmit={handleSubmit} className="flex w-full max-w-[400px] flex-1 flex-col gap-4 pt-4">
+      <form onSubmit={handleSubmit} className={stylex.props(styles_3.s112f1dd6).className || ''}>
         <div className={stylex.props(styles.sfbc6e290).className || ''}>
           <div className={stylex.props(styles.sfbc6e28e).className || ''}>
             <Text size="sm" className={stylex.props(styles.sf2718385).className || ''}>
@@ -1201,21 +1556,26 @@ function RestoreFromPhraseStep({
               placeholder="Enter or paste your Secret Recovery Phrase here…"
               value={secretWords}
               onChange={(e) => setSecretWords(e.target.value)}
-              className="no-window-drag resize-none bg-white opacity-100!"
+              className={stylex.props(styles_4.sc51978d2, styles_4.sc9aa04b1, styles_4.s605ce4a1).className || ''}
             />
           </div>
 
           <CheckboxField
             id="save-existing-wordss"
             checked={shouldSaveWords}
-            onCheckedChange={(v) => setShouldSaveWords(v === 'indeterminate' ? false : v)}
+            onCheckedChange={(v) => setShouldSaveWords(v)}
             variant="brand"
           >
             Store the Secret Recovery Phrase securely on this device.
           </CheckboxField>
         </div>
         <div className={stylex.props(styles.sb42feb5d).className || ''} />
-        <div className="no-window-drag mt-8 flex items-center justify-center gap-4">
+        <div
+          className={
+            stylex.props(styles_4.s334592, styles_4.s2ffff9, styles_4.sc6ed1702, styles_4.sce22ca32, styles_4.s5d936fd)
+              .className || ''
+          }
+        >
           <Button type="submit" variant="default" disabled={!secretWords.trim()}>
             NEXT
           </Button>
@@ -1341,11 +1701,25 @@ function CreateAccountStep({
   return (
     <StepWrapper onPrev={isSubmitting ? undefined : onPrev}>
       <StepTitle>CREATING YOUR SPACE</StepTitle>
-      <div className="no-window-drag flex w-full max-w-[420px] flex-1 flex-col items-center justify-center gap-4 text-center">
+      <div
+        className={
+          stylex.props(
+            styles_4.s2ffff9,
+            styles_4.scdbaf625,
+            styles_4.s8c05c43f,
+            styles_4.sb42feb5d,
+            styles_4.s67e351ac,
+            styles_4.sc6ed1702,
+            styles_4.sce22ca32,
+            styles_4.s5d936fd,
+            styles_4.s65e234f5,
+          ).className || ''
+        }
+      >
         <Text size="xl" className={stylex.props(styles.sf2718385).className || ''}>
           Seed is creating your account and storing it in this device&apos;s encrypted local vault.
         </Text>
-        <Text size="sm" className="text-muted-foreground max-w-[360px]">
+        <Text size="sm" className={stylex.props(styles_3.s1550f449).className || ''}>
           Your account is being set up in this device&apos;s encrypted local vault.
         </Text>
 
@@ -1382,9 +1756,14 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
   return (
     <StepWrapper>
       <StepTitle>READY TO GO</StepTitle>
-      <div className="no-window-drag mt-8 flex max-w-[400px] flex-col gap-4">
+      <div
+        className={
+          stylex.props(styles_4.s334592, styles_4.s2ffff9, styles_4.s8be9953d, styles_4.s67e351ac, styles_4.s5d936fd)
+            .className || ''
+        }
+      >
         <div
-          className="flex h-auto items-center gap-4 rounded-md bg-blue-200 p-4 transition-colors hover:bg-blue-300"
+          className={stylex.props(styles_3.sac9de943).className || ''}
           onClick={() => openUrl('https://discord.gg/7Y7DrhQZFs')}
         >
           <DiscordIcon className={stylex.props(styles.sea4b85de).className || ''} />
@@ -1397,7 +1776,7 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
             </SizableText>
           </div>
         </div>
-        <div className="bg-brand-8/20 dark:bg-brand-6/20 flex h-auto items-center gap-4 rounded-md p-4 transition-colors">
+        <div className={stylex.props(styles_3.s578137d0).className || ''}>
           <ContentIcon className={stylex.props(styles.sea4b85de).className || ''} />
           <div className={stylex.props(styles.s486e68e8).className || ''}>
             <SizableText weight="light" className={stylex.props(styles.s8c7183dc).className || ''}>
@@ -1409,7 +1788,7 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
             </SizableText>
           </div>
         </div>
-        <div className="bg-brand-8/20 dark:bg-brand-6/20 flex h-auto items-center gap-4 rounded-md p-4 transition-colors">
+        <div className={stylex.props(styles_3.s578137d0).className || ''}>
           <AnalyticsIcon className={stylex.props(styles.sea4b85de).className || ''} />
           <div className={stylex.props(styles.s486e68e8).className || ''}>
             <SizableText weight="light" className={stylex.props(styles.s8c7183dc).className || ''}>
@@ -1438,7 +1817,25 @@ export function OnboardingDebugBox() {
   }, [])
   if (IS_PROD_DESKTOP) return null
   return (
-    <div className="bg-background border-border no-window-drag absolute top-4 right-4 z-40 max-h-[300px] w-[300px] rounded-lg border p-2 opacity-80 shadow-lg">
+    <div
+      className={
+        stylex.props(
+          styles_4.s436dc7b6,
+          styles_4.s1a01a0ed,
+          styles_4.s67010d77,
+          styles_4.s478fb0c3,
+          styles_4.s696c5bc,
+          styles_4.s3824af,
+          styles_4.sda323b8f,
+          styles_4.s55fea1c7,
+          styles_4.sf799889b,
+          styles_4.sad8c742c,
+          styles_4.s1aa15,
+          styles_4.s54eab7fa,
+          styles_4.s8a6c2948,
+        ).className || ''
+      }
+    >
       <ScrollArea>
         <div className={stylex.props(styles.s1aa16).className || ''}>
           <Text
@@ -1465,7 +1862,7 @@ export function OnboardingDebugBox() {
 }
 function StepTitle({children}: {children: React.ReactNode}) {
   return (
-    <Text size="4xl" className="no-window-drag text-primary text-center">
+    <Text size="4xl" className={stylex.props(styles_4.s1bfab962, styles_4.s65e234f5).className || ''}>
       {children}
     </Text>
   )
@@ -1473,10 +1870,40 @@ function StepTitle({children}: {children: React.ReactNode}) {
 function StepWrapper({children, onPrev}: {children: React.ReactNode; onPrev?: () => void}) {
   return (
     <>
-      <div className="window-drag bg-primary flex flex-1 flex-col items-center justify-center gap-4 bg-gradient-to-b from-green-50 to-green-100 p-4">
-        <div className="no-window-drag flex h-[600px] w-[600px] flex-col items-center justify-center gap-6">
+      <div
+        className={
+          stylex.props(
+            styles_4.s5b77e87a,
+            styles_4.s2ffff9,
+            styles_4.sb42feb5d,
+            styles_4.s67e351ac,
+            styles_4.sc6ed1702,
+            styles_4.sce22ca32,
+            styles_4.s5d936fd,
+            styles_4.s1aa17,
+          ).className || ''
+        }
+      >
+        <div
+          className={
+            stylex.props(
+              styles_4.s2ffff9,
+              styles_4.sab1aaa95,
+              styles_4.s5b1d2ba4,
+              styles_4.s67e351ac,
+              styles_4.sc6ed1702,
+              styles_4.sce22ca32,
+              styles_4.s5d936ff,
+            ).className || ''
+          }
+        >
           {onPrev ? (
-            <div className="no-window-drag absolute top-10 left-15 z-40">
+            <div
+              className={
+                stylex.props(styles_4.s34d3daa, styles_4.s67010d77, styles_4.scc41f197, styles_4.s3824af).className ||
+                ''
+              }
+            >
               <Button size="icon" onClick={onPrev}>
                 <ArrowLeft className={stylex.props(styles.sa8ecfe2d).className || ''} />
               </Button>
@@ -1491,7 +1918,18 @@ function StepWrapper({children, onPrev}: {children: React.ReactNode; onPrev?: ()
 function OnboardingProgress({currentStep, showVaultStep}: {currentStep: OnboardingStep; showVaultStep: boolean}) {
   const showExistingStep = currentStep === 'existing' || currentStep === 'import'
   return (
-    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform gap-2 pt-4">
+    <div
+      className={
+        stylex.props(
+          styles_4.s67010d77,
+          styles_4.s808fc112,
+          styles_4.s665a770e,
+          styles_4.s2ffff9,
+          styles_4.s5d936fb,
+          styles_4.s34a2ab,
+        ).className || ''
+      }
+    >
       <OnboardingProgressStep active={currentStep === 'welcome'} />
       <OnboardingProgressStep active={currentStep === 'profile'} />
       {showVaultStep ? <OnboardingProgressStep active={currentStep === 'vault'} /> : null}
@@ -1505,7 +1943,14 @@ function OnboardingProgress({currentStep, showVaultStep}: {currentStep: Onboardi
   )
 }
 function OnboardingProgressStep({active}: {active: boolean}) {
-  return <div className={cn(stylex.props(styles.sa37b3229).className || '', active ? 'bg-primary' : 'bg-gray-300')} />
+  return (
+    <div
+      className={cn(
+        stylex.props(styles.sa37b3229).className || '',
+        stylex.props(active ? styles_2.s5b77e87a : styles_2.s5f844f91).className || '',
+      )}
+    />
+  )
 }
 async function fileToImageData(file: File): Promise<ImageData> {
   // Validate the file first
@@ -1556,7 +2001,18 @@ export function ResetOnboardingButton() {
   }
   if (IS_PROD_DESKTOP) return null
   return (
-    <div className="no-window-drag absolute right-2.5 bottom-2.5 z-40 flex gap-2">
+    <div
+      className={
+        stylex.props(
+          styles_4.s67010d77,
+          styles_4.s9ba3c2d7,
+          styles_4.sa2668a48,
+          styles_4.s3824af,
+          styles_4.s2ffff9,
+          styles_4.s5d936fb,
+        ).className || ''
+      }
+    >
       <Button size="sm" onClick={() => dispatchEditPopover(true)}>
         show Edit Dialog
       </Button>
@@ -1589,7 +2045,7 @@ export function CreateAccountBanner() {
         </Button>
         {/* <Button size="#3" chromeless hoverStyle={{bg: '$color44}}>
           I already have a Space
-        </Button> */}
+         </Button> */}
       </div>
     </div>
   )

@@ -2,6 +2,41 @@ import * as stylex from '@stylexjs/stylex'
 import {KeyRound} from 'lucide-react'
 import {type ReactNode} from 'react'
 import {SizableText} from '../text'
+const styles_3 = stylex.create({
+  s9d1e6bc5: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    minHeight: '220px',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 8)',
+    textAlign: 'center',
+  },
+  sf608009e: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-10)',
+    padding: 'calc(var(--spacing) * 4)',
+  },
+})
+const styles_2 = stylex.create({
+  s15930a39: {
+    maxWidth: '24rem',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   sfbc6e28e: {
     display: 'flex',
@@ -64,9 +99,9 @@ export function DelegatedKeysList({
 }) {
   if (!items.length) {
     return (
-      <div className="border-border flex min-h-[220px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-8 text-center">
+      <div className={stylex.props(styles_3.s9d1e6bc5).className || ''}>
         <SizableText weight="bold">{emptyLabel}</SizableText>
-        <SizableText size="sm" color="muted" className="max-w-sm">
+        <SizableText size="sm" color="muted" className={stylex.props(styles_2.s15930a39).className || ''}>
           {emptyDescription}
         </SizableText>
       </div>
@@ -75,14 +110,11 @@ export function DelegatedKeysList({
   return (
     <div className={stylex.props(styles.sfbc6e28e).className || ''}>
       {items.map((item) => (
-        <div
-          key={item.id}
-          className="flex items-center gap-3 rounded-xl border border-black/10 p-4 dark:border-white/10"
-        >
+        <div key={item.id} className={stylex.props(styles_3.sf608009e).className || ''}>
           <div className={stylex.props(styles.s2e2893f4).className || ''}>
             {item.icon ?? <KeyRound className={stylex.props(styles.sca3de969).className || ''} />}
           </div>
-          <div className="min-w-0 flex-1">
+          <div className={stylex.props(styles_2.se30fd43e).className || ''}>
             <SizableText size="sm" weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
               {item.title}
             </SizableText>

@@ -19,6 +19,50 @@ import {UserToolPalette} from './user-tool-palette'
  */
 
 /** Run states a sub-session's parent can no longer be driving it from. */
+const styles_4 = stylex.create({
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+})
+const styles_3 = stylex.create({
+  s42a8fe9d: {
+    color: 'var(--muted-foreground)',
+    marginBottom: 'calc(var(--spacing) * 1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 'calc(var(--spacing) * 2)',
+    fontSize: '11px',
+  },
+  sf909be14: {
+    backgroundColor: 'var(--primary)',
+    height: '100%',
+    borderRadius: 'calc(infinity * 1px)',
+    transitionProperty: 'width',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+  },
+  s3731c254: {
+    '@media ((max-width: 639px))': {
+      width: 'calc(var(--spacing) * 10)',
+      height: 'calc(var(--spacing) * 10)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   saa9e18e6: {
     borderColor: 'var(--border)',
@@ -223,15 +267,15 @@ export function AgentRichMessageComposer({
     <div className={stylex.props(styles.saa9e18e6).className || ''}>
       {attachmentUpload ? (
         <div className={stylex.props(styles.s34f4bddb).className || ''}>
-          <div className="text-muted-foreground mb-1 flex items-center justify-between gap-2 text-[11px]">
-            <span className="min-w-0 truncate">Uploading {attachmentUpload.name}…</span>
+          <div className={stylex.props(styles_3.s42a8fe9d).className || ''}>
+            <span className={stylex.props(styles_2.s64fb8207).className || ''}>Uploading {attachmentUpload.name}…</span>
             <span className={stylex.props(styles.s948be48c).className || ''}>
               {Math.floor((attachmentUpload.sent / Math.max(1, attachmentUpload.total)) * 100)}%
             </span>
           </div>
           <div className={stylex.props(styles.s6bbccae4).className || ''}>
             <div
-              className="bg-primary h-full rounded-full transition-[width] duration-200"
+              className={stylex.props(styles_3.sf909be14).className || ''}
               style={{
                 width: `${(attachmentUpload.sent / Math.max(1, attachmentUpload.total)) * 100}%`,
               }}
@@ -242,7 +286,7 @@ export function AgentRichMessageComposer({
       <div className={stylex.props(styles.sb57c4182).className || ''}>
         {/* The compact chat sizing is desktop-only: iOS Safari zooms the whole page whenever a
             focused field is under 16px, so phones get 16px in the composer instead. */}
-        <div className="min-w-0 flex-1 font-sans [&_.ProseMirror]:font-sans max-sm:[&_.ProseMirror]:!text-base sm:[&_.ProseMirror]:!text-sm [&_.comment-editor]:!min-h-8 [&_.comment-editor]:!pt-1 [&_.comment-editor]:!pb-1 [&_.comment-editor]:font-sans sm:[&_.comment-editor]:!text-sm [&_.comment-editor_.ProseMirror]:!min-h-0 [&_.comment-editor_.bn-editor]:!min-h-0 sm:[&_.hm-prose]:!text-sm">
+        <div className={stylex.props(styles_4.s3f58665f, styles_4.sb42feb5d, styles_4.sa1762f51).className || ''}>
           <CommentEditor
             focusOnMount={focusOnMount}
             hideAvatar
@@ -273,19 +317,25 @@ export function AgentRichMessageComposer({
           {draftMarkdown.trim() ? (
             <Button
               size="sm"
-              className="max-sm:size-10"
+              className={stylex.props(styles_3.s3731c254).className || ''}
               onClick={() => submitHandleRef.current?.submit()}
               title={isBusy ? 'Send while the agent is working' : 'Send'}
             >
               <Send className={stylex.props(styles.s3269316e).className || ''} />
             </Button>
           ) : !isBusy ? (
-            <Button size="sm" className="max-sm:size-10" disabled>
+            <Button size="sm" className={stylex.props(styles_3.s3731c254).className || ''} disabled>
               <Send className={stylex.props(styles.s3269316e).className || ''} />
             </Button>
           ) : null}
           {isStreaming ? (
-            <Button size="sm" variant="destructive" className="max-sm:size-10" onClick={onStop} disabled={stopPending}>
+            <Button
+              size="sm"
+              variant="destructive"
+              className={stylex.props(styles_3.s3731c254).className || ''}
+              onClick={onStop}
+              disabled={stopPending}
+            >
               <Square className={stylex.props(styles.sca3de967).className || ''} />
             </Button>
           ) : null}

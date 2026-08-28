@@ -25,6 +25,37 @@ import {useSelectedAccountId} from '@/selected-account'
 import {useUniversalAppContext} from '@shm/shared'
 import {useMemo, useState} from 'react'
 import {AddBlockAtEndButton} from './add-block-at-end-button'
+const styles_2 = stylex.create({
+  sc1b073e6: {
+    position: 'fixed',
+    bottom: 'calc(var(--spacing) * 3)',
+    left: 'calc(var(--spacing) * 3)',
+    zIndex: '9999',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-neutral-300)',
+    backgroundColor: 'var(--tone-neutral-900)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    color: 'var(--color-neutral-100)',
+    boxShadow: 'var(--shadow-lg)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--tone-neutral-800)',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   s7470bbe2: {
     display: 'inline-block',
@@ -137,7 +168,7 @@ function EditorEditableToggle({editor, onToggle}: {editor: HyperMediaEditor; onT
   return (
     <button
       onClick={() => onToggle(!editable)}
-      className="fixed bottom-3 left-3 z-[9999] flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-900 px-3 py-1.5 font-mono text-xs text-neutral-100 shadow-lg transition-colors hover:bg-neutral-800 dark:border-neutral-600 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+      className={stylex.props(styles_2.sc1b073e6).className || ''}
       title="Toggle editor editable state (debug)"
     >
       <span

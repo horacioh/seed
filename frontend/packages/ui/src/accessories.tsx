@@ -58,7 +58,7 @@ export function PanelContent({children, header}: {children: React.ReactNode; hea
   return (
     <div className={stylex.props(styles.sd6dded7f).className || ''}>
       {header ? <div className={stylex.props(styles.s898dc4cb).className || ''}>{header}</div> : null}
-      <ScrollArea className="">{children}</ScrollArea>
+      <ScrollArea className={stylex.props(null).className || ''}>{children}</ScrollArea>
     </div>
   )
 }

@@ -14,6 +14,11 @@ import appError from '../errors'
 import {useConnectPeer} from '../models/contacts'
 import {useDaemonInfo} from '../models/daemon'
 import {usePeerInfo} from '../models/networking'
+const styles_2 = stylex.create({
+  s158c30ca: {
+    maxHeight: 'calc(0.25rem * 40)',
+  },
+})
 const styles = stylex.create({
   s5f6cd3a4: {
     display: 'flex',
@@ -76,7 +81,7 @@ export function AddConnectionDialog({input, onClose}: {onClose: () => void; inpu
         onChange={(e) => setPeer(e.target.value)}
         rows={4}
         data-testid="add-contact-input"
-        className="max-h-40"
+        className={stylex.props(styles_2.s158c30ca).className || ''}
       />
       <DialogDescription>You can also paste the full peer address here.</DialogDescription>
 

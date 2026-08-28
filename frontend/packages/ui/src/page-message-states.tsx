@@ -7,6 +7,23 @@ import {Spinner} from './spinner'
 import {SizableText} from './text'
 
 // Re-export PageLayout from its own file for backwards compatibility
+const styles_2 = stylex.create({
+  s9da34d3f: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--surface-app)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-lg)',
+    flex: 'none',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 6)',
+    boxShadow: 'var(--shadow-lg)',
+  },
+})
 const styles = stylex.create({
   s4f426e02: {
     display: 'flex',
@@ -63,7 +80,7 @@ export function PageMessageBox({
   return (
     <div className={stylex.props(styles.s4f426e02).className || ''}>
       <div className={stylex.props(styles.se7022aa5).className || ''}>
-        <div className="border-border bg-background flex w-full max-w-lg flex-none flex-col gap-4 rounded-lg border p-6 shadow-lg dark:bg-black">
+        <div className={stylex.props(styles_2.s9da34d3f).className || ''}>
           {spinner ? (
             <div className={stylex.props(styles.sa2c8dace).className || ''}>
               <Spinner className={stylex.props(styles.s88546f06).className || ''} />

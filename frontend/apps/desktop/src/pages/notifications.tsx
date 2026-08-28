@@ -39,6 +39,37 @@ import {useNavRoute} from '@shm/shared/utils/navigation'
 import {useMutation, useQuery} from '@tanstack/react-query'
 import {Info, Settings} from 'lucide-react'
 import {useCallback, useEffect, useMemo, useState} from 'react'
+const styles_3 = stylex.create({
+  sbac0e4f: {
+    backgroundColor: 'var(--surface)',
+  },
+  s459517f6: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '260px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s8be9953d: {
+    maxWidth: '400px',
+  },
+})
+const styles_2 = stylex.create({
+  sa4681c45: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sc689d7c2: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+})
 const styles = stylex.create({
   sf2718385: {
     color: 'var(--muted-foreground)',
@@ -98,7 +129,7 @@ export default function NotificationsPage() {
   const accountUid = selectedAccount?.id.uid
   if (!accountUid) {
     return (
-      <PanelContainer className="dark:bg-background bg-white">
+      <PanelContainer className={stylex.props(styles_3.sbac0e4f).className || ''}>
         <MainWrapper scrollable>
           <GeneralPageSurface>
             <NotificationPageEmptyState title="Notifications" description="Select an account to view notifications." />
@@ -179,7 +210,7 @@ function NotificationsForAccount({accountUid}: {accountUid: string}) {
     })
   }, [accountUid, notifyServiceHost])
   return (
-    <PanelContainer className="dark:bg-background bg-white">
+    <PanelContainer className={stylex.props(styles_3.sbac0e4f).className || ''}>
       <MainWrapper scrollable>
         <GeneralPageSurface>
           <NotificationsPageContent
@@ -277,10 +308,10 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
         }
       }}
     >
-      <div className="flex min-w-0 items-center gap-2">
+      <div className={stylex.props(styles_2.sa4681c45).className || ''}>
         {!isLoading && currentEmail ? (
-          <div className="flex min-w-0 flex-col items-end">
-            <p className="text-muted-foreground max-w-[260px] truncate text-sm">{currentEmail}</p>
+          <div className={stylex.props(styles_2.sc689d7c2).className || ''}>
+            <p className={stylex.props(styles_3.s459517f6).className || ''}>{currentEmail}</p>
             {needsVerification ? (
               <div className={stylex.props(styles.s6aa0f3d9).className || ''}>
                 <p className={stylex.props(styles.s70e15751).className || ''}>Email not verified</p>
@@ -297,7 +328,7 @@ function NotificationEmailSettingsDialog({accountUid}: {accountUid: string}) {
           </DialogTrigger>
         </Tooltip>
       </div>
-      <DialogContent className="max-w-[400px]">
+      <DialogContent className={stylex.props(styles_3.s8be9953d).className || ''}>
         <DialogHeader>
           <DialogTitle>Email Notifications</DialogTitle>
         </DialogHeader>

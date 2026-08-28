@@ -48,6 +48,191 @@ import {Tooltip} from './tooltip'
 import {cn} from './utils'
 
 /** Props shared by embed block renderers. */
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s62a6ad96: {
+    borderColor: 'oklch(80.8% 0.114 19.571)',
+  },
+  saeb1152d: {
+    backgroundColor: 'oklch(93.6% 0.032 17.717)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s8ce93e09: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+})
+const styles_3 = stylex.create({
+  s5504278c: {
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--tone-gray-100)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  s85d43a6d: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-amber-300-2)',
+    backgroundColor: 'var(--tone-amber-100)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  sb78ac935: {
+    width: 'calc(var(--spacing) * 3)',
+    height: 'calc(var(--spacing) * 3)',
+    flexShrink: '0',
+    color: 'var(--tone-amber-600)',
+  },
+  s46bcae32: {
+    flex: '1',
+    fontFamily: 'var(--font-sans)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    color: 'var(--tone-amber-800)',
+  },
+  sa21ad150: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+  },
+  s3e8969e8: {
+    backgroundColor: 'var(--surface-contrast)',
+    boxShadow: 'var(--shadow-md)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '300ms',
+  },
+  se441c6f1: {
+    display: 'flex',
+    aspectRatio: '1 / 1',
+    width: 'calc(var(--spacing) * 10)',
+    height: 'calc(var(--spacing) * 10)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--tone-emerald-100-2)',
+  },
+  sa6c31594: {
+    width: 'calc(var(--spacing) * 5)',
+    height: 'calc(var(--spacing) * 5)',
+    color: 'var(--tone-emerald-700-2)',
+  },
+  s3bf5cbfe: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitboxOrient: 'vertical',
+    WebkitlineClamp: '2',
+    maxWidth: '100%',
+    fontFamily: 'var(--font-sans)',
+    fontSize: 'var(--text-base)',
+    lineHeight: 'var(--text-base--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    color: 'var(--tone-blue-600)',
+    textDecorationLine: 'none',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  sb7fe610e: {
+    overflow: 'hidden',
+    display: '-webkit-box',
+    WebkitboxOrient: 'vertical',
+    WebkitlineClamp: '2',
+    maxWidth: '100%',
+    fontFamily: 'var(--font-sans)',
+    fontSize: 'var(--text-base)',
+    lineHeight: 'var(--text-base--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    color: 'var(--tone-blue-600)',
+  },
+  s5c5d78f7: {
+    width: 'calc(var(--spacing) * 5)',
+    height: 'calc(var(--spacing) * 5)',
+    flexShrink: '0',
+    color: 'var(--tone-blue-600)',
+  },
+  sb8d60dff: {
+    marginInline: 'calc(var(--spacing) * 3)',
+    marginBottom: 'calc(var(--spacing) * 2)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--tone-blue-300)',
+    backgroundColor: 'var(--tone-blue-50)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+  },
+  s91da9b75: {
+    width: 'calc(var(--spacing) * 3)',
+    height: 'calc(var(--spacing) * 3)',
+    flexShrink: '0',
+    color: 'var(--tone-blue-600)',
+  },
+  sba747b65: {
+    fontFamily: 'var(--font-sans)',
+    color: 'var(--tone-blue-800)',
+  },
+})
+const styles_2 = stylex.create({
+  sdecc81f3: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+  },
+})
 const styles = stylex.create({
   sed20b12b: {
     fontFamily: 'var(--font-sans)',
@@ -152,9 +337,21 @@ export function ErrorBlock({
   let [open, toggleOpen] = useState(false)
   return (
     <Tooltip content={debugData ? (open ? 'Hide debug Data' : 'Show debug data') : ''}>
-      <div className="block-content block-unknown flex flex-1 flex-col">
+      <div className={stylex.props(styles_4.s2ffff9, styles_4.sb42feb5d, styles_4.s67e351ac).className || ''}>
         <div
-          className="flex-start flex items-center gap-2 overflow-hidden rounded-md border border-red-300 bg-red-100 p-2"
+          className={
+            stylex.props(
+              styles_4.s2ffff9,
+              styles_4.sc6ed1702,
+              styles_4.s5d936fb,
+              styles_4.s92852dd5,
+              styles_4.sf79988b7,
+              styles_4.sad8c742c,
+              styles_4.s62a6ad96,
+              styles_4.saeb1152d,
+              styles_4.s1aa15,
+            ).className || ''
+          }
           onClick={(e) => {
             e.stopPropagation()
             toggleOpen((v) => !v)
@@ -167,7 +364,7 @@ export function ErrorBlock({
           {children}
         </div>
         {open ? (
-          <pre className="border-border rounded-md border bg-gray-100 p-2 dark:bg-gray-800">
+          <pre className={stylex.props(styles_3.s5504278c).className || ''}>
             <code className={stylex.props(styles.s9444a077).className || ''}>{JSON.stringify(debugData, null, 4)}</code>
           </pre>
         ) : null}
@@ -181,10 +378,10 @@ export function DeletedEmbedBanner({children, entityLabel = 'document'}: {childr
   const [showContent, setShowContent] = useState(false)
   const hasContent = !!children
   return (
-    <div className="block-content flex flex-col gap-1">
-      <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-100 p-2 dark:border-amber-600 dark:bg-amber-900/30">
-        <AlertCircle className="size-3 shrink-0 text-amber-600 dark:text-amber-400" />
-        <SizableText className="flex-1 font-sans text-sm text-amber-800 dark:text-amber-200">
+    <div className={stylex.props(styles_4.s2ffff9, styles_4.s67e351ac, styles_4.s5d936fa).className || ''}>
+      <div className={stylex.props(styles_3.s85d43a6d).className || ''}>
+        <AlertCircle className={stylex.props(styles_3.sb78ac935).className || ''} />
+        <SizableText className={stylex.props(styles_3.s46bcae32).className || ''}>
           This embedded {entityLabel} has been deleted
         </SizableText>
         {hasContent ? (
@@ -376,16 +573,16 @@ function HmLinkEmbed({
     >
       <div
         className={cn(
-          'hover:bg-accent dark:hover:bg-accent flex w-full items-center gap-3 overflow-hidden rounded-lg',
-          'bg-white shadow-md transition-colors duration-300 dark:bg-black',
+          stylex.props(styles_3.sa21ad150).className || '',
+          stylex.props(styles_3.s3e8969e8).className || '',
           stylex.props(styles.s34f4d0a0).className || '',
         )}
       >
         {/* Green icon placeholder, mirrors DocumentCard's no-cover variant. */}
-        <div className="flex aspect-square size-10 shrink-0 items-center justify-center rounded-md bg-emerald-100 dark:bg-emerald-900/30">
-          <Icon className="size-5 text-emerald-700 dark:text-emerald-400" strokeWidth={1.5} />
+        <div className={stylex.props(styles_3.se441c6f1).className || ''}>
+          <Icon className={stylex.props(styles_3.sa6c31594).className || ''} strokeWidth={1.5} />
         </div>
-        <div className="min-w-0 flex-1 overflow-hidden">
+        <div className={stylex.props(styles_2.sdecc81f3).className || ''}>
           {titleIsLink ? (
             <a
               href={titleLink.href}
@@ -394,14 +591,12 @@ function HmLinkEmbed({
                 e.stopPropagation()
                 titleLink.onClick?.(e)
               }}
-              className="line-clamp-2 max-w-full font-sans text-base font-bold text-blue-600 no-underline hover:underline dark:text-blue-400"
+              className={stylex.props(styles_3.s3bf5cbfe).className || ''}
             >
               {title}
             </a>
           ) : (
-            <span className="line-clamp-2 max-w-full font-sans text-base font-bold text-blue-600 dark:text-blue-400">
-              {title}
-            </span>
+            <span className={stylex.props(styles_3.sb7fe610e).className || ''}>{title}</span>
           )}
         </div>
       </div>
@@ -440,7 +635,7 @@ function ExternalLinkEmbed({
         onError={() => setFaviconFailed(true)}
       />
     ) : (
-      <Globe className="size-5 shrink-0 text-blue-600 dark:text-blue-400" />
+      <Globe className={stylex.props(styles_3.s5c5d78f7).className || ''} />
     )
   if (openOnClick) {
     // Published view - whole row navigates.
@@ -452,16 +647,14 @@ function ExternalLinkEmbed({
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          'hover:bg-accent dark:hover:bg-accent flex w-full items-center gap-3 overflow-hidden rounded-lg',
-          'bg-white shadow-md transition-colors duration-300 dark:bg-black',
+          stylex.props(styles_3.sa21ad150).className || '',
+          stylex.props(styles_3.s3e8969e8).className || '',
           stylex.props(styles.s378d3d40).className || '',
         )}
       >
         {icon}
-        <div className="min-w-0 flex-1 overflow-hidden">
-          <span className="line-clamp-2 max-w-full font-sans text-base font-bold text-blue-600 dark:text-blue-400">
-            {linkText}
-          </span>
+        <div className={stylex.props(styles_2.sdecc81f3).className || ''}>
+          <span className={stylex.props(styles_3.sb7fe610e).className || ''}>{linkText}</span>
         </div>
       </a>
     )
@@ -471,13 +664,13 @@ function ExternalLinkEmbed({
     <div
       {...sharedAttrs}
       className={cn(
-        'hover:bg-accent dark:hover:bg-accent flex w-full items-center gap-3 overflow-hidden rounded-lg',
-        'bg-white shadow-md transition-colors duration-300 dark:bg-black',
+        stylex.props(styles_3.sa21ad150).className || '',
+        stylex.props(styles_3.s3e8969e8).className || '',
         stylex.props(styles.s34f4d0a0).className || '',
       )}
     >
       {icon}
-      <div className="min-w-0 flex-1 overflow-hidden">
+      <div className={stylex.props(styles_2.sdecc81f3).className || ''}>
         <a
           href={link.href}
           onMouseDown={(e) => e.stopPropagation()}
@@ -487,7 +680,7 @@ function ExternalLinkEmbed({
           }}
           target="_blank"
           rel="noopener noreferrer"
-          className="line-clamp-2 max-w-full font-sans text-base font-bold text-blue-600 no-underline hover:underline dark:text-blue-400"
+          className={stylex.props(styles_3.s3bf5cbfe).className || ''}
         >
           {linkText}
         </a>
@@ -593,7 +786,20 @@ export function BlockEmbedContent({
   if (resource.data?.type === 'not-found') {
     if (resource.isDiscovering) {
       return (
-        <div className="block-content border-border bg-muted/30 flex items-center gap-2 rounded-md border p-4">
+        <div
+          className={
+            stylex.props(
+              styles_4.s1a01a0ed,
+              styles_4.s8ce93e09,
+              styles_4.s2ffff9,
+              styles_4.sc6ed1702,
+              styles_4.s5d936fb,
+              styles_4.sf79988b7,
+              styles_4.sad8c742c,
+              styles_4.s1aa17,
+            ).className || ''
+          }
+        >
           <Spinner className={stylex.props(styles.sca3de968).className || ''} />
           <SizableText className={stylex.props(styles.se61ef476).className || ''}>
             Looking for this content…
@@ -849,9 +1055,9 @@ function CommentEmbedHeader({
         </div>
       </div>
       {isStaleVersion ? (
-        <div className="mx-3 mb-2 flex items-center gap-2 rounded-md border border-blue-300 bg-blue-50 px-2 py-1 dark:border-blue-600 dark:bg-blue-900/30">
-          <AlertCircle className="size-3 shrink-0 text-blue-600 dark:text-blue-400" />
-          <SizableText size="xs" className="font-sans text-blue-800 dark:text-blue-200">
+        <div className={stylex.props(styles_3.sb8d60dff).className || ''}>
+          <AlertCircle className={stylex.props(styles_3.s91da9b75).className || ''} />
+          <SizableText size="xs" className={stylex.props(styles_3.sba747b65).className || ''}>
             This is an older version — the comment has been edited since it was embedded
           </SizableText>
         </div>

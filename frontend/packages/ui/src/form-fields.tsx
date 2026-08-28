@@ -4,6 +4,11 @@ import {PropsWithChildren} from 'react'
 import {Input} from './components/input'
 import {Switch, SwitchProps} from './components/switch'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from './select-dropdown'
+const styles_2 = stylex.create({
+  s6a21f7e: {
+    width: '50%',
+  },
+})
 const styles = stylex.create({
   sfbc6e28d: {
     display: 'flex',
@@ -134,7 +139,7 @@ export function SelectField({
         <Label htmlFor={id} size="sm" className={stylex.props(styles.sf2718385).className || ''}>
           {label}
         </Label>
-        <div className="w-1/2">{content}</div>
+        <div className={stylex.props(styles_2.s6a21f7e).className || ''}>{content}</div>
       </div>
     )
   } else {

@@ -12,6 +12,13 @@ import {SizableText} from '@shm/ui/text'
 
 // Register the web platform adapter before any agents UI renders. This module is only loaded from
 // the client-lazy agents chunk, so the registration never runs during SSR rendering of other pages.
+const styles_2 = stylex.create({
+  scc106b06: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '28rem',
+    textAlign: 'center',
+  },
+})
 const styles = stylex.create({
   s775a395b: {
     display: 'flex',
@@ -38,7 +45,7 @@ function SignedOutNotice() {
       <SizableText size="lg" weight="bold">
         Agents
       </SizableText>
-      <SizableText className="text-muted-foreground max-w-md text-center">
+      <SizableText className={stylex.props(styles_2.scc106b06).className || ''}>
         Sign in to configure and chat with your agents. Your local web identity signs every agent action, so agents are
         only available once you are signed in.
       </SizableText>

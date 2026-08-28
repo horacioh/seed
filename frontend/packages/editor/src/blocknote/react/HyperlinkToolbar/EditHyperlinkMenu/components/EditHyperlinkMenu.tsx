@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {hmId} from '@shm/shared'
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {packHmId} from '@shm/shared/utils'
@@ -9,7 +10,57 @@ import {ExternalLink, Link as LinkIcon, TextCursorInput, Unlink} from '@shm/ui/i
 import {Separator} from '@shm/ui/separator'
 import {Tooltip} from '@shm/ui/tooltip'
 import {HTMLAttributes, forwardRef} from 'react'
-
+const styles = stylex.create({
+  s5ff7227c: {
+    backgroundColor: 'var(--panel)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s808fc10e: {
+    bottom: 'calc(0.25rem * 0)',
+  },
+  s382452: {
+    zIndex: '10',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+  s8a6c2a27: {
+    boxShadow: 'var(--shadow-sm)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sabb4662d: {
+    minWidth: 'calc(0.25rem * 40)',
+  },
+})
 export type EditHyperlinkMenuProps = {
   url: string
   text: string
@@ -26,11 +77,27 @@ export const EditHyperlinkMenu = forwardRef<HTMLDivElement, EditHyperlinkMenuPro
     const unpackedRef = null // Placeholder - should parse URL to extract HM link data
 
     return (
-      <div className="bg-panel absolute bottom-0 z-10 flex flex-col gap-2 overflow-hidden rounded-md p-2 shadow-sm">
-        <div className="flex items-center gap-2 p-1">
-          <TextCursorInput className="size-4" />
+      <div
+        className={
+          stylex.props(
+            styles.s5ff7227c,
+            styles.s67010d77,
+            styles.s808fc10e,
+            styles.s382452,
+            styles.s2ffff9,
+            styles.s67e351ac,
+            styles.s5d936fb,
+            styles.s92852dd5,
+            styles.sf79988b7,
+            styles.s1aa15,
+            styles.s8a6c2a27,
+          ).className || ''
+        }
+      >
+        <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb, styles.s1aa14).className || ''}>
+          <TextCursorInput className={stylex.props(styles.sca3de968).className || ''} />
           <Input
-            className="flex-1"
+            className={stylex.props(styles.sb42feb5d).className || ''}
             placeholder="link text"
             id="link-text"
             // @ts-expect-error
@@ -39,16 +106,20 @@ export const EditHyperlinkMenu = forwardRef<HTMLDivElement, EditHyperlinkMenuPro
             value={props.text}
           />
         </div>
-        <div className="flex items-center gap-2 p-1">
-          <LinkIcon className="size-4" />
+        <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb, styles.s1aa14).className || ''}>
+          <LinkIcon className={stylex.props(styles.sca3de968).className || ''} />
           {/* @ts-expect-error */}
-          <Input className="flex-1" key={props.url} value={props.url} />
+          <Input className={stylex.props(styles.sb42feb5d).className || ''} key={props.url} value={props.url} />
         </div>
         <Separator />
-        <div className="flex flex-col p-1">
-          <div className="flex items-center gap-2">
+        <div className={stylex.props(styles.s2ffff9, styles.s67e351ac, styles.s1aa14).className || ''}>
+          <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb).className || ''}>
             {unpackedRef ? (
-              <div className="flex min-w-40 items-center gap-2">
+              <div
+                className={
+                  stylex.props(styles.s2ffff9, styles.sabb4662d, styles.sc6ed1702, styles.s5d936fb).className || ''
+                }
+              >
                 <Checkbox
                   id="link-latest"
                   // @ts-expect-error
@@ -78,12 +149,12 @@ export const EditHyperlinkMenu = forwardRef<HTMLDivElement, EditHyperlinkMenuPro
             <Tooltip content="Remove link">
               {/* @ts-expect-error */}
               <Button size="iconSm" onClick={props.deleteHyperlink}>
-                <Unlink className="size-4" />
+                <Unlink className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </Tooltip>
             <Tooltip content="Open in a new Window">
               <Button size="iconSm" onClick={() => props.openUrl(url, true)}>
-                <ExternalLink className="size-4" />
+                <ExternalLink className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </Tooltip>
           </div>

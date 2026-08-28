@@ -14,6 +14,27 @@ import {Suspense, useMemo} from 'react'
 
 // The agents chunk pulls in the editor and agents models; keep it out of the SSR bundle and load
 // it only on the client, like the commenting editor.
+const styles_3 = stylex.create({
+  s87b70f1e: {
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 0)',
+    width: '100%',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    paddingTop: 'var(--site-header-h)',
+    '@media ((min-width: 640px))': {
+      paddingTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  sd8bf54a1: {
+    height: '100dvh',
+    minHeight: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+  },
+})
 const styles = stylex.create({
   scdbaf625: {
     width: '100%',
@@ -47,7 +68,7 @@ export function AgentsPage() {
     >
       {/* The agents pages are full-height panels (PanelContainer uses h-full and scrolls
           internally), so the surface must be a definite viewport height, not min-h-screen. */}
-      <GeneralPageSurface className="h-dvh min-h-0 items-center">
+      <GeneralPageSurface className={stylex.props(styles_2.sd8bf54a1).className || ''}>
         <WebSiteHeader
           homeMetadata={homeMetadata}
           originHomeId={originHomeId}
@@ -56,7 +77,7 @@ export function AgentsPage() {
           origin={origin}
           rightActions={<WebHeaderActions siteUid={originHomeId.uid} />}
         />
-        <NavigationLoadingContent className="flex min-h-0 w-full flex-1 flex-col gap-4 pt-[var(--site-header-h)] sm:pt-0">
+        <NavigationLoadingContent className={stylex.props(styles_3.s87b70f1e).className || ''}>
           <ClientOnly>
             <Suspense fallback={<Spinner />}>
               <WebAgentsContent />

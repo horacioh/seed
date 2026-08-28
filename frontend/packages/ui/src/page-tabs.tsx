@@ -9,6 +9,46 @@ import {cn} from './utils'
 /**
  * Tab item definition for PageTabs.
  */
+const styles_2 = stylex.create({
+  s2b8977d4: {
+    display: 'none',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    '@media ((min-width: 768px))': {
+      display: 'block',
+    },
+  },
+  s5a0bf008: {
+    display: 'inline-flex',
+    height: 'calc(var(--spacing) * 9)',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderTopLeftRadius: 'calc(infinity * 1px)',
+    borderBottomLeftRadius: 'calc(infinity * 1px)',
+    paddingRight: 'calc(var(--spacing) * 2)',
+    paddingLeft: 'calc(var(--spacing) * 4)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-5-10)',
+      },
+    },
+  },
+  s22699816: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 768px))': {
+      gap: 'calc(var(--spacing) * 4)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -24,7 +64,7 @@ const styles = stylex.create({
     display: 'inline-flex',
     alignItems: 'center',
     borderRadius: 'calc(infinity * 1px)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-xs)',
+    boxShadow: 'var(--shadow-xs)',
   },
   sbd905992: {
     flex: '1',
@@ -98,7 +138,7 @@ export function PageTab({
   const linkContent = (
     <>
       {Icon && <Icon className={stylex.props(styles.sca3de968).className || ''} />}
-      {label && showLabel ? <span className="hidden truncate text-sm md:block">{label}</span> : null}
+      {label && showLabel ? <span className={stylex.props(styles_2.s2b8977d4).className || ''}>{label}</span> : null}
       {count ? <span className={stylex.props(styles.sab7cc6fa).className || ''}>{count}</span> : null}
     </>
   )
@@ -116,11 +156,7 @@ export function PageTab({
     return (
       <Tooltip content="">
         <div className={cn(stylex.props(styles.s61644a76).className || '', bg, className)}>
-          <a
-            {...linkProps}
-            data-tab={route.key}
-            className="inline-flex h-9 items-center gap-2 rounded-l-full pr-2 pl-4 transition-colors hover:bg-black/5 dark:hover:bg-white/10"
-          >
+          <a {...linkProps} data-tab={route.key} className={stylex.props(styles_2.s5a0bf008).className || ''}>
             {linkContent}
           </a>
           {nestedAction}
@@ -163,7 +199,7 @@ export interface PageTabsProps {
  */
 export function PageTabs({tabs, activeTab, showLabels = true, className}: PageTabsProps) {
   return (
-    <div className={cn('flex items-center gap-2 md:gap-4', className)}>
+    <div className={cn(stylex.props(styles_2.s22699816).className || '', className)}>
       {tabs.map((tab) => (
         <PageTab
           key={tab.key}

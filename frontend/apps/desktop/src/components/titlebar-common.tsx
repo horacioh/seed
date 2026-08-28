@@ -82,6 +82,346 @@ import {SearchInput, SearchInputHandle} from './search-input'
 import {TitleBarProps} from './titlebar'
 
 // Route keys that have an id and support DocOptionsButton
+const styles_6 = stylex.create({
+  sfb4c68be: {
+    '::placeholder': {
+      color: 'var(--muted-foreground)',
+    },
+  },
+})
+const styles_5 = stylex.create({
+  s7c401ed0: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s18c13: {
+    height: 'calc(0.25rem * 8)',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+  sca3de96c: {
+    width: 'calc(0.25rem * 8)',
+    height: 'calc(0.25rem * 8)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sc5a0131: {
+    borderColor: 'transparent',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s382452: {
+    zIndex: '10',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s9faef944: {
+    cursor: 'text',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s7c401ed1: {
+    borderStyle: 'solid',
+    borderWidth: '2px',
+  },
+  s3484a1: {
+    paddingLeft: 'calc(0.25rem * 2)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  s82357e4e: {
+    width: 'var(--radix-popover-trigger-width)',
+  },
+  sf887c4ab: {
+    minWidth: '400px',
+  },
+  s7c401ecf: {
+    borderStyle: 'solid',
+    borderWidth: '0px',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  sa0080bc5: {
+    boxShadow: 'none',
+  },
+})
+const styles_4 = stylex.create({
+  s9888f71c: {
+    cursor: 'default',
+    borderColor: 'var(--overlay-15)',
+    backgroundColor: 'var(--overlay-10)',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--overlay-20)',
+        backgroundColor: 'var(--overlay-15)',
+      },
+    },
+  },
+  sc5a0131: {
+    borderColor: 'transparent',
+  },
+  s92ffee34: {
+    display: 'flex',
+    height: 'calc(var(--spacing) * 5)',
+    minWidth: 'calc(var(--spacing) * 5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--color-red-500)',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    fontSize: '12px',
+    fontWeight: 'var(--font-weight-bold)',
+    color: 'var(--color-white)',
+  },
+  s908b9122: {
+    width: '320px',
+    borderRadius: 'var(--radius-2xl)',
+    padding: 'calc(var(--spacing) * 0)',
+  },
+  s1272d10: {
+    display: 'flex',
+    width: 'calc(var(--spacing) * 11)',
+    height: 'calc(var(--spacing) * 11)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-10)',
+    backgroundColor: 'var(--surface-translucent)',
+  },
+  sab3e94c3: {
+    marginBlock: 'calc(var(--spacing) * 0)',
+    backgroundColor: 'var(--overlay-10)',
+  },
+  sd0b844d5: {
+    backgroundColor: 'var(--surface-muted-sunken)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 11)',
+    height: 'calc(var(--spacing) * 11)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s549e562e: {
+    width: '260px',
+  },
+  sfb2e96dc: {
+    margin: 'calc(var(--spacing) * 1)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-10)',
+    backgroundColor: 'var(--surface-black-tint)',
+    padding: 'calc(var(--spacing) * 1)',
+  },
+  s6a2552da: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+  sc32e317e: {
+    maxHeight: '200px',
+    overflowY: 'auto',
+  },
+  s191d0534: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    ':disabled': {
+      opacity: '60%',
+    },
+  },
+  sc04d6692: {
+    backgroundColor: 'var(--overlay-10)',
+  },
+  s592e9984: {
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'var(--border)',
+        backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      },
+    },
+    backgroundColor: 'var(--surface-contrast)',
+  },
+  s92b9805b: {
+    borderColor: 'var(--primary)',
+    backgroundColor: 'var(--surface-contrast)',
+  },
+  s623ccd8d: {
+    ':focus-within': {
+      boxShadow: '0 0 0 1px currentcolor',
+    },
+  },
+  s8974ddde: {
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    borderStyle: 'none',
+    backgroundColor: 'transparent',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    outlineStyle: 'none',
+  },
+  s82dde684: {
+    borderColor: 'var(--border)',
+    maxHeight: '280px',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--surface)',
+    padding: 'calc(var(--spacing) * 2)',
+    boxShadow: 'var(--shadow-2xl)',
+  },
+})
+const styles_3 = stylex.create({
+  sc5a0131: {
+    borderColor: 'transparent',
+  },
+  s34b56c: {
+    paddingBlock: 'calc(0.25rem * 0)',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+})
+const styles_2 = stylex.create({
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  s584bf345: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    textAlign: 'left',
+  },
+  safdaede1: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s242145e8: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  see307b2f: {
+    color: 'var(--muted-foreground)',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s946f13fd: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+  },
+  s9ccd4aa7: {
+    maxWidth: '42rem',
+  },
+  see8a63b2: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  s2618e1af: {
+    width: 'calc(0.25rem * 6)',
+    height: 'calc(0.25rem * 6)',
+    minWidth: 'calc(0.25rem * 6)',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -211,8 +551,7 @@ const styles = stylex.create({
     lineHeight: 'calc(1 / 0.75)',
   },
   sf7fb00e8: {
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
   },
@@ -293,10 +632,10 @@ function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
     <Tooltip content="Notifications" asChild>
       <Button
         className={cn(
-          'window-no-drag relative h-8 rounded-full border-1 p-0',
-          isActive
-            ? 'cursor-default border-black/15 bg-black/10 shadow-xs hover:border-black/20 hover:bg-black/15 dark:border-white/15 dark:bg-white/10 dark:hover:border-white/20 dark:hover:bg-white/15'
-            : 'border-transparent',
+          stylex.props(styles_5.s7c401ed0, styles_5.sdef3facc, styles_5.s18c13, styles_5.s775755af, styles_5.s1aa13)
+            .className || '',
+          'window-no-drag',
+          stylex.props(isActive ? styles_4.s9888f71c : styles_4.sc5a0131).className || '',
         )}
         aria-current={isActive ? 'page' : undefined}
         aria-disabled={isActive || undefined}
@@ -314,7 +653,7 @@ function NotificationButtonForAccount({accountUid}: {accountUid: string}) {
       >
         <Bell className={stylex.props(styles.sca3de968).className || ''} />
         {unreadCount > 0 ? (
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-lg bg-red-500 px-1 text-[12px] font-bold text-white">
+          <span className={stylex.props(styles_4.s92ffee34).className || ''}>
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         ) : null}
@@ -390,13 +729,25 @@ export function AccountProfileButton() {
       <>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0">
+            <Button
+              className={
+                stylex.props(
+                  styles_5.s7c401ed0,
+                  styles_5.sdef3facc,
+                  styles_5.sca3de96c,
+                  styles_5.s92852dd5,
+                  styles_5.s775755af,
+                  styles_5.sc5a0131,
+                  styles_5.s1aa13,
+                ).className || ''
+              }
+            >
               <div className={stylex.props(styles.sb53e5ce9).className || ''}>
                 <User className={stylex.props(styles.s3566be63).className || ''} />
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="bottom" align="end" className="w-[320px] rounded-2xl p-0">
+          <DropdownMenuContent side="bottom" align="end" className={stylex.props(styles_4.s908b9122).className || ''}>
             <DropdownMenuItem
               className={stylex.props(styles.s48010636).className || ''}
               onClick={() =>
@@ -407,15 +758,15 @@ export function AccountProfileButton() {
                 })
               }
             >
-              <div className="flex size-11 items-center justify-center rounded-full border border-black/10 bg-white dark:border-white/10 dark:bg-black/10">
+              <div className={stylex.props(styles_4.s1272d10).className || ''}>
                 <LogIn className={stylex.props(styles.sca3de969).className || ''} />
               </div>
-              <div className="min-w-0 flex-1">
+              <div className={stylex.props(styles_2.se30fd43e).className || ''}>
                 <p className={stylex.props(styles.se0a4e204).className || ''}>Sign in</p>
                 <p className={stylex.props(styles.s6d876997).className || ''}>I already have a Hypermedia identity</p>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-0 bg-black/10 dark:bg-white/10" />
+            <DropdownMenuSeparator className={stylex.props(styles_4.sab3e94c3).className || ''} />
             <DropdownMenuItem
               className={stylex.props(styles.s48010636).className || ''}
               onClick={() =>
@@ -426,15 +777,15 @@ export function AccountProfileButton() {
                 })
               }
             >
-              <div className="bg-muted flex size-11 items-center justify-center rounded-full dark:bg-black/20">
+              <div className={stylex.props(styles_4.sd0b844d5).className || ''}>
                 <Plus className={stylex.props(styles.sca3de969).className || ''} />
               </div>
-              <div className="min-w-0 flex-1">
+              <div className={stylex.props(styles_2.se30fd43e).className || ''}>
                 <p className={stylex.props(styles.se0a4e204).className || ''}>Create my identity</p>
                 <p className={stylex.props(styles.s6d876997).className || ''}>New to Seed Hypermedia</p>
               </div>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-0 bg-black/10 dark:bg-white/10" />
+            <DropdownMenuSeparator className={stylex.props(styles_4.sab3e94c3).className || ''} />
             <DropdownMenuItem
               className={stylex.props(styles.s2f251391).className || ''}
               onClick={() =>
@@ -445,7 +796,7 @@ export function AccountProfileButton() {
             >
               I have a different identity domain
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="my-0 bg-black/10 dark:bg-white/10" />
+            <DropdownMenuSeparator className={stylex.props(styles_4.sab3e94c3).className || ''} />
             <DropdownMenuItem
               className={stylex.props(styles.s3facd310).className || ''}
               onClick={() =>
@@ -472,7 +823,19 @@ export function AccountProfileButton() {
         }}
       >
         <DropdownMenuTrigger asChild>
-          <Button className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0">
+          <Button
+            className={
+              stylex.props(
+                styles_5.s7c401ed0,
+                styles_5.sdef3facc,
+                styles_5.sca3de96c,
+                styles_5.s92852dd5,
+                styles_5.s775755af,
+                styles_5.sc5a0131,
+                styles_5.s1aa13,
+              ).className || ''
+            }
+          >
             {accountUid ? (
               <HMIcon
                 id={hmId(accountUid)}
@@ -487,11 +850,11 @@ export function AccountProfileButton() {
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="bottom" align="end" className="w-[260px]">
+        <DropdownMenuContent side="bottom" align="end" className={stylex.props(styles_4.s549e562e).className || ''}>
           {/* Account header + switcher */}
-          <div className="m-1 rounded-lg border border-black/10 p-1 dark:border-white/10">
+          <div className={stylex.props(styles_4.sfb2e96dc).className || ''}>
             <button
-              className="hover:bg-accent flex w-full items-center gap-3 rounded-md px-2 py-2"
+              className={stylex.props(styles_4.s6a2552da).className || ''}
               onClick={() => setSwitcherOpen(!switcherOpen)}
             >
               {accountUid ? (
@@ -506,7 +869,7 @@ export function AccountProfileButton() {
                   <User className={stylex.props(styles.s3566be63).className || ''} />
                 </div>
               )}
-              <div className="min-w-0 flex-1 text-left">
+              <div className={stylex.props(styles_2.s584bf345).className || ''}>
                 <p className={stylex.props(styles.s59c17cd3).className || ''}>
                   {selectedAccount?.metadata?.name || 'Account'}
                 </p>
@@ -520,7 +883,7 @@ export function AccountProfileButton() {
             {switcherOpen && (
               <>
                 <div
-                  className="max-h-[200px] overflow-y-auto"
+                  className={stylex.props(styles_4.sc32e317e).className || ''}
                   style={{
                     background: [
                       'linear-gradient(var(--popover) 33%, transparent) center top',
@@ -538,14 +901,14 @@ export function AccountProfileButton() {
                     option && option.id.uid !== selectedIdentityValue ? (
                       <button
                         key={option.id.uid}
-                        className="hover:bg-accent flex w-full items-center gap-3 rounded-md px-2 py-2"
+                        className={stylex.props(styles_4.s6a2552da).className || ''}
                         onClick={() => {
                           setSelectedIdentity?.(option.id.uid || null)
                           setSwitcherOpen(false)
                         }}
                       >
                         <HMIcon id={option.id} name={option.metadata?.name} icon={option.metadata?.icon} size={32} />
-                        <p className="min-w-0 truncate text-sm">
+                        <p className={stylex.props(styles_2.safdaede1).className || ''}>
                           {option.metadata?.name || `?${option.id.uid?.slice(-8)}`}
                         </p>
                       </button>
@@ -553,7 +916,7 @@ export function AccountProfileButton() {
                   )}
                 </div>
                 <button
-                  className="hover:bg-accent flex w-full items-center gap-3 rounded-md px-2 py-2 disabled:opacity-60"
+                  className={stylex.props(styles_4.s191d0534).className || ''}
                   onClick={() => {
                     setMenuOpen(false)
                     createAccountDialog.open({})
@@ -567,7 +930,7 @@ export function AccountProfileButton() {
               </>
             )}
           </div>
-          <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+          <DropdownMenuSeparator className={stylex.props(styles_4.sc04d6692).className || ''} />
           {accountUid && (
             <DropdownMenuItem
               onClick={() => {
@@ -607,7 +970,7 @@ export function AccountProfileButton() {
           </DropdownMenuItem>
           {canLogOut ? (
             <>
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+              <DropdownMenuSeparator className={stylex.props(styles_4.sc04d6692).className || ''} />
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => {
@@ -678,7 +1041,7 @@ export function NavigationButtons() {
   const dispatch = useNavigationDispatch()
   if (!state) return null
   return (
-    <div className="no-window-drag flex shrink-0">
+    <div className={stylex.props(styles_5.s2ffff9, styles_5.sf032ed6c).className || ''}>
       <Button
         size="icon"
         onClick={() =>
@@ -688,7 +1051,7 @@ export function NavigationButtons() {
         }
         variant="ghost"
         disabled={state.routeIndex <= 0}
-        className="rounded-tl-0 rounded-bl-0 shrink-0"
+        className={stylex.props(styles_5.sf032ed6c).className || ''}
       >
         <Back className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
@@ -701,7 +1064,7 @@ export function NavigationButtons() {
           })
         }
         disabled={state.routeIndex >= state.routes.length - 1}
-        className="rounded-tr-0 rounded-br-0 shrink-0"
+        className={stylex.props(styles_5.sf032ed6c).className || ''}
       >
         <Forward className={stylex.props(styles.sca3de968).className || ''} />
       </Button>
@@ -737,7 +1100,7 @@ export function NavMenuButton({left}: {left?: ReactNode}) {
     <div className={stylex.props(styles.s2b214c4f).className || ''}>
       {left || <div />}
       {ctx && (
-        <div className="no-window-drag relative z-10">
+        <div className={stylex.props(styles_5.sdef3facc, styles_5.s382452).className || ''}>
           <Tooltip
             content={tooltip}
             key={key} // use this key to make sure the component is unmounted when changes, to blur the button and make tooltip disappear
@@ -832,12 +1195,12 @@ function AccountSettingsOmnibarLabel({
 }) {
   const account = useAccount(isVault ? undefined : accountUid)
   if (isVault || !accountUid) {
-    return <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs">Identity Settings</span>
+    return <span className={stylex.props(styles_2.s242145e8).className || ''}>Identity Settings</span>
   }
   const name = account.data?.metadata?.name || 'Account'
   const tabLabel = ACCOUNT_SETTINGS_TAB_LABELS[tab ?? 'devices'] ?? 'Devices'
   return (
-    <span className="text-muted-foreground flex min-w-0 flex-1 items-center gap-1 truncate text-xs">
+    <span className={stylex.props(styles_2.see307b2f).className || ''}>
       <span className={stylex.props(styles.s6e724d66).className || ''}>{name}</span>
       <ChevronRight className={stylex.props(styles.s8a0ec2b7).className || ''} />
       <span className={stylex.props(styles.sf032ed6c).className || ''}>{tabLabel}</span>
@@ -853,8 +1216,22 @@ function AccountSettingsOmnibarLabel({
  */
 function LocalAgentsOmnibarToken() {
   return (
-    <div className="flex min-w-0 flex-1 items-center">
-      <div className="bg-muted text-muted-foreground no-select flex items-center gap-1 rounded-full px-2 py-0.5 text-xs">
+    <div className={stylex.props(styles_2.s946f13fd).className || ''}>
+      <div
+        className={
+          stylex.props(
+            styles_5.s5fd609e3,
+            styles_5.sf2718385,
+            styles_5.s2ffff9,
+            styles_5.sc6ed1702,
+            styles_5.s5d936fa,
+            styles_5.s775755af,
+            styles_5.s34b1ad,
+            styles_5.sc5dd1033,
+            styles_5.sab7cc79b,
+          ).className || ''
+        }
+      >
         <Bot className={stylex.props(styles.sca3de967).className || ''} />
         <span>{LOCAL_AGENT_SERVER_LABEL}</span>
       </div>
@@ -1321,15 +1698,28 @@ export function Omnibar() {
     return (
       <div
         className={cn(
-          'no-window-drag border-border flex min-w-0 flex-1 cursor-text items-center gap-2 overflow-hidden rounded-full border-2 pl-2',
-          'hover:border-border hover:bg-muted/50 bg-white dark:bg-black',
+          stylex.props(
+            styles_5.s1a01a0ed,
+            styles_5.s2ffff9,
+            styles_5.s3f58665f,
+            styles_5.sb42feb5d,
+            styles_5.s9faef944,
+            styles_5.sc6ed1702,
+            styles_5.s5d936fb,
+            styles_5.s92852dd5,
+            styles_5.s775755af,
+            styles_5.s7c401ed1,
+            styles_5.s3484a1,
+          ).className || '',
+          'no-window-drag',
+          stylex.props(styles_4.s592e9984).className || '',
           stylex.props(styles.sf7fb00e8).className || '',
-          'max-w-2xl',
-          routeId ? 'py-0' : 'py-1',
+          stylex.props(styles_2.s9ccd4aa7).className || '',
+          stylex.props(routeId ? styles_3.s34b56c : styles_3.s34b56d).className || '',
         )}
         onClick={handleContainerClick}
       >
-        <div className="flex min-w-0 flex-1 items-center overflow-hidden">
+        <div className={stylex.props(styles_2.see8a63b2).className || ''}>
           {isLocalAgentsRoute ? (
             <LocalAgentsOmnibarToken />
           ) : route.key === 'account-settings' ? (
@@ -1341,9 +1731,9 @@ export function Omnibar() {
           ) : (
             <span
               className={cn(
-                'text-muted-foreground min-w-0 flex-1 truncate text-xs',
+                stylex.props(styles_2.s242145e8).className || '',
                 // Drafts that haven't been published yet have no shareable URL
-                isUnsharable && 'select-none',
+                stylex.props(isUnsharable && styles_3.sa145969).className || '',
               )}
               style={
                 isUnsharable
@@ -1369,11 +1759,16 @@ export function Omnibar() {
         </div>
         {routeId ? (
           <div className={stylex.props(styles.s2cc286a6).className || ''} onClick={(e) => e.stopPropagation()}>
-            <BookmarkButton id={routeId} className="size-6 min-w-6" />
+            <BookmarkButton id={routeId} className={stylex.props(styles_2.s2618e1af).className || ''} />
             {/* Hide copy-reference when
                 the doc's URL isn't shareable */}
             {!isUnsharable && (
-              <CopyReferenceButton docId={routeId} isBlockFocused={false} latest className="size-6 min-w-6" />
+              <CopyReferenceButton
+                docId={routeId}
+                isBlockFocused={false}
+                latest
+                className={stylex.props(styles_2.s2618e1af).className || ''}
+              />
             )}
           </div>
         ) : null}
@@ -1387,10 +1782,22 @@ export function Omnibar() {
     return (
       <div
         className={cn(
-          'no-window-drag flex min-w-0 flex-1 items-center gap-2 overflow-hidden rounded-full border px-2 py-1',
-          'border-primary bg-white dark:bg-black',
-          'focus-within:ring-primary focus-within:ring-1',
-          'max-w-2xl',
+          stylex.props(
+            styles_5.s2ffff9,
+            styles_5.s3f58665f,
+            styles_5.sb42feb5d,
+            styles_5.sc6ed1702,
+            styles_5.s5d936fb,
+            styles_5.s92852dd5,
+            styles_5.s775755af,
+            styles_5.sad8c742c,
+            styles_5.s34b1ad,
+            styles_5.s34b56d,
+          ).className || '',
+          'no-window-drag',
+          stylex.props(styles_4.s92b9805b).className || '',
+          stylex.props(styles_4.s623ccd8d).className || '',
+          stylex.props(styles_2.s9ccd4aa7).className || '',
         )}
       >
         <Search className={stylex.props(styles.s26a52803).className || ''} />
@@ -1402,8 +1809,8 @@ export function Omnibar() {
           onKeyDown={handleKeyDown}
           onBlur={handleInputBlur}
           className={cn(
-            'min-w-0 flex-1 truncate border-none! bg-transparent text-xs outline-none',
-            'placeholder:text-muted-foreground',
+            stylex.props(styles_4.s8974ddde).className || '',
+            stylex.props(styles_6.sfb4c68be).className || '',
           )}
           autoFocus
         />
@@ -1418,10 +1825,22 @@ export function Omnibar() {
       <PopoverTrigger asChild>
         <div
           className={cn(
-            'no-window-drag flex min-w-0 flex-1 items-center gap-2 overflow-hidden rounded-full border px-2 py-1',
-            'border-primary bg-white dark:bg-black',
-            'focus-within:ring-primary focus-within:ring-1',
-            'max-w-2xl',
+            stylex.props(
+              styles_5.s2ffff9,
+              styles_5.s3f58665f,
+              styles_5.sb42feb5d,
+              styles_5.sc6ed1702,
+              styles_5.s5d936fb,
+              styles_5.s92852dd5,
+              styles_5.s775755af,
+              styles_5.sad8c742c,
+              styles_5.s34b1ad,
+              styles_5.s34b56d,
+            ).className || '',
+            'no-window-drag',
+            stylex.props(styles_4.s92b9805b).className || '',
+            stylex.props(styles_4.s623ccd8d).className || '',
+            stylex.props(styles_2.s9ccd4aa7).className || '',
           )}
         >
           <Search className={stylex.props(styles.s26a52803).className || ''} />
@@ -1432,8 +1851,8 @@ export function Omnibar() {
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
             className={cn(
-              'min-w-0 flex-1 truncate border-none! bg-transparent text-xs outline-none',
-              'placeholder:text-muted-foreground',
+              stylex.props(styles_4.s8974ddde).className || '',
+              stylex.props(styles_6.sfb4c68be).className || '',
             )}
             placeholder="Search documents or paste a URL…"
             autoFocus
@@ -1445,10 +1864,19 @@ export function Omnibar() {
       <PopoverContent
         side="bottom"
         align="start"
-        className="no-window-drag w-[var(--radix-popover-trigger-width)] min-w-[400px] border-0 bg-transparent p-0 shadow-none"
+        className={
+          stylex.props(
+            styles_5.s82357e4e,
+            styles_5.sf887c4ab,
+            styles_5.s7c401ecf,
+            styles_5.s60f53bca,
+            styles_5.s1aa13,
+            styles_5.sa0080bc5,
+          ).className || ''
+        }
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <div className="dark:bg-background border-border max-h-[280px] overflow-hidden rounded-md border bg-white p-2 shadow-2xl">
+        <div className={stylex.props(styles_4.s82dde684).className || ''}>
           <SearchInput
             ref={searchInputRef}
             onClose={blur}

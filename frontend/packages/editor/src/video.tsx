@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
 import {Switch} from '@shm/ui/components/switch'
 import {isIpfsUrl, useFileProxyUrl} from '@shm/ui/get-file-url'
@@ -16,7 +17,176 @@ import {MediaContainer} from './media-container'
 import {consumeUploaded, DisplayComponentProps, FALLBACK_EDITOR_WIDTH, MediaRender, MediaType} from './media-render'
 import {HMBlockSchema} from './schema'
 import {isValidUrl, youtubeParser} from './utils'
-
+const styles_2 = stylex.create({
+  s68989642: {
+    ':is(.dark *)': {
+      borderColor: 'color-mix(in oklab, #fff 10%, transparent)',
+    },
+  },
+})
+const styles = stylex.create({
+  s2c88935f: {
+    color: '#000',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  s9b8736ad: {
+    display: 'inline-flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  se45bb2b0: {
+    borderColor: 'color-mix(in oklab, #000 10%, transparent)',
+  },
+  s63f771a: {
+    padding: 'calc(0.25rem * 0.5)',
+  },
+  s54eab79d: {
+    opacity: '50%',
+  },
+  s3b7916ca: {
+    cursor: 'default',
+  },
+  sa145969: {
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s5f3963ff: {
+    backgroundColor: 'var(--brand)',
+  },
+  s2daecf89: {
+    color: '#fff',
+  },
+  s8a6c2a27: {
+    boxShadow: 'var(--shadow-sm)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  sd5b893dc: {
+    pointerEvents: 'none',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sd52b2d2: {
+    textTransform: 'uppercase',
+  },
+  s64e14c29: {
+    letterSpacing: '0.025em',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  sac870708: {
+    aspectRatio: '16/9',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  sbe0abfea: {
+    left: 'calc(0.25rem * 0)',
+  },
+  s696c5b8: {
+    top: 'calc(0.25rem * 0)',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  s808fc10e: {
+    bottom: 'calc(0.25rem * 0)',
+  },
+  s478fb0bf: {
+    right: 'calc(0.25rem * 0)',
+  },
+  sd5b2c253: {
+    pointerEvents: 'auto',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  s655b522d: {
+    backgroundColor: 'oklch(98.2% 0.018 155.826)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sf1212e4c: {
+    color: 'oklch(62.7% 0.194 149.214)',
+  },
+  sf12135ce: {
+    color: 'oklch(44.8% 0.119 151.328)',
+  },
+})
 export const getSourceType = (name: string) => {
   const nameArray = name.split('.')
   const ext = nameArray[nameArray.length - 1]?.toLowerCase()
@@ -25,7 +195,6 @@ export const getSourceType = (name: string) => {
   if (ext === 'mov') return 'video/mp4'
   return `video/${ext}`
 }
-
 function getVideoIframeSrc(link: string) {
   const url = new URL(link)
   if (url.host.includes('youtube.com')) {
@@ -34,7 +203,6 @@ function getVideoIframeSrc(link: string) {
   }
   return link
 }
-
 export const VideoBlock = createReactBlockSpec({
   type: 'video',
   propSchema: {
@@ -86,25 +254,27 @@ export const VideoBlock = createReactBlockSpec({
   // @ts-ignore
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
-
   parseHTML: [
     {
       tag: 'video[src]',
       getAttrs: (element) => {
         if (element.closest('[data-content-type="video"]')) return false
-        return {src: element.getAttribute('src')}
+        return {
+          src: element.getAttribute('src'),
+        }
       },
     },
     {
       tag: 'iframe',
       getAttrs: (element) => {
         if (element.closest('[data-content-type="video"]')) return false
-        return {src: element.getAttribute('src')}
+        return {
+          src: element.getAttribute('src'),
+        }
       },
     },
   ],
 })
-
 const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) => {
   const submitVideo = (url: string, assign: any, setFileName: any) => {
     if (isValidUrl(url)) {
@@ -114,29 +284,51 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
         if (ytId) {
           embedUrl = embedUrl + ytId
         } else {
-          setFileName({name: `Unsupported Youtube Url:${url}`, color: 'red'})
+          setFileName({
+            name: `Unsupported Youtube Url:${url}`,
+            color: 'red',
+          })
           return
         }
       } else if (url.includes('vimeo')) {
         const urlArray = url.split('/')
         embedUrl = `https://player.vimeo.com/video/${urlArray[urlArray.length - 1]}`
       } else {
-        setFileName({name: 'Unsupported video source.', color: 'red'})
+        setFileName({
+          name: 'Unsupported video source.',
+          color: 'red',
+        })
         return
       }
-      assign({props: {url: embedUrl}} as MediaType)
-    } else setFileName({name: 'The provided URL is invalid.', color: 'red'})
+      assign({
+        props: {
+          url: embedUrl,
+        },
+      } as MediaType)
+    } else
+      setFileName({
+        name: 'The provided URL is invalid.',
+        color: 'red',
+      })
     const cursorPosition = editor.getTextCursorPosition()
     editor.focus()
     if (cursorPosition.block.id === block.id) {
       if (cursorPosition.nextBlock) editor.setTextCursorPosition(cursorPosition.nextBlock, 'start')
       else {
-        editor.insertBlocks([{type: 'paragraph', content: ''}], block.id, 'after')
+        editor.insertBlocks(
+          [
+            {
+              type: 'paragraph',
+              content: '',
+            },
+          ],
+          block.id,
+          'after',
+        )
         editor.setTextCursorPosition(editor.getTextCursorPosition().nextBlock!, 'start')
       }
     }
   }
-
   return (
     <MediaRender
       block={block}
@@ -145,12 +337,11 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       mediaType="video"
       submit={submitVideo}
       DisplayComponent={VideoDisplay}
-      icon={<RiVideoAddLine className="text-black dark:text-white" />}
+      icon={<RiVideoAddLine className={stylex.props(styles.s2c88935f).className || ''} />}
       validateFile={validateFile}
     />
   )
 }
-
 function validateFile(file: File) {
   const supportedTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime']
   if (file.type && !supportedTypes.includes(file.type)) {
@@ -159,14 +350,16 @@ function validateFile(file: File) {
   }
   return true
 }
-
 function SegmentedToggle({
   options,
   value,
   onChange,
   disabled,
 }: {
-  options: {label: string; value: string}[]
+  options: {
+    label: string
+    value: string
+  }[]
   value: string
   onChange: (value: string) => void
   disabled?: boolean
@@ -174,8 +367,17 @@ function SegmentedToggle({
   return (
     <div
       className={cn(
-        'bg-muted inline-flex items-center rounded-lg border border-black/10 p-0.5 dark:border-white/10',
-        disabled && 'opacity-50',
+        stylex.props(
+          styles.s5fd609e3,
+          styles.s9b8736ad,
+          styles.sc6ed1702,
+          styles.sf799889b,
+          styles.sad8c742c,
+          styles.se45bb2b0,
+          styles.s63f771a,
+        ).className || '',
+        stylex.props(styles_2.s68989642).className || '',
+        disabled ? stylex.props(styles.s54eab79d).className || '' : '',
       )}
     >
       {options.map((option) => (
@@ -184,9 +386,20 @@ function SegmentedToggle({
           type="button"
           disabled={disabled}
           className={cn(
-            'cursor-default rounded-md px-3 py-1 text-xs font-medium transition-colors select-none',
-            value === option.value ? 'bg-brand text-white shadow-sm' : 'text-muted-foreground hover:text-foreground',
-            disabled && 'pointer-events-none',
+            stylex.props(
+              styles.s3b7916ca,
+              styles.sa145969,
+              styles.sf79988b7,
+              styles.s34b1ae,
+              styles.s34b56d,
+              styles.sab7cc79b,
+              styles.s129e46b3,
+              styles.sf7fb00e8,
+            ).className || '',
+            value === option.value
+              ? stylex.props(styles.s5f3963ff, styles.s2daecf89, styles.s8a6c2a27).className || ''
+              : stylex.props(styles.sf2718385, styles.sae6a97a5).className || '',
+            disabled ? stylex.props(styles.sd5b893dc).className || '' : '',
           )}
           onClick={() => onChange(option.value)}
         >
@@ -196,7 +409,6 @@ function SegmentedToggle({
     </div>
   )
 }
-
 function VideoOptions({
   autoplay,
   setAutoplay,
@@ -214,21 +426,64 @@ function VideoOptions({
 }) {
   return (
     <div
-      className="flex w-full cursor-default flex-col gap-2 px-2 py-2 text-sm select-none"
+      className={
+        stylex.props(
+          styles.s2ffff9,
+          styles.scdbaf625,
+          styles.s3b7916ca,
+          styles.sa145969,
+          styles.s67e351ac,
+          styles.s5d936fb,
+          styles.s34b1ad,
+          styles.s34b56e,
+          styles.sab7cc6fa,
+        ).className || ''
+      }
       onSelect={(e) => e.stopPropagation()}
       onKeyDown={(e) => e.stopPropagation()}
     >
-      <div className="text-muted-foreground px-1 text-xs font-medium tracking-wide uppercase">Video settings</div>
-      <div className="flex items-center justify-between gap-2 px-1">
-        <span className="cursor-default text-sm select-none">Autoplay</span>
+      <div
+        className={
+          stylex.props(
+            styles.sf2718385,
+            styles.s34b1ac,
+            styles.sab7cc79b,
+            styles.s129e46b3,
+            styles.sd52b2d2,
+            styles.s64e14c29,
+          ).className || ''
+        }
+      >
+        Video settings
+      </div>
+      <div
+        className={
+          stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.sc1a629cb, styles.s5d936fb, styles.s34b1ac).className ||
+          ''
+        }
+      >
+        <span className={stylex.props(styles.s3b7916ca, styles.sa145969, styles.sab7cc6fa).className || ''}>
+          Autoplay
+        </span>
         <Switch checked={autoplay} onCheckedChange={setAutoplay} />
       </div>
-      <div className="flex items-center justify-between gap-2 px-1">
-        <span className="cursor-default text-sm select-none">Loop</span>
+      <div
+        className={
+          stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.sc1a629cb, styles.s5d936fb, styles.s34b1ac).className ||
+          ''
+        }
+      >
+        <span className={stylex.props(styles.s3b7916ca, styles.sa145969, styles.sab7cc6fa).className || ''}>Loop</span>
         <SegmentedToggle
           options={[
-            {label: 'Once', value: 'once'},
-            {label: 'Loop', value: 'loop'},
+            {
+              label: 'Once',
+              value: 'once',
+            },
+            {
+              label: 'Loop',
+              value: 'loop',
+            },
           ]}
           value={loop ? 'loop' : 'once'}
           onChange={(v) => setLoop(v === 'loop')}
@@ -236,12 +491,31 @@ function VideoOptions({
       </div>
       {autoplay ? (
         <Tooltip content="Autoplay videos must be muted" side="top">
-          <div className="flex items-center justify-between gap-2 px-1 opacity-50">
-            <span className="cursor-default text-sm select-none">Sound</span>
+          <div
+            className={
+              stylex.props(
+                styles.s2ffff9,
+                styles.sc6ed1702,
+                styles.sc1a629cb,
+                styles.s5d936fb,
+                styles.s34b1ac,
+                styles.s54eab79d,
+              ).className || ''
+            }
+          >
+            <span className={stylex.props(styles.s3b7916ca, styles.sa145969, styles.sab7cc6fa).className || ''}>
+              Sound
+            </span>
             <SegmentedToggle
               options={[
-                {label: 'Off', value: 'off'},
-                {label: 'On', value: 'on'},
+                {
+                  label: 'Off',
+                  value: 'off',
+                },
+                {
+                  label: 'On',
+                  value: 'on',
+                },
               ]}
               value="off"
               onChange={() => {}}
@@ -250,12 +524,25 @@ function VideoOptions({
           </div>
         </Tooltip>
       ) : (
-        <div className="flex items-center justify-between gap-2 px-1">
-          <span className="cursor-default text-sm select-none">Sound</span>
+        <div
+          className={
+            stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.sc1a629cb, styles.s5d936fb, styles.s34b1ac)
+              .className || ''
+          }
+        >
+          <span className={stylex.props(styles.s3b7916ca, styles.sa145969, styles.sab7cc6fa).className || ''}>
+            Sound
+          </span>
           <SegmentedToggle
             options={[
-              {label: 'Off', value: 'off'},
-              {label: 'On', value: 'on'},
+              {
+                label: 'Off',
+                value: 'off',
+              },
+              {
+                label: 'On',
+                value: 'on',
+              },
             ]}
             value={muted ? 'off' : 'on'}
             onChange={(v) => setMuted(v === 'off')}
@@ -265,7 +552,6 @@ function VideoOptions({
     </div>
   )
 }
-
 const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   const getFileUrl = useFileProxyUrl()
   const {canEdit} = useEditorGate()
@@ -295,27 +581,50 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
         toast.error('Unsupported video source. Use a YouTube or Vimeo URL.')
         return
       }
-      assign({props: {url: embedUrl, displaySrc: '', mediaRef: ''}} as unknown as MediaType)
+      assign({
+        props: {
+          url: embedUrl,
+          displaySrc: '',
+          mediaRef: '',
+        },
+      } as unknown as MediaType)
     },
     [assign],
   )
   const [showSuccess, setShowSuccess] = useState(() => consumeUploaded(block.id))
-
   useEffect(() => {
     if (!showSuccess) return
     const timer = setTimeout(() => setShowSuccess(false), 4000)
     return () => clearTimeout(timer)
   }, [showSuccess])
-
   const setAutoplay = (v: boolean) => {
     if (v) {
-      assign({props: {autoplay: 'true', muted: 'true'}})
+      assign({
+        props: {
+          autoplay: 'true',
+          muted: 'true',
+        },
+      })
     } else {
-      assign({props: {autoplay: 'false'}})
+      assign({
+        props: {
+          autoplay: 'false',
+        },
+      })
     }
   }
-  const setLoop = (v: boolean) => assign({props: {loop: v ? 'true' : 'false'}})
-  const setMuted = (v: boolean) => assign({props: {muted: v ? 'true' : 'false'}})
+  const setLoop = (v: boolean) =>
+    assign({
+      props: {
+        loop: v ? 'true' : 'false',
+      },
+    })
+  const setMuted = (v: boolean) =>
+    assign({
+      props: {
+        muted: v ? 'true' : 'false',
+      },
+    })
 
   // Determine video source
   const videoSrc = (() => {
@@ -323,7 +632,6 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     const displaySrc = block.props.displaySrc
     // @ts-ignore
     const url = block.props.url
-
     if (displaySrc) {
       return displaySrc
     }
@@ -353,7 +661,6 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     initialWidth: number
     initialClientX: number
   } | null>(null)
-
   useEffect(() => {
     if (block.props.width) {
       width = parseFloat(block.props.width)
@@ -363,14 +670,11 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
       setCurrentWidth(width)
     }
   }, [block.props.width])
-
   const windowMouseMoveHandler = (event: MouseEvent) => {
     if (!resizeParamsRef.current) {
       return
     }
-
     const {handleUsed, initialClientX, initialWidth} = resizeParamsRef.current
-
     let newWidth: number
     if (handleUsed === 'left') {
       newWidth = initialWidth + (initialClientX - event.clientX) * 2
@@ -396,12 +700,10 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   // `width` prop to the new value.
   const windowMouseUpHandler = () => {
     setShowHandle(false)
-
     if (!resizeParamsRef.current) {
       return
     }
     resizeParamsRef.current = null
-
     assign({
       props: {
         width: width.toString(),
@@ -411,7 +713,6 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => windowMouseMoveHandler(e)
     const handleMouseUp = () => windowMouseUpHandler()
-
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
     return () => {
@@ -425,7 +726,6 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     if (resizeParamsRef.current) {
       return
     }
-
     setShowHandle(false)
   }
 
@@ -433,9 +733,7 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   // moving the cursor left or right.
   const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
-
     setShowHandle(true)
-
     resizeParamsRef.current = {
       handleUsed: 'left',
       // @ts-ignore
@@ -444,12 +742,9 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     }
     editor.setTextCursorPosition(block.id, 'start')
   }
-
   const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
-
     setShowHandle(true)
-
     resizeParamsRef.current = {
       handleUsed: 'right',
       // @ts-ignore
@@ -458,7 +753,6 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     }
     editor.setTextCursorPosition(block.id, 'start')
   }
-
   return (
     <MediaContainer
       editor={editor}
@@ -477,7 +771,7 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
       onSubmitUrl={handleMenuUrl}
       urlMenuLabel={
         <>
-          Embed <span className="text-muted-foreground">(YouTube or Vimeo)</span>
+          Embed <span className={stylex.props(styles.sf2718385).className || ''}>(YouTube or Vimeo)</span>
         </>
       }
       urlInputPlaceholder="Paste a YouTube or Vimeo URL"
@@ -496,11 +790,21 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
         ) : undefined
       }
     >
-      <div className="relative aspect-[16/9] w-full">
+      <div className={stylex.props(styles.sdef3facc, styles.sac870708, styles.scdbaf625).className || ''}>
         {showHandle && (
           <>
-            <ResizeHandle style={{left: 4}} onMouseDown={leftResizeHandleMouseDownHandler} />
-            <ResizeHandle style={{right: 4}} onMouseDown={rightResizeHandleMouseDownHandler} />
+            <ResizeHandle
+              style={{
+                left: 4,
+              }}
+              onMouseDown={leftResizeHandleMouseDownHandler}
+            />
+            <ResizeHandle
+              style={{
+                right: 4,
+              }}
+              onMouseDown={rightResizeHandleMouseDownHandler}
+            />
           </>
         )}
         {block.props.displaySrc || isIpfsUrl(block.props.url || '') ? (
@@ -513,22 +817,27 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
             autoPlay={!editor.isEditable && autoplay}
             loop={!editor.isEditable && loop}
             muted={!editor.isEditable && muted}
-            className="absolute top-0 left-0 h-full w-full"
+            className={
+              stylex.props(styles.s67010d77, styles.sbe0abfea, styles.s696c5b8, styles.sb42244d4, styles.scdbaf625)
+                .className || ''
+            }
           >
             <source
               src={videoSrc}
               // @ts-ignore
               type={getSourceType(block.props.name)}
             />
-            <p className="font-sans">Error with the video file.</p>
+            <p className={stylex.props(styles.sa1762f51).className || ''}>Error with the video file.</p>
           </video>
         ) : block.props.url ? (
           <iframe
             contentEditable={false}
             className={cn(
-              'video-iframe absolute top-0 right-0 bottom-0 left-0',
-              (!editor.isEditable || !canEdit) && 'pointer-events-auto',
-              editor.isEditable && canEdit && 'pointer-events-none',
+              stylex.props(styles.s67010d77, styles.s808fc10e, styles.sbe0abfea, styles.s478fb0bf, styles.s696c5b8)
+                .className || '',
+              'video-iframe',
+              !editor.isEditable || !canEdit ? stylex.props(styles.sd5b2c253).className || '' : '',
+              editor.isEditable && canEdit ? stylex.props(styles.sd5b893dc).className || '' : '',
             )}
             src={getVideoIframeSrc(block.props.url)}
             allowFullScreen
@@ -539,9 +848,24 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
         ) : null}
       </div>
       {editor.isEditable && showSuccess && block.props.name && (
-        <div className="flex w-full items-center gap-2 rounded-sm bg-green-50 px-3 py-2 dark:bg-green-950/30">
-          <CheckCircle2 className="size-4 shrink-0 text-green-600 dark:text-green-400" />
-          <span className="font-sans text-sm text-green-800 dark:text-green-300">
+        <div
+          className={
+            stylex.props(
+              styles.s2ffff9,
+              styles.scdbaf625,
+              styles.sc6ed1702,
+              styles.s5d936fb,
+              styles.sf799897a,
+              styles.s655b522d,
+              styles.s34b1ae,
+              styles.s34b56e,
+            ).className || ''
+          }
+        >
+          <CheckCircle2
+            className={stylex.props(styles.sca3de968, styles.sf032ed6c, styles.sf1212e4c).className || ''}
+          />
+          <span className={stylex.props(styles.sa1762f51, styles.sab7cc6fa, styles.sf12135ce).className || ''}>
             {block.props.name} uploaded successfully
           </span>
         </div>

@@ -5,6 +5,49 @@ import * as React from 'react'
  * A labeled group of settings rows rendered as a bordered card. Used to group
  * related settings (e.g. authentication, notifications) under an uppercase label.
  */
+const styles_4 = stylex.create({
+  s46d743d4: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+  },
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sca3de96d: {
+    width: 'calc(0.25rem * 9)',
+    height: 'calc(0.25rem * 9)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+})
+const styles_3 = stylex.create({
+  s46a762d: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_2 = stylex.create({
+  s797b1794: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+  },
+})
 const styles = stylex.create({
   s6252515a: {
     color: 'var(--muted-foreground)',
@@ -54,7 +97,7 @@ export function SettingsSection({
   return (
     <div className={className}>
       <p className={stylex.props(styles.s6252515a).className || ''}>{label}</p>
-      <div className="bg-muted/50 overflow-hidden rounded-lg border">{children}</div>
+      <div className={stylex.props(styles_3.s46a762d).className || ''}>{children}</div>
     </div>
   )
 }
@@ -78,10 +121,23 @@ export function SettingsRow({
   return (
     <div className={stylex.props(styles.s87791731).className || ''}>
       <div className={stylex.props(styles.s86ff3e5).className || ''}>
-        <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-full [&_svg]:size-4">
+        <div
+          className={
+            stylex.props(
+              styles_4.s46d743d4,
+              styles_4.s1bfab962,
+              styles_4.s2ffff9,
+              styles_4.sca3de96d,
+              styles_4.sf032ed6c,
+              styles_4.sc6ed1702,
+              styles_4.sce22ca32,
+              styles_4.s775755af,
+            ).className || ''
+          }
+        >
           {icon}
         </div>
-        <div className="flex min-w-0 flex-col">
+        <div className={stylex.props(styles_2.s797b1794).className || ''}>
           <p className={stylex.props(styles.s9d4b128d).className || ''}>{label}</p>
           {description ? <p className={stylex.props(styles.sa56e9200).className || ''}>{description}</p> : null}
         </div>

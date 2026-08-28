@@ -24,6 +24,30 @@ import {
  * A staged partial update: top-level keys map to their new value, or `null`
  * to remove the field (publishes a nullValue attribute op).
  */
+const styles_4 = stylex.create({
+  s1b7a73b3: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+    overflowX: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 4)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+})
+const styles_3 = stylex.create({
+  s62a1961: {
+    borderColor: 'var(--destructive)',
+  },
+})
+const styles_2 = stylex.create({
+  sffa0dfec: {
+    display: 'flex',
+    minHeight: 'calc(0.25rem * 8)',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   see7dd02: {
     display: 'flex',
@@ -305,7 +329,7 @@ function MetadataJsonEditor({
     }
   }, [text, serialized])
   if (!editable) {
-    return <pre className="bg-muted/50 overflow-x-auto rounded-md p-4 font-mono text-sm">{serialized}</pre>
+    return <pre className={stylex.props(styles_4.s1b7a73b3).className || ''}>{serialized}</pre>
   }
   return (
     <div className={stylex.props(styles.sfbc6e28e).className || ''}>
@@ -315,11 +339,11 @@ function MetadataJsonEditor({
         spellCheck={false}
         className={cn(
           stylex.props(styles.s9266db7b).className || '',
-          validation.dirty && 'error' in validation && 'border-destructive',
+          stylex.props(validation.dirty && 'error' in validation && styles_3.s62a1961).className || '',
         )}
         onChange={(e) => setText(e.target.value)}
       />
-      <div className="flex min-h-8 items-center gap-2">
+      <div className={stylex.props(styles_2.sffa0dfec).className || ''}>
         {validation.dirty ? (
           'error' in validation ? (
             <p className={stylex.props(styles.s11c1d25d).className || ''}>{validation.error}</p>

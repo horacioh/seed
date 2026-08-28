@@ -11,6 +11,170 @@ import {
 } from './dropdown-menu'
 
 /** Per-account options exposed via the row's 3-dots menu. */
+const styles_7 = stylex.create({
+  sa1abe441: {
+    ':is([class~="group/account"]:hover *)': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_6 = stylex.create({
+  sb5495d44: {
+    ':is([data-state="open"])': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_5 = stylex.create({
+  sdef3facc: {
+    position: 'relative',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s79cfa1b2: {
+    ':focus-visible': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_4 = stylex.create({
+  sb965bd94: {
+    backgroundColor: 'var(--sidebar)',
+    display: 'flex',
+    width: '260px',
+    flexShrink: '0',
+    flexDirection: 'column',
+    borderRightStyle: 'solid',
+    borderRightWidth: '1px',
+    borderColor: 'var(--overlay-10)',
+  },
+  sc518d51c: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'var(--overlay-10)',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  s755b6f2d: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'var(--overlay-5)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    textAlign: 'left',
+  },
+  s60421a34: {
+    borderColor: 'color-mix(in oklab, var(--muted-foreground) 40%, transparent)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 7)',
+    height: 'calc(var(--spacing) * 7)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'dashed',
+    borderWidth: '1px',
+  },
+  s98038632: {
+    backgroundColor: 'var(--sidebar-accent)',
+    color: 'var(--sidebar-accent-foreground)',
+  },
+  s90d53a04: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-5)',
+      },
+    },
+  },
+  scef8c0f8: {
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 1)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 7)',
+    height: 'calc(var(--spacing) * 7)',
+    translate: '0 -50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s453fe492: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-10)',
+      },
+    },
+  },
+  s51dacfe: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-5)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s349b2e: {
+    paddingRight: 'calc(0.25rem * 9)',
+  },
+  s98038632: {
+    backgroundColor: 'var(--sidebar-accent)',
+    color: 'var(--sidebar-accent-foreground)',
+  },
+  s54eab7fa: {
+    opacity: '80%',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_2 = stylex.create({
+  s3c9fa21a: {
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+  },
+  sb7004975: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+    fontWeight: '500',
+  },
+  sf88046cc: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflowY: 'auto',
+  },
+  s5cc90427: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+  },
+})
 const styles = stylex.create({
   sadd927ca: {
     backgroundColor: 'var(--muted)',
@@ -132,9 +296,9 @@ export function AccountSettingsLayout({
   children: ReactNode
 }) {
   return (
-    <div className="flex h-full min-h-0 w-full">
-      <div className="bg-sidebar flex w-[260px] shrink-0 flex-col border-r border-black/10 dark:border-white/10">
-        <div className="border-b border-black/10 p-2 dark:border-white/10">
+    <div className={stylex.props(styles_2.s3c9fa21a).className || ''}>
+      <div className={stylex.props(styles_4.sb965bd94).className || ''}>
+        <div className={stylex.props(styles_4.sc518d51c).className || ''}>
           <SidebarItem
             icon={
               <div className={stylex.props(styles.sadd927ca).className || ''}>
@@ -164,14 +328,11 @@ export function AccountSettingsLayout({
             />
           ))}
           {onAddAccount ? (
-            <button
-              onClick={onAddAccount}
-              className="text-muted-foreground hover:text-foreground flex w-full items-center gap-3 rounded-md px-2 py-2 text-left hover:bg-black/5 dark:hover:bg-white/5"
-            >
-              <div className="border-muted-foreground/40 flex size-7 shrink-0 items-center justify-center rounded-full border border-dashed">
+            <button onClick={onAddAccount} className={stylex.props(styles_4.s755b6f2d).className || ''}>
+              <div className={stylex.props(styles_4.s60421a34).className || ''}>
                 <Plus className={stylex.props(styles.sca3de968).className || ''} />
               </div>
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">Add account</span>
+              <span className={stylex.props(styles_2.sb7004975).className || ''}>Add account</span>
             </button>
           ) : null}
         </div>
@@ -187,7 +348,7 @@ export function AccountSettingsLayout({
         ) : null}
       </div>
 
-      <div className="min-w-0 flex-1 overflow-y-auto">{children}</div>
+      <div className={stylex.props(styles_2.sf88046cc).className || ''}>{children}</div>
     </div>
   )
 }
@@ -207,23 +368,23 @@ function SidebarItem({
   menu?: AccountSettingsAccountMenu
 }) {
   return (
-    <div className="group/account relative">
+    <div className={cn(stylex.props(styles_5.sdef3facc).className || '', 'group/account')}>
       <button
         onClick={onClick}
         className={cn(
           stylex.props(styles.s3a2c3b6d).className || '',
-          menu ? 'pr-9' : '',
-          active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'hover:bg-black/5 dark:hover:bg-white/5',
+          stylex.props(menu ? styles_3.s349b2e : null).className || '',
+          stylex.props(active ? styles_4.s98038632 : styles_4.s90d53a04).className || '',
         )}
       >
         <div className={stylex.props(styles.sf032ed6c).className || ''}>{icon}</div>
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className={stylex.props(styles_2.s5cc90427).className || ''}>
           <span className={stylex.props(styles.s59c17cd3).className || ''}>{label}</span>
           {sublabel ? (
             <span
               className={cn(
                 stylex.props(styles.s2cbbeae1).className || '',
-                active ? 'opacity-80' : 'text-muted-foreground',
+                stylex.props(active ? styles_3.s54eab7fa : styles_3.sf2718385).className || '',
               )}
             >
               {sublabel}
@@ -244,9 +405,11 @@ function AccountOptionsMenu({menu}: {menu: AccountSettingsAccountMenu}) {
         aria-label="Account options"
         onClick={(event) => event.stopPropagation()}
         className={cn(
-          'absolute top-1/2 right-1 flex size-7 -translate-y-1/2 items-center justify-center rounded-md',
-          'opacity-0 group-hover/account:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100',
-          'hover:bg-black/10 dark:hover:bg-white/10',
+          stylex.props(styles_4.scef8c0f8).className || '',
+          stylex.props(styles_5.s765a26ee, styles_5.s79cfa1b2).className || '',
+          stylex.props(styles_6.sb5495d44).className || '',
+          stylex.props(styles_7.sa1abe441).className || '',
+          stylex.props(styles_4.s453fe492).className || '',
         )}
       >
         <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
@@ -296,10 +459,7 @@ function AccountOptionsMenu({menu}: {menu: AccountSettingsAccountMenu}) {
 }
 function SidebarAction({icon, label, onClick}: {icon: ReactNode; label: string; onClick: () => void}) {
   return (
-    <button
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-md px-2 py-2 hover:bg-black/5 dark:hover:bg-white/5"
-    >
+    <button onClick={onClick} className={stylex.props(styles_4.s51dacfe).className || ''}>
       <div className={stylex.props(styles.sadd927ca).className || ''}>{icon}</div>
       <span className={stylex.props(styles.s9d4b128d).className || ''}>{label}</span>
     </button>

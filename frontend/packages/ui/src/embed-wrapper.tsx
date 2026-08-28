@@ -9,6 +9,26 @@ import {HTMLAttributes, MouseEvent, PropsWithChildren, useMemo} from 'react'
 import {blockStyles} from './blocks-content-utils'
 import {useHighlighter} from './highlight-context'
 import {cn} from './utils'
+const styles_3 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
+const styles_2 = stylex.create({
+  s79f948d1: {
+    borderLeftColor: 'var(--primary)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '3px',
+  },
+  s7cc0508b: {
+    cursor: 'pointer',
+    color: 'inherit',
+    textDecorationLine: 'none',
+  },
+})
 const styles = stylex.create({
   s77fea5a8: {
     margin: 'calc(0.25rem * 0)',
@@ -81,11 +101,12 @@ export function EmbedWrapper({
     <Wrapper
       contentEditable={false}
       className={cn(
-        'block-embed hm-prose flex flex-col',
+        stylex.props(styles_3.s2ffff9, styles_3.s67e351ac).className || '',
+        'block-embed hm-prose',
         blockStyles,
-        !hideBorder && 'border-l-primary border-l-3',
+        stylex.props(!hideBorder && styles_2.s79f948d1).className || '',
         stylex.props(styles.s77fea5a8).className || '',
-        openOnClick && effectiveRoute && 'cursor-pointer text-inherit no-underline',
+        stylex.props(openOnClick && effectiveRoute && styles_2.s7cc0508b).className || '',
       )}
       data-is-range={isRange ? 'true' : undefined}
       data-content-type="embed"

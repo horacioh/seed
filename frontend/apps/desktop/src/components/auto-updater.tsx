@@ -7,6 +7,23 @@ import {useState} from 'react'
 import {useEffect} from 'react'
 
 // Add type declaration for window.autoUpdate
+const styles_2 = stylex.create({
+  scffbbed4: {
+    position: 'absolute',
+    right: 'calc(var(--spacing) * 5)',
+    bottom: 'calc(var(--spacing) * 5)',
+    zIndex: '40',
+    display: 'flex',
+    minHeight: '100px',
+    minWidth: '360px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: '0.25rem',
+    backgroundColor: 'var(--surface-contrast)',
+    padding: 'calc(var(--spacing) * 4)',
+    boxShadow: 'var(--shadow-md)',
+  },
+})
 const styles = stylex.create({
   se658ac14: {
     display: 'flex',
@@ -44,7 +61,7 @@ export function AutoUpdater() {
   }
   return (
     <div
-      className="absolute right-5 bottom-5 z-40 flex min-h-[100px] min-w-[360px] flex-col gap-4 rounded bg-white p-4 shadow-md dark:bg-black"
+      className={stylex.props(styles_2.scffbbed4).className || ''}
       style={{
         transform:
           updateStatus?.type == 'update-available' ||

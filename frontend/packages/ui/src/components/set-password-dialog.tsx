@@ -11,6 +11,11 @@ import {checkPasswordStrength, PasswordInput} from './password-input'
  * wrapping inside `onSubmit` (the desktop daemon does it with the in-daemon DEK;
  * the web vault does it in-browser), so the UX stays identical.
  */
+const styles_2 = stylex.create({
+  s8c05c43f: {
+    maxWidth: '420px',
+  },
+})
 const styles = stylex.create({
   sfbc6e290: {
     display: 'flex',
@@ -71,7 +76,7 @@ export function SetPasswordDialog({
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[420px]">
+      <DialogContent className={stylex.props(styles_2.s8c05c43f).className || ''}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>

@@ -1,40 +1,59 @@
-import {cva, type VariantProps} from 'class-variance-authority'
+import * as stylex from '@stylexjs/stylex'
 import {forwardRef} from 'react'
 import {cn} from './utils'
 
-export const headingVariants = cva('font-bold text-gray-900 dark:text-gray-100', {
-  variants: {
-    level: {
-      1: 'text-2xl leading-9 md:text-3xl md:leading-10',
-      2: 'text-xl leading-8 md:text-2xl md:leading-9 ',
-      3: 'text-lg leading-7 md:text-xl md:leading-8',
-      4: 'text-base leading-6 md:text-lg md:leading-7',
+const styles = stylex.create({
+  base: {
+    color: 'var(--tone-gray-900)',
+    fontWeight: 700,
+  },
+  level1: {
+    fontSize: '1.5rem',
+    lineHeight: 'calc(2 / 1.5)',
+    '@media (min-width: 768px)': {
+      fontSize: '1.875rem',
+      lineHeight: 'calc(2.25 / 1.875)',
     },
   },
-  defaultVariants: {
-    level: 2,
+  level2: {
+    fontSize: '1.25rem',
+    lineHeight: 'calc(1.75 / 1.25)',
+    '@media (min-width: 768px)': {
+      fontSize: '1.5rem',
+      lineHeight: 'calc(2 / 1.5)',
+    },
+  },
+  level3: {
+    fontSize: '1.125rem',
+    lineHeight: 'calc(1.75 / 1.125)',
+    '@media (min-width: 768px)': {
+      fontSize: '1.25rem',
+      lineHeight: 'calc(1.75 / 1.25)',
+    },
+  },
+  level4: {
+    fontSize: '1rem',
+    lineHeight: 'calc(1.5 / 1)',
+    '@media (min-width: 768px)': {
+      fontSize: '1.125rem',
+      lineHeight: 'calc(1.75 / 1.125)',
+    },
   },
 })
 
-export const marginClasses = {
-  1: 'mt-8 md:mt-10 lg:mt-12', // Largest margin for h1
-  2: 'mt-6 md:mt-8 lg:mt-10', // Medium margin for h2
-  3: 'mt-4 md:mt-6 lg:mt-8', // Smaller margin for h3
-  default: 'mt-6 md:mt-8 lg:mt-10', // Default margin for other headings
-}
+type HeadingLevel = 1 | 2 | 3 | 4
 
-export interface SeedHeadingProps
-  extends React.HTMLAttributes<HTMLHeadingElement>,
-    VariantProps<typeof headingVariants> {
+export interface SeedHeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   asChild?: boolean
+  level?: HeadingLevel
 }
 
-export const SeedHeading = forwardRef<HTMLHeadingElement, SeedHeadingProps>(
-  ({className, level, asChild = false, ...props}, ref) => {
-    const Tag = level === 1 ? 'h2' : level === 2 ? 'h3' : level === 3 ? 'h4' : level === 4 ? 'h5' : 'h3'
+export const SeedHeading = forwardRef<HTMLHeadingElement, SeedHeadingProps>(({className, level = 2, ...props}, ref) => {
+  const Tag = level === 1 ? 'h2' : level === 2 ? 'h3' : level === 3 ? 'h4' : level === 4 ? 'h5' : 'h3'
+  const levelStyle =
+    level === 1 ? styles.level1 : level === 2 ? styles.level2 : level === 3 ? styles.level3 : styles.level4
 
-    return <Tag ref={ref} className={cn(headingVariants({level}), className)} {...props} />
-  },
-)
+  return <Tag ref={ref} className={cn(stylex.props(styles.base, levelStyle).className, className)} {...props} />
+})
 
 SeedHeading.displayName = 'SeedHeading'

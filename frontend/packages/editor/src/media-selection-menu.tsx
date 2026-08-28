@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Button} from '@shm/ui/button'
 import {
   DropdownMenu,
@@ -9,7 +10,127 @@ import {
 import {cn} from '@shm/ui/utils'
 import {ArrowLeft, Link, MoreHorizontal, Trash2, Upload} from 'lucide-react'
 import {KeyboardEvent, ReactNode, useState} from 'react'
-
+const styles_2 = stylex.create({
+  s93a199ef: {
+    ':is(.dark *)': {
+      backgroundColor: 'oklch(20.5% 0 none)',
+    },
+  },
+})
+const styles = stylex.create({
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s382471: {
+    zIndex: '20',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s8a6c2964: {
+    boxShadow: 'var(--shadow-md)',
+  },
+  s291c6d79: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 10%, transparent)',
+      },
+    },
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s36c7d4: {
+    width: 'calc(0.25rem * 64)',
+  },
+  s199f26b7: {
+    backgroundColor: 'color-mix(in oklab, #000 10%, transparent)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sc039b344: {
+    ':focus': {
+      color: 'var(--destructive)',
+    },
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sca3de96b: {
+    width: 'calc(0.25rem * 7)',
+    height: 'calc(0.25rem * 7)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  sd52b2d2: {
+    textTransform: 'uppercase',
+  },
+  s64e14c29: {
+    letterSpacing: '0.025em',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  sc807c78b: {
+    ':focus': {},
+  },
+  s4a7318b7: {
+    ':focus': {
+      boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+    },
+  },
+  s6044a01e: {
+    justifyContent: 'flex-end',
+  },
+})
 export type MediaSelectionMenuProps = {
   /** Open the file picker for replacing the media with local upload */
   onReplaceFile: () => void
@@ -37,7 +158,6 @@ function displayableUrl(url: string): string {
   if (url.startsWith('ipfs://') || url.startsWith('blob:') || url.startsWith('data:')) return ''
   return url
 }
-
 export function MediaSelectionMenu({
   onReplaceFile,
   onSubmitUrl,
@@ -52,22 +172,18 @@ export function MediaSelectionMenu({
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [mode, setMode] = useState<'main' | 'url'>('main')
   const [urlInput, setUrlInput] = useState(() => displayableUrl(currentUrl))
-
   const testId = (suffix: string) => (testIdPrefix ? `${testIdPrefix}-${suffix}` : suffix)
-
   const resetAndClose = () => {
     setDropdownOpen(false)
     // Defer the mode reset so the menu can fully close before the next open
     setTimeout(() => setMode('main'), 0)
   }
-
   const handleSubmit = () => {
     const trimmed = urlInput.trim()
     if (!trimmed) return
     onSubmitUrl(trimmed)
     resetAndClose()
   }
-
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -77,12 +193,22 @@ export function MediaSelectionMenu({
       setMode('main')
     }
   }
-
   return (
     <div
       className={cn(
-        'bg-background border-border z-20 flex items-center gap-1 rounded-md border p-1 shadow-md',
-        'dark:bg-neutral-900',
+        stylex.props(
+          styles.s436dc7b6,
+          styles.s1a01a0ed,
+          styles.s382471,
+          styles.s2ffff9,
+          styles.sc6ed1702,
+          styles.s5d936fa,
+          styles.sf79988b7,
+          styles.sad8c742c,
+          styles.s1aa14,
+          styles.s8a6c2964,
+        ).className || '',
+        stylex.props(styles_2.s93a199ef).className || '',
       )}
       data-testid={testId('selection-menu')}
       // Selection menu shouldn't bubble pointer events into the editor and
@@ -104,12 +230,12 @@ export function MediaSelectionMenu({
             size="icon"
             variant="ghost"
             data-testid={testId('more')}
-            className="hover:bg-black/10 dark:hover:bg-white/10"
+            className={stylex.props(styles.s291c6d79).className || ''}
           >
-            <MoreHorizontal className="size-4" />
+            <MoreHorizontal className={stylex.props(styles.sca3de968).className || ''} />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" sideOffset={4} className="w-64">
+        <DropdownMenuContent align="end" sideOffset={4} className={stylex.props(styles.s36c7d4).className || ''}>
           {mode === 'main' ? (
             <>
               <DropdownMenuItem
@@ -119,7 +245,7 @@ export function MediaSelectionMenu({
                   resetAndClose()
                 }}
               >
-                <Upload className="size-4" />
+                <Upload className={stylex.props(styles.sca3de968).className || ''} />
                 <span>Replace</span>
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -129,42 +255,55 @@ export function MediaSelectionMenu({
                   setMode('url')
                 }}
               >
-                <Link className="size-4" />
+                <Link className={stylex.props(styles.sca3de968).className || ''} />
                 <span>{urlMenuLabel}</span>
               </DropdownMenuItem>
               {extraContent && (
                 <>
-                  <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+                  <DropdownMenuSeparator className={stylex.props(styles.s199f26b7).className || ''} />
                   {extraContent}
                 </>
               )}
-              <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+              <DropdownMenuSeparator className={stylex.props(styles.s199f26b7).className || ''} />
               <DropdownMenuItem
                 data-testid={testId('delete')}
-                className="text-destructive focus:text-destructive"
+                className={stylex.props(styles.s8a2570e2, styles.sc039b344).className || ''}
                 onSelect={() => {
                   onDelete()
                   resetAndClose()
                 }}
               >
-                <Trash2 className="size-4" />
+                <Trash2 className={stylex.props(styles.sca3de968).className || ''} />
                 <span>{deleteLabel ?? 'Delete'}</span>
               </DropdownMenuItem>
             </>
           ) : (
-            <div className="flex flex-col gap-2 p-1" onKeyDown={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-1">
+            <div
+              className={stylex.props(styles.s2ffff9, styles.s67e351ac, styles.s5d936fb, styles.s1aa14).className || ''}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fa).className || ''}>
                 <Button
                   type="button"
                   size="icon"
                   variant="ghost"
                   data-testid={testId('url-back')}
-                  className="size-7 hover:bg-black/10 dark:hover:bg-white/10"
+                  className={stylex.props(styles.sca3de96b, styles.s291c6d79).className || ''}
                   onClick={() => setMode('main')}
                 >
-                  <ArrowLeft className="size-4" />
+                  <ArrowLeft className={stylex.props(styles.sca3de968).className || ''} />
                 </Button>
-                <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+                <span
+                  className={
+                    stylex.props(
+                      styles.sf2718385,
+                      styles.sab7cc79b,
+                      styles.s129e46b3,
+                      styles.sd52b2d2,
+                      styles.s64e14c29,
+                    ).className || ''
+                  }
+                >
                   {urlMenuLabel}
                 </span>
               </div>
@@ -177,11 +316,22 @@ export function MediaSelectionMenu({
                 onKeyDown={handleKeyDown}
                 placeholder={urlInputPlaceholder ?? 'Paste a URL'}
                 className={cn(
-                  'border-border bg-background text-foreground w-full rounded-md border px-2 py-1.5 text-sm outline-none',
-                  'focus:ring-ring focus:ring-2',
+                  stylex.props(
+                    styles.s1a01a0ed,
+                    styles.s436dc7b6,
+                    styles.sc05281e3,
+                    styles.scdbaf625,
+                    styles.sf79988b7,
+                    styles.sad8c742c,
+                    styles.s34b1ad,
+                    styles.sc5dd13f4,
+                    styles.sab7cc6fa,
+                    styles.sa602a1e3,
+                  ).className || '',
+                  stylex.props(styles.sc807c78b, styles.s4a7318b7).className || '',
                 )}
               />
-              <div className="flex justify-end gap-1">
+              <div className={stylex.props(styles.s2ffff9, styles.s6044a01e, styles.s5d936fa).className || ''}>
                 <Button
                   type="button"
                   size="sm"

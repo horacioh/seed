@@ -34,6 +34,123 @@ import {
   queryTableItemMatchesSearch,
 } from './query-block-table-model'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  s88b2469a: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: 'var(--font-weight-medium)',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s6f7c6ca7: {
+    color: 'var(--muted-foreground)',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 3)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s3c25506a: {
+    borderColor: 'var(--border)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    height: 'calc(var(--spacing) * 9)',
+    cursor: 'pointer',
+    listStyleType: 'none',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s99f984b2: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+})
+const styles_3 = stylex.create({
+  s839477da: {
+    backgroundColor: 'var(--background)',
+    position: 'sticky',
+    left: 'calc(0.25rem * 0)',
+    zIndex: '20',
+  },
+  s839477bb: {
+    backgroundColor: 'var(--background)',
+    position: 'sticky',
+    left: 'calc(0.25rem * 0)',
+    zIndex: '10',
+  },
+})
+const styles_2 = stylex.create({
+  sd69f8dd3: {
+    marginBlock: 'calc(0.25rem * 4)',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 2)',
+    fontFamily: 'var(--font-sans)',
+  },
+  s19b1654: {
+    position: 'relative',
+    minWidth: 'calc(0.25rem * 48)',
+    flex: '1',
+  },
+  s7c5ebd39: {
+    borderColor: 'var(--border)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(0.25rem * 2)',
+    fontSize: '0.875rem',
+    lineHeight: 'calc(1.25 / 0.875)',
+  },
+  s42a8dddc: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    cursor: 'pointer',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  s886946be: {
+    borderColor: 'var(--border)',
+    maxWidth: '100%',
+    touchAction: 'pan-x  ',
+    overflowX: 'auto',
+    overscrollBehaviorX: 'contain',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
 const styles = stylex.create({
   sf2718385: {
     color: 'var(--muted-foreground)',
@@ -96,7 +213,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     padding: 'calc(0.25rem * 3)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+    boxShadow: 'var(--shadow-lg)',
   },
   se658ac13: {
     display: 'flex',
@@ -123,7 +240,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     padding: 'calc(0.25rem * 2)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+    boxShadow: 'var(--shadow-lg)',
   },
   s6e724d66: {
     overflow: 'hidden',
@@ -194,7 +311,7 @@ function TitleCell({item}: {item: HMDocumentInfo}) {
     id: item.id,
   })
   return (
-    <a {...linkProps} className="block truncate font-medium hover:underline">
+    <a {...linkProps} className={stylex.props(styles_4.s88b2469a).className || ''}>
       {getMetadataName(item.metadata) || item.path.at(-1) || 'Untitled'}
     </a>
   )
@@ -357,10 +474,10 @@ export function QueryBlockTable({
     )
   }
   return (
-    <div className="my-4 flex min-w-0 flex-col gap-2 font-sans">
+    <div className={stylex.props(styles_2.sd69f8dd3).className || ''}>
       <div className={stylex.props(styles.s1fa2d8e6).className || ''}>
-        <div className="relative min-w-48 flex-1">
-          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <div className={stylex.props(styles_2.s19b1654).className || ''}>
+          <Search className={stylex.props(styles_4.s6f7c6ca7).className || ''} />
           <Input
             value={search}
             onChangeText={setSearch}
@@ -370,7 +487,7 @@ export function QueryBlockTable({
           />
         </div>
         <details className={stylex.props(styles.sdef3facc).className || ''}>
-          <summary className="border-border hover:bg-muted flex h-9 cursor-pointer list-none items-center gap-2 rounded-md border px-3 text-sm">
+          <summary className={stylex.props(styles_4.s3c25506a).className || ''}>
             <Filter className={stylex.props(styles.sca3de968).className || ''} /> Filter{' '}
             <ChevronDown className={stylex.props(styles.sca3de967).className || ''} />
           </summary>
@@ -379,7 +496,7 @@ export function QueryBlockTable({
               <div key={index} className={stylex.props(styles.se658ac13).className || ''}>
                 <select
                   aria-label="Filter attribute"
-                  className="border-border min-w-0 flex-1 rounded border px-2 text-sm"
+                  className={stylex.props(styles_2.s7c5ebd39).className || ''}
                   value={filter.columnId}
                   onChange={(event) =>
                     setFilters((current) =>
@@ -466,13 +583,13 @@ export function QueryBlockTable({
           </div>
         </details>
         <details className={stylex.props(styles.sdef3facc).className || ''}>
-          <summary className="border-border hover:bg-muted flex h-9 cursor-pointer list-none items-center gap-2 rounded-md border px-3 text-sm">
+          <summary className={stylex.props(styles_4.s3c25506a).className || ''}>
             <Columns3 className={stylex.props(styles.sca3de968).className || ''} /> Columns
           </summary>
           <div className={stylex.props(styles.s67c3557b).className || ''}>
             {table.getAllLeafColumns().map((column) => (
-              <div key={column.id} className="hover:bg-muted flex items-center gap-1 rounded px-2 py-1.5 text-sm">
-                <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2">
+              <div key={column.id} className={stylex.props(styles_4.s99f984b2).className || ''}>
+                <label className={stylex.props(styles_2.s42a8dddc).className || ''}>
                   <input
                     type="checkbox"
                     checked={column.getIsVisible()}
@@ -536,7 +653,7 @@ export function QueryBlockTable({
           {items.length === 0 ? 'No documents found.' : 'No documents match the current search and filters.'}
         </div>
       ) : (
-        <div className="border-border max-w-full touch-pan-x overflow-x-auto overscroll-x-contain rounded-md border">
+        <div className={stylex.props(styles_2.s886946be).className || ''}>
           <Table
             className={stylex.props(styles.sce14a4b5).className || ''}
             style={{
@@ -551,7 +668,7 @@ export function QueryBlockTable({
                       key={header.id}
                       className={cn(
                         stylex.props(styles.sdef3facc).className || '',
-                        header.column.id === 'title' && 'bg-background sticky left-0 z-20',
+                        stylex.props(header.column.id === 'title' && styles_3.s839477da).className || '',
                       )}
                       style={{
                         width: header.getSize(),
@@ -595,7 +712,7 @@ export function QueryBlockTable({
                         key={cell.id}
                         className={cn(
                           stylex.props(styles.s92852dd5).className || '',
-                          cell.column.id === 'title' && 'bg-background sticky left-0 z-10',
+                          stylex.props(cell.column.id === 'title' && styles_3.s839477bb).className || '',
                         )}
                         style={{
                           width: cell.column.getSize(),

@@ -29,6 +29,171 @@ import useMedia from './use-media'
 import {cn} from './utils'
 
 // Stable width estimator functions
+const layout = stylex.create({
+  column: {
+    flexDirection: 'column',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  centered: {
+    justifyContent: 'center',
+    '@media ((min-width: 768px))': {
+      position: 'relative',
+    },
+  },
+  start: {
+    justifyContent: 'flex-start',
+  },
+})
+const styles_5 = stylex.create({
+  sb42feb5d: {
+    flex: '1',
+  },
+})
+const styles_4 = stylex.create({
+  s68b0d4ed: {
+    '@media ((min-width: 768px))': {
+      display: 'none',
+    },
+  },
+  sdd651aa0: {
+    display: 'none',
+    '@media ((min-width: 768px))': {
+      display: 'block',
+    },
+  },
+  s49f891f: {
+    borderColor: 'var(--border)',
+    zIndex: '20',
+    display: 'flex',
+    width: '100%',
+    transform: 'translateZ(0)     ',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    backgroundColor: 'var(--surface)',
+    padding: 'calc(var(--spacing) * 4)',
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+  },
+  sea7471bd: {
+    '@media ((min-width: 640px))': {
+      translate: '0 calc(var(--spacing) * 0)',
+    },
+  },
+  sf47c9066: {
+    display: 'flex',
+    minWidth: 'calc(var(--spacing) * 0)',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    '@media ((min-width: 640px))': {
+      flexShrink: '0',
+    },
+  },
+  s9cc36d7e: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 768px))': {
+      position: 'absolute',
+      right: 'calc(var(--spacing) * 0)',
+    },
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+  },
+  s563dad9: {
+    '@media ((min-width: 768px))': {
+      display: 'flex',
+      paddingBlock: 'calc(var(--spacing) * 2)',
+      paddingRight: 'calc(var(--spacing) * 0)',
+      paddingLeft: 'calc(var(--spacing) * 2)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+  sb49eb337: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: 'calc(var(--spacing) * 0)',
+    left: 'calc(var(--spacing) * 0)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 5)',
+    padding: 'calc(var(--spacing) * 0)',
+    opacity: '0%',
+    '@media ((min-width: 768px))': {
+      display: 'flex',
+      paddingBlock: 'calc(var(--spacing) * 2)',
+      paddingRight: 'calc(var(--spacing) * 0)',
+      paddingLeft: 'calc(var(--spacing) * 2)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+  sa9c9f50e: {
+    maxHeight: '300px',
+    width: 'calc(var(--spacing) * 50)',
+    overflowY: 'scroll',
+  },
+  scc11e8f6: {
+    backgroundColor: 'var(--surface-hover)',
+  },
+  sc8618410: {
+    backgroundColor: 'var(--background)',
+    position: 'fixed',
+    inset: 'calc(var(--spacing) * 0)',
+    zIndex: '50',
+    display: 'flex',
+    height: '100dvh',
+    maxHeight: '100dvh',
+    flexDirection: 'column',
+    transitionProperty: 'transform, translate, scale, rotate',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+    '@media ((min-width: 768px))': {
+      display: 'none',
+    },
+  },
+})
+const styles_3 = stylex.create({
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s6044a01e: {
+    justifyContent: 'flex-end',
+  },
+  s2741d71c: {
+    translate: 'calc(0.25rem * 0) 0',
+  },
+  s6701d423: {
+    translate: '100% 0',
+  },
+})
+const styles_2 = stylex.create({
+  sb6abf356: {
+    display: 'flex',
+    minHeight: '100%',
+    flexDirection: 'column',
+  },
+  sfdc50f41: {
+    position: 'relative',
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   sc7ecd223: {
     display: 'flex',
@@ -96,8 +261,7 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     paddingInline: 'calc(0.25rem * 1)',
     fontWeight: '700',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
     WebkitUserSelect: 'none',
@@ -210,7 +374,7 @@ export function SiteHeader({
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className={stylex.props(styles_4.s68b0d4ed).className || ''}
           aria-label="Open file browser"
           onClick={() => {
             setIsMobileMenuOpen(false)
@@ -223,7 +387,7 @@ export function SiteHeader({
       <Button
         variant="ghost"
         size="icon"
-        className={cn('md:hidden')}
+        className={cn(stylex.props(styles_4.s68b0d4ed).className || '')}
         onClick={() => {
           setIsMobileMenuOpen(true)
         }}
@@ -231,7 +395,7 @@ export function SiteHeader({
         <Menu size={20} />
       </Button>
       {siteHomeId && !IS_DESKTOP ? (
-        <div className="hidden md:block">
+        <div className={stylex.props(styles_4.sdd651aa0).className || ''}>
           <HeaderSearch siteHomeId={siteHomeId} />
         </div>
       ) : null}
@@ -268,27 +432,20 @@ export function SiteHeader({
     <header
       ref={headerRef}
       className={cn(
-        'border-border dark:bg-background z-20 flex w-full transform-gpu border-b bg-white p-4 transition-transform duration-200',
-        {
-          'flex-col': isCenterLayout,
-          'flex-row items-center': !isCenterLayout,
-        },
+        stylex.props(styles_4.s49f891f, isCenterLayout ? layout.column : layout.row).className || '',
         hideSiteBarClassName,
-        'sm:translate-y-0',
+        stylex.props(styles_4.sea7471bd).className || '',
         wrapperClassName,
       )}
     >
       <div
-        className={cn('flex min-w-0 items-center self-stretch sm:shrink-0', {
-          'justify-center md:relative': isCenterLayout,
-          'flex-start': !isCenterLayout,
-        })}
+        className={stylex.props(styles_4.sf47c9066, isCenterLayout ? layout.centered : layout.start).className || ''}
       >
         <div className={stylex.props(styles.sc7ecd223).className || ''}>
           <SiteLogo id={headerHomeId} metadata={draftMetadata || homeDoc.document?.metadata} />
         </div>
         {routeType != 'draft' && isCenterLayout ? (
-          <div className="flex items-center gap-2 md:absolute md:right-0">
+          <div className={stylex.props(styles_4.s9cc36d7e).className || ''}>
             {!IS_DESKTOP && headerSearch}
             {rightActions}
           </div>
@@ -319,7 +476,7 @@ export function SiteHeader({
         open={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
         renderContent={() => (
-          <div className="flex min-h-full flex-col">
+          <div className={stylex.props(styles_2.sb6abf356).className || ''}>
             {!IS_DESKTOP && (
               <MobileSearch
                 siteHomeId={siteHomeId}
@@ -332,7 +489,7 @@ export function SiteHeader({
               />
             )}
 
-            <div className="relative min-h-0 flex-1">
+            <div className={stylex.props(styles_2.sfdc50f41).className || ''}>
               {isMobileSearchActive ? <div className={stylex.props(styles.s46a21c11).className || ''} /> : null}
 
               <div className={stylex.props(styles.sfbb21049).className || ''}>
@@ -533,8 +690,8 @@ function HeaderLinkItem({
       <a
         className={cn(
           stylex.props(styles.scab4b440).className || '',
-          active ? 'text-foreground' : 'text-muted-foreground',
-          'hover:text-foreground',
+          stylex.props(active ? styles_3.sc05281e3 : styles_3.sf2718385).className || '',
+          stylex.props(styles_4.sae6a97a5).className || '',
         )}
         {...linkProps}
       >
@@ -603,8 +760,8 @@ export function SiteHeaderMenu({
       ref={containerRef}
       className={cn(
         stylex.props(styles.s66a6ca52).className || '',
-        'md:flex md:py-2 md:pr-0 md:pl-2',
-        isCenterLayout ? 'justify-center' : 'justify-end',
+        stylex.props(styles_4.s563dad9).className || '',
+        stylex.props(isCenterLayout ? styles_3.sce22ca32 : styles_3.s6044a01e).className || '',
       )}
     >
       {(editNavPane || editNavPanePortalRef) && (
@@ -618,7 +775,7 @@ export function SiteHeaderMenu({
         </div>
       )}
       {/* Hidden measurement container */}
-      <div className="pointer-events-none absolute top-0 left-0 flex items-center gap-5 p-0 opacity-0 md:flex md:p-2">
+      <div className={stylex.props(styles_4.sb49eb337).className || ''}>
         {items?.map((item) => {
           return (
             <div
@@ -675,7 +832,7 @@ export function SiteHeaderMenu({
                 <ChevronDown className={stylex.props(styles.sca3de968).className || ''} />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="max-h-[300px] w-50 overflow-y-scroll" side="bottom" align="end">
+            <DropdownMenuContent className={stylex.props(styles_4.sa9c9f50e).className || ''} side="bottom" align="end">
               {overflowItems.map((item) => (
                 <OverflowMenuItem key={item.key} item={item} />
               ))}
@@ -690,7 +847,7 @@ export function SiteHeaderMenu({
           size="icon"
           className={cn(
             stylex.props(styles.s62783270).className || '',
-            isMainFeedVisible && 'dark:bg-muted bg-black/5',
+            stylex.props(isMainFeedVisible ? styles_4.scc11e8f6 : null).className || '',
           )}
         >
           <a
@@ -719,8 +876,8 @@ export function MobileMenu({
   return (
     <div
       className={cn(
-        'bg-background fixed inset-0 z-50 flex h-dvh max-h-dvh flex-col transition-transform duration-200 md:hidden',
-        open ? 'translate-x-0' : 'translate-x-full',
+        stylex.props(styles_4.sc8618410).className || '',
+        stylex.props(open ? styles_3.s2741d71c : styles_3.s6701d423).className || '',
       )}
     >
       <div className={stylex.props(styles.sb0609b94).className || ''}>
@@ -728,7 +885,7 @@ export function MobileMenu({
           <Close className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
       </div>
-      <ScrollArea className="mobile-menu flex-1">
+      <ScrollArea className={stylex.props(styles_5.sb42feb5d).className || ''}>
         {open ? renderContent() : null}
         <div className={stylex.props(styles.s2ff5c3).className || ''}></div>
       </ScrollArea>

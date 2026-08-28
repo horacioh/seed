@@ -24,6 +24,15 @@ import {ReactNode, useRef} from 'react'
 import {useAppContext} from '../app-context'
 import {encodeRouteToPath} from './route-encoding'
 import {AppWindowEvent} from './window-events'
+const styles_2 = stylex.create({
+  s4e609b53: {
+    position: 'absolute',
+    bottom: 'calc(var(--spacing) * 5)',
+    left: 'calc(var(--spacing) * 15)',
+    zIndex: '40',
+    backgroundColor: 'var(--surface-contrast)',
+  },
+})
 const styles = stylex.create({
   sa145969: {
     WebkitUserSelect: 'none',
@@ -213,7 +222,7 @@ function DevTools() {
         <ReactQueryDevtools />
       </div>
       <div
-        className="absolute bottom-5 left-15 z-40 bg-white dark:bg-black"
+        className={stylex.props(styles_2.s4e609b53).className || ''}
         style={{
           boxShadow: dialogBoxShadow,
         }}

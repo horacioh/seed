@@ -1,5 +1,5 @@
 /* Positioning styles for the supernumber badge widget inside ProseMirror blocks.
-   Visual appearance is handled by Tailwind utility classes set on the element. */
+   Visual appearance is handled by @shm/ui base.css. */
 .bn-supernumber-badge {
   position: absolute;
   top: 0px;

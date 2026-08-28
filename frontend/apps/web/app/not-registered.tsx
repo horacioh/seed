@@ -2,6 +2,20 @@ import * as stylex from '@stylexjs/stylex'
 import {Link} from '@remix-run/react'
 import {SizableText} from '@shm/ui/text'
 import {Container} from './ui/container'
+const styles_2 = stylex.create({
+  s58dae040: {
+    borderColor: 'var(--border)',
+    width: '100%',
+    maxWidth: '36rem',
+    gap: 'calc(0.25rem * 5)',
+    alignSelf: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(0.25rem * 5)',
+    boxShadow: 'var(--shadow-md)',
+  },
+})
 const styles = stylex.create({
   s86ff3e5: {
     display: 'flex',
@@ -16,7 +30,7 @@ export function NotRegisteredPage({}: {}) {
   return (
     <div>
       <Container>
-        <div className="border-border w-full max-w-xl gap-5 self-center rounded-md border p-5 shadow-md">
+        <div className={stylex.props(styles_2.s58dae040).className || ''}>
           <div className={stylex.props(styles.s86ff3e5).className || ''}>
             <SizableText size="3xl">🚧</SizableText>
             <SizableText size="2xl" weight="bold">
@@ -42,7 +56,7 @@ export function NoSitePage({}: {}) {
   return (
     <div>
       <Container>
-        <div className="border-border w-full max-w-xl gap-5 self-center rounded-md border p-5 shadow-md">
+        <div className={stylex.props(styles_2.s58dae040).className || ''}>
           <div className={stylex.props(styles.s86ff3e5).className || ''}>
             <SizableText size="3xl">☁️</SizableText>
             <SizableText size="2xl" weight="bold">

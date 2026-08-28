@@ -36,6 +36,334 @@ import {
   Wrench,
 } from 'lucide-react'
 import {Fragment, type ReactNode, useEffect, useMemo, useRef, useState} from 'react'
+const styles_6 = stylex.create({
+  sbe30147d: {
+    backgroundColor: 'color-mix(in oklab, var(--muted-foreground) 50%, transparent)',
+  },
+  s460ef3a3: {
+    backgroundColor: 'oklch(72.3% 0.219 149.579)',
+  },
+})
+const styles_5 = stylex.create({
+  sca3de966: {
+    width: 'calc(0.25rem * 2)',
+    height: 'calc(0.25rem * 2)',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s5ac553fa: {
+    backgroundColor: 'var(--destructive)',
+  },
+})
+const styles_4 = stylex.create({
+  s9c668528: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
+    },
+  },
+  s2ad763c: {
+    marginInline: 'calc(0.25rem * -1)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(0.25rem * 1)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s948be48c: {
+    flex: 'none',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_3 = stylex.create({
+  s2e7ee7cc: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    '@media ((max-width: 639px))': {
+      display: 'inline-flex',
+      minHeight: 'calc(var(--spacing) * 10)',
+      alignItems: 'center',
+    },
+  },
+  sbe830cc9: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    maxWidth: 'calc(var(--spacing) * 48)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    '@media ((max-width: 639px))': {
+      display: 'inline-flex',
+      minHeight: 'calc(var(--spacing) * 10)',
+      alignItems: 'center',
+    },
+  },
+  s87c6e2ff: {
+    ':focus': {
+      boxShadow: '0 0 0 2px currentcolor',
+    },
+    minWidth: 'calc(var(--spacing) * 0)',
+    flex: '1',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: 'var(--text-lg)',
+    lineHeight: 'var(--text-lg--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    outlineStyle: 'none',
+  },
+  s6bbc3fe1: {
+    marginInline: 'auto',
+    width: '100%',
+    maxWidth: 'var(--container-4xl)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBottom: 'calc(var(--spacing) * 2)',
+    paddingLeft: '3.75rem',
+  },
+  sc33eeff9: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    columnGap: 'calc(var(--spacing) * 4)',
+    rowGap: 'calc(var(--spacing) * 2)',
+    '@media ((min-width: 640px))': {
+      flexWrap: 'nowrap',
+    },
+  },
+  sc89b3123: {
+    ':focus': {
+      boxShadow: '0 0 0 2px currentcolor',
+    },
+    marginInline: 'calc(var(--spacing) * -1)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: 'var(--text-2xl)',
+    lineHeight: 'var(--text-2xl--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    outlineStyle: 'none',
+  },
+  s284af276: {
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  safce1988: {
+    backgroundColor: 'color-mix(in oklab, var(--panel) 95%, transparent)',
+    position: 'sticky',
+    top: 'calc(var(--spacing) * 0)',
+    zIndex: '10',
+    marginInline: 'calc(var(--spacing) * -1)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    padding: 'calc(var(--spacing) * 1)',
+    WebkitBackdropFilter: 'blur(8px)',
+    backdropFilter: 'blur(8px)        ',
+    '@media ((min-width: 768px))': {
+      gap: 'calc(var(--spacing) * 4)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+  s1238120d: {
+    pointerEvents: 'none',
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    opacity: '0%',
+    '@media ((min-width: 768px))': {
+      gap: 'calc(var(--spacing) * 4)',
+      padding: 'calc(var(--spacing) * 2)',
+    },
+  },
+  sdfaffae2: {
+    flex: 'none',
+    '@media ((max-width: 639px))': {
+      minHeight: 'calc(var(--spacing) * 10)',
+    },
+  },
+  s98e15077: {
+    backgroundColor: 'var(--secondary)',
+    color: 'var(--secondary-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--secondary) 80%, transparent)',
+      },
+    },
+    display: 'flex',
+    flex: 'none',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'transparent',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    ':disabled': {
+      opacity: '50%',
+    },
+  },
+  s76a08df2: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s4a244964: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    color: 'var(--muted-foreground)',
+    width: '100%',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+})
+const styles_2 = stylex.create({
+  sddc09a9a: {
+    color: 'var(--foreground)',
+    maxWidth: 'calc(0.25rem * 48)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 1)',
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  sb3fff8a2: {
+    marginInline: 'auto',
+    display: 'flex',
+    height: 'calc(0.25rem * 12)',
+    width: '100%',
+    maxWidth: '56rem',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  sdf91ad18: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+  sb21c636e: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+  },
+  s64fb8207: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s8565410d: {
+    maxWidth: 'calc(0.25rem * 56)',
+    flex: 'none',
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  sdfcaa18b: {
+    maxWidth: 'calc(0.25rem * 40)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  s10483f08: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+})
 const styles = stylex.create({
   sf9dfefc3: {
     color: 'var(--muted-foreground)',
@@ -51,7 +379,7 @@ const styles = stylex.create({
     zIndex: '10',
     width: '100%',
     flex: 'none',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-sm)',
+    boxShadow: 'var(--shadow-sm)',
   },
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -168,7 +496,7 @@ export function AgentBreadcrumb({
   return (
     <nav className={stylex.props(styles.sf9dfefc3).className || ''} aria-label="Agent breadcrumb">
       <button
-        className="hover:text-foreground rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
+        className={stylex.props(styles_3.s2e7ee7cc).className || ''}
         onClick={() =>
           navigate({
             key: 'agents',
@@ -181,10 +509,10 @@ export function AgentBreadcrumb({
         <>
           <span>&gt;</span>
           {serverIsCurrent ? (
-            <span className="text-foreground max-w-48 truncate rounded px-1 py-0.5">{serverLabel}</span>
+            <span className={stylex.props(styles_2.sddc09a9a).className || ''}>{serverLabel}</span>
           ) : (
             <button
-              className="hover:text-foreground max-w-48 truncate rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
+              className={stylex.props(styles_3.sbe830cc9).className || ''}
               onClick={() =>
                 navigate({
                   key: 'agent-server',
@@ -201,7 +529,7 @@ export function AgentBreadcrumb({
         <>
           <span>&gt;</span>
           <button
-            className="hover:text-foreground max-w-48 truncate rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
+            className={stylex.props(styles_3.sbe830cc9).className || ''}
             onClick={() =>
               agentId &&
               navigate({
@@ -220,14 +548,11 @@ export function AgentBreadcrumb({
         <Fragment key={`${item.label}:${index}`}>
           <span>&gt;</span>
           {item.route ? (
-            <button
-              className="hover:text-foreground max-w-48 truncate rounded px-1 py-0.5 max-sm:inline-flex max-sm:min-h-10 max-sm:items-center"
-              onClick={() => navigate(item.route!)}
-            >
+            <button className={stylex.props(styles_3.sbe830cc9).className || ''} onClick={() => navigate(item.route!)}>
               {item.label}
             </button>
           ) : (
-            <span className="text-foreground max-w-48 truncate rounded px-1 py-0.5">{item.label}</span>
+            <span className={stylex.props(styles_2.sddc09a9a).className || ''}>{item.label}</span>
           )}
         </Fragment>
       ))}
@@ -260,17 +585,17 @@ export function AgentSubpageHeader({
 }) {
   return (
     <header className={stylex.props(styles.s13369fda).className || ''}>
-      <div className="mx-auto flex h-12 w-full max-w-4xl items-center gap-2 px-4">
+      <div className={stylex.props(styles_2.sb3fff8a2).className || ''}>
         <Button variant="ghost" size="icon" aria-label={backLabel} onClick={onBack}>
           <ArrowLeft className={stylex.props(styles.sca3de968).className || ''} />
         </Button>
-        <div className="flex min-w-0 flex-1 items-center gap-2">
+        <div className={stylex.props(styles_2.sdf91ad18).className || ''}>
           <input
             aria-label={placeholder}
             value={title}
             placeholder={placeholder}
             onChange={(event) => onTitleChange(event.currentTarget.value)}
-            className="focus:ring-primary/25 min-w-0 flex-1 rounded-md bg-transparent px-1 py-0.5 text-lg font-bold outline-none focus:ring-2"
+            className={stylex.props(styles_3.s87c6e2ff).className || ''}
             disabled={disabled}
           />
           {saveState !== 'idle' ? (
@@ -278,13 +603,15 @@ export function AgentSubpageHeader({
               aria-label={
                 saveState === 'saving' ? 'Saving title' : saveState === 'saved' ? 'Title saved' : 'Title save failed'
               }
-              className={`size-2 flex-none rounded-full ${
-                saveState === 'saving'
-                  ? 'bg-muted-foreground/50'
+              className={
+                (stylex.props(styles_5.sca3de966, styles_5.s948be48c, styles_5.s775755af).className || '') +
+                ' ' +
+                (saveState === 'saving'
+                  ? stylex.props(styles_6.sbe30147d).className || ''
                   : saveState === 'saved'
-                    ? 'bg-green-500'
-                    : 'bg-destructive'
-              }`}
+                    ? stylex.props(styles_6.s460ef3a3).className || ''
+                    : stylex.props(styles_5.s5ac553fa).className || '')
+              }
             />
           ) : null}
         </div>
@@ -292,7 +619,7 @@ export function AgentSubpageHeader({
         {children}
       </div>
       {subtitle ? (
-        <div className="mx-auto w-full max-w-4xl px-4 pb-2 pl-[3.75rem]">
+        <div className={stylex.props(styles_3.s6bbc3fe1).className || ''}>
           <p className={stylex.props(styles.s2627017b).className || ''} title={subtitle}>
             {subtitle}
           </p>
@@ -416,24 +743,47 @@ export function AgentHeader({
         }
       />
       <section className={stylex.props(styles.sfbc6e28f).className || ''}>
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 sm:flex-nowrap">
-          <div className="flex min-w-0 flex-col gap-1">
+        <div className={stylex.props(styles_3.sc33eeff9).className || ''}>
+          <div className={stylex.props(styles_2.sb21c636e).className || ''}>
             {onEditName ? (
               <button
                 type="button"
                 aria-label="Rename agent"
                 onClick={onEditName}
-                className="hover:bg-muted/60 group -mx-1 flex min-w-0 items-center gap-2 rounded-md px-1 py-0.5 text-left"
+                className={
+                  stylex.props(
+                    styles_4.s9c668528,
+                    styles_4.s2ad763c,
+                    styles_4.s2ffff9,
+                    styles_4.s3f58665f,
+                    styles_4.sc6ed1702,
+                    styles_4.s5d936fb,
+                    styles_4.sf79988b7,
+                    styles_4.s34b1ac,
+                    styles_4.sc5dd1033,
+                    styles_4.sbf63b0a7,
+                  ).className || ''
+                }
               >
-                <SizableText size="2xl" weight="bold" className="min-w-0 truncate">
+                <SizableText size="2xl" weight="bold" className={stylex.props(styles_2.s64fb8207).className || ''}>
                   {currentAgentName}
                 </SizableText>
-                <Pencil className="text-muted-foreground size-4 flex-none opacity-0 transition-opacity group-hover:opacity-100" />
+                <Pencil
+                  className={
+                    stylex.props(
+                      styles_4.sf2718385,
+                      styles_4.sca3de968,
+                      styles_4.s948be48c,
+                      styles_4.s765a26ee,
+                      styles_4.s83442393,
+                    ).className || ''
+                  }
+                />
               </button>
             ) : onAgentNameChange ? (
               <input
                 aria-label="Agent name"
-                className="focus:ring-primary/25 -mx-1 min-w-0 truncate rounded-md bg-transparent px-1 py-0.5 text-2xl font-bold outline-none focus:ring-2"
+                className={stylex.props(styles_3.sc89b3123).className || ''}
                 value={agentName ?? agent?.definition.name ?? ''}
                 placeholder="Agent"
                 onChange={(event) => onAgentNameChange(event.currentTarget.value)}
@@ -463,12 +813,20 @@ export function AgentHeader({
           </div>
           <div className={stylex.props(styles.sa0238738).className || ''}>
             {activeTab === 'sessions' && onCreateSession ? (
-              <Button className="max-sm:min-h-10" onClick={onCreateSession} disabled={creatingSession}>
+              <Button
+                className={stylex.props(styles_3.s284af276).className || ''}
+                onClick={onCreateSession}
+                disabled={creatingSession}
+              >
                 <MessageSquarePlus className={stylex.props(styles.sef1c143e).className || ''} /> New session
               </Button>
             ) : null}
             {activeTab === 'triggers' && onCreateTrigger ? (
-              <Button className="max-sm:min-h-10" onClick={onCreateTrigger} disabled={!canCreateTrigger}>
+              <Button
+                className={stylex.props(styles_3.s284af276).className || ''}
+                onClick={onCreateTrigger}
+                disabled={!canCreateTrigger}
+              >
                 <GitBranch className={stylex.props(styles.sef1c143e).className || ''} /> New trigger
               </Button>
             ) : null}
@@ -479,15 +837,8 @@ export function AgentHeader({
         </div>
 
         {agentId ? (
-          <div
-            ref={containerRef}
-            className="bg-panel/95 sticky top-0 z-10 -mx-1 flex items-center gap-2 p-1 backdrop-blur md:gap-4"
-          >
-            <div
-              ref={measureRef}
-              className="pointer-events-none absolute flex items-center gap-2 opacity-0 md:gap-4"
-              aria-hidden="true"
-            >
+          <div ref={containerRef} className={stylex.props(styles_3.safce1988).className || ''}>
+            <div ref={measureRef} className={stylex.props(styles_3.s1238120d).className || ''} aria-hidden="true">
               {tabs.map((tab) => (
                 <PageTab
                   key={tab.key}
@@ -522,7 +873,7 @@ export function AgentHeader({
                 icon={tab.icon}
                 count={tab.count}
                 showLabel={showLabels}
-                className="flex-none max-sm:min-h-10"
+                className={stylex.props(styles_3.sdfaffae2).className || ''}
               />
             ))}
           </div>
@@ -609,7 +960,7 @@ export function SessionModelBadge({
   const spansProviders = options.some((entry) => entry.provider !== effective.provider)
   if (!canWrite || !agentId) {
     return (
-      <Badge variant="secondary" className="max-w-56 flex-none gap-1.5">
+      <Badge variant="secondary" className={stylex.props(styles_2.s8565410d).className || ''}>
         <span className={stylex.props(styles.s6e724d66).className || ''}>{effective.model}</span>
         {effectiveReasoning ? <ReasoningPie level={effectiveReasoning} /> : null}
       </Badge>
@@ -680,9 +1031,9 @@ export function SessionModelBadge({
         type="button"
         aria-label="Set the model for this session"
         disabled={updateSession.isLoading}
-        className="bg-secondary text-secondary-foreground hover:bg-secondary/80 flex flex-none items-center gap-1 rounded-md border border-transparent px-2 py-0.5 text-xs font-medium transition-colors disabled:opacity-50"
+        className={stylex.props(styles_3.s98e15077).className || ''}
       >
-        <span className="max-w-40 truncate">{effective.model}</span>
+        <span className={stylex.props(styles_2.sdfcaa18b).className || ''}>{effective.model}</span>
         {reasoningSupported || effectiveReasoning ? (
           <ReasoningPie level={pendingLevel ? pendingLevel.level : effectiveReasoning} />
         ) : null}
@@ -697,10 +1048,12 @@ export function SessionModelBadge({
             <button
               key={`${entry.provider}:${entry.model}`}
               type="button"
-              className="hover:bg-muted flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm"
+              className={stylex.props(styles_3.s76a08df2).className || ''}
               onClick={() => handleSelect(entry)}
             >
-              <span className="min-w-0 flex-1 truncate">{info ? modelLabel(info) : entry.model}</span>
+              <span className={stylex.props(styles_2.s10483f08).className || ''}>
+                {info ? modelLabel(info) : entry.model}
+              </span>
               {isAgentDefault ? (
                 <span className={stylex.props(styles.s26e23c22).className || ''}>agent default</span>
               ) : null}
@@ -724,7 +1077,7 @@ export function SessionModelBadge({
         <div className={stylex.props(styles.se9d91b89).className || ''}>
           <button
             type="button"
-            className="hover:bg-muted text-muted-foreground w-full rounded-sm px-2 py-1.5 text-left text-xs"
+            className={stylex.props(styles_3.s4a244964).className || ''}
             onClick={() => {
               setOpen(false)
               navigate({

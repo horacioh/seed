@@ -77,6 +77,7 @@ import type {AgentsRichEditorSubmitHandle} from './platform'
 import {RunRecordCard, SessionRunCard} from './run-card'
 import {SessionModelBadge} from './header'
 import {SessionStatusDot, SessionSummaryBanner, SubSessionsDisclosure} from './session-children'
+import {cn} from '@shm/ui/utils'
 
 /**
  * Assistant sidebar.
@@ -90,6 +91,214 @@ import {SessionStatusDot, SessionSummaryBanner, SubSessionsDisclosure} from './s
  * web (mounted beside the site page, toggled from the account menu). Everything host-specific —
  * signing, navigation, the account, the rich editor — comes through the agents platform seam.
  */
+const styles_5 = stylex.create({
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(0.25rem * 1.5)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+})
+const styles_4 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s2ff5a4: {
+    height: 'calc(0.25rem * 10)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  s7c401f01: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sfcf3a2ae: {
+    maxWidth: '100%',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  sc5cefc73: {
+    paddingInline: 'calc(0.25rem * 1.5)',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(0.25rem * 1)',
+  },
+})
+const styles_3 = stylex.create({
+  s17784e3e: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+      },
+    },
+    padding: 'calc(var(--spacing) * 1)',
+  },
+  s804bd6ee: {
+    color: 'var(--muted-foreground)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+    letterSpacing: 'var(--tracking-wide)',
+    textTransform: 'uppercase',
+  },
+  s37a030da: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  sc1e19741: {
+    color: 'var(--muted-foreground)',
+    width: '100%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '10px',
+  },
+  sf5dca943: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    color: 'var(--foreground)',
+    display: 'flex',
+    width: '100%',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+    textAlign: 'left',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+})
+const styles_2 = stylex.create({
+  sdc30a21a: {
+    minWidth: 'calc(0.25rem * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontWeight: '500',
+  },
+  s9117a008: {
+    maxHeight: 'calc(0.25rem * 96)',
+    width: 'calc(0.25rem * 72)',
+    overflowY: 'auto',
+    padding: 'calc(0.25rem * 1)',
+  },
+  se4f05639: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--foreground)',
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 1)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(0.25rem * 2)',
+    paddingBlock: 'calc(0.25rem * 1)',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+  s8dfce98f: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+  },
+  s4cae9c8d: {
+    maxHeight: 'calc(0.25rem * 80)',
+    width: 'calc(0.25rem * 72)',
+    overflowY: 'auto',
+    padding: 'calc(0.25rem * 1)',
+  },
+  s5cc90427: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  sb6abf356: {
+    display: 'flex',
+    minHeight: '100%',
+    flexDirection: 'column',
+  },
+})
 const styles = stylex.create({
   s2f33c551: {
     display: 'flex',
@@ -254,7 +463,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     padding: 'calc(0.25rem * 1.5)',
-    boxShadow: '0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, var(--shadow-lg)',
+    boxShadow: 'var(--shadow-lg)',
   },
   s10106704: {
     display: 'flex',
@@ -395,7 +604,22 @@ export function AssistantPanel({
         : null}
       {deleteDialog.content}
       {createAgentDialog.content}
-      <div className="border-border window-drag flex h-10 items-center justify-between gap-1 border-b px-2 py-2">
+      <div
+        className={cn(
+          stylex.props(
+            styles_4.s1a01a0ed,
+            styles_4.s2ffff9,
+            styles_4.s2ff5a4,
+            styles_4.sc6ed1702,
+            styles_4.sc1a629cb,
+            styles_4.s5d936fa,
+            styles_4.s7c401f01,
+            styles_4.s34b1ad,
+            styles_4.s34b56e,
+          ).className || '',
+          'window-drag',
+        )}
+      >
         <AssistantAgentPicker
           agents={agents}
           activeAgent={activeAgent}
@@ -424,14 +648,14 @@ export function AssistantPanel({
             })
           }
         />
-        <div className="no-window-drag flex shrink-0 items-center">
-          <button onClick={startDraft} className="text-muted-foreground hover:text-foreground p-1" title="New chat">
+        <div className={stylex.props(styles_4.s2ffff9, styles_4.sf032ed6c, styles_4.sc6ed1702).className || ''}>
+          <button onClick={startDraft} className={stylex.props(styles_3.s17784e3e).className || ''} title="New chat">
             <MessageCirclePlus className={stylex.props(styles.sca3de968).className || ''} />
           </button>
           {onClose ? (
             <button
               onClick={onClose}
-              className="text-muted-foreground hover:text-foreground p-1"
+              className={stylex.props(styles_3.s17784e3e).className || ''}
               title="Close agents panel"
               aria-label="Close agents panel"
             >
@@ -453,7 +677,7 @@ export function AssistantPanel({
         {activeSession ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-muted-foreground hover:text-foreground p-1" title="Chat options">
+              <button className={stylex.props(styles_3.s17784e3e).className || ''} title="Chat options">
                 <MoreHorizontal className={stylex.props(styles.s3269316e).className || ''} />
               </button>
             </DropdownMenuTrigger>
@@ -593,29 +817,39 @@ function AssistantAgentPicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="no-window-drag hover:bg-muted flex max-w-full min-w-0 items-center gap-2 rounded px-1.5 py-1"
+          className={
+            stylex.props(
+              styles_4.s37120a61,
+              styles_4.s2ffff9,
+              styles_4.s3f58665f,
+              styles_4.sfcf3a2ae,
+              styles_4.sc6ed1702,
+              styles_4.s5d936fb,
+              styles_4.s529492ad,
+              styles_4.sc5cefc73,
+              styles_4.s34b56d,
+            ).className || ''
+          }
         >
           <Bot className={stylex.props(styles.sf0768e89).className || ''} />
-          <SizableText size="sm" className="min-w-0 truncate font-medium">
+          <SizableText size="sm" className={stylex.props(styles_2.sdc30a21a).className || ''}>
             {activeAgent?.agent.definition.name || 'Agents'}
           </SizableText>
           <ChevronDown className={stylex.props(styles.sfc2d1d6a).className || ''} />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="max-h-96 w-72 overflow-y-auto p-1">
+      <PopoverContent align="start" className={stylex.props(styles_2.s9117a008).className || ''}>
         {groups.length === 0 ? (
           <div className={stylex.props(styles.s183f42f7).className || ''}>No agents yet.</div>
         ) : (
           groups.map((group) => (
             <div key={group.serverUrl} className={stylex.props(styles.s783f19f3).className || ''}>
               <div className={stylex.props(styles.sece3df36).className || ''}>
-                <span className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+                <span className={stylex.props(styles_3.s804bd6ee).className || ''}>
                   {describeAgentServer(group.serverUrl, localServerUrl)}
                 </span>
                 {advertisedServerUrl && group.serverUrl === advertisedServerUrl ? (
-                  <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-[10px] font-medium">
-                    This space
-                  </span>
+                  <span className={stylex.props(styles_3.s37a030da).className || ''}>This space</span>
                 ) : null}
               </div>
               {group.options.map((option) => {
@@ -624,9 +858,21 @@ function AssistantAgentPicker({
                   <button
                     key={`${option.serverUrl}${option.agent.id}`}
                     type="button"
-                    className={`hover:bg-muted flex w-full flex-col items-start rounded px-2 py-1.5 text-left ${
-                      isActive ? 'bg-muted' : ''
-                    }`}
+                    className={
+                      (stylex.props(
+                        styles_5.s37120a61,
+                        styles_5.s2ffff9,
+                        styles_5.scdbaf625,
+                        styles_5.s67e351ac,
+                        styles_5.s93b5f015,
+                        styles_5.s529492ad,
+                        styles_5.s34b1ad,
+                        styles_5.sc5dd13f4,
+                        styles_5.sbf63b0a7,
+                      ).className || '') +
+                      ' ' +
+                      (isActive ? stylex.props(styles_5.s5fd609e3).className || '' : '')
+                    }
                     onClick={() => {
                       onSelect({
                         serverUrl: option.serverUrl,
@@ -638,7 +884,7 @@ function AssistantAgentPicker({
                     <span className={stylex.props(styles.s8e8abc0f).className || ''}>
                       {option.agent.definition.name}
                     </span>
-                    <span className="text-muted-foreground w-full truncate text-[10px]">
+                    <span className={stylex.props(styles_3.sc1e19741).className || ''}>
                       {option.agent.definition.model}
                     </span>
                   </button>
@@ -650,7 +896,7 @@ function AssistantAgentPicker({
         <div className={stylex.props(styles.s739b83e6).className || ''}>
           <button
             type="button"
-            className="hover:bg-muted text-foreground flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
+            className={stylex.props(styles_3.sf5dca943).className || ''}
             onClick={() => {
               setOpen(false)
               onCreateAgent()
@@ -661,7 +907,7 @@ function AssistantAgentPicker({
           </button>
           <button
             type="button"
-            className="hover:bg-muted text-foreground flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs"
+            className={stylex.props(styles_3.sf5dca943).className || ''}
             onClick={() => {
               setOpen(false)
               onOpenAgentsPage()
@@ -698,17 +944,14 @@ function AssistantSessionPicker({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="bg-muted text-foreground flex min-w-0 flex-1 items-center gap-1 rounded px-2 py-1 text-xs"
-        >
-          <span className="min-w-0 flex-1 truncate text-left">
+        <button type="button" className={stylex.props(styles_2.se4f05639).className || ''}>
+          <span className={stylex.props(styles_2.s8dfce98f).className || ''}>
             {isDraft ? 'New chat' : selectedTitle || 'Untitled session'}
           </span>
           <ChevronDown className={stylex.props(styles.s4a58805).className || ''} />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="max-h-80 w-72 overflow-y-auto p-1">
+      <PopoverContent align="start" className={stylex.props(styles_2.s4cae9c8d).className || ''}>
         {isLoading && entries.length === 0 ? (
           <div className={stylex.props(styles.s183f42f7).className || ''}>Loading sessions…</div>
         ) : entries.length === 0 ? (
@@ -723,9 +966,21 @@ function AssistantSessionPicker({
               >
                 <button
                   type="button"
-                  className={`hover:bg-muted flex w-full items-center gap-2 rounded px-2 py-1.5 text-left ${
-                    isSelected ? 'bg-muted' : ''
-                  }`}
+                  className={
+                    (stylex.props(
+                      styles_5.s37120a61,
+                      styles_5.s2ffff9,
+                      styles_5.scdbaf625,
+                      styles_5.sc6ed1702,
+                      styles_5.s5d936fb,
+                      styles_5.s529492ad,
+                      styles_5.s34b1ad,
+                      styles_5.sc5dd13f4,
+                      styles_5.sbf63b0a7,
+                    ).className || '') +
+                    ' ' +
+                    (isSelected ? stylex.props(styles_5.s5fd609e3).className || '' : '')
+                  }
                   onClick={() => {
                     onSelect({
                       serverUrl: entry.serverUrl,
@@ -738,7 +993,7 @@ function AssistantSessionPicker({
                     status={entry.session.status}
                     className={stylex.props(styles.sca3de966).className || ''}
                   />
-                  <span className="flex min-w-0 flex-1 flex-col">
+                  <span className={stylex.props(styles_2.s5cc90427).className || ''}>
                     <span className={stylex.props(styles.s2cbbeae1).className || ''}>
                       {entry.session.title || 'Untitled session'}
                     </span>
@@ -1001,7 +1256,7 @@ function AssistantSessionChat({
         onScroll={autoScroll.handleScroll}
         className={stylex.props(styles.sa96f997f).className || ''}
       >
-        <div ref={autoScroll.contentRef} className="flex min-h-full flex-col">
+        <div ref={autoScroll.contentRef} className={stylex.props(styles_2.sb6abf356).className || ''}>
           {rows.length === 0 && !isStreaming ? (
             <div className={stylex.props(styles.sf4852f34).className || ''}>Send a message to start chatting</div>
           ) : null}

@@ -7,6 +7,22 @@ import {Button} from '../button'
 import {cn} from '../utils'
 import {Calendar} from './calendar'
 import {Popover, PopoverContent, PopoverTrigger} from './popover'
+const styles_3 = stylex.create({
+  s524e0b71: {
+    display: 'flex',
+    width: '100%',
+    minWidth: '100%',
+    alignItems: 'center',
+    '@media ((min-width: 640px))': {
+      minWidth: 'calc(var(--spacing) * 0)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
 const styles = stylex.create({
   scdbaf625: {
     width: '100%',
@@ -73,11 +89,14 @@ export function DatePicker({value, onValue, onReset, placeholder = 'Select date'
     onReset()
   }
   return (
-    <div className={cn('flex w-full min-w-full items-center sm:min-w-0', className)}>
+    <div className={cn(stylex.props(styles_3.s524e0b71).className || '', className)}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger className={stylex.props(styles.scdbaf625).className || ''}>
           <Button
-            className={cn(stylex.props(styles.se1f6a2b6).className || '', !selectedDate && 'text-muted-foreground')}
+            className={cn(
+              stylex.props(styles.se1f6a2b6).className || '',
+              stylex.props(!selectedDate && styles_2.sf2718385).className || '',
+            )}
           >
             <CalendarIcon className={stylex.props(styles.sef1c143e).className || ''} />
             {selectedDate ? formatDate(selectedDate) : placeholder}

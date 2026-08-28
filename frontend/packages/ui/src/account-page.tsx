@@ -17,6 +17,27 @@ import {Pencil} from './icons'
 import {MembershipContent} from './membership'
 import {PageLayout} from './page-layout'
 import {PageTabItem, PageTabs} from './page-tabs'
+const styles_2 = stylex.create({
+  s34b574: {
+    paddingBlock: 'calc(0.25rem * 8)',
+  },
+  s19ed4: {
+    margin: 'calc(0.25rem * 4)',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+})
 const styles = stylex.create({
   sb42feb5d: {
     flex: '1',
@@ -215,8 +236,8 @@ export function AccountPage({
   return (
     <ScrollArea className={stylex.props(styles.sb42feb5d).className || ''}>
       <PageLayout contentMaxWidth={720}>
-        <div className="space-y-6 py-8">
-          <div className="m-4 flex-col space-y-6">
+        <div className={stylex.props(styles_2.s34b574).className || ''}>
+          <div className={stylex.props(styles_2.s19ed4, styles_2.s67e351ac).className || ''}>
             <div className={stylex.props(styles.s86ff3e6).className || ''}>
               <HMIcon
                 id={hmId(accountUid)}
@@ -224,7 +245,7 @@ export function AccountPage({
                 icon={account.data?.metadata?.icon}
                 name={account.data?.metadata?.name}
               />
-              <div className="min-w-0 flex-1 space-y-1">
+              <div className={stylex.props(styles_2.s3f58665f, styles_2.sb42feb5d).className || ''}>
                 <h1 className={stylex.props(styles.s2e6cd8a3).className || ''}>
                   {account.data?.metadata?.name || accountUid}
                 </h1>
@@ -312,7 +333,7 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
             </span>
           </HoverCardTrigger>
           <HoverCardContent align="start" className={stylex.props(styles.s36c7f1).className || ''}>
-            <div className="space-y-2 text-sm">
+            <div className={stylex.props(styles_2.sab7cc6fa).className || ''}>
               <div className={stylex.props(styles.s129e46b3).className || ''}>{linkState.hostname}</div>
               <div className={stylex.props(styles.sf2718385).className || ''}>{linkState.verifiedMessage}</div>
             </div>
@@ -334,7 +355,7 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
             </span>
           </HoverCardTrigger>
           <HoverCardContent align="start" className={stylex.props(styles.s36c7f1).className || ''}>
-            <div className="space-y-2 text-sm">
+            <div className={stylex.props(styles_2.sab7cc6fa).className || ''}>
               <div className={stylex.props(styles.s129e46b3).className || ''}>{linkState.hostname}</div>
               <div className={stylex.props(styles.sf2718385).className || ''}>{linkState.warningMessage}</div>
             </div>

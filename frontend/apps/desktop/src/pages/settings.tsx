@@ -78,6 +78,217 @@ import {
   UserRoundPlus,
 } from 'lucide-react'
 import React, {useEffect, useId, useMemo, useState} from 'react'
+const styles_6 = stylex.create({
+  s7c41759e: {
+    ':is([data-state="active"])': {
+      boxShadow: 'none',
+    },
+  },
+})
+const styles_5 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb41ffff4: {
+    height: 'auto',
+  },
+  s3b7916ca: {
+    cursor: 'default',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s775ae258: {
+    borderRadius: '0',
+  },
+  s7c401ecf: {
+    borderStyle: 'solid',
+    borderWidth: '0px',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s345f18: {
+    paddingBottom: 'calc(0.25rem * 3)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s646c459b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+      },
+    },
+  },
+})
+const styles_4 = stylex.create({
+  sfe6d77b6: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '220px',
+    flexShrink: '0',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRightStyle: 'solid',
+    borderRightWidth: '1px',
+    padding: 'calc(var(--spacing) * 2)',
+  },
+  sf8679c30: {
+    backgroundColor: 'color-mix(in oklab, var(--brand) 10%, transparent)',
+    color: 'var(--brand-2)',
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  s53fb45c: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s52cd4e8d: {
+    width: '140px',
+  },
+  s18a7e3b9: {
+    maxWidth: '500px',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  scb084180: {
+    backgroundColor: 'var(--surface-sunken)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s739765d5: {
+    color: 'var(--destructive)',
+    borderColor: 'var(--destructive)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+        color: 'var(--destructive)',
+        opacity: '100%',
+      },
+    },
+  },
+  sa47f1dda: {
+    display: 'flex',
+    maxWidth: '25%',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+  s2bed67: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--surface-sunken)',
+    display: 'flex',
+    flex: '3',
+    flexDirection: 'column',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s92623d91: {
+    display: 'grid',
+    gridTemplateColumns: '96px minmax(0,1fr)',
+    alignItems: 'flex-start',
+    columnGap: 'calc(var(--spacing) * 4)',
+    rowGap: 'calc(var(--spacing) * 4)',
+  },
+  s20598918: {
+    maxWidth: '600px',
+    gap: 'calc(var(--spacing) * 4)',
+  },
+  s8c05c43f: {
+    maxWidth: '420px',
+  },
+  s322bc8b5: {
+    backgroundColor: 'var(--surface-sunken)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 6)',
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 6)',
+  },
+  se59607d6: {
+    position: 'relative',
+    width: '220px',
+  },
+  s8fd8e4a1: {
+    position: 'absolute',
+    top: '50%',
+    right: 'calc(var(--spacing) * 1)',
+    translate: '0 -50%',
+  },
+  sda4d8583: {
+    backgroundColor: 'var(--surface-sunken)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: '0.25rem',
+    padding: 'calc(var(--spacing) * 3)',
+  },
+})
+const styles_3 = stylex.create({
+  sfb3beb77: {
+    rotate: '180deg',
+  },
+  s65ec9ce: {
+    paddingRight: 'calc(0.25rem * 14)',
+  },
+  s36f336cc: {
+    color: 'var(--brand-2)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_2 = stylex.create({
+  s47f7faa6: {
+    height: '100%',
+    maxHeight: '100%',
+    minHeight: 'calc(0.25rem * 0)',
+    width: '100%',
+    overflow: 'hidden',
+    paddingTop: 'calc(0.25rem * 0)',
+  },
+  s5cc90427: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    flexDirection: 'column',
+  },
+  sd7df9eac: {
+    color: 'var(--muted-foreground)',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    wordBreak: 'break-all',
+  },
+  sb5bbb4ea: {
+    color: 'var(--muted-foreground)',
+    maxWidth: '32rem',
+    textAlign: 'center',
+  },
+})
 const styles = stylex.create({
   sa368bb19: {
     display: 'flex',
@@ -109,8 +320,7 @@ const styles = stylex.create({
     textAlign: 'left',
     fontSize: '0.875rem',
     lineHeight: 'calc(1.25 / 0.875)',
-    transitionProperty:
-      'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     transitionDuration: '150ms',
   },
@@ -468,12 +678,12 @@ export default function Settings() {
       tab,
     })
   return (
-    <div className={cn(windowContainerStyles, 'h-full max-h-full min-h-0 w-full overflow-hidden pt-0')}>
+    <div className={cn(windowContainerStyles, stylex.props(styles_2.s47f7faa6).className || '')}>
       <div className={panelContainerStyles}>
         <div className={stylex.props(styles.sa368bb19).className || ''}>
           <div className={stylex.props(styles.sc3ed6c02).className || ''}>
             {/* Sidebar */}
-            <div className="border-border flex w-[220px] shrink-0 flex-col gap-1 border-r p-2">
+            <div className={stylex.props(styles_4.sfe6d77b6).className || ''}>
               {SETTINGS_TAB_CONFIG.map((tab) => (
                 <SidebarTab
                   key={tab.key}
@@ -535,7 +745,7 @@ function SidebarTab({
     <button
       className={cn(
         stylex.props(styles.sd94ce182).className || '',
-        active ? 'bg-brand/10 text-brand-2 font-medium' : 'text-muted-foreground hover:bg-muted',
+        stylex.props(active ? styles_4.sf8679c30 : styles_4.s53fb45c).className || '',
       )}
       onClick={onClick}
     >
@@ -765,7 +975,7 @@ function NetworkSettings() {
                 }}
                 disabled={networkConfig.isLoading || setNetwork.isLoading}
               >
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className={stylex.props(styles_4.s52cd4e8d).className || ''}>
                   <SelectValue placeholder="Select network" />
                 </SelectTrigger>
                 <SelectContent>
@@ -798,7 +1008,7 @@ function NetworkSettings() {
         }}
       >
         <AlertDialogPortal>
-          <AlertDialogContent className="max-w-[500px] gap-4">
+          <AlertDialogContent className={stylex.props(styles_4.s18a7e3b9).className || ''}>
             <AlertDialogTitle className={stylex.props(styles.s86442bb7).className || ''}>
               Change Network?
             </AlertDialogTitle>
@@ -842,14 +1052,14 @@ function SettingsCard({label, children}: {label: string; children: React.ReactNo
       <SizableText size="xs" weight="bold" className={stylex.props(styles.s95b76734).className || ''}>
         {label}
       </SizableText>
-      <div className="bg-muted dark:bg-background rounded-lg border">{children}</div>
+      <div className={stylex.props(styles_4.scb084180).className || ''}>{children}</div>
     </div>
   )
 }
 function SettingsRow({label, description, right}: {label: string; description?: string; right?: React.ReactNode}) {
   return (
     <div className={stylex.props(styles.s87791731).className || ''}>
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className={stylex.props(styles_2.s5cc90427).className || ''}>
         <SizableText size="sm" weight="medium">
           {label}
         </SizableText>
@@ -878,7 +1088,12 @@ function GoBuildInfo({goBuildInfo}: {goBuildInfo: string}) {
           onClick={() => setExpanded(!expanded)}
         >
           Show details{' '}
-          <ChevronDown className={cn(stylex.props(styles.sd25dd2f0).className || '', expanded && 'rotate-180')} />
+          <ChevronDown
+            className={cn(
+              stylex.props(styles.sd25dd2f0).className || '',
+              stylex.props(expanded && styles_3.sfb3beb77).className || '',
+            )}
+          />
         </Button>
       </div>
       {expanded ? (
@@ -894,7 +1109,7 @@ function NetworkAddresses({addrs}: {addrs?: string}) {
   const firstAddr = addrs?.split('\n')[0]
   return (
     <div className={stylex.props(styles.s4468076a).className || ''}>
-      <SizableText size="xs" className="text-muted-foreground min-w-0 flex-1 break-all">
+      <SizableText size="xs" className={stylex.props(styles_2.sd7df9eac).className || ''}>
         {expanded ? addrs : firstAddr ? `${firstAddr}…` : 'Loading…'}
       </SizableText>
       {addrs ? (
@@ -905,7 +1120,12 @@ function NetworkAddresses({addrs}: {addrs?: string}) {
           onClick={() => setExpanded(!expanded)}
         >
           {expanded ? 'Show less' : 'Show all'}{' '}
-          <ChevronDown className={cn(stylex.props(styles.sd25dd2f0).className || '', expanded && 'rotate-180')} />
+          <ChevronDown
+            className={cn(
+              stylex.props(styles.sd25dd2f0).className || '',
+              stylex.props(expanded && styles_3.sfb3beb77).className || '',
+            )}
+          />
         </Button>
       ) : null}
     </div>
@@ -936,7 +1156,7 @@ function ClearHistoryButton() {
     <Button
       variant="outline"
       size="sm"
-      className="text-destructive border-destructive hover:bg-destructive/10"
+      className={stylex.props(styles_4.s739765d5).className || ''}
       onClick={() => setIsConfirming(true)}
     >
       Clear history
@@ -1057,7 +1277,7 @@ export function DeveloperSettings() {
       </SettingsCard>
       <AlertDialog open={showEmbeddingConfirm} onOpenChange={setShowEmbeddingConfirm}>
         <AlertDialogPortal>
-          <AlertDialogContent className="max-w-[500px] gap-4">
+          <AlertDialogContent className={stylex.props(styles_4.s18a7e3b9).className || ''}>
             <AlertDialogTitle className={stylex.props(styles.s86442bb7).className || ''}>
               {pendingEmbeddingState ? 'Enable Embedding?' : 'Disable Embedding?'}
             </AlertDialogTitle>
@@ -1160,7 +1380,7 @@ function AccountKeys() {
     )
   return keys.data?.length && selectedAccount ? (
     <div className={stylex.props(styles.sd28bc940).className || ''}>
-      <div className="flex max-w-[25%] flex-1 flex-col gap-2">
+      <div className={stylex.props(styles_4.sa47f1dda).className || ''}>
         <div className={stylex.props(styles.s486e68e8).className || ''}>
           {keys.data?.map((key) => (
             <KeyItem
@@ -1172,10 +1392,10 @@ function AccountKeys() {
           ))}
         </div>
       </div>
-      <div className={cn('border-border dark:bg-background bg-muted flex flex-[3] flex-col rounded-lg border')}>
+      <div className={cn(stylex.props(styles_4.s2bed67).className || '')}>
         <div className={stylex.props(styles.s21835087).className || ''}>
           <div className={stylex.props(styles.sd83bda6c).className || ''}>
-            <div className="grid grid-cols-[96px_minmax(0,1fr)] items-start gap-x-4 gap-y-4">
+            <div className={stylex.props(styles_4.s92623d91).className || ''}>
               <div className={stylex.props(styles.sc91a2955).className || ''}>
                 {selectedAccountId ? (
                   <HMIcon
@@ -1218,7 +1438,7 @@ function AccountKeys() {
                   </AlertDialogTrigger>
                 </Tooltip>
                 <AlertDialogPortal>
-                  <AlertDialogContent className="max-w-[600px] gap-4">
+                  <AlertDialogContent className={stylex.props(styles_4.s20598918).className || ''}>
                     <AlertDialogTitle className={stylex.props(styles.s38dca3a9).className || ''}>
                       Delete Account
                     </AlertDialogTitle>
@@ -1286,7 +1506,7 @@ function AccountKeys() {
                         </AlertDialogTrigger>
                       </Tooltip>
                       <AlertDialogPortal>
-                        <AlertDialogContent className="max-w-[600px] gap-4">
+                        <AlertDialogContent className={stylex.props(styles_4.s20598918).className || ''}>
                           <AlertDialogTitle className={stylex.props(styles.s38dca3a9).className || ''}>
                             Delete Words
                           </AlertDialogTitle>
@@ -1326,7 +1546,7 @@ function AccountKeys() {
         </div>
       </div>
       <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
-        <DialogContent className="max-w-[420px]">
+        <DialogContent className={stylex.props(styles_4.s8c05c43f).className || ''}>
           <DialogHeader>
             <DialogTitle>Export Key File</DialogTitle>
             <DialogDescription>
@@ -1368,7 +1588,7 @@ function AccountKeys() {
         <UserRoundPlus size={50} className={stylex.props(styles.sf2718385).className || ''} />
       </div>
       <SizableText size="xl">No Accounts Found</SizableText>
-      <p className="text-muted-foreground max-w-lg text-center">
+      <p className={stylex.props(styles_2.sb5bbb4ea).className || ''}>
         Create a new profile to get started with Seed. You'll need to create a profile to use all the features.
       </p>
       <Button
@@ -1418,7 +1638,7 @@ export function ExperimentSection({
   value: boolean
 }) {
   return (
-    <div className={cn('dark:bg-background bg-muted flex items-center gap-6 rounded border p-3 px-6')}>
+    <div className={cn(stylex.props(styles_4.s322bc8b5).className || '')}>
       <SizableText size="2xl">{experiment.emoji}</SizableText>
       <div className={stylex.props(styles.s731a65c4).className || ''}>
         <div className={stylex.props(styles.sd28bc940).className || ''}>
@@ -1477,9 +1697,12 @@ function GatewaySettings() {
           label="Gateway URL"
           description="Primary hyper.media endpoint"
           right={
-            <div className="relative w-[220px]">
+            <div className={stylex.props(styles_4.se59607d6).className || ''}>
               <Input
-                className={cn(stylex.props(styles.scdbaf625).className || '', gwChanged && 'pr-14')}
+                className={cn(
+                  stylex.props(styles.scdbaf625).className || '',
+                  stylex.props(gwChanged && styles_3.s65ec9ce).className || '',
+                )}
                 value={gwUrl}
                 onChangeText={setGWUrl}
               />
@@ -1487,7 +1710,7 @@ function GatewaySettings() {
                 <Button
                   size="xs"
                   variant="outline"
-                  className="absolute top-1/2 right-1 -translate-y-1/2"
+                  className={stylex.props(styles_4.s8fd8e4a1).className || ''}
                   onClick={() => {
                     setGatewayUrl.mutate(gwUrl)
                     toast.success('Gateway URL saved!')
@@ -1864,20 +2087,40 @@ function Tab(
   return (
     <TabsTrigger
       data-testid={`tab-${props.value}`}
-      className="flex h-auto cursor-default flex-col items-center justify-center gap-2 rounded-none border-0 bg-transparent p-4 pb-3 text-sm font-medium hover:bg-black/5 data-[state=active]:shadow-none dark:hover:bg-white/10"
+      className={
+        (stylex.props(
+          styles_5.s2ffff9,
+          styles_5.sb41ffff4,
+          styles_5.s3b7916ca,
+          styles_5.s67e351ac,
+          styles_5.sc6ed1702,
+          styles_5.sce22ca32,
+          styles_5.s5d936fb,
+          styles_5.s775ae258,
+          styles_5.s7c401ecf,
+          styles_5.s60f53bca,
+          styles_5.s1aa17,
+          styles_5.s345f18,
+          styles_5.sab7cc6fa,
+          styles_5.s129e46b3,
+          styles_5.s646c459b,
+        ).className || '') +
+        ' ' +
+        (stylex.props(styles_6.s7c41759e).className || '')
+      }
       {...rest}
     >
       <Icon
         className={cn(
           stylex.props(styles.sca3de969).className || '',
-          active ? 'text-brand-2' : 'text-muted-foreground',
+          stylex.props(active ? styles_3.s36f336cc : styles_3.sf2718385).className || '',
         )}
       />
       <SizableText
         size="xs"
         className={cn(
           stylex.props(styles.sb42feb5d).className || '',
-          active ? 'text-brand-2' : 'text-muted-foreground',
+          stylex.props(active ? styles_3.s36f336cc : styles_3.sf2718385).className || '',
         )}
       >
         {label}
@@ -1894,7 +2137,7 @@ function SettingsSection({
   afterTitle?: React.ReactNode
 }>) {
   return (
-    <div className={cn('dark:bg-background bg-muted flex flex-col gap-3 rounded p-3')}>
+    <div className={cn(stylex.props(styles_4.sda4d8583).className || '')}>
       <div className={stylex.props(styles.s48f5532a).className || ''}>
         <SizableText size="2xl">{title}</SizableText>
         {afterTitle}

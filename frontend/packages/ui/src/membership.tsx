@@ -8,6 +8,43 @@ import {Spinner} from './spinner'
 import {SizableText} from './text'
 
 /** Shows sites/accounts that this account has membership in (all contacts). */
+const styles_4 = stylex.create({
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_3 = stylex.create({
+  s6c85cbfb: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'var(--radius)',
+    paddingInline: 'calc(var(--spacing) * 6)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_2 = stylex.create({
+  sdf91ad18: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   s65917ffb: {
     display: 'flex',
@@ -67,10 +104,17 @@ function MembershipItem({contact}: {contact: HMContactRecord}) {
   const name = contact.name || subject.data?.metadata?.name
   const icon = subject.data?.metadata?.icon
   return (
-    <a {...linkProps} className="hover:bg-muted flex items-center gap-3 rounded-lg px-6 py-3 transition-colors">
+    <a {...linkProps} className={stylex.props(styles_3.s6c85cbfb).className || ''}>
       <HMIcon id={hmId(contact.subject)} size={40} icon={icon} name={name} />
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        <SizableText weight="medium" className={`truncate ${name ? '' : 'text-muted-foreground'}`}>
+      <div className={stylex.props(styles_2.sdf91ad18).className || ''}>
+        <SizableText
+          weight="medium"
+          className={
+            (stylex.props(styles_4.s6e724d66).className || '') +
+            ' ' +
+            (name ? '' : stylex.props(styles_4.sf2718385).className || '')
+          }
+        >
           {name || 'Untitled'}
         </SizableText>
         {!name ? <Spinner size="small" /> : null}

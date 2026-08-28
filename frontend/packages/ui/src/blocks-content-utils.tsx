@@ -12,6 +12,24 @@ import {DocumentCard} from './newspaper'
 import {cn} from './utils'
 
 /** CSS class string for standard block content width. */
+const styles_3 = stylex.create({
+  sd58866be: {
+    flexBasis: '100%',
+  },
+  sce58bea5: {
+    flexBasis: '50%',
+  },
+  s642495a3: {
+    flexBasis: 'calc(1 / 3 * 100%)',
+  },
+})
+const styles_2 = stylex.create({
+  s1ecfd32e: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    padding: 'calc(0.25rem * 3)',
+  },
+})
 const styles = stylex.create({
   s730eff20: {
     display: 'flex',
@@ -29,7 +47,15 @@ const styles = stylex.create({
     justifyContent: 'center',
   },
 })
-export const blockStyles = 'w-full flex-1 self-center'
+/** Shared block wrapper layout: full width, flexible, and centered in its column. */
+const blockLayoutStyles = stylex.create({
+  block: {
+    width: '100%',
+    flex: '1 1 0%',
+    alignSelf: 'center',
+  },
+})
+export const blockStyles = stylex.props(blockLayoutStyles.block).className || ''
 
 /** Recursively finds a block node by ID in a tree of block nodes. */
 export function getBlockNodeById(blocks: Array<HMBlockNode>, blockId: string): HMBlockNode | null {
@@ -137,7 +163,11 @@ export function DocumentCardGrid({
   navigateCards?: boolean
 }) {
   const columnClasses = useMemo(() => {
-    return cn('basis-full', columnCount == 2 && 'sm:basis-1/2', columnCount == 3 && 'sm:basis-1/2 md:basis-1/3')
+    return cn(
+      stylex.props(styles_3.sd58866be).className || '',
+      columnCount == 2 ? stylex.props(styles_3.sce58bea5).className || '' : '',
+      columnCount == 3 ? stylex.props(styles_3.sce58bea5, styles_3.s642495a3).className || '' : '',
+    )
   }, [columnCount])
   const hasPrependItems = prependItems && prependItems.length > 0
   const hasItems = items?.length > 0
@@ -167,14 +197,14 @@ export function DocumentCardGrid({
       {hasPrependItems || hasItems ? (
         <div className={stylex.props(styles.s7aa9cc9).className || ''}>
           {prependItems?.map((item, i) => (
-            <div className={cn(columnClasses, 'flex min-w-0 p-3')} key={`prepend-${i}`}>
+            <div className={cn(columnClasses, stylex.props(styles_2.s1ecfd32e).className || '')} key={`prepend-${i}`}>
               {item}
             </div>
           ))}
           {items.map((item) => {
             if (!item) return null
             return (
-              <div className={cn(columnClasses, 'flex min-w-0 p-3')} key={item.id.id}>
+              <div className={cn(columnClasses, stylex.props(styles_2.s1ecfd32e).className || '')} key={item.id.id}>
                 <DocumentCard
                   docId={item.id}
                   entity={null}

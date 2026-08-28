@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {registerDesktopAgentsPlatform} from '@/agents-platform'
 import {AppContextProvider} from '@/app-context-provider'
 import {AppIPC} from '@/app-ipc'
@@ -26,7 +27,6 @@ import Main from './pages/main'
 import type {AppInfoType} from './preload'
 import './root.css'
 import './stylex.css'
-
 import {AppWindowEvent} from '@/utils/window-events'
 import {ReadOnlyViewer} from '@shm/editor/readonly-viewer'
 import {onQueryCacheError, onQueryInvalidation, registerQueryClient} from '@shm/shared/models/query-client'
@@ -34,12 +34,30 @@ import {labelOfQueryKey} from '@shm/shared/models/query-keys'
 import {ReadOnlyViewerProvider} from '@shm/shared/readonly-viewer-context'
 import {windowContainerStyles} from '@shm/ui/container'
 import {cn} from '@shm/ui/utils'
-
+const styles_2 = stylex.create({
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s5d936fd: {
+    gap: 'calc(0.25rem * 4)',
+  },
+  s1aa1b: {
+    padding: 'calc(0.25rem * 8)',
+  },
+})
+const styles = stylex.create({
+  s84d690e9: {
+    minHeight: 'calc(0.25rem * 4)',
+    textAlign: 'center',
+  },
+})
 const logger = {
   log: wrapLogger(console.log),
   error: wrapLogger(console.error),
 }
-
 function wrapLogger(logFn: (...args: any[]) => void) {
   return (...input: any[]) => {
     logFn(
@@ -53,7 +71,6 @@ function wrapLogger(logFn: (...args: any[]) => void) {
     )
   }
 }
-
 function useWindowUtils(ipc: AppIPC): WindowUtils {
   // const win = getCurrent()
   const [isMaximized, setIsMaximized] = useState<boolean | undefined>(false)
@@ -74,20 +91,22 @@ function useWindowUtils(ipc: AppIPC): WindowUtils {
     if (window.windowMaximizedState) {
       setIsMaximized(window.windowMaximizedState.get())
     }
-
     return () => {
       if (unsubscribe) unsubscribe()
     }
   }, [])
-
   const windowUtils = {
     maximize: () => {
       // No longer immediately set the state here, let the event handler do it
-      ipc.send('maximize_window', {forceMaximize: true})
+      ipc.send('maximize_window', {
+        forceMaximize: true,
+      })
     },
     unmaximize: () => {
       // No longer immediately set the state here, let the event handler do it
-      ipc.send('maximize_window', {forceUnmaximize: true})
+      ipc.send('maximize_window', {
+        forceUnmaximize: true,
+      })
     },
     close: () => {
       ipc.send('close_window')
@@ -113,10 +132,8 @@ const daemonState: StateStream<GoDaemonState> = window.daemonState
 // @ts-expect-error
 const appInfo: AppInfoType = window.appInfo
 const darkMode: StateStream<boolean> = window.darkMode
-
 function useGoDaemonState(): GoDaemonState | undefined {
   const [state, setState] = useState<GoDaemonState | undefined>(daemonState.get())
-
   useEffect(() => {
     const updateHandler = (value: GoDaemonState) => {
       setState(value)
@@ -126,15 +143,12 @@ function useGoDaemonState(): GoDaemonState | undefined {
       setState(daemonState.get())
     }
     const sub = daemonState.subscribe(updateHandler)
-
     return () => {
       sub()
     }
   }, [])
-
   return state
 }
-
 function useDarkMode(): boolean {
   const [isDark, setIsDark] = useState<boolean>(() => {
     const initialValue = darkMode.get()
@@ -148,7 +162,6 @@ function useDarkMode(): boolean {
     }
     return initialValue
   })
-
   useEffect(() => {
     const updateHandler = (value: boolean) => {
       setIsDark(value)
@@ -161,14 +174,11 @@ function useDarkMode(): boolean {
         document.documentElement.classList.remove('dark')
       }
     }
-
     const sub = darkMode.subscribe(updateHandler)
-
     return () => {
       sub()
     }
   }, [])
-
   return isDark
 }
 
@@ -191,11 +201,17 @@ onQueryInvalidation((queryKey: QueryKey) => {
 
 // RQ will refuse to run mutations if !isOnline
 onlineManager.setOnline(true)
-
 function isAbortError(error: unknown): boolean {
   if (typeof DOMException === 'undefined') return false
   if (error instanceof DOMException && error.name === 'AbortError') return true
-  const cause = error instanceof Error ? (error as Error & {cause?: unknown}).cause : undefined
+  const cause =
+    error instanceof Error
+      ? (
+          error as Error & {
+            cause?: unknown
+          }
+        ).cause
+      : undefined
   return cause instanceof DOMException && cause.name === 'AbortError'
 }
 
@@ -209,7 +225,14 @@ onQueryCacheError((error, query) => {
     action: {
       label: 'Copy Details',
       onClick: () => {
-        const detailString = JSON.stringify({queryKey, errorMessage}, null, 2)
+        const detailString = JSON.stringify(
+          {
+            queryKey,
+            errorMessage,
+          },
+          null,
+          2,
+        )
         copyTextToClipboard(detailString)
         toast.success(`📋 Copied details to clipboard`)
       },
@@ -238,7 +261,6 @@ declare global {
     windowId?: string
   }
 }
-
 function MainApp({}: {}) {
   // Make window visible immediately - this should be the very first thing
   useEffect(() => {
@@ -254,11 +276,9 @@ function MainApp({}: {}) {
       cleanupAllEntitySubscriptions()
     }
   }, [])
-
   const daemonState = useGoDaemonState()
   const isDarkMode = useDarkMode()
   const windowUtils = useWindowUtils(ipc)
-
   useListenAppEvent('trigger_database_reindex', () => {
     toast.promise(grpcClient.daemon.forceReindex({}), {
       loading: 'Reindexing the database…',
@@ -268,14 +288,17 @@ function MainApp({}: {}) {
       error: 'Reindex failed!',
     })
   })
-
   useEffect(() => {
     let unsubscribe: (() => void) | undefined
     let disposed = false
     ipc
-      .listen<{payload: QueryKey}>('query_invalidation', ({payload: queryKey}) => {
+      .listen<{
+        payload: QueryKey
+      }>('query_invalidation', ({payload: queryKey}) => {
         if (!queryKey) return
-        queryClient.invalidateQueries({queryKey})
+        queryClient.invalidateQueries({
+          queryKey,
+        })
       })
       .then((cleanup) => {
         if (disposed) cleanup()
@@ -286,7 +309,6 @@ function MainApp({}: {}) {
       unsubscribe?.()
     }
   }, [])
-
   const mainContent = (
     <>
       <Main />
@@ -330,7 +352,10 @@ function MainApp({}: {}) {
               return window.keyExport?.pickFile(defaultFileName) ?? Promise.resolve(null)
             }}
             saveCidAsFile={async (cid: string, name: string) => {
-              ipc.send?.('save-file', {cid, name})
+              ipc.send?.('save-file', {
+                cid,
+                name,
+              })
             }}
             openMarkdownFiles={(accountId: string) => {
               // @ts-ignore
@@ -355,7 +380,11 @@ function MainApp({}: {}) {
             exportDocument={async (
               title: string,
               markdownContent: string,
-              mediaFiles: {url: string; filename: string; placeholder: string}[],
+              mediaFiles: {
+                url: string
+                filename: string
+                placeholder: string
+              }[],
             ) => {
               // @ts-ignore
               return window.docExport.exportDocument(title, markdownContent, mediaFiles)
@@ -417,48 +446,48 @@ function MainApp({}: {}) {
     return <SpinnerWithText message={'We are doing some housekeeping.\nDo not close this window!'} delay={1000} />
   }
 }
-
 function SpinnerWithText(props: {message: string; delay?: number}) {
   const [message, setMessage] = useState('')
-
   useEffect(() => {
     if (!props.delay) {
       setMessage(props.message)
       return () => {}
     }
-
     const timer = setTimeout(() => {
       setMessage(props.message)
     }, props.delay)
-
     return () => clearTimeout(timer)
   }, [])
-
   return (
-    <div className={cn(windowContainerStyles, 'window-drag items-center justify-center gap-4 p-8')}>
+    <div
+      className={cn(
+        windowContainerStyles,
+        stylex.props(styles_2.sc6ed1702, styles_2.sce22ca32, styles_2.s5d936fd, styles_2.s1aa1b).className || '',
+        'window-drag',
+      )}
+    >
       <Spinner />
       <SizableText
         size="md"
         color="muted"
         weight="normal"
-        className="min-h-4 text-center"
-        style={{opacity: message ? 1 : 0}}
+        className={stylex.props(styles.s84d690e9).className || ''}
+        style={{
+          opacity: message ? 1 : 0,
+        }}
       >
         {message}
       </SizableText>
     </div>
   )
 }
-
 function LoadingWindowTestButton() {
   const handleOpen = () => {
     ipc.send?.('open_loading_window', null)
   }
-
   const handleClose = () => {
     ipc.send?.('close_loading_window', null)
   }
-
   return (
     <div
       style={{
@@ -507,11 +536,9 @@ function LoadingWindowTestButton() {
     </div>
   )
 }
-
 function ElectronApp() {
   return <MainApp />
 }
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ElectronApp />

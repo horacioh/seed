@@ -10,6 +10,14 @@ import {createResourceResolver} from '@shm/shared/resource-loader'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
+const styles_2 = stylex.create({
+  s3e87a91a: {
+    display: 'flex',
+    maxWidth: '700px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1.5)',
+  },
+})
 const styles = stylex.create({
   s13588c5b: {
     overflowWrap: 'break-word',
@@ -50,7 +58,7 @@ export function useExportDocuments() {
       .then((res) => {
         const success = (
           <>
-            <div className="flex max-w-[700px] flex-col gap-1.5">
+            <div className={stylex.props(styles_2.s3e87a91a).className || ''}>
               <SizableText className={stylex.props(styles.s13588c5b).className || ''}>
                 Successfully exported documents to: <b>{`${res}`}</b>.
               </SizableText>

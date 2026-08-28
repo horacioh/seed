@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {updateGroup} from '../../../../../block-utils'
 import {BlockNoteEditor, BlockSchema} from '../../../../core'
 import {useMemo, useState} from 'react'
@@ -6,25 +7,31 @@ import {ToolbarDropdown} from '../../../SharedComponents/Toolbar/components/Tool
 import {ToolbarDropdownItemProps} from '../../../SharedComponents/Toolbar/components/ToolbarDropdownItem'
 import {useEditorContentChange} from '../../../hooks/useEditorContentChange'
 import {useEditorSelectionChange} from '../../../hooks/useEditorSelectionChange'
-
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+})
 export type BlockTypeDropdownItem = {
   name: string
   type: string
   props?: Record<string, string>
   icon: any
 }
-
 export const defaultBlockTypeDropdownItems: BlockTypeDropdownItem[] = [
   {
     name: 'Paragraph',
     type: 'paragraph',
-    icon: <RiText className="size-4" />,
+    icon: <RiText className={stylex.props(styles.sca3de968).className || ''} />,
   },
   {
     name: 'Heading',
     type: 'heading',
-    props: {level: '2'},
-    icon: <RiH2 className="size-4" />,
+    props: {
+      level: '2',
+    },
+    icon: <RiH2 className={stylex.props(styles.sca3de968).className || ''} />,
   },
   // {
   //   name: 'Heading 2',
@@ -41,21 +48,19 @@ export const defaultBlockTypeDropdownItems: BlockTypeDropdownItem[] = [
   {
     name: 'Bullet List',
     type: 'bulletListItem',
-    icon: <RiListUnordered className="size-4" />,
+    icon: <RiListUnordered className={stylex.props(styles.sca3de968).className || ''} />,
   },
   {
     name: 'Numbered List',
     type: 'numberedListItem',
-    icon: <RiListOrdered className="size-4" />,
+    icon: <RiListOrdered className={stylex.props(styles.sca3de968).className || ''} />,
   },
 ]
-
 export const BlockTypeDropdown = <BSchema extends BlockSchema>(props: {
   editor: BlockNoteEditor<BSchema>
   items?: BlockTypeDropdownItem[]
 }) => {
   const [block, setBlock] = useState(props.editor.getTextCursorPosition().block)
-
   const filteredItems: BlockTypeDropdownItem[] = useMemo(() => {
     return (props.items || defaultBlockTypeDropdownItems).filter((item) => {
       // Checks if block type exists in the schema
@@ -83,16 +88,13 @@ export const BlockTypeDropdown = <BSchema extends BlockSchema>(props: {
           return false
         }
       }
-
       return true
     })
   }, [props.editor, props.items])
-
   const shouldShow: boolean = useMemo(
     () => filteredItems.find((item) => item.type === block.type) !== undefined,
     [block.type, filteredItems],
   )
-
   const fullItems: ToolbarDropdownItemProps[] = useMemo(
     () =>
       filteredItems.map((item) => ({
@@ -109,19 +111,15 @@ export const BlockTypeDropdown = <BSchema extends BlockSchema>(props: {
       })),
     [block, filteredItems, props.editor],
   )
-
   useEditorContentChange(props.editor, () => {
     setBlock(props.editor.getTextCursorPosition().block)
   })
-
   useEditorSelectionChange(props.editor, () => {
     setBlock(props.editor.getTextCursorPosition().block)
   })
-
   if (!shouldShow) {
     return null
   }
-
   return (
     <ToolbarDropdown
       items={[

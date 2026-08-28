@@ -40,6 +40,289 @@ import {Spinner} from './spinner'
 import {Tooltip} from './tooltip'
 import {useCopyHmLink} from './use-copy-hm-link'
 import {cn} from './utils'
+const styles_7 = stylex.create({
+  s59794290: {
+    ':is(.dark *)': {
+      ':hover': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+  s20a3e675: {
+    ':is(.dark *)': {
+      ':hover': {
+        backgroundColor: 'color-mix(in oklab, #000 10%, transparent)',
+      },
+    },
+  },
+})
+const styles_6 = stylex.create({
+  s48bb0432: {
+    '::before': {
+      content: '""',
+      borderColor: 'var(--border)',
+    },
+  },
+  s41e96d2: {
+    '::before': {
+      content: '""',
+      borderTopStyle: 'solid',
+      borderTopWidth: '1px',
+    },
+  },
+  s41e78ca: {
+    '::before': {
+      content: '""',
+      borderLeftStyle: 'solid',
+      borderLeftWidth: '1px',
+    },
+  },
+  s8e0df312: {
+    '::before': {
+      content: '""',
+      position: 'absolute',
+    },
+  },
+  s97216324: {
+    '::before': {
+      content: '""',
+      left: '12px',
+    },
+  },
+  s6ad686a4: {
+    '::before': {
+      content: '""',
+      top: '9px',
+    },
+  },
+  s5494a8fc: {
+    '::before': {
+      content: '""',
+      height: 'calc(100% - 10px)',
+    },
+  },
+  s5b46eb46: {
+    '::before': {
+      content: '""',
+      width: '16px',
+    },
+  },
+  sa30d0915: {
+    '::before': {
+      content: '""',
+      borderTopLeftRadius: 'var(--radius)',
+    },
+  },
+})
+const styles_5 = stylex.create({
+  s856bab52: {
+    backgroundColor: 'var(--accent)',
+  },
+  s95afba94: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b570: {
+    paddingBlock: 'calc(0.25rem * 4)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s4e079f: {
+    '@media (hover: hover)': {
+      opacity: '0%',
+    },
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8c9099f9: {
+    transitionDuration: '200ms',
+  },
+  sea6c7565: {
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s769ec921: {
+    padding: '2px',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s356a30: {
+    boxShadow: '0 0 0 1px var(--ring-color, currentcolor)',
+  },
+  s646c459b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+      },
+    },
+  },
+  s48a3ed91: {
+    ':active': {
+      backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+    },
+  },
+  s68b465f8: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--background)',
+      },
+    },
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
+const styles_4 = stylex.create({
+  s8e3eaed: {
+    backgroundColor: 'var(--muted)',
+    display: 'flex',
+    width: '24px',
+    height: '24px',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s695c9313: {
+    borderRadius: 'calc(infinity * 1px)',
+    backgroundColor: 'color-mix(in oklab, var(--color-amber-500) 10%, transparent)',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--tone-amber-700)',
+  },
+  s86211ac2: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--destructive)',
+        opacity: '100%',
+      },
+    },
+    margin: 'calc(var(--spacing) * -1)',
+    width: 'calc(var(--spacing) * 7)',
+    height: 'calc(var(--spacing) * 7)',
+    flexShrink: '0',
+    opacity: '70%',
+  },
+  s69314a36: {
+    height: '18px',
+    width: '24px',
+  },
+  sa3de5f9f: {
+    width: '18px',
+    height: '18px',
+  },
+  sb30c9c28: {
+    minHeight: '20px',
+    flex: '1',
+    overflow: 'hidden',
+    lineHeight: '14px',
+  },
+  sc061136a: {
+    color: 'var(--muted-foreground)',
+    marginLeft: 'calc(var(--spacing) * 0.5)',
+    flex: 'none',
+    fontSize: '11px',
+  },
+  s346fa975: {
+    width: '50px',
+  },
+  sa3eaa5a4: {
+    width: '24px',
+    height: '24px',
+  },
+  s3447346e: {
+    width: '24px',
+  },
+  se3333c05: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--muted-foreground)',
+      },
+    },
+    ':active': {
+      color: 'var(--muted-foreground)',
+    },
+  },
+  sdab42caa: {
+    backgroundColor: 'var(--accent)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s8ff9bd15: {
+    boxShadow: '0 0 0 1px var(--border)',
+  },
+})
+const styles_2 = stylex.create({
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   s8d50829d: {
     display: 'flex',
@@ -273,12 +556,11 @@ export const RESTORE_VERSION_DIALOG = {
   restoreVariant: 'danger',
 } as const
 
-/** Shared classes for version-row action buttons; leaves the icon button dimensions untouched. */
-export const RESTORE_VERSION_ACTION_BUTTON_CLASS =
-  'text-foreground hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out'
-
-/** Shared classes for version-row action icons so restore/copy actions stay readable. */
-export const RESTORE_VERSION_ACTION_ICON_CLASS = 'size-4'
+/**
+ * Marks version-row action buttons. The matching stylesheet rule reveals them on row hover and
+ * keeps the icon button dimensions untouched.
+ */
+export const RESTORE_VERSION_ACTION_SLOT = 'restore-version-action'
 export function Feed({
   filterResource,
   filterAuthors,
@@ -485,21 +767,30 @@ function DraftVersionItem({
   return (
     <div
       className={cn(
-        'bg-accent hover:bg-accent group dark:hover:bg-accent flex items-start gap-2 px-4 py-4 transition-colors',
-        isCurrentDraftRoute && 'ring-border ring-1 ring-inset',
+        stylex.props(
+          styles_5.s856bab52,
+          styles_5.s95afba94,
+          styles_5.s2ffff9,
+          styles_5.s93b5f015,
+          styles_5.s5d936fb,
+          styles_5.s34b1af,
+          styles_5.s34b570,
+          styles_5.sf7fb00e8,
+        ).className || '',
+        stylex.props(styles_7.s59794290).className || '',
+        'group',
+        stylex.props(isCurrentDraftRoute && styles_3.s8ff9bd15).className || '',
       )}
       {...draftLinkProps}
     >
-      <div className="bg-muted flex size-[24px] shrink-0 items-center justify-center rounded-full">
+      <div className={stylex.props(styles_4.s8e3eaed).className || ''}>
         <FilePen className={stylex.props(styles.s76b0b3a9).className || ''} />
       </div>
-      <div className="min-w-0 flex-1">
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>
         <div className={stylex.props(styles.sc250396c).className || ''}>
           <span className={stylex.props(styles.s342f90d0).className || ''}>Unpublished Changes</span>
           {hasNewerPublishedVersion ? (
-            <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
-              Newer version above
-            </span>
+            <span className={stylex.props(styles_4.s695c9313).className || ''}>Newer version above</span>
           ) : null}
         </div>
       </div>
@@ -507,7 +798,7 @@ function DraftVersionItem({
         <Button
           size="icon"
           variant="ghost"
-          className="text-muted-foreground hover:text-destructive -m-1 size-7 shrink-0 opacity-70 hover:opacity-100"
+          className={stylex.props(styles_4.s86211ac2).className || ''}
           onClick={(event) => {
             event.preventDefault()
             event.stopPropagation()
@@ -575,7 +866,17 @@ function EventHeaderContent({
     return (
       <>
         {deleteCommentDialog.content}
-        <div className="group flex w-full items-center justify-between gap-2">
+        <div
+          className={
+            stylex.props(
+              styles_5.s2ffff9,
+              styles_5.scdbaf625,
+              styles_5.sc6ed1702,
+              styles_5.sc1a629cb,
+              styles_5.s5d936fb,
+            ).className || ''
+          }
+        >
           <InlineDescriptor>
             <AuthorNameLink author={event.author} />{' '}
             {!isSingleResource && event.target ? (
@@ -591,7 +892,15 @@ function EventHeaderContent({
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="text-muted-foreground hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
+                  className={
+                    stylex.props(
+                      styles_5.sf2718385,
+                      styles_5.s4e079f,
+                      styles_5.s83442393,
+                      styles_5.s8c9099f9,
+                      styles_5.sea6c7565,
+                    ).className || ''
+                  }
                   onClick={(e) => {
                     e.preventDefault()
                     e.stopPropagation()
@@ -621,7 +930,10 @@ function EventHeaderContent({
                 <OptionsDropdown
                   side="bottom"
                   align="end"
-                  className="hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
+                  className={
+                    stylex.props(styles_5.s4e079f, styles_5.s83442393, styles_5.s8c9099f9, styles_5.sea6c7565)
+                      .className || ''
+                  }
                   menuItems={options}
                 />
               )}
@@ -677,14 +989,14 @@ function EventHeaderContent({
             aria-label="Restore"
             size="icon"
             variant="ghost"
-            className={RESTORE_VERSION_ACTION_BUTTON_CLASS}
+            data-slot={RESTORE_VERSION_ACTION_SLOT}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               setRestoreDialogOpen(true)
             }}
           >
-            <RotateCcw className={RESTORE_VERSION_ACTION_ICON_CLASS} />
+            <RotateCcw />
           </Button>
         </Tooltip>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}>
@@ -756,7 +1068,7 @@ function EventHeaderContent({
             <Button
               size="icon"
               variant="ghost"
-              className={RESTORE_VERSION_ACTION_BUTTON_CLASS}
+              data-slot={RESTORE_VERSION_ACTION_SLOT}
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -778,7 +1090,7 @@ function EventHeaderContent({
                 onPushReference?.(versionedId)
               }}
             >
-              <Link className={RESTORE_VERSION_ACTION_ICON_CLASS} />
+              <Link />
             </Button>
           </Tooltip>
         </div>
@@ -812,7 +1124,21 @@ function EventHeaderContent({
           <>
             {' '}
             <span>as</span>{' '}
-            <span className="self-inline ring-px ring-border bg-background text-foreground hover:text-foreground dark:hover:bg-muted rounded p-[2px] text-sm ring hover:bg-black/5 active:bg-black/5 dark:active:bg-white/10">
+            <span
+              className={
+                stylex.props(
+                  styles_5.s436dc7b6,
+                  styles_5.sc05281e3,
+                  styles_5.sae6a97a5,
+                  styles_5.s529492ad,
+                  styles_5.s769ec921,
+                  styles_5.sab7cc6fa,
+                  styles_5.s356a30,
+                  styles_5.s646c459b,
+                  styles_5.s48a3ed91,
+                ).className || ''
+              }
+            >
               {contactName}
             </span>
           </>
@@ -962,19 +1288,34 @@ function EventCommentWithReply({
   return (
     <div
       key={`${event.type}-${event.id}-${event.time}`}
-      className={cn('hover:bg-background group px-4 py-2 transition-colors dark:hover:bg-black/10')}
+      className={cn(
+        stylex.props(styles_5.s68b465f8, styles_5.s34b1af, styles_5.s34b56e, styles_5.sf7fb00e8).className || '',
+        stylex.props(styles_7.s20a3e675).className || '',
+        'group',
+      )}
       {...(route ? linkProps : {})}
     >
       {/* replying comment */}
       <div
         className={cn(
           stylex.props(styles.s783f19f3).className || '',
-          'before:border-border relative before:absolute before:top-[9px] before:left-[12px] before:h-[calc(100%-10px)] before:w-[16px] before:rounded-tl-lg before:border-t-1 before:border-l-1',
+          stylex.props(styles_5.sdef3facc).className || '',
+          stylex.props(
+            styles_6.s48bb0432,
+            styles_6.s41e96d2,
+            styles_6.s41e78ca,
+            styles_6.s8e0df312,
+            styles_6.s97216324,
+            styles_6.s6ad686a4,
+            styles_6.s5494a8fc,
+            styles_6.s5b46eb46,
+            styles_6.sa30d0915,
+          ).className || '',
         )}
       >
         <div className={stylex.props(styles.se99caec9).className || ''}>
-          <div className={cn('h-[18px] w-[24px]')} />
-          <div className="size-[18px]">
+          <div className={cn(stylex.props(styles_4.s69314a36).className || '')} />
+          <div className={stylex.props(styles_4.sa3de5f9f).className || ''}>
             {event.replyParentAuthor?.id ? (
               <HMIcon
                 size={18}
@@ -984,17 +1325,27 @@ function EventCommentWithReply({
               />
             ) : null}
           </div>
-          <div className="group flex w-full items-center justify-between gap-2">
-            <p className="min-h-[20px] flex-1 overflow-hidden leading-[14px]">
+          <div
+            className={
+              stylex.props(
+                styles_5.s2ffff9,
+                styles_5.scdbaf625,
+                styles_5.sc6ed1702,
+                styles_5.sc1a629cb,
+                styles_5.s5d936fb,
+              ).className || ''
+            }
+          >
+            <p className={stylex.props(styles_4.sb30c9c28).className || ''}>
               <AuthorNameLink author={event.replyParentAuthor} />{' '}
-              <span className="text-muted-foreground ml-0.5 flex-none text-[11px]">
+              <span className={stylex.props(styles_4.sc061136a).className || ''}>
                 <Timestamp time={event.replyingComment?.updateTime} />
               </span>
             </p>
           </div>
         </div>
         <div className={stylex.props(styles.s7b2a91e8).className || ''}>
-          <div className={cn('w-[50px]')} />
+          <div className={cn(stylex.props(styles_4.s346fa975).className || '')} />
 
           <div className={stylex.props(styles.s34b4f5fe).className || ''}>
             <EventContent
@@ -1008,8 +1359,8 @@ function EventCommentWithReply({
         </div>
       </div>
 
-      <div className="group flex items-start gap-2">
-        <div className="size-[24px]">
+      <div className={stylex.props(styles_5.s2ffff9, styles_5.s93b5f015, styles_5.s5d936fb).className || ''}>
+        <div className={stylex.props(styles_4.sa3eaa5a4).className || ''}>
           {event.author?.id ? (
             <HMIcon
               size={24}
@@ -1028,14 +1379,11 @@ function EventCommentWithReply({
         />
       </div>
       <div className={stylex.props(styles.s7b2a91e8).className || ''}>
-        <div className={cn('w-[24px]')} />
+        <div className={cn(stylex.props(styles_4.s3447346e).className || '')} />
         <div className={stylex.props(styles.s731a65c4).className || ''}>
           <EventContent size={size} event={event} />
           <div className={stylex.props(styles.s2ad4932).className || ''}>
-            <Button
-              size="xs"
-              className="text-muted-foreground hover:text-muted-foreground active:text-muted-foreground"
-            >
+            <Button size="xs" className={stylex.props(styles_4.se3333c05).className || ''}>
               <ReplyArrow className={stylex.props(styles.sca3de967).className || ''} />
               {tx('Reply')}
               {event.replyCount > 0 ? ` (${event.replyCount})` : ''}
@@ -1185,13 +1533,23 @@ function EventItem({
   return (
     <div
       className={cn(
-        'hover:bg-background group flex flex-col gap-2 px-4 py-4 transition-colors dark:hover:bg-black/10',
-        isSelectedVersion && 'bg-accent hover:bg-accent dark:hover:bg-accent',
+        stylex.props(
+          styles_5.s68b465f8,
+          styles_5.s2ffff9,
+          styles_5.s67e351ac,
+          styles_5.s5d936fb,
+          styles_5.s34b1af,
+          styles_5.s34b570,
+          styles_5.sf7fb00e8,
+        ).className || '',
+        stylex.props(styles_7.s20a3e675).className || '',
+        'group',
+        stylex.props(isSelectedVersion ? styles_4.sdab42caa : null).className || '',
       )}
       {...(route ? linkProps : {})}
     >
       <div className={stylex.props(styles.se99caec9).className || ''}>
-        <div className="size-[24px]">
+        <div className={stylex.props(styles_4.sa3eaa5a4).className || ''}>
           {event.author?.id ? (
             <HMIcon
               size={24}
@@ -1210,15 +1568,12 @@ function EventItem({
       </div>
       {isSingleResource && event.type == 'doc-update' ? null : (
         <div className={stylex.props(styles.s7b2a91e8).className || ''}>
-          <div className={cn('w-[24px]')} />
+          <div className={cn(stylex.props(styles_4.s3447346e).className || '')} />
           <div className={stylex.props(styles.s731a65c4).className || ''}>
             <EventContent size={size} isSingleResource={isSingleResource} event={event} />
             {event.type == 'comment' || (event.type == 'citation' && event.comment) ? (
               <div className={stylex.props(styles.s2ad4932).className || ''}>
-                <Button
-                  size="xs"
-                  className="text-muted-foreground hover:text-muted-foreground active:text-muted-foreground"
-                >
+                <Button size="xs" className={stylex.props(styles_4.se3333c05).className || ''}>
                   <ReplyArrow className={stylex.props(styles.sca3de967).className || ''} />
                   {tx('Reply')}
                   {(event.type == 'comment' && event.replyCount > 0) ||

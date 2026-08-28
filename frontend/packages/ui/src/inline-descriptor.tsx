@@ -6,6 +6,80 @@ import {useAccount, useResource} from '@shm/shared/models/entity'
 import {useNavRoute} from '@shm/shared/utils/navigation'
 import {Spinner} from './spinner'
 import {Tooltip} from './tooltip'
+const styles_4 = stylex.create({
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sa16ea943: {
+    fontWeight: '700',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
+const styles_3 = stylex.create({
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s769ec921: {
+    padding: '2px',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s356a30: {
+    boxShadow: '0 0 0 1px var(--ring-color, currentcolor)',
+  },
+  s646c459b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+      },
+    },
+  },
+  s48a3ed91: {
+    ':active': {
+      backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s9cd548c8: {
+    marginLeft: 'calc(var(--spacing) * 1)',
+    flex: 'none',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '11px',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   s21188150: {
     color: 'var(--muted-foreground)',
@@ -32,7 +106,7 @@ export function Timestamp({time, route}: {time: AnyTimestamp; route?: NavRoute |
   if (!time || !date) return null
   return (
     <Tooltip side="top" delay={400} content={formatUTC(date)}>
-      <a {...linkProps} className="ml-1 flex-none font-sans text-[11px] hover:underline">
+      <a {...linkProps} className={stylex.props(styles_2.s9cd548c8).className || ''}>
         {formattedDateShort(time)}
       </a>
     </Tooltip>
@@ -96,7 +170,13 @@ export function AuthorNameLink({author, siteUid}: {author: HMContactItem | null;
   const linkProps = useRouteLink(getContextualProfileRoute(currentRoute, author?.id || null, siteUid))
   return (
     <a
-      className={`font-sans text-sm font-bold ${resolvedName ? 'text-foreground' : 'text-muted-foreground'}`}
+      className={
+        (stylex.props(styles_4.sa1762f51, styles_4.sab7cc6fa, styles_4.sa16ea943).className || '') +
+        ' ' +
+        (resolvedName
+          ? stylex.props(styles_4.sc05281e3).className || ''
+          : stylex.props(styles_4.sf2718385).className || '')
+      }
       {...linkProps}
     >
       {authorName}
@@ -130,7 +210,20 @@ export function DocumentNameLink({
   const name = draft?.metadata?.name ?? liveMetadata?.name ?? metadata?.name
   return (
     <a
-      className="self-inline ring-px ring-border bg-background text-foreground hover:text-foreground dark:hover:bg-muted rounded p-[2px] font-sans text-sm ring hover:bg-black/5 active:bg-black/5 dark:active:bg-white/10"
+      className={
+        stylex.props(
+          styles_3.s436dc7b6,
+          styles_3.sc05281e3,
+          styles_3.sae6a97a5,
+          styles_3.s529492ad,
+          styles_3.s769ec921,
+          styles_3.sa1762f51,
+          styles_3.sab7cc6fa,
+          styles_3.s356a30,
+          styles_3.s646c459b,
+          styles_3.s48a3ed91,
+        ).className || ''
+      }
       {...linkProps}
     >
       {name || fallback}

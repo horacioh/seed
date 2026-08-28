@@ -6,6 +6,37 @@ import {cn} from '@shm/ui/utils'
 import {Trash} from 'lucide-react'
 import {ChangeEvent} from 'react'
 import appError from '../errors'
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34a2ad: {
+    paddingTop: 'calc(0.25rem * 6)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+})
+const styles_3 = stylex.create({
+  sa6650a61: {
+    height: '25vh',
+    opacity: '100%',
+  },
+})
+const styles_2 = stylex.create({
+  s856bab52: {
+    backgroundColor: 'var(--accent)',
+  },
+})
 const styles = stylex.create({
   sca2e147b: {
     position: 'relative',
@@ -77,7 +108,11 @@ export function CoverImage({
   }
   const coverImage = (
     <div
-      className={cn(stylex.props(styles.sca2e147b).className || '', show && 'h-[25vh] opacity-100', url && 'bg-accent')}
+      className={cn(
+        stylex.props(styles.sca2e147b).className || '',
+        stylex.props(show ? styles_3.sa6650a61 : null).className || '',
+        stylex.props(url ? styles_2.s856bab52 : null).className || '',
+      )}
     >
       {url ? (
         <img
@@ -102,7 +137,18 @@ export function CoverImage({
         <div className={stylex.props(styles.s6e9a2c6f).className || ''}>
           {showOutline ? <div /> : null}
           <div className={stylex.props(styles.s34b1ad).className || ''}>
-            <div className="flex items-center gap-2 px-4 pt-6 opacity-0 group-hover:opacity-100">
+            <div
+              className={
+                stylex.props(
+                  styles_4.s2ffff9,
+                  styles_4.sc6ed1702,
+                  styles_4.s5d936fb,
+                  styles_4.s34b1af,
+                  styles_4.s34a2ad,
+                  styles_4.s765a26ee,
+                ).className || ''
+              }
+            >
               <Tooltip content="Remove Cover image">
                 <Button variant="destructive" onClick={onRemoveCover}>
                   <Trash className={stylex.props(styles.sca3de968).className || ''} />

@@ -95,6 +95,34 @@ import {Copy, FileInput, History, Layers, LayoutList, Split} from 'lucide-react'
 import {nanoid} from 'nanoid'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {fromPromise} from 'xstate'
+const styles_4 = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s9ccd4aa7: {
+    maxWidth: '42rem',
+  },
+})
+const styles_3 = stylex.create({
+  s3e87a91a: {
+    display: 'flex',
+    maxWidth: '700px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 1.5)',
+  },
+})
+const styles_2 = stylex.create({
+  sabac66e6: {
+    position: 'relative',
+    height: '100%',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: '#fff',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -846,7 +874,7 @@ export default function DesktopResourcePage() {
   const {exportDocument, openDirectory} = useAppContext()
   const deleteEntity = useDeleteDialog()
   const destinationDialog = useAppDialog(DocumentDestinationDialog, {
-    className: 'w-full max-w-2xl',
+    className: stylex.props(styles_4.scdbaf625, styles_4.s9ccd4aa7).className || '',
   })
   const menuItems: MenuItemType[] = []
   menuItems.push(
@@ -974,7 +1002,7 @@ export default function DesktopResourcePage() {
       exportDocument(title, markdownContent, mediaFiles)
         .then((res) => {
           toast.success(
-            <div className="flex max-w-[700px] flex-col gap-1.5">
+            <div className={stylex.props(styles_3.s3e87a91a).className || ''}>
               <SizableText className={stylex.props(styles.sead8181d).className || ''}>
                 Successfully exported document &quot;{title}&quot; to: <b>{`${res}`}</b>.
               </SizableText>
@@ -1158,7 +1186,7 @@ export default function DesktopResourcePage() {
   })
   const followIntent = useFollowProfileIntent(route.key === 'site-profile' ? route.accountUid || docId.uid : docId.uid)
   return (
-    <div className="relative h-full max-h-full overflow-hidden rounded-lg border bg-white">
+    <div className={stylex.props(styles_2.sabac66e6).className || ''}>
       <CommentsProvider
         useHackyAuthorsSubscriptions={useHackyAuthorsSubscriptions}
         onReplyClick={onReplyClick}

@@ -55,6 +55,29 @@ import {SizableText} from '@shm/ui/text'
 import {shouldRevalidateDocumentRoute} from './revalidation'
 
 // Extended payload with view term and panel param for page routing
+const styles_3 = stylex.create({
+  s2aadbded: {
+    borderColor: 'var(--border)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-2xl)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    backgroundColor: 'var(--surface)',
+    padding: 'calc(var(--spacing) * 6)',
+    boxShadow: 'var(--shadow-lg)',
+  },
+})
+const styles_2 = stylex.create({
+  s38c9694b: {
+    maxWidth: '28rem',
+    textAlign: 'center',
+  },
+})
 const styles = stylex.create({
   sceaed122: {
     display: 'flex',
@@ -701,7 +724,7 @@ function DiscoveryPendingPage({id}: {id: UnpackedHypermediaId}) {
             <SizableText size="2xl" weight="bold">
               {tx('Document Not Found')}
             </SizableText>
-            <SizableText className="max-w-md text-center">
+            <SizableText className={stylex.props(styles_2.s38c9694b).className || ''}>
               {tx(
                 'discovery_failed_description',
                 'We searched the network but could not find this document. It may be unavailable right now.',
@@ -722,7 +745,7 @@ function DiscoveryPendingPage({id}: {id: UnpackedHypermediaId}) {
             <SizableText size="2xl" weight="bold">
               {tx('Looking for this document…')}
             </SizableText>
-            <SizableText className="max-w-md text-center">
+            <SizableText className={stylex.props(styles_2.s38c9694b).className || ''}>
               {tx(
                 'discovery_pending_description',
                 'This document is not on this server yet. We are searching the network for it — the page will load automatically once it is found.',
@@ -739,7 +762,7 @@ export function DaemonErrorPage(props: GRPCError) {
   return (
     <div className={stylex.props(styles.sceaed122).className || ''}>
       <div className={stylex.props(styles.se6224f5b).className || ''}>
-        <div className="border-border dark:bg-background flex w-full max-w-2xl flex-1 flex-col gap-4 rounded-lg border bg-white p-6 shadow-lg">
+        <div className={stylex.props(styles_3.s2aadbded).className || ''}>
           <SizableText size="3xl">☹️</SizableText>
           <SizableText size="2xl" weight="bold">
             {props.code === Code.Unavailable ? tx('Internal Server Error') : tx('Server Error')}

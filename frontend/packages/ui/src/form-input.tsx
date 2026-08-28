@@ -7,6 +7,11 @@ import {Input} from './components/input'
 import {Label} from './components/label'
 import {Textarea} from './components/textarea'
 import {Text} from './text'
+const styles_2 = stylex.create({
+  s54eab79d: {
+    opacity: '50%',
+  },
+})
 const styles = stylex.create({
   se658ac13: {
     display: 'flex',
@@ -118,7 +123,7 @@ export function FullCheckbox({
   return (
     <div className={stylex.props(styles.se658ac13).className || ''}>
       <Checkbox
-        className={isLoading ? 'opacity-50' : ''}
+        className={stylex.props(isLoading ? styles_2.s54eab79d : null).className || ''}
         checked={value}
         onCheckedChange={onValue}
         id={id}

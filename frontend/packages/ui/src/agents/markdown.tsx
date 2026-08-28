@@ -13,6 +13,106 @@ import ReactMarkdown, {defaultUrlTransform, type Components, type ExtraProps} fr
 // v4 mdast context — feeding it v3 throws `this.getData is not a function`
 // on inline code inside tables. The npm-aliased name pins v4 unambiguously.
 import remarkGfm from 'remark-gfm-v4'
+const styles_3 = stylex.create({
+  s2110670f: {
+    color: 'var(--color-blue-400)',
+    textDecorationLine: 'underline',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--color-blue-300)',
+      },
+    },
+  },
+  sc24b3a33: {
+    marginTop: 'calc(var(--spacing) * 3)',
+    marginBottom: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-base)',
+    lineHeight: 'var(--text-base--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    ':firstChild': {
+      marginTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+  s3af3230a: {
+    marginTop: 'calc(var(--spacing) * 3)',
+    marginBottom: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    ':firstChild': {
+      marginTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+  s823458fc: {
+    marginTop: 'calc(var(--spacing) * 2)',
+    marginBottom: 'calc(var(--spacing) * 1)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-semibold)',
+    ':firstChild': {
+      marginTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+  se79e65b6: {
+    marginBottom: 'calc(var(--spacing) * 2)',
+    ':lastChild': {
+      marginBottom: 'calc(var(--spacing) * 0)',
+    },
+  },
+  s841f6c1: {
+    marginBottom: 'calc(var(--spacing) * 2)',
+    listStyleType: 'disc',
+    paddingLeft: 'calc(var(--spacing) * 4)',
+    ':lastChild': {
+      marginBottom: 'calc(var(--spacing) * 0)',
+    },
+  },
+  sf7d172b7: {
+    marginBottom: 'calc(var(--spacing) * 2)',
+    listStyleType: 'decimal',
+    paddingLeft: 'calc(var(--spacing) * 4)',
+    ':lastChild': {
+      marginBottom: 'calc(var(--spacing) * 0)',
+    },
+  },
+  sf8817373: {
+    borderColor: 'color-mix(in oklab, var(--muted-foreground) 30%, transparent)',
+    marginBlock: 'calc(var(--spacing) * 2)',
+    borderLeftStyle: 'solid',
+    borderLeftWidth: '2px',
+    paddingLeft: 'calc(var(--spacing) * 3)',
+    fontStyle: 'italic',
+  },
+  s63698ec9: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 50%, transparent)',
+    marginBlock: 'calc(var(--spacing) * 2)',
+    overflowX: 'auto',
+    borderRadius: '0.25rem',
+    padding: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s70e23123: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 50%, transparent)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  sc43c4b56: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 30%, transparent)',
+  },
+})
+const styles_2 = stylex.create({
+  s2f83379c: {
+    borderColor: 'var(--border)',
+    minWidth: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '0.75rem',
+    lineHeight: 'calc(1 / 0.75)',
+  },
+})
 const styles = stylex.create({
   sbf7a69bf: {
     marginBottom: 'calc(0.25rem * 0.5)',
@@ -100,7 +200,7 @@ function MarkdownLink({href, children}: React.ComponentProps<'a'> & ExtraProps) 
   return (
     <a
       href={renderedHref}
-      className="text-blue-400 underline hover:text-blue-300"
+      className={stylex.props(styles_3.s2110670f).className || ''}
       target={isHypermediaLink ? undefined : '_blank'}
       rel={isHypermediaLink ? undefined : 'noopener noreferrer'}
       onClick={(event) => {
@@ -121,21 +221,21 @@ function MarkdownLink({href, children}: React.ComponentProps<'a'> & ExtraProps) 
  * between table and paragraph rendering mid-stream. */
 export function Markdown({children, enableGfm = true}: {children: string; enableGfm?: boolean}) {
   const components: Components = {
-    h1: ({children}) => <h1 className="mt-3 mb-2 text-base font-bold first:mt-0">{children}</h1>,
-    h2: ({children}) => <h2 className="mt-3 mb-2 text-sm font-bold first:mt-0">{children}</h2>,
-    h3: ({children}) => <h3 className="mt-2 mb-1 text-sm font-semibold first:mt-0">{children}</h3>,
-    p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
-    ul: ({children}) => <ul className="mb-2 list-disc pl-4 last:mb-0">{children}</ul>,
-    ol: ({children}) => <ol className="mb-2 list-decimal pl-4 last:mb-0">{children}</ol>,
+    h1: ({children}) => <h1 className={stylex.props(styles_3.sc24b3a33).className || ''}>{children}</h1>,
+    h2: ({children}) => <h2 className={stylex.props(styles_3.s3af3230a).className || ''}>{children}</h2>,
+    h3: ({children}) => <h3 className={stylex.props(styles_3.s823458fc).className || ''}>{children}</h3>,
+    p: ({children}) => <p className={stylex.props(styles_3.se79e65b6).className || ''}>{children}</p>,
+    ul: ({children}) => <ul className={stylex.props(styles_3.s841f6c1).className || ''}>{children}</ul>,
+    ol: ({children}) => <ol className={stylex.props(styles_3.sf7d172b7).className || ''}>{children}</ol>,
     li: ({children}) => <li className={stylex.props(styles.sbf7a69bf).className || ''}>{children}</li>,
     a: MarkdownLink,
     blockquote: ({children}) => (
-      <blockquote className="border-muted-foreground/30 my-2 border-l-2 pl-3 italic">{children}</blockquote>
+      <blockquote className={stylex.props(styles_3.sf8817373).className || ''}>{children}</blockquote>
     ),
     strong: ({children}) => <strong className={stylex.props(styles.s62c182b1).className || ''}>{children}</strong>,
     em: ({children}) => <em>{children}</em>,
     hr: () => <hr className={stylex.props(styles.s9c6533a5).className || ''} />,
-    pre: ({children}) => <pre className="bg-background/50 my-2 overflow-x-auto rounded p-2 text-xs">{children}</pre>,
+    pre: ({children}) => <pre className={stylex.props(styles_3.s63698ec9).className || ''}>{children}</pre>,
     code: ({className, children}) => {
       const isBlock = !!className
       if (isBlock) {
@@ -145,14 +245,18 @@ export function Markdown({children, enableGfm = true}: {children: string; enable
           </code>
         )
       }
-      return <code className="bg-background/50 rounded px-1 py-0.5 text-xs">{children}</code>
+      return (
+        <code className={[stylex.props(styles_3.s70e23123).className || '', className].filter(Boolean).join(' ')}>
+          {children}
+        </code>
+      )
     },
     table: ({children}) => (
       <div className={stylex.props(styles.s1026c40).className || ''}>
-        <table className="border-border min-w-full border-collapse text-xs">{children}</table>
+        <table className={stylex.props(styles_2.s2f83379c).className || ''}>{children}</table>
       </div>
     ),
-    thead: ({children}) => <thead className="bg-background/30">{children}</thead>,
+    thead: ({children}) => <thead className={stylex.props(styles_3.sc43c4b56).className || ''}>{children}</thead>,
     th: ({children}) => <th className={stylex.props(styles.sf88965b7).className || ''}>{children}</th>,
     td: ({children}) => <td className={stylex.props(styles.s6904bfdf).className || ''}>{children}</td>,
   }

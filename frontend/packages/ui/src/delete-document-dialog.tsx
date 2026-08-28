@@ -4,6 +4,77 @@ import {Button} from './button'
 import {Text} from './text'
 import {toast} from './toast'
 import {cn} from './utils'
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
+const styles_3 = stylex.create({
+  sed5953ff: {
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 15%, transparent)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 8)',
+    height: 'calc(var(--spacing) * 8)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  sf01b85e8: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 20%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 3%, transparent)',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sb1ab7538: {
+    color: 'var(--primary)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'color-mix(in oklab, var(--primary) 80%, transparent)',
+      },
+    },
+    ':focus-visible': {
+      boxShadow: '0 0 0 3px currentcolor',
+    },
+    borderRadius: 'calc(var(--radius) - 4px)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    fontWeight: 'var(--font-weight-medium)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+    outlineStyle: 'none',
+  },
+})
+const styles_2 = stylex.create({
+  sf3690bef: {
+    minWidth: 'calc(0.25rem * 0)',
+    fontSize: '1.5rem',
+    lineHeight: '1.25',
+    fontWeight: '600',
+  },
+  s3b867143: {
+    borderColor: 'var(--border)',
+    maxHeight: 'calc(0.25rem * 56)',
+    overflowY: 'auto',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    paddingInline: 'calc(0.25rem * 4)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+  secd636e1: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+    gap: 'calc(0.25rem * 1)',
+    paddingBlock: 'calc(0.25rem * 3)',
+  },
+})
 const styles = stylex.create({
   sfbc6e293: {
     display: 'flex',
@@ -142,10 +213,10 @@ export function DeleteDocumentDialog({
     <div className={cn(stylex.props(styles.sfbc6e293).className || '', className)}>
       <div className={stylex.props(styles.sfbc6e290).className || ''}>
         <div className={stylex.props(styles.s86ff3e5).className || ''}>
-          <span className="bg-destructive/15 flex size-8 shrink-0 items-center justify-center rounded-full">
+          <span className={stylex.props(styles_3.sed5953ff).className || ''}>
             <span className={stylex.props(styles.sbe9e10ab).className || ''}>!</span>
           </span>
-          <Text className="min-w-0 text-2xl leading-tight font-semibold">Delete &quot;{document.title}&quot;?</Text>
+          <Text className={stylex.props(styles_2.sf3690bef).className || ''}>Delete &quot;{document.title}&quot;?</Text>
         </div>
         <Text className={stylex.props(styles.s7ca58426).className || ''}>
           This permanently removes the document and all its content. Links pointing to it from other documents will
@@ -154,10 +225,7 @@ export function DeleteDocumentDialog({
       </div>
 
       {hasChildren ? (
-        <div
-          className="border-destructive/20 bg-destructive/[0.03] overflow-hidden rounded-lg border"
-          data-testid="delete-document-child-section"
-        >
+        <div className={stylex.props(styles_3.sf01b85e8).className || ''} data-testid="delete-document-child-section">
           <div className={stylex.props(styles.s87791731).className || ''}>
             <Text className={stylex.props(styles.sebff7442).className || ''}>
               {childDocuments.length} {childDocumentLabel} will also be deleted
@@ -166,7 +234,7 @@ export function DeleteDocumentDialog({
               type="button"
               aria-controls={showChildDocuments ? childDocumentListId : undefined}
               aria-expanded={showChildDocuments}
-              className="text-primary hover:text-primary/80 focus-visible:ring-ring/50 rounded-sm text-sm font-medium transition-colors outline-none focus-visible:ring-[3px]"
+              className={stylex.props(styles_3.sb1ab7538).className || ''}
               onClick={() => setShowChildDocuments((visible) => !visible)}
             >
               {showChildDocuments ? 'Hide' : 'Show'}
@@ -175,10 +243,10 @@ export function DeleteDocumentDialog({
           {showChildDocuments ? (
             <div
               id={childDocumentListId}
-              className="border-border max-h-56 overflow-y-auto border-t px-4 py-3"
+              className={stylex.props(styles_2.s3b867143).className || ''}
               data-testid="delete-document-child-list"
             >
-              <div className="flex flex-col divide-y">
+              <div className={stylex.props(styles_4.s2ffff9, styles_4.s67e351ac).className || ''}>
                 {childDocuments.map((item) => (
                   <DeletionListItem key={item.key} item={item} />
                 ))}
@@ -201,7 +269,7 @@ export function DeleteDocumentDialog({
 }
 function DeletionListItem({item}: {item: DeleteDocumentDialogItem}) {
   return (
-    <div className="flex min-w-0 flex-col gap-1 py-3" data-testid="delete-document-child-item">
+    <div className={stylex.props(styles_2.secd636e1).className || ''} data-testid="delete-document-child-item">
       <Text className={stylex.props(styles.s59c17cd3).className || ''}>{item.title}</Text>
       <Text className={stylex.props(styles.s2627021c).className || ''}>{item.path?.join('/') || 'Unknown path'}</Text>
     </div>

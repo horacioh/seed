@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {editorBlocksToHMBlockNodes} from '@seed-hypermedia/client/editorblock-to-hmblock'
 import {EditorToggledStyle, HMBlockChildrenType, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {Button} from '@shm/ui/button'
@@ -45,6 +46,155 @@ import {useMobile} from './use-mobile'
 /**
  * Ensures a grid has at least columnCount number of children.
  */
+const styles_2 = stylex.create({
+  s68989642: {
+    ':is(.dark *)': {
+      borderColor: 'color-mix(in oklab, #fff 10%, transparent)',
+    },
+  },
+  se117420b: {
+    ':is(.dark *)': {
+      ':hover': {
+        backgroundColor: 'color-mix(in oklab, #fff 10%, transparent)',
+      },
+    },
+  },
+  sa0da43a7: {
+    ':is(.dark *)': {
+      ':focus': {
+        backgroundColor: 'color-mix(in oklab, #fff 10%, transparent)',
+      },
+    },
+  },
+})
+const styles = stylex.create({
+  sca3de968: {
+    width: 'calc(0.25rem * 4)',
+    height: 'calc(0.25rem * 4)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s3824ce: {
+    zIndex: '50',
+  },
+  s6a2edbb: {
+    width: 'fit-content',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa14: {
+    padding: 'calc(0.25rem * 1)',
+  },
+  s8a6c2964: {
+    boxShadow: 'var(--shadow-md)',
+  },
+  sc05281e3: {
+    color: 'var(--foreground)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s5d936fa: {
+    gap: 'calc(0.25rem * 1)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s291c6d79: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 10%, transparent)',
+      },
+    },
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s18c14: {
+    height: 'calc(0.25rem * 9)',
+  },
+  s1c463: {
+    width: 'calc(0.25rem * 9)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sf4676641: {
+    gap: 'calc(0.25rem * 1.5)',
+  },
+  se45bb2b0: {
+    borderColor: 'color-mix(in oklab, #000 10%, transparent)',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s14e67425: {
+    fontWeight: '400',
+  },
+  s3269316e: {
+    width: 'calc(0.25rem * 3.5)',
+    height: 'calc(0.25rem * 3.5)',
+  },
+  s54eab7bc: {
+    opacity: '60%',
+  },
+  sf614494: {
+    zIndex: '10000',
+  },
+  s5483ce08: {
+    width: '22rem',
+  },
+  s7868b4e7: {
+    maxWidth: '92vw',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  se8df6f15: {
+    ':focus': {
+      backgroundColor: 'color-mix(in oklab, #000 10%, transparent)',
+    },
+  },
+  s5f36a877: {
+    backgroundColor: '#000',
+  },
+  s2daecf89: {
+    color: '#fff',
+  },
+  s291c6e52: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 80%, transparent)',
+      },
+    },
+  },
+  s25eca887: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: '#fff',
+      },
+    },
+  },
+})
 function fillGridChildren(tiptap: any, columnCount: number) {
   setTimeout(() => {
     tiptap.commands.command(({state, dispatch}: {state: any; dispatch: any}) => {
@@ -81,21 +231,17 @@ function getSelectionFragment(editor: BlockNoteEditor<any>): {
   const view = editor._tiptapEditor.view
   const {state} = view
   const {selection} = state
-
   if (selection.empty) return null
 
   // Disable copy link and comment on block buttons for multi-cell selections,
   // because they don't have a single addressable container, so anchoring a
   // comment or fragment link to one of the cells would pick only one cell.
   if (selection instanceof CellSelection) return null
-
   const {$from, $to} = selection
   const from = $from.pos
   const to = $to.pos
-
   let blockNode: import('prosemirror-model').Node
   let blockBeforePos: number
-
   try {
     const posInfo = getNearestBlockOrCellPos(state.doc, from)
     blockNode = posInfo.node
@@ -112,7 +258,6 @@ function getSelectionFragment(editor: BlockNoteEditor<any>): {
   } catch {
     return null
   }
-
   const blockId: string = blockNode.attrs?.id ?? ''
   if (!blockId) return null
 
@@ -130,13 +275,14 @@ function getSelectionFragment(editor: BlockNoteEditor<any>): {
       }
     })
   }
-
   if (!getReferenceableRevision(blockNode)) return null
-
   const rangeStart = prosemirrorPosToBlockTextOffset(state.doc, from, blockContentBeforePos)
   const rangeEnd = prosemirrorPosToBlockTextOffset(state.doc, to, blockContentBeforePos)
-
-  return {blockId, rangeStart, rangeEnd}
+  return {
+    blockId,
+    rangeStart,
+    rangeEnd,
+  }
 }
 
 /** Clears the visible browser/ProseMirror text selection after fragment actions. */
@@ -151,41 +297,37 @@ function clearEditorTextSelection(editor: BlockNoteEditor<any>) {
       // Ignore invalid positions; clearing the native selection below is still useful.
     }
   }
-
   if (typeof window !== 'undefined') {
     window.getSelection()?.removeAllRanges()
   }
 }
-
 const toggleStyles = [
   {
     name: 'Bold (Mod+B)',
-    icon: <Strong className="size-4" />,
+    icon: <Strong className={stylex.props(styles.sca3de968).className || ''} />,
     style: 'bold' as EditorToggledStyle,
   },
   {
     name: 'Italic (Mod+I)',
-    icon: <Emphasis className="size-4" />,
+    icon: <Emphasis className={stylex.props(styles.sca3de968).className || ''} />,
     style: 'italic' as EditorToggledStyle,
   },
-
   {
     name: 'Underline (Mod+U)',
-    icon: <Underline className="size-4" />,
+    icon: <Underline className={stylex.props(styles.sca3de968).className || ''} />,
     style: 'underline' as EditorToggledStyle,
   },
   {
     name: 'Strikethrough (Mod+Shift+X)',
-    icon: <Strikethrough className="size-4" />,
+    icon: <Strikethrough className={stylex.props(styles.sca3de968).className || ''} />,
     style: 'strike' as EditorToggledStyle,
   },
   {
     name: 'Code (Mod+E)',
-    icon: <Code className="size-4" />,
+    icon: <Code className={stylex.props(styles.sca3de968).className || ''} />,
     style: 'code' as EditorToggledStyle,
   },
 ]
-
 export const blockDropdownItems: BlockTypeDropdownItem[] = [
   {
     name: 'Paragraph',
@@ -195,25 +337,23 @@ export const blockDropdownItems: BlockTypeDropdownItem[] = [
   {
     name: 'Heading',
     type: 'heading',
-    icon: <HeadingIcon className="size-4" />,
+    icon: <HeadingIcon className={stylex.props(styles.sca3de968).className || ''} />,
   },
   {
     name: 'Bullet List',
     type: 'bulletListItem',
-    icon: <UnorderedList className="size-4" />,
+    icon: <UnorderedList className={stylex.props(styles.sca3de968).className || ''} />,
   },
   {
     name: 'Numbered List',
     type: 'numberedListItem',
-    icon: <OrderedList className="size-4" />,
+    icon: <OrderedList className={stylex.props(styles.sca3de968).className || ''} />,
   },
 ]
-
 function normalizeColorName(value: unknown): ToolbarColorName {
   if (typeof value !== 'string') return 'default'
   return (TOOLBAR_COLOR_NAMES as readonly string[]).includes(value) ? (value as ToolbarColorName) : 'default'
 }
-
 export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<string, PropSchema>>>(
   props: FormattingToolbarProps<Schema> & {
     blockTypeDropdownItems?: BlockTypeDropdownItem[]
@@ -252,12 +392,10 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     })
   }, [props.editor])
   const isMobile = useMobile()
-
   useEditorSelectionChange(props.editor, () => {
     const tiptap = props.editor._tiptapEditor
     const {state} = tiptap
     setHasReferenceableFragment(!!getSelectionFragment(props.editor))
-
     try {
       const groupInfo = getGroupInfoFromPos(state.selection.from, state)
       setCurrentGroupType(groupInfo.group.attrs.listType || 'Group')
@@ -266,21 +404,18 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
       setCurrentGroupType('Group')
       setCurrentColumnCount('3')
     }
-
     try {
       const blockInfo = getBlockInfoFromSelection(state)
       setCurrentBlockType(blockInfo.blockContentType || 'paragraph')
     } catch {
       setCurrentBlockType('paragraph')
     }
-
     const activeStyles = props.editor.getActiveStyles()
     setCurrentTextColor(normalizeColorName(activeStyles.textColor))
     setCurrentBackgroundColor(normalizeColorName(activeStyles.backgroundColor))
     setCurrentTextSize(typeof activeStyles.textSize === 'string' ? activeStyles.textSize : '')
     setCurrentTextFamily(typeof activeStyles.textFamily === 'string' ? activeStyles.textFamily : '')
   })
-
   useEditorContentChange(props.editor, () => {
     const activeStyles = props.editor.getActiveStyles()
     setCurrentTextColor(normalizeColorName(activeStyles.textColor))
@@ -288,7 +423,6 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     setCurrentTextSize(typeof activeStyles.textSize === 'string' ? activeStyles.textSize : '')
     setCurrentTextFamily(typeof activeStyles.textFamily === 'string' ? activeStyles.textFamily : '')
   })
-
   const handleGroupTypeChange = (listType: string) => {
     if (listType === currentGroupType) return
     const tiptap = props.editor._tiptapEditor
@@ -308,7 +442,6 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     }
     setCurrentGroupType(listType)
   }
-
   const handleColumnCountChange = (colCount: string) => {
     if (colCount === currentColumnCount) return
     const tiptap = props.editor._tiptapEditor
@@ -320,7 +453,6 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     setCurrentColumnCount(colCount)
     fillGridChildren(tiptap, newCount)
   }
-
   const handleBlockTypeChange = (blockType: string) => {
     if (blockType === currentBlockType) return
     const tiptap = props.editor._tiptapEditor
@@ -336,12 +468,10 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     )
     setCurrentBlockType(blockType)
   }
-
   const handleTextMarkerChange = (listType: string) => {
     handleGroupTypeChange(listType)
     setIsTextMarkerDialogOpen(false)
   }
-
   const handleTextTypeChange = (blockType: string) => {
     handleBlockTypeChange(blockType)
     setIsTextTypeDialogOpen(false)
@@ -351,9 +481,13 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
    * selection. Empty string clears the mark. */
   const handleTextSizeChange = (value: string) => {
     if (value) {
-      props.editor.addStyles({textSize: value})
+      props.editor.addStyles({
+        textSize: value,
+      })
     } else {
-      props.editor.removeStyles({textSize: true} as any)
+      props.editor.removeStyles({
+        textSize: true,
+      } as any)
     }
     setCurrentTextSize(value)
   }
@@ -362,9 +496,13 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
    * selection. Empty string clears the mark. */
   const handleTextFamilyChange = (value: string) => {
     if (value) {
-      props.editor.addStyles({textFamily: value})
+      props.editor.addStyles({
+        textFamily: value,
+      })
     } else {
-      props.editor.removeStyles({textFamily: true} as any)
+      props.editor.removeStyles({
+        textFamily: true,
+      } as any)
     }
     setCurrentTextFamily(value)
   }
@@ -379,7 +517,6 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     if (!props.docId || !onCreateInlineDraft) return
     const blocks = getSelectedFullBlocks(props.editor)
     if (!blocks || blocks.length === 0) return
-
     let initialContent
     try {
       initialContent = editorBlocksToHMBlockNodes(blocks as any)
@@ -387,30 +524,43 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
       console.error('[turn-into-doc] failed to serialize selected blocks:', err)
       return
     }
-
     const name = deriveDraftNameFromBlocks(blocks)
-
     try {
-      const {draftId} = await onCreateInlineDraft(props.docId, {initialContent, name})
+      const {draftId} = await onCreateInlineDraft(props.docId, {
+        initialContent,
+        name,
+      })
       replaceBlocksWithDraftEmbed(props.editor, blocks, draftId)
     } catch (err) {
       console.error('[turn-into-doc] failed to create inline draft:', err)
     }
   }
-
   return (
     <>
       <div
         data-testid="formatting-toolbar"
-        className="border-border bg-background z-50 w-fit rounded-md border p-1 shadow-md"
+        className={
+          stylex.props(
+            styles.s1a01a0ed,
+            styles.s436dc7b6,
+            styles.s3824ce,
+            styles.s6a2edbb,
+            styles.sf79988b7,
+            styles.sad8c742c,
+            styles.s1aa14,
+            styles.s8a6c2964,
+          ).className || ''
+        }
         onPointerDown={(e) => {
           e.preventDefault()
           e.stopPropagation()
         }}
       >
-        <div className="text-foreground flex flex-col gap-1">
+        <div
+          className={stylex.props(styles.sc05281e3, styles.s2ffff9, styles.s67e351ac, styles.s5d936fa).className || ''}
+        >
           {/* Row 1 - inline marks and fragment actions */}
-          <div className="flex items-center gap-1">
+          <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fa).className || ''}>
             {toggleStyles.map((item) => (
               <ToggleStyleButton key={item.style} editor={props.editor} toggleStyle={item.style} {...item} />
             ))}
@@ -419,7 +569,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
             {isMobile ? (
               <MobileLinkToolbarButton editor={props.editor} />
             ) : (
-              <div className="relative">
+              <div className={stylex.props(styles.sdef3facc).className || ''}>
                 <HMLinkToolbarButton editor={props.editor} testId="link-button" />
               </div>
             )}
@@ -434,7 +584,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                     type="button"
                     size="icon"
                     variant="ghost"
-                    className="rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+                    className={stylex.props(styles.sf79988b7, styles.s291c6d79).className || ''}
                     onClick={() => {
                       const frag = getSelectionFragment(props.editor)
                       if (frag) {
@@ -443,7 +593,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                       }
                     }}
                   >
-                    <MessageSquare className="size-4" />
+                    <MessageSquare className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
                 </Tooltip>
                 <Tooltip content="Copy Link">
@@ -451,7 +601,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                     type="button"
                     size="icon"
                     variant="ghost"
-                    className="rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+                    className={stylex.props(styles.sf79988b7, styles.s291c6d79).className || ''}
                     onClick={() => {
                       const frag = getSelectionFragment(props.editor)
                       if (frag) {
@@ -460,7 +610,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                       }
                     }}
                   >
-                    <Link className="size-4" />
+                    <Link className={stylex.props(styles.sca3de968).className || ''} />
                   </Button>
                 </Tooltip>
               </>
@@ -468,26 +618,30 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
           </div>
 
           {/* Row 2 - Style options and Turn into doc */}
-          <div className="flex items-center gap-2">
+          <div className={stylex.props(styles.s2ffff9, styles.sc6ed1702, styles.s5d936fb).className || ''}>
             {isMobile ? (
               <>
                 <Button
                   type="button"
                   size="icon"
                   variant="ghost"
-                  className="h-9 w-9 shrink-0 hover:bg-black/10 dark:hover:bg-white/10"
+                  className={
+                    stylex.props(styles.s18c14, styles.s1c463, styles.sf032ed6c, styles.s291c6d79).className || ''
+                  }
                   onClick={() => setIsTextMarkerDialogOpen(true)}
                 >
-                  <UnorderedList className="size-4" />
+                  <UnorderedList className={stylex.props(styles.sca3de968).className || ''} />
                 </Button>
                 <Button
                   type="button"
                   size="icon"
                   variant="ghost"
-                  className="h-9 w-9 shrink-0 hover:bg-black/10 dark:hover:bg-white/10"
+                  className={
+                    stylex.props(styles.s18c14, styles.s1c463, styles.sf032ed6c, styles.s291c6d79).className || ''
+                  }
                   onClick={() => setIsTextTypeDialogOpen(true)}
                 >
-                  <Type className="size-4" />
+                  <Type className={stylex.props(styles.sca3de968).className || ''} />
                 </Button>
               </>
             ) : (
@@ -497,11 +651,23 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                     type="button"
                     variant="ghost"
                     data-testid="style-options-trigger"
-                    className="format-toolbar-item h-9 gap-1.5 rounded-md border border-black/10 px-3 text-sm font-normal hover:bg-black/10 dark:border-white/10 dark:hover:bg-white/10"
+                    className={
+                      stylex.props(
+                        styles.s18c14,
+                        styles.sf4676641,
+                        styles.sf79988b7,
+                        styles.sad8c742c,
+                        styles.se45bb2b0,
+                        styles.s34b1ae,
+                        styles.sab7cc6fa,
+                        styles.s14e67425,
+                        styles.s291c6d79,
+                      ).className || ''
+                    }
                   >
-                    <ListChecks className="size-4" />
+                    <ListChecks className={stylex.props(styles.sca3de968).className || ''} />
                     <span>Style options</span>
-                    <ChevronDown className="size-3.5 opacity-60" />
+                    <ChevronDown className={stylex.props(styles.s3269316e, styles.s54eab7bc).className || ''} />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -526,7 +692,10 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                       e.preventDefault()
                     }
                   }}
-                  className="format-toolbar-item bg-background z-[10000] w-[22rem] max-w-[92vw] p-3"
+                  className={
+                    stylex.props(styles.s436dc7b6, styles.sf614494, styles.s5483ce08, styles.s7868b4e7, styles.s1aa16)
+                      .className || ''
+                  }
                 >
                   <StyleOptionsPanel
                     editor={props.editor}
@@ -553,10 +722,22 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                   type="button"
                   variant="ghost"
                   data-testid="turn-into-doc-button"
-                  className="h-9 gap-1.5 rounded-md border border-black/10 px-3 text-sm font-normal hover:bg-black/10 dark:border-white/10 dark:hover:bg-white/10"
+                  className={
+                    stylex.props(
+                      styles.s18c14,
+                      styles.sf4676641,
+                      styles.sf79988b7,
+                      styles.sad8c742c,
+                      styles.se45bb2b0,
+                      styles.s34b1ae,
+                      styles.sab7cc6fa,
+                      styles.s14e67425,
+                      styles.s291c6d79,
+                    ).className || ''
+                  }
                   onClick={handleTurnIntoDoc}
                 >
-                  <FileText className="size-4" />
+                  <FileText className={stylex.props(styles.sca3de968).className || ''} />
                   <span>Turn into doc</span>
                 </Button>
               </Tooltip>
@@ -585,11 +766,9 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
     </>
   )
 }
-
 function ToggleStyleButton<Schema extends Record<string, BlockSpec<string, PropSchema>>>({
   editor,
   toggleStyle,
-
   name,
   icon,
 }: {
@@ -599,19 +778,17 @@ function ToggleStyleButton<Schema extends Record<string, BlockSpec<string, PropS
   icon: any
 }) {
   const [active, setActive] = useState<boolean>(toggleStyle in editor.getActiveStyles())
-
   function toggleCurrentStyle() {
     setActive(toggleStyle in editor.getActiveStyles())
   }
-
   useEditorContentChange(editor, toggleCurrentStyle)
   useEditorSelectionChange(editor, toggleCurrentStyle)
-
   function handlePress(style: EditorToggledStyle) {
     editor.focus()
-    editor.toggleStyles({[toggleStyle]: true})
+    editor.toggleStyles({
+      [toggleStyle]: true,
+    })
   }
-
   return (
     <Tooltip content={name}>
       <Button
@@ -620,12 +797,16 @@ function ToggleStyleButton<Schema extends Record<string, BlockSpec<string, PropS
         size="icon"
         variant="ghost"
         className={cn(
-          'rounded-md border border-black/10 dark:border-white/10',
-          'hover:bg-black/10 dark:hover:bg-white/10',
-          'focus:bg-black/10 dark:focus:bg-white/10',
+          stylex.props(styles.sf79988b7, styles.sad8c742c, styles.se45bb2b0).className || '',
+          stylex.props(styles_2.s68989642).className || '',
+          stylex.props(styles.s291c6d79).className || '',
+          stylex.props(styles_2.se117420b).className || '',
+          stylex.props(styles.se8df6f15).className || '',
+          stylex.props(styles_2.sa0da43a7).className || '',
           'format-toolbar-item',
-          active &&
-            'bg-black text-white hover:bg-black/80 hover:text-white dark:bg-white dark:text-black dark:hover:bg-white/90 dark:hover:text-white',
+          active
+            ? stylex.props(styles.s5f36a877, styles.s2daecf89, styles.s291c6e52, styles.s25eca887).className || ''
+            : '',
         )}
         onClick={() => {
           console.log('toggleStyle', toggleStyle)

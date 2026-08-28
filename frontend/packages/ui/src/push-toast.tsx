@@ -1,6 +1,14 @@
 import * as stylex from '@stylexjs/stylex'
 import {hostnameStripProtocol, StateStream} from '@shm/shared'
 import {useStream} from '@shm/shared/use-stream'
+const styles_2 = stylex.create({
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+})
 const styles = stylex.create({
   sa176bd57: {
     fontWeight: '100',
@@ -123,10 +131,13 @@ export function PushToast({
   }
   return (
     <>
-      {errorMessage ? <p className="">{errorMessage}</p> : <p>{statusMessage}</p>}
+      {errorMessage ? <p className={stylex.props(null).className || ''}>{errorMessage}</p> : <p>{statusMessage}</p>}
       {hosts.map(({host, message, status}) => {
         return (
-          <p key={host} className={status === 'error' ? 'text-destructive' : 'text-muted-foreground'}>
+          <p
+            key={host}
+            className={stylex.props(status === 'error' ? styles_2.s8a2570e2 : styles_2.sf2718385).className || ''}
+          >
             <span>{hostnameStripProtocol(host)}</span>
             <span className={stylex.props(styles.sa176bd57).className || ''}>{` - ${message || 'Syncing...'}`}</span>
           </p>

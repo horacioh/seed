@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useDraft} from '@/models/accounts'
 import {client} from '@/trpc'
 import {useNavigate} from '@/utils/useNavigate'
@@ -16,14 +17,25 @@ import {PropsWithChildren, useMemo, useState} from 'react'
  * to inline child drafts. Pass `canCreateInlineDraft={false}` when the parent
  * is an upublished draft to avoid orphaning the child draft under a placeholder path segment.
  */
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s9ccd4aa7: {
+    maxWidth: '42rem',
+  },
+})
 export function DesktopDraftActionsProvider({
   canCreateInlineDraft = true,
   children,
-}: PropsWithChildren<{canCreateInlineDraft?: boolean}>) {
+}: PropsWithChildren<{
+  canCreateInlineDraft?: boolean
+}>) {
   const navigate = useNavigate()
-  const moveDraftDialog = useAppDialog(DocumentDestinationDialog, {className: 'w-full max-w-2xl'})
+  const moveDraftDialog = useAppDialog(DocumentDestinationDialog, {
+    className: stylex.props(styles.scdbaf625, styles.s9ccd4aa7).className || '',
+  })
   const [lastCreatedInlineDraftId, setLastCreatedInlineDraftId] = useState<string | null>(null)
-
   const value = useMemo<DraftActions>(
     () => ({
       // Mirrors useCreateInlineDraft. Inlined here because the slash menu's
@@ -39,7 +51,10 @@ export function DesktopDraftActionsProvider({
             invalidateQueries([queryKeys.DRAFTS_LIST_ACCOUNT, parentId.uid])
             invalidateQueries([queryKeys.DRAFTS_LIST])
             setLastCreatedInlineDraftId(writeParams.id)
-            return {draftId: writeParams.id, draftPath: writeParams.editPath}
+            return {
+              draftId: writeParams.id,
+              draftPath: writeParams.editPath,
+            }
           }
         : undefined,
       useInlineDraft: useDraft,
@@ -56,7 +71,12 @@ export function DesktopDraftActionsProvider({
           const editUid = draft.editUid ?? draft.locationUid
           if (!editUid) return
           const editPath = draft.editPath?.length ? draft.editPath : draftPath
-          navigate({key: 'document', id: hmId(editUid, {path: editPath})})
+          navigate({
+            key: 'document',
+            id: hmId(editUid, {
+              path: editPath,
+            }),
+          })
         })
       },
       onMoveDraft: (draftId, origin) => {
@@ -66,15 +86,23 @@ export function DesktopDraftActionsProvider({
           if (!editUid) return
           const editPath = draft.editPath?.length ? draft.editPath : [...(draft.locationPath ?? []), `-${draftId}`]
           moveDraftDialog.open({
-            id: hmId(editUid, {path: editPath}),
+            id: hmId(editUid, {
+              path: editPath,
+            }),
             mode: 'move',
             origin: draft.locationUid
               ? {
-                  parentDocumentId: hmId(draft.locationUid, {path: draft.locationPath ?? []}),
+                  parentDocumentId: hmId(draft.locationUid, {
+                    path: draft.locationPath ?? [],
+                  }),
                   embedBlockId: origin?.embedBlockId,
                 }
               : undefined,
-            draft: {draftId, title: draft.metadata?.name, icon: draft.metadata?.icon},
+            draft: {
+              draftId,
+              title: draft.metadata?.name,
+              icon: draft.metadata?.icon,
+            },
           })
         })
       },
@@ -87,7 +115,10 @@ export function DesktopDraftActionsProvider({
           locationPath: draft.locationPath,
           editUid: draft.editUid,
           editPath: draft.editPath,
-          metadata: {...draft.metadata, name},
+          metadata: {
+            ...draft.metadata,
+            name,
+          },
           content: draft.content,
           deps: draft.deps,
           navigation: draft.navigation,
@@ -104,7 +135,6 @@ export function DesktopDraftActionsProvider({
     }),
     [navigate, canCreateInlineDraft, lastCreatedInlineDraftId, moveDraftDialog],
   )
-
   return (
     <DraftActionsContext.Provider value={value}>
       {children}

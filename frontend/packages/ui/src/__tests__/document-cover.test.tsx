@@ -101,8 +101,6 @@ describe('DocumentCover', () => {
     renderCover(<DocumentCover cover="ipfs://cover-cid" onRemove={vi.fn()} onChangeCover={vi.fn()} />)
 
     const controls = container.querySelector<HTMLElement>('[data-document-cover-controls]')
-    expect(controls?.className).toContain('opacity-100')
-    expect(controls?.className).toContain('md:opacity-0')
-    expect(controls?.className).toContain('md:group-hover/cover:opacity-100')
+    expect(controls?.getAttribute('data-visibility')).toBe('mobile-visible')
   })
 })

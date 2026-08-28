@@ -18,6 +18,83 @@ import {Spinner} from './spinner'
 import {toast} from './toast'
 import {OmnibarUrl} from './url-omnibar'
 import {CBOR_VALUE_RULES, isPlainObject, ValueDisplay, ValueEditor, ValueEditorProvider} from './value-editor'
+const styles_4 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s2ff5a5: {
+    height: 'calc(0.25rem * 11)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+  s7c401f01: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s34b1ae: {
+    paddingInline: 'calc(0.25rem * 3)',
+  },
+  s5fd609e3: {
+    backgroundColor: 'var(--muted)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(0.25rem * 2)',
+  },
+  sc5dd1033: {
+    paddingBlock: 'calc(0.25rem * 0.5)',
+  },
+  sab7cc79b: {
+    fontSize: '0.75rem',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+})
+const styles_3 = stylex.create({
+  sfd023371: {
+    minHeight: '60vh',
+    fontFamily: 'var(--font-mono)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s6dd5e73e: {
+    maxHeight: '80vh',
+    maxWidth: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    objectFit: 'contain',
+    boxShadow: 'var(--shadow-sm)',
+  },
+})
+const styles_2 = stylex.create({
+  s6c2b5195: {
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    height: '100%',
+    maxHeight: '100%',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+})
 const styles = stylex.create({
   s7026dbcb: {
     display: 'flex',
@@ -306,7 +383,7 @@ export function InspectIpfsPage({
           value={editText ?? ''}
           onChange={(e) => setEditText(e.target.value)}
           spellCheck={false}
-          className="min-h-[60vh] font-mono text-sm"
+          className={stylex.props(styles_3.sfd023371).className || ''}
         />
       )
   } else if (kind === 'loading' || (kind === 'text' && textLoading)) {
@@ -318,11 +395,7 @@ export function InspectIpfsPage({
   } else if (kind === 'image') {
     body = (
       <div className={stylex.props(styles.s78630139).className || ''}>
-        <img
-          src={imageUrl}
-          alt={`ipfs://${cid}`}
-          className="max-h-[80vh] max-w-full rounded-md object-contain shadow-sm"
-        />
+        <img src={imageUrl} alt={`ipfs://${cid}`} className={stylex.props(styles_3.s6dd5e73e).className || ''} />
       </div>
     )
   } else if (kind === 'text') {
@@ -344,7 +417,7 @@ export function InspectIpfsPage({
     )
   }
   return (
-    <div className="bg-background flex h-full max-h-full flex-col overflow-hidden">
+    <div className={stylex.props(styles_2.s6c2b5195).className || ''}>
       <IpfsTopBar
         restingUrl={`ipfs://${ipfsPath}`}
         gatewayLink={gatewayLink}
@@ -427,7 +500,19 @@ function IpfsTopBar({
   ) : undefined
   return (
     <div
-      className="window-drag border-border bg-background flex h-11 shrink-0 items-center gap-2 border-b px-3"
+      className={
+        stylex.props(
+          styles_4.s1a01a0ed,
+          styles_4.s436dc7b6,
+          styles_4.s2ffff9,
+          styles_4.s2ff5a5,
+          styles_4.sf032ed6c,
+          styles_4.sc6ed1702,
+          styles_4.s5d936fb,
+          styles_4.s7c401f01,
+          styles_4.s34b1ae,
+        ).className || ''
+      }
       style={
         trafficLightInset
           ? {
@@ -438,11 +523,23 @@ function IpfsTopBar({
     >
       {editing ? (
         <>
-          <span className="bg-muted text-muted-foreground no-window-drag rounded px-2 py-0.5 text-xs font-medium">
+          <span
+            className={
+              stylex.props(
+                styles_4.s5fd609e3,
+                styles_4.sf2718385,
+                styles_4.s529492ad,
+                styles_4.s34b1ad,
+                styles_4.sc5dd1033,
+                styles_4.sab7cc79b,
+                styles_4.s129e46b3,
+              ).className || ''
+            }
+          >
             Unpublished draft
           </span>
           <div className={stylex.props(styles.sb42feb5d).className || ''} />
-          <div className="no-window-drag flex items-center gap-2">
+          <div className={stylex.props(styles_4.s2ffff9, styles_4.sc6ed1702, styles_4.s5d936fb).className || ''}>
             <Button size="sm" onClick={onPublish} disabled={publishing}>
               {publishing ? (
                 <Spinner className={stylex.props(styles.sca3de968).className || ''} />

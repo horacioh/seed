@@ -2,6 +2,28 @@ import * as stylex from '@stylexjs/stylex'
 import {Plus} from 'lucide-react'
 import {SizableText} from './text'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s993b893d: {
+    borderColor: 'color-mix(in oklab, var(--muted-foreground) 25%, transparent)',
+    backgroundColor: 'var(--color-white)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '200ms',
+  },
+  sfa63f40d: {
+    ':hover': {
+      '@media (hover: hover)': {
+        borderColor: 'color-mix(in oklab, var(--muted-foreground) 50%, transparent)',
+        backgroundColor: 'var(--surface-hover-card)',
+      },
+    },
+  },
+  s31a60f83: {
+    backgroundColor: 'var(--surface-black)',
+  },
+})
 const styles = stylex.create({
   s86394f20: {
     display: 'flex',
@@ -36,9 +58,9 @@ export function NewDocumentListItem({onCreateDraft}: NewDocumentListItemProps) {
       onClick={onCreateDraft}
       className={cn(
         stylex.props(styles.s86394f20).className || '',
-        'border-muted-foreground/25 bg-white px-4 py-2 transition-colors duration-200',
-        'hover:border-muted-foreground/50 hover:bg-muted/30',
-        'dark:hover:bg-muted/20 dark:bg-black',
+        stylex.props(styles_2.s993b893d).className || '',
+        stylex.props(styles_2.sfa63f40d).className || '',
+        stylex.props(styles_2.s31a60f83).className || '',
         stylex.props(styles.sc7847ec6).className || '',
       )}
     >

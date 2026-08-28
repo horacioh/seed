@@ -5,6 +5,31 @@ import {useImageUrl} from './get-file-url'
 import {useHighlighter} from './highlight-context'
 import {HMIcon} from './hm-icon'
 import {cn} from './utils'
+const styles_3 = stylex.create({
+  se6f071ca: {
+    color: 'var(--foreground)',
+    minWidth: 'calc(var(--spacing) * 0)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'center',
+    fontWeight: 'var(--font-weight-bold)',
+    WebkitUserSelect: 'none',
+    userSelect: 'none',
+    '@media ((min-width: 768px))': {
+      textAlign: 'left',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  scc23c503: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 'calc(0.25rem * 2)',
+  },
+})
 const styles = stylex.create({
   s22db9e54: {
     display: 'flex',
@@ -57,17 +82,11 @@ export function SiteLogo({id, metadata}: {id: UnpackedHypermediaId; metadata?: H
     <a
       {...homeLinkProps}
       data-resourceid={id.id}
-      className={cn('flex min-w-0 items-center justify-center gap-2')}
+      className={cn(stylex.props(styles_2.scc23c503).className || '')}
       {...highlighter(id)}
     >
       <HMIcon size={24} id={id} name={metadata?.name} icon={metadata?.icon} />
-      <p
-        className={cn(
-          'text-foreground min-w-0 truncate overflow-hidden text-center font-bold select-none md:text-left',
-        )}
-      >
-        {metadata?.name}
-      </p>
+      <p className={cn(stylex.props(styles_3.se6f071ca).className || '')}>{metadata?.name}</p>
     </a>
   )
 }

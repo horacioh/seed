@@ -5,6 +5,23 @@ import {Button} from './button'
 import {Version} from './icons'
 import {SizableText} from './text'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s775755af: {
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s5f846256: {
+    backgroundColor: 'oklch(27.8% 0.033 256.848)',
+  },
+  s63f771a: {
+    padding: 'calc(0.25rem * 0.5)',
+  },
+})
 const styles = stylex.create({
   s7b2d8cee: {
     height: 'auto',
@@ -49,7 +66,6 @@ const styles = stylex.create({
     opacity: '80%',
   },
 })
-const iconSize = 20
 export function SubDocumentItem({
   item,
   accountsMetadata,
@@ -72,7 +88,15 @@ export function SubDocumentItem({
     <Button className={cn(stylex.props(styles.s7b2d8cee).className || '')} {...linkProps}>
       {!hideIcon && (
         <div
-          className={`w-[${iconSize}px] h-[${iconSize}px] items-center justify-center rounded-full bg-gray-800 p-0.5`}
+          className={
+            stylex.props(
+              styles_2.sc6ed1702,
+              styles_2.sce22ca32,
+              styles_2.s775755af,
+              styles_2.s5f846256,
+              styles_2.s63f771a,
+            ).className || ''
+          }
         >
           <Version size={16} color="white" />
         </div>

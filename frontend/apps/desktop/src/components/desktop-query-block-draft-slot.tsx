@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {DocumentDestinationDialog} from '@/components/document-destination-dialog'
 import {draftDocumentRouteId} from '@/utils/draft-route'
 import {useChildDrafts, useCreateInlineDraft, useDeleteDraft, useUpdateDraftMetadata} from '@/models/documents'
@@ -8,31 +9,40 @@ import {useResource} from '@shm/shared/models/entity'
 import {QueryBlockDraftSlotProps, useQueryBlockDrafts} from '@shm/shared/query-block-drafts-context'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {useMemo} from 'react'
-
+const styles = stylex.create({
+  scdbaf625: {
+    width: '100%',
+  },
+  s9ccd4aa7: {
+    maxWidth: '42rem',
+  },
+})
 export function DesktopQueryBlockDraftSlot({targetId, children}: QueryBlockDraftSlotProps) {
   const navigate = useNavigate()
-  const moveDraftDialog = useAppDialog(DocumentDestinationDialog, {className: 'w-full max-w-2xl'})
+  const moveDraftDialog = useAppDialog(DocumentDestinationDialog, {
+    className: stylex.props(styles.scdbaf625, styles.s9ccd4aa7).className || '',
+  })
   const capability = useSelectedAccountCapability(targetId ?? undefined)
   const canEdit = roleCanWrite(capability?.role)
   const resource = useResource(targetId)
   const doc = resource.data?.type === 'document' ? resource.data.document : undefined
   const isPrivate = doc?.visibility === 'PRIVATE'
-
   const childDrafts = useChildDrafts(targetId ?? undefined)
   const createInlineDraft = useCreateInlineDraft(targetId ?? undefined)
   const deleteDraft = useDeleteDraft()
   const updateDraftMetadata = useUpdateDraftMetadata()
   const {lastCreatedDraftId, setLastCreatedDraftId} = useQueryBlockDrafts()
-
   const drafts = useMemo(
     () =>
       childDrafts
         .slice()
         .reverse()
-        .map((draft) => ({draft, autoFocus: draft.id === lastCreatedDraftId})),
+        .map((draft) => ({
+          draft,
+          autoFocus: draft.id === lastCreatedDraftId,
+        })),
     [childDrafts, lastCreatedDraftId],
   )
-
   const onCreateDraft = useMemo(() => {
     if (!targetId || !canEdit || isPrivate) return undefined
     return () => {
@@ -46,7 +56,6 @@ export function DesktopQueryBlockDraftSlot({targetId, children}: QueryBlockDraft
       )
     }
   }, [targetId, canEdit, isPrivate, createInlineDraft, setLastCreatedDraftId])
-
   return (
     <>
       {children({
@@ -72,12 +81,26 @@ export function DesktopQueryBlockDraftSlot({targetId, children}: QueryBlockDraft
             id: sourceId,
             mode: 'move',
             origin: draft.locationUid
-              ? {parentDocumentId: hmId(draft.locationUid, {path: draft.locationPath ?? []})}
+              ? {
+                  parentDocumentId: hmId(draft.locationUid, {
+                    path: draft.locationPath ?? [],
+                  }),
+                }
               : undefined,
-            draft: {draftId, title: draft.metadata?.name, icon: draft.metadata?.icon},
+            draft: {
+              draftId,
+              title: draft.metadata?.name,
+              icon: draft.metadata?.icon,
+            },
           })
         },
-        onUpdateDraftName: (draftId, name) => updateDraftMetadata.mutate({draftId, metadata: {name}}),
+        onUpdateDraftName: (draftId, name) =>
+          updateDraftMetadata.mutate({
+            draftId,
+            metadata: {
+              name,
+            },
+          }),
       })}
       {moveDraftDialog.content}
     </>

@@ -32,6 +32,152 @@ import {ArrowRight, X} from './icons'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {toast} from './toast'
+const styles_7 = stylex.create({
+  s45e7760a: {
+    color: 'currentColor',
+  },
+})
+const styles_6 = stylex.create({
+  s27f483b3: {
+    ':is([data-active-item])': {
+      backgroundColor: 'var(--accent)',
+    },
+  },
+})
+const styles_5 = stylex.create({
+  s6e724d66: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sf8e1b8f0: {
+    ':focus-visible': {},
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  sd30dd60e: {
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  sc1942972: {
+    ':focus-visible': {
+      boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+    },
+  },
+})
+const styles_4 = stylex.create({
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  s1aa16: {
+    padding: 'calc(0.25rem * 3)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s33c76c94: {
+    '@media (hover: hover) and (pointer: fine)': {
+      opacity: '0%',
+    },
+  },
+  sc393d8ad: {
+    '@media (hover: hover) and (pointer: fine)': {
+      transitionProperty: 'opacity',
+      transitionTimingFunction: 'var(--default-transition-timing-function)',
+      transitionDuration: 'var(--default-transition-duration)',
+    },
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s5d936fb: {
+    gap: 'calc(0.25rem * 2)',
+  },
+})
+const styles_3 = stylex.create({
+  s755eb46f: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 'calc(var(--spacing) * 3)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sdb5d35de: {
+    backgroundColor: 'var(--background)',
+    borderColor: 'var(--border)',
+    display: 'flex',
+    minHeight: 'calc(var(--spacing) * 6)',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    padding: 'calc(var(--spacing) * 1)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--overlay-10)',
+      },
+    },
+  },
+  s4fb446a0: {
+    zIndex: '100',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    backgroundColor: 'var(--surface-contrast)',
+  },
+})
+const styles_2 = stylex.create({
+  sbd4566cd: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    overflow: 'hidden',
+  },
+})
 const styles = stylex.create({
   sb8c7436a: {
     display: 'flex',
@@ -418,10 +564,17 @@ function PublisherCollaborator({uid, siteUid, account}: {uid: string; siteUid: s
   })
   const metadata = account?.metadata
   return (
-    <a {...linkProps} className="hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
+    <a {...linkProps} className={stylex.props(styles_3.s755eb46f).className || ''}>
       <HMIcon id={publisherId} name={metadata?.name} icon={metadata?.icon} size={32} />
       <div className={stylex.props(styles.s95536c4e).className || ''}>
-        <SizableText size="sm" className={`truncate ${metadata?.name ? '' : 'text-muted-foreground'}`}>
+        <SizableText
+          size="sm"
+          className={
+            (stylex.props(styles_5.s6e724d66).className || '') +
+            ' ' +
+            (metadata?.name ? '' : stylex.props(styles_5.sf2718385).className || '')
+          }
+        >
           {metadata?.name || abbreviateUid(uid)}
         </SizableText>
         <SizableText size="xs" color="muted" className={stylex.props(styles.s67b8a10f).className || ''}>
@@ -450,10 +603,17 @@ function CollaboratorListItem({
   const metadata = account?.metadata
   const isParentCapability = capability.grantId.id !== docId.id
   return (
-    <a {...linkProps} className="hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
+    <a {...linkProps} className={stylex.props(styles_3.s755eb46f).className || ''}>
       <HMIcon id={collaboratorId} name={metadata?.name} icon={metadata?.icon} size={32} />
       <div className={stylex.props(styles.s95536c4e).className || ''}>
-        <SizableText size="sm" className={`truncate ${metadata?.name ? '' : 'text-muted-foreground'}`}>
+        <SizableText
+          size="sm"
+          className={
+            (stylex.props(styles_5.s6e724d66).className || '') +
+            ' ' +
+            (metadata?.name ? '' : stylex.props(styles_5.sf2718385).className || '')
+          }
+        >
           {metadata?.name || abbreviateUid(capability.accountUid)}
         </SizableText>
         <SizableText size="xs" color="muted" className={stylex.props(styles.s67b8a10f).className || ''}>
@@ -576,14 +736,37 @@ function MemberListItem({
   const metadata = account?.metadata
   const showAddAsWriter = canAddAsWriter && member.role === 'member'
   return (
-    <div className="group hover:bg-muted flex items-center gap-3 rounded-md p-3 transition-colors">
+    <div
+      className={
+        stylex.props(
+          styles_4.s37120a61,
+          styles_4.s2ffff9,
+          styles_4.sc6ed1702,
+          styles_4.s5d936fc,
+          styles_4.sf79988b7,
+          styles_4.s1aa16,
+          styles_4.sf7fb00e8,
+        ).className || ''
+      }
+    >
       <HMIcon id={member.account} name={metadata?.name} icon={metadata?.icon} size={32} />
-      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
+      <div className={stylex.props(styles_2.sbd4566cd).className || ''}>
         <a
           {...linkProps}
-          className={`focus-visible:ring-ring min-w-0 flex-1 truncate rounded-sm outline-none hover:underline focus-visible:ring-2 ${
-            metadata?.name ? '' : 'text-muted-foreground'
-          }`}
+          className={
+            (stylex.props(
+              styles_5.sf8e1b8f0,
+              styles_5.s3f58665f,
+              styles_5.sb42feb5d,
+              styles_5.s6e724d66,
+              styles_5.sf799897a,
+              styles_5.sa602a1e3,
+              styles_5.sd30dd60e,
+              styles_5.sc1942972,
+            ).className || '') +
+            ' ' +
+            (metadata?.name ? '' : stylex.props(styles_5.sf2718385).className || '')
+          }
         >
           <SizableText size="sm" className={stylex.props(styles.s6e724d66).className || ''}>
             {metadata?.name || abbreviateUid(member.account.uid)}
@@ -595,7 +778,7 @@ function MemberListItem({
             size="xs"
             variant="outline"
             loading={isPromoting}
-            className="[@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:transition-opacity [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100"
+            className={stylex.props(styles_4.s33c76c94, styles_4.sc393d8ad).className || ''}
             onClick={() => onAddAsWriter?.(member.account.uid)}
           >
             Add as writer
@@ -766,9 +949,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
               onClick={onItemClick(value)}
               onKeyDown={onItemKeyDown}
               onFocus={combobox.hide}
-              render={
-                <div className="bg-background border-border flex min-h-6 items-center gap-1 rounded-md border p-1 px-2 hover:bg-black/10 dark:hover:bg-white/10" />
-              }
+              render={<div className={stylex.props(styles_3.sdb5d35de).className || ''} />}
             >
               {'unresolved' in value && value.unresolved ? (
                 <UnresolvedItem value={value} />
@@ -805,7 +986,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
             <Ariakit.SelectList
               // @ts-expect-error
               store={select}
-              render={<div className="z-100 rounded-sm bg-white dark:bg-black" />}
+              render={<div className={stylex.props(styles_3.s4fb446a0).className || ''} />}
             />
           }
         >
@@ -846,7 +1027,7 @@ const TagInputItem = forwardRef<HTMLDivElement, TagInputItemProps>(function TagI
           <HMIcon size={16} name={metadata?.name} icon={metadata?.icon} id={props.member?.id} />
         ) : null}
         <div className={stylex.props(styles.se39f1964).className || ''}>
-          <SizableText size="sm" className="text-currentColor">
+          <SizableText size="sm" className={stylex.props(styles_7.s45e7760a).className || ''}>
             {props.children || props.member?.label}
           </SizableText>
         </div>
@@ -857,7 +1038,15 @@ const TagInputItem = forwardRef<HTMLDivElement, TagInputItemProps>(function TagI
 const TagInputItemContent = forwardRef<any, any>(function TagInputItemContent(props, ref) {
   let {render, children, ...restProps} = props
   return (
-    <div ref={ref} {...restProps} className="combobox-item data-[active-item]:bg-accent flex flex-1 gap-2 p-3">
+    <div
+      ref={ref}
+      {...restProps}
+      className={
+        (stylex.props(styles_4.s2ffff9, styles_4.sb42feb5d, styles_4.s5d936fb, styles_4.s1aa16).className || '') +
+        ' ' +
+        (stylex.props(styles_6.s27f483b3).className || '')
+      }
+    >
       {render ? render : children}
     </div>
   )

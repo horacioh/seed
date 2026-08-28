@@ -1,6 +1,20 @@
 import * as stylex from '@stylexjs/stylex'
 import {ScrollArea} from '@shm/ui/components/scroll-area'
 import {HTMLAttributes} from 'react'
+const styles_2 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  sb42244d4: {
+    height: '100%',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   se8f9b829: {
     height: '100%',
@@ -16,7 +30,14 @@ export function MainWrapper({
   scrollable?: boolean
 }) {
   return (
-    <div {...props} className={`flex h-full w-full flex-1 ${className || ''}`}>
+    <div
+      {...props}
+      className={
+        (stylex.props(styles_2.s2ffff9, styles_2.sb42244d4, styles_2.scdbaf625, styles_2.sb42feb5d).className || '') +
+        ' ' +
+        (className || '')
+      }
+    >
       {/* TODO: we cannot remove this ID here because the SlashMenu is referencing
        this! */}
       <div className={stylex.props(styles.se8f9b829).className || ''}>
@@ -27,7 +48,10 @@ export function MainWrapper({
 }
 export function MainWrapperStandalone({children, className, ...props}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`flex flex-1 ${className || ''}`} {...props}>
+    <div
+      className={(stylex.props(styles_2.s2ffff9, styles_2.sb42feb5d).className || '') + ' ' + (className || '')}
+      {...props}
+    >
       {/* TODO: we cannot remove this ID here because the SlashMenu is referencing
        this! */}
       <ScrollArea id="scroll-page-wrapper">{children}</ScrollArea>
@@ -36,7 +60,10 @@ export function MainWrapperStandalone({children, className, ...props}: HTMLAttri
 }
 export function MainWrapperNoScroll({children, className, ...props}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`flex flex-1 ${className || ''}`} {...props}>
+    <div
+      className={(stylex.props(styles_2.s2ffff9, styles_2.sb42feb5d).className || '') + ' ' + (className || '')}
+      {...props}
+    >
       {children}
     </div>
   )

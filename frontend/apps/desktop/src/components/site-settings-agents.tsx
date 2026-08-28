@@ -46,6 +46,77 @@ import {useState} from 'react'
  * here. The published order carries exactly one meaning, the default (the agent a new visitor opens
  * on), so that is all the list offers: a button to promote an agent, not a way to arrange them.
  */
+const styles_4 = stylex.create({
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sf799889b: {
+    borderRadius: 'var(--radius)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+})
+const styles_3 = stylex.create({
+  scbdf5b0d: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 30%, transparent)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+  },
+  s4316ebd: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      },
+    },
+    cursor: 'pointer',
+  },
+  sf8314d9d: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 9)',
+    height: 'calc(var(--spacing) * 9)',
+    flex: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'var(--radius)',
+  },
+  se1f3b537: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 10%, transparent)',
+    color: 'var(--primary)',
+    borderRadius: 'calc(infinity * 1px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '10px',
+    fontWeight: 'var(--font-weight-bold)',
+    textTransform: 'uppercase',
+  },
+})
+const styles_2 = stylex.create({
+  s4ed9b402: {
+    height: 'calc(0.25rem * 9)',
+    maxWidth: '28rem',
+  },
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  sba8b2aaf: {
+    height: 'calc(0.25rem * 8)',
+    maxWidth: '20rem',
+    borderStyle: 'none',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+  },
+})
 const styles = stylex.create({
   s4c9e7ebc: {
     display: 'flex',
@@ -242,7 +313,7 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
         <SizableText weight="medium">Agents server</SizableText>
         <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <Select value={serverValue || NO_SERVER} onValueChange={chooseServer}>
-            <SelectTrigger className="h-9 max-w-md">
+            <SelectTrigger className={stylex.props(styles_2.s4ed9b402).className || ''}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -288,7 +359,12 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
 
           {/* One card: the published agents and the control that adds to them are the same list, and
               reading them as two stacked sections made adding look like a separate setting. */}
-          <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
+          <div
+            className={
+              stylex.props(styles_4.s1a01a0ed, styles_4.s92852dd5, styles_4.sf799889b, styles_4.sad8c742c).className ||
+              ''
+            }
+          >
             {publishedRows.map(({agentId, agent}, index) => (
               <PublishedAgentRow
                 key={agentId}
@@ -317,7 +393,7 @@ export function SpaceAgentsSettings({siteId}: {siteId: UnpackedHypermediaId}) {
                 </SizableText>
               </div>
             ) : null}
-            <div className="bg-muted/30 flex items-center gap-2 px-3 py-2">
+            <div className={stylex.props(styles_3.scbdf5b0d).className || ''}>
               <Plus className={stylex.props(styles.s9cbc670f).className || ''} />
               <AddAgentControl
                 key={addKey}
@@ -375,21 +451,20 @@ function PublishedAgentRow({
           onOpen()
         }
       }}
-      className={cn(stylex.props(styles.s55881eac).className || '', onOpen && 'hover:bg-muted/50 cursor-pointer')}
+      className={cn(
+        stylex.props(styles.s55881eac).className || '',
+        stylex.props(onOpen ? styles_3.s4316ebd : null).className || '',
+      )}
     >
-      <div className="bg-primary/10 text-primary flex size-9 flex-none items-center justify-center rounded-lg">
+      <div className={stylex.props(styles_3.sf8314d9d).className || ''}>
         <Bot className={stylex.props(styles.sca3de968).className || ''} />
       </div>
-      <div className="min-w-0 flex-1">
+      <div className={stylex.props(styles_2.se30fd43e).className || ''}>
         <div className={stylex.props(styles.s86ff3e4).className || ''}>
           <SizableText weight="bold" className={stylex.props(styles.s6e724d66).className || ''}>
             {agent ? agent.definition.name : 'Unavailable agent'}
           </SizableText>
-          {isDefault ? (
-            <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">
-              Default
-            </span>
-          ) : null}
+          {isDefault ? <span className={stylex.props(styles_3.se1f3b537).className || ''}>Default</span> : null}
         </div>
         {!agent ? (
           <SizableText size="xs" color="muted" className={stylex.props(styles.s597c48d).className || ''}>
@@ -452,7 +527,7 @@ function AddAgentControl({
         if (agent) onAdd(agent)
       }}
     >
-      <SelectTrigger className="h-8 max-w-xs border-none bg-transparent shadow-none" size="sm">
+      <SelectTrigger className={stylex.props(styles_2.sba8b2aaf).className || ''} size="sm">
         <SelectValue placeholder={agents.length ? 'Add an agent…' : 'No public agents to add'} />
       </SelectTrigger>
       <SelectContent>

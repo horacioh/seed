@@ -18,6 +18,53 @@ import {cn} from '@shm/ui/utils'
 import {ArrowUpRight} from 'lucide-react'
 import {base58btc} from 'multiformats/bases/base58'
 import {useEffect, useState} from 'react'
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fe: {
+    gap: 'calc(0.25rem * 5)',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  s605ce4a1: {
+    backgroundColor: 'var(--background)',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+})
+const styles_3 = stylex.create({
+  se83b4868: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: 'var(--container-lg)',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 0)',
+    paddingTop: 'var(--site-header-h)',
+    '@media ((min-width: 640px))': {
+      paddingTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  sa5fbe220: {
+    display: 'flex',
+    minHeight: '100vh',
+    flex: '1',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+})
 const styles = stylex.create({
   s34b1af: {
     paddingInline: 'calc(0.25rem * 4)',
@@ -64,7 +111,7 @@ export default function ConnectPage() {
   }
   return (
     <WebSiteProvider origin={origin} originHomeId={originHomeId} siteHost={siteHost} dehydratedState={dehydratedState}>
-      <div className="flex min-h-screen flex-1 flex-col items-center">
+      <div className={stylex.props(styles_2.sa5fbe220).className || ''}>
         <WebSiteHeader
           homeMetadata={homeMetadata}
           originHomeId={originHomeId}
@@ -72,7 +119,7 @@ export default function ConnectPage() {
           docId={null}
           origin={origin}
         />
-        <NavigationLoadingContent className="flex w-full max-w-lg flex-1 flex-col gap-3 px-0 pt-[var(--site-header-h)] sm:pt-0">
+        <NavigationLoadingContent className={stylex.props(styles_3.se83b4868).className || ''}>
           <div className={stylex.props(styles.s34b1af).className || ''}>
             <HMConnectPage />
           </div>
@@ -83,7 +130,21 @@ export default function ConnectPage() {
   )
 }
 const ConnectionPageContainer = ({className, ...props}: any) => (
-  <div className={cn('dark:bg-dark flex flex-col items-center gap-5 rounded-sm bg-white p-4', className)} {...props} />
+  <div
+    className={cn(
+      stylex.props(
+        styles_4.s2ffff9,
+        styles_4.s67e351ac,
+        styles_4.sc6ed1702,
+        styles_4.s5d936fe,
+        styles_4.sf799897a,
+        styles_4.s605ce4a1,
+        styles_4.s1aa17,
+      ).className || '',
+      className,
+    )}
+    {...props}
+  />
 )
 export function HMConnectPage() {
   const [error, setError] = useState<string | null>(null)
@@ -123,7 +184,7 @@ export function HMConnectPage() {
       {connectionInfo && (
         <Button variant="default" asChild>
           <a href={`hm://connect/${connectionInfo.encoded}`}>
-            Launch Seed Desktop App <ArrowUpRight size="size-4" />
+            Launch Seed Desktop App <ArrowUpRight size={16} />
           </a>
         </Button>
       )}

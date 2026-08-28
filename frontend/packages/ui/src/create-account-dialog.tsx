@@ -4,6 +4,68 @@ import * as React from 'react'
 import {Button} from './button'
 import {DialogDescription, DialogTitle} from './components/dialog'
 import {SeedLogo} from './seed-logo'
+const styles_2 = stylex.create({
+  s7aab10d6: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 2)',
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-base)',
+      lineHeight: 'var(--text-base--line-height)',
+    },
+  },
+  s652f45e3: {
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-sm)',
+      lineHeight: 'var(--text-sm--line-height)',
+    },
+  },
+  sfeedb1e8: {
+    borderRadius: '0.25rem',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+    backgroundColor: 'var(--surface-neutral-900)',
+  },
+  sd66d801a: {
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-base)',
+      lineHeight: 'var(--text-base--line-height)',
+    },
+  },
+  s9629c8d: {
+    fontSize: 'var(--text-xl)',
+    lineHeight: 'var(--text-xl--line-height)',
+    fontWeight: 'var(--font-weight-bold)',
+    '@media ((max-width: 639px))': {
+      fontSize: 'var(--text-lg)',
+      lineHeight: 'var(--text-lg--line-height)',
+    },
+  },
+  s940b6441: {
+    height: '1px',
+    flex: '1',
+    backgroundColor: 'var(--tone-neutral-200-2)',
+  },
+  s3380dfe6: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+    color: 'var(--tone-neutral-400-2)',
+  },
+  s89485e16: {
+    cursor: 'pointer',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--tone-neutral-500)',
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   se658ac14: {
     display: 'flex',
@@ -115,10 +177,12 @@ export function CreateAccountDialogContent({
   if (!localAccountUnlocked && step === 'custom-identity') {
     return (
       <>
-        <DialogTitle className="flex items-center gap-2 max-sm:text-base">{customIdentityTitle}</DialogTitle>
-        <DialogDescription className="max-sm:text-sm">Enter the URL of your identity server.</DialogDescription>
+        <DialogTitle className={stylex.props(styles_2.s7aab10d6).className || ''}>{customIdentityTitle}</DialogTitle>
+        <DialogDescription className={stylex.props(styles_2.s652f45e3).className || ''}>
+          Enter the URL of your identity server.
+        </DialogDescription>
         <input
-          className="rounded border px-3 py-2 text-sm dark:bg-neutral-900"
+          className={stylex.props(styles_2.sfeedb1e8).className || ''}
           value={customIdentityUrl}
           onChange={(e) => setCustomIdentityUrl(e.target.value)}
           placeholder={customIdentityPlaceholder}
@@ -163,7 +227,7 @@ export function CreateAccountDialogContent({
   return (
     <>
       {localAccountUnlocked ? (
-        <DialogTitle className="max-sm:text-base" onClick={onTitleClick}>
+        <DialogTitle className={stylex.props(styles_2.sd66d801a).className || ''} onClick={onTitleClick}>
           {localAccountTitle}
         </DialogTitle>
       ) : header ? (
@@ -174,12 +238,12 @@ export function CreateAccountDialogContent({
             </div>
             <span className={stylex.props(styles.sf56ac00b).className || ''}>{header}</span>
           </div>
-          <DialogTitle className="text-xl font-bold max-sm:text-lg" onClick={onTitleClick}>
+          <DialogTitle className={stylex.props(styles_2.s9629c8d).className || ''} onClick={onTitleClick}>
             {title}
           </DialogTitle>
         </>
       ) : (
-        <DialogTitle className="flex items-center gap-2 max-sm:text-base" onClick={onTitleClick}>
+        <DialogTitle className={stylex.props(styles_2.s7aab10d6).className || ''} onClick={onTitleClick}>
           <div className={stylex.props(styles.s33b7a7d9).className || ''}>
             <SeedLogo className={stylex.props(styles.sf796cd41).className || ''} />
           </div>
@@ -189,12 +253,16 @@ export function CreateAccountDialogContent({
 
       {localAccountUnlocked ? (
         <>
-          <DialogDescription className="max-sm:text-sm">{localAccountDescription}</DialogDescription>
+          <DialogDescription className={stylex.props(styles_2.s652f45e3).className || ''}>
+            {localAccountDescription}
+          </DialogDescription>
           {localAccountForm}
         </>
       ) : (
         <>
-          <DialogDescription className="max-sm:text-sm">{introDescription}</DialogDescription>
+          <DialogDescription className={stylex.props(styles_2.s652f45e3).className || ''}>
+            {introDescription}
+          </DialogDescription>
 
           <Button
             variant="default"
@@ -211,9 +279,9 @@ export function CreateAccountDialogContent({
           </Button>
 
           <div className={stylex.props(styles.s86ff3e4).className || ''}>
-            <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-            <span className="text-xs text-neutral-400 dark:text-neutral-500">Or,</span>
-            <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
+            <div className={stylex.props(styles_2.s940b6441).className || ''} />
+            <span className={stylex.props(styles_2.s3380dfe6).className || ''}>Or,</span>
+            <div className={stylex.props(styles_2.s940b6441).className || ''} />
           </div>
 
           <Button
@@ -232,7 +300,7 @@ export function CreateAccountDialogContent({
           <div className={stylex.props(styles.sd78ed2cf).className || ''}>
             <button
               type="button"
-              className="cursor-pointer font-medium text-neutral-500 hover:underline dark:text-neutral-400"
+              className={stylex.props(styles_2.s89485e16).className || ''}
               onClick={() => setStep('custom-identity')}
             >
               I have a different identity domain

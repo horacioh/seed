@@ -1,8 +1,26 @@
+import * as stylex from '@stylexjs/stylex'
 import {Placeholder} from '@/components/placeholder-box'
-
+const styles = stylex.create({
+  sf599e7a4: {
+    marginInline: 'auto',
+    marginTop: 'calc(var(--spacing) * 7)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '600px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 6)',
+  },
+  s2be3f340: {
+    display: 'flex',
+    width: '100%',
+    maxWidth: '600px',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 2)',
+  },
+})
 export function DocumentPlaceholder() {
   return (
-    <div className="mx-auto mt-7 flex w-full max-w-[600px] flex-col gap-6">
+    <div className={stylex.props(styles.sf599e7a4).className || ''}>
       <BlockPlaceholder />
       <BlockPlaceholder />
       <BlockPlaceholder />
@@ -11,10 +29,9 @@ export function DocumentPlaceholder() {
     </div>
   )
 }
-
 function BlockPlaceholder() {
   return (
-    <div className="flex w-full max-w-[600px] flex-col gap-2">
+    <div className={stylex.props(styles.s2be3f340).className || ''}>
       <Placeholder width="100%" />
       <Placeholder width="92%" />
       <Placeholder width="84%" />

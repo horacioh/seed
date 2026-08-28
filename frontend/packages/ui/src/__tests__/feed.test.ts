@@ -4,8 +4,7 @@ import {
   getDraftVersionInsertIndex,
   getLatestDocUpdateVersion,
   isSelectedDocUpdateVersion,
-  RESTORE_VERSION_ACTION_BUTTON_CLASS,
-  RESTORE_VERSION_ACTION_ICON_CLASS,
+  RESTORE_VERSION_ACTION_SLOT,
   RESTORE_VERSION_DIALOG,
   shouldShowDraftVersionEntry,
 } from '../feed'
@@ -106,12 +105,8 @@ describe('restore version action helpers', () => {
     ).toBe(false)
   })
 
-  it('keeps version action buttons the same size while making their icons readable', () => {
-    expect(RESTORE_VERSION_ACTION_BUTTON_CLASS).toContain('text-foreground')
-    expect(RESTORE_VERSION_ACTION_BUTTON_CLASS).not.toContain('text-muted-foreground')
-    expect(RESTORE_VERSION_ACTION_BUTTON_CLASS).not.toContain('h-')
-    expect(RESTORE_VERSION_ACTION_BUTTON_CLASS).not.toContain('min-w-')
-    expect(RESTORE_VERSION_ACTION_ICON_CLASS).toBe('size-4')
+  it('marks version action buttons with the slot the stylesheet reveals on row hover', () => {
+    expect(RESTORE_VERSION_ACTION_SLOT).toBe('restore-version-action')
   })
 
   it('does not allow restore without a provider-selected account', () => {

@@ -4,6 +4,27 @@ import {Button} from './button'
 import {Spinner} from './spinner'
 import {SizableText} from './text'
 import {cn} from './utils'
+const styles_3 = stylex.create({
+  s948be48c: {
+    flex: 'none',
+  },
+  s880858c0: {
+    flexShrink: '0',
+  },
+  s1aa15: {
+    padding: 'calc(0.25rem * 2)',
+  },
+})
+const styles_2 = stylex.create({
+  sf5f40c83: {
+    backgroundColor: 'color-mix(in oklab, var(--muted-foreground) 20%, transparent)',
+    height: '180px',
+    width: '100%',
+  },
+  sbe301420: {
+    backgroundColor: 'color-mix(in oklab, var(--muted-foreground) 20%, transparent)',
+  },
+})
 const styles = stylex.create({
   s5cf3d507: {
     marginInline: 'calc(0.25rem * -2)',
@@ -113,7 +134,7 @@ export function QueryBlockListPlaceholder() {
 }
 export function EntityCardPlaceholder() {
   return (
-    <div className="flex-basis-full sm:flex-basis-1/2 md:flex-basis-1/3 flex-none flex-shrink-0 p-2">
+    <div className={stylex.props(styles_3.s948be48c, styles_3.s880858c0, styles_3.s1aa15).className || ''}>
       <div className={stylex.props(styles.s556cad3e).className || ''}>
         <CoverPlaceholder />
         <div className={stylex.props(styles.s486e68e8).className || ''}>
@@ -140,7 +161,7 @@ export function EntityCardPlaceholder() {
   )
 }
 function CoverPlaceholder() {
-  return <div className="bg-muted-foreground/20 h-[180px] w-full" />
+  return <div className={stylex.props(styles_2.sf5f40c83).className || ''} />
 }
 function TextPlaceholder({
   height = 16,
@@ -196,7 +217,7 @@ function Skeleton(
   const {w, width, height, maxWidth, borderRadius, marginLeft, className, style, ...rest} = props
   return (
     <div
-      className={cn('bg-muted-foreground/20', className)}
+      className={cn(stylex.props(styles_2.sbe301420).className || '', className)}
       style={{
         width: w || (width ? `${width}px` : undefined),
         height: height ? `${height}px` : undefined,

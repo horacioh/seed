@@ -17,6 +17,25 @@ import {WebHeaderActions} from '@/web-utils'
 import {Suspense} from 'react'
 import {GeneralPageSurface} from '@shm/ui/general-page'
 import {Spinner} from '@shm/ui/spinner'
+const styles_3 = stylex.create({
+  s833a2e0e: {
+    display: 'flex',
+    width: '100%',
+    flex: '1',
+    flexDirection: 'column',
+    gap: 'calc(var(--spacing) * 4)',
+    paddingTop: 'var(--site-header-h)',
+    '@media ((min-width: 640px))': {
+      paddingTop: 'calc(var(--spacing) * 0)',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s6bedac16: {
+    minHeight: '100vh',
+    alignItems: 'center',
+  },
+})
 const styles = stylex.create({
   scdbaf625: {
     width: '100%',
@@ -54,7 +73,7 @@ export default function NotificationsRoute() {
   }
   return (
     <WebSiteProvider origin={origin} originHomeId={originHomeId} siteHost={siteHost} dehydratedState={dehydratedState}>
-      <GeneralPageSurface className="min-h-screen items-center">
+      <GeneralPageSurface className={stylex.props(styles_2.s6bedac16).className || ''}>
         <WebSiteHeader
           homeMetadata={homeMetadata}
           originHomeId={originHomeId}
@@ -63,7 +82,7 @@ export default function NotificationsRoute() {
           origin={origin}
           rightActions={<WebHeaderActions siteUid={originHomeId.uid} />}
         />
-        <NavigationLoadingContent className="flex w-full flex-1 flex-col gap-4 pt-[var(--site-header-h)] sm:pt-0">
+        <NavigationLoadingContent className={stylex.props(styles_3.s833a2e0e).className || ''}>
           <ClientOnly>
             <Suspense fallback={<Spinner />}>
               <WebNotificationsPage />

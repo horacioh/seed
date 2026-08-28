@@ -7,6 +7,16 @@ import {Text} from './text'
 import {toast} from './toast'
 import {Tooltip} from './tooltip'
 import {cn} from './utils'
+const styles_2 = stylex.create({
+  s2a2f6137: {
+    gap: 'calc(0.25rem * 2)',
+    padding: 'calc(0.25rem * 2.5)',
+  },
+  s78215fee: {
+    gap: 'calc(0.25rem * 1)',
+    padding: 'calc(0.25rem * 1)',
+  },
+})
 const styles = stylex.create({
   s3e6ca6c7: {
     display: 'flex',
@@ -30,7 +40,12 @@ const styles = stylex.create({
 export function CopyUrlField({url, label, size = 'md'}: {url: string; label: string; size?: 'sm' | 'md'}) {
   const {openUrl} = useUniversalAppContext()
   return (
-    <div className={cn(stylex.props(styles.s3e6ca6c7).className || '', size == 'md' ? 'gap-2 p-2.5' : 'gap-1 p-1')}>
+    <div
+      className={cn(
+        stylex.props(styles.s3e6ca6c7).className || '',
+        stylex.props(size == 'md' ? styles_2.s2a2f6137 : styles_2.s78215fee).className || '',
+      )}
+    >
       <div className={stylex.props(styles.s3b8925b9).className || ''}>
         <Text size={size} color="muted">
           {url}

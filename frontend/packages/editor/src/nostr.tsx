@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {Block, BlockNoteEditor, defaultProps, getBlockInfoFromPos} from '@shm/editor/blocknote'
 import {createReactBlockSpec} from './blocknote/react/ReactBlockSpec'
 import {DAEMON_FILE_UPLOAD_URL, DAEMON_FILE_URL} from '@shm/shared/constants'
@@ -10,7 +11,161 @@ import {cn} from '@shm/ui/utils'
 import {Event as NostrEvent, nip19, nip21, relayInit, validateEvent, verifySignature} from 'nostr-tools'
 import {useEffect, useState} from 'react'
 import {HMBlockSchema} from './schema'
-
+const styles_4 = stylex.create({
+  se117420b: {
+    ':is(.dark *)': {
+      ':hover': {
+        backgroundColor: 'color-mix(in oklab, #fff 10%, transparent)',
+      },
+    },
+  },
+})
+const styles_3 = stylex.create({
+  s7c41759e: {
+    ':is([data-state="active"])': {
+      boxShadow: 'none',
+    },
+  },
+})
+const styles_2 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+})
+const styles = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  sa2668687: {
+    right: 'calc(0.25rem * 1.5)',
+  },
+  sbbfc4140: {
+    top: 'calc(0.25rem * 1.5)',
+  },
+  s382471: {
+    zIndex: '20',
+  },
+  s347dc0f6: {
+    width: '60px',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  sa1762f51: {
+    fontFamily: 'var(--font-sans)',
+  },
+  s33458c: {
+    marginTop: 'calc(0.25rem * 2)',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s33458e: {
+    marginTop: 'calc(0.25rem * 4)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s529492ad: {
+    borderRadius: '0.25rem',
+  },
+  s47fbceb6: {
+    borderStyle: 'solid',
+    borderWidth: '2.5px',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  s11f8a88a: {
+    borderColor: 'var(--muted)',
+  },
+  s436dc7b6: {
+    backgroundColor: 'var(--background)',
+  },
+  s3301f9: {
+    marginBottom: 'calc(0.25rem * 1)',
+  },
+  sb41ffff4: {
+    height: 'auto',
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  s775ae258: {
+    borderRadius: '0',
+  },
+  s7c401f01: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+  },
+  s1aa13: {
+    padding: 'calc(0.25rem * 0)',
+  },
+  s6cb46864: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '0px',
+  },
+  s60f53bca: {
+    backgroundColor: 'transparent',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+  s34b56e: {
+    paddingBlock: 'calc(0.25rem * 2)',
+  },
+  sab7cc6fa: {
+    fontSize: '0.875rem',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  s129e46b3: {
+    fontWeight: '500',
+  },
+  s646c459b: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, #000 5%, transparent)',
+      },
+    },
+  },
+  s16e74d84: {
+    borderColor: 'var(--foreground)',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s1aa17: {
+    padding: 'calc(0.25rem * 4)',
+  },
+  s5d936fc: {
+    gap: 'calc(0.25rem * 3)',
+  },
+  s34a2a9: {
+    paddingTop: 'calc(0.25rem * 2)',
+  },
+})
 export const RELAY_LIST = [
   'wss://relayable.org',
   'wss://brb.io',
@@ -18,7 +173,6 @@ export const RELAY_LIST = [
   'wss://relay.damus.io',
   'wss://soloco.nl',
 ]
-
 export const NostrBlock = createReactBlockSpec({
   type: 'nostr',
   propSchema: {
@@ -45,7 +199,6 @@ export const NostrBlock = createReactBlockSpec({
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
 })
-
 type NostrType = {
   id: string
   props: {
@@ -58,14 +211,11 @@ type NostrType = {
   content: []
   type: string
 }
-
 const boolRegex = new RegExp('true')
-
 const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) => {
   const [selected, setSelected] = useState(false)
   const tiptapEditor = editor._tiptapEditor
   const selection = tiptapEditor.state.selection
-
   useEffect(() => {
     const selectedNode = getBlockInfoFromPos(tiptapEditor.state, tiptapEditor.state.selection.from)
     if (selectedNode && selectedNode.block.node.attrs.id) {
@@ -76,21 +226,21 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       }
     }
   }, [selection])
-
   const assignNostr = (newNostr: NostrType) => {
     editor.updateBlock(block.id, {
-      props: {...block.props, ...newNostr.props},
+      props: {
+        ...block.props,
+        ...newNostr.props,
+      },
       content: newNostr.content,
     })
     editor.setTextCursorPosition(block.id, 'end')
   }
-
   const setSelection = (isSelected: boolean) => {
     setSelected(isSelected)
   }
-
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className={stylex.props(styles.s2ffff9, styles.s67e351ac, styles.s92852dd5).className || ''}>
       {block.props.name ? (
         <NostrComponent
           block={block}
@@ -105,7 +255,6 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
     </div>
   )
 }
-
 function NostrComponent({
   block,
   editor,
@@ -121,14 +270,11 @@ function NostrComponent({
 }) {
   // @ts-ignore
   const nostrNpud = nip19.npubEncode(block.props.name)
-
   const [replace, setReplace] = useState<boolean>(false)
   const [verified, setVerified] = useState<boolean>()
   const [content, setContent] = useState<string>()
-
   const uri = `nostr:${nostrNpud}`
   const header = `${nostrNpud.slice(0, 6)}…${nostrNpud.slice(-6)}`
-
   if (block.props.name && block.props.name !== '') {
     fetch(`${DAEMON_FILE_URL}/${block.props.url}`, {
       method: 'GET',
@@ -146,12 +292,11 @@ function NostrComponent({
       }
     })
   }
-
   return (
     <div
       // @ts-ignore
       contentEditable={false}
-      className={`flex flex-col ${block.type}`}
+      className={stylex.props(styles_2.s2ffff9, styles_2.s67e351ac).className || ''}
       onMouseEnter={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setReplace(true)
       }}
@@ -161,7 +306,10 @@ function NostrComponent({
     >
       {replace && editor.isEditable ? (
         <Button
-          className="absolute top-1.5 right-1.5 z-20 w-[60px]"
+          className={
+            stylex.props(styles.s67010d77, styles.sa2668687, styles.sbbfc4140, styles.s382471, styles.s347dc0f6)
+              .className || ''
+          }
           size="sm"
           onClick={() =>
             assign({
@@ -180,10 +328,15 @@ function NostrComponent({
           replace
         </Button>
       ) : null}
-      <div className="flex">
-        <div className="border-border flex-1 rounded-md border font-sans">
-          <SizableText className="mt-2" size="2xl">
-            <div className="flex justify-between">
+      <div className={stylex.props(styles.s2ffff9).className || ''}>
+        <div
+          className={
+            stylex.props(styles.s1a01a0ed, styles.sb42feb5d, styles.sf79988b7, styles.sad8c742c, styles.sa1762f51)
+              .className || ''
+          }
+        >
+          <SizableText className={stylex.props(styles.s33458c).className || ''} size="2xl">
+            <div className={stylex.props(styles.s2ffff9, styles.sc1a629cb).className || ''}>
               <Text>
                 {'Public Key: '}
                 {nip21.test(uri) ? <a href={uri}>{header}</a> : header}
@@ -197,13 +350,12 @@ function NostrComponent({
               </Tooltip>
             </div>
           </SizableText>
-          <p className="mt-4">{content}</p>
+          <p className={stylex.props(styles.s33458e).className || ''}>{content}</p>
         </div>
       </div>
     </div>
   )
 }
-
 function NostrForm({
   block,
   assign,
@@ -224,34 +376,30 @@ function NostrForm({
     name: undefined,
     color: undefined,
   })
-
   useEffect(() => {
     if (note) ingestNote(note)
   }, [note])
-
   const delay = async (t = 100): Promise<void> => {
     await new Promise((resolve) => setTimeout(resolve, t))
   }
-
   const searchRelay = async (relayUrl: string, noteId: string): Promise<void> => {
     const relay = relayInit(relayUrl)
     relay.on('connect', () => {
-      setState({name: `Searching in ${relayUrl}`, color: 'green'})
+      setState({
+        name: `Searching in ${relayUrl}`,
+        color: 'green',
+      })
     })
     relay.on('error', () => {
       throw new Error()
     })
-
     await relay.connect()
-
     await delay(1000)
-
     const sub = relay.sub([
       {
         ids: [noteId],
       },
     ])
-
     sub.on('event', async (event) => {
       if (event.id === noteId) {
         setNote(event)
@@ -261,29 +409,27 @@ function NostrForm({
     sub.on('eose', () => {
       sub.unsub()
     })
-
     await delay(4000)
-
     if (!note) {
       sub.unsub()
       throw new Error()
     }
   }
-
   const searchNote = async () => {
-    setState({name: 'Connecting…', color: 'green'})
+    setState({
+      name: 'Connecting…',
+      color: 'green',
+    })
     const decodedBech32 = nip19.decode(nevent)
     let noteId = ''
     let relayListIndex = 0
     let relays = RELAY_LIST.sort(() => Math.random() - 0.5)
-
     if (decodedBech32.type === 'nevent') {
       noteId = decodedBech32.data.id
       relays = [...(decodedBech32.data.relays ?? []), ...RELAY_LIST]
     } else if (decodedBech32.type === 'note') {
       noteId = decodedBech32.data
     }
-
     const tryRelay = async () => {
       // @ts-ignore
       searchRelay(RELAY_LIST[relayListIndex], noteId).catch(() => {
@@ -291,19 +437,19 @@ function NostrForm({
         if (relayListIndex < RELAY_LIST.length) {
           tryRelay()
         } else {
-          setState({name: "Can't find the note in relays.", color: 'red'})
+          setState({
+            name: "Can't find the note in relays.",
+            color: 'red',
+          })
         }
       })
     }
-
     if (noteId !== '') tryRelay()
   }
-
   const submitNote = async (raw: string = rawNote) => {
     const event: NostrEvent = JSON.parse(raw)
     setNote(event)
   }
-
   const isValidEvent = (event: NostrEvent) => {
     try {
       return validateEvent(event) && verifySignature(event)
@@ -312,25 +458,26 @@ function NostrForm({
       return false
     }
   }
-
   const ingestNote = async (event: NostrEvent): Promise<void> => {
     if (isValidEvent(event)) {
       const blobData = [JSON.stringify(event)]
-      const blob = new Blob(blobData, {type: 'text/plain'})
-
+      const blob = new Blob(blobData, {
+        type: 'text/plain',
+      })
       const formData = new FormData()
       formData.append('file', blob, event.id)
       const response = await fetch(DAEMON_FILE_UPLOAD_URL, {
         method: 'POST',
         body: formData,
       })
-
       const data = await response.text()
       if (response.status !== 201) {
         throw new Error(data)
       }
-
-      setState({name: undefined, color: undefined})
+      setState({
+        name: undefined,
+        color: undefined,
+      })
       assign({
         props: {
           url: data,
@@ -346,10 +493,20 @@ function NostrForm({
       })
     }
   }
-
   return (
     <div
-      className="border-border relative flex flex-col rounded border-[2.5px] font-sans outline-none"
+      className={
+        stylex.props(
+          styles.s1a01a0ed,
+          styles.sdef3facc,
+          styles.s2ffff9,
+          styles.s67e351ac,
+          styles.s529492ad,
+          styles.s47fbceb6,
+          styles.sa1762f51,
+          styles.sa602a1e3,
+        ).className || ''
+      }
       // @ts-ignore
       contentEditable={false}
     >
@@ -362,14 +519,42 @@ function NostrForm({
           })
           setTabState(value)
         }}
-        className="flex flex-col"
+        className={stylex.props(styles.s2ffff9, styles.s67e351ac).className || ''}
       >
-        <TabsList className="border-muted bg-background mb-1 h-auto w-full rounded-none border-b p-0">
+        <TabsList
+          className={
+            stylex.props(
+              styles.s11f8a88a,
+              styles.s436dc7b6,
+              styles.s3301f9,
+              styles.sb41ffff4,
+              styles.scdbaf625,
+              styles.s775ae258,
+              styles.s7c401f01,
+              styles.s1aa13,
+            ).className || ''
+          }
+        >
           <TabsTrigger
             value="search"
             className={cn(
-              'h-auto flex-1 rounded-none border-b-0 bg-transparent px-4 py-2 text-sm font-medium hover:bg-black/5 data-[state=active]:shadow-none dark:hover:bg-white/10',
-              tabState === 'search' ? 'border-foreground border-b' : 'border-b-0',
+              stylex.props(
+                styles.sb41ffff4,
+                styles.sb42feb5d,
+                styles.s775ae258,
+                styles.s6cb46864,
+                styles.s60f53bca,
+                styles.s34b1af,
+                styles.s34b56e,
+                styles.sab7cc6fa,
+                styles.s129e46b3,
+                styles.s646c459b,
+              ).className || '',
+              stylex.props(styles_3.s7c41759e).className || '',
+              stylex.props(styles_4.se117420b).className || '',
+              tabState === 'search'
+                ? stylex.props(styles.s16e74d84, styles.s7c401f01).className || ''
+                : stylex.props(styles.s6cb46864).className || '',
             )}
           >
             <SizableText size="sm">Search</SizableText>
@@ -377,19 +562,39 @@ function NostrForm({
           <TabsTrigger
             value="manual"
             className={cn(
-              'h-auto flex-1 rounded-none border-b-0 bg-transparent px-4 py-2 text-sm font-medium hover:bg-black/5 data-[state=active]:shadow-none dark:hover:bg-white/10',
-              tabState === 'manual' ? 'border-foreground border-b' : 'border-b-0',
+              stylex.props(
+                styles.sb41ffff4,
+                styles.sb42feb5d,
+                styles.s775ae258,
+                styles.s6cb46864,
+                styles.s60f53bca,
+                styles.s34b1af,
+                styles.s34b56e,
+                styles.sab7cc6fa,
+                styles.s129e46b3,
+                styles.s646c459b,
+              ).className || '',
+              stylex.props(styles_3.s7c41759e).className || '',
+              stylex.props(styles_4.se117420b).className || '',
+              tabState === 'manual'
+                ? stylex.props(styles.s16e74d84, styles.s7c401f01).className || ''
+                : stylex.props(styles.s6cb46864).className || '',
             )}
           >
             <SizableText size="sm">Manual</SizableText>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="search">
-          <div className="bg-background flex items-center rounded p-4">
-            <form className="w-full" onSubmit={() => searchNote()}>
-              <div className="flex flex-1 gap-3">
+          <div
+            className={
+              stylex.props(styles.s436dc7b6, styles.s2ffff9, styles.sc6ed1702, styles.s529492ad, styles.s1aa17)
+                .className || ''
+            }
+          >
+            <form className={stylex.props(styles.scdbaf625).className || ''} onSubmit={() => searchNote()}>
+              <div className={stylex.props(styles.s2ffff9, styles.sb42feb5d, styles.s5d936fc).className || ''}>
                 <Input
-                  className="w-full"
+                  className={stylex.props(styles.scdbaf625).className || ''}
                   placeholder="Input nevent or note1"
                   onChange={(e) => setNevent(e.target.value)}
                   autoFocus={true}
@@ -398,7 +603,13 @@ function NostrForm({
                 <Button type="submit">SEARCH</Button>
               </div>
               {state.name && (
-                <SizableText size="sm" style={{color: state.color}} className="pt-2">
+                <SizableText
+                  size="sm"
+                  style={{
+                    color: state.color,
+                  }}
+                  className={stylex.props(styles.s34a2a9).className || ''}
+                >
                   {state.name}
                 </SizableText>
               )}
@@ -406,11 +617,16 @@ function NostrForm({
           </div>
         </TabsContent>
         <TabsContent value="manual">
-          <div className="bg-background flex items-center rounded p-4">
-            <form className="w-full" onSubmit={() => submitNote()}>
-              <div className="flex flex-1 gap-3">
+          <div
+            className={
+              stylex.props(styles.s436dc7b6, styles.s2ffff9, styles.sc6ed1702, styles.s529492ad, styles.s1aa17)
+                .className || ''
+            }
+          >
+            <form className={stylex.props(styles.scdbaf625).className || ''} onSubmit={() => submitNote()}>
+              <div className={stylex.props(styles.s2ffff9, styles.sb42feb5d, styles.s5d936fc).className || ''}>
                 <Input
-                  className="w-full"
+                  className={stylex.props(styles.scdbaf625).className || ''}
                   placeholder="Input JSON note"
                   onChange={(e) => setRawNote(e.target.value)}
                   autoFocus={true}
@@ -419,7 +635,13 @@ function NostrForm({
                 <Button type="submit">EMBED</Button>
               </div>
               {state.name && (
-                <SizableText size="sm" style={{color: state.color}} className="pt-2">
+                <SizableText
+                  size="sm"
+                  style={{
+                    color: state.color,
+                  }}
+                  className={stylex.props(styles.s34a2a9).className || ''}
+                >
                   {state.name}
                 </SizableText>
               )}

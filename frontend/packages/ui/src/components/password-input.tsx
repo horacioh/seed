@@ -9,6 +9,40 @@ import {Label} from './label'
  * Rates a password 0 (weak) / 1 (medium) / 2 (strong). Shared with the web vault
  * so the desktop and vault enforce the same minimum strength.
  */
+const strengthBarStyles = stylex.create({
+  base: {
+    height: '100%',
+    transitionProperty: 'all',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: '300ms',
+  },
+  weak: {
+    width: '33.3333%',
+    backgroundColor: 'var(--destructive)',
+  },
+  medium: {
+    width: '66.6667%',
+    backgroundColor: '#eab308',
+  },
+  strong: {
+    width: '100%',
+    backgroundColor: '#22c55e',
+  },
+})
+const styles_2 = stylex.create({
+  sf07abff9: {
+    position: 'absolute',
+    top: 'calc(var(--spacing) * 0)',
+    right: 'calc(var(--spacing) * 0)',
+    height: '100%',
+    width: 'calc(var(--spacing) * 10)',
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'transparent',
+      },
+    },
+  },
+})
 const styles = stylex.create({
   sfbc6e28e: {
     display: 'flex',
@@ -46,12 +80,6 @@ export function checkPasswordStrength(password: string): number {
   if (score <= 3) return 1
   return 2
 }
-const strengthConfig: Record<number, string> = {
-  0: 'w-1/3 bg-destructive',
-  1: 'w-2/3 bg-yellow-500',
-  2: 'w-full bg-green-500',
-}
-
 /**
  * Password input with a visibility toggle and optional strength meter. Shared
  * between the desktop app and the web vault.
@@ -75,6 +103,8 @@ export function PasswordInput({
 }) {
   const [showPassword, setShowPassword] = useState(false)
   const strength = showStrength ? checkPasswordStrength(value) : 0
+  const strengthStyle =
+    strength === 0 ? strengthBarStyles.weak : strength === 1 ? strengthBarStyles.medium : strengthBarStyles.strong
   return (
     <div className={stylex.props(styles.sfbc6e28e).className || ''}>
       <Label htmlFor={id}>{label}</Label>
@@ -95,7 +125,7 @@ export function PasswordInput({
           type="button"
           variant="ghost"
           size="icon"
-          className="absolute top-0 right-0 h-full w-10 hover:bg-transparent"
+          className={stylex.props(styles_2.sf07abff9).className || ''}
           onClick={() => setShowPassword(!showPassword)}
           aria-label={showPassword ? 'Hide password' : 'Show password'}
           title={showPassword ? 'Hide password' : 'Show password'}
@@ -109,7 +139,7 @@ export function PasswordInput({
       </div>
       {showStrength && value ? (
         <div className={stylex.props(styles.sebad82b1).className || ''}>
-          <div className={`h-full transition-all duration-300 ${strengthConfig[strength]}`} />
+          <div className={stylex.props(strengthBarStyles.base, strengthStyle).className || ''} />
         </div>
       ) : null}
     </div>

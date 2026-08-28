@@ -20,6 +20,23 @@ import {Label} from './label'
  * - `warning` renders destination-specific stakes (e.g. "this key will be sent
  *   to a remote server") between the file field and the submit controls.
  */
+const styles_2 = stylex.create({
+  s8c05c43f: {
+    maxWidth: '420px',
+  },
+  s37155a9b: {
+    borderColor: 'color-mix(in oklab, var(--destructive) 40%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
+    color: 'var(--destructive)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+})
 const styles = stylex.create({
   sfbc6e290: {
     display: 'flex',
@@ -85,7 +102,7 @@ export function ImportKeyDialog({
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[420px]">
+      <DialogContent className={stylex.props(styles_2.s8c05c43f).className || ''}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -105,11 +122,7 @@ export function ImportKeyDialog({
               placeholder="Only needed for encrypted files"
             />
           </div>
-          {warning ? (
-            <div className="border-destructive/40 bg-destructive/5 text-destructive rounded-md border px-3 py-2 text-sm">
-              {warning}
-            </div>
-          ) : null}
+          {warning ? <div className={stylex.props(styles_2.s37155a9b).className || ''}>{warning}</div> : null}
           {error ? <p className={stylex.props(styles.s11c1d1bc).className || ''}>{error}</p> : null}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

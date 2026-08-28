@@ -1,18 +1,311 @@
 import * as stylex from '@stylexjs/stylex'
 import {Slot} from '@radix-ui/react-slot'
-import {cva, type VariantProps} from 'class-variance-authority'
 import {Loader2} from 'lucide-react'
 import * as React from 'react'
 import {cn} from './utils'
 const styles = stylex.create({
-  s3b858bae: {
+  loader: {
     animation: 'spin 1s linear infinite',
   },
+  base: {
+    display: 'inline-flex',
+    userSelect: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.5rem',
+    whiteSpace: 'nowrap',
+    borderRadius: '0.375rem',
+    fontFamily: 'var(--font-sans)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    fontWeight: 500,
+    outline: 'none',
+    flexShrink: 0,
+    transitionProperty: 'all',
+    transitionDuration: '150ms',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    ':disabled': {
+      pointerEvents: 'none',
+      opacity: 0.5,
+    },
+    ':focus-visible': {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklch, var(--ring) 50%, transparent)',
+    },
+  },
+  variantDefault: {
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--primary) 90%, transparent)',
+    },
+  },
+  variantDestructive: {
+    backgroundColor: 'var(--destructive)',
+    color: 'var(--destructive-foreground)',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--destructive) 90%, transparent)',
+    },
+    ':focus-visible': {
+      boxShadow: 'var(--ring-destructive)',
+    },
+  },
+  variantOutline: {
+    backgroundColor: 'var(--input)',
+    color: 'var(--foreground)',
+    border: '1px solid var(--border-outline)',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--background)',
+      color: 'var(--accent-foreground)',
+      boxShadow: 'var(--shadow-md)',
+    },
+  },
+  variantSecondary: {
+    backgroundColor: 'var(--secondary)',
+    color: 'var(--secondary-foreground)',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--secondary) 80%, transparent)',
+    },
+  },
+  variantAccent: {
+    backgroundColor: 'var(--accent)',
+    color: 'var(--accent-foreground)',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'color-mix(in oklch, var(--accent) 80%, transparent)',
+    },
+  },
+  variantGhost: {
+    backgroundColor: 'transparent',
+    color: 'var(--foreground)',
+    borderColor: 'transparent',
+    ':hover': {
+      backgroundColor: 'var(--surface-hover)',
+      color: 'var(--foreground)',
+    },
+    ':active': {
+      backgroundColor: 'var(--overlay-5-10)',
+    },
+  },
+  variantLink: {
+    backgroundColor: 'transparent',
+    color: 'var(--primary)',
+    borderColor: 'transparent',
+    textDecoration: 'none',
+    textUnderlineOffset: '4px',
+    ':hover': {
+      textDecoration: 'underline',
+    },
+  },
+  variantBrand: {
+    backgroundColor: 'var(--brand)',
+    color: 'white',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--brand-4)',
+    },
+    ':active': {
+      backgroundColor: 'var(--brand-3)',
+    },
+  },
+  variantBrand12: {
+    backgroundColor: 'var(--brand-12)',
+    color: 'var(--foreground)',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--brand-11)',
+    },
+    ':active': {
+      backgroundColor: 'var(--brand-10)',
+    },
+  },
+  variantBlue: {
+    backgroundColor: 'var(--color-blue-700)',
+    color: 'white',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--color-blue-800)',
+    },
+  },
+  variantGreen: {
+    backgroundColor: 'var(--color-green-700)',
+    color: 'white',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--color-green-800)',
+    },
+  },
+  variantOrange: {
+    backgroundColor: 'var(--color-orange-700)',
+    color: 'white',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--color-orange-800)',
+    },
+  },
+  variantInverse: {
+    backgroundColor: 'var(--contrast)',
+    color: 'var(--surface-contrast)',
+    borderColor: 'transparent',
+    boxShadow: 'var(--shadow-xs)',
+    ':hover': {
+      backgroundColor: 'var(--contrast-90)',
+    },
+  },
+  sizeXs: {
+    height: '1.5rem',
+    minWidth: '1.5rem',
+    borderRadius: '0.375rem',
+    gap: '0.375rem',
+    paddingBlock: 0,
+    paddingInline: {
+      default: '0.5rem',
+      ':has(> svg)': '0.375rem',
+    },
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  },
+  sizeSm: {
+    height: '2rem',
+    minWidth: '2rem',
+    borderRadius: '0.375rem',
+    gap: '0.375rem',
+    paddingBlock: 0,
+    paddingInline: {
+      default: '0.75rem',
+      ':has(> svg)': '0.625rem',
+    },
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  },
+  sizeDefault: {
+    height: '2.25rem',
+    minWidth: '2.25rem',
+    paddingBlock: '0.5rem',
+    paddingInline: {
+      default: '1rem',
+      ':has(> svg)': '0.75rem',
+    },
+  },
+  sizeLg: {
+    height: '2.5rem',
+    minWidth: '2.5rem',
+    borderRadius: '0.375rem',
+    paddingBlock: 0,
+    paddingInline: {
+      default: '1.5rem',
+      ':has(> svg)': '1rem',
+    },
+  },
+  sizeIcon: {
+    height: '2rem',
+    width: '2rem',
+    minWidth: '2rem',
+    borderRadius: '0.375rem',
+    paddingInline: {
+      default: null,
+      ':has(> svg)': '0.5rem',
+    },
+  },
+  sizeIconSm: {
+    height: '1.5rem',
+    width: '1.5rem',
+    minWidth: '1.5rem',
+    borderRadius: '0.375rem',
+    paddingInline: {
+      default: null,
+      ':has(> svg)': '0.25rem',
+    },
+  },
 })
+export type ButtonVariant =
+  | 'default'
+  | 'destructive'
+  | 'danger'
+  | 'outline'
+  | 'secondary'
+  | 'accent'
+  | 'ghost'
+  | 'link'
+  | 'brand'
+  | 'brand-12'
+  | 'blue'
+  | 'green'
+  | 'orange'
+  | 'inverse'
+export type ButtonSize = 'xs' | 'sm' | 'default' | 'lg' | 'icon' | 'iconSm'
+export interface ButtonVariantProps {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+}
+function variantStyle(variant: ButtonVariant) {
+  switch (variant) {
+    case 'default':
+      return styles.variantDefault
+    case 'destructive':
+    case 'danger':
+      return styles.variantDestructive
+    case 'outline':
+      return styles.variantOutline
+    case 'secondary':
+      return styles.variantSecondary
+    case 'accent':
+      return styles.variantAccent
+    case 'ghost':
+      return styles.variantGhost
+    case 'link':
+      return styles.variantLink
+    case 'brand':
+      return styles.variantBrand
+    case 'brand-12':
+      return styles.variantBrand12
+    case 'blue':
+      return styles.variantBlue
+    case 'green':
+      return styles.variantGreen
+    case 'orange':
+      return styles.variantOrange
+    case 'inverse':
+      return styles.variantInverse
+  }
+}
+function sizeStyle(size: ButtonSize) {
+  switch (size) {
+    case 'xs':
+      return styles.sizeXs
+    case 'sm':
+      return styles.sizeSm
+    case 'lg':
+      return styles.sizeLg
+    case 'icon':
+      return styles.sizeIcon
+    case 'iconSm':
+      return styles.sizeIconSm
+    default:
+      return styles.sizeDefault
+  }
+}
+export function buttonVariants({variant = 'ghost', size = 'default', className}: ButtonVariantProps = {}) {
+  return cn(stylex.props(styles.base, variantStyle(variant), sizeStyle(size)).className, className)
+}
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<'button'> &
-    VariantProps<typeof buttonVariants> & {
+    ButtonVariantProps & {
       asChild?: boolean
       loading?: boolean
     }
@@ -26,8 +319,8 @@ export const Button = React.forwardRef<
         buttonVariants({
           variant,
           size,
-          className,
         }),
+        className,
       )}
       disabled={loading || props.disabled}
       {...props}
@@ -36,7 +329,7 @@ export const Button = React.forwardRef<
         children
       ) : (
         <>
-          {loading ? <Loader2 className={stylex.props(styles.s3b858bae).className || ''} /> : null}
+          {loading ? <Loader2 className={stylex.props(styles.loader).className || ''} /> : null}
           {children}
         </>
       )}
@@ -44,12 +337,7 @@ export const Button = React.forwardRef<
   )
 })
 Button.displayName = 'Button'
-export function ButtonLink({
-  className,
-  variant,
-  size,
-  ...props
-}: React.ComponentProps<'a'> & VariantProps<typeof buttonVariants>) {
+export function ButtonLink({className, variant, size, ...props}: React.ComponentProps<'a'> & ButtonVariantProps) {
   return (
     <a
       data-slot="button-link"
@@ -57,53 +345,14 @@ export function ButtonLink({
         buttonVariants({
           variant,
           size,
-          className,
         }),
+        className,
       )}
       {...props}
     />
   )
 }
 export type ButtonProps = React.ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
+  ButtonVariantProps & {
     asChild?: boolean
   }
-export const buttonVariants = cva(
-  "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-md font-sans text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive dark:hover:bg-destructive/90',
-        danger:
-          'bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive dark:hover:bg-destructive/90',
-        outline:
-          'border bg-input shadow-xs hover:bg-background hover:shadow-md hover:text-accent-foreground dark:border-input',
-        secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
-        accent: 'bg-accent text-accent-foreground shadow-xs hover:bg-accent/80',
-        ghost:
-          'active:bg-black/5 text-foreground dark:active:bg-white/10 hover:text-foreground hover:bg-black/5 dark:hover:bg-muted',
-        link: 'text-primary underline-offset-4 hover:underline',
-        brand: 'bg-brand text-white shadow-xs hover:bg-brand-4 active:brand-3',
-        'brand-12': 'bg-brand-12 shadow-xs hover:bg-brand-11 active:bg-brand-10',
-        blue: 'bg-blue-700 text-white shadow-xs hover:bg-blue-800',
-        green: 'bg-green-700 text-white shadow-xs hover:bg-green-800',
-        orange: 'bg-orange-700 text-white shadow-xs hover:bg-orange-800',
-        inverse: 'bg-black text-white shadow-xs hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90',
-      },
-      size: {
-        xs: 'h-6 rounded-md gap-1.5 px-2 has-[>svg]:px-1.5 text-xs',
-        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 text-sm',
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'h-8 min-w-8 rounded-md has-[>svg]:px-2',
-        iconSm: 'h-6 min-w-6 rounded-md has-[>svg]:px-1',
-      },
-    },
-    defaultVariants: {
-      variant: 'ghost',
-      size: 'default',
-    },
-  },
-)

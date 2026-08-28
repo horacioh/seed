@@ -167,8 +167,7 @@ describe('DocumentMetadataAffordanceButtons', () => {
     renderButtons({visible: false, fileUpload: vi.fn(), alwaysVisibleOnMobile: true})
     const affordanceRow = container.querySelector('[data-document-metadata-affordances]')!
 
-    expect(affordanceRow.className).toContain('opacity-100')
-    expect(affordanceRow.className).toContain('md:opacity-0')
+    expect(affordanceRow.getAttribute('data-visibility')).toBe('mobile-visible')
   })
 
   it('shows only the gated actions in the mobile Add menu', () => {
@@ -281,8 +280,7 @@ describe('EditableDocumentMetadataFields', () => {
       container.querySelector<HTMLTextAreaElement>('textarea[aria-label="Document title"]')?.focus()
     })
 
-    expect(affordanceRow.className).toContain('opacity-100')
-    expect(affordanceRow.className).toContain('md:opacity-0')
+    expect(affordanceRow.getAttribute('data-visibility')).toBe('mobile-visible')
   })
 
   it('focuses the title when requested by the document machine', async () => {
@@ -324,10 +322,7 @@ describe('EditableDocumentMetadataFields', () => {
     await renderFields({fileUpload: vi.fn()})
     const affordanceRow = container.querySelector('[data-document-metadata-affordances]')!
 
-    expect(affordanceRow.className).toContain('opacity-0')
-    expect(affordanceRow.className).not.toContain('max-h-0')
-    expect(affordanceRow.className).not.toContain('translate-y')
-    expect(affordanceRow.className).not.toContain('blur')
+    expect(affordanceRow.getAttribute('data-visibility')).toBe('hover')
   })
 
   it('offsets header affordances left to visually align with the title edge', async () => {
@@ -606,7 +601,9 @@ describe('HomeDocumentMetadataAffordanceBar', () => {
     expect(bar).not.toBeNull()
     expect(bar?.tabIndex).toBe(-1)
     expect(buttonWithText('Add icon')).not.toBeNull()
-    expect(container.querySelector('[data-document-metadata-affordances]')?.className).toContain('opacity-100')
+    expect(container.querySelector('[data-document-metadata-affordances]')?.getAttribute('data-visibility')).toBe(
+      'visible',
+    )
   })
 
   it('does not render summary controls for home documents', async () => {

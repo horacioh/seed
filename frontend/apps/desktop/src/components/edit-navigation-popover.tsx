@@ -18,6 +18,167 @@ import {cn} from '@shm/ui/utils'
 import {ChevronDown, EllipsisVertical, Globe, Pencil, Plus, Search, Trash} from 'lucide-react'
 import {nanoid} from 'nanoid'
 import {useEffect, useRef, useState} from 'react'
+const styles_5 = stylex.create({
+  sc883a3d5: {
+    boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+  },
+})
+const styles_4 = stylex.create({
+  s66bc867c: {
+    maxHeight: '80vh',
+    width: '420px',
+    overflowY: 'auto',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-8-10)',
+    backgroundColor: 'var(--surface-contrast)',
+    padding: 'calc(var(--spacing) * 0)',
+  },
+  sd6c4b7fc: {
+    borderBottomStyle: 'solid',
+    borderBottomWidth: '1px',
+    borderColor: 'var(--overlay-8-10)',
+    backgroundColor: 'var(--surface-black)',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 3)',
+  },
+  s4cb35e7: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    marginTop: 'calc(var(--spacing) * 1)',
+    justifyContent: 'flex-start',
+    paddingInline: 'calc(var(--spacing) * 2)',
+  },
+  s5e1d0a35: {
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-8-10)',
+    backgroundColor: 'var(--surface-contrast)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  sad3d4715: {
+    borderColor: 'color-mix(in oklab, var(--primary) 30%, transparent)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 20%, transparent)',
+  },
+  sd07b7b7c: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
+    },
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 3)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingBlock: 'calc(var(--spacing) * 2.5)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8ce93e28: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+  },
+  s32a3e7ae: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    cursor: 'grab',
+    padding: 'calc(var(--spacing) * 1)',
+    ':active': {
+      cursor: 'grabbing',
+    },
+  },
+  s5bfcc649: {
+    borderRadius: 'calc(infinity * 1px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--text-muted-strong)',
+    backgroundColor: 'var(--scrim)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 0.5)',
+    fontSize: '11px',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--tone-amber-900)',
+  },
+  s74d9b7a0: {
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    borderColor: 'var(--overlay-8-10)',
+    backgroundColor: 'var(--surface-black)',
+    paddingInline: 'calc(var(--spacing) * 3)',
+    paddingTop: 'calc(var(--spacing) * 2.5)',
+    paddingBottom: 'calc(var(--spacing) * 3)',
+  },
+  sb412c02f: {
+    color: 'var(--destructive)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--destructive)',
+        opacity: '100%',
+      },
+    },
+    paddingInline: 'calc(var(--spacing) * 2)',
+  },
+  s7152e96b: {
+    color: 'var(--muted-foreground)',
+    position: 'absolute',
+    top: '50%',
+    left: 'calc(var(--spacing) * 3)',
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+    translate: '0 -50%',
+  },
+  s6823aae4: {
+    zIndex: '50',
+    maxHeight: '50vh',
+    overflowY: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: 'var(--overlay-8-10)',
+    backgroundColor: 'var(--surface-contrast)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+})
+const styles_3 = stylex.create({
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  sfb3beb77: {
+    rotate: '180deg',
+  },
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+})
+const styles_2 = stylex.create({
+  s2920039f: {
+    display: 'flex',
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+    alignItems: 'center',
+    gap: 'calc(0.25rem * 2)',
+    textAlign: 'left',
+  },
+})
 const styles = stylex.create({
   sca3de968: {
     width: 'calc(0.25rem * 4)',
@@ -140,7 +301,7 @@ export function EditNavPopover({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="max-h-[80vh] w-[420px] overflow-y-auto rounded-xl border border-black/8 bg-white p-0 dark:border-white/10 dark:bg-black">
+      <PopoverContent className={stylex.props(styles_4.s66bc867c).className || ''}>
         <EditNavigation docNav={docNav} onDocNav={editDocNav} homeId={homeId} />
       </PopoverContent>
     </Popover>
@@ -206,7 +367,7 @@ function EditNavigation({
   }, [docNav, expandedItemId])
   return (
     <div className={stylex.props(styles.s783f19f3).className || ''} ref={containerRef}>
-      <div className="border-b border-black/8 px-4 py-3 dark:border-white/10">
+      <div className={stylex.props(styles_4.sd6c4b7fc).className || ''}>
         <div className={stylex.props(styles.s9d4b128d).className || ''}>Navigation</div>
         <div className={stylex.props(styles.sabdedac1).className || ''}>Choose the links shown in the top bar.</div>
       </div>
@@ -240,7 +401,7 @@ function EditNavigation({
           <Button
             size="sm"
             variant="ghost"
-            className="text-muted-foreground hover:text-foreground mt-1 justify-start px-2"
+            className={stylex.props(styles_4.s4cb35e7).className || ''}
             onClick={() => {
               const newItem = createEmptyNavigationItem()
               setExpandedItemId(newItem.id)
@@ -308,15 +469,15 @@ function DraggableNavItem({
     <div
       ref={cardRef}
       className={cn(
-        'overflow-hidden rounded-lg border border-black/8 bg-white transition-colors dark:border-white/10 dark:bg-black',
-        isDraggingOver && 'ring-primary/60 ring-2',
-        isExpanded && 'border-primary/30 bg-muted/20',
+        stylex.props(styles_4.s5e1d0a35).className || '',
+        isDraggingOver ? stylex.props(styles_5.sc883a3d5).className || '' : '',
+        stylex.props(isExpanded ? styles_4.sad3d4715 : null).className || '',
       )}
     >
       <div
         className={cn(
-          'hover:bg-muted/60 flex items-center gap-3 px-3 py-2.5 transition-colors',
-          isExpanded && 'bg-muted/40',
+          stylex.props(styles_4.sd07b7b7c).className || '',
+          stylex.props(isExpanded ? styles_4.s8ce93e28 : null).className || '',
         )}
         ref={dragHandleRef}
         style={{
@@ -325,28 +486,29 @@ function DraggableNavItem({
           cursor: 'grab',
         }}
       >
-        <div className="text-muted-foreground hover:text-foreground cursor-grab p-1 active:cursor-grabbing">
+        <div className={stylex.props(styles_4.s32a3e7ae).className || ''}>
           <EllipsisVertical size={16} />
         </div>
-        <button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={onToggleExpanded}>
+        <button type="button" className={stylex.props(styles_2.s2920039f).className || ''} onClick={onToggleExpanded}>
           <span
             className={cn(
               stylex.props(styles.scdaedd9c).className || '',
-              item.text === '' ? 'text-muted-foreground' : '',
+              stylex.props(item.text === '' ? styles_3.sf2718385 : null).className || '',
             )}
           >
             {item.text || 'Untitled item'}
           </span>
-          {isIncomplete ? (
-            <span className="rounded-full border border-amber-300/60 bg-amber-100/70 px-2 py-0.5 text-[11px] font-medium text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200">
-              Incomplete
-            </span>
-          ) : null}
-          <ChevronDown className={cn(stylex.props(styles.s83ece90e).className || '', isExpanded && 'rotate-180')} />
+          {isIncomplete ? <span className={stylex.props(styles_4.s5bfcc649).className || ''}>Incomplete</span> : null}
+          <ChevronDown
+            className={cn(
+              stylex.props(styles.s83ece90e).className || '',
+              stylex.props(isExpanded && styles_3.sfb3beb77).className || '',
+            )}
+          />
         </button>
       </div>
       {isExpanded ? (
-        <div className="border-t border-black/8 px-3 pt-2.5 pb-3 dark:border-white/10">
+        <div className={stylex.props(styles_4.s74d9b7a0).className || ''}>
           <NavItemForm
             item={item}
             homeId={homeId}
@@ -412,7 +574,7 @@ function NavItemForm({
           <Button
             size="sm"
             variant="ghost"
-            className="text-destructive hover:text-destructive px-2"
+            className={stylex.props(styles_4.sb412c02f).className || ''}
             onClick={() => {
               onRemove()
             }}
@@ -460,10 +622,13 @@ export function HMDocURLInput({
   return (
     <div className={stylex.props(styles.sfbc6e28e).className || ''}>
       <div className={stylex.props(styles.sdef3facc).className || ''}>
-        <Icon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <Icon className={stylex.props(styles_4.s7152e96b).className || ''} />
         <Input
           aria-label="Link"
-          className={cn(stylex.props(styles.s3484a8).className || '', link ? 'text-primary' : 'text-muted-foreground')}
+          className={cn(
+            stylex.props(styles.s3484a8).className || '',
+            stylex.props(link ? styles_3.s1bfab962 : styles_3.sf2718385).className || '',
+          )}
           value={query}
           placeholder="Search documents or paste URL"
           onFocus={() => {
@@ -654,7 +819,7 @@ function SearchUI({
     }
   }, [normalizedFocusedIndex, onActiveResultChange, results])
   return (
-    <div className="z-50 max-h-[50vh] overflow-y-auto rounded-md border border-black/8 bg-white shadow-sm dark:border-white/10 dark:bg-black">
+    <div className={stylex.props(styles_4.s6823aae4).className || ''}>
       {isResolvingUrl ? (
         <div className={stylex.props(styles.sa02df2af).className || ''}>
           <Spinner />

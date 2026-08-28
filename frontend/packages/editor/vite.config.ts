@@ -6,7 +6,11 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [stylex.vite(), react(), tsconfigPaths({root: path.resolve(__dirname, '../..')})],
+  plugins: [
+    stylex.vite({lightningcssOptions: {minify: true}}),
+    react(),
+    tsconfigPaths({root: path.resolve(__dirname, '../..')}),
+  ],
   resolve: {
     dedupe: [
       '@shm/shared',

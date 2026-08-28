@@ -42,6 +42,313 @@ import {cn} from './utils'
  * document metadata editor (attribute-publish constraints) and the raw
  * DAG-CBOR blob editor (full CBOR data model).
  */
+const styles_7 = stylex.create({
+  s5d936ff: {
+    gap: 'calc(0.25rem * 6)',
+  },
+  s1aa19: {
+    padding: 'calc(0.25rem * 6)',
+  },
+  sca5958fa: {
+    padding: 'calc(0.25rem * 7)',
+  },
+})
+const styles_6 = stylex.create({
+  sbeae75af: {
+    backdropFilter: 'blur(2px)',
+    WebkitBackdropFilter: 'blur(2px)',
+  },
+})
+const styles_5 = stylex.create({
+  sc3d470af: {
+    ':active': {
+      cursor: 'grabbing',
+    },
+  },
+  s442d9fa9: {
+    ':is([class~="group/item"]:focus-within *)': {
+      opacity: '100%',
+    },
+  },
+  s37bc4ec9: {
+    ':is([class~="group/item"]:hover *)': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_4 = stylex.create({
+  s879bac54: {
+    zIndex: '100',
+  },
+  sabb46631: {
+    minWidth: 'calc(0.25rem * 44)',
+  },
+  sb4372171: {
+    textOverflow: 'ellipsis',
+  },
+  saaddf753: {
+    whiteSpace: 'pre',
+  },
+  sc43c4bd2: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 70%, transparent)',
+  },
+  s18c11: {
+    height: 'calc(0.25rem * 6)',
+  },
+})
+const styles_3 = stylex.create({
+  sc43c4bf6: {
+    backgroundColor: 'color-mix(in oklab, var(--background) 85%, transparent)',
+  },
+  s8ce93e66: {
+    backgroundColor: 'color-mix(in oklab, var(--muted) 60%, transparent)',
+  },
+  s54eab77e: {
+    opacity: '40%',
+  },
+  s2ad4930: {
+    marginLeft: 'calc(0.25rem * -1)',
+  },
+  s9fa93e63: {
+    cursor: 'grab',
+  },
+  s9bf10647: {
+    width: 'calc(100% - 2rem)',
+  },
+  sda9fd615: {
+    height: '40rem',
+  },
+  s84d08d8f: {
+    maxHeight: 'calc(var(--vvh,1vh) * 100 - 4rem)',
+  },
+})
+const styles_2 = stylex.create({
+  s5cee774: {
+    position: 'fixed',
+  },
+  s74a79380: {
+    inset: 'calc(var(--spacing) * 0)',
+  },
+  s56bd391d: {
+    backgroundColor: 'var(--popover)',
+  },
+  s9a29c60b: {
+    color: 'var(--popover-foreground)',
+  },
+  s67010d77: {
+    position: 'absolute',
+  },
+  s2ffff9: {
+    display: 'flex',
+  },
+  s67e351ac: {
+    flexDirection: 'column',
+  },
+  sf79988b7: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  sad8c742c: {
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s1aa14: {
+    padding: 'calc(var(--spacing) * 1)',
+  },
+  s8a6c2964: {
+    boxShadow: '\n var(--shadow-md)',
+  },
+  s95afba94: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+  },
+  scdbaf625: {
+    width: '100%',
+  },
+  sc6ed1702: {
+    alignItems: 'center',
+  },
+  s5d936fb: {
+    gap: 'calc(var(--spacing) * 2)',
+  },
+  sf799897a: {
+    borderRadius: 'calc(var(--radius) - 4px)',
+  },
+  s34b1ad: {
+    paddingInline: 'calc(var(--spacing) * 2)',
+  },
+  sc5dd13f4: {
+    paddingBlock: 'calc(var(--spacing) * 1.5)',
+  },
+  sbf63b0a7: {
+    textAlign: 'left',
+  },
+  sab7cc6fa: {
+    fontSize: 'var(--text-sm)',
+    lineHeight: 'var(--text-sm--line-height)',
+  },
+  sf7fb00e8: {
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s8a2570e2: {
+    color: 'var(--destructive)',
+  },
+  sf2718385: {
+    color: 'var(--muted-foreground)',
+  },
+  s8a6c2ac8: {
+    boxShadow: '\n var(--shadow-xs)',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+  sae6a97a5: {
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+      },
+    },
+  },
+  sca3de968: {
+    width: 'calc(var(--spacing) * 4)',
+    height: 'calc(var(--spacing) * 4)',
+  },
+  sf032ed6c: {
+    flexShrink: '0',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s597c48d: {
+    display: 'block',
+  },
+  sfcf3a2ae: {
+    maxWidth: '100%',
+  },
+  s92852dd5: {
+    overflow: 'hidden',
+  },
+  sa173a9a1: {
+    fontFamily: 'var(--font-mono)',
+  },
+  sab7cc79b: {
+    fontSize: 'var(--text-xs)',
+    lineHeight: 'var(--text-xs--line-height)',
+  },
+  sdef3facc: {
+    position: 'relative',
+  },
+  s93b5f015: {
+    alignItems: 'flex-start',
+  },
+  sa602a1e3: {
+    outlineStyle: 'none',
+  },
+  s3f58665f: {
+    minWidth: 'calc(var(--spacing) * 0)',
+  },
+  sb42feb5d: {
+    flex: '1',
+  },
+  s5d936fa: {
+    gap: 'calc(var(--spacing) * 1)',
+  },
+  s1bfab962: {
+    color: 'var(--primary)',
+  },
+  s8ecdafd3: {
+    wordBreak: 'break-all',
+  },
+  sd30dd60e: {
+    ':hover': {
+      '@media (hover: hover)': {
+        textDecorationLine: 'underline',
+      },
+    },
+  },
+  s5d1fb7e0: {
+    backgroundColor: 'color-mix(in oklab, var(--primary) 5%, transparent)',
+  },
+  sc883a3d5: {
+    boxShadow: '0 0 0 2px var(--ring-color, currentcolor)',
+  },
+  s1a01a0ed: {
+    borderColor: 'var(--border)',
+  },
+  s9b8736ad: {
+    display: 'inline-flex',
+  },
+  sf4676641: {
+    gap: 'calc(var(--spacing) * 1.5)',
+  },
+  s34b56d: {
+    paddingBlock: 'calc(var(--spacing) * 1)',
+  },
+  s37120a61: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--muted)',
+      },
+    },
+  },
+  sc7847ec6: {
+    cursor: 'pointer',
+  },
+  s4c967259: {
+    backgroundColor: 'color-mix(in oklab, var(--accent) 40%, transparent)',
+  },
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s83442393: {
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+  s3824ce: {
+    zIndex: '50',
+  },
+  s33458b: {
+    marginTop: 'calc(var(--spacing) * 1)',
+  },
+  s158c30d2: {
+    maxHeight: 'calc(var(--spacing) * 48)',
+  },
+  sac38f2ae: {
+    overflowY: 'auto',
+  },
+  s8a6c2948: {
+    boxShadow: '\n var(--shadow-lg)',
+  },
+  sc1a629cb: {
+    justifyContent: 'space-between',
+  },
+  s5d936fc: {
+    gap: 'calc(var(--spacing) * 3)',
+  },
+  s5542e25a: {
+    fontSize: '11px',
+  },
+  s9315a67a: {
+    '@media ((min-width: 640px))': {
+      maxWidth: 'var(--container-lg)',
+    },
+  },
+  s4ea16215: {
+    marginTop: 'auto',
+  },
+  s34b1ac: {
+    paddingInline: 'calc(var(--spacing) * 1)',
+  },
+  sca3de967: {
+    width: 'calc(var(--spacing) * 3)',
+    height: 'calc(var(--spacing) * 3)',
+  },
+})
 const styles = stylex.create({
   sbe3dc205: {
     opacity: '0%',
@@ -398,10 +705,41 @@ export function findInvalidValue(value: unknown, rules: ValueEditorRules, path: 
 }
 
 // No text-transform: keys are case-sensitive data, so they display verbatim.
-export const FIELD_LABEL_CLASS = 'text-muted-foreground text-xs font-medium'
-const NESTED_GROUP_CLASS = 'border-border ml-1 flex flex-col gap-1 border-l-2 pl-3'
-// Expanded objects get a boxed treatment (border + slight fill) so their extent is clear.
-const NESTED_OBJECT_CLASS = 'border-border bg-muted/40 flex flex-col gap-1 rounded-md border px-3 py-2'
+const layoutStyles = stylex.create({
+  fieldLabel: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    fontWeight: 500,
+  },
+  nestedGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+    marginLeft: '0.25rem',
+    borderLeftWidth: '2px',
+    borderLeftStyle: 'solid',
+    borderLeftColor: 'var(--border)',
+    paddingLeft: '0.75rem',
+  },
+  // Expanded objects get a boxed treatment (border + slight fill) so their extent is clear.
+  nestedObject: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: '0.375rem',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    paddingInline: '0.75rem',
+    paddingBlock: '0.5rem',
+  },
+})
+/** Class for the small muted key label shown next to editable values. */
+export const FIELD_LABEL_CLASS = stylex.props(layoutStyles.fieldLabel).className || ''
+const NESTED_GROUP_CLASS = stylex.props(layoutStyles.nestedGroup).className || ''
+const NESTED_OBJECT_CLASS = stylex.props(layoutStyles.nestedObject).className || ''
 
 // ---------------------------------------------------------------------------
 // Undo history
@@ -819,7 +1157,11 @@ export function ValueEditorProvider({
         {children}
         {menu && (
           <div
-            className="fixed inset-0 z-[100]"
+            className={
+              (stylex.props(styles_2.s5cee774, styles_2.s74a79380).className || '') +
+              ' ' +
+              (stylex.props(styles_4.s879bac54).className || '')
+            }
             onClick={() => setMenu(null)}
             onContextMenu={(e) => {
               e.preventDefault()
@@ -827,7 +1169,21 @@ export function ValueEditorProvider({
             }}
           >
             <div
-              className="bg-popover text-popover-foreground absolute flex min-w-44 flex-col rounded-md border p-1 shadow-md"
+              className={
+                (stylex.props(
+                  styles_2.s56bd391d,
+                  styles_2.s9a29c60b,
+                  styles_2.s67010d77,
+                  styles_2.s2ffff9,
+                  styles_2.s67e351ac,
+                  styles_2.sf79988b7,
+                  styles_2.sad8c742c,
+                  styles_2.s1aa14,
+                  styles_2.s8a6c2964,
+                ).className || '') +
+                ' ' +
+                (stylex.props(styles_4.sabb46631).className || '')
+              }
               style={{
                 left: Math.min(menu.x, typeof window !== 'undefined' ? window.innerWidth - 200 : menu.x),
                 top: Math.min(
@@ -841,8 +1197,20 @@ export function ValueEditorProvider({
                   key={action.key}
                   type="button"
                   className={cn(
-                    'hover:bg-accent flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors',
-                    action.destructive && 'text-destructive',
+                    stylex.props(
+                      styles_2.s95afba94,
+                      styles_2.s2ffff9,
+                      styles_2.scdbaf625,
+                      styles_2.sc6ed1702,
+                      styles_2.s5d936fb,
+                      styles_2.sf799897a,
+                      styles_2.s34b1ad,
+                      styles_2.sc5dd13f4,
+                      styles_2.sbf63b0a7,
+                      styles_2.sab7cc6fa,
+                      styles_2.sf7fb00e8,
+                    ).className || '',
+                    action.destructive ? stylex.props(styles_2.s8a2570e2).className || '' : '',
                   )}
                   onClick={() => {
                     setMenu(null)
@@ -972,8 +1340,23 @@ function useRowSelection(
     rowProps,
   }
 }
-const ROW_CLASS = '-mx-1 rounded-md px-1 py-0.5 transition-colors'
-const ROW_SELECTED_CLASS = 'bg-accent/70 ring-border ring-1'
+const rowStyles = stylex.create({
+  row: {
+    marginInline: '-0.25rem',
+    borderRadius: '0.375rem',
+    paddingInline: '0.25rem',
+    paddingBlock: '0.125rem',
+    transitionProperty: 'color, background-color, border-color, box-shadow',
+    transitionDuration: '150ms',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  },
+  selected: {
+    backgroundColor: 'color-mix(in oklab, var(--accent) 70%, transparent)',
+    boxShadow: '0 0 0 1px var(--border)',
+  },
+})
+const ROW_CLASS = stylex.props(rowStyles.row).className || ''
+const ROW_SELECTED_CLASS = stylex.props(rowStyles.selected).className || ''
 
 // ---------------------------------------------------------------------------
 // Row components
@@ -1002,9 +1385,11 @@ function RowActionsMenu({
           size="iconSm"
           aria-label={label}
           className={cn(
-            'text-muted-foreground bg-background/85 shadow-xs backdrop-blur-[2px]',
+            stylex.props(styles_2.sf2718385, styles_2.s8a6c2ac8).className || '',
+            stylex.props(styles_3.sc43c4bf6).className || '',
+            stylex.props(styles_6.sbeae75af).className || '',
             stylex.props(styles.sbe3dc205).className || '',
-            open && 'opacity-100',
+            open ? stylex.props(styles_2.s486c2d2f).className || '' : '',
             className,
           )}
           onClick={(e) => e.stopPropagation()}
@@ -1033,7 +1418,17 @@ function CollapseToggle({collapsed, onToggle}: {collapsed: boolean; onToggle: ()
       type="button"
       aria-label={collapsed ? 'Expand' : 'Collapse'}
       aria-expanded={!collapsed}
-      className="text-muted-foreground hover:text-foreground flex size-4 shrink-0 items-center justify-center"
+      className={
+        stylex.props(
+          styles_2.sf2718385,
+          styles_2.sae6a97a5,
+          styles_2.s2ffff9,
+          styles_2.sca3de968,
+          styles_2.sf032ed6c,
+          styles_2.sc6ed1702,
+          styles_2.sce22ca32,
+        ).className || ''
+      }
       onClick={onToggle}
     >
       {collapsed ? (
@@ -1077,7 +1472,21 @@ function CollapsedSummary({value, rules, onExpand}: {value: unknown; rules: Valu
     <button
       type="button"
       title={preview}
-      className="text-muted-foreground hover:text-foreground block max-w-full overflow-hidden text-left font-mono text-xs text-ellipsis whitespace-pre transition-colors"
+      className={
+        (stylex.props(
+          styles_2.sf2718385,
+          styles_2.sae6a97a5,
+          styles_2.s597c48d,
+          styles_2.sfcf3a2ae,
+          styles_2.s92852dd5,
+          styles_2.sbf63b0a7,
+          styles_2.sa173a9a1,
+          styles_2.sab7cc79b,
+          styles_2.sf7fb00e8,
+        ).className || '') +
+        ' ' +
+        (stylex.props(styles_4.sb4372171, styles_4.saaddf753).className || '')
+      }
       onClick={onExpand}
     >
       {preview}
@@ -1216,13 +1625,20 @@ export function FieldRow({
     <div
       {...rowProps}
       className={cn(
-        'group/row relative flex items-start gap-2 outline-none',
+        stylex.props(styles_2.sdef3facc, styles_2.s2ffff9, styles_2.s93b5f015, styles_2.s5d936fb, styles_2.sa602a1e3)
+          .className || '',
+        'group/row',
         ROW_CLASS,
         isSelected && ROW_SELECTED_CLASS,
         className,
       )}
     >
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
+      <div
+        className={
+          stylex.props(styles_2.s2ffff9, styles_2.s3f58665f, styles_2.sb42feb5d, styles_2.s67e351ac, styles_2.s5d936fa)
+            .className || ''
+        }
+      >
         {/* Field name first so names align regardless of type; the collapse
             chevron sits after the name for containers. */}
         <div className={stylex.props(styles.s86ff3e3).className || ''}>
@@ -1246,7 +1662,7 @@ export function FieldRow({
           getActions={getMenuActions}
           // Only the selected row shows its actions (selection follows focus),
           // so nested objects don't light up every ancestor's menu at once.
-          className={cn(isSelected && 'opacity-100')}
+          className={cn(isSelected ? stylex.props(styles_2.s486c2d2f).className || '' : '')}
         />
       </div>
       <FieldDialog
@@ -1281,7 +1697,15 @@ export function ValueDisplay({value, rules = CBOR_VALUE_RULES}: {value: unknown;
       return (
         <button
           type="button"
-          className="text-primary font-mono text-sm break-all hover:underline"
+          className={
+            stylex.props(
+              styles_2.s1bfab962,
+              styles_2.sa173a9a1,
+              styles_2.sab7cc6fa,
+              styles_2.s8ecdafd3,
+              styles_2.sd30dd60e,
+            ).className || ''
+          }
           onClick={() => openUrl(value)}
         >
           {value}
@@ -1440,7 +1864,9 @@ function StringLeafEditor({
     <div
       className={cn(
         stylex.props(styles.s9ca3cd06).className || '',
-        dragOver && canDrop && 'ring-primary bg-primary/5 ring-2 outline-none',
+        dragOver && canDrop
+          ? stylex.props(styles_2.s5d1fb7e0, styles_2.sc883a3d5, styles_2.sa602a1e3).className || ''
+          : '',
       )}
       onDragOver={
         canDrop
@@ -1489,7 +1915,21 @@ function StringLeafEditor({
         />
       )}
       {uploading && (
-        <div className="bg-background/70 absolute inset-0 flex items-center justify-center gap-2 rounded-md">
+        <div
+          className={
+            (stylex.props(
+              styles_2.s67010d77,
+              styles_2.s74a79380,
+              styles_2.s2ffff9,
+              styles_2.sc6ed1702,
+              styles_2.sce22ca32,
+              styles_2.s5d936fb,
+              styles_2.sf79988b7,
+            ).className || '') +
+            ' ' +
+            (stylex.props(styles_4.sc43c4bd2).className || '')
+          }
+        >
           <Spinner className={stylex.props(styles.sca3de968).className || ''} />
           <span className={stylex.props(styles.sa56e9200).className || ''}>Uploading…</span>
         </div>
@@ -1525,8 +1965,21 @@ function IpfsFileTag({
           disabled={!onOpen}
           onClick={onOpen ? () => onOpen(cid) : undefined}
           className={cn(
-            'border-border bg-muted/60 inline-flex max-w-full items-center gap-1.5 rounded-md border px-2 py-1 text-sm transition-colors',
-            onOpen && 'hover:bg-muted cursor-pointer',
+            stylex.props(
+              styles_2.s1a01a0ed,
+              styles_2.s9b8736ad,
+              styles_2.sfcf3a2ae,
+              styles_2.sc6ed1702,
+              styles_2.sf4676641,
+              styles_2.sf79988b7,
+              styles_2.sad8c742c,
+              styles_2.s34b1ad,
+              styles_2.s34b56d,
+              styles_2.sab7cc6fa,
+              styles_2.sf7fb00e8,
+            ).className || '',
+            stylex.props(styles_3.s8ce93e66).className || '',
+            onOpen ? stylex.props(styles_2.s37120a61, styles_2.sc7847ec6).className || '' : '',
           )}
         >
           <Icon className={stylex.props(styles.s26a52803).className || ''} />
@@ -1590,7 +2043,7 @@ function LinkValueEditor({
         <Link2
           className={cn(
             stylex.props(styles.sf2ad57de).className || '',
-            cid ? 'text-destructive' : 'text-muted-foreground',
+            cid ? stylex.props(styles_2.s8a2570e2).className || '' : stylex.props(styles_2.sf2718385).className || '',
           )}
         />
       </Tooltip>
@@ -1652,7 +2105,12 @@ function BytesValueEditor({
   }
   return (
     <div className={stylex.props(styles.s1fa2d8e5).className || ''}>
-      <span className={cn(stylex.props(styles.s9266db7b).className || '', size === null && 'text-destructive')}>
+      <span
+        className={cn(
+          stylex.props(styles.s9266db7b).className || '',
+          size === null ? stylex.props(styles_2.s8a2570e2).className || '' : '',
+        )}
+      >
         {size === null ? 'Invalid base64 data' : `${formatByteSize(size)} binary`}
       </span>
       {size !== null && size > 0 && (
@@ -1972,11 +2430,13 @@ function ListItemRow({
         drag.onDrop()
       }}
       className={cn(
-        'group/item relative flex items-start gap-2 outline-none',
+        stylex.props(styles_2.sdef3facc, styles_2.s2ffff9, styles_2.s93b5f015, styles_2.s5d936fb, styles_2.sa602a1e3)
+          .className || '',
+        'group/item',
         ROW_CLASS,
         isSelected && ROW_SELECTED_CLASS,
-        drag.isDragging && 'opacity-40',
-        drag.isDragOver && 'ring-primary/50 bg-accent/40 ring-2',
+        drag.isDragging ? stylex.props(styles_3.s54eab77e).className || '' : '',
+        drag.isDragOver ? stylex.props(styles_2.s4c967259, styles_2.sc883a3d5).className || '' : '',
       )}
     >
       <div className={stylex.props(styles.sb868a5b7).className || ''}>
@@ -1984,9 +2444,17 @@ function ListItemRow({
           draggable
           aria-label="Drag to reorder"
           className={cn(
-            'text-muted-foreground -ml-1 flex cursor-grab items-center opacity-0 transition-opacity active:cursor-grabbing',
-            'group-focus-within/item:opacity-100 group-hover/item:opacity-100',
-            (isSelected || drag.active) && 'opacity-100',
+            stylex.props(
+              styles_2.sf2718385,
+              styles_2.s2ffff9,
+              styles_2.sc6ed1702,
+              styles_2.s765a26ee,
+              styles_2.s83442393,
+            ).className || '',
+            stylex.props(styles_3.s2ad4930, styles_3.s9fa93e63).className || '',
+            stylex.props(styles_5.sc3d470af).className || '',
+            stylex.props(styles_5.s442d9fa9, styles_5.s37bc4ec9).className || '',
+            isSelected || drag.active ? stylex.props(styles_2.s486c2d2f).className || '' : '',
           )}
           onDragStart={(e) => {
             e.dataTransfer.effectAllowed = 'move'
@@ -2004,7 +2472,7 @@ function ListItemRow({
         )}
         <span className={stylex.props(styles.sc65eac41).className || ''}>{index + 1}.</span>
       </div>
-      <div className="min-w-0 flex-1">
+      <div className={stylex.props(styles_2.s3f58665f, styles_2.sb42feb5d).className || ''}>
         {isContainer && collapsed ? (
           <div className={stylex.props(styles.s34a2a8).className || ''}>
             <CollapsedSummary value={item} rules={rules} onExpand={() => setCollapsed(false)} />
@@ -2019,7 +2487,7 @@ function ListItemRow({
           label={`Actions for item ${index + 1}`}
           getActions={getMenuActions}
           // Only the selected item shows its actions (selection follows focus).
-          className={cn(isSelected && 'opacity-100')}
+          className={cn(isSelected ? stylex.props(styles_2.s486c2d2f).className || '' : '')}
         />
       </div>
       <FieldDialog
@@ -2593,7 +3061,22 @@ function SuggestionPopover<T>({
     <div
       id={id}
       role="listbox"
-      className="border-border bg-popover absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border p-1 shadow-lg"
+      className={
+        stylex.props(
+          styles_2.s1a01a0ed,
+          styles_2.s56bd391d,
+          styles_2.s67010d77,
+          styles_2.s3824ce,
+          styles_2.s33458b,
+          styles_2.s158c30d2,
+          styles_2.scdbaf625,
+          styles_2.sac38f2ae,
+          styles_2.sf79988b7,
+          styles_2.sad8c742c,
+          styles_2.s1aa14,
+          styles_2.s8a6c2948,
+        ).className || ''
+      }
       onMouseDown={(event) => event.preventDefault()}
       onScroll={(event) => {
         const target = event.currentTarget
@@ -2607,16 +3090,35 @@ function SuggestionPopover<T>({
           type="button"
           role="option"
           aria-selected={activeIndex === index}
-          className="hover:bg-accent focus-visible:bg-accent flex w-full items-start justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm outline-none"
+          className={
+            stylex.props(
+              styles_2.s95afba94,
+              styles_2.s2ffff9,
+              styles_2.scdbaf625,
+              styles_2.s93b5f015,
+              styles_2.sc1a629cb,
+              styles_2.s5d936fc,
+              styles_2.sf799897a,
+              styles_2.s34b1ad,
+              styles_2.sc5dd13f4,
+              styles_2.sbf63b0a7,
+              styles_2.sab7cc6fa,
+              styles_2.sa602a1e3,
+            ).className || ''
+          }
           onClick={() => onSelect(item)}
         >
-          <span className="min-w-0">
+          <span className={stylex.props(styles_2.s3f58665f).className || ''}>
             <span className={stylex.props(styles.s12583799).className || ''}>{getLabel(item)}</span>
             {getDescription?.(item) ? (
               <span className={stylex.props(styles.s1047710f).className || ''}>{getDescription(item)}</span>
             ) : null}
           </span>
-          {getMeta && <span className="text-muted-foreground shrink-0 text-[11px]">{getMeta(item)}</span>}
+          {getMeta && (
+            <span className={stylex.props(styles_2.sf2718385, styles_2.sf032ed6c, styles_2.s5542e25a).className || ''}>
+              {getMeta(item)}
+            </span>
+          )}
         </button>
       ))}
       {loading && (
@@ -2741,10 +3243,11 @@ function FieldDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          'w-[calc(100%-2rem)] sm:max-w-lg',
-          !itemMode && 'sm:h-[40rem] sm:max-h-[calc(var(--vvh,1vh)*100-4rem)]',
+          stylex.props(styles_2.s9315a67a).className || '',
+          stylex.props(styles_3.s9bf10647).className || '',
+          !itemMode ? stylex.props(styles_3.sda9fd615, styles_3.s84d08d8f).className || '' : '',
         )}
-        contentClassName="gap-6 p-6 sm:p-7"
+        contentClassName={stylex.props(styles_7.s5d936ff, styles_7.s1aa19, styles_7.sca5958fa).className || ''}
         onClick={(e) => e.stopPropagation()}
       >
         <DialogHeader>
@@ -2842,7 +3345,7 @@ function FieldDialog({
           </div>
           {error && <p className={stylex.props(styles.s11c1d25d).className || ''}>{error}</p>}
         </div>
-        <DialogFooter className={!itemMode ? 'mt-auto' : undefined}>
+        <DialogFooter className={!itemMode ? stylex.props(styles_2.s4ea16215).className || '' : undefined}>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
@@ -2882,10 +3385,23 @@ export function AddFieldForm({
       <Button
         variant="ghost"
         size="sm"
-        className={cn(stylex.props(styles.sf2718385).className || '', compact && 'h-6 px-1 text-xs')}
+        className={cn(
+          stylex.props(styles.sf2718385).className || '',
+          compact
+            ? (stylex.props(styles_2.s34b1ac, styles_2.sab7cc79b).className || '') +
+                ' ' +
+                (stylex.props(styles_4.s18c11).className || '')
+            : '',
+        )}
         onClick={() => setOpen(true)}
       >
-        <Plus className={compact ? 'size-3' : 'size-4'} />
+        <Plus
+          className={
+            compact
+              ? stylex.props(styles_2.sca3de967).className || ''
+              : stylex.props(styles_2.sca3de968).className || ''
+          }
+        />
         {itemMode ? 'Add item' : 'Add field'}
       </Button>
       <FieldDialog

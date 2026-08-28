@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex'
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
 import {useImageUrl} from '@shm/ui/get-file-url'
 import {ResizeHandle} from '@shm/ui/resize-handle'
@@ -12,7 +13,11 @@ import {MediaContainer} from './media-container'
 import {DisplayComponentProps, FALLBACK_EDITOR_WIDTH, MediaRender, MediaType} from './media-render'
 import {HMBlockSchema} from './schema'
 import {isValidUrl, timeoutPromise} from './utils'
-
+const styles = stylex.create({
+  s2c88935f: {
+    color: '#000',
+  },
+})
 export const ImageBlock = createReactBlockSpec({
   type: 'image',
   propSchema: {
@@ -44,16 +49,13 @@ export const ImageBlock = createReactBlockSpec({
     },
   },
   containsInlineContent: true,
-
   render: ({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) =>
     Render(block, editor),
-
   parseHTML: [
     {
       tag: 'img[src]',
       getAttrs: (element) => {
         if (element.closest('[data-content-type="image"]')) return false
-
         const name = element.getAttribute('title')
         const width = element.getAttribute('width') || element.style.width
         const alt = element.getAttribute('alt')
@@ -72,7 +74,6 @@ export const ImageBlock = createReactBlockSpec({
     },
   ],
 })
-
 const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) => {
   const submitImage = (url: string, assign: any, setFileName: any, setLoading: any) => {
     if (!editor.importWebFile) {
@@ -82,7 +83,6 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       })
       return
     }
-
     if (isValidUrl(url)) {
       setLoading(true)
       timeoutPromise(editor.importWebFile(url), 5000, {
@@ -99,7 +99,11 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
               })
               return
             }
-            assign({props: {url: `ipfs://${imageData.cid}`}} as MediaType)
+            assign({
+              props: {
+                url: `ipfs://${imageData.cid}`,
+              },
+            } as MediaType)
           }
           // Web result (has displaySrc and fileBinary)
           else if ('displaySrc' in imageData && 'fileBinary' in imageData) {
@@ -131,19 +135,30 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
           })
           setLoading(false)
         })
-    } else setFileName({name: 'The provided URL is invalid.', color: 'red'})
-
+    } else
+      setFileName({
+        name: 'The provided URL is invalid.',
+        color: 'red',
+      })
     const cursorPosition = editor.getTextCursorPosition()
     editor.focus()
     if (cursorPosition.block.id === block.id) {
       if (cursorPosition.nextBlock) editor.setTextCursorPosition(cursorPosition.nextBlock, 'start')
       else {
-        editor.insertBlocks([{type: 'paragraph', content: ''}], block.id, 'after')
+        editor.insertBlocks(
+          [
+            {
+              type: 'paragraph',
+              content: '',
+            },
+          ],
+          block.id,
+          'after',
+        )
         editor.setTextCursorPosition(editor.getTextCursorPosition().nextBlock!, 'start')
       }
     }
   }
-
   return (
     <MediaRender
       block={block}
@@ -152,7 +167,7 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
       mediaType="image"
       submit={submitImage}
       DisplayComponent={ImageDisplay}
-      icon={<RiImage2Line className="text-black dark:text-white" />}
+      icon={<RiImage2Line className={stylex.props(styles.s2c88935f).className || ''} />}
     />
   )
 }
@@ -173,21 +188,34 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
         toast.error('The provided URL is invalid.')
         return
       }
-      timeoutPromise(editor.importWebFile(url), 5000, {reason: 'Error fetching the image.'})
+      timeoutPromise(editor.importWebFile(url), 5000, {
+        reason: 'Error fetching the image.',
+      })
         .then((imageData: any) => {
           if ('cid' in imageData) {
             if (!imageData.type.includes('image')) {
               toast.error('The provided URL is not an image.')
               return
             }
-            assign({props: {url: `ipfs://${imageData.cid}`, displaySrc: '', mediaRef: ''}} as unknown as MediaType)
+            assign({
+              props: {
+                url: `ipfs://${imageData.cid}`,
+                displaySrc: '',
+                mediaRef: '',
+              },
+            } as unknown as MediaType)
           } else if ('displaySrc' in imageData && 'fileBinary' in imageData) {
             if (!imageData.type.includes('image')) {
               toast.error('The provided URL is not an image.')
               return
             }
             assign({
-              props: {fileBinary: imageData.fileBinary, displaySrc: imageData.displaySrc, url: '', mediaRef: ''},
+              props: {
+                fileBinary: imageData.fileBinary,
+                displaySrc: imageData.displaySrc,
+                url: '',
+                mediaRef: '',
+              },
             } as unknown as MediaType)
           }
         })
@@ -197,7 +225,6 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     },
     [editor, assign],
   )
-
   useEffect(() => {
     // @ts-ignore
     const url = block.props.url
@@ -221,7 +248,11 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
             if (!imageData.type.includes('image')) {
               return
             }
-            assign({props: {url: `ipfs://${imageData.cid}`}} as MediaType)
+            assign({
+              props: {
+                url: `ipfs://${imageData.cid}`,
+              },
+            } as MediaType)
           }
           // Web result
           else if ('displaySrc' in imageData && 'fileBinary' in imageData) {
@@ -262,7 +293,6 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
         mediaRef = ''
       }
     }
-
     if (displaySrc) {
       return displaySrc
     }
@@ -298,13 +328,11 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       : parseFloat(widthProp || '') || getEditorWidth()
   const [currentWidth, setCurrentWidth] = useState(width)
   const [showHandle, setShowHandle] = useState(false)
-
   const resizeParamsRef = useRef<{
     handleUsed: 'left' | 'right'
     initialWidth: number
     initialClientX: number
   } | null>(null)
-
   useEffect(() => {
     const editorWidth = getEditorWidth()
     const nextWidthProp = block.props.width?.trim()
@@ -318,14 +346,11 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       setCurrentWidth(width)
     }
   }, [block.props.width])
-
   const windowMouseMoveHandler = (event: MouseEvent) => {
     if (!resizeParamsRef.current) {
       return
     }
-
     const {handleUsed, initialClientX, initialWidth} = resizeParamsRef.current
-
     let newWidth: number
     if (handleUsed === 'left') {
       newWidth = initialWidth + (initialClientX - event.clientX) * 2
@@ -351,12 +376,10 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
   // `width` prop to the new value.
   const windowMouseUpHandler = () => {
     setShowHandle(false)
-
     if (!resizeParamsRef.current) {
       return
     }
     resizeParamsRef.current = null
-
     assign({
       props: {
         width: `${Math.round((width / getEditorWidth()) * 10000) / 100}%`,
@@ -366,7 +389,6 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => windowMouseMoveHandler(e)
     const handleMouseUp = () => windowMouseUpHandler()
-
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseup', handleMouseUp)
     return () => {
@@ -380,7 +402,6 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     if (resizeParamsRef.current) {
       return
     }
-
     setShowHandle(false)
   }
 
@@ -388,9 +409,7 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
   // moving the cursor left or right.
   const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
-
     setShowHandle(true)
-
     resizeParamsRef.current = {
       handleUsed: 'left',
       // @ts-ignore
@@ -399,11 +418,9 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     }
     editor.setTextCursorPosition(block.id, 'start')
   }
-
   const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault()
     setShowHandle(true)
-
     resizeParamsRef.current = {
       handleUsed: 'right',
       // @ts-ignore
@@ -412,7 +429,6 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     }
     editor.setTextCursorPosition(block.id, 'start')
   }
-
   return (
     <MediaContainer
       editor={editor}
@@ -434,8 +450,18 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     >
       {showHandle && (
         <>
-          <ResizeHandle style={{left: 4}} onMouseDown={leftResizeHandleMouseDownHandler} />
-          <ResizeHandle style={{right: 4}} onMouseDown={rightResizeHandleMouseDownHandler} />
+          <ResizeHandle
+            style={{
+              left: 4,
+            }}
+            onMouseDown={leftResizeHandleMouseDownHandler}
+          />
+          <ResizeHandle
+            style={{
+              right: 4,
+            }}
+            onMouseDown={rightResizeHandleMouseDownHandler}
+          />
         </>
       )}
       {imageSrc && (

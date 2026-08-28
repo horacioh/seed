@@ -147,6 +147,95 @@ import {useCopyHmLink} from './use-copy-hm-link'
 import {useMedia} from './use-media'
 import {cn} from './utils'
 import {AttributeAutocomplete, AttributeAutocompleteProvider} from './value-editor'
+const styles_5 = stylex.create({
+  s67010d77: {
+    position: 'absolute',
+  },
+  se911c76b: {
+    insetInline: 'calc(0.25rem * 0)',
+  },
+  s696c5b8: {
+    top: 'calc(0.25rem * 0)',
+  },
+  s382452: {
+    zIndex: '10',
+  },
+  s605ce4a1: {
+    backgroundColor: '#fff',
+  },
+})
+const styles_4 = stylex.create({
+  s7486a4cf: {
+    ':hover': {
+      '@media (hover: hover)': {
+        backgroundColor: 'var(--accent)',
+      },
+    },
+    display: 'flex',
+    width: '100%',
+    alignItems: 'flex-start',
+    gap: 'calc(var(--spacing) * 2)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 'calc(var(--spacing) * 2)',
+    paddingBlock: 'calc(var(--spacing) * 2)',
+    textAlign: 'left',
+  },
+  sfd38616b: {
+    display: 'flex',
+    maxHeight: '100%',
+    flexDirection: 'column',
+    backgroundColor: 'var(--surface)',
+  },
+  s289b3426: {
+    minHeight: 'calc(100dvh - 60px - 0px)',
+  },
+  s85cda355: {
+    height: 'auto',
+  },
+  sc78b0057: {
+    position: 'absolute',
+    insetInline: 'calc(var(--spacing) * 0)',
+    top: 'calc(var(--spacing) * 0)',
+    zIndex: '10',
+    backgroundColor: 'var(--surface)',
+  },
+})
+const styles_3 = stylex.create({
+  sca05bbf6: {
+    minHeight: '100dvh',
+  },
+  s5cf8731: {
+    height: '100dvh',
+  },
+  s76b2a8af: {
+    minHeight: '100%',
+  },
+  sce22ca32: {
+    justifyContent: 'center',
+  },
+  s6578475: {
+    paddingBottom: 'calc(0.25rem * 60)',
+  },
+  s34b1af: {
+    paddingInline: 'calc(0.25rem * 4)',
+  },
+})
+const styles_2 = stylex.create({
+  se30fd43e: {
+    minWidth: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+  sb04cd461: {
+    display: 'flex',
+    height: '100%',
+    minHeight: 'calc(0.25rem * 0)',
+    flexDirection: 'column',
+  },
+  s92c2336d: {
+    minHeight: 'calc(0.25rem * 0)',
+    flex: '1',
+  },
+})
 const styles = stylex.create({
   s250c01f2: {
     pointerEvents: 'none',
@@ -457,7 +546,7 @@ function CitationFragmentPopover({
               <button
                 key={citation.id}
                 type="button"
-                className="hover:bg-accent flex w-full items-start gap-2 rounded-md px-2 py-2 text-left"
+                className={stylex.props(styles_4.s7486a4cf).className || ''}
                 onClick={() => onCitationSelect(citation)}
               >
                 {citation.sourceType === 'comment' ? (
@@ -472,7 +561,7 @@ function CitationFragmentPopover({
                     ) : (
                       <div className={stylex.props(styles.s1f44aeca).className || ''} />
                     )}
-                    <div className="min-w-0 flex-1">
+                    <div className={stylex.props(styles_2.se30fd43e).className || ''}>
                       <div className={stylex.props(styles.s2627021c).className || ''}>
                         {author?.metadata?.name || authorUid || 'Comment'}
                       </div>
@@ -484,7 +573,7 @@ function CitationFragmentPopover({
                 ) : (
                   <>
                     <Quote className={stylex.props(styles.s51be82d0).className || ''} />
-                    <div className="min-w-0 flex-1">
+                    <div className={stylex.props(styles_2.se30fd43e).className || ''}>
                       <div className={stylex.props(styles.s59c17cd3).className || ''}>
                         {documentCitationTitle(citation, documentResourceByCitation.get(citation.id))}
                       </div>
@@ -1666,10 +1755,10 @@ export function PageShell({
       // web paint ever reads them.
       data-header-layout={headerData.isCenterLayout ? 'center' : 'bar'}
       className={cn(
-        'dark:bg-background flex max-h-full flex-col bg-white',
+        stylex.props(styles_4.sfd38616b).className || '',
         // On desktop: fill viewport height for element scrolling (use dvh for mobile browsers)
         // On mobile: natural height for document scrolling
-        isMobile ? 'min-h-dvh' : 'h-dvh',
+        stylex.props(isMobile ? styles_3.sca05bbf6 : styles_3.s5cf8731).className || '',
       )}
     >
       <SiteHeader
@@ -1769,12 +1858,28 @@ export function PageWrapper({
     </PageShell>
   )
 }
+/** Tone colors for the transient resource banner. */
+const transientBannerStyles = stylex.create({
+  warning: {
+    backgroundColor: {
+      default: 'var(--color-amber-100)',
+      ':is(.dark *)': 'color-mix(in oklab, var(--color-amber-900) 40%, transparent)',
+    },
+    color: {
+      default: 'var(--color-amber-900)',
+      ':is(.dark *)': 'var(--color-amber-100)',
+    },
+  },
+  muted: {
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+  },
+})
 function TransientResourceBanner({error}: {error: TransientResourceError}) {
   if (!error) return null
   const tone =
-    error.kind === 'refetch-error'
-      ? 'bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-100'
-      : 'bg-muted text-muted-foreground'
+    stylex.props(error.kind === 'refetch-error' ? transientBannerStyles.warning : transientBannerStyles.muted)
+      .className || ''
   let message: string
   switch (error.kind) {
     case 'refetch-error':
@@ -2778,9 +2883,8 @@ function DocumentBody({
     <div
       className={cn(
         stylex.props(styles.s783f19f3).className || '',
-        pageFooter &&
-          'min-h-[calc(100dvh-var(--site-header-live-h,var(--site-header-default-h,60px))-var(--hm-host-banner-h,0px))]',
-        !pageFooter && 'min-h-full',
+        stylex.props(pageFooter ? styles_4.s289b3426 : null).className || '',
+        stylex.props(!pageFooter && styles_3.s76b2a8af).className || '',
       )}
     >
       <DocumentCover
@@ -2798,10 +2902,15 @@ function DocumentBody({
           className={cn(
             wrapperProps.className,
             stylex.props(styles.s948be48c).className || '',
-            !showSidebars && 'justify-center',
+            stylex.props(!showSidebars && styles_3.sce22ca32).className || '',
           )}
         >
-          {showSidebars && <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />}
+          {showSidebars && (
+            <div
+              {...sidebarProps}
+              className={cn(sidebarProps.className, stylex.props(styles_4.s85cda355).className || '')}
+            />
+          )}
           <div
             {...mainContentProps}
             className={cn(mainContentProps.className, stylex.props(styles.s783f19f3).className || '')}
@@ -2836,7 +2945,12 @@ function DocumentBody({
                 />
               ))}
           </div>
-          {showSidebars && <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />}
+          {showSidebars && (
+            <div
+              {...sidebarProps}
+              className={cn(sidebarProps.className, stylex.props(styles_4.s85cda355).className || '')}
+            />
+          )}
         </div>
       ) : (
         <div
@@ -2940,8 +3054,8 @@ function DocumentBody({
       <div
         className={cn(
           stylex.props(styles.sb42feb5d).className || '',
-          activeView !== 'content' && 'pb-60',
-          isMobile && 'px-4',
+          stylex.props(activeView !== 'content' && styles_3.s6578475).className || '',
+          stylex.props(isMobile && styles_3.s34b1af).className || '',
         )}
       >
         <MainContent
@@ -3104,12 +3218,12 @@ function DocumentBody({
         filterEventType={panelRoute?.key === 'activity' ? panelRoute.filterEventType : undefined}
         onFilterChange={handleFilterChange}
       >
-        <div className="flex h-full min-h-0 flex-col">
+        <div className={stylex.props(styles_2.sb04cd461).className || ''}>
           {documentTopBar}
           <ScrollArea
             id="scroll-page-wrapper"
-            className="min-h-0 flex-1"
-            viewportClassName="scroll-pt-4 [&>div]:!block [&>div]:flex [&>div]:min-h-full [&>div]:flex-col"
+            className={stylex.props(styles_2.s92c2336d).className || ''}
+            viewportClassName="scroll-page-viewport"
             fillViewportContent
           >
             {mainPageContent}
@@ -4013,7 +4127,17 @@ function DocumentContentHandoff({
       {!settled && (
         <div
           ref={placeholderRef}
-          className={editorMounted ? 'dark:bg-background absolute inset-x-0 top-0 z-10 bg-white' : undefined}
+          className={
+            editorMounted
+              ? stylex.props(
+                  styles_5.s67010d77,
+                  styles_5.se911c76b,
+                  styles_5.s696c5b8,
+                  styles_5.s382452,
+                  styles_5.s605ce4a1,
+                ).className || ''
+              : undefined
+          }
           dangerouslySetInnerHTML={{
             __html: ssrContentHTML,
           }}

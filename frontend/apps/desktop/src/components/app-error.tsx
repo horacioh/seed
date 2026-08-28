@@ -8,6 +8,81 @@ import {Check, Copy, RefreshCw, TriangleAlert} from 'lucide-react'
 import {useState} from 'react'
 import {FallbackProps, getErrorMessage} from 'react-error-boundary'
 import {ErrorBar} from './error-bar'
+const styles_3 = stylex.create({
+  s9f58bc18: {
+    display: 'flex',
+    flex: '1',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    overflow: 'auto',
+    paddingInline: 'calc(var(--spacing) * 4)',
+    paddingBlock: 'calc(var(--spacing) * 16)',
+    '@media ((min-width: 640px))': {
+      paddingInline: 'calc(var(--spacing) * 8)',
+    },
+  },
+  s251c6549: {
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    color: 'var(--destructive)',
+    display: 'flex',
+    width: 'calc(var(--spacing) * 10)',
+    height: 'calc(var(--spacing) * 10)',
+    flexShrink: '0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(infinity * 1px)',
+  },
+  s995bfbdb: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 40%, transparent)',
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+  },
+  s12497abb: {
+    color: 'var(--muted-foreground)',
+    ':hover': {
+      '@media (hover: hover)': {
+        color: 'var(--foreground)',
+        backgroundColor: 'color-mix(in oklab, var(--color-black) 5%, transparent)',
+        opacity: '100%',
+        textDecorationLine: 'underline',
+      },
+    },
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'calc(var(--spacing) * 1.5)',
+    borderRadius: '0.25rem',
+    paddingInline: 'calc(var(--spacing) * 1.5)',
+    paddingBlock: 'calc(var(--spacing) * 1)',
+    transitionProperty: 'color, background-color, border-color, outline-color, text-decoration-color, fill, stroke',
+    transitionTimingFunction: 'var(--default-transition-timing-function)',
+    transitionDuration: 'var(--default-transition-duration)',
+  },
+})
+const styles_2 = stylex.create({
+  s7bcef575: {
+    borderColor: 'var(--border)',
+    backgroundColor: 'var(--background)',
+    margin: 'calc(0.25rem * 4)',
+    display: 'flex',
+    width: '100%',
+    maxWidth: '48rem',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) + 4px)',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  s3f58665f: {
+    minWidth: 'calc(0.25rem * 0)',
+  },
+  s158c310c: {
+    maxHeight: 'calc(0.25rem * 64)',
+  },
+})
 const styles = stylex.create({
   sc9792423: {
     borderColor: 'var(--border)',
@@ -143,16 +218,13 @@ export function AppErrorContent({
   }
   return (
     <div className={panelContainerStyles}>
-      <div className="flex flex-1 items-start justify-center overflow-auto px-4 py-16 sm:px-8">
-        <div
-          role="alertdialog"
-          className="border-border bg-background m-4 flex w-full max-w-3xl flex-col overflow-hidden rounded-xl border shadow-sm"
-        >
+      <div className={stylex.props(styles_3.s9f58bc18).className || ''}>
+        <div role="alertdialog" className={stylex.props(styles_2.s7bcef575).className || ''}>
           <div className={stylex.props(styles.sc9792423).className || ''}>
-            <div className="bg-destructive/10 text-destructive flex size-10 shrink-0 items-center justify-center rounded-full">
+            <div className={stylex.props(styles_3.s251c6549).className || ''}>
               <TriangleAlert className={stylex.props(styles.sca3de969).className || ''} />
             </div>
-            <div className="min-w-0">
+            <div className={stylex.props(styles_2.s3f58665f).className || ''}>
               <p className={stylex.props(styles.sc4a7bbdc).className || ''}>{eyebrow}</p>
               <h2 className={stylex.props(styles.s7326a4a8).className || ''}>{title}</h2>
               <p className={stylex.props(styles.sabdeda20).className || ''}>{description}</p>
@@ -161,13 +233,13 @@ export function AppErrorContent({
           <div className={stylex.props(styles.s7adf1fb1).className || ''}>
             <p className={stylex.props(styles.sea9251bd).className || ''}>{message}</p>
             {details ? (
-              <div className="border-border bg-muted/40 overflow-hidden rounded-lg border">
+              <div className={stylex.props(styles_3.s995bfbdb).className || ''}>
                 <div className={stylex.props(styles.s5e9d8349).className || ''}>
                   <span>Recent daemon output</span>
                   <button
                     type="button"
                     onClick={copyDiagnostics}
-                    className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 rounded px-1.5 py-1 transition-colors"
+                    className={stylex.props(styles_3.s12497abb).className || ''}
                   >
                     {copied ? (
                       <Check className={stylex.props(styles.s3269316e).className || ''} />
@@ -177,7 +249,7 @@ export function AppErrorContent({
                     {copied ? 'Copied' : 'Copy diagnostics'}
                   </button>
                 </div>
-                <ScrollArea className="max-h-64">
+                <ScrollArea className={stylex.props(styles_2.s158c310c).className || ''}>
                   <pre className={stylex.props(styles.s2c975dd6).className || ''}>{details}</pre>
                 </ScrollArea>
               </div>

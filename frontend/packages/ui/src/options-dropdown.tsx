@@ -17,6 +17,34 @@ import {SizableText} from './text'
 import {Tooltip} from './tooltip'
 import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
+const styles_5 = stylex.create({
+  s37bc4ec9: {
+    ':is([class~="group/item"]:hover *)': {
+      opacity: '100%',
+    },
+  },
+})
+const styles_4 = stylex.create({
+  s2ffff9: {
+    display: 'flex',
+  },
+})
+const styles_3 = stylex.create({
+  s46527e6e: {
+    opacity: '100%',
+  },
+  sc04d6692: {
+    backgroundColor: 'var(--overlay-10)',
+  },
+})
+const styles_2 = stylex.create({
+  s765a26ee: {
+    opacity: '0%',
+  },
+  s486c2d2f: {
+    opacity: '100%',
+  },
+})
 const styles = stylex.create({
   sa0cf170f: {
     color: 'var(--muted-foreground)',
@@ -192,10 +220,12 @@ export function OptionsDropdown({
   return (
     <div
       className={cn(
-        'flex group-hover/item:opacity-100',
-        !popoverState.open && hiddenUntilItemHover ? 'opacity-0' : 'opacity-100',
+        stylex.props(styles_4.s2ffff9).className || '',
+        stylex.props(styles_5.s37bc4ec9).className || '',
+        stylex.props(!popoverState.open && hiddenUntilItemHover ? styles_2.s765a26ee : styles_2.s486c2d2f).className ||
+          '',
         className,
-        popoverState.open && '!opacity-100',
+        stylex.props(popoverState.open ? styles_3.s46527e6e : null).className || '',
       )}
     >
       <DropdownMenu open={popoverState.open} onOpenChange={popoverState.onOpenChange}>
@@ -228,7 +258,7 @@ export function OptionsDropdown({
             {ordered.map((item, index) => (
               <div key={item.key}>
                 {index === firstDestructiveIndex ? (
-                  <DropdownMenuSeparator className="bg-black/10 dark:bg-white/10" />
+                  <DropdownMenuSeparator className={stylex.props(styles_3.sc04d6692).className || ''} />
                 ) : null}
                 {renderMenuItem(item, close)}
               </div>
