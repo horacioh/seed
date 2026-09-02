@@ -1,5 +1,5 @@
 import type {HMDocumentInfo, HMListedDraft, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
-import {hmId} from '@shm/shared'
+import {getDocumentTitle, hmId} from '@shm/shared'
 import {isDraftPlaceholderPath, type HMListedDraftWithLocation} from '@shm/shared/draft-breadcrumb-context'
 import {useDirectoryWithDrafts} from '@shm/shared/models/entity'
 import {
@@ -31,7 +31,7 @@ export interface SiteFileBrowserProps {
 }
 
 function titleOf(doc: HMDocumentInfo) {
-  return doc.metadata?.name || doc.path?.at(-1) || 'Untitled Document'
+  return getDocumentTitle(doc, 'Untitled Document')
 }
 
 /** Renders the searchable, expandable document hierarchy for a site. */
