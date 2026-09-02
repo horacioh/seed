@@ -4,7 +4,7 @@ import type {
   HMQueryBlockItemSummary,
   HMQueryTableConfig,
 } from '@seed-hypermedia/client/hm-types'
-import {formattedDate, getMetadataName, useRouteLink} from '@shm/shared'
+import {formattedDate, getDocumentTitle, useRouteLink} from '@shm/shared'
 import {useInteractionSummaries} from '@shm/shared/models/interaction-summary'
 import {
   type ColumnDef,
@@ -53,7 +53,7 @@ function TitleCell({item}: {item: HMDocumentInfo}) {
   const linkProps = useRouteLink({key: 'document', id: item.id})
   return (
     <a {...linkProps} className="block truncate font-medium hover:underline">
-      {getMetadataName(item.metadata) || item.path.at(-1) || 'Untitled'}
+      {getDocumentTitle(item, 'Untitled')}
     </a>
   )
 }

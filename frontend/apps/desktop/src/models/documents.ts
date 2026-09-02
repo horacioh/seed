@@ -272,7 +272,10 @@ export function usePublishResource(
         newContent = fillEmptyQueryBlocks(newContent, destinationId)
       }
 
-      const navigationChanges = getNavigationChanges(draft.navigation, editDocument?.detachedBlocks?.navigation)
+      const navigationChanges = getNavigationChanges(
+        draft.navigation,
+        editId ? editDocument?.detachedBlocks?.navigation : undefined,
+      )
 
       if (accts.data?.length == 0) {
         throw new Error('Create an account before publishing')
@@ -351,7 +354,12 @@ export function usePublishResource(
 
           const allChanges = [
             ...navigationChanges,
-            ...getDocAttributeChanges(expandObjectRemovals(draft.metadata, editDocument?.metadata)),
+            ...getDocAttributeChanges(
+              expandObjectRemovals(
+                editId ? {...editDocument?.metadata, ...draft.metadata} : draft.metadata,
+                editId ? editDocument?.metadata : undefined,
+              ),
+            ),
             ...changes.changes,
             ...deleteChanges,
           ]

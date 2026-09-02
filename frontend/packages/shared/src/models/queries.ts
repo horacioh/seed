@@ -115,6 +115,7 @@ export function queryResource(client: UniversalClient, id: UnpackedHypermediaId 
       }
     },
     enabled: !!id,
+    keepPreviousData: !!id,
   }
 }
 
@@ -144,6 +145,7 @@ export function queryRawResource(client: UniversalClient, id: UnpackedHypermedia
       }
     },
     enabled: !!id,
+    keepPreviousData: !!id,
   }
 }
 
