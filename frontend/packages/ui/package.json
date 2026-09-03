@@ -5,6 +5,7 @@
     "*.css"
   ],
   "private": true,
+  "type": "module",
   "types": "./types/index",
   "module:jsx": "src",
   "files": [
@@ -32,7 +33,9 @@
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "test": "vitest --run",
-    "typecheck": "tsc --noEmit --project tsconfig.app.json"
+    "typecheck": "tsc --noEmit --project tsconfig.app.json",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build -o storybook-static"
   },
   "dependencies": {
     "@ariakit/react": "0.3.5",
@@ -81,8 +84,16 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@storybook/addon-docs": "9.1.20",
+    "@storybook/addon-themes": "9.1.20",
+    "@storybook/react": "9.1.20",
+    "@storybook/react-vite": "9.1.20",
+    "@vitejs/plugin-react": "4.3.4",
     "shadcn": "^2.6.3",
+    "storybook": "9.1.20",
     "typescript": "5.8.3",
+    "vite": "6.4.3",
+    "vite-tsconfig-paths": "5.1.4",
     "vitest": "4.1.8"
   },
   "peerDependencies": {

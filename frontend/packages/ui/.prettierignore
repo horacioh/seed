@@ -1,7 +1,4 @@
 dist/
-.DS_Store
-THUMBS_DB
 node_modules/
-src/themes-generated.ts
 types/
 storybook-static/
