@@ -12,6 +12,8 @@ const STORAGE_STATE = path.join(os.homedir(), '.config/coolify/storage-state.jso
 const API_TOKEN = path.join(os.homedir(), '.config/coolify/api-token')
 const SITE_COMPOSE = path.resolve('ops/coolify/seed-site.yaml')
 const UPDATER_COMPOSE = path.resolve('ops/coolify/seed-updater.yaml')
+let originalDnsValidation
+let dnsValidationChanged = false
 
 async function api(route, {method = 'GET', body} = {}) {
   const token = fs.readFileSync(API_TOKEN, 'utf8').trim()
@@ -44,8 +46,12 @@ function belongsToProject(service, environmentIds) {
 }
 
 function isSeedCompose(service) {
-  const source = [service.name, service.docker_compose_raw, service.docker_compose].filter(Boolean).join('\n')
-  return /seed|SERVICE_PASSWORD_SEEDLINK/i.test(source)
+  const compose = [service.docker_compose_raw, service.docker_compose].filter(Boolean).join('\n')
+  return (
+    /seedhypermedia\//i.test(compose) ||
+    /SERVICE_PASSWORD_SEEDLINK/i.test(compose) ||
+    (/nickfedor\/watchtower/i.test(compose) && /com\.centurylinklabs\.watchtower\.scope\s*=\s*seed/i.test(compose))
+  )
 }
 
 async function applicationStatuses(uuid) {
@@ -53,10 +59,32 @@ async function applicationStatuses(uuid) {
   return new Map((service.applications || []).map((application) => [application.name, application.status]))
 }
 
-function seedDataVolumes() {
+function seedDataVolumes(serviceUuids) {
+  const prefixes = serviceUuids.map((uuid) => `${uuid}_`)
   return execFileSync('docker', ['volume', 'ls', '--format', '{{.Name}}'], {encoding: 'utf8'})
     .split('\n')
-    .filter((name) => /seed-(daemon|web)-data/i.test(name))
+    .filter((name) => prefixes.some((prefix) => name.startsWith(prefix)))
+    .filter((name) => /seed-(daemon|web)-data$/i.test(name))
+}
+
+function setDnsValidation(value) {
+  execFileSync('docker', [
+    'exec',
+    'coolify-db',
+    'psql',
+    '-U',
+    'coolify',
+    '-d',
+    'coolify',
+    '-c',
+    `update instance_settings set is_dns_validation_enabled=${value}`,
+  ])
+}
+
+function restoreDnsValidation() {
+  if (!dnsValidationChanged) return
+  setDnsValidation(originalDnsValidation)
+  dnsValidationChanged = false
 }
 
 async function pasteCompose(r, file, beat) {
@@ -78,17 +106,24 @@ async function pasteCompose(r, file, beat) {
 /** Clears existing Seed Compose resources and their data volumes through Coolify. */
 export async function prepare() {
   // The demo hostname does not resolve to this server.
-  execFileSync('docker', [
-    'exec',
-    'coolify-db',
-    'psql',
-    '-U',
-    'coolify',
-    '-d',
-    'coolify',
-    '-c',
-    'update instance_settings set is_dns_validation_enabled=false',
-  ])
+  originalDnsValidation = execFileSync(
+    'docker',
+    [
+      'exec',
+      'coolify-db',
+      'psql',
+      '-U',
+      'coolify',
+      '-d',
+      'coolify',
+      '-tAc',
+      'select is_dns_validation_enabled from instance_settings limit 1',
+    ],
+    {encoding: 'utf8'},
+  ).trim()
+  if (!['t', 'f'].includes(originalDnsValidation)) {
+    throw new Error(`Unexpected Coolify DNS validation setting: ${originalDnsValidation}`)
+  }
   const server = await api(`/servers/${SERVER_UUID}`)
   if (!server.settings?.is_reachable || !server.settings?.is_usable) {
     throw new Error('Coolify localhost server is not validated and usable')
@@ -108,17 +143,22 @@ export async function prepare() {
     )
   }
 
-  const pending = new Set(targets.map((service) => service.uuid))
+  const targetUuids = targets.map((service) => service.uuid)
+  const pending = new Set(targetUuids)
   const deadline = Date.now() + 60_000
-  while ((pending.size || seedDataVolumes().length) && Date.now() < deadline) {
+  while ((pending.size || seedDataVolumes(targetUuids).length) && Date.now() < deadline) {
     const current = await api('/services')
     const remaining = new Set(current.map((service) => service.uuid))
     for (const uuid of pending) if (!remaining.has(uuid)) pending.delete(uuid)
-    if (pending.size || seedDataVolumes().length) await new Promise((resolve) => setTimeout(resolve, 1000))
+    if (pending.size || seedDataVolumes(targetUuids).length) await new Promise((resolve) => setTimeout(resolve, 1000))
   }
   if (pending.size) throw new Error(`Timed out waiting for Coolify to remove services: ${[...pending].join(', ')}`)
-  const volumes = seedDataVolumes()
+  const volumes = seedDataVolumes(targetUuids)
   if (volumes.length) throw new Error(`Coolify left Seed data volumes behind: ${volumes.join(', ')}`)
+  if (originalDnsValidation === 't') {
+    setDnsValidation(false)
+    dnsValidationChanged = true
+  }
 }
 
 /** Configures the browser session for Coolify and clipboard paste. */
@@ -142,6 +182,14 @@ export const options = {
 
 /** Captures the asserted Coolify deployment walkthrough. */
 export default async function capture(r) {
+  try {
+    await captureTutorial(r)
+  } finally {
+    restoreDnsValidation()
+  }
+}
+
+async function captureTutorial(r) {
   const page = r.page
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], {origin: COOLIFY_URL})
   await r.nav(PROJECT_PATH)
@@ -383,16 +431,10 @@ export default async function capture(r) {
     },
     settleMs: 1000,
   })
-  const updaterProject = await api(`/projects/${PROJECT_UUID}`)
-  const updaterEnvironmentIds = new Set(
-    (updaterProject.environments || []).map((environment) => Number(environment.id)),
-  )
-  const updaterService = (await api('/services')).find(
-    (item) =>
-      belongsToProject(item, updaterEnvironmentIds) &&
-      /seed-updater/i.test([item.name, item.docker_compose_raw, item.docker_compose].filter(Boolean).join('\n')),
-  )
-  if (!updaterService) throw new Error('Coolify did not create the Seed updater Compose resource')
+  const updaterServiceUuid = new URL(page.url()).pathname.match(/\/service\/([^/]+)\/?$/)?.[1]
+  if (!updaterServiceUuid) throw new Error('Coolify did not navigate to the Seed updater service')
+  const updaterService = await api(`/services/${encodeURIComponent(updaterServiceUuid)}`)
+  if (!updaterService?.uuid) throw new Error('Coolify did not create the Seed updater Compose resource')
 
   const deployUpdater = page.getByRole('button', {name: /^Deploy$/i})
   const updaterStartupHeading = page.getByRole('heading', {name: 'Service Startup', exact: true})

@@ -85,7 +85,6 @@ export async function createRecorder(opts) {
   if (!p) throw new Error(`unknown persona ${persona}`)
   const shotsDir = path.join(outDir, 'shots', take)
   fs.mkdirSync(shotsDir, {recursive: true})
-  for (const f of fs.readdirSync(shotsDir)) if (f.endsWith('.png')) fs.unlinkSync(path.join(shotsDir, f))
 
   const browser = await chromium.launch({
     headless,
@@ -116,6 +115,7 @@ export async function createRecorder(opts) {
   await cdp.send('Emulation.setFocusEmulationEnabled', {enabled: true})
 
   const beats = []
+  const writtenImages = new Set()
   let cursor = {x: Math.round(p.viewport.width * 0.55), y: Math.round(p.viewport.height * 0.6)}
   let shotIndex = 0
   const t0 = Date.now()
@@ -168,6 +168,7 @@ export async function createRecorder(opts) {
       caret: 'hide',
       fullPage: false,
     })
+    writtenImages.add(file)
     return path.posix.join('shots', take, file)
   }
 
@@ -408,6 +409,9 @@ export async function createRecorder(opts) {
       beats,
     }
     fs.writeFileSync(file, JSON.stringify(existing, null, 2))
+    for (const image of fs.readdirSync(shotsDir)) {
+      if (image.endsWith('.png') && !writtenImages.has(image)) fs.unlinkSync(path.join(shotsDir, image))
+    }
     await browser.close()
     return file
   }
