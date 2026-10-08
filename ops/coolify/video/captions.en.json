@@ -1,0 +1,35 @@
+{
+  "intro": {
+    "title": "Deploy a Seed site on Coolify",
+    "subtitle": "Self-host a Seed Hypermedia site from one Compose file"
+  },
+  "beats": {
+    "project": "Start in your Coolify project",
+    "new-resource": "Add a new resource",
+    "docker-compose": "Choose Docker Compose — no Git repo needed",
+    "paste": "Paste ops/coolify/seed-site.yaml",
+    "create": "Create proxy, init, daemon and web",
+    "services": "Review all four Seed resources",
+    "domain": "Set your domain on Seed Proxy",
+    "domain-settings": "Open the proxy domain settings",
+    "protocol": "Use https and your own domain",
+    "domain-name": "Set site.example.com as the hostname",
+    "save": "Save the domain settings",
+    "deploy": "Deploy the Seed site stack",
+    "wait": "Wait for proxy and web to turn healthy",
+    "running": "Seed Init exits after first setup — that's expected",
+    "secret": "Find SERVICE_PASSWORD_SEEDLINK for registration",
+    "copy-secret": "Copy SERVICE_PASSWORD_SEEDLINK for registration",
+    "updater-resource": "Add the updater once per server for auto-updates",
+    "updater-compose": "Choose Docker Compose again",
+    "updater-paste": "Paste ops/coolify/seed-updater.yaml",
+    "updater-create": "Create the updater service",
+    "updater-deploy": "Deploy Watchtower for automatic updates",
+    "updater-running": "Confirm the updater is running",
+    "site": "Your site is live — register it from Seed desktop"
+  },
+  "outro": {
+    "takeaway": "Register at https://<domain>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/coolify"
+  }
+}
