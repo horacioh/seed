@@ -73,8 +73,9 @@ ops/<platform>/video/
 
 The recorder API is intentionally small: `r.nav(path, { waitFor })`, `r.shot(name, { target })`,
 `r.click(locator, { name, expect, mark })`, `r.type(locator, text, { name, expect })`, and
-`r.poll(name, { every, until, max })`. Every click must have an `expect(page)` postcondition; capture stops on a failed
-assertion or frame guard.
+`r.poll(name, { every, until, max })`, plus `r.dismissToasts()`. Guard exceptions (`allowLoading`, `allowToast`,
+`allowBanner`, `allowEmpty`) are per call. Every click must have an `expect(page)` postcondition; capture stops on a
+failed assertion or frame guard.
 
 ## Style rules
 
@@ -95,3 +96,23 @@ assertion or frame guard.
   takeaway and link are provided by the tutorial's caption/spec data.
 - Audio is one subtle synthesized click per actual click: no music, voiceover, whooshes, typing ticks or caption sounds.
 - Final video is 3840×2160 at 60 fps, H.264 High with AAC 48 kHz; `--preview` produces a 1080p review cut.
+
+## Adding a platform
+
+`ops/coolify/video/` is the reference tutorial. To add another platform:
+
+1. Run the platform for real on the VM (self-hosted install, or a real account for hosted platforms) and follow
+   `ops/<platform>/TUTORIAL.md` once by hand. If the UI no longer matches the tutorial, fix `TUTORIAL.md` as well.
+2. Copy the Coolify folder's structure. Rewrite `capture.mjs` for the platform: `prepare()` deletes earlier Seed stacks
+   through the platform's API, so every take starts from the same empty project. Keep tokens in files under
+   `~/.config/<platform>/` with mode `600` and never log them.
+3. Keep beat names identical across `capture.mjs`, `spec.js` and `captions.en.json`, in capture order.
+4. Show the full flow: create the stack, paste `seed-site.yaml` (or the platform's equivalent), set the https domain,
+   deploy, wait until healthy, find the registration secret, add the updater where the platform needs one, then show the
+   live “Coming Soon” page. Registering the site from Seed desktop belongs in a separate video.
+5. Base waits on the platform's API state or real Docker health, not page text, and reload the page before a status shot
+   so it never shows stale state. Map `site.example.com` to `127.0.0.1` with Chromium host-resolver rules, and also map
+   `localhost` to `127.0.0.1`: Chromium otherwise tries `::1`, which Docker-published ports may not answer.
+6. Verify `curl --resolve site.example.com:443:127.0.0.1 -k https://site.example.com/hm/api/config` returns JSON, build
+   the preview, and review a contact sheet (`--contact`) and stills for stale states, stray toasts, secrets on screen
+   and zooms that miss their target before opening a PR.
