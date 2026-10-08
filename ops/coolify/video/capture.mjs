@@ -48,6 +48,11 @@ function isSeedCompose(service) {
   return /seed|SERVICE_PASSWORD_SEEDLINK/i.test(source)
 }
 
+async function applicationStatuses(uuid) {
+  const service = await api(`/services/${encodeURIComponent(uuid)}`)
+  return new Map((service.applications || []).map((application) => [application.name, application.status]))
+}
+
 function seedDataVolumes() {
   return execFileSync('docker', ['volume', 'ls', '--format', '{{.Name}}'], {encoding: 'utf8'})
     .split('\n')
@@ -72,6 +77,18 @@ async function pasteCompose(r, file, beat) {
 
 /** Clears existing Seed Compose resources and their data volumes through Coolify. */
 export async function prepare() {
+  // The demo hostname does not resolve to this server.
+  execFileSync('docker', [
+    'exec',
+    'coolify-db',
+    'psql',
+    '-U',
+    'coolify',
+    '-d',
+    'coolify',
+    '-c',
+    'update instance_settings set is_dns_validation_enabled=false',
+  ])
   const server = await api(`/servers/${SERVER_UUID}`)
   if (!server.settings?.is_reachable || !server.settings?.is_usable) {
     throw new Error('Coolify localhost server is not validated and usable')
@@ -116,7 +133,10 @@ export function context() {
 export const options = {
   baseUrl: COOLIFY_URL,
   browser: {
-    args: ['--ignore-certificate-errors', '--host-resolver-rules=MAP site.example.com 127.0.0.1'],
+    args: [
+      '--ignore-certificate-errors',
+      '--host-resolver-rules=MAP site.example.com 127.0.0.1, MAP localhost 127.0.0.1',
+    ],
   },
 }
 
@@ -211,66 +231,123 @@ export default async function capture(r) {
     name: 'protocol-https',
     expect: async () => (await protocol.getAttribute('title')) === 'https',
   })
-  await r.shot('protocol', {target: protocol})
   const domain = settingsPanel.getByLabel('Domain')
   await r.type(domain, 'site.example.com', {
     name: 'domain-name',
     expect: async () => (await domain.inputValue()) === 'site.example.com',
   })
   const saveDomain = settingsPanel.getByRole('button', {name: /^Save$/i})
+  const usePort = page.getByRole('button', {name: 'Use This Port Anyway'})
   await r.click(saveDomain, {
     name: 'save',
     expect: async () => {
-      await settingsHeading.waitFor({state: 'hidden', timeout: 10_000})
+      await usePort.waitFor({state: 'visible', timeout: 10_000})
       return true
     },
   })
+  await r.click(usePort, {
+    name: 'confirm-port',
+    expect: async () => {
+      await settingsHeading.waitFor({state: 'hidden', timeout: 10_000})
+      await proxyCard.getByText('https://site.example.com').waitFor({state: 'visible', timeout: 10_000})
+      await proxyCard.getByText('Checking DNS').waitFor({state: 'hidden', timeout: 30_000})
+      return true
+    },
+    allowToast: true,
+  })
 
   const deploySite = page.getByRole('button', {name: /^Deploy$/i})
+  const startupHeading = page.getByRole('heading', {name: 'Service Startup', exact: true})
   await r.click(deploySite, {
     name: 'deploy',
     expect: async (currentPage) => {
-      await currentPage
-        .getByText(/deployment|deploying/i)
-        .first()
-        .waitFor({state: 'visible', timeout: 15_000})
+      await currentPage.getByRole('heading', {name: 'Service Startup', exact: true}).waitFor({
+        state: 'visible',
+        timeout: 15_000,
+      })
       return true
     },
+    allowLoading: true,
     allowToast: true,
     settleMs: 800,
   })
 
-  const statusList = page.getByRole('main')
+  const siteIsReady = async () => {
+    const statuses = await applicationStatuses(siteService.uuid)
+    return (
+      statuses.get('seed-proxy') === 'running:healthy' &&
+      statuses.get('seed-web') === 'running:healthy' &&
+      statuses.get('seed-daemon')?.startsWith('running')
+    )
+  }
   await r.poll('wait', {
     every: 1000,
     max: 240_000,
-    until: async () => {
-      const text = await statusList.innerText()
-      return (
-        /Seed Proxy[\s\S]{0,180}healthy/i.test(text) &&
-        /Seed Web[\s\S]{0,180}healthy/i.test(text) &&
-        /Seed Daemon[\s\S]{0,180}running/i.test(text)
-      )
-    },
+    until: siteIsReady,
+    allowLoading: true,
+    allowToast: true,
   })
-  const statusText = await statusList.innerText()
+  if (!(await siteIsReady()))
+    throw new Error('Seed Proxy, Seed Web and Seed Daemon did not reach their expected states')
+
+  const closeStartup = page.getByRole('button', {name: 'Close', exact: true})
+  await r.click(closeStartup, {
+    name: 'close-logs',
+    expect: async () => {
+      await startupHeading.waitFor({state: 'hidden', timeout: 10_000})
+      return true
+    },
+    allowLoading: true,
+    allowToast: true,
+  })
+
+  await r.nav(sitePageUrl)
+  const statusText = await page.getByRole('main').innerText()
+  if (!/Seed Proxy[\s\S]{0,180}healthy/i.test(statusText)) {
+    throw new Error('Seed Proxy did not reach Healthy')
+  }
+  if (!/Seed Web[\s\S]{0,180}healthy/i.test(statusText)) {
+    throw new Error('Seed Web did not reach Healthy')
+  }
+  if (!/Seed Daemon[\s\S]{0,180}running/i.test(statusText)) {
+    throw new Error('Seed Daemon did not reach Running')
+  }
   if (!/Seed Init[\s\S]{0,180}exited/i.test(statusText)) {
     throw new Error('Seed Init did not reach Exited after the first setup')
   }
-  await r.shot('running', {allowEmpty: true})
+  await r.shot('running', {target: composeResources})
 
   const envTab = page.getByRole('link', {name: 'Environment Variables'})
   await r.click(envTab, {
     name: 'secret',
-    expect: async (currentPage) => currentPage.getByRole('heading', {name: /Environment Variables/}).isVisible(),
+    expect: async (currentPage) => {
+      await currentPage.getByRole('heading', {name: /Environment variables/i}).waitFor({
+        state: 'visible',
+        timeout: 10_000,
+      })
+      await currentPage
+        .locator('.data-table-row')
+        .filter({has: currentPage.getByText('SERVICE_PASSWORD_SEEDLINK', {exact: true})})
+        .waitFor({
+          state: 'visible',
+          timeout: 10_000,
+        })
+      return true
+    },
+    allowEmpty: true,
   })
-  const secretRow = page.getByRole('row', {name: /SERVICE_PASSWORD_SEEDLINK/})
+  const secretRow = page
+    .locator('.data-table-row')
+    .filter({has: page.getByText('SERVICE_PASSWORD_SEEDLINK', {exact: true})})
   await secretRow.waitFor({state: 'visible'})
   const copySecret = secretRow.getByRole('button', {name: /copy/i})
   await r.click(copySecret, {
     name: 'copy-secret',
-    expect: async (currentPage) => currentPage.getByRole('status').isVisible(),
+    expect: async (currentPage) => {
+      return currentPage.evaluate(async () => Boolean((await navigator.clipboard.readText()).trim()))
+    },
     allowToast: true,
+    allowEmpty: true,
   })
 
   await r.nav(PROJECT_PATH)
@@ -313,22 +390,39 @@ export default async function capture(r) {
   if (!updaterService) throw new Error('Coolify did not create the Seed updater Compose resource')
 
   const deployUpdater = page.getByRole('button', {name: /^Deploy$/i})
+  const updaterStartupHeading = page.getByRole('heading', {name: 'Service Startup', exact: true})
   await r.click(deployUpdater, {
     name: 'updater-deploy',
     expect: async (currentPage) => {
-      await currentPage
-        .getByText(/deployment|deploying/i)
-        .first()
-        .waitFor({state: 'visible', timeout: 15_000})
+      await currentPage.getByRole('heading', {name: 'Service Startup', exact: true}).waitFor({
+        state: 'visible',
+        timeout: 15_000,
+      })
       return true
     },
+    allowLoading: true,
     allowToast: true,
     settleMs: 800,
   })
+  const updaterIsRunning = async () =>
+    [...(await applicationStatuses(updaterService.uuid)).values()].some((status) => /^running(?::|$)/i.test(status))
   await r.poll('updater-running', {
     every: 1000,
-    max: 120_000,
-    until: async () => /running/i.test(await page.getByRole('main').innerText()),
+    max: 240_000,
+    until: updaterIsRunning,
+    allowLoading: true,
+    allowToast: true,
+  })
+  if (!(await updaterIsRunning())) throw new Error('Seed updater did not reach Running')
+
+  await r.click(page.getByRole('button', {name: 'Close', exact: true}), {
+    name: 'updater-close-logs',
+    expect: async () => {
+      await updaterStartupHeading.waitFor({state: 'hidden', timeout: 10_000})
+      return true
+    },
+    allowLoading: true,
+    allowToast: true,
   })
 
   await r.nav('https://site.example.com/')

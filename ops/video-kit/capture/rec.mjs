@@ -44,13 +44,13 @@ const DEFAULT_GUARD_SELECTORS = {
   empty: ['[data-empty-state]', '[data-empty]', '.empty-state'],
 }
 
-function guardScript({allowToast, allowBanner, allowEmpty, selectors}) {
+function guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selectors}) {
   return `(() => {
     const problems = []
     const vis = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && s.opacity !== '0' && r.bottom > 0 && r.top < innerHeight }
     const selectors = ${JSON.stringify(selectors)}
     const matching = (key) => selectors[key].length ? document.querySelectorAll(selectors[key].join(',')) : []
-    for (const el of matching('loading')) if (vis(el)) problems.push('loading: ' + el.className)
+    if (!${allowLoading}) for (const el of matching('loading')) if (vis(el)) problems.push('loading: ' + (el.getAttribute('class') || el.tagName))
     if (!${allowToast}) for (const el of matching('toast')) if (vis(el)) problems.push('toast: ' + (el.textContent || '').slice(0, 60))
     if (!${allowBanner}) for (const el of matching('banner')) if (vis(el)) problems.push('banner: ' + (el.textContent || '').slice(0, 60))
     if (!${allowEmpty}) for (const el of matching('empty')) if (vis(el)) problems.push('empty: ' + (el.textContent || '').slice(0, 60))
@@ -148,14 +148,14 @@ export async function createRecorder(opts) {
     await page.waitForTimeout(80)
   }
 
-  async function guard({allowToast = false, allowBanner = false, allowEmpty = false} = {}) {
+  async function guard({allowLoading = false, allowToast = false, allowBanner = false, allowEmpty = false} = {}) {
     const selectors = Object.fromEntries(
       Object.keys(DEFAULT_GUARD_SELECTORS).map((key) => {
         const configured = frameGuard[key] ?? DEFAULT_GUARD_SELECTORS[key]
         return [key, Array.isArray(configured) ? configured : [configured]]
       }),
     )
-    const problems = await page.evaluate(guardScript({allowToast, allowBanner, allowEmpty, selectors}))
+    const problems = await page.evaluate(guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selectors}))
     if (problems.length) throw new Error(`frame guard failed:\n  ${problems.join('\n  ')}`)
   }
 
@@ -187,12 +187,15 @@ export async function createRecorder(opts) {
     await clean()
   }
 
-  async function shot(name, {allowToast, allowBanner, allowEmpty, target, mark, keepHover, keepFocus} = {}) {
+  async function shot(
+    name,
+    {allowLoading, allowToast, allowBanner, allowEmpty, target, mark, keepHover, keepFocus} = {},
+  ) {
     await settle(150)
     const targetBox = target ? await bboxOf(target) : undefined
     const markBox = mark ? await bboxOf(mark) : undefined
     await clean({keepHover, keepFocus})
-    await guard({allowToast, allowBanner, allowEmpty})
+    await guard({allowLoading, allowToast, allowBanner, allowEmpty})
     const beat = {
       kind: 'shot',
       name,
@@ -213,6 +216,7 @@ export async function createRecorder(opts) {
       expect,
       mark,
       name = 'click',
+      allowLoading = false,
       allowToast = false,
       allowBanner = false,
       allowEmpty = false,
@@ -225,7 +229,7 @@ export async function createRecorder(opts) {
     await settle(100)
     const target = await bboxOf(locator)
     await clean({keepHover: true})
-    await guard({allowToast, allowBanner, allowEmpty})
+    await guard({allowLoading, allowToast, allowBanner, allowEmpty})
     const before = await capture(`${name}-before`)
     const from = {...cursor}
     const to = {x: Math.round(target.x + target.w / 2), y: Math.round(target.y + target.h / 2)}
@@ -248,7 +252,7 @@ export async function createRecorder(opts) {
     if (ok === false) throw new Error(`click(${name}): postcondition returned false`)
     await settle(settleMs)
     await clean({keepHover: true, keepFocus})
-    await guard({allowToast, allowBanner, allowEmpty})
+    await guard({allowLoading, allowToast, allowBanner, allowEmpty})
     const markBox = mark ? await bboxOf(mark) : undefined
     const after = await capture(`${name}-after`)
     const beat = {
@@ -270,11 +274,15 @@ export async function createRecorder(opts) {
     return beat
   }
 
-  async function type(locator, text, {name = 'type', expect, delay = 35, allowToast = false, clear = true} = {}) {
+  async function type(
+    locator,
+    text,
+    {name = 'type', expect, delay = 35, allowLoading = false, allowToast = false, clear = true} = {},
+  ) {
     await settle(100)
     const target = await bboxOf(locator)
     await clean({keepHover: true})
-    await guard({allowToast})
+    await guard({allowLoading, allowToast})
     const before = await capture(`${name}-before`)
     const from = {...cursor}
     const to = {x: Math.round(target.x + target.w / 2), y: Math.round(target.y + target.h / 2)}
@@ -292,7 +300,7 @@ export async function createRecorder(opts) {
     }
     await page.waitForTimeout(150)
     await clean({keepHover: true, keepFocus: true})
-    await guard({allowToast})
+    await guard({allowLoading, allowToast})
     const after = await capture(`${name}-after`)
     const beat = {
       kind: 'type',
@@ -316,13 +324,21 @@ export async function createRecorder(opts) {
   // or `max` ms elapsed. Produces a 'poll' beat with several frames (renderer shows them with a "Sped up" badge).
   async function poll(
     name,
-    {every = 1000, until, max = 15000, allowToast = false, allowBanner = false, allowEmpty = false} = {},
+    {
+      every = 1000,
+      until,
+      max = 15000,
+      allowLoading = false,
+      allowToast = false,
+      allowBanner = false,
+      allowEmpty = false,
+    } = {},
   ) {
     const frames = []
     const tStart = now()
     while (now() - tStart < max) {
       await clean({keepHover: true})
-      await guard({allowToast, allowBanner, allowEmpty})
+      await guard({allowLoading, allowToast, allowBanner, allowEmpty})
       frames.push({t: now(), image: await capture(`${name}-${frames.length}`)})
       if (until && (await until(page))) break
       await page.waitForTimeout(every)
