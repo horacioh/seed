@@ -25,8 +25,8 @@ export const T = {
   ZOOM_IN: 800,
   ZOOM_OUT: 700,
   RESULT_HOLD: 1200, // after the result has settled, before the beat ends (+ REST of the next beat ≈ 1.85 s)
-  END_HOLD: 3000,
-  OUTRO_IN: 450,
+  END_HOLD: 3800,
+  OUTRO_IN: 700,
   CURSOR_FADE: 200,
 }
 export const capMin = (lang) => (lang === 'es' ? 3000 : 2600)
@@ -388,6 +388,7 @@ export async function compile({take, spec, captions, lang, format = '16x9', fold
       badge,
       typing,
       outro,
+      outroMs: ms - outroAt,
     }
   }
   function cursorPos0(ms) {

@@ -281,7 +281,7 @@ function drawScene(ms) {
     )
   if (st.outro > 0) {
     if (phone) drawPhoneOutro(ctx, captions.outro || {}, {web: phone.web, ppt: phone.ppt, p: st.outro, logo, brand})
-    else drawOutro(ctx, captions.outro || {}, {outW, outH, u, p: st.outro, logo, brand})
+    else drawOutro(ctx, captions.outro || {}, {outW, outH, u, p: st.outro, ms: st.outroMs, logo, brand})
   }
   if (phone) {
     drawHomeIndicator(ctx, phone.scr, phone.ppt, st.outro < 0.5)

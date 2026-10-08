@@ -92,8 +92,11 @@ failed assertion or frame guard.
 - Captions are short dark pills at the bottom; keep them clear of the control being demonstrated. Long waits use
   `r.poll` and the automatic “Sped up” badge. Long forms drop in as a still rather than being typed
   character-by-character.
-- Start with the text intro from `captions.<lang>.json` and crossfade into the first app frame. End with an outro whose
-  takeaway and link are provided by the tutorial's caption/spec data.
+- Every video shares the same brand intro and outro cards (Seed-green background, Seed logo and wordmark, drawn by
+  `drawIntro`/`drawOutro` in `render/draw.mjs`); don't restyle them per platform. A tutorial only supplies the copy in
+  `captions.<lang>.json`: `intro` takes `title`, `subtitle` and an optional `kicker` (default “Tutorial”), and `outro`
+  takes `takeaway`, `link` and an optional `cta`. The intro crossfades into the first app frame; the outro reveals over
+  the last one.
 - Audio is one subtle synthesized click per actual click: no music, voiceover, whooshes, typing ticks or caption sounds.
 - Final video is 3840×2160 at 60 fps, H.264 High with AAC 48 kHz; `--preview` produces a 1080p review cut.
 

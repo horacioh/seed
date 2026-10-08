@@ -217,7 +217,6 @@ export function drawLogo(ctx, x, y, size, logo) {
   return w
 }
 
-// Outro lower third: logo, wordmark, takeaway and tutorial link. p = enter progress 0..1.
 // Shrinks the font until `text` fits in `maxW` (never below minPx).
 function fitFont(ctx, weight, px, minPx, text, maxW) {
   for (let size = px; size >= minPx; size -= 1) {
@@ -226,98 +225,183 @@ function fitFont(ctx, weight, px, minPx, text, maxW) {
   }
 }
 
-export function drawOutro(ctx, outro, {outW, outH, u, p, logo, brand}) {
-  if (p <= 0) return
-  const portrait = outH > outW
-  const e = easeOut(p)
-  const h = 200 * u
-  const y0 = outH - h * e
-  ctx.save()
-  ctx.globalAlpha = e
-  const g = ctx.createLinearGradient(0, y0 - 80 * u, 0, outH)
-  g.addColorStop(0, 'rgba(24,24,27,0)')
-  g.addColorStop(0.3, 'rgba(24,24,27,0.88)')
-  g.addColorStop(1, 'rgba(24,24,27,0.97)')
-  ctx.fillStyle = g
-  ctx.fillRect(0, y0 - 80 * u, outW, h + 80 * u)
-  const pad = 64 * u
-  const logoSize = 72 * u
-  const logoWidth = drawLogo(ctx, pad, y0 + (h - logoSize) / 2, logoSize, logo)
-  const tx = pad + logoWidth + 28 * u
-  ctx.textBaseline = 'alphabetic'
-  ctx.textAlign = 'right'
-  ctx.font = `600 ${Math.round(30 * u)}px Inter`
-  ctx.fillStyle = '#fafafa'
-  ctx.fillText(outro.link || '', outW - pad, y0 + 80 * u)
-  let rightW = 0
-  if (!portrait) {
-    ctx.font = `500 ${Math.round(20 * u)}px Inter`
-    ctx.fillStyle = '#a1a1aa'
-    ctx.fillText(outro.tagline || '', outW - pad, y0 + 116 * u)
-    rightW = ctx.measureText(outro.tagline || '').width + 40 * u
+/** Dark green ink used for text and the logo on brand-green cards. */
+export const BRAND_INK = '#0b2e23'
+
+const tintCache = new Map()
+function tintedLogo(logo, color) {
+  const key = `${logo.src}|${color}`
+  if (!tintCache.has(key)) {
+    const c = createCanvas(logo.width * 2, logo.height * 2)
+    const g = c.getContext('2d')
+    g.drawImage(logo, 0, 0, c.width, c.height)
+    g.globalCompositeOperation = 'source-in'
+    g.fillStyle = color
+    g.fillRect(0, 0, c.width, c.height)
+    tintCache.set(key, c)
   }
-  const maxW = outW - pad - tx - rightW
-  ctx.textAlign = 'left'
-  ctx.fillStyle = '#fafafa'
-  ctx.font = `700 ${Math.round(40 * u)}px Inter`
-  ctx.fillText(outro.wordmark || brand.wordmark, tx, y0 + 74 * u)
-  ctx.fillStyle = '#e4e4e7'
-  fitFont(ctx, 500, 26 * u, 18 * u, outro.takeaway || '', maxW)
-  ctx.fillText(outro.takeaway || '', tx, y0 + 116 * u)
-  ctx.fillStyle = brand.accent
-  fitFont(ctx, 500, 22 * u, 15 * u, outro.cta || '', outW - pad - tx)
-  ctx.fillText(outro.cta || '', tx, y0 + 154 * u)
+  return tintCache.get(key)
+}
+
+// Shared brand card background: Seed green with a soft light falloff and a large, slowly drifting logo watermark.
+function drawBrandBackground(ctx, {outW, outH, u, ms, logo}) {
+  ctx.fillStyle = SEED_GREEN
+  ctx.fillRect(0, 0, outW, outH)
+  const g = ctx.createRadialGradient(outW * 0.3, outH * 0.25, 0, outW * 0.3, outH * 0.25, Math.hypot(outW, outH) * 0.8)
+  g.addColorStop(0, 'rgba(255,255,255,0.16)')
+  g.addColorStop(1, 'rgba(3,142,122,0.22)')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, outW, outH)
+  const mark = tintedLogo(logo, '#ffffff')
+  const h = Math.max(outW, outH) * 0.78
+  const w = h * (logo.width / logo.height)
+  const drift = ms / 1000
+  ctx.save()
+  ctx.globalAlpha = 0.14
+  ctx.translate(outW > outH ? outW * 0.82 : outW * 0.7, outH * 0.55)
+  ctx.rotate(-0.12 + drift * 0.01)
+  ctx.scale(1 + drift * 0.012, 1 + drift * 0.012)
+  ctx.drawImage(mark, -w / 2, -h / 2, w, h)
   ctx.restore()
 }
 
-// Text intro card (16:9 and 9:16): dark full frame, logo + wordmark, title, subtitle. `p` = time since start
-// in ms; text fades and rises in. The caller crossfades it into the first app frame.
-export function drawIntro(ctx, intro, {outW, outH, u, ms, logo, brand}) {
-  const portrait = outH > outW
-  const k = (d, dur = 500) => easeOut(prog(ms, d, dur))
-  ctx.save()
-  ctx.fillStyle = INK
-  ctx.fillRect(0, 0, outW, outH)
-  ctx.textAlign = 'center'
+function drawBrandRow(ctx, x, y, size, {logo, brand, color = BRAND_INK, align = 'left'}) {
+  ctx.font = `700 ${Math.round(size * 0.62)}px Inter`
+  const wm = brand.wordmark
+  const logoW = size * (logo.width / logo.height)
+  const gap = size * 0.36
+  const rowW = logoW + gap + ctx.measureText(wm).width
+  const x0 = align === 'center' ? x - rowW / 2 : x
+  ctx.drawImage(tintedLogo(logo, color), x0, y - size / 2, logoW, size)
+  ctx.fillStyle = color
+  ctx.textAlign = 'left'
   ctx.textBaseline = 'middle'
+  ctx.fillText(wm, x0 + logoW + gap, y + size * 0.03)
+  return rowW
+}
+
+/**
+ * Brand outro card (16:9 and 9:16), the same for every tutorial: a Seed-green circle reveal over the last app frame,
+ * then logo + wordmark, the takeaway and the tutorial link. `p` = reveal progress 0..1, `ms` = time since the outro began.
+ */
+export function drawOutro(ctx, outro, {outW, outH, u, p, ms = 0, logo, brand}) {
+  if (p <= 0) return
+  const portrait = outH > outW
+  const k = (d, dur = 450) => easeOut(prog(ms, d, dur))
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(outW / 2, outH / 2, (Math.hypot(outW, outH) / 2) * p, 0, Math.PI * 2)
+  ctx.clip()
+  drawBrandBackground(ctx, {outW, outH, u, ms, logo})
   const cx = outW / 2,
     cy = outH / 2
-  const maxW = outW - (portrait ? 120 : 320) * u
-  const logoSize = (portrait ? 96 : 80) * u
-  let e = k(100)
+  const maxW = outW - (portrait ? 120 : 360) * u
+  let e = k(300)
   ctx.globalAlpha = e
-  ctx.font = `700 ${Math.round((portrait ? 44 : 36) * u)}px Inter`
-  const wm = brand.wordmark,
-    wmW = ctx.measureText(wm).width,
-    gap = 18 * u
-  const logoWidth = logoSize * (logo.width / logo.height)
-  const rowW = logoWidth + gap + wmW,
-    rowY = cy - (portrait ? 260 : 170) * u + (1 - e) * 16 * u
-  drawLogo(ctx, cx - rowW / 2, rowY - logoSize / 2, logoSize, logo)
-  ctx.fillStyle = '#fafafa'
-  ctx.textAlign = 'left'
-  ctx.fillText(wm, cx - rowW / 2 + logoWidth + gap, rowY)
+  const logoSize = (portrait ? 150 : 132) * u
+  const logoW = logoSize * (logo.width / logo.height)
+  ctx.drawImage(
+    tintedLogo(logo, BRAND_INK),
+    cx - logoW / 2,
+    cy - (portrait ? 330 : 250) * u + (1 - e) * 16 * u,
+    logoW,
+    logoSize,
+  )
   ctx.textAlign = 'center'
-  e = k(350)
+  ctx.textBaseline = 'middle'
+  ctx.fillStyle = BRAND_INK
+  ctx.font = `700 ${Math.round((portrait ? 64 : 60) * u)}px Inter`
+  ctx.fillText(outro.wordmark || brand.wordmark, cx, cy - (portrait ? 110 : 60) * u + (1 - e) * 16 * u)
+  e = k(500)
   ctx.globalAlpha = e
-  let px = (portrait ? 92 : 84) * u,
+  ctx.fillStyle = 'rgba(11,46,35,0.82)'
+  const take = outro.takeaway || ''
+  if (portrait) {
+    ctx.font = `500 ${Math.round(36 * u)}px Inter`
+    wrapText(ctx, take, maxW).forEach((l, i) => ctx.fillText(l, cx, cy + (i * 48 - 10) * u + (1 - e) * 12 * u))
+  } else {
+    fitFont(ctx, 500, 32 * u, 20 * u, take, maxW)
+    ctx.fillText(take, cx, cy + 14 * u + (1 - e) * 12 * u)
+  }
+  const link = outro.link || ''
+  if (link) {
+    e = k(700)
+    ctx.globalAlpha = e
+    fitFont(ctx, 600, (portrait ? 30 : 28) * u, 16 * u, link, maxW - 64 * u)
+    const pw = ctx.measureText(link).width + 64 * u,
+      ph = 64 * u,
+      py = cy + (portrait ? 170 : 110) * u + (1 - e) * 12 * u
+    roundRect(ctx, cx - pw / 2, py, pw, ph, ph / 2)
+    ctx.fillStyle = BRAND_INK
+    ctx.fill()
+    ctx.fillStyle = '#ffffff'
+    ctx.fillText(link, cx, py + ph / 2 + 1 * u)
+  }
+  if (outro.cta) {
+    e = k(850)
+    ctx.globalAlpha = e
+    ctx.fillStyle = BRAND_INK
+    fitFont(ctx, 600, 24 * u, 15 * u, outro.cta, maxW)
+    ctx.fillText(outro.cta, cx, cy + (portrait ? 290 : 225) * u)
+  }
+  ctx.restore()
+}
+
+/**
+ * Brand intro card (16:9 and 9:16), the same for every tutorial: Seed-green background, logo + wordmark, a "Tutorial"
+ * kicker (`intro.kicker`), the title and subtitle, rising in one after another. `ms` = time since start.
+ */
+export function drawIntro(ctx, intro, {outW, outH, u, ms, logo, brand}) {
+  const portrait = outH > outW
+  const k = (d, dur = 550) => easeOut(prog(ms, d, dur))
+  ctx.save()
+  drawBrandBackground(ctx, {outW, outH, u, ms, logo})
+  const pad = (portrait ? 80 : 140) * u
+  const maxW = outW - pad * 2 - (portrait ? 0 : 280 * u)
+  let e = k(80)
+  ctx.globalAlpha = e
+  drawBrandRow(ctx, pad, pad + (portrait ? 40 : 20) * u - (1 - e) * 10 * u, (portrait ? 72 : 60) * u, {logo, brand})
+  let px = (portrait ? 96 : 92) * u,
     lines
   for (;;) {
     ctx.font = `700 ${Math.round(px)}px Inter`
     lines = wrapText(ctx, intro.title || '', maxW)
-    if (lines.length <= 3 || px <= 40 * u) break
+    if (lines.length <= (portrait ? 4 : 2) || px <= 44 * u) break
     px -= 4 * u
   }
-  const lh = px * 1.12,
-    ty = cy - ((lines.length - 1) * lh) / 2 + (1 - e) * 20 * u
-  ctx.fillStyle = '#fafafa'
-  lines.forEach((l, i) => ctx.fillText(l, cx, ty + i * lh))
+  const lh = px * 1.08
+  const subPx = (portrait ? 40 : 36) * u
+  const kickerH = 52 * u
+  const blockH = kickerH + 36 * u + lines.length * lh + (intro.subtitle ? subPx * 2.3 : 0)
+  let y = outH / 2 - blockH / 2 + (portrait ? 40 : 30) * u
+  e = k(250)
+  ctx.globalAlpha = e
+  const kicker = (intro.kicker || 'Tutorial').toUpperCase()
+  ctx.font = `700 ${Math.round(22 * u)}px Inter`
+  const kw = ctx.measureText(kicker).width + 44 * u
+  roundRect(ctx, pad, y + (1 - e) * 14 * u, kw, kickerH, kickerH / 2)
+  ctx.fillStyle = BRAND_INK
+  ctx.fill()
+  ctx.fillStyle = SEED_GREEN
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(kicker, pad + 22 * u, y + kickerH / 2 + 1 * u + (1 - e) * 14 * u)
+  y += kickerH + 36 * u
+  e = k(420)
+  ctx.globalAlpha = e
+  ctx.font = `700 ${Math.round(px)}px Inter`
+  ctx.fillStyle = BRAND_INK
+  ctx.textBaseline = 'top'
+  lines.forEach((l, i) => ctx.fillText(l, pad, y + i * lh + (1 - e) * 20 * u))
+  y += lines.length * lh
   if (intro.subtitle) {
     e = k(650)
     ctx.globalAlpha = e
-    ctx.font = `500 ${Math.round((portrait ? 40 : 34) * u)}px Inter`
-    ctx.fillStyle = brand.accent
-    ctx.fillText(intro.subtitle, cx, ty + (lines.length - 1) * lh + px * 0.6 + 60 * u + (1 - e) * 12 * u)
+    ctx.font = `500 ${Math.round(subPx)}px Inter`
+    ctx.fillStyle = 'rgba(11,46,35,0.78)'
+    wrapText(ctx, intro.subtitle, maxW).forEach((l, i) =>
+      ctx.fillText(l, pad, y + subPx * 1.1 + i * subPx * 1.3 + (1 - e) * 12 * u),
+    )
   }
   ctx.restore()
 }
