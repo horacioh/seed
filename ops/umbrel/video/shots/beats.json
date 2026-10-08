@@ -1,0 +1,398 @@
+{
+  "takes": {
+    "en": {
+      "capturedAt": "2026-10-08T23:19:30.397Z",
+      "platform": {
+        "os": "linux",
+        "release": "6.8.0-1061-aws",
+        "node": "v22.22.0",
+        "browser": "153.0.8010.12"
+      },
+      "persona": "desktop",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 2,
+      "frame": "card",
+      "format": "16x9",
+      "lang": "en",
+      "baseUrl": "http://umbrel.local",
+      "beats": [
+        {
+          "kind": "shot",
+          "name": "home",
+          "t": 2979,
+          "image": "shots/en/01-home.png",
+          "cursor": {
+            "x": 1056,
+            "y": 648
+          }
+        },
+        {
+          "kind": "click",
+          "name": "app-store",
+          "t": 6139,
+          "tClick": 8269,
+          "tAfter": 12364,
+          "target": {
+            "x": 935,
+            "y": 1008,
+            "w": 50,
+            "h": 50
+          },
+          "from": {
+            "x": 1056,
+            "y": 648
+          },
+          "to": {
+            "x": 960,
+            "y": 1033
+          },
+          "before": "shots/en/02-app-store-before.png",
+          "hover": "shots/en/03-app-store-hover.png",
+          "after": "shots/en/04-app-store-after.png",
+          "image": "shots/en/04-app-store-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "more-menu",
+          "t": 14237,
+          "tClick": 16571,
+          "tAfter": 18522,
+          "target": {
+            "x": 1514,
+            "y": 108,
+            "w": 36,
+            "h": 36
+          },
+          "from": {
+            "x": 960,
+            "y": 1033
+          },
+          "to": {
+            "x": 1532,
+            "y": 126
+          },
+          "before": "shots/en/05-more-menu-before.png",
+          "hover": "shots/en/06-more-menu-hover.png",
+          "after": "shots/en/07-more-menu-after.png",
+          "image": "shots/en/07-more-menu-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "community-stores",
+          "t": 20549,
+          "tClick": 22668,
+          "tAfter": 24840,
+          "target": {
+            "x": 1385,
+            "y": 153,
+            "w": 160,
+            "h": 32
+          },
+          "from": {
+            "x": 1532,
+            "y": 126
+          },
+          "to": {
+            "x": 1465,
+            "y": 169
+          },
+          "before": "shots/en/08-community-stores-before.png",
+          "hover": "shots/en/09-community-stores-hover.png",
+          "after": "shots/en/10-community-stores-after.png",
+          "image": "shots/en/10-community-stores-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "store-url",
+          "t": 27052,
+          "tClick": 27533,
+          "tAfter": 31138,
+          "target": {
+            "x": 741,
+            "y": 578,
+            "w": 348,
+            "h": 36
+          },
+          "from": {
+            "x": 1465,
+            "y": 169
+          },
+          "to": {
+            "x": 915,
+            "y": 596
+          },
+          "text": "http://git.example.com/your-name/seed-apps",
+          "before": "shots/en/11-store-url-before.png",
+          "after": "shots/en/12-store-url-after.png",
+          "image": "shots/en/12-store-url-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "add-store",
+          "t": 33253,
+          "tClick": 35438,
+          "tAfter": 38226,
+          "target": {
+            "x": 1099,
+            "y": 578,
+            "w": 80,
+            "h": 36
+          },
+          "from": {
+            "x": 915,
+            "y": 596
+          },
+          "to": {
+            "x": 1139,
+            "y": 596
+          },
+          "before": "shots/en/13-add-store-before.png",
+          "hover": "shots/en/14-add-store-hover.png",
+          "after": "shots/en/15-add-store-after.png",
+          "image": "shots/en/15-add-store-after.png",
+          "mark": {
+            "x": 741,
+            "y": 662,
+            "w": 438,
+            "h": 65
+          }
+        },
+        {
+          "kind": "click",
+          "name": "open-store",
+          "t": 40185,
+          "tClick": 42400,
+          "tAfter": 44889,
+          "target": {
+            "x": 1084,
+            "y": 682,
+            "w": 52,
+            "h": 25
+          },
+          "from": {
+            "x": 1139,
+            "y": 596
+          },
+          "to": {
+            "x": 1110,
+            "y": 695
+          },
+          "before": "shots/en/16-open-store-before.png",
+          "hover": "shots/en/17-open-store-hover.png",
+          "after": "shots/en/18-open-store-after.png",
+          "image": "shots/en/18-open-store-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "seed-site",
+          "t": 46748,
+          "tClick": 48427,
+          "tAfter": 50752,
+          "target": {
+            "x": 395,
+            "y": 316,
+            "w": 370,
+            "h": 76
+          },
+          "from": {
+            "x": 1110,
+            "y": 695
+          },
+          "to": {
+            "x": 580,
+            "y": 354
+          },
+          "before": "shots/en/19-seed-site-before.png",
+          "hover": "shots/en/20-seed-site-hover.png",
+          "after": "shots/en/21-seed-site-after.png",
+          "image": "shots/en/21-seed-site-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "install",
+          "t": 52294,
+          "tClick": 53957,
+          "tAfter": 56630,
+          "target": {
+            "x": 1479,
+            "y": 203,
+            "w": 71,
+            "h": 40
+          },
+          "from": {
+            "x": 580,
+            "y": 354
+          },
+          "to": {
+            "x": 1515,
+            "y": 223
+          },
+          "before": "shots/en/22-install-before.png",
+          "hover": "shots/en/23-install-hover.png",
+          "after": "shots/en/24-install-after.png",
+          "image": "shots/en/24-install-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "wait",
+          "t": 56630,
+          "tAfter": 88713,
+          "frames": [
+            {
+              "t": 56715,
+              "image": "shots/en/25-wait-0.png"
+            },
+            {
+              "t": 59089,
+              "image": "shots/en/26-wait-1.png"
+            },
+            {
+              "t": 61401,
+              "image": "shots/en/27-wait-2.png"
+            },
+            {
+              "t": 63766,
+              "image": "shots/en/28-wait-3.png"
+            },
+            {
+              "t": 66067,
+              "image": "shots/en/29-wait-4.png"
+            },
+            {
+              "t": 68377,
+              "image": "shots/en/30-wait-5.png"
+            },
+            {
+              "t": 70730,
+              "image": "shots/en/31-wait-6.png"
+            },
+            {
+              "t": 73100,
+              "image": "shots/en/32-wait-7.png"
+            },
+            {
+              "t": 75463,
+              "image": "shots/en/33-wait-8.png"
+            },
+            {
+              "t": 77764,
+              "image": "shots/en/34-wait-9.png"
+            },
+            {
+              "t": 80279,
+              "image": "shots/en/35-wait-10.png"
+            },
+            {
+              "t": 82614,
+              "image": "shots/en/36-wait-11.png"
+            },
+            {
+              "t": 85103,
+              "image": "shots/en/37-wait-12.png"
+            },
+            {
+              "t": 87434,
+              "image": "shots/en/38-wait-13.png"
+            }
+          ],
+          "image": "shots/en/38-wait-13.png",
+          "cursor": {
+            "x": 1515,
+            "y": 223
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "installed",
+          "t": 89181,
+          "image": "shots/en/39-installed.png",
+          "cursor": {
+            "x": 1515,
+            "y": 223
+          },
+          "target": {
+            "x": 1483,
+            "y": 203,
+            "w": 67,
+            "h": 40
+          }
+        },
+        {
+          "kind": "click",
+          "name": "open-app",
+          "t": 91965,
+          "tClick": 93492,
+          "tAfter": 95295,
+          "target": {
+            "x": 1483,
+            "y": 203,
+            "w": 67,
+            "h": 40
+          },
+          "from": {
+            "x": 1515,
+            "y": 223
+          },
+          "to": {
+            "x": 1517,
+            "y": 223
+          },
+          "before": "shots/en/40-open-app-before.png",
+          "hover": "shots/en/41-open-app-hover.png",
+          "after": "shots/en/42-open-app-after.png",
+          "image": "shots/en/42-open-app-after.png",
+          "mark": {
+            "x": 750,
+            "y": 511,
+            "w": 420,
+            "h": 48
+          }
+        },
+        {
+          "kind": "click",
+          "name": "open-site",
+          "t": 96800,
+          "tClick": 98446,
+          "tAfter": 100566,
+          "target": {
+            "x": 1047,
+            "y": 616,
+            "w": 124,
+            "h": 30
+          },
+          "from": {
+            "x": 1517,
+            "y": 223
+          },
+          "to": {
+            "x": 1109,
+            "y": 631
+          },
+          "before": "shots/en/43-open-site-before.png",
+          "hover": "shots/en/44-open-site-hover.png",
+          "after": "shots/en/45-open-site-after.png",
+          "image": "shots/en/45-open-site-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "site",
+          "t": 102326,
+          "image": "shots/en/46-site.png",
+          "cursor": {
+            "x": 1109,
+            "y": 631
+          },
+          "target": {
+            "x": 672,
+            "y": 24,
+            "w": 576,
+            "h": 174
+          }
+        }
+      ]
+    }
+  }
+}
