@@ -23,8 +23,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Build llama.cpp with Vulkan GPU support (falls back to CPU at runtime if no GPU available).
 # Clean any pre-existing build artifacts copied from host to ensure fresh build.
 WORKDIR /code/backend/util/llama-go
+ARG TARGETARCH
 RUN rm -rf build llama.cpp/*.o *.o *.a *.so && \
-    BUILD_TYPE=vulkan CMAKE_ARGS="-DBUILD_SHARED_LIBS=OFF -DGGML_NATIVE=OFF -DGGML_AVX2=ON -DGGML_AVX=ON -DGGML_AVX512=OFF" make libbinding.a
+    CMAKE_ARGS="-DBUILD_SHARED_LIBS=OFF -DGGML_NATIVE=OFF" && \
+    if [ "$TARGETARCH" = "amd64" ]; then \
+        CMAKE_ARGS="$CMAKE_ARGS -DGGML_AVX2=ON -DGGML_AVX=ON -DGGML_AVX512=OFF"; \
+    fi && \
+    BUILD_TYPE=vulkan CMAKE_ARGS="$CMAKE_ARGS" make libbinding.a
 
 # Build seed-daemon with llama.cpp support.
 WORKDIR /code
