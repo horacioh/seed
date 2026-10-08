@@ -25,7 +25,8 @@ stack can update all Seed sites on the same server.
    ![The four resources in the created Seed stack](images/services.png)
 
 3. Open **Domains** in the stack's menu, open the settings of the Seed Proxy domain, set **Protocol** to `https` and
-   **Domain** to your hostname (for example `site.example.com`), then **Save**. Use one domain with no path.
+   **Domain** to your hostname (for example `site.example.com`), then **Save**. Use one domain with no path. If Coolify
+   asks “Use a different port?”, choose **Use This Port Anyway**; Seed Proxy keeps internal port 80.
 
    ![The Seed Proxy domain settings](images/domain.png)
 
