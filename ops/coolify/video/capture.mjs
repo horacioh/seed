@@ -175,9 +175,10 @@ export default async function capture(r) {
 
   const sitePageUrl = `${COOLIFY_URL}${PROJECT_PATH}/service/${siteService.uuid}`
   await r.nav(sitePageUrl)
-  await r.shot('services', {target: page.getByText('Seed Proxy', {exact: true})})
+  const composeResources = page.getByRole('heading', {name: 'Compose resources'}).locator('xpath=../../..')
+  await r.shot('services', {target: composeResources})
 
-  const domainTab = page.getByRole('link', {name: 'Domains'})
+  const domainTab = page.getByRole('link', {name: 'Domains', exact: true})
   await r.click(domainTab, {
     name: 'domain',
     expect: async (currentPage) => {
@@ -190,23 +191,39 @@ export default async function capture(r) {
   const domainSettings = proxyCard.getByRole('button', {name: /^Settings for /})
   await r.click(domainSettings, {
     name: 'domain-edit',
-    expect: async (currentPage) => currentPage.getByRole('dialog').isVisible(),
+    expect: async (currentPage) => {
+      await currentPage
+        .getByRole('heading', {name: 'Domain settings', exact: true})
+        .waitFor({state: 'visible', timeout: 10_000})
+      return true
+    },
   })
 
-  const dialog = page.getByRole('dialog')
-  const protocol = dialog.getByLabel('Protocol')
-  await protocol.selectOption('https')
-  if ((await protocol.inputValue()) !== 'https') throw new Error('Proxy protocol was not set to https')
+  const settingsHeading = page.getByRole('heading', {name: 'Domain settings', exact: true})
+  const settingsPanel = settingsHeading.locator('xpath=../..')
+  const protocol = settingsPanel.getByLabel('Protocol')
+  await r.click(protocol, {
+    name: 'protocol-menu',
+    expect: async () => (await protocol.getAttribute('aria-expanded')) === 'true',
+  })
+  const httpsOption = page.getByText('https', {exact: true}).last()
+  await r.click(httpsOption, {
+    name: 'protocol-https',
+    expect: async () => (await protocol.getAttribute('title')) === 'https',
+  })
   await r.shot('protocol', {target: protocol})
-  const domain = dialog.getByLabel('Domain')
+  const domain = settingsPanel.getByLabel('Domain')
   await r.type(domain, 'site.example.com', {
     name: 'domain-name',
     expect: async () => (await domain.inputValue()) === 'site.example.com',
   })
-  const saveDomain = dialog.getByRole('button', {name: /^Save$/i})
+  const saveDomain = settingsPanel.getByRole('button', {name: /^Save$/i})
   await r.click(saveDomain, {
     name: 'save',
-    expect: async () => !(await dialog.isVisible()),
+    expect: async () => {
+      await settingsHeading.waitFor({state: 'hidden', timeout: 10_000})
+      return true
+    },
   })
 
   const deploySite = page.getByRole('button', {name: /^Deploy$/i})
