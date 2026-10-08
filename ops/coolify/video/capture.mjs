@@ -258,6 +258,11 @@ export default async function capture(r) {
 
   const deploySite = page.getByRole('button', {name: /^Deploy$/i})
   const startupHeading = page.getByRole('heading', {name: 'Service Startup', exact: true})
+  await r.dismissToasts()
+  const visibleToasts = page.locator(
+    '[data-sonner-toast], ol[data-radix-toast-viewport] li, li[role="status"][data-state], .toast',
+  )
+  await visibleToasts.first().waitFor({state: 'hidden', timeout: 5000})
   await r.click(deploySite, {
     name: 'deploy',
     expect: async (currentPage) => {
@@ -425,9 +430,32 @@ export default async function capture(r) {
     allowToast: true,
   })
 
+  const updaterPageUrl = `${COOLIFY_URL}${PROJECT_PATH}/service/${updaterService.uuid}`
+  await r.nav(updaterPageUrl)
+  const updaterResources = page.getByRole('heading', {name: 'Compose resources'}).locator('xpath=../../..')
+  const updaterRow = updaterResources.locator('.grid.min-h-14').filter({hasText: /Seed Updater/})
+  let updaterRunningInUi = false
+  for (let attempt = 0; attempt < 2 && !updaterRunningInUi; attempt++) {
+    if (attempt > 0) await r.nav(updaterPageUrl)
+    try {
+      await updaterResources.waitFor({state: 'visible', timeout: 10_000})
+      await updaterRow.waitFor({state: 'visible', timeout: 10_000})
+      await updaterRow.getByText(/^Running\b/i).waitFor({state: 'visible', timeout: 15_000})
+      updaterRunningInUi = true
+    } catch {
+      if (attempt === 1) {
+        throw new Error('Seed Updater did not show Running in Compose resources after reloading')
+      }
+    }
+  }
+  if (!updaterRunningInUi) throw new Error('Seed Updater did not show Running in Compose resources')
+  await r.shot('updater-status', {target: updaterRow})
+
   await r.nav('https://site.example.com/')
-  await page.getByText(/Seed Hypermedia Space Coming Soon/i).waitFor({state: 'visible', timeout: 30_000})
-  await r.shot('site', {target: page.getByText(/Seed Hypermedia Space Coming Soon/i)})
+  const comingSoonHeading = page.getByText(/Seed Hypermedia Space Coming Soon/i)
+  await comingSoonHeading.waitFor({state: 'visible', timeout: 30_000})
+  const comingSoonCard = comingSoonHeading.locator('xpath=../..')
+  await r.shot('site', {target: comingSoonCard})
 
   const config = execFileSync(
     'curl',

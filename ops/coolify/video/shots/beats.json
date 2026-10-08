@@ -1,7 +1,7 @@
 {
   "takes": {
     "en": {
-      "capturedAt": "2026-10-08T20:10:30.577Z",
+      "capturedAt": "2026-10-08T20:38:14.862Z",
       "platform": {
         "os": "linux",
         "release": "6.8.0-1061-aws",
@@ -22,7 +22,7 @@
         {
           "kind": "shot",
           "name": "project",
-          "t": 1925,
+          "t": 1949,
           "image": "shots/en/01-project.png",
           "cursor": {
             "x": 1056,
@@ -38,9 +38,9 @@
         {
           "kind": "click",
           "name": "new-resource",
-          "t": 2588,
-          "tClick": 3141,
-          "tAfter": 4367,
+          "t": 2675,
+          "tClick": 3246,
+          "tAfter": 4511,
           "target": {
             "x": 1748,
             "y": 76,
@@ -63,9 +63,9 @@
         {
           "kind": "click",
           "name": "docker-compose",
-          "t": 5060,
-          "tClick": 5611,
-          "tAfter": 6470,
+          "t": 5184,
+          "tClick": 5764,
+          "tAfter": 6599,
           "target": {
             "x": 1344,
             "y": 481,
@@ -88,7 +88,7 @@
         {
           "kind": "shot",
           "name": "paste",
-          "t": 7092,
+          "t": 7282,
           "image": "shots/en/08-paste.png",
           "cursor": {
             "x": 1604,
@@ -104,9 +104,9 @@
         {
           "kind": "click",
           "name": "create",
-          "t": 7867,
-          "tClick": 8430,
-          "tAfter": 11121,
+          "t": 8060,
+          "tClick": 8644,
+          "tAfter": 11397,
           "target": {
             "x": 1760,
             "y": 99,
@@ -129,7 +129,7 @@
         {
           "kind": "shot",
           "name": "services",
-          "t": 13031,
+          "t": 13333,
           "image": "shots/en/12-services.png",
           "cursor": {
             "x": 1816,
@@ -145,9 +145,9 @@
         {
           "kind": "click",
           "name": "domain",
-          "t": 13798,
-          "tClick": 14438,
-          "tAfter": 15267,
+          "t": 14096,
+          "tClick": 14646,
+          "tAfter": 15511,
           "target": {
             "x": 72,
             "y": 114,
@@ -170,9 +170,9 @@
         {
           "kind": "click",
           "name": "domain-edit",
-          "t": 15813,
-          "tClick": 16355,
-          "tAfter": 17714,
+          "t": 16057,
+          "tClick": 16650,
+          "tAfter": 17677,
           "target": {
             "x": 1804,
             "y": 234,
@@ -195,9 +195,9 @@
         {
           "kind": "click",
           "name": "protocol-menu",
-          "t": 19095,
-          "tClick": 20127,
-          "tAfter": 21115,
+          "t": 18637,
+          "tClick": 19656,
+          "tAfter": 20629,
           "target": {
             "x": 640,
             "y": 483,
@@ -220,9 +220,9 @@
         {
           "kind": "click",
           "name": "protocol-https",
-          "t": 22026,
-          "tClick": 23069,
-          "tAfter": 24046,
+          "t": 21685,
+          "tClick": 22777,
+          "tAfter": 23897,
           "target": {
             "x": 653,
             "y": 530,
@@ -245,9 +245,9 @@
         {
           "kind": "type",
           "name": "domain-name",
-          "t": 25196,
-          "tClick": 25609,
-          "tAfter": 27033,
+          "t": 24931,
+          "tClick": 25361,
+          "tAfter": 26800,
           "target": {
             "x": 784,
             "y": 483,
@@ -270,9 +270,9 @@
         {
           "kind": "click",
           "name": "save",
-          "t": 27930,
-          "tClick": 28971,
-          "tAfter": 30557,
+          "t": 27769,
+          "tClick": 28771,
+          "tAfter": 30271,
           "target": {
             "x": 1228,
             "y": 726,
@@ -295,9 +295,9 @@
         {
           "kind": "click",
           "name": "confirm-port",
-          "t": 31986,
-          "tClick": 33589,
-          "tAfter": 36837,
+          "t": 32038,
+          "tClick": 33725,
+          "tAfter": 37006,
           "target": {
             "x": 1127,
             "y": 605,
@@ -320,9 +320,9 @@
         {
           "kind": "click",
           "name": "deploy",
-          "t": 37396,
-          "tClick": 37944,
-          "tAfter": 40427,
+          "t": 37853,
+          "tClick": 38407,
+          "tAfter": 41087,
           "target": {
             "x": 1791,
             "y": 10,
@@ -345,15 +345,15 @@
         {
           "kind": "poll",
           "name": "wait",
-          "t": 40427,
-          "tAfter": 43362,
+          "t": 41088,
+          "tAfter": 43779,
           "frames": [
             {
-              "t": 40519,
+              "t": 41179,
               "image": "shots/en/36-wait-0.png"
             },
             {
-              "t": 42259,
+              "t": 42910,
               "image": "shots/en/37-wait-1.png"
             }
           ],
@@ -366,9 +366,9 @@
         {
           "kind": "click",
           "name": "close-logs",
-          "t": 44494,
-          "tClick": 46030,
-          "tAfter": 46825,
+          "t": 44957,
+          "tClick": 46957,
+          "tAfter": 47838,
           "target": {
             "x": 1372,
             "y": 134,
@@ -391,7 +391,7 @@
         {
           "kind": "shot",
           "name": "running",
-          "t": 48779,
+          "t": 49764,
           "image": "shots/en/41-running.png",
           "cursor": {
             "x": 1386,
@@ -407,9 +407,9 @@
         {
           "kind": "click",
           "name": "secret",
-          "t": 49548,
-          "tClick": 50096,
-          "tAfter": 51122,
+          "t": 50506,
+          "tClick": 51076,
+          "tAfter": 52153,
           "target": {
             "x": 72,
             "y": 146,
@@ -432,9 +432,9 @@
         {
           "kind": "click",
           "name": "copy-secret",
-          "t": 51690,
-          "tClick": 52239,
-          "tAfter": 52844,
+          "t": 52722,
+          "tClick": 53283,
+          "tAfter": 53908,
           "target": {
             "x": 1806,
             "y": 494,
@@ -457,9 +457,9 @@
         {
           "kind": "click",
           "name": "updater-resource",
-          "t": 54673,
-          "tClick": 55223,
-          "tAfter": 56323,
+          "t": 55712,
+          "tClick": 56264,
+          "tAfter": 57451,
           "target": {
             "x": 1748,
             "y": 76,
@@ -482,9 +482,9 @@
         {
           "kind": "click",
           "name": "updater-compose",
-          "t": 57032,
-          "tClick": 57605,
-          "tAfter": 58239,
+          "t": 58242,
+          "tClick": 58802,
+          "tAfter": 59447,
           "target": {
             "x": 1344,
             "y": 481,
@@ -507,7 +507,7 @@
         {
           "kind": "shot",
           "name": "updater-paste",
-          "t": 58940,
+          "t": 60113,
           "image": "shots/en/54-updater-paste.png",
           "cursor": {
             "x": 1604,
@@ -523,9 +523,9 @@
         {
           "kind": "click",
           "name": "updater-create",
-          "t": 59727,
-          "tClick": 60311,
-          "tAfter": 62692,
+          "t": 60901,
+          "tClick": 61488,
+          "tAfter": 63812,
           "target": {
             "x": 1760,
             "y": 99,
@@ -548,9 +548,9 @@
         {
           "kind": "click",
           "name": "updater-deploy",
-          "t": 63339,
-          "tClick": 63897,
-          "tAfter": 66210,
+          "t": 64452,
+          "tClick": 64991,
+          "tAfter": 67264,
           "target": {
             "x": 1791,
             "y": 10,
@@ -573,15 +573,19 @@
         {
           "kind": "poll",
           "name": "updater-running",
-          "t": 66210,
-          "tAfter": 66958,
+          "t": 67264,
+          "tAfter": 69774,
           "frames": [
             {
-              "t": 66297,
+              "t": 67350,
               "image": "shots/en/61-updater-running-0.png"
+            },
+            {
+              "t": 69090,
+              "image": "shots/en/62-updater-running-1.png"
             }
           ],
-          "image": "shots/en/61-updater-running-0.png",
+          "image": "shots/en/62-updater-running-1.png",
           "cursor": {
             "x": 1834,
             "y": 24
@@ -590,9 +594,9 @@
         {
           "kind": "click",
           "name": "updater-close-logs",
-          "t": 67912,
-          "tClick": 69308,
-          "tAfter": 70079,
+          "t": 70783,
+          "tClick": 72284,
+          "tAfter": 73160,
           "target": {
             "x": 1372,
             "y": 134,
@@ -607,25 +611,41 @@
             "x": 1386,
             "y": 148
           },
-          "before": "shots/en/62-updater-close-logs-before.png",
-          "hover": "shots/en/63-updater-close-logs-hover.png",
-          "after": "shots/en/64-updater-close-logs-after.png",
-          "image": "shots/en/64-updater-close-logs-after.png"
+          "before": "shots/en/63-updater-close-logs-before.png",
+          "hover": "shots/en/64-updater-close-logs-hover.png",
+          "after": "shots/en/65-updater-close-logs-after.png",
+          "image": "shots/en/65-updater-close-logs-after.png"
         },
         {
           "kind": "shot",
-          "name": "site",
-          "t": 72056,
-          "image": "shots/en/65-site.png",
+          "name": "updater-status",
+          "t": 75037,
+          "image": "shots/en/66-updater-status.png",
           "cursor": {
             "x": 1386,
             "y": 148
           },
           "target": {
-            "x": 742,
-            "y": 47,
-            "w": 450,
-            "h": 32
+            "x": 347,
+            "y": 502,
+            "w": 1532,
+            "h": 56
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "site",
+          "t": 77226,
+          "image": "shots/en/67-site.png",
+          "cursor": {
+            "x": 1386,
+            "y": 148
+          },
+          "target": {
+            "x": 672,
+            "y": 24,
+            "w": 576,
+            "h": 174
           }
         }
       ]

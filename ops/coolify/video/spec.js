@@ -34,6 +34,7 @@ export default {
     {name: 'updater-deploy', zoom: true},
     {name: 'updater-running', zoom: true, speed: true},
     {name: 'updater-close-logs', zoom: true},
+    {name: 'updater-status', zoom: true},
     {name: 'site', zoom: true, hold: 900},
   ],
 }

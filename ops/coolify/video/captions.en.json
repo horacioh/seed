@@ -28,8 +28,9 @@
     "updater-paste": "Paste ops/coolify/seed-updater.yaml",
     "updater-create": "Create the updater service",
     "updater-deploy": "Deploy Watchtower for automatic updates",
-    "updater-running": "Confirm the updater is running",
+    "updater-running": "Watch the updater start",
     "updater-close-logs": "Close the updater logs",
+    "updater-status": "The updater is running — it checks for new images every 10 minutes",
     "site": "Your site is live — register it from Seed desktop"
   },
   "outro": {
