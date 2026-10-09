@@ -1,0 +1,799 @@
+{
+  "takes": {
+    "en": {
+      "capturedAt": "2026-10-09T00:32:41.515Z",
+      "platform": {
+        "os": "linux",
+        "release": "6.8.0-1061-aws",
+        "node": "v22.22.0",
+        "browser": "153.0.8010.12"
+      },
+      "persona": "desktop",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 2,
+      "frame": "card",
+      "format": "16x9",
+      "lang": "en",
+      "baseUrl": "http://localhost:3000",
+      "beats": [
+        {
+          "kind": "shot",
+          "name": "project",
+          "t": 10107,
+          "image": "shots/en/01-project.png",
+          "cursor": {
+            "x": 1056,
+            "y": 648
+          },
+          "target": {
+            "x": 1715,
+            "y": 111,
+            "w": 155,
+            "h": 40
+          }
+        },
+        {
+          "kind": "click",
+          "name": "create-service",
+          "t": 18831,
+          "tClick": 19454,
+          "tAfter": 28069,
+          "target": {
+            "x": 1715,
+            "y": 111,
+            "w": 155,
+            "h": 40
+          },
+          "from": {
+            "x": 1056,
+            "y": 648
+          },
+          "to": {
+            "x": 1793,
+            "y": 131
+          },
+          "before": "shots/en/02-create-service-before.png",
+          "hover": "shots/en/03-create-service-hover.png",
+          "after": "shots/en/04-create-service-after.png",
+          "image": "shots/en/04-create-service-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "import-option",
+          "t": 36645,
+          "tClick": 37199,
+          "tAfter": 46212,
+          "target": {
+            "x": 1674,
+            "y": 380,
+            "w": 192,
+            "h": 28
+          },
+          "from": {
+            "x": 1793,
+            "y": 131
+          },
+          "to": {
+            "x": 1770,
+            "y": 394
+          },
+          "before": "shots/en/05-import-option-before.png",
+          "hover": "shots/en/06-import-option-hover.png",
+          "after": "shots/en/07-import-option-after.png",
+          "image": "shots/en/07-import-option-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "name",
+          "t": 55167,
+          "tClick": 55566,
+          "tAfter": 56734,
+          "target": {
+            "x": 696,
+            "y": 409,
+            "w": 528,
+            "h": 40
+          },
+          "from": {
+            "x": 1770,
+            "y": 394
+          },
+          "to": {
+            "x": 960,
+            "y": 429
+          },
+          "text": "Seed site",
+          "before": "shots/en/08-name-before.png",
+          "after": "shots/en/09-name-after.png",
+          "image": "shots/en/09-name-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "paste",
+          "t": 65329,
+          "image": "shots/en/10-paste.png",
+          "cursor": {
+            "x": 960,
+            "y": 429
+          },
+          "target": {
+            "x": 696,
+            "y": 573,
+            "w": 528,
+            "h": 128
+          }
+        },
+        {
+          "kind": "click",
+          "name": "load",
+          "t": 74995,
+          "tClick": 75989,
+          "tAfter": 85552,
+          "target": {
+            "x": 1157,
+            "y": 717,
+            "w": 67,
+            "h": 40
+          },
+          "from": {
+            "x": 960,
+            "y": 429
+          },
+          "to": {
+            "x": 1191,
+            "y": 737
+          },
+          "before": "shots/en/11-load-before.png",
+          "hover": "shots/en/12-load-hover.png",
+          "after": "shots/en/13-load-after.png",
+          "image": "shots/en/13-load-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "import",
+          "t": 95153,
+          "tClick": 96769,
+          "tAfter": 106396,
+          "target": {
+            "x": 1114,
+            "y": 962,
+            "w": 78,
+            "h": 40
+          },
+          "from": {
+            "x": 1191,
+            "y": 737
+          },
+          "to": {
+            "x": 1153,
+            "y": 982
+          },
+          "before": "shots/en/14-import-before.png",
+          "hover": "shots/en/15-import-hover.png",
+          "after": "shots/en/16-import-after.png",
+          "image": "shots/en/16-import-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "open-service",
+          "t": 114948,
+          "tClick": 115470,
+          "tAfter": 124154,
+          "target": {
+            "x": 386,
+            "y": 313,
+            "w": 71,
+            "h": 16
+          },
+          "from": {
+            "x": 1153,
+            "y": 982
+          },
+          "to": {
+            "x": 422,
+            "y": 321
+          },
+          "before": "shots/en/17-open-service-before.png",
+          "hover": "shots/en/18-open-service-hover.png",
+          "after": "shots/en/19-open-service-after.png",
+          "image": "shots/en/19-open-service-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "domains",
+          "t": 132720,
+          "tClick": 133315,
+          "tAfter": 141950,
+          "target": {
+            "x": 618,
+            "y": 230,
+            "w": 84,
+            "h": 31
+          },
+          "from": {
+            "x": 422,
+            "y": 321
+          },
+          "to": {
+            "x": 660,
+            "y": 246
+          },
+          "before": "shots/en/20-domains-before.png",
+          "hover": "shots/en/21-domains-hover.png",
+          "after": "shots/en/22-domains-after.png",
+          "image": "shots/en/22-domains-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "web-domain",
+          "t": 150502,
+          "tClick": 151107,
+          "tAfter": 160316,
+          "target": {
+            "x": 995,
+            "y": 474,
+            "w": 40,
+            "h": 40
+          },
+          "from": {
+            "x": 660,
+            "y": 246
+          },
+          "to": {
+            "x": 1015,
+            "y": 494
+          },
+          "before": "shots/en/23-web-domain-before.png",
+          "hover": "shots/en/24-web-domain-hover.png",
+          "after": "shots/en/25-web-domain-after.png",
+          "image": "shots/en/25-web-domain-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "web-host",
+          "t": 169458,
+          "tClick": 169889,
+          "tAfter": 171544,
+          "target": {
+            "x": 664,
+            "y": 444,
+            "w": 534,
+            "h": 40
+          },
+          "from": {
+            "x": 1015,
+            "y": 494
+          },
+          "to": {
+            "x": 931,
+            "y": 464
+          },
+          "text": "site.example.com",
+          "before": "shots/en/26-web-host-before.png",
+          "after": "shots/en/27-web-host-after.png",
+          "image": "shots/en/27-web-host-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "web-cert-menu",
+          "t": 180546,
+          "tClick": 181598,
+          "tAfter": 190631,
+          "target": {
+            "x": 664,
+            "y": 770,
+            "w": 592,
+            "h": 40
+          },
+          "from": {
+            "x": 931,
+            "y": 464
+          },
+          "to": {
+            "x": 960,
+            "y": 790
+          },
+          "before": "shots/en/28-web-cert-menu-before.png",
+          "hover": "shots/en/29-web-cert-menu-hover.png",
+          "after": "shots/en/30-web-cert-menu-after.png",
+          "image": "shots/en/30-web-cert-menu-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "web-cert",
+          "t": 199700,
+          "tClick": 200862,
+          "tAfter": 210076,
+          "target": {
+            "x": 668,
+            "y": 850,
+            "w": 584,
+            "h": 32
+          },
+          "from": {
+            "x": 960,
+            "y": 790
+          },
+          "to": {
+            "x": 960,
+            "y": 866
+          },
+          "before": "shots/en/31-web-cert-before.png",
+          "hover": "shots/en/32-web-cert-hover.png",
+          "after": "shots/en/33-web-cert-after.png",
+          "image": "shots/en/33-web-cert-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "web-update",
+          "t": 219167,
+          "tClick": 220375,
+          "tAfter": 229314,
+          "target": {
+            "x": 1174,
+            "y": 962,
+            "w": 82,
+            "h": 40
+          },
+          "from": {
+            "x": 960,
+            "y": 866
+          },
+          "to": {
+            "x": 1215,
+            "y": 982
+          },
+          "before": "shots/en/34-web-update-before.png",
+          "hover": "shots/en/35-web-update-hover.png",
+          "after": "shots/en/36-web-update-after.png",
+          "image": "shots/en/36-web-update-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "daemon-domain",
+          "t": 237867,
+          "tClick": 238482,
+          "tAfter": 247671,
+          "target": {
+            "x": 995,
+            "y": 474,
+            "w": 40,
+            "h": 40
+          },
+          "from": {
+            "x": 1215,
+            "y": 982
+          },
+          "to": {
+            "x": 1015,
+            "y": 494
+          },
+          "before": "shots/en/37-daemon-domain-before.png",
+          "hover": "shots/en/38-daemon-domain-hover.png",
+          "after": "shots/en/39-daemon-domain-after.png",
+          "image": "shots/en/39-daemon-domain-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "daemon-host",
+          "t": 256802,
+          "tClick": 257230,
+          "tAfter": 258741,
+          "target": {
+            "x": 664,
+            "y": 444,
+            "w": 534,
+            "h": 40
+          },
+          "from": {
+            "x": 1015,
+            "y": 494
+          },
+          "to": {
+            "x": 931,
+            "y": 464
+          },
+          "text": "site.example.com",
+          "before": "shots/en/40-daemon-host-before.png",
+          "after": "shots/en/41-daemon-host-after.png",
+          "image": "shots/en/41-daemon-host-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "daemon-cert-menu",
+          "t": 267708,
+          "tClick": 268789,
+          "tAfter": 277809,
+          "target": {
+            "x": 664,
+            "y": 770,
+            "w": 592,
+            "h": 40
+          },
+          "from": {
+            "x": 931,
+            "y": 464
+          },
+          "to": {
+            "x": 960,
+            "y": 790
+          },
+          "before": "shots/en/42-daemon-cert-menu-before.png",
+          "hover": "shots/en/43-daemon-cert-menu-hover.png",
+          "after": "shots/en/44-daemon-cert-menu-after.png",
+          "image": "shots/en/44-daemon-cert-menu-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "daemon-cert",
+          "t": 286921,
+          "tClick": 288033,
+          "tAfter": 297340,
+          "target": {
+            "x": 668,
+            "y": 850,
+            "w": 584,
+            "h": 32
+          },
+          "from": {
+            "x": 960,
+            "y": 790
+          },
+          "to": {
+            "x": 960,
+            "y": 866
+          },
+          "before": "shots/en/45-daemon-cert-before.png",
+          "hover": "shots/en/46-daemon-cert-hover.png",
+          "after": "shots/en/47-daemon-cert-after.png",
+          "image": "shots/en/47-daemon-cert-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "daemon-update",
+          "t": 306448,
+          "tClick": 307524,
+          "tAfter": 316471,
+          "target": {
+            "x": 1174,
+            "y": 962,
+            "w": 82,
+            "h": 40
+          },
+          "from": {
+            "x": 960,
+            "y": 866
+          },
+          "to": {
+            "x": 1215,
+            "y": 982
+          },
+          "before": "shots/en/48-daemon-update-before.png",
+          "hover": "shots/en/49-daemon-update-hover.png",
+          "after": "shots/en/50-daemon-update-after.png",
+          "image": "shots/en/50-daemon-update-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "environment",
+          "t": 325033,
+          "tClick": 325615,
+          "tAfter": 334229,
+          "target": {
+            "x": 476,
+            "y": 230,
+            "w": 110,
+            "h": 31
+          },
+          "from": {
+            "x": 1215,
+            "y": 982
+          },
+          "to": {
+            "x": 531,
+            "y": 246
+          },
+          "before": "shots/en/51-environment-before.png",
+          "hover": "shots/en/52-environment-hover.png",
+          "after": "shots/en/53-environment-after.png",
+          "image": "shots/en/53-environment-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "reveal",
+          "t": 342776,
+          "tClick": 343332,
+          "tAfter": 351946,
+          "target": {
+            "x": 1806,
+            "y": 319,
+            "w": 40,
+            "h": 40
+          },
+          "from": {
+            "x": 531,
+            "y": 246
+          },
+          "to": {
+            "x": 1826,
+            "y": 339
+          },
+          "before": "shots/en/54-reveal-before.png",
+          "hover": "shots/en/55-reveal-hover.png",
+          "after": "shots/en/56-reveal-after.png",
+          "image": "shots/en/56-reveal-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "env-domain",
+          "t": 360497,
+          "tClick": 360840,
+          "tAfter": 362600,
+          "target": {
+            "x": 418,
+            "y": 404,
+            "w": 1427,
+            "h": 20
+          },
+          "from": {
+            "x": 1826,
+            "y": 339
+          },
+          "to": {
+            "x": 1132,
+            "y": 414
+          },
+          "text": "SEED_DOMAIN=site.example.com",
+          "before": "shots/en/57-env-domain-before.png",
+          "after": "shots/en/58-env-domain-after.png",
+          "image": "shots/en/58-env-domain-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "env-base-url",
+          "t": 371205,
+          "tClick": 371530,
+          "tAfter": 373733,
+          "target": {
+            "x": 418,
+            "y": 424,
+            "w": 1427,
+            "h": 20
+          },
+          "from": {
+            "x": 1132,
+            "y": 414
+          },
+          "to": {
+            "x": 1132,
+            "y": 434
+          },
+          "text": "SEED_BASE_URL=https://site.example.com",
+          "before": "shots/en/59-env-base-url-before.png",
+          "after": "shots/en/60-env-base-url-after.png",
+          "image": "shots/en/60-env-base-url-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "env-save",
+          "t": 382315,
+          "tClick": 382913,
+          "tAfter": 391666,
+          "target": {
+            "x": 1779,
+            "y": 815,
+            "w": 67,
+            "h": 40
+          },
+          "from": {
+            "x": 1132,
+            "y": 434
+          },
+          "to": {
+            "x": 1813,
+            "y": 835
+          },
+          "before": "shots/en/61-env-save-before.png",
+          "hover": "shots/en/62-env-save-hover.png",
+          "after": "shots/en/63-env-save-after.png",
+          "image": "shots/en/63-env-save-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "general",
+          "t": 400236,
+          "tClick": 400842,
+          "tAfter": 409582,
+          "target": {
+            "x": 366,
+            "y": 230,
+            "w": 78,
+            "h": 31
+          },
+          "from": {
+            "x": 1813,
+            "y": 835
+          },
+          "to": {
+            "x": 405,
+            "y": 246
+          },
+          "before": "shots/en/64-general-before.png",
+          "hover": "shots/en/65-general-hover.png",
+          "after": "shots/en/66-general-after.png",
+          "image": "shots/en/66-general-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "deploy",
+          "t": 418162,
+          "tClick": 418765,
+          "tAfter": 427787,
+          "target": {
+            "x": 386,
+            "y": 393,
+            "w": 101,
+            "h": 40
+          },
+          "from": {
+            "x": 405,
+            "y": 246
+          },
+          "to": {
+            "x": 437,
+            "y": 413
+          },
+          "before": "shots/en/67-deploy-before.png",
+          "hover": "shots/en/68-deploy-hover.png",
+          "after": "shots/en/69-deploy-after.png",
+          "image": "shots/en/69-deploy-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "deploy-confirm",
+          "t": 436975,
+          "tClick": 438126,
+          "tAfter": 446888,
+          "target": {
+            "x": 1104,
+            "y": 569,
+            "w": 88,
+            "h": 40
+          },
+          "from": {
+            "x": 437,
+            "y": 413
+          },
+          "to": {
+            "x": 1148,
+            "y": 589
+          },
+          "before": "shots/en/70-deploy-confirm-before.png",
+          "hover": "shots/en/71-deploy-confirm-hover.png",
+          "after": "shots/en/72-deploy-confirm-after.png",
+          "image": "shots/en/72-deploy-confirm-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "wait",
+          "t": 446888,
+          "tAfter": 469690,
+          "frames": [
+            {
+              "t": 446973,
+              "image": "shots/en/73-wait-0.png"
+            },
+            {
+              "t": 448290,
+              "image": "shots/en/74-wait-1.png"
+            },
+            {
+              "t": 449629,
+              "image": "shots/en/75-wait-2.png"
+            },
+            {
+              "t": 450955,
+              "image": "shots/en/76-wait-3.png"
+            },
+            {
+              "t": 452275,
+              "image": "shots/en/77-wait-4.png"
+            },
+            {
+              "t": 453595,
+              "image": "shots/en/78-wait-5.png"
+            },
+            {
+              "t": 454919,
+              "image": "shots/en/79-wait-6.png"
+            },
+            {
+              "t": 456223,
+              "image": "shots/en/80-wait-7.png"
+            },
+            {
+              "t": 457550,
+              "image": "shots/en/81-wait-8.png"
+            },
+            {
+              "t": 458860,
+              "image": "shots/en/82-wait-9.png"
+            },
+            {
+              "t": 460174,
+              "image": "shots/en/83-wait-10.png"
+            },
+            {
+              "t": 461495,
+              "image": "shots/en/84-wait-11.png"
+            },
+            {
+              "t": 462803,
+              "image": "shots/en/85-wait-12.png"
+            },
+            {
+              "t": 464130,
+              "image": "shots/en/86-wait-13.png"
+            },
+            {
+              "t": 465446,
+              "image": "shots/en/87-wait-14.png"
+            },
+            {
+              "t": 466800,
+              "image": "shots/en/88-wait-15.png"
+            },
+            {
+              "t": 468110,
+              "image": "shots/en/89-wait-16.png"
+            },
+            {
+              "t": 469422,
+              "image": "shots/en/90-wait-17.png"
+            }
+          ],
+          "image": "shots/en/90-wait-17.png",
+          "cursor": {
+            "x": 1148,
+            "y": 589
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "running",
+          "t": 472104,
+          "image": "shots/en/91-running.png",
+          "cursor": {
+            "x": 1148,
+            "y": 589
+          },
+          "target": {
+            "x": 387,
+            "y": 388,
+            "w": 1458,
+            "h": 308
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "site",
+          "t": 474230,
+          "image": "shots/en/92-site.png",
+          "cursor": {
+            "x": 1148,
+            "y": 589
+          },
+          "target": {
+            "x": 672,
+            "y": 24,
+            "w": 576,
+            "h": 174
+          }
+        }
+      ]
+    }
+  }
+}
