@@ -84,8 +84,7 @@ caproverOneClickApp:
     variables:
         - id: $$cap_seed_domain
           label: Site domain
-          defaultValue: $$cap_appname.$$cap_root_domain
-          description: Public hostname used by Seed and daemon announce addresses.
+          description: Public hostname used by Seed and daemon announce addresses, such as <app-name>.<CapRover-root-domain> or the custom domain you add to this app.
           validRegex: '/^[A-Za-z0-9.-]+$/'
         - id: $$cap_p2p_port
           label: P2P host port
