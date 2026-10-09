@@ -1,0 +1,37 @@
+{
+  "intro": {
+    "title": "Install a Seed site on CasaOS",
+    "subtitle": "Add the Seed app source and install Seed Hypermedia from the App Store"
+  },
+  "beats": {
+    "dashboard": "Start on your CasaOS dashboard",
+    "app-store": "Open the App Store",
+    "sources": "Open the app source menu",
+    "more-apps": "Choose More apps to add a source",
+    "source-url": "Paste the Seed app source ZIP URL",
+    "add-source": "Add the source",
+    "search": "Search for Seed",
+    "app-detail": "Open Seed Hypermedia",
+    "install": "Install it",
+    "installing": "CasaOS pulls the images and starts Seed",
+    "installed": "Seed Hypermedia is on your dashboard",
+    "tile-menu": "Open the app menu",
+    "settings": "Open Settings",
+    "web-tab": "Switch to the seed-web container",
+    "open-logs": "Open Terminal and Logs",
+    "logs-tab": "Show the logs",
+    "registration-link": "Seed Web prints your registration link once — keep the secret private",
+    "close-logs": "Close the logs",
+    "base-url": "Set SEED_BASE_URL to your site's URL",
+    "asset-host": "Set SEED_ASSET_HOST to the same URL",
+    "init-tab": "Switch to seed-init",
+    "restart-policy": "Set its restart policy to on-failure so it runs once",
+    "save": "Save — CasaOS recreates the containers",
+    "restarting": "Wait for Seed to come back up",
+    "site": "Your site is live on port 3567 — register it from Seed desktop"
+  },
+  "outro": {
+    "takeaway": "Register at <your URL>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/casaos"
+  }
+}
