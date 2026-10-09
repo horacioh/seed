@@ -114,9 +114,21 @@ export async function prepare() {
   await waitFor(
     () => {
       for (const volume of seedVolumes()) {
-        const holders = docker('ps', '-aq', '--filter', `volume=${volume}`).split('\n').filter(Boolean)
+        const holders = docker(
+          'ps',
+          '-a',
+          '--filter',
+          `volume=${volume}`,
+          '--format',
+          '{{.ID}} {{.Label "com.docker.swarm.service.name"}}',
+        )
+          .split('\n')
+          .filter(Boolean)
+          .map((line) => line.split(' '))
+        const foreign = holders.find(([, service]) => !service?.startsWith(`${PROJECT}_`))
+        if (foreign) throw new Error(`${volume} is used by a container outside the ${PROJECT} project`)
         try {
-          if (holders.length) docker('rm', '-f', ...holders)
+          if (holders.length) docker('rm', '-f', ...holders.map(([id]) => id))
           docker('volume', 'rm', volume)
         } catch {}
       }
