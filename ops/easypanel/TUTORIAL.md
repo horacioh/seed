@@ -11,7 +11,9 @@ HTTPS and sends `/ipfs/` requests to the daemon.
 
 ## Step 1: Create the project from the template
 
-Create an Easypanel project from schema/JSON and paste the contents of `ops/easypanel/seed.json`.
+Create an Easypanel project, then choose **Service**, open the **Custom** tab, choose **Create From Schema**, and paste
+the contents of `ops/easypanel/seed.json`. Easypanel creates the daemon, web, and updater services and deploys them
+right away; web keeps restarting until Step 2 sets its secret.
 
 ## Step 2: Set the domain, port, secret, and images
 
@@ -35,7 +37,8 @@ Point DNS at the server before deploying, and open the P2P port for both TCP and
 
 ## Step 3: Deploy
 
-Deploy the project. Easypanel enables HTTPS for the domain by default.
+Save the web service's environment and choose **Deploy** on the web service. Easypanel enables HTTPS for the domain by
+default.
 
 ## Register the site from Seed desktop
 

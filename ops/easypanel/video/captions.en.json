@@ -1,0 +1,33 @@
+{
+  "intro": {
+    "title": "Deploy a Seed site on Easypanel",
+    "subtitle": "Self-host a Seed Hypermedia site from one schema file"
+  },
+  "beats": {
+    "dashboard": "Start on your Easypanel dashboard",
+    "create-project": "Create a new project",
+    "project-name": "Name it seed",
+    "project-create": "Create the project",
+    "new-service": "Add a service",
+    "custom": "Open the Custom tab",
+    "schema": "Choose Create From Schema",
+    "paste": "Paste ops/easypanel/seed.json with your domain",
+    "create": "Create daemon, web and updater",
+    "web": "Web stays yellow until it has a secret",
+    "environment": "Open the web service environment",
+    "secret-line": "Find SEED_LINK_SECRET",
+    "secret": "Replace it with a long random secret",
+    "save": "Save the environment",
+    "deploy": "Deploy the web service",
+    "overview": "Back to the web overview",
+    "wait": "Wait for Seed web to start",
+    "running": "Daemon, web and updater are running",
+    "domains": "Web answers at https://site.example.com/",
+    "updater": "Shepherd keeps the Seed images up to date",
+    "site": "Your site is live — register it from Seed desktop"
+  },
+  "outro": {
+    "takeaway": "Register at https://<domain>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/easypanel"
+  }
+}
