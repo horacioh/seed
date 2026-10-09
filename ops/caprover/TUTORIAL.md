@@ -16,8 +16,8 @@ In CapRover, open **Apps → One-Click Apps → `>> TEMPLATE <<`**, paste `ops/c
 
 ## Step 2: Set the site values
 
-Choose a site domain and P2P host port. The default domain is `<app-name>.<CapRover-root-domain>`; use a unique port,
-`56000` by default. If you use a custom domain, set it to the same hostname as the app's custom domain.
+Enter an app name, such as `site`, and a site domain. Use `<app-name>.<CapRover-root-domain>`, such as
+`site.example.com`, or a custom domain that you add to the app later. Use a unique P2P host port, `56000` by default.
 
 For the fork's images, set the **Seed web image** and **Seed daemon image** values to:
 
@@ -28,9 +28,11 @@ Seed daemon image: ghcr.io/horacioh/seed-site:main
 
 Leave the generated **Registration link secret** value in place unless you have a reason to replace it.
 
-## Step 3: Enable HTTPS and deploy
+## Step 3: Deploy and enable HTTPS
 
-Enable **HTTPS** and **Force HTTPS** for the app, then deploy it. Open the configured P2P port for both TCP and UDP.
+Click **Deploy** and wait for every step to finish. Then open **Apps**, select the app (for example `site`), and in
+**HTTP Settings** click **Enable HTTPS**. Check **Force HTTPS by redirecting all HTTP traffic to HTTPS**, then click
+**Save & Restart**. Open the configured P2P port for both TCP and UDP.
 
 ## Register the site from Seed desktop
 
