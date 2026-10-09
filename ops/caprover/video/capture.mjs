@@ -142,9 +142,15 @@ function stackHealthy() {
   return Boolean(seedConfig('http')?.peerId)
 }
 
-/** Deletes the Seed apps, their data volumes and their project through CapRover. */
+/** Deletes the Seed apps, their data volumes and their `site` project through CapRover. Only touches apps that belong to the `site` project — an app that matches by name but sits outside it (or in no project) is refused, since the tutorial template did not create it. */
 export async function prepare() {
+  const {data} = await api('/user/projects')
+  const projectIds = (data.projects || []).filter((project) => project.name === APP).map((project) => project.id)
   const apps = await seedApps()
+  const foreign = apps.filter((app) => !projectIds.includes(app.projectId))
+  if (foreign.length) {
+    throw new Error(`Refusing to delete ${foreign.map((app) => app.appName).join(', ')}: not in the ${APP} project`)
+  }
   if (apps.length) {
     await api('/user/apps/appDefinitions/delete', {
       method: 'POST',
@@ -173,10 +179,8 @@ export async function prepare() {
   const leftover = DATA_VOLUMES.filter((volume) => dockerVolumes().includes(volume))
   if (leftover.length) throw new Error(`Seed data volumes are still present: ${leftover.join(', ')}`)
 
-  const {data} = await api('/user/projects')
-  const projects = (data.projects || []).filter((project) => project.name === APP)
-  if (projects.length) {
-    await api('/user/projects/delete', {method: 'POST', body: {projectIds: projects.map((project) => project.id)}})
+  if (projectIds.length) {
+    await api('/user/projects/delete', {method: 'POST', body: {projectIds}})
   }
   if ((await seedApps()).length) throw new Error('CapRover still lists Seed apps')
 }
