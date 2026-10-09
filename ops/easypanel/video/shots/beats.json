@@ -1,0 +1,497 @@
+{
+  "takes": {
+    "en": {
+      "capturedAt": "2026-10-08T23:52:28.985Z",
+      "platform": {
+        "os": "linux",
+        "release": "6.8.0-1061-aws",
+        "node": "v22.22.0",
+        "browser": "153.0.8010.12"
+      },
+      "persona": "desktop",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 2,
+      "frame": "card",
+      "format": "16x9",
+      "lang": "en",
+      "baseUrl": "http://localhost:3000",
+      "beats": [
+        {
+          "kind": "shot",
+          "name": "dashboard",
+          "t": 17309,
+          "image": "shots/en/01-dashboard.png",
+          "cursor": {
+            "x": 1056,
+            "y": 648
+          },
+          "target": {
+            "x": 535,
+            "y": 388,
+            "w": 1152,
+            "h": 96
+          }
+        },
+        {
+          "kind": "click",
+          "name": "create-project",
+          "t": 26137,
+          "tClick": 26798,
+          "tAfter": 35771,
+          "target": {
+            "x": 535,
+            "y": 388,
+            "w": 1152,
+            "h": 96
+          },
+          "from": {
+            "x": 1056,
+            "y": 648
+          },
+          "to": {
+            "x": 1111,
+            "y": 436
+          },
+          "before": "shots/en/02-create-project-before.png",
+          "hover": "shots/en/03-create-project-hover.png",
+          "after": "shots/en/04-create-project-after.png",
+          "image": "shots/en/04-create-project-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "project-name",
+          "t": 44718,
+          "tClick": 45284,
+          "tAfter": 46619,
+          "target": {
+            "x": 760,
+            "y": 524,
+            "w": 400,
+            "h": 40
+          },
+          "from": {
+            "x": 1111,
+            "y": 436
+          },
+          "to": {
+            "x": 960,
+            "y": 544
+          },
+          "text": "seed",
+          "before": "shots/en/05-project-name-before.png",
+          "after": "shots/en/06-project-name-after.png",
+          "image": "shots/en/06-project-name-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "project-create",
+          "t": 55584,
+          "tClick": 56756,
+          "tAfter": 65400,
+          "target": {
+            "x": 760,
+            "y": 580,
+            "w": 84,
+            "h": 40
+          },
+          "from": {
+            "x": 960,
+            "y": 544
+          },
+          "to": {
+            "x": 802,
+            "y": 600
+          },
+          "before": "shots/en/07-project-create-before.png",
+          "hover": "shots/en/08-project-create-hover.png",
+          "after": "shots/en/09-project-create-after.png",
+          "image": "shots/en/09-project-create-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "new-service",
+          "t": 73945,
+          "tClick": 74467,
+          "tAfter": 83038,
+          "target": {
+            "x": 340,
+            "y": 88,
+            "w": 16,
+            "h": 16
+          },
+          "from": {
+            "x": 802,
+            "y": 600
+          },
+          "to": {
+            "x": 348,
+            "y": 96
+          },
+          "before": "shots/en/10-new-service-before.png",
+          "hover": "shots/en/11-new-service-hover.png",
+          "after": "shots/en/12-new-service-after.png",
+          "image": "shots/en/12-new-service-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "custom",
+          "t": 91567,
+          "tClick": 92134,
+          "tAfter": 100718,
+          "target": {
+            "x": 786,
+            "y": 113,
+            "w": 92,
+            "h": 40
+          },
+          "from": {
+            "x": 348,
+            "y": 96
+          },
+          "to": {
+            "x": 832,
+            "y": 133
+          },
+          "before": "shots/en/13-custom-before.png",
+          "hover": "shots/en/14-custom-hover.png",
+          "after": "shots/en/15-custom-after.png",
+          "image": "shots/en/15-custom-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "schema",
+          "t": 109277,
+          "tClick": 109841,
+          "tAfter": 118809,
+          "target": {
+            "x": 598,
+            "y": 306,
+            "w": 1106,
+            "h": 40
+          },
+          "from": {
+            "x": 832,
+            "y": 133
+          },
+          "to": {
+            "x": 1151,
+            "y": 326
+          },
+          "before": "shots/en/16-schema-before.png",
+          "hover": "shots/en/17-schema-hover.png",
+          "after": "shots/en/18-schema-after.png",
+          "image": "shots/en/18-schema-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "paste",
+          "t": 127319,
+          "image": "shots/en/19-paste.png",
+          "cursor": {
+            "x": 1151,
+            "y": 326
+          },
+          "target": {
+            "x": 760,
+            "y": 421,
+            "w": 400,
+            "h": 238
+          }
+        },
+        {
+          "kind": "click",
+          "name": "create",
+          "t": 136775,
+          "tClick": 138082,
+          "tAfter": 147601,
+          "target": {
+            "x": 1076,
+            "y": 675,
+            "w": 84,
+            "h": 40
+          },
+          "from": {
+            "x": 1151,
+            "y": 326
+          },
+          "to": {
+            "x": 1118,
+            "y": 695
+          },
+          "before": "shots/en/20-create-before.png",
+          "hover": "shots/en/21-create-hover.png",
+          "after": "shots/en/22-create-after.png",
+          "image": "shots/en/22-create-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "web",
+          "t": 156236,
+          "tClick": 156915,
+          "tAfter": 167807,
+          "target": {
+            "x": 104,
+            "y": 208,
+            "w": 252,
+            "h": 40
+          },
+          "from": {
+            "x": 1118,
+            "y": 695
+          },
+          "to": {
+            "x": 230,
+            "y": 228
+          },
+          "before": "shots/en/23-web-before.png",
+          "hover": "shots/en/24-web-hover.png",
+          "after": "shots/en/25-web-after.png",
+          "image": "shots/en/25-web-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "environment",
+          "t": 176384,
+          "tClick": 177072,
+          "tAfter": 185702,
+          "target": {
+            "x": 104,
+            "y": 697,
+            "w": 252,
+            "h": 40
+          },
+          "from": {
+            "x": 230,
+            "y": 228
+          },
+          "to": {
+            "x": 230,
+            "y": 717
+          },
+          "before": "shots/en/26-environment-before.png",
+          "hover": "shots/en/27-environment-hover.png",
+          "after": "shots/en/28-environment-after.png",
+          "image": "shots/en/28-environment-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "secret-line",
+          "t": 194269,
+          "tClick": 194831,
+          "tAfter": 203429,
+          "target": {
+            "x": 635,
+            "y": 366,
+            "w": 125,
+            "h": 15
+          },
+          "from": {
+            "x": 230,
+            "y": 717
+          },
+          "to": {
+            "x": 698,
+            "y": 374
+          },
+          "before": "shots/en/29-secret-line-before.png",
+          "hover": "shots/en/30-secret-line-hover.png",
+          "after": "shots/en/31-secret-line-after.png",
+          "image": "shots/en/31-secret-line-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "secret",
+          "t": 212270,
+          "image": "shots/en/32-secret.png",
+          "cursor": {
+            "x": 698,
+            "y": 374
+          },
+          "target": {
+            "x": 629,
+            "y": 365,
+            "w": 1073,
+            "h": 18
+          }
+        },
+        {
+          "kind": "click",
+          "name": "save",
+          "t": 220996,
+          "tClick": 221567,
+          "tAfter": 230178,
+          "target": {
+            "x": 598,
+            "y": 723,
+            "w": 70,
+            "h": 40
+          },
+          "from": {
+            "x": 698,
+            "y": 374
+          },
+          "to": {
+            "x": 633,
+            "y": 743
+          },
+          "before": "shots/en/33-save-before.png",
+          "hover": "shots/en/34-save-hover.png",
+          "after": "shots/en/35-save-after.png",
+          "image": "shots/en/35-save-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "deploy",
+          "t": 238727,
+          "tClick": 239321,
+          "tAfter": 251721,
+          "target": {
+            "x": 590,
+            "y": 128,
+            "w": 86,
+            "h": 40
+          },
+          "from": {
+            "x": 633,
+            "y": 743
+          },
+          "to": {
+            "x": 633,
+            "y": 148
+          },
+          "before": "shots/en/36-deploy-before.png",
+          "hover": "shots/en/37-deploy-hover.png",
+          "after": "shots/en/38-deploy-after.png",
+          "image": "shots/en/38-deploy-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "overview",
+          "t": 260259,
+          "tClick": 260908,
+          "tAfter": 269511,
+          "target": {
+            "x": 104,
+            "y": 565,
+            "w": 252,
+            "h": 40
+          },
+          "from": {
+            "x": 633,
+            "y": 148
+          },
+          "to": {
+            "x": 230,
+            "y": 585
+          },
+          "before": "shots/en/39-overview-before.png",
+          "hover": "shots/en/40-overview-hover.png",
+          "after": "shots/en/41-overview-after.png",
+          "image": "shots/en/41-overview-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "wait",
+          "t": 269511,
+          "tAfter": 269889,
+          "frames": [
+            {
+              "t": 269599,
+              "image": "shots/en/42-wait-0.png"
+            }
+          ],
+          "image": "shots/en/42-wait-0.png",
+          "cursor": {
+            "x": 230,
+            "y": 585
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "running",
+          "t": 286979,
+          "image": "shots/en/43-running.png",
+          "cursor": {
+            "x": 230,
+            "y": 585
+          },
+          "target": {
+            "x": 80,
+            "y": 120,
+            "w": 300,
+            "h": 152
+          }
+        },
+        {
+          "kind": "click",
+          "name": "domains",
+          "t": 295849,
+          "tClick": 296566,
+          "tAfter": 305222,
+          "target": {
+            "x": 104,
+            "y": 741,
+            "w": 252,
+            "h": 40
+          },
+          "from": {
+            "x": 230,
+            "y": 585
+          },
+          "to": {
+            "x": 230,
+            "y": 761
+          },
+          "before": "shots/en/44-domains-before.png",
+          "hover": "shots/en/45-domains-hover.png",
+          "after": "shots/en/46-domains-after.png",
+          "image": "shots/en/46-domains-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "updater",
+          "t": 313765,
+          "tClick": 314390,
+          "tAfter": 325284,
+          "target": {
+            "x": 104,
+            "y": 164,
+            "w": 252,
+            "h": 40
+          },
+          "from": {
+            "x": 230,
+            "y": 761
+          },
+          "to": {
+            "x": 230,
+            "y": 184
+          },
+          "before": "shots/en/47-updater-before.png",
+          "hover": "shots/en/48-updater-hover.png",
+          "after": "shots/en/49-updater-after.png",
+          "image": "shots/en/49-updater-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "site",
+          "t": 327327,
+          "image": "shots/en/50-site.png",
+          "cursor": {
+            "x": 230,
+            "y": 184
+          },
+          "target": {
+            "x": 672,
+            "y": 24,
+            "w": 576,
+            "h": 174
+          }
+        }
+      ]
+    }
+  }
+}
