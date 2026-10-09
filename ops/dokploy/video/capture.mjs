@@ -91,8 +91,12 @@ function redactSecrets() {
   }
   new MutationObserver(tag).observe(document, {childList: true, subtree: true, characterData: true})
   document.addEventListener('DOMContentLoaded', tag)
-  // Input values change without DOM mutations.
-  setInterval(tag, 50)
+  // Input values change without DOM mutations, so re-tag before every paint.
+  const onFrame = () => {
+    tag()
+    requestAnimationFrame(onFrame)
+  }
+  requestAnimationFrame(onFrame)
 }
 
 async function assertRedacted(page) {
@@ -422,7 +426,7 @@ export default async function capture(r) {
       deployment?.status === 'done' &&
       states.get('seed-web')?.state === 'running' &&
       states.get('seed-daemon')?.state === 'running' &&
-      /healthy/.test(states.get('seed-updater')?.status || '') &&
+      /\(healthy\)/.test(states.get('seed-updater')?.status || '') &&
       states.get('seed-init')?.status.startsWith('Exited (0)') &&
       Boolean(siteConfig()?.peerId) &&
       assertRedacted(currentPage)
