@@ -82,7 +82,8 @@ failed assertion or frame guard.
 - Narrate only real actions; locate targets by role, label, href or stable attributes inside the appropriate container.
   Never use loose text matches. Assert the visible result after every click.
 - Keep the frame guard enabled. Its generic skeleton, spinner, toast, banner and empty-state selectors can be replaced
-  per tutorial with `options.frameGuard`; `allowToast`, `allowBanner` and `allowEmpty` are per-beat exceptions.
+  per tutorial with `options.frameGuard`, and `frameGuard.bigTextExempt` adds selectors for text the platform draws
+  large on purpose (a dashboard clock, say); `allowToast`, `allowBanner` and `allowEmpty` are per-beat exceptions.
 - Commit `beats.json`, `spec.js`, captions, `capture.mjs`, and the poster. Ignore `node_modules`, captured PNGs under
   `shots/<take>/`, and `out/`.
 - Use the Seed theme by default: Seed icon from `ops/dokploy/seed/seed-icon.svg`, “Seed Hypermedia” wordmark, green
