@@ -1971,7 +1971,7 @@ describe('Section blocks', () => {
 
   test('omits attributes that were never set', () => {
     const [node] = editorBlocksToHMBlockNodes(hmBlocksToEditorContent([sectionNode({})]))
-    expect(node!.block.attributes).toEqual({})
+    expect((node!.block as {attributes?: unknown}).attributes).toEqual({})
   })
 
   test('normalizes invalid values to the defaults at render time', () => {
