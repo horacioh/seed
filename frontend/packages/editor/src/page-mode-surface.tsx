@@ -667,7 +667,6 @@ function PageModeDock({
         {cycler}
         {color}
         {trigger('more', <DockButton label="More" icon={<Ellipsis className="size-4" />} />, 'Section')}
-        <span className="flex-1" />
         {publish}
       </>
     ) : (

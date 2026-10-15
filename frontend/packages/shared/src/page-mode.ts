@@ -89,6 +89,25 @@ export function usePageModeSurface(): boolean {
   return useSyncExternalStore(surface.subscribe, surface.get, () => false)
 }
 
+const pageLayoutSurface = createFlagStore()
+
+/**
+ * Report whether the document page is laid out as a full-width page (Page
+ * mode, or reading a document built from Sections), so outer chrome such as
+ * the site's document browser can step aside.
+ */
+export function usePublishPageLayoutSurface(active: boolean) {
+  useEffect(() => {
+    pageLayoutSurface.set(active)
+    return () => pageLayoutSurface.set(false)
+  }, [active])
+}
+
+/** Whether a document page is currently laid out as a full-width page. */
+export function usePageLayoutSurface(): boolean {
+  return useSyncExternalStore(pageLayoutSurface.subscribe, pageLayoutSurface.get, () => false)
+}
+
 /**
  * App-provided controls for the Page mode dock. The document page fills this
  * with the app's existing publish flow; the editor renders it inside the dock.

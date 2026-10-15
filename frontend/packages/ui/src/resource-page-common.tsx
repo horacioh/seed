@@ -52,7 +52,9 @@ import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
 import {
   PageModeDockContext,
   useIsPageModeActive,
+  usePageLayoutSurface,
   usePageModeSurface,
+  usePublishPageLayoutSurface,
   usePublishPageModeSurface,
   type PageModeDockSlots,
 } from '@shm/shared/page-mode'
@@ -1654,6 +1656,7 @@ export function PageShell({
   const isMobile = media.xs && !IS_DESKTOP
   const navigate = useNavigate()
   const pageModeSurface = usePageModeSurface()
+  const pageLayoutSurface = usePageLayoutSurface()
   const [isFileBrowserOpen, setIsFileBrowserOpen] = useState(false)
   const itemsForHeader = liveNavigationItems ?? headerData.items
 
@@ -1695,7 +1698,7 @@ export function PageShell({
         siteName={getMetadataName(headerData.siteHomeDocument?.metadata) || 'Space documents'}
         mobileOpen={isFileBrowserOpen}
         onMobileOpenChange={setIsFileBrowserOpen}
-        hidden={pageModeSurface}
+        hidden={pageModeSurface || pageLayoutSurface}
         onPrefetch={onPrefetchDocument}
         createMenuItem={fileBrowserCreateMenuItem}
         onIncludeDocument={fileBrowserOnIncludeDocument}
@@ -2151,6 +2154,7 @@ function DocumentBody({
   const pageLayout = pageModeActive || (!isEditing && documentHasSections)
   const showDocumentChrome = activeView !== 'explore' && !pageLayout
   usePublishPageModeSurface(pageModeActive)
+  usePublishPageLayoutSurface(pageLayout)
 
   // Extract blockRef from route for scroll-to-block and highlighting
   const routeBlockRef = 'id' in route && typeof route.id === 'object' ? route.id.blockRef : null
@@ -3037,7 +3041,7 @@ function DocumentBody({
         )}
 
         {/* Main content based on activeView */}
-        <div className={cn('flex-1', activeView !== 'content' && 'pb-60', isMobile && 'px-4')}>
+        <div className={cn('flex-1', activeView !== 'content' && 'pb-60', isMobile && !pageLayout && 'px-4')}>
           <DocumentViewContent
             activeView={activeView}
             collection={
@@ -3220,7 +3224,7 @@ function DocumentBody({
             <div ref={documentTopSentinelRef} className="h-px" aria-hidden="true" />
             {mainPageContent}
           </ScrollArea>
-          {activeView === 'content' ? (
+          {activeView === 'content' && !pageModeActive ? (
             <Button
               ref={backToTopButtonRef}
               type="button"
