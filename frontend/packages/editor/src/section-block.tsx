@@ -1,68 +1,96 @@
 import {
-  HM_SECTION_CONTENT_WIDTHS,
   HM_SECTION_LAYOUTS,
-  HM_SECTION_PADDINGS,
   normalizeSectionAttributes,
   type HMSectionAttributes,
   type HMSectionBackgroundToken,
-  type HMSectionContentWidth,
   type HMSectionLayout,
-  type HMSectionPadding,
 } from '@seed-hypermedia/client/hm-types'
 import {DAEMON_FILE_UPLOAD_URL, MAX_FILE_SIZE_B, MAX_FILE_SIZE_MB} from '@shm/shared/constants'
-import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
 import {useImageUrl} from '@shm/ui/get-file-url'
 import {toast} from '@shm/ui/toast'
 import {cn} from '@shm/ui/utils'
-import {ArrowDown, ArrowUp, Check, Copy, ImagePlus, Paintbrush, Plus, Rows3, Trash2, X} from 'lucide-react'
-import {useEffect, useRef, useState, type ReactNode} from 'react'
-import {createPortal} from 'react-dom'
+import {Check, ImagePlus, X} from 'lucide-react'
+import {useRef, useState, useSyncExternalStore} from 'react'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
 import type {Block, PartialBlock} from './blocknote/core/extensions/Blocks/api/blockTypes'
 import {defaultProps} from './blocknote/core/extensions/Blocks/api/defaultBlocks'
 import {UniqueID} from './blocknote/core/extensions/UniqueID/UniqueID'
 import {createReactBlockSpec} from './blocknote/react/ReactBlockSpec'
 import type {HMBlockSchema} from './schema'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter-tight/600.css'
 import './section-block.css'
-import {useMobile} from './use-mobile'
 
-type SectionEditor = BlockNoteEditor<HMBlockSchema>
-type SectionBlockType = Block<HMBlockSchema>
+/** Editor instance the Section block and Page mode operate on. */
+export type SectionEditor = BlockNoteEditor<HMBlockSchema>
+/** An editor block, as read from `editor.topLevelBlocks`. */
+export type SectionBlockType = Block<HMBlockSchema>
 
-/** Visual arrangements of the section toolbar, selectable while the design is being reviewed. */
-export type SectionToolbarVariant = 'bar' | 'strip' | 'rail'
+/** Display names of the layouts, in the order the layout cycler steps through them. */
+export const LAYOUT_NAMES: Record<HMSectionLayout, string> = {
+  hero: 'Hero',
+  split: 'Image and text',
+  features: 'Three columns',
+  fullBleed: 'Full-bleed image',
+}
 
-const TOOLBAR_VARIANT_KEY = 'seed.pageMode.toolbar'
+/** Display names of the background tokens. */
+export const BACKGROUND_NAMES: Record<HMSectionBackgroundToken, string> = {
+  default: 'White',
+  muted: 'Mist',
+  accent: 'Sand',
+  inverted: 'Ink',
+}
 
-function getToolbarVariant(): SectionToolbarVariant {
-  try {
-    const value = typeof localStorage !== 'undefined' ? localStorage.getItem(TOOLBAR_VARIANT_KEY) : null
-    return value === 'strip' || value === 'rail' ? value : 'bar'
-  } catch {
-    return 'bar'
+/** The layout after (or before) `layout` in the cycler order. */
+export function cycleLayout(layout: HMSectionLayout, delta: 1 | -1): HMSectionLayout {
+  const i = HM_SECTION_LAYOUTS.indexOf(layout)
+  return HM_SECTION_LAYOUTS[(i + delta + HM_SECTION_LAYOUTS.length) % HM_SECTION_LAYOUTS.length]!
+}
+
+type Store = {value: string | null; listeners: Set<() => void>}
+const selectionStores = new WeakMap<object, Store>()
+
+function getSelectionStore(editor: object): Store {
+  let store = selectionStores.get(editor)
+  if (!store) {
+    store = {value: null, listeners: new Set()}
+    selectionStores.set(editor, store)
   }
+  return store
 }
 
-const LAYOUT_LABELS: Record<HMSectionLayout, {name: string; hint: string}> = {
-  hero: {name: 'Hero', hint: 'Centered, large heading'},
-  split: {name: 'Split', hint: 'Media beside text'},
-  features: {name: 'Features', hint: 'Equal columns'},
-  fullBleed: {name: 'Full bleed', hint: 'Text over a full-width image'},
+/** Select a Section in Page mode (or clear the selection with `null`). */
+export function setSelectedSection(editor: object, id: string | null) {
+  const store = getSelectionStore(editor)
+  if (store.value === id) return
+  store.value = id
+  store.listeners.forEach((listener) => listener())
 }
 
-const BACKGROUND_LABELS: Record<HMSectionBackgroundToken, string> = {
-  default: 'Page',
-  muted: 'Muted',
-  accent: 'Accent',
-  inverted: 'Inverted',
+/** The id of the Section selected in Page mode, if any. */
+export function getSelectedSection(editor: object): string | null {
+  return getSelectionStore(editor).value
 }
 
-const PADDING_LABELS: Record<HMSectionPadding, string> = {S: 'Compact', M: 'Regular', L: 'Spacious'}
-const WIDTH_LABELS: Record<HMSectionContentWidth, string> = {S: 'Narrow', M: 'Medium', L: 'Wide', full: 'Full'}
+/** Subscribe to the Page mode Section selection of `editor`. */
+export function useSelectedSection(editor: object): string | null {
+  const store = getSelectionStore(editor)
+  return useSyncExternalStore(
+    (listener) => {
+      store.listeners.add(listener)
+      return () => store.listeners.delete(listener)
+    },
+    () => store.value,
+    () => null,
+  )
+}
 
 /**
  * Editor block for the HM `Section` type. The block itself only renders the
- * section frame (background + editing controls); its children are ordinary
+ * section frame (background and selection outline); its children are ordinary
  * blocks laid out by `section-block.css`. The same render runs in the live
  * editor, the read-only viewer and SSR, so editing looks like the published page.
  */
@@ -90,7 +118,7 @@ export const SectionBlock = createReactBlockSpec({
 export function SectionFrame({block, editor}: {block: SectionBlockType; editor: SectionEditor}) {
   const attrs = normalizeSectionAttributes(block.props as Record<string, unknown>)
   const getImageUrl = useImageUrl()
-  const {editable, selected} = useSectionEditingState(editor, block.id)
+  const selected = useSelectedSection(editor) === block.id
   const imageUrl = attrs.backgroundImage ? getImageUrl(attrs.backgroundImage, 'XL') : null
   return (
     <div
@@ -111,43 +139,12 @@ export function SectionFrame({block, editor}: {block: SectionBlockType; editor: 
           }}
         />
       ) : null}
-      {editable ? <SectionControls block={block} editor={editor} attrs={attrs} selected={selected} /> : null}
     </div>
   )
 }
 
-function useSectionEditingState(editor: SectionEditor, blockId: string) {
-  const tiptap = (editor as any)?._tiptapEditor
-  const read = () => {
-    if (!tiptap || !editor.isEditable) return {editable: false, selected: false}
-    const {$from} = tiptap.state.selection
-    for (let depth = $from.depth; depth > 0; depth--) {
-      const node = $from.node(depth)
-      if (node.type.name === 'blockNode' && node.attrs.id === blockId) return {editable: true, selected: true}
-    }
-    return {editable: true, selected: false}
-  }
-  const [state, setState] = useState(read)
-  useEffect(() => {
-    if (!tiptap) return
-    const update = () => {
-      const next = read()
-      setState((prev) => (prev.editable === next.editable && prev.selected === next.selected ? prev : next))
-    }
-    update()
-    tiptap.on('selectionUpdate', update)
-    tiptap.on('update', update)
-    tiptap.on('focus', update)
-    return () => {
-      tiptap.off('selectionUpdate', update)
-      tiptap.off('update', update)
-      tiptap.off('focus', update)
-    }
-  }, [tiptap, blockId])
-  return state
-}
-
-function findSiblings(blocks: SectionBlockType[], id: string): SectionBlockType[] | null {
+/** Find the sibling list that contains block `id`. */
+export function findSiblings(blocks: SectionBlockType[], id: string): SectionBlockType[] | null {
   for (const block of blocks) {
     if (block.id === id) return blocks
     const found = findSiblings(block.children as SectionBlockType[], id)
@@ -156,8 +153,8 @@ function findSiblings(blocks: SectionBlockType[], id: string): SectionBlockType[
   return null
 }
 
-function cloneWithFreshIds(block: SectionBlockType): PartialBlock<HMBlockSchema> {
-  // Table cells point at their column blocks by id, so remap those references too.
+/** Deep copy of a block with fresh ids, remapping table-cell column references. */
+export function cloneWithFreshIds(block: SectionBlockType): PartialBlock<HMBlockSchema> {
   const ids = new Map<string, string>()
   const assign = (b: SectionBlockType) => {
     ids.set(b.id, UniqueID.options.generateID())
@@ -172,251 +169,8 @@ function cloneWithFreshIds(block: SectionBlockType): PartialBlock<HMBlockSchema>
   return clone(block)
 }
 
-function SectionControls({
-  block,
-  editor,
-  attrs,
-  selected,
-}: {
-  block: SectionBlockType
-  editor: SectionEditor
-  attrs: HMSectionAttributes
-  selected: boolean
-}) {
-  const isMobile = useMobile()
-  const variant = getToolbarVariant()
-  const setProps = (props: Record<string, string>) => editor.updateBlock(block.id, {props} as any)
-  // Child edits don't re-render this node view, so read the live blocks when acting.
-  const locate = () => {
-    const siblings = findSiblings(editor.topLevelBlocks as SectionBlockType[], block.id) ?? []
-    const index = siblings.findIndex((b) => b.id === block.id)
-    return {siblings, index, current: siblings[index]}
-  }
-  const {siblings, index} = locate()
-  const move = (delta: -1 | 1) => {
-    const {siblings, index, current} = locate()
-    const other = siblings[index + delta]
-    if (!current || !other) return
-    editor.removeBlocks([current.id])
-    editor.insertBlocks([current] as any, other.id, delta < 0 ? 'before' : 'after')
-  }
-  const actions = {
-    moveUp: index > 0 ? () => move(-1) : undefined,
-    moveDown: index >= 0 && index < siblings.length - 1 ? () => move(1) : undefined,
-    duplicate: () => {
-      const {current} = locate()
-      if (current) editor.insertBlocks([cloneWithFreshIds(current)], block.id, 'after')
-    },
-    remove: () => editor.removeBlocks([block.id]),
-  }
-
-  const toolbar = (
-    <SectionToolbar
-      variant={isMobile ? 'mobile' : variant}
-      attrs={attrs}
-      setProps={setProps}
-      actions={actions}
-      sheetSide={isMobile ? 'top' : 'bottom'}
-    />
-  )
-
-  return (
-    <>
-      {isMobile ? (selected && typeof document !== 'undefined' ? createPortal(toolbar, document.body) : null) : toolbar}
-      <div className="hm-section-add">
-        <AddSectionButton editor={editor} afterBlockId={block.id} compact />
-      </div>
-    </>
-  )
-}
-
-type ToolbarActions = {
-  moveUp?: () => void
-  moveDown?: () => void
-  duplicate: () => void
-  remove: () => void
-}
-
-function SectionToolbar({
-  variant,
-  attrs,
-  setProps,
-  actions,
-  sheetSide,
-}: {
-  variant: SectionToolbarVariant | 'mobile'
-  attrs: HMSectionAttributes
-  setProps: (props: Record<string, string>) => void
-  actions: ToolbarActions
-  sheetSide: 'top' | 'bottom'
-}) {
-  const vertical = variant === 'rail'
-  const layoutControl =
-    variant === 'strip' ? (
-      <div className="flex items-center gap-1" role="radiogroup" aria-label="Section layout">
-        {HM_SECTION_LAYOUTS.map((layout) => (
-          <button
-            key={layout}
-            type="button"
-            role="radio"
-            aria-checked={attrs.layout === layout}
-            title={LAYOUT_LABELS[layout].name}
-            onClick={() => setProps({layout})}
-            className={cn(
-              'hm-section-tool flex h-8 items-center gap-1.5 rounded-md px-1.5 text-xs',
-              attrs.layout === layout && 'bg-accent text-accent-foreground ring-foreground/70 ring-1',
-            )}
-          >
-            <LayoutThumb layout={layout} className="h-5 w-7" active={attrs.layout === layout} />
-            <span className={cn(attrs.layout === layout ? 'font-semibold' : 'hidden lg:inline')}>
-              {LAYOUT_LABELS[layout].name}
-            </span>
-          </button>
-        ))}
-      </div>
-    ) : (
-      <ToolPopover
-        label="Layout"
-        side={vertical ? 'left' : sheetSide}
-        trigger={
-          <>
-            <LayoutThumb layout={attrs.layout} className="h-4 w-6" active />
-            {variant !== 'rail' ? <span>{LAYOUT_LABELS[attrs.layout].name}</span> : null}
-          </>
-        }
-      >
-        <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Section layout">
-          {HM_SECTION_LAYOUTS.map((layout) => (
-            <button
-              key={layout}
-              type="button"
-              role="radio"
-              aria-checked={attrs.layout === layout}
-              onClick={() => setProps({layout})}
-              className={cn(
-                'hover:bg-muted flex flex-col items-start gap-1.5 rounded-md border p-2 text-left',
-                attrs.layout === layout ? 'border-foreground' : 'border-border',
-              )}
-            >
-              <LayoutThumb layout={layout} className="h-12 w-full" active={attrs.layout === layout} />
-              <span className="flex w-full items-center justify-between text-sm font-medium">
-                {LAYOUT_LABELS[layout].name}
-                {attrs.layout === layout ? <Check className="size-3.5" aria-label="Selected" /> : null}
-              </span>
-              <span className="text-muted-foreground text-xs">{LAYOUT_LABELS[layout].hint}</span>
-            </button>
-          ))}
-        </div>
-      </ToolPopover>
-    )
-
-  return (
-    <div
-      className={cn('hm-section-toolbar', `hm-section-toolbar--${variant}`)}
-      role="toolbar"
-      aria-label="Section"
-      aria-orientation={vertical ? 'vertical' : 'horizontal'}
-      onMouseDown={(e) => e.preventDefault()}
-    >
-      {layoutControl}
-      <ToolbarDivider vertical={vertical} />
-      <ToolPopover
-        label="Background"
-        side={vertical ? 'left' : sheetSide}
-        trigger={
-          <>
-            <Paintbrush className="size-4" />
-            {variant !== 'rail' ? <span className="hidden sm:inline">Background</span> : null}
-          </>
-        }
-      >
-        <BackgroundPicker attrs={attrs} setProps={setProps} />
-      </ToolPopover>
-      <ToolPopover
-        label="Spacing"
-        side={vertical ? 'left' : sheetSide}
-        trigger={
-          <>
-            <Rows3 className="size-4" />
-            {variant !== 'rail' ? <span className="hidden sm:inline">Spacing</span> : null}
-          </>
-        }
-      >
-        <SpacingPicker attrs={attrs} setProps={setProps} />
-      </ToolPopover>
-      <ToolbarDivider vertical={vertical} />
-      <IconTool label="Move up" onClick={actions.moveUp}>
-        <ArrowUp className="size-4" />
-      </IconTool>
-      <IconTool label="Move down" onClick={actions.moveDown}>
-        <ArrowDown className="size-4" />
-      </IconTool>
-      <IconTool label="Duplicate" onClick={actions.duplicate}>
-        <Copy className="size-4" />
-      </IconTool>
-      <IconTool label="Delete section" onClick={actions.remove}>
-        <Trash2 className="size-4" />
-      </IconTool>
-    </div>
-  )
-}
-
-function ToolbarDivider({vertical}: {vertical: boolean}) {
-  return <span aria-hidden className={cn('bg-border shrink-0', vertical ? 'mx-1 h-px w-6' : 'my-1 h-5 w-px')} />
-}
-
-function IconTool({label, onClick, children}: {label: string; onClick?: () => void; children: ReactNode}) {
-  return (
-    <button
-      type="button"
-      className="hm-section-tool flex size-8 items-center justify-center rounded-md disabled:opacity-35"
-      aria-label={label}
-      title={label}
-      disabled={!onClick}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  )
-}
-
-function ToolPopover({
-  label,
-  trigger,
-  side,
-  children,
-}: {
-  label: string
-  trigger: ReactNode
-  side: 'top' | 'bottom' | 'left'
-  children: ReactNode
-}) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label={label}
-          title={label}
-          className="hm-section-tool flex h-8 items-center gap-1.5 rounded-md px-2 text-sm"
-        >
-          {trigger}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        side={side}
-        align="start"
-        className="hm-section-popover w-[min(92vw,20rem)] p-3 data-[state=closed]:animate-none data-[state=open]:animate-none"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <div className="text-muted-foreground mb-2 text-xs font-medium">{label}</div>
-        {children}
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-function BackgroundPicker({
+/** Colour swatches plus background image upload and focus point, for the Color popover. */
+export function BackgroundPicker({
   attrs,
   setProps,
 }: {
@@ -447,8 +201,9 @@ function BackgroundPicker({
   }
   return (
     <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-4 gap-2" role="radiogroup" aria-label="Background colour">
-        {(Object.keys(BACKGROUND_LABELS) as HMSectionBackgroundToken[]).map((token) => {
+      <div className="hm-dock-label">Background</div>
+      <div className="flex items-center gap-2" role="radiogroup" aria-label="Background colour">
+        {(Object.keys(BACKGROUND_NAMES) as HMSectionBackgroundToken[]).map((token) => {
           const active = !hasImage && attrs.background === token
           return (
             <button
@@ -456,22 +211,33 @@ function BackgroundPicker({
               type="button"
               role="radio"
               aria-checked={active}
+              aria-label={BACKGROUND_NAMES[token]}
+              title={BACKGROUND_NAMES[token]}
               onClick={() => setProps({background: token === 'default' ? '' : token, focalX: '', focalY: ''})}
-              className="flex flex-col items-center gap-1 text-xs"
+              className="hm-dock-swatch"
+              data-active={active ? 'true' : undefined}
             >
-              <span
-                className={cn(
-                  'hm-section-swatch flex size-9 items-center justify-center rounded-md border',
-                  active ? 'border-foreground ring-foreground ring-1' : 'border-border',
-                )}
-                data-section-background={token}
-              >
-                {active ? <Check className="size-4" aria-hidden /> : null}
+              <span className="hm-section-swatch" data-section-background={token}>
+                {active ? <Check className="size-3.5" aria-hidden /> : null}
               </span>
-              <span className={cn(active && 'font-semibold')}>{BACKGROUND_LABELS[token]}</span>
             </button>
           )
         })}
+        <button
+          type="button"
+          role="radio"
+          aria-checked={hasImage}
+          aria-label={hasImage ? 'Replace background image' : 'Background image'}
+          title={hasImage ? 'Replace image' : 'Image'}
+          className="hm-dock-swatch"
+          data-active={hasImage ? 'true' : undefined}
+          onClick={() => fileInput.current?.click()}
+          disabled={uploading}
+        >
+          <span className="hm-section-swatch hm-section-swatch--image">
+            {hasImage ? <Check className="size-3.5" aria-hidden /> : <ImagePlus className="size-3.5" aria-hidden />}
+          </span>
+        </button>
       </div>
       <input
         ref={fileInput}
@@ -484,30 +250,10 @@ function BackgroundPicker({
           e.target.value = ''
         }}
       />
-      <div className="flex gap-2">
-        <button
-          type="button"
-          className="hover:bg-muted border-border flex h-8 flex-1 items-center justify-center gap-1.5 rounded-md border text-sm"
-          onClick={() => fileInput.current?.click()}
-          disabled={uploading}
-        >
-          <ImagePlus className="size-4" />
-          {uploading ? 'Uploading…' : hasImage ? 'Replace image' : 'Image'}
-        </button>
-        {hasImage ? (
-          <button
-            type="button"
-            className="hover:bg-muted border-border flex h-8 items-center gap-1.5 rounded-md border px-2 text-sm"
-            onClick={() => setProps({background: '', focalX: '', focalY: ''})}
-          >
-            <X className="size-4" />
-            Remove
-          </button>
-        ) : null}
-      </div>
+      {uploading ? <div className="text-muted-foreground text-xs">Uploading…</div> : null}
       {hasImage ? (
         <div className="flex items-center justify-between gap-3">
-          <span className="text-muted-foreground text-xs">Focus point</span>
+          <span className="hm-dock-label">Focus point</span>
           <div className="grid grid-cols-3 gap-1" role="radiogroup" aria-label="Image focus point">
             {[0, 0.5, 1].flatMap((y) =>
               [0, 0.5, 1].map((x) => {
@@ -524,7 +270,7 @@ function BackgroundPicker({
                     onClick={() => setProps({focalX: String(x), focalY: String(y)})}
                     className={cn(
                       'flex size-5 items-center justify-center rounded-sm border',
-                      active ? 'border-foreground bg-foreground text-background' : 'border-border',
+                      active ? 'border-[#16171a] bg-[#16171a] text-white' : 'border-[#e6e6e3]',
                     )}
                   >
                     {active ? <Check className="size-3" aria-hidden /> : null}
@@ -533,123 +279,17 @@ function BackgroundPicker({
               }),
             )}
           </div>
+          <button
+            type="button"
+            className="hm-dock-text-button"
+            onClick={() => setProps({background: '', focalX: '', focalY: ''})}
+          >
+            <X className="size-3.5" aria-hidden />
+            Remove
+          </button>
         </div>
       ) : null}
     </div>
-  )
-}
-
-function PresetRow<T extends string>({
-  label,
-  options,
-  labels,
-  value,
-  onChange,
-}: {
-  label: string
-  options: readonly T[]
-  labels: Record<T, string>
-  value: T | null
-  onChange: (value: T) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-sm">{label}</span>
-      <div className="bg-muted flex rounded-md p-0.5" role="radiogroup" aria-label={label}>
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            role="radio"
-            aria-checked={value === option}
-            onClick={() => onChange(option)}
-            className={cn(
-              'flex h-7 flex-1 items-center justify-center gap-1 rounded-sm text-xs',
-              value === option ? 'bg-background font-semibold shadow-sm' : 'text-muted-foreground',
-            )}
-          >
-            {value === option ? <Check className="size-3" aria-hidden /> : null}
-            {labels[option]}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SpacingPicker({
-  attrs,
-  setProps,
-}: {
-  attrs: HMSectionAttributes
-  setProps: (props: Record<string, string>) => void
-}) {
-  return (
-    <div className="flex flex-col gap-3">
-      <PresetRow
-        label="Padding"
-        options={HM_SECTION_PADDINGS}
-        labels={PADDING_LABELS}
-        value={attrs.padding}
-        onChange={(padding) => setProps({padding})}
-      />
-      <PresetRow
-        label="Content width"
-        options={HM_SECTION_CONTENT_WIDTHS}
-        labels={WIDTH_LABELS}
-        value={attrs.contentWidth}
-        onChange={(contentWidth) => setProps({contentWidth})}
-      />
-    </div>
-  )
-}
-
-/** Small schematic of a section layout, used in the layout picker and template gallery. */
-export function LayoutThumb({
-  layout,
-  className,
-  active,
-}: {
-  layout: HMSectionLayout
-  className?: string
-  active?: boolean
-}) {
-  const ink = active ? 0.85 : 0.55
-  const soft = active ? 0.35 : 0.2
-  return (
-    <svg viewBox="0 0 48 32" className={cn('shrink-0', className)} aria-hidden preserveAspectRatio="none">
-      <rect x="0.5" y="0.5" width="47" height="31" rx="3" fill="none" stroke="currentColor" strokeOpacity={soft} />
-      {layout === 'hero' ? (
-        <>
-          <rect x="12" y="9" width="24" height="4" rx="1" fill="currentColor" fillOpacity={ink} />
-          <rect x="15" y="16" width="18" height="2" rx="1" fill="currentColor" fillOpacity={soft} />
-          <rect x="19" y="22" width="10" height="4" rx="1.5" fill="currentColor" fillOpacity={ink} />
-        </>
-      ) : layout === 'split' ? (
-        <>
-          <rect x="5" y="6" width="17" height="20" rx="1.5" fill="currentColor" fillOpacity={soft} />
-          <rect x="26" y="9" width="16" height="3" rx="1" fill="currentColor" fillOpacity={ink} />
-          <rect x="26" y="15" width="14" height="2" rx="1" fill="currentColor" fillOpacity={soft} />
-          <rect x="26" y="19" width="12" height="2" rx="1" fill="currentColor" fillOpacity={soft} />
-        </>
-      ) : layout === 'features' ? (
-        <>
-          {[5, 19, 33].map((x) => (
-            <g key={x}>
-              <rect x={x} y="9" width="10" height="3" rx="1" fill="currentColor" fillOpacity={ink} />
-              <rect x={x} y="15" width="10" height="2" rx="1" fill="currentColor" fillOpacity={soft} />
-              <rect x={x} y="19" width="8" height="2" rx="1" fill="currentColor" fillOpacity={soft} />
-            </g>
-          ))}
-        </>
-      ) : (
-        <>
-          <rect x="1" y="1" width="46" height="30" rx="2.5" fill="currentColor" fillOpacity={soft} />
-          <rect x="7" y="17" width="20" height="4" rx="1" fill="currentColor" fillOpacity={ink} />
-          <rect x="7" y="23" width="14" height="2" rx="1" fill="currentColor" fillOpacity={ink} />
-        </>
-      )}
-    </svg>
   )
 }
 
@@ -657,24 +297,23 @@ function text(t: string) {
   return t as any
 }
 
-/** Prefilled sections offered by "Add section". */
-export const SECTION_TEMPLATES: {
+/** A prefilled section offered by the template gallery. */
+export type SectionTemplate = {
   key: string
   name: string
-  description: string
-  layout: HMSectionLayout
   build: () => PartialBlock<HMBlockSchema>
-}[] = [
+}
+
+/** Prefilled sections offered by "Add section". */
+export const SECTION_TEMPLATES: SectionTemplate[] = [
   {
     key: 'hero',
     name: 'Hero',
-    description: 'Headline, a line of text and a button',
-    layout: 'hero',
     build: () => ({
       type: 'section',
-      props: {layout: 'hero', padding: 'L'},
+      props: {layout: 'hero', background: 'accent'},
       children: [
-        {type: 'heading', props: {level: '2'}, content: text('A clear headline for your page')},
+        {type: 'heading', props: {level: '1'}, content: text('A clear headline for your page')},
         {type: 'paragraph', content: text('One or two sentences that say what this is and who it is for.')},
         {type: 'button', props: {name: 'Get started', url: '', alignment: 'center'}},
       ],
@@ -683,8 +322,6 @@ export const SECTION_TEMPLATES: {
   {
     key: 'split',
     name: 'Image and text',
-    description: 'A picture beside a short pitch',
-    layout: 'split',
     build: () => ({
       type: 'section',
       props: {layout: 'split'},
@@ -698,9 +335,7 @@ export const SECTION_TEMPLATES: {
   },
   {
     key: 'features',
-    name: 'Three features',
-    description: 'Three columns, each with a title and text',
-    layout: 'features',
+    name: 'Three columns',
     build: () => ({
       type: 'section',
       props: {layout: 'features', background: 'muted'},
@@ -715,101 +350,49 @@ export const SECTION_TEMPLATES: {
   {
     key: 'fullBleed',
     name: 'Full-bleed image',
-    description: 'Large background image with a caption',
-    layout: 'fullBleed',
     build: () => ({
       type: 'section',
       props: {layout: 'fullBleed', background: 'inverted', padding: 'L'},
       children: [
         {type: 'heading', props: {level: '2'}, content: text('A caption over the image')},
-        {type: 'paragraph', content: text('Pick a background image from the section toolbar.')},
+        {type: 'paragraph', content: text('Pick a background image from Color in the dock.')},
       ],
     }),
   },
   {
     key: 'cta',
     name: 'Call to action',
-    description: 'A closing line and a button on an accent band',
-    layout: 'hero',
     build: () => ({
       type: 'section',
-      props: {layout: 'hero', background: 'accent'},
+      props: {layout: 'hero', background: 'inverted'},
       children: [
         {type: 'heading', props: {level: '2'}, content: text('Ready to try it?')},
+        {type: 'paragraph', content: text('Tell readers what happens next.')},
         {type: 'button', props: {name: 'Contact us', url: '', alignment: 'center'}},
       ],
     }),
   },
 ]
 
+function isEmptyParagraph(block: SectionBlockType | undefined) {
+  return block?.type === 'paragraph' && (block.content as any[]).every((c) => !c.text) && block.children.length === 0
+}
+
 /**
- * "+ Add section" control. Opens the template gallery and inserts the chosen
- * section after `afterBlockId`, or at the end of the document when omitted.
+ * Insert `template` as a top-level block at `index` (0 = before the first
+ * block, `topLevelBlocks.length` = after the last). An empty placeholder
+ * paragraph at that spot is replaced instead of being left behind. Returns the
+ * new section's id.
  */
-export function AddSectionButton({
-  editor,
-  afterBlockId,
-  compact,
-}: {
-  editor: SectionEditor
-  afterBlockId?: string
-  compact?: boolean
-}) {
-  const [open, setOpen] = useState(false)
-  const isMobile = useMobile()
-  const insert = (template: (typeof SECTION_TEMPLATES)[number]) => {
-    const blocks = editor.topLevelBlocks
-    const ref = afterBlockId ?? blocks[blocks.length - 1]?.id
-    if (!ref) return
-    const last = blocks[blocks.length - 1]
-    // Replace a trailing empty paragraph instead of leaving it stranded above the new section.
-    const replaceTrailing =
-      !afterBlockId &&
-      last?.type === 'paragraph' &&
-      (last.content as any[]).every((c) => !c.text) &&
-      !last.children.length
-    if (replaceTrailing) editor.replaceBlocks([last.id], [template.build()])
-    else editor.insertBlocks([template.build()], ref, 'after')
-    setOpen(false)
-  }
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className={cn(
-            'hm-section-add-button flex items-center gap-1.5 text-sm',
-            compact ? 'h-7 rounded-full px-3' : 'h-10 w-full justify-center rounded-md border border-dashed',
-          )}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          <Plus className="size-4" />
-          Add section
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        side={isMobile ? 'top' : 'bottom'}
-        align="center"
-        collisionPadding={{top: 8, bottom: isMobile ? 72 : 8}}
-        className="hm-section-popover max-h-[var(--radix-popover-content-available-height)] w-[min(94vw,34rem)] overflow-y-auto p-3 data-[state=closed]:animate-none data-[state=open]:animate-none"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <div className="text-muted-foreground mb-2 text-xs font-medium">Add a section</div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {SECTION_TEMPLATES.map((template) => (
-            <button
-              key={template.key}
-              type="button"
-              className="hover:bg-muted border-border hover:border-foreground/40 flex flex-col items-start gap-1.5 rounded-md border p-2 text-left"
-              onClick={() => insert(template)}
-            >
-              <LayoutThumb layout={template.layout} className="h-14 w-full" active />
-              <span className="text-sm font-medium">{template.name}</span>
-              <span className="text-muted-foreground text-xs leading-snug">{template.description}</span>
-            </button>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
+export function insertSectionTemplate(editor: SectionEditor, template: SectionTemplate, index: number): string {
+  const id = UniqueID.options.generateID()
+  const block = {...template.build(), id}
+  const blocks = editor.topLevelBlocks as SectionBlockType[]
+  const after = blocks[index - 1]
+  const before = blocks[index]
+  if (isEmptyParagraph(before)) editor.replaceBlocks([before!.id], [block])
+  else if (isEmptyParagraph(after) && !before) editor.replaceBlocks([after!.id], [block])
+  else if (before) editor.insertBlocks([block], before.id, 'before')
+  else if (after) editor.insertBlocks([block], after.id, 'after')
+  return id
 }

@@ -23,6 +23,8 @@
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^2.1.5",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^1.1.0",
     "@emotion/react": "^11.14.0",
+    "@fontsource/inter": "5.2.8",
+    "@fontsource/inter-tight": "5.2.7",
     "@mantine/core": "6.0.22",
     "@mantine/hooks": "6.0.22",
     "@mantine/utils": "6.0.22",

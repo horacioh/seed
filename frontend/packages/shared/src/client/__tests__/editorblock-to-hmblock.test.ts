@@ -1964,7 +1964,7 @@ describe('Section blocks', () => {
   })
 
   test('stores invalid values verbatim instead of rejecting them', () => {
-    const attributes = {layout: 'carousel', background: '#ff0000', padding: 'XL', contentWidth: '900px', focalX: 7}
+    const attributes = {layout: 'carousel', background: '#ff0000', padding: 'XXL', contentWidth: '900px', focalX: 7}
     const [node] = editorBlocksToHMBlockNodes(hmBlocksToEditorContent([sectionNode(attributes)]))
     expect(node!.block).toMatchObject({type: 'Section', attributes})
   })
@@ -1979,7 +1979,7 @@ describe('Section blocks', () => {
       normalizeSectionAttributes({
         layout: 'carousel',
         background: '#ff0000',
-        padding: 'XL',
+        padding: 'XXL',
         contentWidth: '900px',
         focalX: 7,
         focalY: 'x',

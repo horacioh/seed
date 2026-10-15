@@ -1050,7 +1050,7 @@ export const HM_SECTION_LAYOUTS = ['hero', 'split', 'features', 'fullBleed'] as 
 /** Theme colour tokens a Section background can use. The first entry is the default. */
 export const HM_SECTION_BACKGROUND_TOKENS = ['default', 'muted', 'accent', 'inverted'] as const
 /** Vertical padding presets for a Section. */
-export const HM_SECTION_PADDINGS = ['S', 'M', 'L'] as const
+export const HM_SECTION_PADDINGS = ['S', 'M', 'L', 'XL'] as const
 /** Content width presets for a Section. */
 export const HM_SECTION_CONTENT_WIDTHS = ['S', 'M', 'L', 'full'] as const
 

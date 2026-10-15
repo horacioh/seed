@@ -1,18 +1,31 @@
 /* Section blocks: the block's own content is just the frame (background and
- * editing controls), painted behind the section; its children are ordinary
+ * selection outline), painted behind the section; its children are ordinary
  * blocks laid out by the layout preset. Selectors key off the normalized
  * data-section-* attributes the frame renders, so invalid stored values fall
- * back to the defaults. */
+ * back to the defaults. The same rules style the editor, the reader and SSR. */
+
+:root {
+  --hm-section-heading-font: 'Inter Tight', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --hm-section-body-font: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --hm-section-ink: #16171a;
+  --hm-section-text: #55585f;
+  --hm-section-line: #e6e6e3;
+}
 
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) {
-  --section-pad: 3.5rem;
-  --section-width: 100%;
+  --section-pad: 112px;
+  --section-side: 64px;
+  --section-width: 1080px;
+  --section-heading: var(--hm-section-ink);
+  --section-body: var(--hm-section-text);
   position: relative;
   isolation: isolate;
-  padding: var(--section-pad) clamp(1rem, 4vw, 2.5rem);
+  padding: var(--section-pad) var(--section-side);
   margin-block: 0;
-  color: var(--foreground);
-  background: var(--background);
+  background: #fff;
+  color: var(--section-heading);
+  font-family: var(--hm-section-body-font);
+  --hm-breakout: 0px;
 }
 
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) > *:has(> [data-content-type='section']),
@@ -29,7 +42,6 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border-radius: inherit;
 }
 
 .hm-section-bg-image {
@@ -42,61 +54,75 @@
 
 /* Padding and content width presets. */
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-padding='S']) {
-  --section-pad: 1.75rem;
+  --section-pad: 48px;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-padding='L']) {
-  --section-pad: 6rem;
+  --section-pad: 144px;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-padding='XL']) {
+  --section-pad: 176px;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-width='S']) {
-  --section-width: 32rem;
+  --section-width: 560px;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-width='M']) {
-  --section-width: 44rem;
+  --section-width: 760px;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-width='L']) {
-  --section-width: 60rem;
+  --section-width: 960px;
+}
+@media (max-width: 660px) {
+  [data-node-type='blockNode']:has(> * > [data-content-type='section']) {
+    --section-pad: 72px;
+    --section-side: 22px;
+  }
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-padding='S']) {
+    --section-pad: 32px;
+  }
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-padding='L']) {
+    --section-pad: 96px;
+  }
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-padding='XL']) {
+    --section-pad: 120px;
+  }
 }
 
 /* Background tokens. */
+.hm-section-swatch[data-section-background='default'] {
+  background: #fff;
+}
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-background='muted']),
 .hm-section-swatch[data-section-background='muted'] {
-  background: var(--muted);
-  color: var(--foreground);
+  background: #eef2f6;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-background='accent']),
 .hm-section-swatch[data-section-background='accent'] {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background: #f3efe8;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-background='inverted']),
 .hm-section-swatch[data-section-background='inverted'] {
-  background: var(--foreground);
-  color: var(--background);
-}
-.hm-section-swatch[data-section-background='default'] {
-  background: var(--background);
-  color: var(--foreground);
+  --section-heading: #fff;
+  --section-body: #b9bcc3;
+  background: #16171a;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-background='image']) {
-  color: #fff;
-  background: oklch(0.25 0 0);
+  --section-heading: #fff;
+  --section-body: rgba(255, 255, 255, 0.84);
+  background: #2a2b2f;
 }
 [data-section-background='image'] > .hm-section-bg-image::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, oklch(0 0 0 / 0.55), oklch(0 0 0 / 0.15));
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.12));
 }
 
-[data-node-type='blockNode']:has(> * > [data-content-type='section']) :is(h1, h2, h3, h4, p, li) {
-  color: inherit;
-}
-
-/* Children container. */
+/* Children container: centered, capped at the content width. */
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) > [data-node-type='blockChildren'] {
   position: relative;
   z-index: 2;
   margin: 0 auto !important;
+  padding: 0 !important;
   max-width: var(--section-width);
   width: 100%;
 }
@@ -104,6 +130,54 @@
   > [data-node-type='blockChildren']
   [data-node-type='blockChildren'] {
   margin-left: 0;
+  padding-left: 0;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  > [data-node-type='blockChildren']
+  [data-node-type='blockNode'] {
+  margin: 0;
+  padding: 0;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  > [data-node-type='blockChildren']
+  [data-node-type='blockNode']
+  + [data-node-type='blockNode'] {
+  margin-top: 18px;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  > [data-node-type='blockChildren']
+  [data-node-type='blockNode']:has(> * > [data-content-type='button']) {
+  margin-top: 30px;
+}
+
+/* Type. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) [data-content-type='heading'] {
+  font-family: var(--hm-section-heading-font) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.025em;
+  color: var(--section-heading) !important;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.05;
+  margin: 0;
+  padding: 0;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  [data-content-type='heading']:is([data-level='3'], [data-level='4']) {
+  font-size: 21px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  :is(p, li, [data-content-type='paragraph'], .image-caption) {
+  font-family: var(--hm-section-body-font) !important;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--section-body) !important;
+  margin: 0;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) [data-content-type='heading'] *,
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) p * {
+  font-family: inherit;
 }
 
 /* hero (default): centered, large heading. */
@@ -113,27 +187,91 @@
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='hero'])
   > [data-node-type='blockChildren']
-  > [data-node-type='blockNode']
-  > [data-content-type='heading'] {
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  [data-content-type='heading'] {
+  max-width: 780px;
+  margin-inline: auto;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='hero'])
   > [data-node-type='blockChildren']
-  p {
-  font-size: 1.15em;
+  [data-content-type='heading'][data-level='1'] {
+  font-size: clamp(44px, 6vw, 68px);
+  line-height: 1.02;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='hero'])
+  > [data-node-type='blockChildren']
+  :is(p, [data-content-type='paragraph']) {
+  font-size: 20px;
+  line-height: 1.55;
+  max-width: 520px;
+  margin-inline: auto;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='hero'])
+  > [data-node-type='blockChildren']
+  [data-node-type='blockNode']:has(> * > [data-content-type='heading'])
+  + [data-node-type='blockNode'] {
+  margin-top: 22px;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='hero'])
+  [data-content-type='button']
+  button[data-slot='button'] {
+  align-self: center !important;
 }
 
-/* split: first child is the media column, the rest stack beside it. */
+/* Buttons: pill, 46px tall. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  [data-content-type='button']
+  button[data-slot='button'] {
+  height: 46px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--section-heading) !important;
+  color: #fff;
+  box-shadow: none;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  [data-content-type='button']
+  button[data-slot='button']
+  > span {
+  font-family: var(--hm-section-body-font) !important;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--section-surface-ink, #fff) !important;
+}
+[data-node-type='blockNode']:has(
+    > * > [data-content-type='section'] > :is([data-section-background='inverted'], [data-section-background='image'])
+  ) {
+  --section-surface-ink: #16171a;
+}
+@media (max-width: 660px) {
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'])
+    [data-content-type='button']
+    button[data-slot='button'] {
+    width: 100% !important;
+    align-self: stretch !important;
+  }
+}
+
+/* Images. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) [data-content-type='image'] .image {
+  border-radius: 18px;
+  overflow: hidden;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) [data-content-type='image'] img {
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.35);
+}
+
+/* split: first child is the media column, the rest are vertically centered beside it. */
 @media (min-width: 661px) {
   [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
     > [data-node-type='blockChildren'] {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-auto-rows: min-content;
-    column-gap: clamp(1.5rem, 4vw, 3.5rem);
-    align-content: center;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-rows: 1fr repeat(10, auto) 1fr;
+    column-gap: 72px;
   }
   [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
     > [data-node-type='blockChildren']
@@ -142,192 +280,91 @@
   }
   [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
     > [data-node-type='blockChildren']
+    > :nth-child(2) {
+    grid-row-start: 2;
+  }
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+    > [data-node-type='blockChildren']
     > :first-child {
     grid-column: 1;
-    grid-row: 1 / span 12;
+    grid-row: 1 / -1;
     align-self: center;
+    margin-top: 0;
   }
-
-  /* features: every child is an equal column. */
-  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
-    > [data-node-type='blockChildren'] {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 3vw, 2.5rem);
-    align-items: start;
-  }
-  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
     > [data-node-type='blockChildren']
-    > [data-node-type='blockNode'] {
+    > :nth-child(2) {
     margin-top: 0;
   }
 }
-[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
-  > [data-node-type='blockChildren']
-  img {
-  border-radius: 0.5rem;
+@media (max-width: 660px) {
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+    > [data-node-type='blockChildren']
+    > :first-child {
+    margin-bottom: 14px;
+  }
 }
 
-/* Media stays inside the section: no prose breakout, and a shadow tight enough
- * to fit within the section's horizontal padding. */
-[data-node-type='blockNode']:has(> * > [data-content-type='section']) {
-  --hm-breakout: 0px;
+/* features: every child is an equal white card. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
+  > [data-node-type='blockChildren'] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: stretch;
 }
-[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
   > [data-node-type='blockChildren']
-  [data-content-type='image']
-  img {
-  box-shadow:
-    0 1px 2px oklch(0 0 0 / 0.06),
-    0 6px 14px -6px oklch(0 0 0 / 0.22);
+  > [data-node-type='blockNode'] {
+  --section-heading: var(--hm-section-ink);
+  --section-body: var(--hm-section-text);
+  margin: 0 !important;
+  padding: 28px !important;
+  border-radius: 18px;
+  background: #fff;
+  text-align: left;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features']):has(
+    > * > [data-content-type='section'] > [data-section-background='default']
+  )
+  > [data-node-type='blockChildren']
+  > [data-node-type='blockNode'] {
+  border: 1px solid var(--hm-section-line);
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
+  > [data-node-type='blockChildren']
+  > [data-node-type='blockNode']
+  > [data-node-type='blockChildren'] {
+  margin-top: 10px;
+}
+@media (max-width: 660px) {
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
+    > [data-node-type='blockChildren'] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
 }
 
 /* fullBleed: tall band, children overlaid at the bottom-left. */
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='fullBleed']) {
-  min-height: clamp(18rem, 55vh, 34rem);
+  min-height: clamp(360px, 62vh, 620px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='fullBleed'])
   > [data-node-type='blockChildren']
-  > [data-node-type='blockNode']
-  > [data-content-type='heading'] {
-  font-size: clamp(1.9rem, 4vw, 2.75rem);
-  line-height: 1.12;
+  [data-content-type='heading'] {
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.04;
+  max-width: 720px;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='fullBleed'])
+  > [data-node-type='blockChildren']
+  p {
+  max-width: 520px;
 }
 
-/* Editing controls. */
-.hm-section-toolbar,
-.hm-section-add {
-  pointer-events: auto;
-  font-family: inherit;
-  color: var(--popover-foreground);
-  text-align: left;
-}
-.hm-section-toolbar {
-  position: absolute;
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  gap: 0.125rem;
-  padding: 0.25rem;
-  background: var(--popover);
-  border: 1px solid var(--border);
-  box-shadow: 0 6px 20px -8px oklch(0 0 0 / 0.25);
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 120ms ease,
-    visibility 120ms;
-}
-.hm-section-toolbar--bar {
-  top: 0.75rem;
-  left: 0.75rem;
-  border-radius: 0.6rem;
-}
-.hm-section-toolbar--strip {
-  top: 0;
-  left: 0;
-  right: 0;
-  border-width: 0 0 1px;
-  border-radius: 0;
-  padding-inline: 0.75rem;
-  box-shadow: none;
-}
-.hm-section-toolbar--rail {
-  top: 0.75rem;
-  right: 0.75rem;
-  flex-direction: column;
-  border-radius: 0.6rem;
-}
-.hm-section-toolbar--mobile {
-  position: fixed;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: max(0.5rem, env(safe-area-inset-bottom));
-  z-index: 60;
-  border-radius: 0.75rem;
-  overflow-x: auto;
-  opacity: 1;
-  visibility: visible;
-  justify-content: space-between;
-}
-.hm-section-tool:hover:not(:disabled) {
-  background: var(--muted);
-}
-.hm-section-tool:focus-visible,
-.hm-section-add-button:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 1px;
-}
-
-.hm-section-add {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  z-index: 31;
-  transform: translate(-50%, 50%);
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 120ms ease,
-    visibility 120ms;
-}
-.hm-section-add-button {
-  background: var(--popover);
-  color: var(--popover-foreground);
-  border: 1px solid var(--border);
-}
-.hm-section-add-button:hover {
-  border-color: var(--foreground);
-}
-
-[data-node-type='blockNode']:has(> * > [data-content-type='section']):hover
-  > *
-  > [data-content-type='section']
-  > .hm-section-frame
-  > :is(.hm-section-toolbar, .hm-section-add),
-.hm-section-frame[data-section-selected] > :is(.hm-section-toolbar, .hm-section-add) {
-  opacity: 1;
-  visibility: visible;
-}
-.hm-section-frame[data-section-selected] {
-  outline: 2px solid var(--ring);
-  outline-offset: -2px;
-}
-[data-node-type='blockNode']:has(> * > [data-content-type='section']):hover
-  > *
-  > [data-content-type='section']
-  > .hm-section-frame:not([data-section-selected]) {
-  outline: 1px dashed color-mix(in oklch, currentColor 45%, transparent);
-  outline-offset: -1px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hm-section-toolbar,
-  .hm-section-add {
-    transition: none;
-  }
-}
-
-/* Page mode: the draft is shown as the published page, so sections run edge to edge
- * of the content column and the trailing "Add section" control sits below them. */
-.page-mode-add-section {
-  display: flex;
-  justify-content: center;
-  padding-block: 1.5rem 4rem;
-}
-.page-mode-add-section .hm-section-add-button {
-  max-width: 28rem;
-  color: var(--muted-foreground);
-}
-
-/* Editor highlights follow the section's text colour, so they stay readable on dark backgrounds. */
-[data-node-type='blockNode']:has(> * > [data-content-type='section'])
-  :is(.bn-block-highlight-focus, .bn-range-highlight-focus, .bn-block-hover-highlight) {
-  background-color: color-mix(in oklch, currentColor 12%, transparent);
-}
 /* The heading-group highlight follows the cursor even when the editor is not
  * focused (and in read-only views), so inside sections it only shows while editing. */
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) .selection-in-section::before {
@@ -335,7 +372,7 @@
   margin: 0;
   background-color: transparent;
 }
-.ProseMirror-focused[contenteditable='true']
+.ProseMirror-focused[contenteditable='true']:not(.hm-page-surface *)
   [data-node-type='blockNode']:has(> * > [data-content-type='section'])
   .selection-in-section::before {
   background-color: color-mix(in oklch, currentColor 6%, transparent);

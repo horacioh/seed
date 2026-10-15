@@ -49,7 +49,12 @@ import type {
 import {findDraftForPath, isDraftPlaceholderPath, useDraftsForAccountSafe} from '@shm/shared/draft-breadcrumb-context'
 import {parseExploreQuery, type HMExploreResultType} from '@shm/shared/explore'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
-import {useIsPageModeActive} from '@shm/shared/page-mode'
+import {
+  PageModeDockContext,
+  useIsPageModeActive,
+  usePublishPageModeSurface,
+  type PageModeDockSlots,
+} from '@shm/shared/page-mode'
 import type {DocumentMachineEvent, TransientResourceError} from '@shm/shared/models/document-machine'
 import {
   useAccount,
@@ -547,6 +552,9 @@ export function getCommentsPanelTarget(
 }
 
 /** Selects the action controls shown for document content. */
+const PAGE_LAYOUT_WRAPPER_PROPS: React.HTMLAttributes<HTMLDivElement> = {className: 'hm-page-layout flex w-full flex-1'}
+const PAGE_LAYOUT_MAIN_PROPS: React.HTMLAttributes<HTMLDivElement> = {className: 'w-full !px-0 !pt-0'}
+
 export function getDocumentContentAction({
   activeView,
   isEditing,
@@ -559,7 +567,7 @@ export function getDocumentContentAction({
   activeView: ActiveView
   isEditing: boolean
   hasDraft: boolean
-  editingFloatingActions?: (props: {menuItems: MenuItemType[]}) => ReactNode
+  editingFloatingActions?: (props: {menuItems: MenuItemType[]; dock?: boolean}) => ReactNode
   draftActions?: (props: {menuItems: MenuItemType[]}) => ReactNode
   actionButtons: ReactNode
   allMenuItems: MenuItemType[]
@@ -926,7 +934,7 @@ export interface ResourcePageProps {
   /** Extra components to render inside the DocumentMachineProvider (e.g. draft content loader). */
   machineExtras?: ReactNode
   /** Render prop for floating overlay when editing. Receives existing menu items so they can be merged. */
-  editingFloatingActions?: (props: {menuItems: MenuItemType[]}) => ReactNode
+  editingFloatingActions?: (props: {menuItems: MenuItemType[]; dock?: boolean}) => ReactNode
   /** Render prop for floating overlay when a draft exists but not actively editing. Shown when a draft exists and isEditing is false. */
   draftActions?: (props: {menuItems: MenuItemType[]}) => ReactNode
   /** Signing account ID for draft saving (desktop only). Flows into machine context. */
@@ -1895,7 +1903,7 @@ function DocumentBody({
   /** Whether the current user can edit this document */
   canEdit?: boolean
   /** Render prop for floating overlay when editing */
-  editingFloatingActions?: (props: {menuItems: MenuItemType[]}) => ReactNode
+  editingFloatingActions?: (props: {menuItems: MenuItemType[]; dock?: boolean}) => ReactNode
   /** Render prop for floating overlay when a draft exists but not actively editing */
   draftActions?: (props: {menuItems: MenuItemType[]}) => ReactNode
   /** Signing account ID for draft saving (desktop only) */
@@ -2130,7 +2138,14 @@ function DocumentBody({
 
   // Explore searches the whole space rather than presenting a document, and
   // Page mode shows the draft as readers will see it, so both drop the document's chrome.
-  const showDocumentChrome = activeView !== 'explore' && !pageModeActive
+  const documentHasSections = useMemo(
+    () => !!document.content?.some((node) => node.block?.type === 'Section'),
+    [document.content],
+  )
+  // A published page built from Sections reads full width without the document's chrome too.
+  const pageLayout = pageModeActive || (!isEditing && documentHasSections)
+  const showDocumentChrome = activeView !== 'explore' && !pageLayout
+  usePublishPageModeSurface(pageModeActive)
 
   // Extract blockRef from route for scroll-to-block and highlighting
   const routeBlockRef = 'id' in route && typeof route.id === 'object' ? route.id.blockRef : null
@@ -2389,11 +2404,13 @@ function DocumentBody({
   // Mobile panel open state derived from URL panel route
   const mobilePanelOpen = !!panelKey
 
-  const {showSidebars, showCollapsed, sidebarProps, mainContentProps, elementRef, wrapperProps, contentMaxWidth} =
-    useDocumentLayout({
-      contentWidth: metadata?.contentWidth,
-      showSidebars: !isHomeDoc && !pageModeActive && metadata?.showOutline !== false && activeView === 'content',
-    })
+  const documentLayout = useDocumentLayout({
+    contentWidth: metadata?.contentWidth,
+    showSidebars: !isHomeDoc && !pageLayout && metadata?.showOutline !== false && activeView === 'content',
+  })
+  const {showSidebars, showCollapsed, sidebarProps, elementRef, contentMaxWidth} = documentLayout
+  const wrapperProps = pageLayout ? PAGE_LAYOUT_WRAPPER_PROPS : documentLayout.wrapperProps
+  const mainContentProps = pageLayout ? PAGE_LAYOUT_MAIN_PROPS : documentLayout.mainContentProps
 
   // Fetch author metadata for document header and subscribe for discovery
   const accountsMetadata = useAccountsMetadata(document.authors || [])
@@ -2815,12 +2832,18 @@ function DocumentBody({
       </>
     ) : null
   const floatingButtonsAction = activeView === 'content' && !documentContentAction ? floatingButtons : null
+  const pageModeDockSlots: PageModeDockSlots = {
+    publish:
+      pageModeActive && draftOverlayAllowed && editingFloatingActions
+        ? editingFloatingActions({menuItems: allMenuItems, dock: true})
+        : undefined,
+  }
 
   // The bar always states where you are, so a home document is its own single crumb.
   const spaceBreadcrumbs = breadcrumbs ?? [{id: hmId(docId.uid, {latest: true}), metadata}]
   const topBarBreadcrumbs: BreadcrumbEntry[] =
     activeView === 'explore' ? [...spaceBreadcrumbs, {label: 'Explore'}] : spaceBreadcrumbs
-  const documentTopBar = (
+  const documentTopBar = pageModeActive ? null : (
     <DocumentTopBar
       breadcrumbs={topBarBreadcrumbs}
       status={
@@ -2838,40 +2861,82 @@ function DocumentBody({
 
   // Main page content (used in both mobile and desktop layouts)
   const mainPageContent = (
-    <div
-      className={cn(
-        'flex flex-col',
-        pageFooter &&
-          'min-h-[calc(100dvh-var(--site-header-live-h,var(--site-header-default-h,60px))-var(--hm-host-banner-h,0px))]',
-        !pageFooter && 'min-h-full',
-      )}
-    >
-      {documentConversionDialog}
-      <DocumentCover
-        cover={metadata?.cover}
-        onRemove={canEditCurrentRoute && metadata?.cover ? removeCover : undefined}
-        onChangeCover={canEditCurrentRoute && metadata?.cover && fileUpload ? changeCover : undefined}
-      />
-      {isHomeDoc && canEditCurrentRoute && activeView === 'content' ? (
-        <HomeDocumentMetadataControls metadata={metadata as any} fileUpload={fileUpload} />
-      ) : null}
+    <PageModeDockContext.Provider value={pageModeDockSlots}>
+      <div
+        className={cn(
+          'flex flex-col',
+          pageFooter &&
+            'min-h-[calc(100dvh-var(--site-header-live-h,var(--site-header-default-h,60px))-var(--hm-host-banner-h,0px))]',
+          !pageFooter && 'min-h-full',
+        )}
+      >
+        {documentConversionDialog}
+        <DocumentCover
+          cover={metadata?.cover}
+          onRemove={canEditCurrentRoute && metadata?.cover ? removeCover : undefined}
+          onChangeCover={canEditCurrentRoute && metadata?.cover && fileUpload ? changeCover : undefined}
+        />
+        {isHomeDoc && canEditCurrentRoute && activeView === 'content' ? (
+          <HomeDocumentMetadataControls metadata={metadata as any} fileUpload={fileUpload} />
+        ) : null}
 
-      {!isMobile ? (
-        <div
-          {...wrapperProps}
-          className={cn(
-            wrapperProps.className,
-            'flex-none',
-            !showSidebars && 'justify-center',
-            isCollection && '!block w-full',
-          )}
-          style={isCollection ? {...wrapperProps.style, maxWidth: undefined} : wrapperProps.style}
-        >
-          {showSidebars && !isCollection && <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />}
+        {!isMobile ? (
           <div
-            {...mainContentProps}
-            className={cn(mainContentProps.className, 'flex flex-col', isCollection && '!w-full !max-w-none')}
-            style={isCollection ? {...mainContentProps.style, maxWidth: undefined} : mainContentProps.style}
+            {...wrapperProps}
+            className={cn(
+              wrapperProps.className,
+              'flex-none',
+              !showSidebars && 'justify-center',
+              isCollection && '!block w-full',
+            )}
+            style={isCollection ? {...wrapperProps.style, maxWidth: undefined} : wrapperProps.style}
+          >
+            {showSidebars && !isCollection && (
+              <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />
+            )}
+            <div
+              {...mainContentProps}
+              className={cn(mainContentProps.className, 'flex flex-col', isCollection && '!w-full !max-w-none')}
+              style={isCollection ? {...mainContentProps.style, maxWidth: undefined} : mainContentProps.style}
+            >
+              {showMembersFacepile && (
+                <div className="pt-4">
+                  <MembersFacepile members={siteMembers.members} siteId={siteId} />
+                </div>
+              )}
+              {!isHomeDoc &&
+                !pageLayout &&
+                (canEditCurrentRoute ? (
+                  <EditableDocumentHeader
+                    docId={docId}
+                    docMetadata={metadata}
+                    authors={authorPayloads}
+                    updateTime={document.updateTime}
+                    visibility={headerVisibility}
+                    version={document.version}
+                    fileUpload={fileUpload}
+                    flushByline={isCollection}
+                  />
+                ) : (
+                  <DocumentHeader
+                    docId={docId}
+                    docMetadata={metadata}
+                    authors={authorPayloads}
+                    updateTime={document.updateTime}
+                    visibility={headerVisibility}
+                    version={document.version}
+                    flushByline={isCollection}
+                  />
+                ))}
+            </div>
+            {showSidebars && !isCollection && (
+              <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />
+            )}
+          </div>
+        ) : (
+          <div
+            className={cn('mx-auto flex w-full flex-col px-4')}
+            style={{maxWidth: isCollection ? undefined : contentMaxWidth}}
           >
             {showMembersFacepile && (
               <div className="pt-4">
@@ -2879,6 +2944,7 @@ function DocumentBody({
               </div>
             )}
             {!isHomeDoc &&
+              !pageLayout &&
               (canEditCurrentRoute ? (
                 <EditableDocumentHeader
                   docId={docId}
@@ -2902,163 +2968,128 @@ function DocumentBody({
                 />
               ))}
           </div>
-          {showSidebars && !isCollection && <div {...sidebarProps} className={cn(sidebarProps.className, '!h-auto')} />}
-        </div>
-      ) : (
-        <div
-          className={cn('mx-auto flex w-full flex-col px-4')}
-          style={{maxWidth: isCollection ? undefined : contentMaxWidth}}
-        >
-          {showMembersFacepile && (
-            <div className="pt-4">
-              <MembersFacepile members={siteMembers.members} siteId={siteId} />
-            </div>
-          )}
-          {!isHomeDoc &&
-            (canEditCurrentRoute ? (
-              <EditableDocumentHeader
-                docId={docId}
-                docMetadata={metadata}
-                authors={authorPayloads}
-                updateTime={document.updateTime}
-                visibility={headerVisibility}
-                version={document.version}
-                fileUpload={fileUpload}
-                flushByline={isCollection}
-              />
-            ) : (
-              <DocumentHeader
-                docId={docId}
-                docMetadata={metadata}
-                authors={authorPayloads}
-                updateTime={document.updateTime}
-                visibility={headerVisibility}
-                version={document.version}
-                flushByline={isCollection}
-              />
-            ))}
-        </div>
-      )}
+        )}
 
-      {/* DocumentTools - scrolls with the page; the border separates document
+        {/* DocumentTools - scrolls with the page; the border separates document
           identity above from document body below. Hidden when showActivity is false. */}
-      {showActivity && showDocumentChrome && (
-        <div className="px-5 py-1">
-          <DocumentTools
-            id={docId}
-            activeTab={
-              activeView === 'activity' &&
-              activityFilterToSlug(route.key === 'activity' ? route.filterEventType : undefined) === 'citations'
-                ? 'citations'
-                : activeView === 'activity' ||
-                    activeView === 'directory' ||
-                    activeView === 'site-profile' ||
-                    activeView === 'all-documents'
+        {showActivity && showDocumentChrome && (
+          <div className="px-5 py-1">
+            <DocumentTools
+              id={docId}
+              activeTab={
+                activeView === 'activity' &&
+                activityFilterToSlug(route.key === 'activity' ? route.filterEventType : undefined) === 'citations'
+                  ? 'citations'
+                  : activeView === 'activity' ||
+                      activeView === 'directory' ||
+                      activeView === 'site-profile' ||
+                      activeView === 'all-documents'
+                    ? undefined
+                    : activeView
+              }
+              currentPanel={panelRoute}
+              existingDraft={isEditing || !shouldUseDraftOverlay ? undefined : existingDraft}
+              commentsCount={interactionSummary.data?.comments || 0}
+              citationsCount={interactionSummary.data?.citations || 0}
+              collabsCount={peopleCount}
+              metadataCount={countCustomMetadataFields(metadata)}
+              schemaCid={schemaDefinitionCid(metadata)}
+              layoutProps={
+                isMobile || isCollection
                   ? undefined
-                  : activeView
-            }
-            currentPanel={panelRoute}
-            existingDraft={isEditing || !shouldUseDraftOverlay ? undefined : existingDraft}
-            commentsCount={interactionSummary.data?.comments || 0}
-            citationsCount={interactionSummary.data?.citations || 0}
-            collabsCount={peopleCount}
-            metadataCount={countCustomMetadataFields(metadata)}
-            schemaCid={schemaDefinitionCid(metadata)}
-            layoutProps={
-              isMobile || isCollection
-                ? undefined
-                : {
-                    wrapperProps,
-                    sidebarProps,
-                    mainContentProps,
-                    showSidebars,
-                  }
-            }
-            activeTabAction={
-              activeView !== 'content' &&
-              activeView !== 'site-profile' &&
-              activeView !== 'all-documents' &&
-              activeView !== 'schema' ? (
-                <OpenInPanelButton
-                  id={docId}
-                  panelRoute={
-                    route.key === activeView
-                      ? extractPanelRoute(route)
-                      : {
-                          key: activeView as Exclude<
-                            ActiveView,
-                            'content' | 'site-profile' | 'all-documents' | 'explore' | 'schema'
-                          >,
-                          id: docId,
-                        }
-                  }
-                />
-              ) : null
-            }
-          />
-        </div>
-      )}
+                  : {
+                      wrapperProps,
+                      sidebarProps,
+                      mainContentProps,
+                      showSidebars,
+                    }
+              }
+              activeTabAction={
+                activeView !== 'content' &&
+                activeView !== 'site-profile' &&
+                activeView !== 'all-documents' &&
+                activeView !== 'schema' ? (
+                  <OpenInPanelButton
+                    id={docId}
+                    panelRoute={
+                      route.key === activeView
+                        ? extractPanelRoute(route)
+                        : {
+                            key: activeView as Exclude<
+                              ActiveView,
+                              'content' | 'site-profile' | 'all-documents' | 'explore' | 'schema'
+                            >,
+                            id: docId,
+                          }
+                    }
+                  />
+                ) : null
+              }
+            />
+          </div>
+        )}
 
-      {/* Main content based on activeView */}
-      <div className={cn('flex-1', activeView !== 'content' && 'pb-60', isMobile && 'px-4')}>
-        <DocumentViewContent
-          activeView={activeView}
-          collection={
-            isCollection ? (
-              <DocumentCollection docId={docId} queryBlock={collectionQueryBlock} canEdit={canEditCurrentRoute} />
-            ) : undefined
-          }
-        >
-          <MainContent
-            docId={docId}
-            resourceId={'id' in route && typeof route.id === 'object' ? route.id : docId}
-            document={document}
+        {/* Main content based on activeView */}
+        <div className={cn('flex-1', activeView !== 'content' && 'pb-60', isMobile && 'px-4')}>
+          <DocumentViewContent
             activeView={activeView}
-            contentMaxWidth={contentMaxWidth}
-            wrapperProps={wrapperProps}
-            sidebarProps={sidebarProps}
-            mainContentProps={mainContentProps}
-            showSidebars={showSidebars}
-            showCollapsed={showCollapsed}
-            discussionsParams={discussionsParams}
-            suppressCommentEditor={suppressMainCommentEditor}
-            activityFilterEventType={route.key === 'activity' ? route.filterEventType : undefined}
-            onActivityFilterChange={handleMainActivityFilterChange}
-            blockCitations={blockCitations}
-            citationFragmentHighlights={citationFragmentHighlights}
-            onCitationFragmentClick={handleCitationFragmentClick}
-            onBlockCitationClick={handleBlockCitationClick}
-            onBlockCommentClick={handleBlockCommentClick}
-            onBlockSelect={handleBlockSelect}
-            onTextSelection={handleTextSelection}
-            isUnpublishedDraft={isUnpublishedDraft}
-            isBlockInPublishedVersion={isBlockInPublishedVersion}
-            CommentEditor={CommentEditor}
-            directory={directory.data}
-            siteUrl={siteUrl}
-            inlineCards={inlineCards}
-            inlineInsert={inlineInsert}
-            DocumentContentComponent={DocumentContentComponent}
-            onEditorReady={handleEditorReadyWrapped}
-            existingDraftContent={effectiveContent}
-            existingDraftCursorPosition={existingDraftCursorPosition}
-            ssrContentHTML={ssrContentHTML}
-            perspectiveAccountUid={perspectiveAccountUid}
-            linkExtensionOptions={linkExtensionOptions}
-            fileUpload={fileUpload}
-            draftVersionEntry={draftVersionEntry}
-          />
-        </DocumentViewContent>
-        {citationFragmentClick ? (
-          <CitationFragmentPopover
-            click={citationFragmentClick}
-            onClose={() => setCitationFragmentClick(null)}
-            onCitationSelect={handleCitationFragmentSelect}
-          />
-        ) : null}
+            collection={
+              isCollection ? (
+                <DocumentCollection docId={docId} queryBlock={collectionQueryBlock} canEdit={canEditCurrentRoute} />
+              ) : undefined
+            }
+          >
+            <MainContent
+              docId={docId}
+              resourceId={'id' in route && typeof route.id === 'object' ? route.id : docId}
+              document={document}
+              activeView={activeView}
+              contentMaxWidth={contentMaxWidth}
+              wrapperProps={wrapperProps}
+              sidebarProps={sidebarProps}
+              mainContentProps={mainContentProps}
+              showSidebars={showSidebars}
+              showCollapsed={showCollapsed}
+              discussionsParams={discussionsParams}
+              suppressCommentEditor={suppressMainCommentEditor}
+              activityFilterEventType={route.key === 'activity' ? route.filterEventType : undefined}
+              onActivityFilterChange={handleMainActivityFilterChange}
+              blockCitations={blockCitations}
+              citationFragmentHighlights={citationFragmentHighlights}
+              onCitationFragmentClick={handleCitationFragmentClick}
+              onBlockCitationClick={handleBlockCitationClick}
+              onBlockCommentClick={handleBlockCommentClick}
+              onBlockSelect={handleBlockSelect}
+              onTextSelection={handleTextSelection}
+              isUnpublishedDraft={isUnpublishedDraft}
+              isBlockInPublishedVersion={isBlockInPublishedVersion}
+              CommentEditor={CommentEditor}
+              directory={directory.data}
+              siteUrl={siteUrl}
+              inlineCards={inlineCards}
+              inlineInsert={inlineInsert}
+              DocumentContentComponent={DocumentContentComponent}
+              onEditorReady={handleEditorReadyWrapped}
+              existingDraftContent={effectiveContent}
+              existingDraftCursorPosition={existingDraftCursorPosition}
+              ssrContentHTML={ssrContentHTML}
+              perspectiveAccountUid={perspectiveAccountUid}
+              linkExtensionOptions={linkExtensionOptions}
+              fileUpload={fileUpload}
+              draftVersionEntry={draftVersionEntry}
+            />
+          </DocumentViewContent>
+          {citationFragmentClick ? (
+            <CitationFragmentPopover
+              click={citationFragmentClick}
+              onClose={() => setCitationFragmentClick(null)}
+              onCitationSelect={handleCitationFragmentSelect}
+            />
+          ) : null}
+        </div>
+        {pageFooter ? <div className="mt-auto">{pageFooter}</div> : null}
       </div>
-      {pageFooter ? <div className="mt-auto">{pageFooter}</div> : null}
-    </div>
+    </PageModeDockContext.Provider>
   )
 
   // Close panel handler

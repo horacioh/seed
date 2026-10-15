@@ -57,7 +57,7 @@ import {useBlockHighlight} from './use-block-highlight'
 import {useReadOnlyClickToEdit} from './use-readonly-click-to-edit'
 import {selectAllEditorContent} from './utils'
 import {useIsPageModeActive} from '@shm/shared/page-mode'
-import {AddSectionButton} from './section-block'
+import {PageModeSurface} from './page-mode-surface'
 
 export type {DocumentContentProps}
 
@@ -776,16 +776,12 @@ export function DocumentEditor({
           />
           <FullBlockSelectionObserver editor={editor} onBlocksFullSelected={onBlocksFullSelected} />
         </BlockNoteView>
-        {pageMode ? (
-          <div className="page-mode-add-section">
-            <AddSectionButton editor={editor} />
-          </div>
-        ) : null}
+        {pageMode ? <PageModeSurface editor={editor} /> : null}
 
         {/* Click-to-edit affordance below the content. Only for users who can
             edit — for readers it would add 500px of dead space that the SSR
             HTML doesn't have, shifting everything below it on hydration. */}
-        {canEdit && (
+        {canEdit && !pageMode && (
           <button
             type="button"
             aria-label="Focus editor at end"

@@ -1,4 +1,4 @@
-import {useSyncExternalStore} from 'react'
+import {createContext, useEffect, useSyncExternalStore, type ReactNode} from 'react'
 import {useUniversalAppContext} from './routing'
 
 const STORAGE_KEY = 'seed.pageMode'
@@ -51,3 +51,52 @@ export function useIsPageModeActive(isEditing: boolean): boolean {
   const preferred = usePageModePreference()
   return !!experiments?.pageMode && preferred && isEditing
 }
+
+function createFlagStore() {
+  let value = false
+  const subs = new Set<() => void>()
+  return {
+    set(next: boolean) {
+      if (value === next) return
+      value = next
+      subs.forEach((listener) => listener())
+    },
+    subscribe(listener: () => void) {
+      subs.add(listener)
+      return () => {
+        subs.delete(listener)
+      }
+    },
+    get: () => value,
+  }
+}
+
+const surface = createFlagStore()
+
+/**
+ * Report from the document page whether Page mode is currently on screen, so
+ * app chrome outside the page (the desktop sidebar) can step aside.
+ */
+export function usePublishPageModeSurface(active: boolean) {
+  useEffect(() => {
+    surface.set(active)
+    return () => surface.set(false)
+  }, [active])
+}
+
+/** Whether a document page is currently showing Page mode. */
+export function usePageModeSurface(): boolean {
+  return useSyncExternalStore(surface.subscribe, surface.get, () => false)
+}
+
+/**
+ * App-provided controls for the Page mode dock. The document page fills this
+ * with the app's existing publish flow; the editor renders it inside the dock.
+ */
+export type PageModeDockSlots = {
+  /** The app's Publish control, styled for the dock. */
+  publish?: ReactNode
+}
+
+/** Context that carries {@link PageModeDockSlots} from the page to the editor. */
+export const PageModeDockContext = createContext<PageModeDockSlots>({})

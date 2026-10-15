@@ -520,10 +520,11 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
 
   const editingFloatingActions =
     effectiveCanEdit && showPublishToolbar
-      ? ({menuItems}: {menuItems: any[]}) => (
+      ? ({menuItems, dock}: {menuItems: any[]; dock?: boolean}) => (
           <EditingDocToolsRight
             docId={docId}
             existingMenuItems={menuItems}
+            dock={dock}
             beforePublish={
               <WebDocumentCreateButton
                 locationId={docId}
