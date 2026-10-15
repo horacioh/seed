@@ -390,6 +390,60 @@
   [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='fullBleed']) {
   min-height: 760px;
 }
+/* Previews always show the desktop split, whatever the viewport. */
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-rows: 1fr repeat(10, auto) 1fr;
+  column-gap: 72px;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > * {
+  grid-column: 2;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > :nth-child(2) {
+  grid-row: 2;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > :nth-child(3) {
+  grid-row: 3;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > :nth-child(4) {
+  grid-row: 4;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > :nth-child(5) {
+  grid-row: 5;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > :nth-child(6) {
+  grid-row: 6;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  > [data-node-type='blockChildren']
+  > :first-child {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: center;
+  margin: 0;
+}
 .hm-template-photo {
   background: linear-gradient(140deg, #c7d2de 0%, #8fa1b6 55%, #5d6f86 100%);
 }

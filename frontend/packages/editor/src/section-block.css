@@ -442,3 +442,43 @@
   .selection-in-section::before {
   background-color: color-mix(in oklch, currentColor 6%, transparent);
 }
+
+/* Section images always fill their column; the free-form resize width does not apply here. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) [data-content-type='image'] .image {
+  width: 100% !important;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  .image-caption[contenteditable='false']:is(:empty, :has(> :only-child:empty)) {
+  display: none;
+}
+
+/* Split: buttons read as a text link beside the image. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  [data-content-type='button']
+  button[data-slot='button'] {
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent !important;
+  width: auto !important;
+  align-self: flex-start !important;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  [data-content-type='button']
+  button[data-slot='button']
+  > span {
+  color: var(--section-heading) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1.5px;
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='split'])
+  [data-content-type='button']
+  button[data-slot='button']
+  > span::after {
+  content: ' \2192';
+  display: inline-block;
+  margin-left: 6px;
+  text-decoration: none;
+}
