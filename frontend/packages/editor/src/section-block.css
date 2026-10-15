@@ -175,6 +175,16 @@
   color: var(--section-body) !important;
   margin: 0;
 }
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  [data-content-type='heading']
+  :is(h1, h2, h3, h4, h5, h6) {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  margin: 0 !important;
+}
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) [data-content-type='heading'] *,
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) p * {
   font-family: inherit;

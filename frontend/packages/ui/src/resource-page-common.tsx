@@ -52,6 +52,7 @@ import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
 import {
   PageModeDockContext,
   useIsPageModeActive,
+  usePageModeSurface,
   usePublishPageModeSurface,
   type PageModeDockSlots,
 } from '@shm/shared/page-mode'
@@ -1652,6 +1653,7 @@ export function PageShell({
   const media = useMedia()
   const isMobile = media.xs && !IS_DESKTOP
   const navigate = useNavigate()
+  const pageModeSurface = usePageModeSurface()
   const [isFileBrowserOpen, setIsFileBrowserOpen] = useState(false)
   const itemsForHeader = liveNavigationItems ?? headerData.items
 
@@ -1669,21 +1671,23 @@ export function PageShell({
         isMobile ? 'min-h-dvh' : 'h-dvh',
       )}
     >
-      <SiteHeader
-        siteHomeId={siteHomeId}
-        docId={docId}
-        items={itemsForHeader}
-        homeNavigationItems={headerData.homeNavigationItems}
-        directoryItems={headerData.directoryItems}
-        isCenterLayout={headerData.isCenterLayout}
-        document={document}
-        siteHomeDocument={headerData.siteHomeDocument}
-        isMainFeedVisible={isMainFeedVisible}
-        notifyServiceHost={NOTIFY_SERVICE_HOST}
-        rightActions={rightActions}
-        editNavPane={editNavPanePortalRef ? undefined : editNavPane}
-        editNavPanePortalRef={editNavPanePortalRef}
-      />
+      {pageModeSurface ? null : (
+        <SiteHeader
+          siteHomeId={siteHomeId}
+          docId={docId}
+          items={itemsForHeader}
+          homeNavigationItems={headerData.homeNavigationItems}
+          directoryItems={headerData.directoryItems}
+          isCenterLayout={headerData.isCenterLayout}
+          document={document}
+          siteHomeDocument={headerData.siteHomeDocument}
+          isMainFeedVisible={isMainFeedVisible}
+          notifyServiceHost={NOTIFY_SERVICE_HOST}
+          rightActions={rightActions}
+          editNavPane={editNavPanePortalRef ? undefined : editNavPane}
+          editNavPanePortalRef={editNavPanePortalRef}
+        />
+      )}
       <TransientResourceBanner error={transientResourceError ?? null} />
       <SiteFileBrowserLayout
         siteId={hmId(siteHomeId.uid)}
@@ -1691,6 +1695,7 @@ export function PageShell({
         siteName={getMetadataName(headerData.siteHomeDocument?.metadata) || 'Space documents'}
         mobileOpen={isFileBrowserOpen}
         onMobileOpenChange={setIsFileBrowserOpen}
+        hidden={pageModeSurface}
         onPrefetch={onPrefetchDocument}
         createMenuItem={fileBrowserCreateMenuItem}
         onIncludeDocument={fileBrowserOnIncludeDocument}
@@ -2871,12 +2876,14 @@ function DocumentBody({
         )}
       >
         {documentConversionDialog}
-        <DocumentCover
-          cover={metadata?.cover}
-          onRemove={canEditCurrentRoute && metadata?.cover ? removeCover : undefined}
-          onChangeCover={canEditCurrentRoute && metadata?.cover && fileUpload ? changeCover : undefined}
-        />
-        {isHomeDoc && canEditCurrentRoute && activeView === 'content' ? (
+        {pageLayout ? null : (
+          <DocumentCover
+            cover={metadata?.cover}
+            onRemove={canEditCurrentRoute && metadata?.cover ? removeCover : undefined}
+            onChangeCover={canEditCurrentRoute && metadata?.cover && fileUpload ? changeCover : undefined}
+          />
+        )}
+        {!pageLayout && isHomeDoc && canEditCurrentRoute && activeView === 'content' ? (
           <HomeDocumentMetadataControls metadata={metadata as any} fileUpload={fileUpload} />
         ) : null}
 

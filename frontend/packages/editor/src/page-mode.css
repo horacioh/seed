@@ -10,9 +10,6 @@
     --hm-gap: 24px;
   }
 }
-:has(> .hm-page-surface) {
-  position: relative;
-}
 .hm-page-surface > [data-node-type='blockChildren'] > [data-node-type='blockNode'] {
   margin-top: var(--hm-gap) !important;
 }
@@ -56,8 +53,7 @@
 
 /* Insertion gaps. */
 .hm-page-gaps {
-  position: absolute;
-  inset: 0 0 auto 0;
+  position: relative;
   height: 0;
   z-index: 20;
 }
@@ -431,6 +427,11 @@
 .hm-page-hint button:hover {
   background: #f4f4f2;
   color: #16171a;
+}
+@media (max-width: 1760px) {
+  .hm-page-hint {
+    bottom: 86px;
+  }
 }
 @media (max-width: 1240px) {
   .hm-page-hint {

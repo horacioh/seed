@@ -16,7 +16,17 @@ import {
   Undo2,
   X,
 } from 'lucide-react'
-import {useCallback, useContext, useEffect, useLayoutEffect, useReducer, useState, type ReactNode} from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useReducer,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 import {createPortal} from 'react-dom'
 import './page-mode.css'
 import {
@@ -252,17 +262,16 @@ function PageModeGaps({
 }) {
   const version = useEditorVersion(editor)
   const [gaps, setGaps] = useState<number[]>([])
-  const [host, setHost] = useState<HTMLElement | null>(null)
+  const anchorRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState<number | null>(null)
 
   const measure = useCallback(() => {
     const dom = tiptap(editor).view.dom
-    const parent = dom.parentElement
-    if (!parent) return
-    setHost(parent)
+    const anchor = anchorRef.current
+    if (!anchor) return
     const nodes = topLevelNodes(dom)
     if (!nodes.length) return setGaps([])
-    const origin = parent.getBoundingClientRect().top
+    const origin = anchor.getBoundingClientRect().top
     const gap = parseFloat(getComputedStyle(dom).getPropertyValue('--hm-gap')) || 14
     const tops = nodes.map((n) => n.getBoundingClientRect().top - origin - gap)
     tops.push(nodes[nodes.length - 1]!.getBoundingClientRect().bottom - origin)
@@ -290,9 +299,8 @@ function PageModeGaps({
     }
   }, [editor, measure, version])
 
-  if (!host) return null
-  return createPortal(
-    <div className="hm-page-gaps" aria-label="Section insertion points">
+  return (
+    <div ref={anchorRef} className="hm-page-gaps" aria-label="Section insertion points">
       {gaps.map((top, index) => {
         const button = (
           <button
@@ -342,8 +350,7 @@ function PageModeGaps({
           </Popover>
         )
       })}
-    </div>,
-    host,
+    </div>
   )
 }
 
@@ -467,15 +474,13 @@ function BottomSheet({title, onClose, children}: {title: string; onClose: () => 
   )
 }
 
-function DockButton({
-  label,
-  icon,
-  children,
-  className,
-  ...rest
-}: {label: string; icon?: ReactNode; children?: ReactNode} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+const DockButton = forwardRef<
+  HTMLButtonElement,
+  {label: string; icon?: ReactNode; children?: ReactNode} & React.ButtonHTMLAttributes<HTMLButtonElement>
+>(function DockButton({label, icon, children, className, ...rest}, ref) {
   return (
     <button
+      ref={ref}
       type="button"
       aria-label={label}
       title={label}
@@ -487,7 +492,7 @@ function DockButton({
       {children}
     </button>
   )
-}
+})
 
 function SpacingControl({value, onChange}: {value: string; onChange: (padding: string) => void}) {
   return (
