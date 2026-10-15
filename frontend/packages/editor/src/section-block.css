@@ -431,16 +431,20 @@
 }
 
 /* The heading-group highlight follows the cursor even when the editor is not
- * focused (and in read-only views), so inside sections it only shows while editing. */
+ * focused (and in read-only views), so inside sections it only shows while
+ * editing outside Page mode, which uses the dashed text outline instead. */
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) .selection-in-section::before {
   width: 100%;
   margin: 0;
   background-color: transparent;
 }
-.ProseMirror-focused[contenteditable='true']:not(.hm-page-surface *)
+.ProseMirror-focused[contenteditable='true']
   [data-node-type='blockNode']:has(> * > [data-content-type='section'])
   .selection-in-section::before {
   background-color: color-mix(in oklch, currentColor 6%, transparent);
+}
+.page-mode [data-node-type='blockNode']:has(> * > [data-content-type='section']) .selection-in-section::before {
+  background-color: transparent !important;
 }
 
 /* Section images always fill their column; the free-form resize width does not apply here. */
