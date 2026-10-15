@@ -448,7 +448,11 @@
   width: 100% !important;
 }
 [data-node-type='blockNode']:has(> * > [data-content-type='section'])
-  .image-caption[contenteditable='false']:is(:empty, :has(> :only-child:empty)) {
+  .image-caption[contenteditable='false']:is(
+    :empty,
+    :has(> :only-child:empty),
+    :has(> :only-child > br.ProseMirror-trailingBreak:only-child)
+  ) {
   display: none;
 }
 
@@ -469,6 +473,10 @@
   button[data-slot='button']
   > span {
   color: var(--section-heading) !important;
+  overflow: visible !important;
+  height: auto !important;
+  line-height: 1.6 !important;
+  padding-bottom: 2px;
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-thickness: 1.5px;
