@@ -17,8 +17,10 @@ import {cn} from '@shm/ui/utils'
 import {ArrowDown, ArrowUp, Check, Copy, ImagePlus, Paintbrush, Plus, Rows3, Trash2, X} from 'lucide-react'
 import {useEffect, useRef, useState, type ReactNode} from 'react'
 import {createPortal} from 'react-dom'
-import {Block, BlockNoteEditor, PartialBlock, defaultProps} from './blocknote/core'
-import {createReactBlockSpec} from './blocknote/react'
+import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
+import type {Block, PartialBlock} from './blocknote/core/extensions/Blocks/api/blockTypes'
+import {defaultProps} from './blocknote/core/extensions/Blocks/api/defaultBlocks'
+import {createReactBlockSpec} from './blocknote/react/ReactBlockSpec'
 import type {HMBlockSchema} from './schema'
 import './section-block.css'
 import {useMobile} from './use-mobile'
@@ -765,7 +767,8 @@ export function AddSectionButton({
       <PopoverContent
         side={isMobile ? 'top' : 'bottom'}
         align="center"
-        className="hm-section-popover w-[min(94vw,34rem)] p-3"
+        collisionPadding={{top: 8, bottom: isMobile ? 72 : 8}}
+        className="hm-section-popover max-h-[var(--radix-popover-content-available-height)] w-[min(94vw,34rem)] overflow-y-auto p-3"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="text-muted-foreground mb-2 text-xs font-medium">Add a section</div>

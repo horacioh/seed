@@ -1,6 +1,4 @@
 import '@/blocknote/core/style.css'
-import {useIsPageModeActive} from '@shm/shared/page-mode'
-import {AddSectionButton} from './section-block'
 import {cn} from '@shm/ui/utils'
 import '@/editor.css'
 
@@ -58,6 +56,8 @@ import {useBlockBorderDebug} from './use-block-border-debug'
 import {useBlockHighlight} from './use-block-highlight'
 import {useReadOnlyClickToEdit} from './use-readonly-click-to-edit'
 import {selectAllEditorContent} from './utils'
+import {useIsPageModeActive} from '@shm/shared/page-mode'
+import {AddSectionButton} from './section-block'
 
 export type {DocumentContentProps}
 
