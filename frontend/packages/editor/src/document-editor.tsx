@@ -1,4 +1,7 @@
 import '@/blocknote/core/style.css'
+import {useIsPageModeActive} from '@shm/shared/page-mode'
+import {AddSectionButton} from './section-block'
+import {cn} from '@shm/ui/utils'
 import '@/editor.css'
 
 import {editorBlocksToHMBlockNodes} from '@seed-hypermedia/client/editorblock-to-hmblock'
@@ -218,7 +221,8 @@ export function DocumentEditor({
       blockSchema: hmBlockSchema,
       importWebFile: importWebFile as any,
       handleFileAttachment: handleFileAttachment as any,
-      getSlashMenuItems: () => getSlashMenuItems({docId: resourceId, onCreateInlineDraft}),
+      getSlashMenuItems: () =>
+        getSlashMenuItems({docId: resourceId, onCreateInlineDraft, showSection: !!experiments?.pageMode}),
       onEditorContentChange(editor) {
         if (suppressChangeRef.current) return
         const {changed, nextKey} = getEditorBlocksChange(lastEditorContentKeyRef.current, editor.topLevelBlocks)
@@ -648,6 +652,7 @@ export function DocumentEditor({
   useReadOnlyClickToEdit({editor, canEditRef, onEditStart, onTextSelectionRef})
 
   const editable = isEditing
+  const pageMode = useIsPageModeActive(editable)
 
   const fragmentActionsValue = useMemo<FragmentActions | null>(() => {
     if (!onBlockSelect && !onBlockCommentClick) return null
@@ -709,12 +714,12 @@ export function DocumentEditor({
   return (
     <RenderResourceProvider resource={{kind: 'document', id: resourceId}}>
       <FragmentActionsContext.Provider value={fragmentActionsValue}>
-        <BlockNoteView editor={editor} className="hm-prose draft-editor">
+        <BlockNoteView editor={editor} className={cn('hm-prose draft-editor', pageMode && 'page-mode')}>
           {/* Editing-only positioners — gated behind isEditing */}
           {editable && (
             <>
               <FormattingToolbarPositioner editor={editor} formattingToolbar={hmFormattingToolbar} />
-              <SideMenuPositioner editor={editor} />
+              {pageMode ? null : <SideMenuPositioner editor={editor} />}
               <SlashMenuPositioner editor={editor} />
               <LinkMenuPositioner editor={editor} />
               <MentionMenuPositioner
@@ -735,7 +740,7 @@ export function DocumentEditor({
 
           {/* Viewer/hover extensions */}
           <ImageGalleryOverlay editor={editor} resolveImageUrl={getImageUrl} />
-          {(onBlockSelect || onBlockCommentClick) && (
+          {!pageMode && (onBlockSelect || onBlockCommentClick) && (
             <BlockHoverActionsPositioner
               editor={editor}
               isBlockReferenceable={hoverActionAlwaysReferenceable}
@@ -771,6 +776,11 @@ export function DocumentEditor({
           />
           <FullBlockSelectionObserver editor={editor} onBlocksFullSelected={onBlocksFullSelected} />
         </BlockNoteView>
+        {pageMode ? (
+          <div className="page-mode-add-section">
+            <AddSectionButton editor={editor} />
+          </div>
+        ) : null}
 
         {/* Click-to-edit affordance below the content. Only for users who can
             edit — for readers it would add 500px of dead space that the SSR

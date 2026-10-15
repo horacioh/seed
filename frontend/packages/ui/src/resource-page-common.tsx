@@ -49,6 +49,7 @@ import type {
 import {findDraftForPath, isDraftPlaceholderPath, useDraftsForAccountSafe} from '@shm/shared/draft-breadcrumb-context'
 import {parseExploreQuery, type HMExploreResultType} from '@shm/shared/explore'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
+import {useIsPageModeActive} from '@shm/shared/page-mode'
 import type {DocumentMachineEvent, TransientResourceError} from '@shm/shared/models/document-machine'
 import {
   useAccount,
@@ -1981,6 +1982,7 @@ function DocumentBody({
   useDraftResolutionSync(draftResolution)
   const publishedVersion = useDocumentSelector(selectPublishedVersion)
   const isEditing = useDocumentSelector(selectIsEditing)
+  const pageModeActive = useIsPageModeActive(isEditing)
   const isUnpublishedDraft = useDocumentSelector(selectIsUnpublishedDraft)
   const ctx = useDocumentSelector(selectContext)
   const draftOverlayAllowed = useDocumentSelector(selectDraftOverlayAllowed)
@@ -2126,9 +2128,9 @@ function DocumentBody({
   // Respect the showActivity metadata toggle to hide the document tools bar.
   const showActivity = metadata?.showActivity !== false
 
-  // Explore searches the whole space rather than presenting a document,
-  // so it drops the document's chrome.
-  const showDocumentChrome = activeView !== 'explore'
+  // Explore searches the whole space rather than presenting a document, and
+  // Page mode shows the draft as readers will see it, so both drop the document's chrome.
+  const showDocumentChrome = activeView !== 'explore' && !pageModeActive
 
   // Extract blockRef from route for scroll-to-block and highlighting
   const routeBlockRef = 'id' in route && typeof route.id === 'object' ? route.id.blockRef : null
@@ -2390,7 +2392,7 @@ function DocumentBody({
   const {showSidebars, showCollapsed, sidebarProps, mainContentProps, elementRef, wrapperProps, contentMaxWidth} =
     useDocumentLayout({
       contentWidth: metadata?.contentWidth,
-      showSidebars: !isHomeDoc && metadata?.showOutline !== false && activeView === 'content',
+      showSidebars: !isHomeDoc && !pageModeActive && metadata?.showOutline !== false && activeView === 'content',
     })
 
   // Fetch author metadata for document header and subscribe for discovery

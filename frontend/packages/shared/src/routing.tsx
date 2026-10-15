@@ -44,6 +44,8 @@ export const appExperimentsSchema = z
     developerMode: z.boolean().optional(),
     /** Dev tools sub-toggle: expose Hypermedia Schema features (New > Schema, schema building blocks). */
     hypermediaSchemas: z.boolean().optional(),
+    /** Page mode: edit drafts as the published page and compose them from Section blocks. */
+    pageMode: z.boolean().optional(),
   })
   .strict()
 export type AppExperiments = z.infer<typeof appExperimentsSchema>

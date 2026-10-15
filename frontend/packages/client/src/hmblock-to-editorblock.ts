@@ -39,6 +39,7 @@ function toEditorBlockType(hmBlockType: HMBlockType): EditorBlockType {
   if (hmBlockType === 'TableRow') return 'tableRow'
   if (hmBlockType === 'TableColumn') return 'tableColumn'
   if (hmBlockType === 'Slot') return 'slot'
+  if (hmBlockType === 'Section') return 'section'
   return 'unknown'
 }
 
@@ -223,6 +224,14 @@ export function hmBlockToEditorBlock(block: HMBlock): EditorBlock {
     const isHeader = (block as any).attributes?.isHeader
     if (isHeader === true) {
       ;(out.props as any).isHeader = true
+    }
+  }
+
+  if (block.type === 'Section') {
+    const sectionProps = out.props as Record<string, string>
+    for (const key of ['layout', 'background', 'padding', 'contentWidth', 'focalX', 'focalY'] as const) {
+      const value = (block.attributes as Record<string, unknown> | undefined)?.[key]
+      if (typeof value === 'string' || typeof value === 'number') sectionProps[key] = String(value)
     }
   }
 

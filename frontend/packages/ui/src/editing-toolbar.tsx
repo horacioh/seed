@@ -1,5 +1,7 @@
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
+import {setPageMode, usePageModePreference} from '@shm/shared/page-mode'
+import {useUniversalAppContext} from '@shm/shared/routing'
 import {type DocumentMachineEvent} from '@shm/shared/models/document-machine'
 import {useAccount} from '@shm/shared/models/entity'
 import {
@@ -17,7 +19,7 @@ import {
 import {useUnpublishedChangeCount} from '@shm/shared/models/use-unpublished-change-count'
 import {type AnyTimestamp, formattedDateMedium, formattedDateShort, normalizeDate} from '@shm/shared/utils/date'
 import {pathNameify} from '@shm/shared/utils/path'
-import {Check, ChevronRight, Clock, Copy, FileDiff, Pencil, Trash, X} from 'lucide-react'
+import {Check, ChevronRight, Clock, Copy, FileDiff, PanelsTopLeft, Pencil, Trash, X} from 'lucide-react'
 import React, {forwardRef, useState} from 'react'
 import {Button} from './button'
 import {PathInput} from './path-input'
@@ -478,6 +480,27 @@ export function PublishButtonWithPopover({
   )
 }
 
+/** Draft toolbar switch between document editing and Page mode (only with the `pageMode` experiment). */
+function PageModeToggle() {
+  const {experiments} = useUniversalAppContext()
+  const enabled = usePageModePreference()
+  if (!experiments?.pageMode) return null
+  return (
+    <Tooltip content={enabled ? 'Back to document editing' : 'Edit the draft as the published page'}>
+      <Button
+        size="sm"
+        variant={enabled ? 'secondary' : 'ghost'}
+        aria-pressed={enabled}
+        onClick={() => setPageMode(!enabled)}
+      >
+        <PanelsTopLeft className="size-4" />
+        {enabled ? 'Page mode on' : 'Page mode'}
+        {enabled ? <Check className="size-3.5" aria-hidden /> : null}
+      </Button>
+    </Tooltip>
+  )
+}
+
 /**
  * Combined right-actions for DocumentTools when editing.
  * Must be rendered inside DocumentMachineProvider.
@@ -500,6 +523,7 @@ export function EditingDocToolsRight({
       <div className="pointer-events-none absolute right-full mr-2">
         <SaveIndicator />
       </div>
+      <PageModeToggle />
       {beforePublish}
       <PublishButtonWithPopover
         docId={docId}

@@ -218,6 +218,7 @@ type FixtureName =
   | 'withTwoEmbeds'
   | 'draftAndPublished'
   | 'allBlocks'
+  | 'sections'
 
 const text = (text: string) =>
   ({
@@ -284,6 +285,49 @@ const fixtures: Record<FixtureName, Block<HMBlockSchema>[]> = {
     embed('embed-pub', 'hm://bafy-doc-uid/Root', 'Card'),
     p('p-bottom', [text('Below the cards')]),
   ],
+
+  // Page-mode landing page built from Section blocks (one per layout).
+  sections: (() => {
+    const img =
+      'data:image/svg+xml;utf8,' +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f6f73"/><stop offset="1" stop-color="#e6b35a"/></linearGradient></defs><rect width="800" height="560" fill="url(#g)"/></svg>',
+      )
+    const h = (id: string, label: string, level = '2', children: any[] = []) =>
+      ({id, type: 'heading', props: {level}, content: [text(label)], children}) as any
+    const section = (id: string, props: Record<string, string>, children: any[]) =>
+      ({id, type: 'section', props, content: [], children}) as any
+    const button = (id: string, name: string, alignment = 'center') =>
+      ({
+        id,
+        type: 'button',
+        props: {name, url: 'https://seed.hyper.media', alignment},
+        content: [],
+        children: [],
+      }) as any
+    return [
+      section('sec-hero', {layout: 'hero', padding: 'L'}, [
+        h('hero-h', 'Publish pages people actually read'),
+        p('hero-p', [text('Seed keeps your words, your links and your history in one place you own.')]),
+        button('hero-btn', 'Start writing'),
+      ]),
+      section('sec-split', {layout: 'split'}, [
+        {id: 'split-img', type: 'image', props: {url: img, name: ''}, content: [], children: []} as any,
+        h('split-h', 'Write once, link everywhere'),
+        p('split-p', [text('Every block has a stable address, so citations keep pointing at the right sentence.')]),
+        button('split-btn', 'See how it works', 'flex-start'),
+      ]),
+      section('sec-features', {layout: 'features', background: 'muted'}, [
+        h('f1', 'Yours', '3', [p('f1-p', [text('Documents are signed by you and live on your machine.')])]),
+        h('f2', 'Linked', '3', [p('f2-p', [text('Cite any block of any document with a permanent link.')])]),
+        h('f3', 'Versioned', '3', [p('f3-p', [text('Every change is kept, so nothing is lost.')])]),
+      ]),
+      section('sec-cta', {layout: 'hero', background: 'inverted', padding: 'M'}, [
+        h('cta-h', 'Ready when you are'),
+        button('cta-btn', 'Download Seed'),
+      ]),
+    ]
+  })(),
 
   // One block of every selectable node type (selectable-node-types.ts) plus
   // text blocks, for the cross-block-type selection-consistency suite.
@@ -615,6 +659,7 @@ export function TestEditor() {
         <QueryClientProvider client={mockQueryClient}>
           <NavContextProvider value={navContext}>
             <UniversalAppProvider
+              experiments={{pageMode: sp.get('pageMode') === '1'}}
               selectedIdentity={mentionAccount}
               universalClient={mockUniversalClient as any}
               openUrl={(url?: string, newWindow?: boolean) => {

@@ -7,6 +7,7 @@ import {
   Columns3,
   FileText,
   FolderUp,
+  PanelsTopLeft,
   Image as ImageIcon,
   LogIn,
   Radical,
@@ -19,6 +20,7 @@ import {RiGridFill, RiHeading, RiText, RiWindow2Fill} from 'react-icons/ri'
 import {BlockNoteEditor, BlockSpec, insertOrUpdateBlock, PartialBlock, PropSchema} from './blocknote/core'
 import {getBlockInfoFromPos} from './blocknote/core/extensions/Blocks/helpers/getBlockInfoFromPos'
 import {HMBlockSchema} from './schema'
+import {SECTION_TEMPLATES} from './section-block'
 
 const SHOW_NEW_DOCUMENT_SLASH_COMMAND = false
 
@@ -45,10 +47,13 @@ function selectInsertedBlock(editor: BlockNoteEditor<Record<string, BlockSpec<st
 
 export function getSlashMenuItems({
   showQuery = true,
+  showSection = false,
   docId,
   onCreateInlineDraft,
 }: {
   showQuery?: boolean
+  /** Offer the Page mode `Section` block (behind the `pageMode` experiment). */
+  showSection?: boolean
   docId?: UnpackedHypermediaId
   /** Provided by the host app (desktop). Creates a child
    * draft under docId and returns its id. */
@@ -433,5 +438,17 @@ export function getSlashMenuItems({
     })
   }
 
+  if (showSection) {
+    slashMenuItems.push({
+      name: 'Section',
+      aliases: ['section', 'hero', 'layout', 'page'],
+      group: 'Layout',
+      icon: <PanelsTopLeft size={18} />,
+      hint: 'Insert a page section with a preset layout',
+      execute: (editor: BlockNoteEditor<Record<string, BlockSpec<string, PropSchema>>>) => {
+        insertOrUpdateBlock(editor, SECTION_TEMPLATES[0]!.build() as PartialBlock<any>)
+      },
+    })
+  }
   return slashMenuItems
 }

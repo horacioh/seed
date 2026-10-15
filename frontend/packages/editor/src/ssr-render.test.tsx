@@ -412,4 +412,27 @@ describe('server-rendered mention labels', () => {
     expect(html).toContain('href="/hm/alice/:profile"')
     queryClient.clear()
   })
+
+  it('renders a Section with normalized layout attributes and its children', () => {
+    const html = render([
+      {
+        block: {
+          id: 'sec1',
+          type: 'Section',
+          text: '',
+          annotations: [],
+          attributes: {layout: 'carousel', background: 'inverted', padding: 'L'},
+        },
+        children: [
+          {block: {id: 'p1', type: 'Paragraph', text: 'Inside', annotations: [], attributes: {}}, children: []},
+        ],
+      },
+    ] as any)
+    expect(html).toContain('data-content-type="section"')
+    expect(html).toContain('data-section-layout="hero"')
+    expect(html).toContain('data-section-background="inverted"')
+    expect(html).toContain('data-section-padding="L"')
+    expect(html).toContain('Inside')
+    expect(html).not.toContain('hm-section-toolbar')
+  })
 })
