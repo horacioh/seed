@@ -406,7 +406,7 @@ function ToolPopover({
       <PopoverContent
         side={side}
         align="start"
-        className="hm-section-popover w-[min(92vw,20rem)] p-3"
+        className="hm-section-popover w-[min(92vw,20rem)] p-3 data-[state=closed]:animate-none data-[state=open]:animate-none"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="text-muted-foreground mb-2 text-xs font-medium">{label}</div>
@@ -791,7 +791,7 @@ export function AddSectionButton({
         side={isMobile ? 'top' : 'bottom'}
         align="center"
         collisionPadding={{top: 8, bottom: isMobile ? 72 : 8}}
-        className="hm-section-popover max-h-[var(--radix-popover-content-available-height)] w-[min(94vw,34rem)] overflow-y-auto p-3"
+        className="hm-section-popover max-h-[var(--radix-popover-content-available-height)] w-[min(94vw,34rem)] overflow-y-auto p-3 data-[state=closed]:animate-none data-[state=open]:animate-none"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="text-muted-foreground mb-2 text-xs font-medium">Add a section</div>

@@ -491,10 +491,11 @@ function PageModeToggle() {
         size="sm"
         variant={enabled ? 'secondary' : 'ghost'}
         aria-pressed={enabled}
+        aria-label="Page mode"
         onClick={() => setPageMode(!enabled)}
       >
         <PanelsTopLeft className="size-4" />
-        {enabled ? 'Page mode on' : 'Page mode'}
+        <span className="hidden sm:inline">{enabled ? 'Page mode on' : 'Page mode'}</span>
         {enabled ? <Check className="size-3.5" aria-hidden /> : null}
       </Button>
     </Tooltip>
