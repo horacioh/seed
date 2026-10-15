@@ -352,7 +352,6 @@ func (dm *Document) ReplaceBlock(blkpb *documents.Block) error {
 	if err != nil {
 		return err
 	}
-	blk = applyBlockAttributeEdits(blk, dm.dirtyBlockAttrs[blkpb.Id])
 
 	if dirty, alreadyDirty := dm.dirtyBlocks[blkpb.Id]; alreadyDirty {
 		_, current, _ := dm.effectiveBlock(blkpb.Id)
@@ -920,7 +919,7 @@ func (dm *Document) Hydrate(ctx context.Context) (*documents.Document, error) {
 	treeState := dm.crdt.tree.State()
 
 	blockToProto := func(id string) (*documents.Block, error) {
-		opid, blk, ok := dm.effectiveBlock(id)
+		opid, blk, ok := dm.crdt.effectiveBlock(id)
 		if !ok {
 			return nil, nil
 		}
@@ -1010,7 +1009,7 @@ func (dm *Document) FirstContentImage() string {
 
 	treeState := dm.crdt.tree.State()
 	for pair := range treeState.DFT("") {
-		_, blk, ok := dm.effectiveBlock(pair.Child)
+		_, blk, ok := dm.crdt.effectiveBlock(pair.Child)
 		if !ok {
 			continue
 		}
@@ -1049,7 +1048,7 @@ func (dm *Document) ReferenceSummary() ([]string, bool) {
 	}
 
 	for pair := range dm.crdt.tree.State().DFT("") {
-		_, blk, ok := dm.effectiveBlock(pair.Child)
+		_, blk, ok := dm.crdt.effectiveBlock(pair.Child)
 		if !ok {
 			continue
 		}
@@ -1289,7 +1288,7 @@ func (dm *Document) IsCollection() bool {
 		return false
 	}
 
-	_, blk, ok := dm.effectiveBlock(root)
+	_, blk, ok := dm.crdt.effectiveBlock(root)
 	if !ok || blk.Type != "Query" {
 		return false
 	}

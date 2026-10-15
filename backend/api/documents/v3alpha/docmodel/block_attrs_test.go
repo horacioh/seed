@@ -299,8 +299,8 @@ func TestBlockAttributeWriterCleanup(t *testing.T) {
 
 	t.Run("attribute edit folds into a dirty ReplaceBlock", func(t *testing.T) {
 		doc := blockAttrsLoad(t, base)
-		must.Do(doc.SetAttribute("block", []string{"style", "color"}, "red"))
 		must.Do(doc.ReplaceBlock(testBlock(t, "block", "edited", map[string]any{"style": map[string]any{"color": "black"}})))
+		must.Do(doc.SetAttribute("block", []string{"style", "color"}, "red"))
 		body, err := doc.cleanupPatch()
 		require.NoError(t, err)
 		ops := blockAttrsDecodeOps(t, body)
@@ -308,6 +308,33 @@ func TestBlockAttributeWriterCleanup(t *testing.T) {
 		replace, ok := ops[0].(blob.OpReplaceBlock)
 		require.True(t, ok)
 		require.Equal(t, "red", replace.Block.Attributes()["style"].(map[string]any)["color"])
+	})
+
+	t.Run("later attribute-only ReplaceBlock replaces earlier attribute edits", func(t *testing.T) {
+		doc := blockAttrsLoad(t, blockAttrsBase(t, map[string]any{"color": "black"}))
+		must.Do(doc.SetAttribute("block", []string{"color"}, "red"))
+		must.Do(doc.ReplaceBlock(testBlock(t, "block", "", map[string]any{"color": "blue"})))
+		body, err := doc.cleanupPatch()
+		require.NoError(t, err)
+		ops := blockAttrsDecodeOps(t, body)
+		require.Len(t, ops, 1)
+		set, ok := ops[0].(blob.OpSetAttributes)
+		require.True(t, ok)
+		require.Equal(t, "block", set.Block)
+		require.Equal(t, []blob.KeyValue{{Key: []string{"color"}, Value: "blue"}}, set.Attrs)
+	})
+
+	t.Run("later content ReplaceBlock replaces earlier attribute edits", func(t *testing.T) {
+		doc := blockAttrsLoad(t, blockAttrsBase(t, map[string]any{"color": "black"}))
+		must.Do(doc.SetAttribute("block", []string{"color"}, "red"))
+		must.Do(doc.ReplaceBlock(testBlock(t, "block", "edited", map[string]any{"color": "blue"})))
+		body, err := doc.cleanupPatch()
+		require.NoError(t, err)
+		ops := blockAttrsDecodeOps(t, body)
+		require.Len(t, ops, 1)
+		replace, ok := ops[0].(blob.OpReplaceBlock)
+		require.True(t, ok)
+		require.Equal(t, "blue", replace.Block.Attributes()["color"])
 	})
 }
 
