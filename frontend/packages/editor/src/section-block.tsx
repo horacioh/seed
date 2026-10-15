@@ -186,10 +186,15 @@ function SectionControls({
   const isMobile = useMobile()
   const variant = getToolbarVariant()
   const setProps = (props: Record<string, string>) => editor.updateBlock(block.id, {props} as any)
-  const siblings = findSiblings(editor.topLevelBlocks as SectionBlockType[], block.id) ?? []
-  const index = siblings.findIndex((b) => b.id === block.id)
-  const current = siblings[index]
+  // Child edits don't re-render this node view, so read the live blocks when acting.
+  const locate = () => {
+    const siblings = findSiblings(editor.topLevelBlocks as SectionBlockType[], block.id) ?? []
+    const index = siblings.findIndex((b) => b.id === block.id)
+    return {siblings, index, current: siblings[index]}
+  }
+  const {siblings, index} = locate()
   const move = (delta: -1 | 1) => {
+    const {siblings, index, current} = locate()
     const other = siblings[index + delta]
     if (!current || !other) return
     editor.removeBlocks([current.id])
@@ -198,7 +203,10 @@ function SectionControls({
   const actions = {
     moveUp: index > 0 ? () => move(-1) : undefined,
     moveDown: index >= 0 && index < siblings.length - 1 ? () => move(1) : undefined,
-    duplicate: () => current && editor.insertBlocks([cloneWithFreshIds(current)], block.id, 'after'),
+    duplicate: () => {
+      const {current} = locate()
+      if (current) editor.insertBlocks([cloneWithFreshIds(current)], block.id, 'after')
+    },
     remove: () => editor.removeBlocks([block.id]),
   }
 

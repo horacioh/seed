@@ -308,3 +308,14 @@
   max-width: 28rem;
   color: var(--muted-foreground);
 }
+
+/* Editor highlights follow the section's text colour, so they stay readable on dark backgrounds. */
+[data-node-type='blockNode']:has(> * > [data-content-type='section'])
+  :is(.bn-block-highlight-focus, .bn-range-highlight-focus, .bn-block-hover-highlight) {
+  background-color: color-mix(in oklch, currentColor 12%, transparent);
+}
+[data-node-type='blockNode']:has(> * > [data-content-type='section']) .selection-in-section::before {
+  width: 100%;
+  margin: 0;
+  background-color: color-mix(in oklch, currentColor 8%, transparent);
+}
