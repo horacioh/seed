@@ -371,24 +371,41 @@
   --hm-template-scale: 0.17;
   position: relative;
   display: block;
-  height: 128px;
+  aspect-ratio: 16 / 10;
+  container-type: inline-size;
   overflow: hidden;
   border-radius: 10px;
   border: 1px solid #e6e6e3;
   background: #fff;
   pointer-events: none;
 }
+/* The canvas is the card's size divided by the scale, so the scaled render fills the card. */
 .hm-template-canvas {
   position: absolute;
   top: 0;
   left: 0;
-  width: 1200px;
+  width: calc(100cqw / var(--hm-template-scale));
+  height: calc(100cqw * 0.625 / var(--hm-template-scale));
   transform: scale(var(--hm-template-scale));
   transform-origin: top left;
 }
+.hm-template-canvas > [data-node-type='blockNode'] {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .hm-template-canvas
-  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='fullBleed']) {
-  min-height: 760px;
+  > [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='fullBleed']) {
+  justify-content: flex-end;
+}
+.hm-template-canvas
+  [data-node-type='blockNode']:has(> * > [data-content-type='section'] > [data-section-layout='features'])
+  > [data-node-type='blockChildren'] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
 }
 /* Previews always show the desktop split, whatever the viewport. */
 .hm-template-canvas
@@ -462,7 +479,6 @@
   }
   .hm-template-preview {
     --hm-template-scale: 0.135;
-    height: 104px;
   }
 }
 

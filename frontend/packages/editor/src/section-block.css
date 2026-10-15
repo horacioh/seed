@@ -28,6 +28,12 @@
   --hm-breakout: 0px;
 }
 
+/* Sections are flush bands: no prose rhythm gap next to them. */
+.hm-prose [data-node-type='blockNode']:has(> * > [data-content-type='section']) + [data-node-type='blockNode'],
+.hm-prose [data-node-type='blockNode'] + [data-node-type='blockNode']:has(> * > [data-content-type='section']) {
+  margin-top: 0;
+}
+
 [data-node-type='blockNode']:has(> * > [data-content-type='section']) > *:has(> [data-content-type='section']),
 [data-content-type='section'] {
   position: static !important;
