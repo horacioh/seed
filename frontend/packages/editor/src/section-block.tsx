@@ -9,7 +9,7 @@ import {
   type HMSectionLayout,
   type HMSectionPadding,
 } from '@seed-hypermedia/client/hm-types'
-import {DAEMON_FILE_UPLOAD_URL} from '@shm/shared/constants'
+import {DAEMON_FILE_UPLOAD_URL, MAX_FILE_SIZE_B, MAX_FILE_SIZE_MB} from '@shm/shared/constants'
 import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
 import {useImageUrl} from '@shm/ui/get-file-url'
 import {toast} from '@shm/ui/toast'
@@ -20,6 +20,7 @@ import {createPortal} from 'react-dom'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
 import type {Block, PartialBlock} from './blocknote/core/extensions/Blocks/api/blockTypes'
 import {defaultProps} from './blocknote/core/extensions/Blocks/api/defaultBlocks'
+import {UniqueID} from './blocknote/core/extensions/UniqueID/UniqueID'
 import {createReactBlockSpec} from './blocknote/react/ReactBlockSpec'
 import type {HMBlockSchema} from './schema'
 import './section-block.css'
@@ -155,9 +156,20 @@ function findSiblings(blocks: SectionBlockType[], id: string): SectionBlockType[
   return null
 }
 
-function withoutIds(block: SectionBlockType): PartialBlock<HMBlockSchema> {
-  const {id: _id, children, ...rest} = block as any
-  return {...rest, children: (children as SectionBlockType[]).map(withoutIds)}
+function cloneWithFreshIds(block: SectionBlockType): PartialBlock<HMBlockSchema> {
+  // Table cells point at their column blocks by id, so remap those references too.
+  const ids = new Map<string, string>()
+  const assign = (b: SectionBlockType) => {
+    ids.set(b.id, UniqueID.options.generateID())
+    ;(b.children as SectionBlockType[]).forEach(assign)
+  }
+  assign(block)
+  const clone = (b: SectionBlockType): PartialBlock<HMBlockSchema> => {
+    const props = {...(b.props as Record<string, unknown>)}
+    if (typeof props.columnId === 'string' && ids.has(props.columnId)) props.columnId = ids.get(props.columnId)
+    return {...b, id: ids.get(b.id), props, children: (b.children as SectionBlockType[]).map(clone)} as any
+  }
+  return clone(block)
 }
 
 function SectionControls({
@@ -180,13 +192,13 @@ function SectionControls({
   const move = (delta: -1 | 1) => {
     const other = siblings[index + delta]
     if (!current || !other) return
-    const [first, second] = delta < 0 ? [other, current] : [current, other]
-    editor.replaceBlocks([first.id, second.id], [second, first] as any)
+    editor.removeBlocks([current.id])
+    editor.insertBlocks([current] as any, other.id, delta < 0 ? 'before' : 'after')
   }
   const actions = {
     moveUp: index > 0 ? () => move(-1) : undefined,
     moveDown: index >= 0 && index < siblings.length - 1 ? () => move(1) : undefined,
-    duplicate: () => current && editor.insertBlocks([withoutIds(current)], block.id, 'after'),
+    duplicate: () => current && editor.insertBlocks([cloneWithFreshIds(current)], block.id, 'after'),
     remove: () => editor.removeBlocks([block.id]),
   }
 
@@ -407,6 +419,10 @@ function BackgroundPicker({
   const [uploading, setUploading] = useState(false)
   const hasImage = !!attrs.backgroundImage
   const upload = async (file: File) => {
+    if (file.size > MAX_FILE_SIZE_B) {
+      toast.error(`The size of ${file.name} exceeds ${MAX_FILE_SIZE_MB} MB.`)
+      return
+    }
     setUploading(true)
     try {
       const formData = new FormData()
@@ -743,8 +759,7 @@ export function AddSectionButton({
       !afterBlockId &&
       last?.type === 'paragraph' &&
       (last.content as any[]).every((c) => !c.text) &&
-      !last.children.length &&
-      blocks.length > 1
+      !last.children.length
     if (replaceTrailing) editor.replaceBlocks([last.id], [template.build()])
     else editor.insertBlocks([template.build()], ref, 'after')
     setOpen(false)
