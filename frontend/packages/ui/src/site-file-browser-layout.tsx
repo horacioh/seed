@@ -40,6 +40,8 @@ export interface SiteFileBrowserLayoutProps {
   createMenuItem?: MenuItemType | null
   onIncludeDocument?: SiteFileBrowserProps['onIncludeDocument']
   getIncludeDocumentState?: SiteFileBrowserProps['getIncludeDocumentState']
+  /** Hide the browser and its reveal button without unmounting the page content (Page mode). */
+  hidden?: boolean
   children: ReactNode
 }
 
@@ -55,6 +57,7 @@ export function SiteFileBrowserLayout({
   createMenuItem,
   onIncludeDocument,
   getIncludeDocumentState,
+  hidden,
   children,
 }: SiteFileBrowserLayoutProps) {
   const media = useMedia()
@@ -213,7 +216,7 @@ export function SiteFileBrowserLayout({
     <SiteFileBrowserContext.Provider value={controls}>
       <div ref={desktopContainerRef} className="flex min-h-0 flex-1">
         <PanelGroup direction="horizontal" className="min-h-0 flex-1">
-          {!collapsed ? (
+          {!collapsed && !hidden ? (
             <>
               <Panel
                 id="site-file-browser"
@@ -257,7 +260,7 @@ export function SiteFileBrowserLayout({
           ) : null}
           <Panel id="site-main-content" order={2} minSize={60}>
             <div className="dark:bg-background relative flex h-full min-h-0 flex-col overflow-hidden bg-white">
-              {collapsed && revealClaims === 0 ? (
+              {collapsed && !hidden && revealClaims === 0 ? (
                 <div className="absolute top-2 left-2 z-50 md:top-4 md:left-4">
                   <Tooltip content="Show file explorer">
                     <Button

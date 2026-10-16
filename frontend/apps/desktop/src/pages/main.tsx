@@ -35,6 +35,7 @@ import {AutoUpdater} from '../components/auto-updater'
 import Footer from '../components/footer'
 import {HypermediaHighlight} from '../components/hypermedia-highlight'
 import {AppSidebar} from '../components/sidebar'
+import {usePageModeSurface} from '@shm/shared/page-mode'
 import {TitleBar} from '../components/titlebar'
 import {WindowTitle} from '../components/window-title'
 import {BaseLoading, NotFoundPage} from './base'
@@ -175,6 +176,7 @@ export default function Main({className}: {className?: string}) {
     [navigate],
   )
   const windowType = getWindowType()
+  const pageModeSurface = usePageModeSurface()
   let titlebar: ReactElement | null = null
   let sidebar: ReactElement | null = null
   if (windowType === 'main') {
@@ -184,7 +186,7 @@ export default function Main({className}: {className?: string}) {
         onToggleAssistant={isAssistantAvailable ? handleToggleAssistant : undefined}
       />
     )
-    sidebar = <AppSidebar />
+    sidebar = pageModeSurface ? null : <AppSidebar />
   } else if (windowType === 'settings') {
     titlebar = (
       <TitlebarWrapper className="bg-background h-8 min-h-8 dark:bg-black">

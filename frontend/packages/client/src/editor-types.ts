@@ -17,6 +17,7 @@ export type EditorBlock =
   | EditorTableRowBlock
   | EditorTableColumnBlock
   | EditorSlotBlock
+  | EditorSectionBlock
   | EditorUnknownBlock
 export type HMInlineContent = EditorText | EditorInlineEmbed | EditorLink
 
@@ -186,6 +187,20 @@ export interface EditorTableColumnBlock extends EditorBaseBlock {
 
 export interface EditorSlotBlock extends EditorBaseBlock {
   type: 'slot'
+  content: Array<HMInlineContent>
+}
+
+/** Page section container. Props mirror the HM `Section` attributes as raw strings. */
+export interface EditorSectionBlock extends EditorBaseBlock {
+  type: 'section'
+  props: EditorBlockProps & {
+    layout?: string
+    background?: string
+    focalX?: string
+    focalY?: string
+    padding?: string
+    contentWidth?: string
+  }
   content: Array<HMInlineContent>
 }
 

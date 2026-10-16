@@ -643,22 +643,27 @@ export function MobileMenu({
   open: boolean
   onClose: () => void
 }) {
+  // The closed panel sits off-screen to the right; the clipping wrapper keeps it from
+  // widening the page, which would let narrow layouts scroll sideways into it. The
+  // header is transformed, so it is the wrapper's containing block: height must be explicit.
   return (
-    <div
-      className={cn(
-        'bg-background fixed inset-0 z-50 flex h-dvh max-h-dvh flex-col transition-transform duration-200 md:hidden',
-        open ? 'translate-x-0' : 'translate-x-full',
-      )}
-    >
-      <div className="flex flex-0 items-center justify-end p-4">
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <Close className="size-4" />
-        </Button>
+    <div className="pointer-events-none fixed inset-x-0 top-0 z-50 h-dvh overflow-clip md:hidden">
+      <div
+        className={cn(
+          'bg-background pointer-events-auto flex h-dvh max-h-dvh flex-col transition-[translate,visibility] duration-200',
+          open ? 'visible translate-x-0' : 'invisible translate-x-full',
+        )}
+      >
+        <div className="flex flex-0 items-center justify-end p-4">
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <Close className="size-4" />
+          </Button>
+        </div>
+        <ScrollArea className="mobile-menu flex-1">
+          {open ? renderContent() : null}
+          <div className="h-20"></div>
+        </ScrollArea>
       </div>
-      <ScrollArea className="mobile-menu flex-1">
-        {open ? renderContent() : null}
-        <div className="h-20"></div>
-      </ScrollArea>
     </div>
   )
 }

@@ -1219,10 +1219,11 @@ export default function DesktopResourcePage() {
 
   const editingFloatingActions =
     canEdit && showPublishToolbar
-      ? ({menuItems}: {menuItems: any[]}) => (
+      ? ({menuItems, dock}: {menuItems: any[]; dock?: boolean}) => (
           <EditingDocToolsRight
             docId={docId}
             existingMenuItems={menuItems}
+            dock={dock}
             getUnpublishedChildCount={getUnpublishedChildCount}
             beforePublish={<DesktopDocumentCreateButton locationId={docId} />}
           />

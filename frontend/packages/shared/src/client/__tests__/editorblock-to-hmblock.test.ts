@@ -22,6 +22,8 @@ import {
   HMBlockQuery,
   HMBlockWebEmbed,
 } from '@seed-hypermedia/client/hm-types'
+import {blocksToMarkdown} from '@seed-hypermedia/client/blocks-to-markdown'
+import {normalizeSectionAttributes} from '@seed-hypermedia/client/hm-types'
 import {hmBlocksToEditorContent} from '@seed-hypermedia/client/hmblock-to-editorblock'
 import {describe, expect, test, vi} from 'vitest'
 
@@ -1912,5 +1914,125 @@ describe('EditorBlock to HMBlock', () => {
       expect(cols.map((c) => c.block?.id)).toEqual(['col-0'])
       expect(rows.map((r) => r.block?.id)).toEqual(['row-0'])
     })
+  })
+})
+
+describe('Section blocks', () => {
+  const sectionNode = (attributes: Record<string, unknown>): HMBlockNode =>
+    ({
+      block: {type: 'Section', id: 'sec1', text: '', annotations: [], attributes},
+      children: [
+        {
+          block: {type: 'Heading', id: 'h1', text: 'Welcome', annotations: [], attributes: {}},
+          children: [
+            {block: {type: 'Paragraph', id: 'p1', text: 'Nested', annotations: [], attributes: {}}, children: []},
+          ],
+        },
+        {block: {type: 'Button', id: 'b1', text: 'Go', annotations: [], link: '', attributes: {}}, children: []},
+      ],
+    }) as unknown as HMBlockNode
+
+  test('round-trips every attribute and the nested children', () => {
+    const attributes = {
+      layout: 'split',
+      background: 'ipfs://bafyimage',
+      focalX: 0.25,
+      focalY: 1,
+      padding: 'L',
+      contentWidth: 'full',
+    }
+    const editorBlocks = hmBlocksToEditorContent([sectionNode(attributes)])
+    expect(editorBlocks[0]).toMatchObject({
+      id: 'sec1',
+      type: 'section',
+      props: {
+        layout: 'split',
+        background: 'ipfs://bafyimage',
+        focalX: '0.25',
+        focalY: '1',
+        padding: 'L',
+        contentWidth: 'full',
+      },
+    })
+    expect(editorBlocks[0]!.children.map((c) => c.id)).toEqual(['h1', 'b1'])
+    expect(editorBlocks[0]!.children[0]!.children[0]!.id).toBe('p1')
+
+    const [node] = editorBlocksToHMBlockNodes(editorBlocks)
+    expect(node!.block).toMatchObject({type: 'Section', id: 'sec1', attributes})
+    expect(node!.children!.map((c) => c.block.id)).toEqual(['h1', 'b1'])
+    expect(node!.children![0]!.children![0]!.block).toMatchObject({type: 'Paragraph', id: 'p1', text: 'Nested'})
+  })
+
+  test('stores invalid values verbatim instead of rejecting them', () => {
+    const attributes = {layout: 'carousel', background: '#ff0000', padding: 'XXL', contentWidth: '900px', focalX: 7}
+    const [node] = editorBlocksToHMBlockNodes(hmBlocksToEditorContent([sectionNode(attributes)]))
+    expect(node!.block).toMatchObject({type: 'Section', attributes})
+  })
+
+  test('omits attributes that were never set', () => {
+    const [node] = editorBlocksToHMBlockNodes(hmBlocksToEditorContent([sectionNode({})]))
+    expect((node!.block as {attributes?: unknown}).attributes).toEqual({})
+  })
+
+  test('normalizes invalid values to the defaults at render time', () => {
+    expect(
+      normalizeSectionAttributes({
+        layout: 'carousel',
+        background: '#ff0000',
+        padding: 'XXL',
+        contentWidth: '900px',
+        focalX: 7,
+        focalY: 'x',
+      }),
+    ).toEqual({
+      layout: 'hero',
+      background: 'default',
+      backgroundImage: null,
+      focalX: 1,
+      focalY: 0.5,
+      padding: 'M',
+      contentWidth: null,
+    })
+    expect(normalizeSectionAttributes(undefined).layout).toBe('hero')
+    expect(normalizeSectionAttributes({background: 'ipfs://'}).backgroundImage).toBeNull()
+    expect(normalizeSectionAttributes({background: 'inverted', focalX: '0.2'})).toMatchObject({
+      background: 'inverted',
+      focalX: 0.2,
+    })
+    expect(normalizeSectionAttributes({background: 'ipfs://bafy'})).toMatchObject({
+      background: 'default',
+      backgroundImage: 'ipfs://bafy',
+    })
+  })
+
+  test('a client without Section support keeps it intact as an unknown block with children', () => {
+    const original = {
+      type: 'Section',
+      id: 'sec1',
+      text: '',
+      annotations: [],
+      attributes: {layout: 'features', background: 'muted', padding: 'S', contentWidth: 'L'},
+    }
+    // What an older client holds after loading the Section: an `unknown` block
+    // carrying the original data, with the children as ordinary editor blocks.
+    const editorBlock = {
+      id: 'sec1',
+      type: 'unknown',
+      content: [],
+      props: {originalType: 'Section', originalData: JSON.stringify(original)},
+      children: [
+        {id: 'p1', type: 'paragraph', content: [{type: 'text', text: 'Child', styles: {}}], props: {}, children: []},
+      ],
+    } as unknown as EditorBlock
+
+    const [node] = editorBlocksToHMBlockNodes([editorBlock])
+    expect(node!.block).toEqual(original)
+    expect(node!.children![0]!.block).toMatchObject({type: 'Paragraph', id: 'p1', text: 'Child'})
+  })
+
+  test('markdown export does not crash and keeps the children', () => {
+    const md = blocksToMarkdown({metadata: {}, content: [sectionNode({layout: 'hero'})]} as any)
+    expect(md).toContain('Welcome')
+    expect(md).toContain('Nested')
   })
 })

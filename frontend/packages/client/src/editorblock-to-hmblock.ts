@@ -27,6 +27,7 @@ function toHMBlockType(editorBlockType: EditorBlock['type']): HMBlockType | unde
   if (editorBlockType === 'tableRow') return 'TableRow'
   if (editorBlockType === 'tableColumn') return 'TableColumn'
   if (editorBlockType === 'slot') return 'Slot'
+  if (editorBlockType === 'section') return 'Section'
   return undefined
 }
 
@@ -352,6 +353,24 @@ export function editorBlockToHMBlock(editorBlock: EditorBlock): HMBlock {
     blockQuery.attributes.query = query
     blockQuery.attributes.banner = editorBlock.props.banner == 'true'
     if (editorBlock.props.tableConfig) blockQuery.attributes.table = JSON.parse(editorBlock.props.tableConfig)
+  }
+
+  const blockSection = block.type === 'Section' ? block : undefined
+  if (blockSection && editorBlock.type == 'section') {
+    // Stored verbatim (including values this client doesn't know); renderers normalize.
+    blockSection.text = ''
+    const {layout, background, padding, contentWidth, focalX, focalY} = editorBlock.props
+    if (layout) blockSection.attributes.layout = layout
+    if (background) blockSection.attributes.background = background
+    if (padding) blockSection.attributes.padding = padding
+    if (contentWidth) blockSection.attributes.contentWidth = contentWidth
+    for (const [key, value] of [
+      ['focalX', focalX],
+      ['focalY', focalY],
+    ] as const) {
+      const n = value ? Number(value) : NaN
+      if (Number.isFinite(n)) blockSection.attributes[key] = n
+    }
   }
 
   const blockParse = HMBlockSchema.safeParse(block)

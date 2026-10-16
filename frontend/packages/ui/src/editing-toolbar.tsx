@@ -1,5 +1,7 @@
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
+import {setPageMode, usePageModePreference} from '@shm/shared/page-mode'
+import {useUniversalAppContext} from '@shm/shared/routing'
 import {type DocumentMachineEvent} from '@shm/shared/models/document-machine'
 import {useAccount} from '@shm/shared/models/entity'
 import {
@@ -17,7 +19,7 @@ import {
 import {useUnpublishedChangeCount} from '@shm/shared/models/use-unpublished-change-count'
 import {type AnyTimestamp, formattedDateMedium, formattedDateShort, normalizeDate} from '@shm/shared/utils/date'
 import {pathNameify} from '@shm/shared/utils/path'
-import {Check, ChevronRight, Clock, Copy, FileDiff, Pencil, Trash, X} from 'lucide-react'
+import {Check, ChevronRight, Clock, Copy, FileDiff, PanelsTopLeft, Pencil, Trash, X} from 'lucide-react'
 import React, {forwardRef, useState} from 'react'
 import {Button} from './button'
 import {PathInput} from './path-input'
@@ -359,25 +361,28 @@ function canPublishDocument({
 }
 
 /** Trigger button for the Publish popover. */
-const PublishTrigger = forwardRef<HTMLButtonElement, {canPublish: boolean; onClick: (e: React.MouseEvent) => void}>(
-  ({canPublish, onClick}, ref) => {
-    return (
-      <Button
-        ref={ref}
-        size="sm"
-        variant={canPublish ? 'green' : 'ghost'}
-        className={cn(
-          'gap-1.5',
+const PublishTrigger = forwardRef<
+  HTMLButtonElement,
+  {canPublish: boolean; dock?: boolean; onClick: (e: React.MouseEvent) => void}
+>(({canPublish, dock, onClick}, ref) => {
+  return (
+    <Button
+      ref={ref}
+      size="sm"
+      variant={dock ? 'default' : canPublish ? 'green' : 'ghost'}
+      className={cn(
+        'gap-1.5',
+        dock && 'hm-page-dock-publish',
+        !dock &&
           !canPublish &&
-            'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400',
-        )}
-        onClick={onClick}
-      >
-        <span>Publish</span>
-      </Button>
-    )
-  },
-)
+          'bg-neutral-100 text-neutral-500 hover:bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400',
+      )}
+      onClick={onClick}
+    >
+      <span>Publish</span>
+    </Button>
+  )
+})
 PublishTrigger.displayName = 'PublishTrigger'
 
 /**
@@ -393,9 +398,12 @@ export function PublishButtonWithPopover({
   onGoToVersions,
   getUnpublishedChildCount,
   onPublishIntercept,
+  dock,
 }: {
   docId: UnpackedHypermediaId
   existingMenuItems: MenuItemType[]
+  /** Render only the Publish button, styled for the Page mode dock, with its popover opening upwards. */
+  dock?: boolean
   /** When greater than 0, publish is blocked because the doc embeds child drafts that haven't been published yet. */
   unpublishedChildCount?: number
 } & EditingToolbarCallbacks) {
@@ -458,9 +466,17 @@ export function PublishButtonWithPopover({
     <div className="flex items-center gap-2">
       <Popover open={popoverState.open} onOpenChange={popoverState.onOpenChange}>
         <PopoverAnchor asChild>
-          <PublishTrigger canPublish={canPublish} onClick={handlePublishTriggerClick} />
+          <PublishTrigger canPublish={canPublish} dock={dock} onClick={handlePublishTriggerClick} />
         </PopoverAnchor>
-        <PopoverContent align="end" className="w-[26rem] max-w-[calc(100vw-2rem)] p-6">
+        <PopoverContent
+          align="end"
+          side={dock ? 'top' : undefined}
+          sideOffset={dock ? 14 : undefined}
+          className={cn(
+            'w-[26rem] max-w-[calc(100vw-2rem)] p-6',
+            dock && 'z-[70] data-[state=closed]:animate-none data-[state=open]:animate-none',
+          )}
+        >
           <PublishPopoverBody
             docId={docId}
             changeCount={changeCount}
@@ -473,8 +489,30 @@ export function PublishButtonWithPopover({
           />
         </PopoverContent>
       </Popover>
-      <OptionsDropdown menuItems={allItems} align="end" side="bottom" />
+      {dock ? null : <OptionsDropdown menuItems={allItems} align="end" side="bottom" />}
     </div>
+  )
+}
+
+/** Draft toolbar switch between document editing and Page mode (only with the `pageMode` experiment). */
+function PageModeToggle() {
+  const {experiments} = useUniversalAppContext()
+  const enabled = usePageModePreference()
+  if (!experiments?.pageMode) return null
+  return (
+    <Tooltip content={enabled ? 'Back to document editing' : 'Edit the draft as the published page'}>
+      <Button
+        size="sm"
+        variant={enabled ? 'secondary' : 'ghost'}
+        aria-pressed={enabled}
+        aria-label="Page mode"
+        onClick={() => setPageMode(!enabled)}
+      >
+        <PanelsTopLeft className="size-4" />
+        <span className="hidden sm:inline">{enabled ? 'Page mode on' : 'Page mode'}</span>
+        {enabled ? <Check className="size-3.5" aria-hidden /> : null}
+      </Button>
+    </Tooltip>
   )
 }
 
@@ -487,6 +525,7 @@ export function EditingDocToolsRight({
   existingMenuItems,
   unpublishedChildCount,
   beforePublish,
+  dock,
   ...callbacks
 }: {
   docId: UnpackedHypermediaId
@@ -494,12 +533,26 @@ export function EditingDocToolsRight({
   unpublishedChildCount?: number
   /** Contextual actions rendered immediately before Publish. */
   beforePublish?: React.ReactNode
+  /** Render only the Publish control, for the Page mode dock. */
+  dock?: boolean
 } & EditingToolbarCallbacks) {
+  if (dock) {
+    return (
+      <PublishButtonWithPopover
+        docId={docId}
+        existingMenuItems={existingMenuItems}
+        unpublishedChildCount={unpublishedChildCount}
+        dock
+        {...callbacks}
+      />
+    )
+  }
   return (
     <div className="relative flex items-center gap-2">
       <div className="pointer-events-none absolute right-full mr-2">
         <SaveIndicator />
       </div>
+      <PageModeToggle />
       {beforePublish}
       <PublishButtonWithPopover
         docId={docId}

@@ -121,11 +121,14 @@ export function EditingDocToolsRight({
   existingMenuItems,
   getUnpublishedChildCount,
   beforePublish,
+  dock,
 }: {
   docId: UnpackedHypermediaId
   existingMenuItems: MenuItemType[]
   getUnpublishedChildCount?: () => number
   beforePublish?: ReactNode
+  /** Render only the Publish control, for the Page mode dock. */
+  dock?: boolean
 }) {
   const {callbacks, deleteDraftDialog} = useDesktopToolbarCallbacks(docId)
   const unpublishedChildCount = useUnpublishedChildCount()
@@ -137,6 +140,7 @@ export function EditingDocToolsRight({
         unpublishedChildCount={unpublishedChildCount}
         getUnpublishedChildCount={getUnpublishedChildCount}
         beforePublish={beforePublish}
+        dock={dock}
         {...callbacks}
       />
       {deleteDraftDialog.content}
