@@ -10,7 +10,7 @@
       "value": {
         "type": "hm://hyper.media/string"
       },
-      "description": "Reserved for per-block attributes; must be empty today."
+      "description": "Proposed (spike, not released): empty means document metadata; non-empty is the block id whose attributes are written. Old daemons reject block-scoped writes at replay."
     },
     "attrs": {
       "value": {

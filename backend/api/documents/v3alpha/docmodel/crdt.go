@@ -1,3 +1,4 @@
+// Package docmodel models document state and change operations.
 package docmodel
 
 import (
@@ -147,8 +148,9 @@ type docCRDT struct {
 
 	tree *treeOpSet
 
-	stateMetadata *btree.Map[[]string, *mvReg[metadataValue]]
-	stateBlocks   map[string]*mvReg[blob.Block] // blockID -> opid -> block state.
+	stateMetadata   *btree.Map[[]string, *mvReg[metadataValue]]
+	stateBlocks     map[string]*mvReg[blob.Block] // blockID -> opid -> block state.
+	stateBlockAttrs map[string]*btree.Map[[]string, *mvReg[metadataValue]]
 
 	clock        *cclock.Clock
 	actorsIntern map[core.PrincipalUnsafeString]core.PrincipalUnsafeString
@@ -162,15 +164,16 @@ type metadataValue struct {
 
 func newCRDT(id blob.IRI, clock *cclock.Clock) *docCRDT {
 	e := &docCRDT{
-		id:            id,
-		applied:       make(map[cid.Cid]int),
-		heads:         make(map[cid.Cid]struct{}),
-		tree:          newTreeOpSet(),
-		stateMetadata: btree.New[[]string, *mvReg[metadataValue]](8, slices.Compare),
-		stateBlocks:   make(map[string]*mvReg[blob.Block]),
-		clock:         cclock.New(),
-		actorsIntern:  make(map[core.PrincipalUnsafeString]core.PrincipalUnsafeString),
-		vectorClock:   make(map[core.PrincipalUnsafeString]time.Time),
+		id:              id,
+		applied:         make(map[cid.Cid]int),
+		heads:           make(map[cid.Cid]struct{}),
+		tree:            newTreeOpSet(),
+		stateMetadata:   btree.New[[]string, *mvReg[metadataValue]](8, slices.Compare),
+		stateBlocks:     make(map[string]*mvReg[blob.Block]),
+		stateBlockAttrs: make(map[string]*btree.Map[[]string, *mvReg[metadataValue]]),
+		clock:           cclock.New(),
+		actorsIntern:    make(map[core.PrincipalUnsafeString]core.PrincipalUnsafeString),
+		vectorClock:     make(map[core.PrincipalUnsafeString]time.Time),
 	}
 	e.clock = clock
 	return e
@@ -204,8 +207,12 @@ func (e *docCRDT) GetMetadata() map[string]any {
 }
 
 func (e *docCRDT) setMetadata(id opID, key []string, value any) {
+	setAttrRegister(e.stateMetadata, id, key, value)
+}
+
+func setAttrRegister(state *btree.Map[[]string, *mvReg[metadataValue]], id opID, key []string, value any) {
 	exactKey := slices.Clone(key)
-	if reg := e.stateMetadata.GetMaybe(exactKey); reg != nil {
+	if reg := state.GetMaybe(exactKey); reg != nil {
 		currentID, _, ok := reg.GetLatestWithID()
 		if ok && currentID.Compare(id) >= 0 {
 			return
@@ -216,7 +223,7 @@ func (e *docCRDT) setMetadata(id opID, key []string, value any) {
 	// them with the same total order as exact-key updates so replay order cannot
 	// resurrect a value that a later structural replacement removed.
 	var remove [][]string
-	for otherKey, reg := range e.stateMetadata.Items() {
+	for otherKey, reg := range state.Items() {
 		if slices.Equal(otherKey, exactKey) {
 			continue
 		}
@@ -240,15 +247,129 @@ func (e *docCRDT) setMetadata(id opID, key []string, value any) {
 	}
 
 	for _, otherKey := range remove {
-		e.stateMetadata.Delete(otherKey)
+		state.Delete(otherKey)
 	}
 
-	reg := e.stateMetadata.GetMaybe(exactKey)
+	reg := state.GetMaybe(exactKey)
 	if reg == nil {
 		reg = newMVReg[metadataValue]()
-		e.stateMetadata.Set(exactKey, reg)
+		state.Set(exactKey, reg)
 	}
 	reg.Set(id, metadataValue{Key: slices.Clone(key), Value: value})
+}
+
+func (e *docCRDT) effectiveBlock(id string) (opID, blob.Block, bool) {
+	reg := e.stateBlocks[id]
+	if reg == nil {
+		return opID{}, blob.Block{}, false
+	}
+
+	blockID, blk, ok := reg.GetLatestWithID()
+	if !ok {
+		return opID{}, blob.Block{}, false
+	}
+
+	attrs := e.stateBlockAttrs[id]
+	if attrs == nil {
+		return blockID, blk, true
+	}
+
+	blockAttrs := cloneBlockAttrs(blk.Attributes())
+	var updates []struct {
+		id    opID
+		value metadataValue
+	}
+
+	for _, attrReg := range attrs.Items() {
+		attrID, value, ok := attrReg.GetLatestWithID()
+		if ok && attrID.Compare(blockID) > 0 && !isBlockFieldAttribute(value.Key) {
+			updates = append(updates, struct {
+				id    opID
+				value metadataValue
+			}{id: attrID, value: value})
+		}
+	}
+
+	slices.SortFunc(updates, func(a, b struct {
+		id    opID
+		value metadataValue
+	}) int {
+		return a.id.Compare(b.id)
+	})
+	for _, update := range updates {
+		if update.value.Value == nil {
+			deleteAttrPath(blockAttrs, update.value.Key)
+		} else {
+			attrkey.Set(blockAttrs, update.value.Key, update.value.Value)
+		}
+	}
+
+	setBlockAttributes(&blk, blockAttrs)
+	return blockID, blk, true
+}
+
+func cloneBlockAttrs(attrs map[string]any) map[string]any {
+	out := make(map[string]any, len(attrs))
+	for key, value := range attrs {
+		out[key] = cloneAttributeValue(value)
+	}
+
+	return out
+}
+
+func cloneAttributeValue(value any) any {
+	switch value := value.(type) {
+	case map[string]any:
+		return cloneBlockAttrs(value)
+	case []any:
+		out := make([]any, len(value))
+		for i, child := range value {
+			out[i] = cloneAttributeValue(child)
+		}
+
+		return out
+	default:
+		return value
+	}
+}
+
+func setBlockAttributes(blk *blob.Block, attrs map[string]any) {
+	if len(blk.Attributes_Old) > 0 {
+		blk.Attributes_Old = attrs
+	} else {
+		blk.InlineAttributes_ = attrs
+	}
+}
+
+func deleteAttrPath(attrs map[string]any, path []string) {
+	if len(path) == 0 {
+		return
+	}
+
+	current := attrs
+	for _, segment := range path[:len(path)-1] {
+		next, ok := current[segment].(map[string]any)
+		if !ok {
+			return
+		}
+
+		current = next
+	}
+
+	delete(current, path[len(path)-1])
+}
+
+func isBlockFieldAttribute(path []string) bool {
+	if len(path) == 0 {
+		return false
+	}
+
+	switch path[0] {
+	case "id", "type", "text", "link", "annotations", "attributes", "revision":
+		return true
+	default:
+		return false
+	}
 }
 
 // Heads returns the map of head changes.
@@ -540,8 +661,13 @@ func (e *docCRDT) ApplyChange(c cid.Cid, ch *blob.Change) error {
 				}
 			}
 		case blob.OpSetAttributes:
+			state := e.stateMetadata
 			if op.Block != "" {
-				return fmt.Errorf("TODO: SetAttributes can only be used for document (empty block ID)")
+				state = e.stateBlockAttrs[op.Block]
+				if state == nil {
+					state = btree.New[[]string, *mvReg[metadataValue]](8, slices.Compare)
+					e.stateBlockAttrs[op.Block] = state
+				}
 			}
 
 			for i, kv := range op.Attrs {
@@ -550,7 +676,12 @@ func (e *docCRDT) ApplyChange(c cid.Cid, ch *blob.Change) error {
 				if err != nil {
 					return err
 				}
-				e.setMetadata(opid, kv.Key, kv.Value)
+
+				if op.Block == "" {
+					e.setMetadata(opid, kv.Key, kv.Value)
+				} else {
+					setAttrRegister(state, opid, kv.Key, kv.Value)
+				}
 			}
 		default:
 			return fmt.Errorf("BUG?: unhandled op type: %T", op)

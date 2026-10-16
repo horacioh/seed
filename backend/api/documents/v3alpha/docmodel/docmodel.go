@@ -12,6 +12,7 @@ import (
 	"seed/backend/blob"
 	"seed/backend/core"
 	documents "seed/backend/genproto/documents/v3alpha"
+	"seed/backend/util/attrkey"
 	"seed/backend/util/btree"
 	"seed/backend/util/cclock"
 	"seed/backend/util/maybe"
@@ -47,8 +48,9 @@ type Document struct {
 	// Blocks that we've deleted in this change.
 	deletedBlocks map[string]struct{}
 
-	dirtyBlocks   map[string]mvRegValue[blob.Block]
-	dirtyMetadata *btree.Map[[]string, mvRegValue[metadataValue]]
+	dirtyBlocks     map[string]mvRegValue[blob.Block]
+	dirtyMetadata   *btree.Map[[]string, mvRegValue[metadataValue]]
+	dirtyBlockAttrs map[string]*btree.Map[[]string, mvRegValue[metadataValue]]
 
 	Generation maybe.Value[int64]
 
@@ -209,10 +211,6 @@ func (dm *Document) SetMetadata(key, newValue string) error {
 // SetAttribute on a given block.
 // Empty block ID means the document metadata.
 func (dm *Document) SetAttribute(block string, keyPath []string, newValue any) error {
-	if block != "" {
-		return fmt.Errorf("TODO: setting attributes for non-root blocks")
-	}
-
 	if len(keyPath) == 0 {
 		return fmt.Errorf("must specify key path to set value for")
 	}
@@ -221,6 +219,18 @@ func (dm *Document) SetAttribute(block string, keyPath []string, newValue any) e
 		if strings.Contains(k, ".") {
 			return fmt.Errorf("key segments must not contain dots, got: %s", k)
 		}
+	}
+
+	if block != "" {
+		if isBlockFieldAttribute(keyPath) {
+			return fmt.Errorf("block attribute path %q is reserved", keyPath[0])
+		}
+
+		if _, _, ok := dm.effectiveBlock(block); !ok {
+			return fmt.Errorf("block %q does not exist", block)
+		}
+
+		return dm.setBlockAttribute(block, keyPath, newValue)
 	}
 
 	dm.dirty = true
@@ -246,6 +256,68 @@ func (dm *Document) SetAttribute(block string, keyPath []string, newValue any) e
 		Preds: preds,
 	})
 
+	return nil
+}
+
+func (dm *Document) setBlockAttribute(block string, keyPath []string, value any) error {
+	dm.dirty = true
+	if dm.dirtyBlockAttrs == nil {
+		dm.dirtyBlockAttrs = make(map[string]*btree.Map[[]string, mvRegValue[metadataValue]])
+	}
+
+	attrs := dm.dirtyBlockAttrs[block]
+	if attrs == nil {
+		attrs = btree.New[[]string, mvRegValue[metadataValue]](8, slices.Compare)
+		dm.dirtyBlockAttrs[block] = attrs
+	}
+
+	exactKey := slices.Clone(keyPath)
+	if dirty, ok := attrs.Get(exactKey); ok && reflect.DeepEqual(value, dirty.Value.Value) {
+		return nil
+	}
+
+	var remove [][]string
+
+	for existing := range attrs.Keys() {
+		ancestor := len(existing) < len(exactKey) && slices.Equal(existing, exactKey[:len(existing)])
+		descendant := len(exactKey) < len(existing) && slices.Equal(exactKey, existing[:len(exactKey)])
+
+		if ancestor || descendant {
+			remove = append(remove, existing)
+		}
+	}
+
+	for _, existing := range remove {
+		attrs.Delete(existing)
+	}
+
+	if state := dm.crdt.stateBlockAttrs[block]; state != nil {
+		if reg := state.GetMaybe(exactKey); reg != nil {
+			latest := reg.GetLatest()
+			if reflect.DeepEqual(value, latest.Value) && slices.Equal(keyPath, latest.Key) {
+				attrs.Delete(exactKey)
+
+				if attrs.Len() == 0 {
+					delete(dm.dirtyBlockAttrs, block)
+				}
+
+				return nil
+			}
+		}
+	}
+
+	var preds []opID
+
+	if state := dm.crdt.stateBlockAttrs[block]; state != nil {
+		if reg := state.GetMaybe(exactKey); reg != nil {
+			preds = slices.Collect(reg.state.Keys())
+		}
+	}
+
+	attrs.Set(exactKey, mvRegValue[metadataValue]{
+		Value: metadataValue{Key: slices.Clone(keyPath), Value: value},
+		Preds: preds,
+	})
 	return nil
 }
 
@@ -276,28 +348,49 @@ func (dm *Document) ReplaceBlock(blkpb *documents.Block) error {
 		return fmt.Errorf("blocks must have ID")
 	}
 
-	if dm.dirtyBlocks == nil {
-		dm.dirtyBlocks = make(map[string]mvRegValue[blob.Block])
-	}
-
 	blk, err := BlockFromProto(blkpb)
 	if err != nil {
 		return err
 	}
 
-	// Check if CRDT state already has the same value for block.
-	// If so, we do nothing, and remove any dirty state for this block.
-	var preds []opID
-	if reg := dm.crdt.stateBlocks[blkpb.Id]; reg != nil {
-		oldValue, ok := reg.GetLatestOK()
-		if ok && reflect.DeepEqual(oldValue, blk) {
-			delete(dm.dirtyBlocks, blkpb.Id)
+	if dirty, alreadyDirty := dm.dirtyBlocks[blkpb.Id]; alreadyDirty {
+		_, current, _ := dm.effectiveBlock(blkpb.Id)
+		if reflect.DeepEqual(current, blk) {
 			return nil
 		}
+
+		dirty.Value = blk
+		dm.dirtyBlocks[blkpb.Id] = dirty
+		delete(dm.dirtyBlockAttrs, blkpb.Id)
+		return nil
+	}
+
+	_, oldBlock, exists := dm.crdt.effectiveBlock(blkpb.Id)
+	if exists && reflect.DeepEqual(oldBlock, blk) {
+		delete(dm.dirtyBlocks, blkpb.Id)
+		return nil
+	}
+
+	if exists && sameBlockContent(oldBlock, blk) {
+		edits, ok := diffBlockAttributes(oldBlock.Attributes(), blk.Attributes())
+		if ok {
+			dm.setDirtyBlockAttributes(blkpb.Id, edits)
+			return nil
+		}
+	}
+
+	// Check if CRDT state already has the same value for block.
+	var preds []opID
+	if reg := dm.crdt.stateBlocks[blkpb.Id]; reg != nil {
 		preds = slices.Collect(reg.state.Keys())
 	}
 
+	if dm.dirtyBlocks == nil {
+		dm.dirtyBlocks = make(map[string]mvRegValue[blob.Block])
+	}
+
 	dm.dirtyBlocks[blk.ID()] = mvRegValue[blob.Block]{Value: blk, Preds: preds}
+	delete(dm.dirtyBlockAttrs, blkpb.Id)
 
 	if _, ok := dm.crdt.tree.sublists.Get(blk.ID()); !ok {
 		dm.crdt.tree.sublists.Set(blk.ID(), newRGAList[string]())
@@ -305,6 +398,188 @@ func (dm *Document) ReplaceBlock(blkpb *documents.Block) error {
 	}
 
 	return nil
+}
+
+func (dm *Document) effectiveBlock(id string) (opID, blob.Block, bool) {
+	opid, blk, ok := dm.crdt.effectiveBlock(id)
+	if dirty, exists := dm.dirtyBlocks[id]; exists {
+		blk = dirty.Value
+		ok = true
+	}
+
+	if !ok {
+		return opID{}, blob.Block{}, false
+	}
+
+	return opid, applyBlockAttributeEdits(blk, dm.dirtyBlockAttrs[id]), true
+}
+
+func (dm *Document) setDirtyBlockAttributes(block string, edits []metadataValue) {
+	if len(edits) == 0 {
+		delete(dm.dirtyBlockAttrs, block)
+		return
+	}
+
+	attrs := btree.New[[]string, mvRegValue[metadataValue]](8, slices.Compare)
+	for _, edit := range edits {
+		attrs.Set(slices.Clone(edit.Key), mvRegValue[metadataValue]{
+			Value: metadataValue{Key: slices.Clone(edit.Key), Value: edit.Value},
+		})
+	}
+
+	if dm.dirtyBlockAttrs == nil {
+		dm.dirtyBlockAttrs = make(map[string]*btree.Map[[]string, mvRegValue[metadataValue]])
+	}
+
+	dm.dirtyBlockAttrs[block] = attrs
+}
+
+func applyBlockAttributeEdits(blk blob.Block, edits *btree.Map[[]string, mvRegValue[metadataValue]]) blob.Block {
+	if edits == nil {
+		return blk
+	}
+
+	attrs := cloneBlockAttrs(blk.Attributes())
+	for _, edit := range edits.Items() {
+		if edit.Value.Value == nil {
+			deleteAttrPath(attrs, edit.Value.Key)
+		} else {
+			attrkey.Set(attrs, edit.Value.Key, edit.Value.Value)
+		}
+	}
+
+	setBlockAttributes(&blk, attrs)
+	return blk
+}
+
+func sameBlockContent(a, b blob.Block) bool {
+	return a.ID() == b.ID() &&
+		a.Type == b.Type &&
+		a.Text == b.Text &&
+		a.Link == b.Link &&
+		reflect.DeepEqual(a.Annotations, b.Annotations)
+}
+
+func diffBlockAttributes(oldAttrs, newAttrs map[string]any) ([]metadataValue, bool) {
+	var edits []metadataValue
+	var walk func([]string, any, bool, any, bool) bool
+
+	walk = func(path []string, oldValue any, oldOK bool, newValue any, newOK bool) bool {
+		if oldOK && newOK && reflect.DeepEqual(oldValue, newValue) {
+			return true
+		}
+
+		if len(path) > 0 {
+			segment := path[len(path)-1]
+			if segment == "" || strings.Contains(segment, ".") {
+				return false
+			}
+		}
+
+		oldMap, oldIsMap := oldValue.(map[string]any)
+
+		newMap, newIsMap := newValue.(map[string]any)
+		if newOK && newIsMap {
+			if len(newMap) == 0 || oldOK && oldIsMap && len(oldMap) == 0 || oldOK && !oldIsMap && !isAttributeScalar(oldValue) {
+				return false
+			}
+
+			keys := make(map[string]struct{}, len(oldMap)+len(newMap))
+			if oldIsMap {
+				for key := range oldMap {
+					keys[key] = struct{}{}
+				}
+			}
+
+			for key := range newMap {
+				keys[key] = struct{}{}
+			}
+
+			ordered := make([]string, 0, len(keys))
+			for key := range keys {
+				ordered = append(ordered, key)
+			}
+
+			slices.Sort(ordered)
+			for _, key := range ordered {
+				oldChild, oldChildOK := oldMap[key]
+				if !oldIsMap {
+					oldChildOK = false
+				}
+
+				newChild, newChildOK := newMap[key]
+				if !walk(append(slices.Clone(path), key), oldChild, oldChildOK, newChild, newChildOK) {
+					return false
+				}
+			}
+
+			return true
+		}
+
+		if newOK {
+			if !isAttributeScalar(newValue) {
+				return false
+			}
+
+			edits = append(edits, metadataValue{Key: slices.Clone(path), Value: newValue})
+			return true
+		}
+
+		if !oldOK {
+			return true
+		}
+
+		if oldIsMap {
+			if len(oldMap) == 0 {
+				return false
+			}
+
+			keys := make([]string, 0, len(oldMap))
+			for key := range oldMap {
+				keys = append(keys, key)
+			}
+
+			slices.Sort(keys)
+			for _, key := range keys {
+				if !walk(append(slices.Clone(path), key), oldMap[key], true, nil, false) {
+					return false
+				}
+			}
+
+			return true
+		}
+
+		if !isAttributeScalar(oldValue) {
+			return false
+		}
+
+		edits = append(edits, metadataValue{Key: slices.Clone(path), Value: nil})
+		return true
+	}
+
+	if !walk(nil, oldAttrs, true, newAttrs, true) {
+		return nil, false
+	}
+
+	slices.SortFunc(edits, func(a, b metadataValue) int {
+		return slices.Compare(a.Key, b.Key)
+	})
+	return edits, true
+}
+
+func isAttributeScalar(value any) bool {
+	if value == nil {
+		return true
+	}
+
+	switch reflect.TypeOf(value).Kind() {
+	case reflect.String, reflect.Bool,
+		reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return true
+	default:
+		return false
+	}
 }
 
 // MoveBlock moves a block.
@@ -505,9 +780,20 @@ func (dm *Document) cleanupPatch() (out blob.ChangeBody, err error) {
 
 	// Remove state of those blocks that we created and deleted in the same change.
 	for blk := range dm.deletedBlocks {
+		delete(dm.dirtyBlockAttrs, blk)
 		if _, mustIgnore := dm.createdBlocks[blk]; mustIgnore {
 			delete(dm.dirtyBlocks, blk)
 			continue
+		}
+	}
+
+	// A ReplaceBlock already writes the complete attribute map, so fold any
+	// same-mutation attribute edits into it instead of emitting both operations.
+	for blk, attrs := range dm.dirtyBlockAttrs {
+		if dirty, ok := dm.dirtyBlocks[blk]; ok {
+			dirty.Value = applyBlockAttributeEdits(dirty.Value, attrs)
+			dm.dirtyBlocks[blk] = dirty
+			delete(dm.dirtyBlockAttrs, blk)
 		}
 	}
 
@@ -519,6 +805,20 @@ func (dm *Document) cleanupPatch() (out blob.ChangeBody, err error) {
 			panic("BUG: dirty block not found")
 		}
 		addOp(blob.NewOpReplaceBlock(blk.Value), 1)
+	}
+
+	dirtyBlockIDs = slices.Collect(maps.Keys(dm.dirtyBlockAttrs))
+	slices.Sort(dirtyBlockIDs)
+	for _, bid := range dirtyBlockIDs {
+		attrs := make([]blob.KeyValue, 0, dm.dirtyBlockAttrs[bid].Len())
+		for _, v := range dm.dirtyBlockAttrs[bid].Items() {
+			attrs = append(attrs, blob.KeyValue{
+				Key:   v.Value.Key,
+				Value: v.Value.Value,
+			})
+		}
+
+		addOp(blob.NewOpSetAttributes(bid, attrs), len(attrs))
 	}
 
 	return out, nil
@@ -619,12 +919,7 @@ func (dm *Document) Hydrate(ctx context.Context) (*documents.Document, error) {
 	treeState := dm.crdt.tree.State()
 
 	blockToProto := func(id string) (*documents.Block, error) {
-		bs := dm.crdt.stateBlocks[id]
-		if bs == nil {
-			return nil, nil
-		}
-
-		opid, blk, ok := bs.GetLatestWithID()
+		opid, blk, ok := dm.crdt.effectiveBlock(id)
 		if !ok {
 			return nil, nil
 		}
@@ -714,12 +1009,7 @@ func (dm *Document) FirstContentImage() string {
 
 	treeState := dm.crdt.tree.State()
 	for pair := range treeState.DFT("") {
-		bs := dm.crdt.stateBlocks[pair.Child]
-		if bs == nil {
-			continue
-		}
-
-		_, blk, ok := bs.GetLatestWithID()
+		_, blk, ok := dm.crdt.effectiveBlock(pair.Child)
 		if !ok {
 			continue
 		}
@@ -758,11 +1048,7 @@ func (dm *Document) ReferenceSummary() ([]string, bool) {
 	}
 
 	for pair := range dm.crdt.tree.State().DFT("") {
-		bs := dm.crdt.stateBlocks[pair.Child]
-		if bs == nil {
-			continue
-		}
-		_, blk, ok := bs.GetLatestWithID()
+		_, blk, ok := dm.crdt.effectiveBlock(pair.Child)
 		if !ok {
 			continue
 		}
@@ -1002,12 +1288,7 @@ func (dm *Document) IsCollection() bool {
 		return false
 	}
 
-	bs := dm.crdt.stateBlocks[root]
-	if bs == nil {
-		return false
-	}
-
-	_, blk, ok := bs.GetLatestWithID()
+	_, blk, ok := dm.crdt.effectiveBlock(root)
 	if !ok || blk.Type != "Query" {
 		return false
 	}
