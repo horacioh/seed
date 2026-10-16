@@ -2,11 +2,15 @@
  * dock and its popovers. None of this applies to the reader. */
 
 .hm-page-surface {
-  --hm-gap: 14px;
   padding-bottom: 120px;
 }
+.hm-page-surface,
+.hm-page-gaps {
+  --hm-gap: 14px;
+}
 @media (max-width: 660px) {
-  .hm-page-surface {
+  .hm-page-surface,
+  .hm-page-gaps {
     --hm-gap: 24px;
   }
 }

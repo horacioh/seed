@@ -197,6 +197,9 @@ export function PageModeSurface({editor}: {editor: SectionEditor}) {
       if (event.key === 'Escape') {
         if (document.querySelector('[data-radix-popper-content-wrapper], .hm-dock-sheet')) return
         if (id) {
+          // Keep the editor's own Escape (leave editing) from firing too.
+          event.preventDefault()
+          event.stopPropagation()
           setSelectedSection(editor, null)
           tt.commands.blur()
         }
