@@ -1,0 +1,508 @@
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import {execFileSync} from 'node:child_process'
+
+const COOLIFY_URL = 'http://localhost:8000'
+const API_URL = `${COOLIFY_URL}/api/v1`
+const PROJECT_UUID = 'n5nnxdsvsmls18z90uxmxirg'
+const SERVER_UUID = '5eq5rioqls2zo5kozzedwb4c'
+const PROJECT_PATH = `/project/${PROJECT_UUID}/environment/e0f8nivpbvv8owofo1dlgnmz`
+const STORAGE_STATE = path.join(os.homedir(), '.config/coolify/storage-state.json')
+const API_TOKEN = path.join(os.homedir(), '.config/coolify/api-token')
+const SITE_COMPOSE = path.resolve('ops/coolify/seed-site.yaml')
+const UPDATER_COMPOSE = path.resolve('ops/coolify/seed-updater.yaml')
+let originalDnsValidation
+let dnsValidationChanged = false
+
+async function api(route, {method = 'GET', body} = {}) {
+  const token = fs.readFileSync(API_TOKEN, 'utf8').trim()
+  const response = await fetch(`${API_URL}${route}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      ...(body ? {'Content-Type': 'application/json'} : {}),
+    },
+    ...(body ? {body: JSON.stringify(body)} : {}),
+  })
+  const text = await response.text()
+  let data
+  try {
+    data = text ? JSON.parse(text) : null
+  } catch {
+    data = text
+  }
+  if (!response.ok) throw new Error(`Coolify API ${method} ${route}: ${response.status} ${JSON.stringify(data)}`)
+  return data
+}
+
+function belongsToProject(service, environmentIds) {
+  return (
+    environmentIds.has(Number(service.environment_id)) ||
+    service.environment?.project_uuid === PROJECT_UUID ||
+    service.project_uuid === PROJECT_UUID
+  )
+}
+
+function isSeedCompose(service) {
+  const compose = [service.docker_compose_raw, service.docker_compose].filter(Boolean).join('\n')
+  return (
+    /seedhypermedia\//i.test(compose) ||
+    /SERVICE_PASSWORD_SEEDLINK/i.test(compose) ||
+    (/nickfedor\/watchtower/i.test(compose) && /com\.centurylinklabs\.watchtower\.scope\s*=\s*seed/i.test(compose))
+  )
+}
+
+async function applicationStatuses(uuid) {
+  const service = await api(`/services/${encodeURIComponent(uuid)}`)
+  return new Map((service.applications || []).map((application) => [application.name, application.status]))
+}
+
+function seedDataVolumes(serviceUuids) {
+  const prefixes = serviceUuids.map((uuid) => `${uuid}_`)
+  return execFileSync('docker', ['volume', 'ls', '--format', '{{.Name}}'], {encoding: 'utf8'})
+    .split('\n')
+    .filter((name) => prefixes.some((prefix) => name.startsWith(prefix)))
+    .filter((name) => /seed-(daemon|web)-data$/i.test(name))
+}
+
+function setDnsValidation(value) {
+  execFileSync('docker', [
+    'exec',
+    'coolify-db',
+    'psql',
+    '-U',
+    'coolify',
+    '-d',
+    'coolify',
+    '-c',
+    `update instance_settings set is_dns_validation_enabled=${value}`,
+  ])
+}
+
+function restoreDnsValidation() {
+  if (!dnsValidationChanged) return
+  setDnsValidation(originalDnsValidation)
+  dnsValidationChanged = false
+}
+
+async function pasteCompose(r, file, beat) {
+  const page = r.page
+  const editorInput = page.getByRole('textbox', {name: 'Editor content'})
+  const editor = page.locator('.monaco-editor')
+  await editorInput.waitFor({state: 'visible'})
+  const source = fs.readFileSync(file, 'utf8')
+  await page.evaluate((text) => navigator.clipboard.writeText(text), source)
+  await editor.click({position: {x: 120, y: 80}})
+  await page.keyboard.press('Control+V')
+  await page.waitForFunction(
+    (text) => window.monaco?.editor.getModels().some((model) => model.getValue() === text),
+    source,
+  )
+  await r.shot(beat, {target: editor})
+}
+
+/** Clears existing Seed Compose resources and their data volumes through Coolify. */
+export async function prepare() {
+  // The demo hostname does not resolve to this server.
+  originalDnsValidation = execFileSync(
+    'docker',
+    [
+      'exec',
+      'coolify-db',
+      'psql',
+      '-U',
+      'coolify',
+      '-d',
+      'coolify',
+      '-tAc',
+      'select is_dns_validation_enabled from instance_settings limit 1',
+    ],
+    {encoding: 'utf8'},
+  ).trim()
+  if (!['t', 'f'].includes(originalDnsValidation)) {
+    throw new Error(`Unexpected Coolify DNS validation setting: ${originalDnsValidation}`)
+  }
+  const server = await api(`/servers/${SERVER_UUID}`)
+  if (!server.settings?.is_reachable || !server.settings?.is_usable) {
+    throw new Error('Coolify localhost server is not validated and usable')
+  }
+  const project = await api(`/projects/${PROJECT_UUID}`)
+  const environmentIds = new Set((project.environments || []).map((environment) => Number(environment.id)))
+  if (!environmentIds.size) throw new Error('Seed sites project has no environments')
+  const services = await api('/services')
+  const targets = services.filter((service) => belongsToProject(service, environmentIds) && isSeedCompose(service))
+
+  for (const service of targets) {
+    await api(
+      `/services/${encodeURIComponent(
+        service.uuid,
+      )}?delete_volumes=true&delete_connected_networks=true&delete_configurations=true&docker_cleanup=true`,
+      {method: 'DELETE'},
+    )
+  }
+
+  const targetUuids = targets.map((service) => service.uuid)
+  const pending = new Set(targetUuids)
+  const deadline = Date.now() + 60_000
+  while ((pending.size || seedDataVolumes(targetUuids).length) && Date.now() < deadline) {
+    const current = await api('/services')
+    const remaining = new Set(current.map((service) => service.uuid))
+    for (const uuid of pending) if (!remaining.has(uuid)) pending.delete(uuid)
+    if (pending.size || seedDataVolumes(targetUuids).length) await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
+  if (pending.size) throw new Error(`Timed out waiting for Coolify to remove services: ${[...pending].join(', ')}`)
+  const volumes = seedDataVolumes(targetUuids)
+  if (volumes.length) throw new Error(`Coolify left Seed data volumes behind: ${volumes.join(', ')}`)
+  if (originalDnsValidation === 't') {
+    setDnsValidation(false)
+    dnsValidationChanged = true
+  }
+}
+
+/** Configures the browser session for Coolify and clipboard paste. */
+export function context() {
+  return {
+    storageState: STORAGE_STATE,
+    ignoreHTTPSErrors: true,
+  }
+}
+
+/** Coolify tutorial browser launch settings. */
+export const options = {
+  baseUrl: COOLIFY_URL,
+  browser: {
+    args: [
+      '--ignore-certificate-errors',
+      '--host-resolver-rules=MAP site.example.com 127.0.0.1, MAP localhost 127.0.0.1',
+    ],
+  },
+}
+
+/** Captures the asserted Coolify deployment walkthrough. */
+export default async function capture(r) {
+  try {
+    await captureTutorial(r)
+  } finally {
+    restoreDnsValidation()
+  }
+}
+
+async function captureTutorial(r) {
+  const page = r.page
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], {origin: COOLIFY_URL})
+  await r.nav(PROJECT_PATH)
+
+  const acceptNotifications = page.getByRole('button', {name: 'Accept and close'})
+  if (await acceptNotifications.isVisible()) await acceptNotifications.first().click()
+  const maybeLater = page.getByRole('button', {name: 'Maybe next time'})
+  if (await maybeLater.isVisible()) await maybeLater.first().click()
+
+  const projectHeading = page.getByRole('heading', {name: 'No resources yet'})
+  await projectHeading.waitFor({state: 'visible'})
+  await r.shot('project', {target: projectHeading, allowEmpty: true})
+
+  const addResource = page.getByRole('main').getByRole('link', {name: 'New resource'})
+  await r.click(addResource, {
+    name: 'new-resource',
+    allowEmpty: true,
+    expect: async (currentPage) => {
+      await currentPage.waitForURL(/\/new$/, {timeout: 10_000})
+      return currentPage.url().endsWith('/new')
+    },
+  })
+
+  const dockerCompose = page.getByRole('button', {name: /Docker Compose/})
+  await r.click(dockerCompose, {
+    name: 'docker-compose',
+    expect: async (currentPage) => {
+      await currentPage.waitForURL((url) => url.searchParams.has('destination'), {timeout: 10_000})
+      const query = new URL(currentPage.url()).searchParams
+      return query.get('type') === 'docker-compose-empty' && query.has('destination')
+    },
+  })
+
+  await pasteCompose(r, SITE_COMPOSE, 'paste')
+
+  const createSite = page.getByRole('button', {name: /^Create service$/i})
+  await r.click(createSite, {
+    name: 'create',
+    expect: async (currentPage) => {
+      await currentPage.waitForURL(/\/service\//, {timeout: 30_000})
+      return currentPage.url().includes('/service/')
+    },
+    settleMs: 1200,
+  })
+
+  const service = await api('/services')
+  const project = await api(`/projects/${PROJECT_UUID}`)
+  const environmentIds = new Set((project.environments || []).map((environment) => Number(environment.id)))
+  const siteService = service.find((item) => belongsToProject(item, environmentIds) && isSeedCompose(item))
+  if (!siteService) throw new Error('Coolify did not create the Seed site Compose resource')
+
+  const sitePageUrl = `${COOLIFY_URL}${PROJECT_PATH}/service/${siteService.uuid}`
+  await r.nav(sitePageUrl)
+  const composeResources = page.getByRole('heading', {name: 'Compose resources'}).locator('xpath=../../..')
+  await r.shot('services', {target: composeResources})
+
+  const domainTab = page.getByRole('link', {name: 'Domains', exact: true})
+  await r.click(domainTab, {
+    name: 'domain',
+    expect: async (currentPage) => {
+      await currentPage.waitForURL(/\/domains$/, {timeout: 10_000})
+      return currentPage.getByRole('heading', {name: 'Domains'}).isVisible()
+    },
+  })
+
+  const proxyCard = page.getByRole('main').locator('section').filter({hasText: 'Seed Proxy'})
+  const domainSettings = proxyCard.getByRole('button', {name: /^Settings for /})
+  await r.click(domainSettings, {
+    name: 'domain-edit',
+    expect: async (currentPage) => {
+      await currentPage
+        .getByRole('heading', {name: 'Domain settings', exact: true})
+        .waitFor({state: 'visible', timeout: 10_000})
+      return true
+    },
+  })
+
+  const settingsHeading = page.getByRole('heading', {name: 'Domain settings', exact: true})
+  const settingsPanel = settingsHeading.locator('xpath=../..')
+  const protocol = settingsPanel.getByLabel('Protocol')
+  await r.click(protocol, {
+    name: 'protocol-menu',
+    expect: async () => (await protocol.getAttribute('aria-expanded')) === 'true',
+  })
+  const httpsOption = page.getByText('https', {exact: true}).last()
+  await r.click(httpsOption, {
+    name: 'protocol-https',
+    expect: async () => (await protocol.getAttribute('title')) === 'https',
+  })
+  const domain = settingsPanel.getByLabel('Domain')
+  await r.type(domain, 'site.example.com', {
+    name: 'domain-name',
+    expect: async () => (await domain.inputValue()) === 'site.example.com',
+  })
+  const saveDomain = settingsPanel.getByRole('button', {name: /^Save$/i})
+  const usePort = page.getByRole('button', {name: 'Use This Port Anyway'})
+  await r.click(saveDomain, {
+    name: 'save',
+    expect: async () => {
+      await usePort.waitFor({state: 'visible', timeout: 10_000})
+      return true
+    },
+  })
+  await r.click(usePort, {
+    name: 'confirm-port',
+    expect: async () => {
+      await settingsHeading.waitFor({state: 'hidden', timeout: 10_000})
+      await proxyCard.getByText('https://site.example.com').waitFor({state: 'visible', timeout: 10_000})
+      await proxyCard.getByText('Checking DNS').waitFor({state: 'hidden', timeout: 30_000})
+      return true
+    },
+    allowToast: true,
+  })
+
+  const deploySite = page.getByRole('button', {name: /^Deploy$/i})
+  const startupHeading = page.getByRole('heading', {name: 'Service Startup', exact: true})
+  await r.dismissToasts()
+  const visibleToasts = page.locator(
+    '[data-sonner-toast], ol[data-radix-toast-viewport] li, li[role="status"][data-state], .toast',
+  )
+  await visibleToasts.first().waitFor({state: 'hidden', timeout: 5000})
+  await r.click(deploySite, {
+    name: 'deploy',
+    expect: async (currentPage) => {
+      await currentPage.getByRole('heading', {name: 'Service Startup', exact: true}).waitFor({
+        state: 'visible',
+        timeout: 15_000,
+      })
+      return true
+    },
+    allowLoading: true,
+    allowToast: true,
+    settleMs: 800,
+  })
+
+  const siteIsReady = async () => {
+    const statuses = await applicationStatuses(siteService.uuid)
+    return (
+      statuses.get('seed-proxy') === 'running:healthy' &&
+      statuses.get('seed-web') === 'running:healthy' &&
+      statuses.get('seed-daemon')?.startsWith('running')
+    )
+  }
+  await r.poll('wait', {
+    every: 1000,
+    max: 240_000,
+    until: siteIsReady,
+    allowLoading: true,
+    allowToast: true,
+  })
+  if (!(await siteIsReady()))
+    throw new Error('Seed Proxy, Seed Web and Seed Daemon did not reach their expected states')
+
+  const closeStartup = page.getByRole('button', {name: 'Close', exact: true})
+  await r.click(closeStartup, {
+    name: 'close-logs',
+    expect: async () => {
+      await startupHeading.waitFor({state: 'hidden', timeout: 10_000})
+      return true
+    },
+    allowLoading: true,
+    allowToast: true,
+  })
+
+  await r.nav(sitePageUrl)
+  const statusText = await page.getByRole('main').innerText()
+  if (!/Seed Proxy[\s\S]{0,180}healthy/i.test(statusText)) {
+    throw new Error('Seed Proxy did not reach Healthy')
+  }
+  if (!/Seed Web[\s\S]{0,180}healthy/i.test(statusText)) {
+    throw new Error('Seed Web did not reach Healthy')
+  }
+  if (!/Seed Daemon[\s\S]{0,180}running/i.test(statusText)) {
+    throw new Error('Seed Daemon did not reach Running')
+  }
+  if (!/Seed Init[\s\S]{0,180}exited/i.test(statusText)) {
+    throw new Error('Seed Init did not reach Exited after the first setup')
+  }
+  await r.shot('running', {target: composeResources})
+
+  const envTab = page.getByRole('link', {name: 'Environment Variables'})
+  await r.click(envTab, {
+    name: 'secret',
+    expect: async (currentPage) => {
+      await currentPage.getByRole('heading', {name: /Environment variables/i}).waitFor({
+        state: 'visible',
+        timeout: 10_000,
+      })
+      await currentPage
+        .locator('.data-table-row')
+        .filter({has: currentPage.getByText('SERVICE_PASSWORD_SEEDLINK', {exact: true})})
+        .waitFor({
+          state: 'visible',
+          timeout: 10_000,
+        })
+      return true
+    },
+    allowEmpty: true,
+  })
+  const secretRow = page
+    .locator('.data-table-row')
+    .filter({has: page.getByText('SERVICE_PASSWORD_SEEDLINK', {exact: true})})
+  await secretRow.waitFor({state: 'visible'})
+  const copySecret = secretRow.getByRole('button', {name: /copy/i})
+  await r.click(copySecret, {
+    name: 'copy-secret',
+    expect: async (currentPage) => {
+      return currentPage.evaluate(async () => Boolean((await navigator.clipboard.readText()).trim()))
+    },
+    allowToast: true,
+    allowEmpty: true,
+  })
+
+  await r.nav(PROJECT_PATH)
+  const addUpdater = page.getByRole('main').getByRole('link', {name: 'New resource'})
+  await r.click(addUpdater, {
+    name: 'updater-resource',
+    allowEmpty: true,
+    expect: async (currentPage) => {
+      await currentPage.waitForURL(/\/new$/, {timeout: 10_000})
+      return currentPage.url().endsWith('/new')
+    },
+  })
+  await r.click(page.getByRole('button', {name: /Docker Compose/}), {
+    name: 'updater-compose',
+    expect: async (currentPage) => {
+      await currentPage.waitForURL((url) => url.searchParams.has('destination'), {timeout: 10_000})
+      const query = new URL(currentPage.url()).searchParams
+      return query.get('type') === 'docker-compose-empty' && query.has('destination')
+    },
+  })
+  await pasteCompose(r, UPDATER_COMPOSE, 'updater-paste')
+
+  await r.click(page.getByRole('button', {name: /^Create service$/i}), {
+    name: 'updater-create',
+    expect: async (currentPage) => {
+      await currentPage.waitForURL(/\/service\//, {timeout: 30_000})
+      return currentPage.url().includes('/service/')
+    },
+    settleMs: 1000,
+  })
+  const updaterServiceUuid = new URL(page.url()).pathname.match(/\/service\/([^/]+)\/?$/)?.[1]
+  if (!updaterServiceUuid) throw new Error('Coolify did not navigate to the Seed updater service')
+  const updaterService = await api(`/services/${encodeURIComponent(updaterServiceUuid)}`)
+  if (!updaterService?.uuid) throw new Error('Coolify did not create the Seed updater Compose resource')
+
+  const deployUpdater = page.getByRole('button', {name: /^Deploy$/i})
+  const updaterStartupHeading = page.getByRole('heading', {name: 'Service Startup', exact: true})
+  await r.click(deployUpdater, {
+    name: 'updater-deploy',
+    expect: async (currentPage) => {
+      await currentPage.getByRole('heading', {name: 'Service Startup', exact: true}).waitFor({
+        state: 'visible',
+        timeout: 15_000,
+      })
+      return true
+    },
+    allowLoading: true,
+    allowToast: true,
+    settleMs: 800,
+  })
+  const updaterIsRunning = async () =>
+    [...(await applicationStatuses(updaterService.uuid)).values()].some((status) => /^running(?::|$)/i.test(status))
+  await r.poll('updater-running', {
+    every: 1000,
+    max: 240_000,
+    until: updaterIsRunning,
+    allowLoading: true,
+    allowToast: true,
+  })
+  if (!(await updaterIsRunning())) throw new Error('Seed updater did not reach Running')
+
+  await r.click(page.getByRole('button', {name: 'Close', exact: true}), {
+    name: 'updater-close-logs',
+    expect: async () => {
+      await updaterStartupHeading.waitFor({state: 'hidden', timeout: 10_000})
+      return true
+    },
+    allowLoading: true,
+    allowToast: true,
+  })
+
+  const updaterPageUrl = `${COOLIFY_URL}${PROJECT_PATH}/service/${updaterService.uuid}`
+  await r.nav(updaterPageUrl)
+  const updaterResources = page.getByRole('heading', {name: 'Compose resources'}).locator('xpath=../../..')
+  const updaterRow = updaterResources.locator('.grid.min-h-14').filter({hasText: /Seed Updater/})
+  let updaterRunningInUi = false
+  for (let attempt = 0; attempt < 2 && !updaterRunningInUi; attempt++) {
+    if (attempt > 0) await r.nav(updaterPageUrl)
+    try {
+      await updaterResources.waitFor({state: 'visible', timeout: 10_000})
+      await updaterRow.waitFor({state: 'visible', timeout: 10_000})
+      await updaterRow.getByText(/^Running\b/i).waitFor({state: 'visible', timeout: 15_000})
+      updaterRunningInUi = true
+    } catch {
+      if (attempt === 1) {
+        throw new Error('Seed Updater did not show Running in Compose resources after reloading')
+      }
+    }
+  }
+  if (!updaterRunningInUi) throw new Error('Seed Updater did not show Running in Compose resources')
+  await r.shot('updater-status', {target: updaterRow})
+
+  await r.nav('https://site.example.com/')
+  const comingSoonHeading = page.getByText(/Seed Hypermedia Space Coming Soon/i)
+  await comingSoonHeading.waitFor({state: 'visible', timeout: 30_000})
+  const comingSoonCard = comingSoonHeading.locator('xpath=../..')
+  await r.shot('site', {target: comingSoonCard})
+
+  const config = execFileSync(
+    'curl',
+    ['-kfsS', '--resolve', 'site.example.com:443:127.0.0.1', 'https://site.example.com/hm/api/config'],
+    {encoding: 'utf8'},
+  )
+  if (!JSON.parse(config)) throw new Error('Seed config endpoint did not return JSON')
+}
