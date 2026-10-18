@@ -5,6 +5,7 @@ import {Fragment, Node as PMNode} from 'prosemirror-model'
 import {EditorState, TextSelection} from 'prosemirror-state'
 import {getBlockInfoFromPos, getBlockInfoFromSelection} from '../../../extensions/Blocks/helpers/getBlockInfoFromPos'
 import {getGroupInfoFromPos} from '../../../extensions/Blocks/helpers/getGroupInfoFromPos'
+import {isListSlotNode} from '../../../extensions/SlotNormalization/SlotNormalizationExtension'
 
 // Returns true if the current block's previous sibling is a table block.
 function isPreviousSiblingTable(state: EditorState): boolean {
@@ -118,7 +119,7 @@ function unwrapSlot(
   const slotWrapperDepth = groupDepth - 1
   if (slotWrapperDepth < 1) return false
   const slotWrapper = $pos.node(slotWrapperDepth)
-  if (slotWrapper.type.name !== 'blockNode' || slotWrapper.firstChild?.type.name !== 'slot') return false
+  if (slotWrapper.type.name !== 'blockNode' || !isListSlotNode(slotWrapper.firstChild)) return false
   if (!dispatch) return true
 
   const innerGroup = $pos.node(groupDepth)
@@ -147,7 +148,7 @@ export const nestSlotItem = () => {
     const slotWrapper = depth - 1 >= 0 ? $pos.node(depth - 1) : null
     const isRootSlot =
       slotWrapper?.type.name === 'blockNode' &&
-      slotWrapper.firstChild?.type.name === 'slot' &&
+      isListSlotNode(slotWrapper.firstChild) &&
       depth - 3 >= 0 &&
       $pos.node(depth - 2).type.name === 'blockChildren' &&
       $pos.node(depth - 3).type.name === 'doc'
@@ -200,7 +201,7 @@ export const liftSlotItem = (opts: {requireAtStart?: boolean} = {}) => {
       const great = $from.node(d - 3)
       if (
         parent.type.name === 'blockNode' &&
-        parent.firstChild?.type.name === 'slot' &&
+        isListSlotNode(parent.firstChild) &&
         grand.type.name === 'blockChildren' &&
         great.type.name === 'doc'
       ) {
@@ -274,7 +275,7 @@ export const liftSlotSelection = () => {
       const great = $from.node(d - 3)
       if (
         parent.type.name === 'blockNode' &&
-        parent.firstChild?.type.name === 'slot' &&
+        isListSlotNode(parent.firstChild) &&
         grand.type.name === 'blockChildren' &&
         great.type.name === 'doc'
       ) {
@@ -446,8 +447,7 @@ export const updateGroupCommand = (
 
     // Unwrap slot when it's turned back into a plain group.
     const parentBlockOfGroup = depth - 1 >= 0 ? $pos.node(depth - 1) : null
-    const isInsideSlot =
-      parentBlockOfGroup?.type.name === 'blockNode' && parentBlockOfGroup.firstChild?.type.name === 'slot'
+    const isInsideSlot = parentBlockOfGroup?.type.name === 'blockNode' && isListSlotNode(parentBlockOfGroup.firstChild)
     if (isInsideSlot && listType === 'Group' && container) {
       return unwrapSlot(state, dispatch, $pos, depth)
     }

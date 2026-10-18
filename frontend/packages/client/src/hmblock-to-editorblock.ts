@@ -226,6 +226,22 @@ export function hmBlockToEditorBlock(block: HMBlock): EditorBlock {
     }
   }
 
+  if (block.type === 'Slot') {
+    const sectionProps = out.props as Record<string, string>
+    const attrs = (block.attributes ?? {}) as Record<string, unknown>
+    const known = ['layout', 'background', 'padding', 'contentWidth', 'focalX', 'focalY'] as const
+    for (const key of known) {
+      const value = attrs[key]
+      if (typeof value === 'string' || typeof value === 'number') sectionProps[key] = String(value)
+    }
+    const extra = Object.fromEntries(
+      Object.entries(attrs).filter(
+        ([key]) => !(known as readonly string[]).includes(key) && key !== 'childrenType' && key !== 'columnCount',
+      ),
+    )
+    if (Object.keys(extra).length) sectionProps.extraAttributes = JSON.stringify(extra)
+  }
+
   if (block.type === 'Query') {
     const queryProps = out.props as any
     queryProps.style = block.attributes?.style

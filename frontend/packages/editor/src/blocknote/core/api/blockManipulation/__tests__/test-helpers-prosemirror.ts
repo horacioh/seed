@@ -36,6 +36,7 @@ export function createMinimalSchema(): Schema {
         attrs: {
           childrenType: {default: 'Group'},
           columnCount: {default: ''},
+          layout: {default: ''},
         },
       },
       table: {

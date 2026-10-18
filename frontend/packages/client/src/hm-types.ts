@@ -519,6 +519,12 @@ export type HMPublishableBlockSlot = {
   type: 'Slot'
   childrenType?: HMBlockChildrenType
   columnCount?: number
+  layout?: string
+  background?: string
+  focalX?: number
+  focalY?: number
+  padding?: string
+  contentWidth?: string
   children?: HMPublishableBlock[]
 }
 
@@ -1012,13 +1018,99 @@ export const HMBlockGroupSchema = z.object({
   id: z.string(),
 })
 
+/**
+ * An invisible container. It carries a list or grid at the top level of a document
+ * (`childrenType`, `columnCount`), and becomes a visible page section when `layout`
+ * is set. Section attributes are loose strings so values written by newer clients
+ * are stored as-is (renderers normalize them with `normalizeSectionAttributes`), and
+ * attributes this client doesn't know are kept rather than dropped.
+ */
 export const HMBlockSlotSchema = z
   .object({
     type: z.literal('Slot'),
     ...blockBaseProperties,
-    attributes: z.object(parentBlockAttributes).optional().default({}),
+    attributes: z
+      .object({
+        ...parentBlockAttributes,
+        layout: z.string().optional(),
+        background: z.string().optional(),
+        focalX: z.number().optional(),
+        focalY: z.number().optional(),
+        padding: z.string().optional(),
+        contentWidth: z.string().optional(),
+      })
+      .catchall(z.any())
+      .optional()
+      .default({}),
   })
   .strict()
+
+/** Whether a block is a page section: a `Slot` with a `layout` attribute. */
+export function isSectionSlot(block: {type?: string; attributes?: unknown} | null | undefined): boolean {
+  const layout = (block?.attributes as {layout?: unknown} | undefined)?.layout
+  return block?.type === 'Slot' && typeof layout === 'string' && layout !== ''
+}
+
+/** Preset layouts a Section can use. The first entry is the default. */
+export const HM_SECTION_LAYOUTS = ['hero', 'split', 'features', 'fullBleed'] as const
+/** Theme colour tokens a Section background can use. The first entry is the default. */
+export const HM_SECTION_BACKGROUND_TOKENS = ['default', 'muted', 'accent', 'inverted'] as const
+/** Vertical padding presets for a Section. */
+export const HM_SECTION_PADDINGS = ['S', 'M', 'L', 'XL'] as const
+/** Content width presets for a Section. */
+export const HM_SECTION_CONTENT_WIDTHS = ['S', 'M', 'L', 'full'] as const
+
+/** Section layout preset. */
+export type HMSectionLayout = (typeof HM_SECTION_LAYOUTS)[number]
+/** Section background colour token. */
+export type HMSectionBackgroundToken = (typeof HM_SECTION_BACKGROUND_TOKENS)[number]
+/** Section padding preset. */
+export type HMSectionPadding = (typeof HM_SECTION_PADDINGS)[number]
+/** Section content width preset. */
+export type HMSectionContentWidth = (typeof HM_SECTION_CONTENT_WIDTHS)[number]
+
+/** Section attributes after render-time normalization: every field holds a supported value. */
+export type HMSectionAttributes = {
+  layout: HMSectionLayout
+  /** Colour token used for the section surface (falls back to `default` under an image). */
+  background: HMSectionBackgroundToken
+  /** `ipfs://` URL of the background image, if any. */
+  backgroundImage: string | null
+  focalX: number
+  focalY: number
+  padding: HMSectionPadding
+  /** Missing means "use the document's content width". */
+  contentWidth: HMSectionContentWidth | null
+}
+
+function pickPreset<T extends string>(options: readonly T[], value: unknown): T | null {
+  return typeof value === 'string' && (options as readonly string[]).includes(value) ? (value as T) : null
+}
+
+function toFocal(value: unknown): number {
+  const n = typeof value === 'string' && value.trim() !== '' ? Number(value) : value
+  return typeof n === 'number' && Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 0.5
+}
+
+/**
+ * Normalize raw Section attributes (from the wire or editor props) into supported presets.
+ * Never throws: unknown or malformed values fall back to the defaults, so data written
+ * by other clients renders sensibly without being rewritten.
+ */
+export function normalizeSectionAttributes(raw: Record<string, unknown> | null | undefined): HMSectionAttributes {
+  const attrs = raw ?? {}
+  const background = typeof attrs.background === 'string' ? attrs.background.trim() : ''
+  const backgroundImage = background.startsWith('ipfs://') && background.length > 'ipfs://'.length ? background : null
+  return {
+    layout: pickPreset(HM_SECTION_LAYOUTS, attrs.layout) ?? 'hero',
+    background: (backgroundImage ? null : pickPreset(HM_SECTION_BACKGROUND_TOKENS, background)) ?? 'default',
+    backgroundImage,
+    focalX: toFocal(attrs.focalX),
+    focalY: toFocal(attrs.focalY),
+    padding: pickPreset(HM_SECTION_PADDINGS, attrs.padding) ?? 'M',
+    contentWidth: pickPreset(HM_SECTION_CONTENT_WIDTHS, attrs.contentWidth),
+  }
+}
 
 export const HMBlockLinkSchema = z.object({
   type: z.literal('Link'),

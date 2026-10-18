@@ -354,6 +354,35 @@ export function editorBlockToHMBlock(editorBlock: EditorBlock): HMBlock {
     if (editorBlock.props.tableConfig) blockQuery.attributes.table = JSON.parse(editorBlock.props.tableConfig)
   }
 
+  const blockSection = block.type === 'Slot' ? block : undefined
+  if (blockSection && editorBlock.type == 'slot') {
+    // Stored verbatim (including values this client doesn't know); renderers normalize.
+    blockSection.text = ''
+    const {layout, background, padding, contentWidth, focalX, focalY} = editorBlock.props
+    if (layout) blockSection.attributes.layout = layout
+    if (background) blockSection.attributes.background = background
+    if (padding) blockSection.attributes.padding = padding
+    if (contentWidth) blockSection.attributes.contentWidth = contentWidth
+    for (const [key, value] of [
+      ['focalX', focalX],
+      ['focalY', focalY],
+    ] as const) {
+      const n = value ? Number(value) : NaN
+      if (Number.isFinite(n)) blockSection.attributes[key] = n
+    }
+    // Attributes added by other clients round-trip untouched.
+    if (editorBlock.props.extraAttributes) {
+      try {
+        const extra = JSON.parse(editorBlock.props.extraAttributes)
+        if (extra && typeof extra === 'object' && !Array.isArray(extra)) {
+          blockSection.attributes = {...extra, ...blockSection.attributes}
+        }
+      } catch {
+        // Unparseable extras are dropped rather than breaking the block.
+      }
+    }
+  }
+
   const blockParse = HMBlockSchema.safeParse(block)
 
   if (blockParse.success) {

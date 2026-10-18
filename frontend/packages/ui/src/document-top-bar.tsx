@@ -55,7 +55,7 @@ export function DocumentTopBar({
             </Button>
           </Tooltip>
         ) : null}
-        {breadcrumbs?.length ? <Breadcrumbs breadcrumbs={breadcrumbs} /> : null}
+        {breadcrumbs?.length ? <Breadcrumbs breadcrumbs={breadcrumbs} className="overflow-hidden" /> : null}
         {status ? (
           <div data-document-status="" className="flex shrink-0 items-center gap-1">
             {status}

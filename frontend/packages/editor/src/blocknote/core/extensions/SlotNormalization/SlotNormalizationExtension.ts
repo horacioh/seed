@@ -4,8 +4,16 @@ import {Plugin, PluginKey, Transaction} from 'prosemirror-state'
 
 type SlotFix = {from: number; to: number; kind: 'delete'} | {from: number; to: number; kind: 'replace'; nodes: PMNode[]}
 
+/**
+ * Whether `node` is a list/grid Slot. A Slot with `layout` set is a page section:
+ * a visible container the list rules (unwrap, delete when empty, merge) skip.
+ */
+export function isListSlotNode(node: PMNode | null | undefined): boolean {
+  return node?.type.name === 'slot' && !node.attrs.layout
+}
+
 function isSlotWrapper(node: PMNode): boolean {
-  return node.type.name === 'blockNode' && node.firstChild?.type.name === 'slot'
+  return node.type.name === 'blockNode' && isListSlotNode(node.firstChild)
 }
 
 /** A malformed slot wrapper: orphan or a pointless Group slot. */

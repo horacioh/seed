@@ -585,6 +585,7 @@ export function DeveloperSettings() {
   const enabledDevTools = experiments?.developerTools
   const enabledPubContentDevMenu = experiments?.pubContentDevMenu
   const enabledHypermediaSchemas = experiments?.hypermediaSchemas
+  const enabledPageMode = experiments?.pageMode
   const enabledAdvancedCopyLinkOptions = experiments?.advancedCopyLinkOptions
   const embeddingEnabled = experiments?.embeddingEnabled
   const [showEmbeddingConfirm, setShowEmbeddingConfirm] = useState(false)
@@ -632,6 +633,17 @@ export function DeveloperSettings() {
             >
               {enabledDeveloperMode ? 'Disable Developer Mode' : 'Enable Developer Mode'}
             </Button>
+          }
+        />
+        <Separator />
+        <SettingsRow
+          label="Page Mode"
+          description="Adds a Page mode toggle to drafts: edit the document as the published page and compose it from Section blocks with preset layouts."
+          right={
+            <Switch
+              checked={!!enabledPageMode}
+              onCheckedChange={(checked) => writeExperiments.mutate({pageMode: checked})}
+            />
           }
         />
         <Separator />

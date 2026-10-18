@@ -338,3 +338,46 @@ describe('non-root slot unwrapping', () => {
     expect(wrapper.lastChild!.attrs.listType).toBe('Unordered')
   })
 })
+
+describe('section slots', () => {
+  let schema: Schema
+  beforeEach(() => {
+    schema = createMinimalSchema()
+  })
+
+  function section(id: string, childrenType: string, items: any[]) {
+    const content: any[] = [{type: 'slot', attrs: {childrenType, columnCount: '', layout: 'hero'}}]
+    if (items.length) content.push(group(childrenType, items))
+    return blockNode(id, content)
+  }
+  function run(d: any) {
+    const state = EditorState.create({doc: d, schema, plugins: [createSlotNormalizationPlugin()]})
+    return state.apply(state.tr.insertText('!', 6)).doc
+  }
+
+  it('keeps a section whose children are a plain group', () => {
+    const d = doc(schema, [blockNode('p0', [para('x')]), section('s1', 'Group', [blockNode('a', [para('a')])])])
+    expect(collectSlotFixes(d)).toEqual([])
+    expect(countSlots(run(d))).toBe(1)
+  })
+
+  it('keeps an empty section', () => {
+    const d = doc(schema, [blockNode('p0', [para('x')]), section('s1', 'Group', [])])
+    expect(collectSlotFixes(d)).toEqual([])
+  })
+
+  it('does not merge a section with an adjacent list slot', () => {
+    const list = blockNode('l1', [slot('Ordered'), group('Ordered', [blockNode('b', [para('b')])])])
+    const d = doc(schema, [section('s1', 'Ordered', [blockNode('a', [para('a')])]), list])
+    expect(firstSlotMergeSeam(d)).toBeNull()
+  })
+
+  it('still normalizes a list slot nested inside a section', () => {
+    const inner = blockNode('l1', [slot('Unordered'), group('Unordered', [blockNode('b', [para('b')])])])
+    const d = doc(schema, [section('s1', 'Group', [blockNode('a', [para('a')]), inner])])
+    expect(firstNonRootSlotUnwrap(d)).not.toBeNull()
+    const out = run(d)
+    expect(countSlots(out)).toBe(1)
+    expect(out.textContent).toContain('b')
+  })
+})

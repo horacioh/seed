@@ -184,8 +184,20 @@ export interface EditorTableColumnBlock extends EditorBaseBlock {
   content: Array<HMInlineContent> // always empty
 }
 
+/** Invisible container; a page section when `layout` is set. Section props are raw strings. */
 export interface EditorSlotBlock extends EditorBaseBlock {
   type: 'slot'
+  props: EditorBlockProps & {
+    columnCount?: string
+    /** JSON of attributes this client doesn't know, kept so they survive a save. */
+    extraAttributes?: string
+    layout?: string
+    background?: string
+    focalX?: string
+    focalY?: string
+    padding?: string
+    contentWidth?: string
+  }
   content: Array<HMInlineContent>
 }
 

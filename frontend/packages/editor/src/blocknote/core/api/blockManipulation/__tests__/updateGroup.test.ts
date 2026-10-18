@@ -1316,3 +1316,63 @@ describe('updateGroup command', () => {
     })
   })
 })
+
+describe('updateGroup in a section slot', () => {
+  function sectionDoc(schema: Schema, layout: string) {
+    const item = {
+      type: 'blockNode',
+      attrs: {id: 'a'},
+      content: [{type: 'paragraph', content: [{type: 'text', text: 'Hi'}]}],
+    }
+    return schema.nodeFromJSON({
+      type: 'doc',
+      content: [
+        {
+          type: 'blockChildren',
+          attrs: {listType: 'Group', columnCount: null},
+          content: [
+            {
+              type: 'blockNode',
+              attrs: {id: 's1'},
+              content: [
+                {type: 'slot', attrs: {childrenType: 'Unordered', columnCount: '', layout}},
+                {type: 'blockChildren', attrs: {listType: 'Unordered', columnCount: null}, content: [item]},
+              ],
+            },
+          ],
+        },
+      ],
+    })
+  }
+  function toGroup(layout: string) {
+    const schema = createMinimalSchema()
+    const doc = sectionDoc(schema, layout)
+    const state = EditorState.create({doc, schema})
+    const groupInfo = getGroupInfoFromPos(findPosInBlock(doc, 'a'), state)
+    let next: EditorState | undefined
+    updateGroupCommand(
+      groupInfo.$pos.start(),
+      'Group',
+      false,
+    )({
+      editor: createMockEditor(state),
+      state,
+      dispatch: (tr: any) => {
+        next = state.apply(tr || state.tr) as EditorState
+      },
+    } as any)
+    let slots = 0
+    next!.doc.descendants((n) => {
+      if (n.type.name === 'slot') slots++
+    })
+    return {slots, text: next!.doc.textContent}
+  }
+
+  it('turning the list off keeps the section', () => {
+    expect(toGroup('hero')).toEqual({slots: 1, text: 'Hi'})
+  })
+
+  it('turning the list off still unwraps a plain list slot', () => {
+    expect(toGroup('')).toEqual({slots: 0, text: 'Hi'})
+  })
+})
