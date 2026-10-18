@@ -589,13 +589,13 @@ export type HMChangeOpReplaceBlock<Block = HMBlock> = {
 
 /**
  * SetAttributes Op
- * The operation that sets document metadata by key path, where each path is a last-writer-wins register and a nested write prunes older values above and below it.
+ * The operation that sets document metadata or block attributes by key path, where each path is a last-writer-wins register and a nested write prunes older values above and below it.
  * The operation that sets document metadata by key path, each path a last-writer-wins register.
  * Schema: hm://hyper.media/change/op/set-attributes
  */
 export type HMChangeOpSetAttributes = {
   type: 'SetAttributes'
-  /** Reserved for per-block attributes; must be empty today. */
+  /** Proposed (spike, not released): empty means document metadata; non-empty is the block id whose attributes are written. Old daemons reject block-scoped writes at replay. */
   block?: string
   /** Key paths and the values to write; a `null` value deletes the key. */
   attrs?: HMKeyValue[]

@@ -1,0 +1,65 @@
+{
+  "account":  "alice.example",
+  "path":  "/doc",
+  "metadata":  {
+    "enabled":  true,
+    "theme":  {
+      "accent":  "green"
+    }
+  },
+  "authors":  [
+    "z6MkvFrq593SZ3QNsAgXdsHC2CJGrrwUdwxY2EdRGaT4UbYj"
+  ],
+  "content":  [
+    {
+      "block":  {
+        "id":  "p2",
+        "type":  "Paragraph",
+        "text":  "second",
+        "attributes":  {
+          "caption":  "Second",
+          "nested":  {
+            "enabled":  true
+          }
+        },
+        "revision":  "bafy2bzaceaxd6pf5kl2tqrtdvqhfygencmrj3e3zq75y66wds6b4xrkeh2bvg"
+      }
+    },
+    {
+      "block":  {
+        "id":  "p1",
+        "type":  "Paragraph",
+        "text":  "original",
+        "attributes":  {
+          "custom":  true,
+          "style":  {
+            "color":  "blue",
+            "weight":  700
+          }
+        },
+        "annotations":  [
+          {
+            "type":  "Link",
+            "link":  "hm://alice.example/target",
+            "attributes":  {},
+            "starts":  [
+              0
+            ],
+            "ends":  [
+              4
+            ]
+          }
+        ],
+        "revision":  "bafy2bzaceaxd6pf5kl2tqrtdvqhfygencmrj3e3zq75y66wds6b4xrkeh2bvg"
+      }
+    }
+  ],
+  "createTime":  "2024-01-01T00:00:00Z",
+  "updateTime":  "2024-01-01T00:01:00Z",
+  "genesis":  "bafy2bzaceaxd6pf5kl2tqrtdvqhfygencmrj3e3zq75y66wds6b4xrkeh2bvg",
+  "version":  "bafy2bzacecw3o24j7vefyhuxbeefe2clriwsdiwlvfteffjvr56cgdw7mqkw6",
+  "generationInfo":  {
+    "genesis":  "bafy2bzaceaxd6pf5kl2tqrtdvqhfygencmrj3e3zq75y66wds6b4xrkeh2bvg"
+  },
+  "visibility":  "RESOURCE_VISIBILITY_PUBLIC"
+}

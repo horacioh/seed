@@ -49,6 +49,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -179,12 +180,19 @@ func storeTestProfileGenesis(ctx context.Context, app *App, kp *core.KeyPair) er
 }
 
 func signPreparedTestChange(unsignedBytes []byte, kp *core.KeyPair) (blob.Encoded[*blob.Change], error) {
+	return signPreparedTestChangeAt(unsignedBytes, kp, time.Time{})
+}
+
+func signPreparedTestChangeAt(unsignedBytes []byte, kp *core.KeyPair, at time.Time) (blob.Encoded[*blob.Change], error) {
 	var change blob.Change
 	if err := cbornode.DecodeInto(unsignedBytes, &change); err != nil {
 		return blob.Encoded[*blob.Change]{}, fmt.Errorf("decoding unsigned change: %w", err)
 	}
 
 	change.Signer = kp.Principal()
+	if !at.IsZero() {
+		change.Ts = at.Round(blob.ClockPrecision)
+	}
 
 	if err := blob.Sign(kp, &change, &change.Sig); err != nil {
 		return blob.Encoded[*blob.Change]{}, fmt.Errorf("signing change: %w", err)
@@ -1885,6 +1893,102 @@ func TestPushing_Deletes(t *testing.T) {
 		})
 		require.Error(t, err, "alice's delete must propagate over to bob")
 	}
+}
+
+func TestSetAttributesSyncConcurrentTextEdit(t *testing.T) {
+	t.Parallel()
+
+	alice, bob, account, base, iri := makeBlockAttributeSyncFixture(t)
+	baseTime := time.UnixMilli(base.GenerationInfo.Generation)
+	alicePrepared := prepareBlockAttributeTestChange(t, alice, account, base,
+		&documents.DocumentChange{Op: &documents.DocumentChange_ReplaceBlock{
+			ReplaceBlock: &documents.Block{
+				Id:         "b1",
+				Type:       "paragraph",
+				Text:       "Hello wrold",
+				Attributes: mustTestStruct(t, map[string]any{"color": "blue"}),
+			},
+		}},
+	)
+	bobPrepared := prepareBlockAttributeTestChange(t, bob, account, base,
+		&documents.DocumentChange{Op: &documents.DocumentChange_ReplaceBlock{
+			ReplaceBlock: &documents.Block{
+				Id:         "b1",
+				Type:       "paragraph",
+				Text:       "Hello world",
+				Attributes: mustTestStruct(t, map[string]any{"color": "red"}),
+			},
+		}},
+	)
+	requirePreparedBlockAttribute(t, alicePrepared, "blue")
+	requirePreparedBlockReplacement(t, bobPrepared, "b1")
+
+	aliceChange := storePreparedBlockAttributeTestChange(t, alice, base, alicePrepared, baseTime.Add(2*time.Second))
+	bobChange := storePreparedBlockAttributeTestChange(t, bob, base, bobPrepared, baseTime.Add(time.Second))
+	require.True(t, aliceChange.Decoded.Ts.After(bobChange.Decoded.Ts))
+
+	pushDocuments(t, alice, bob, iri)
+	pushDocuments(t, bob, alice, iri)
+
+	aliceMerged, err := alice.RPC.DocumentsV3.GetDocument(t.Context(), &documents.GetDocumentRequest{
+		Account: account.PublicKey.String(),
+		Path:    base.Path,
+	})
+	require.NoError(t, err)
+	bobMerged, err := bob.RPC.DocumentsV3.GetDocument(t.Context(), &documents.GetDocumentRequest{
+		Account: account.PublicKey.String(),
+		Path:    base.Path,
+	})
+	require.NoError(t, err)
+	requireConvergedBlockAttributeDocuments(t, base, aliceMerged, bobMerged, "Hello world", "blue")
+}
+
+func TestSetAttributesSyncConcurrentSameKey(t *testing.T) {
+	t.Parallel()
+
+	alice, bob, account, base, iri := makeBlockAttributeSyncFixture(t)
+	baseTime := time.UnixMilli(base.GenerationInfo.Generation)
+	alicePrepared := prepareBlockAttributeTestChange(t, alice, account, base,
+		&documents.DocumentChange{Op: &documents.DocumentChange_ReplaceBlock{
+			ReplaceBlock: &documents.Block{
+				Id:         "b1",
+				Type:       "paragraph",
+				Text:       "Hello wrold",
+				Attributes: mustTestStruct(t, map[string]any{"color": "blue"}),
+			},
+		}},
+	)
+	bobPrepared := prepareBlockAttributeTestChange(t, bob, account, base,
+		&documents.DocumentChange{Op: &documents.DocumentChange_ReplaceBlock{
+			ReplaceBlock: &documents.Block{
+				Id:         "b1",
+				Type:       "paragraph",
+				Text:       "Hello wrold",
+				Attributes: mustTestStruct(t, map[string]any{"color": "green"}),
+			},
+		}},
+	)
+	requirePreparedBlockAttribute(t, alicePrepared, "blue")
+	requirePreparedBlockAttribute(t, bobPrepared, "green")
+
+	aliceChange := storePreparedBlockAttributeTestChange(t, alice, base, alicePrepared, baseTime.Add(time.Second))
+	bobChange := storePreparedBlockAttributeTestChange(t, bob, base, bobPrepared, baseTime.Add(2*time.Second))
+	require.True(t, bobChange.Decoded.Ts.After(aliceChange.Decoded.Ts))
+
+	pushDocuments(t, alice, bob, iri)
+	pushDocuments(t, bob, alice, iri)
+
+	aliceMerged, err := alice.RPC.DocumentsV3.GetDocument(t.Context(), &documents.GetDocumentRequest{
+		Account: account.PublicKey.String(),
+		Path:    base.Path,
+	})
+	require.NoError(t, err)
+	bobMerged, err := bob.RPC.DocumentsV3.GetDocument(t.Context(), &documents.GetDocumentRequest{
+		Account: account.PublicKey.String(),
+		Path:    base.Path,
+	})
+	require.NoError(t, err)
+	requireConvergedBlockAttributeDocuments(t, base, aliceMerged, bobMerged, "Hello wrold", "green")
 }
 
 func TestPushing(t *testing.T) {
@@ -4259,6 +4363,188 @@ func pullDocument(t *testing.T, app *App, recordAccount, path, wantVersion strin
 		recordState = resp.State
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func makeBlockAttributeSyncFixture(t *testing.T) (*App, *App, *core.KeyPair, *documents.Document, string) {
+	t.Helper()
+
+	ctx := t.Context()
+	account := coretest.NewTester("alice").Account
+	accountID := account.PublicKey.String()
+	alice := makeTestApp(t, "alice", makeTestConfig(t), false)
+	bob := makeTestApp(t, "bob", makeTestConfig(t), false)
+	require.NoError(t, alice.RPC.Daemon.RegisterAccount(ctx, "main", account))
+	require.NoError(t, bob.RPC.Daemon.RegisterAccount(ctx, "main", account))
+
+	const path = "/block-attributes"
+
+	base, err := createTestDocumentChange(ctx, t, alice, &apitest.DocumentChangeRequest{
+		Account:        accountID,
+		Path:           path,
+		SigningKeyName: "main",
+		Changes: []*documents.DocumentChange{
+			{Op: &documents.DocumentChange_MoveBlock_{
+				MoveBlock: &documents.DocumentChange_MoveBlock{BlockId: "b1"},
+			}},
+			{Op: &documents.DocumentChange_ReplaceBlock{
+				ReplaceBlock: &documents.Block{
+					Id:         "b1",
+					Type:       "paragraph",
+					Text:       "Hello wrold",
+					Attributes: mustTestStruct(t, map[string]any{"color": "red"}),
+				},
+			}},
+			{Op: &documents.DocumentChange_MoveBlock_{
+				MoveBlock: &documents.DocumentChange_MoveBlock{BlockId: "b2", LeftSibling: "b1"},
+			}},
+			{Op: &documents.DocumentChange_ReplaceBlock{
+				ReplaceBlock: &documents.Block{
+					Id:         "b2",
+					Type:       "paragraph",
+					Text:       "Second block unchanged",
+					Attributes: mustTestStruct(t, map[string]any{"color": "purple"}),
+				},
+			}},
+		},
+	})
+	require.NoError(t, err)
+
+	iri := "hm://" + accountID + path
+	pushDocuments(t, alice, bob, iri)
+	bobBase, err := bob.RPC.DocumentsV3.GetDocument(ctx, &documents.GetDocumentRequest{
+		Account: accountID,
+		Path:    path,
+	})
+	require.NoError(t, err)
+	require.Equal(t, base.Version, bobBase.Version)
+	require.True(t, proto.Equal(base, bobBase))
+
+	return alice, bob, account, base, iri
+}
+
+func mustTestStruct(t *testing.T, attrs map[string]any) *structpb.Struct {
+	t.Helper()
+
+	result, err := structpb.NewStruct(attrs)
+	require.NoError(t, err)
+	return result
+}
+
+func prepareBlockAttributeTestChange(t *testing.T, app *App, account *core.KeyPair, base *documents.Document, changes ...*documents.DocumentChange) []byte {
+	t.Helper()
+
+	prepared, err := app.RPC.DocumentsV3.PrepareChange(t.Context(), &documents.PrepareChangeRequest{
+		Account:     account.PublicKey.String(),
+		Path:        base.Path,
+		BaseVersion: base.Version,
+		Changes:     changes,
+	})
+	require.NoError(t, err)
+	return prepared.UnsignedChange
+}
+
+func requirePreparedBlockAttribute(t *testing.T, unsignedBytes []byte, wantColor string) {
+	t.Helper()
+
+	var unsigned blob.Change
+
+	require.NoError(t, cbornode.DecodeInto(unsignedBytes, &unsigned))
+	var ops []blob.Op
+
+	for op, err := range unsigned.Ops() {
+		require.NoError(t, err)
+		ops = append(ops, op)
+	}
+
+	require.Len(t, ops, 1)
+	setAttributes, ok := ops[0].(blob.OpSetAttributes)
+	require.True(t, ok)
+	require.Equal(t, "b1", setAttributes.Block)
+	require.Equal(t, []blob.KeyValue{{Key: []string{"color"}, Value: wantColor}}, setAttributes.Attrs)
+}
+
+func requirePreparedBlockReplacement(t *testing.T, unsignedBytes []byte, blockID string) {
+	t.Helper()
+
+	var unsigned blob.Change
+
+	require.NoError(t, cbornode.DecodeInto(unsignedBytes, &unsigned))
+	var found bool
+
+	for op, err := range unsigned.Ops() {
+		require.NoError(t, err)
+
+		if replacement, ok := op.(blob.OpReplaceBlock); ok && replacement.Block.ID() == blockID {
+			found = true
+		}
+	}
+
+	require.True(t, found, "prepared change must contain a ReplaceBlock for %s", blockID)
+}
+
+func storePreparedBlockAttributeTestChange(t *testing.T, app *App, base *documents.Document, unsignedBytes []byte, at time.Time) blob.Encoded[*blob.Change] {
+	t.Helper()
+
+	ctx := t.Context()
+	kp, err := app.Storage.KeyStore().GetKey(ctx, "main")
+	require.NoError(t, err)
+	signedChange, err := signPreparedTestChangeAt(unsignedBytes, kp, at)
+	require.NoError(t, err)
+
+	require.NotNil(t, base.GenerationInfo)
+	genesis := signedChange.Decoded.Genesis
+
+	if !genesis.Defined() {
+		genesis = signedChange.CID
+	}
+
+	ref, err := blob.NewRef(
+		kp,
+		base.GenerationInfo.Generation,
+		genesis,
+		kp.Principal(),
+		base.Path,
+		[]cid.Cid{signedChange.CID},
+		signedChange.Decoded.Ts,
+		blob.VisibilityPublic,
+	)
+	require.NoError(t, err)
+	_, err = app.RPC.Daemon.StoreBlobs(ctx, &daemon.StoreBlobsRequest{
+		Blobs: []*daemon.Blob{
+			{Cid: signedChange.CID.String(), Data: signedChange.Data},
+			{Cid: ref.CID.String(), Data: ref.Data},
+		},
+	})
+	require.NoError(t, err)
+	return signedChange
+}
+
+func requireConvergedBlockAttributeDocuments(t *testing.T, base, alice, bob *documents.Document, wantText, wantColor string) {
+	t.Helper()
+
+	require.True(t, proto.Equal(alice, bob), "hydrated documents must be equal")
+	for _, doc := range []*documents.Document{alice, bob} {
+		block := documentBlockByID(t, doc, "b1")
+		require.Equal(t, "paragraph", block.Type)
+		require.Equal(t, wantText, block.Text)
+		color, ok := block.Attributes.Fields["color"]
+		require.True(t, ok)
+		require.Equal(t, wantColor, color.GetStringValue())
+		require.True(t, proto.Equal(documentBlockByID(t, base, "b2"), documentBlockByID(t, doc, "b2")), "b2 must remain unchanged")
+	}
+}
+
+func documentBlockByID(t *testing.T, doc *documents.Document, id string) *documents.Block {
+	t.Helper()
+
+	for _, node := range doc.Content {
+		if node != nil && node.Block != nil && node.Block.Id == id {
+			return node.Block
+		}
+	}
+
+	t.Fatalf("block %q not found", id)
+	return nil
 }
 
 func TestSearchEntitiesFilters(t *testing.T) {
