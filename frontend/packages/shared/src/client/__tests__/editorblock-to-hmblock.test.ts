@@ -1917,10 +1917,10 @@ describe('EditorBlock to HMBlock', () => {
   })
 })
 
-describe('Section blocks', () => {
+describe('Section slots', () => {
   const sectionNode = (attributes: Record<string, unknown>): HMBlockNode =>
     ({
-      block: {type: 'Section', id: 'sec1', text: '', annotations: [], attributes},
+      block: {type: 'Slot', id: 'sec1', text: '', annotations: [], attributes},
       children: [
         {
           block: {type: 'Heading', id: 'h1', text: 'Welcome', annotations: [], attributes: {}},
@@ -1944,7 +1944,7 @@ describe('Section blocks', () => {
     const editorBlocks = hmBlocksToEditorContent([sectionNode(attributes)])
     expect(editorBlocks[0]).toMatchObject({
       id: 'sec1',
-      type: 'section',
+      type: 'slot',
       props: {
         layout: 'split',
         background: 'ipfs://bafyimage',
@@ -1958,7 +1958,7 @@ describe('Section blocks', () => {
     expect(editorBlocks[0]!.children[0]!.children[0]!.id).toBe('p1')
 
     const [node] = editorBlocksToHMBlockNodes(editorBlocks)
-    expect(node!.block).toMatchObject({type: 'Section', id: 'sec1', attributes})
+    expect(node!.block).toMatchObject({type: 'Slot', id: 'sec1', attributes})
     expect(node!.children!.map((c) => c.block.id)).toEqual(['h1', 'b1'])
     expect(node!.children![0]!.children![0]!.block).toMatchObject({type: 'Paragraph', id: 'p1', text: 'Nested'})
   })
@@ -1966,7 +1966,7 @@ describe('Section blocks', () => {
   test('stores invalid values verbatim instead of rejecting them', () => {
     const attributes = {layout: 'carousel', background: '#ff0000', padding: 'XXL', contentWidth: '900px', focalX: 7}
     const [node] = editorBlocksToHMBlockNodes(hmBlocksToEditorContent([sectionNode(attributes)]))
-    expect(node!.block).toMatchObject({type: 'Section', attributes})
+    expect(node!.block).toMatchObject({type: 'Slot', attributes})
   })
 
   test('omits attributes that were never set', () => {
@@ -2005,29 +2005,43 @@ describe('Section blocks', () => {
     })
   })
 
-  test('a client without Section support keeps it intact as an unknown block with children', () => {
+  test('keeps attributes this client does not know through an edit', () => {
+    const attributes = {layout: 'hero', somebodyElses: {deep: [1, 2]}, theme: 'dusk'}
+    const [editorBlock] = hmBlocksToEditorContent([sectionNode(attributes)])
+    const [node] = editorBlocksToHMBlockNodes([editorBlock!])
+    expect(node!.block).toMatchObject({type: 'Slot', attributes})
+  })
+
+  test('a plain list Slot is unchanged', () => {
+    const list = {
+      block: {type: 'Slot', id: 's1', text: '', annotations: [], attributes: {childrenType: 'Ordered'}},
+      children: [{block: {type: 'Paragraph', id: 'p1', text: 'One', annotations: [], attributes: {}}, children: []}],
+    } as unknown as HMBlockNode
+    const [editorBlock] = hmBlocksToEditorContent([list])
+    expect(editorBlock!.props).not.toHaveProperty('layout')
+    const [node] = editorBlocksToHMBlockNodes([editorBlock!])
+    expect(node!.block).toMatchObject({type: 'Slot', attributes: {childrenType: 'Ordered'}})
+    expect(node!.children![0]!.block).toMatchObject({type: 'Paragraph', text: 'One'})
+  })
+
+  test('an unknown block type is kept intact with its children', () => {
     const original = {
-      type: 'Section',
-      id: 'sec1',
+      type: 'Carousel',
+      id: 'c1',
       text: '',
       annotations: [],
-      attributes: {layout: 'features', background: 'muted', padding: 'S', contentWidth: 'L'},
+      attributes: {speed: 3},
     }
-    // What an older client holds after loading the Section: an `unknown` block
-    // carrying the original data, with the children as ordinary editor blocks.
-    const editorBlock = {
-      id: 'sec1',
-      type: 'unknown',
-      content: [],
-      props: {originalType: 'Section', originalData: JSON.stringify(original)},
-      children: [
-        {id: 'p1', type: 'paragraph', content: [{type: 'text', text: 'Child', styles: {}}], props: {}, children: []},
-      ],
-    } as unknown as EditorBlock
-
-    const [node] = editorBlocksToHMBlockNodes([editorBlock])
-    expect(node!.block).toEqual(original)
-    expect(node!.children![0]!.block).toMatchObject({type: 'Paragraph', id: 'p1', text: 'Child'})
+    const node = {
+      block: original,
+      children: [{block: {type: 'Paragraph', id: 'p1', text: 'Child', annotations: [], attributes: {}}, children: []}],
+    } as unknown as HMBlockNode
+    const [editorBlock] = hmBlocksToEditorContent([node])
+    expect(editorBlock).toMatchObject({type: 'unknown', props: {originalType: 'Carousel'}})
+    expect(editorBlock!.children.map((c) => c.id)).toEqual(['p1'])
+    const [out] = editorBlocksToHMBlockNodes([editorBlock!])
+    expect(out!.block).toEqual(original)
+    expect(out!.children![0]!.block).toMatchObject({type: 'Paragraph', id: 'p1', text: 'Child'})
   })
 
   test('markdown export does not crash and keeps the children', () => {

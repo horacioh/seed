@@ -13,6 +13,7 @@ import {
   HMResource,
   normalizeQuerySort,
   UnpackedHypermediaId,
+  isSectionSlot,
 } from '@seed-hypermedia/client/hm-types'
 import {
   createInspectNavRoute,
@@ -2147,7 +2148,7 @@ function DocumentBody({
   // Explore searches the whole space rather than presenting a document, and
   // Page mode shows the draft as readers will see it, so both drop the document's chrome.
   const documentHasSections = useMemo(
-    () => !!document.content?.some((node) => node.block?.type === 'Section'),
+    () => !!document.content?.some((node) => isSectionSlot(node.block)),
     [document.content],
   )
   // A published page built from Sections reads full width without the document's chrome too.

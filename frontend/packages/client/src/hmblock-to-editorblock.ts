@@ -39,7 +39,6 @@ function toEditorBlockType(hmBlockType: HMBlockType): EditorBlockType {
   if (hmBlockType === 'TableRow') return 'tableRow'
   if (hmBlockType === 'TableColumn') return 'tableColumn'
   if (hmBlockType === 'Slot') return 'slot'
-  if (hmBlockType === 'Section') return 'section'
   return 'unknown'
 }
 
@@ -227,12 +226,20 @@ export function hmBlockToEditorBlock(block: HMBlock): EditorBlock {
     }
   }
 
-  if (block.type === 'Section') {
+  if (block.type === 'Slot') {
     const sectionProps = out.props as Record<string, string>
-    for (const key of ['layout', 'background', 'padding', 'contentWidth', 'focalX', 'focalY'] as const) {
-      const value = (block.attributes as Record<string, unknown> | undefined)?.[key]
+    const attrs = (block.attributes ?? {}) as Record<string, unknown>
+    const known = ['layout', 'background', 'padding', 'contentWidth', 'focalX', 'focalY'] as const
+    for (const key of known) {
+      const value = attrs[key]
       if (typeof value === 'string' || typeof value === 'number') sectionProps[key] = String(value)
     }
+    const extra = Object.fromEntries(
+      Object.entries(attrs).filter(
+        ([key]) => !(known as readonly string[]).includes(key) && key !== 'childrenType' && key !== 'columnCount',
+      ),
+    )
+    if (Object.keys(extra).length) sectionProps.extraAttributes = JSON.stringify(extra)
   }
 
   if (block.type === 'Query') {

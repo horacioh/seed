@@ -39,7 +39,7 @@ BASIC STYLES
   /*margin: 0px;*/
 }
 
-.blockContent[data-content-type='slot'] {
+.blockContent[data-content-type='slot']:not([data-layout]) {
   display: none;
 }
 

@@ -13,9 +13,7 @@ import {Check, ImagePlus, X} from 'lucide-react'
 import {useRef, useState, useSyncExternalStore} from 'react'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
 import type {Block, PartialBlock} from './blocknote/core/extensions/Blocks/api/blockTypes'
-import {defaultProps} from './blocknote/core/extensions/Blocks/api/defaultBlocks'
 import {UniqueID} from './blocknote/core/extensions/UniqueID/UniqueID'
-import {createReactBlockSpec} from './blocknote/react/ReactBlockSpec'
 import type {HMBlockSchema} from './schema'
 import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
@@ -88,28 +86,14 @@ export function useSelectedSection(editor: object): string | null {
   )
 }
 
-/**
- * Editor block for the HM `Section` type. The block itself only renders the
- * section frame (background and selection outline); its children are ordinary
- * blocks laid out by `section-block.css`. The same render runs in the live
- * editor, the read-only viewer and SSR, so editing looks like the published page.
- */
-export const SectionBlock = createReactBlockSpec({
-  type: 'section',
-  propSchema: {
-    ...defaultProps,
-    layout: {default: ''},
-    background: {default: ''},
-    focalX: {default: ''},
-    focalY: {default: ''},
-    padding: {default: ''},
-    contentWidth: {default: ''},
-  },
-  containsInlineContent: false,
-  render: ({block, editor}: {block: SectionBlockType; editor: SectionEditor}) => (
-    <SectionFrame block={block} editor={editor} />
-  ),
-})
+/** Whether an editor block is a page section: a `slot` with `layout` set. */
+export function isSectionSlotBlock(block: {type?: string; props?: unknown} | null | undefined): boolean {
+  const layout = (block?.props as {layout?: unknown} | undefined)?.layout
+  return block?.type === 'slot' && typeof layout === 'string' && layout !== ''
+}
+
+/** CSS selector for the content element of a section slot. */
+export const SECTION_CONTENT_SELECTOR = '[data-content-type="slot"][data-layout]'
 
 /**
  * Shared Section frame. Exposes the normalized attributes as data attributes
@@ -310,7 +294,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     key: 'hero',
     name: 'Hero',
     build: () => ({
-      type: 'section',
+      type: 'slot',
       props: {layout: 'hero', background: 'accent'},
       children: [
         {type: 'heading', props: {level: '1'}, content: text('A clear headline for your page')},
@@ -323,7 +307,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     key: 'split',
     name: 'Image and text',
     build: () => ({
-      type: 'section',
+      type: 'slot',
       props: {layout: 'split'},
       children: [
         {type: 'image', props: {url: ''}},
@@ -337,7 +321,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     key: 'features',
     name: 'Three columns',
     build: () => ({
-      type: 'section',
+      type: 'slot',
       props: {layout: 'features', background: 'muted'},
       children: ['Fast', 'Private', 'Yours'].map((title) => ({
         type: 'heading',
@@ -351,7 +335,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     key: 'fullBleed',
     name: 'Full-bleed image',
     build: () => ({
-      type: 'section',
+      type: 'slot',
       props: {layout: 'fullBleed', background: 'inverted', padding: 'L'},
       children: [
         {type: 'heading', props: {level: '2'}, content: text('A caption over the image')},
@@ -363,7 +347,7 @@ export const SECTION_TEMPLATES: SectionTemplate[] = [
     key: 'cta',
     name: 'Call to action',
     build: () => ({
-      type: 'section',
+      type: 'slot',
       props: {layout: 'hero', background: 'inverted'},
       children: [
         {type: 'heading', props: {level: '2'}, content: text('Ready to try it?')},

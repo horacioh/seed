@@ -345,12 +345,12 @@ describe('renderDocumentToHTML', () => {
     expect(html).not.toContain('data-ssr-error')
   })
 
-  it('renders unknown block types through the real error component', () => {
+  it('renders unknown block types quietly for readers', () => {
     const html = render([
       {block: {id: 'u1', type: 'FancyNewType', text: '', annotations: [], attributes: {}}, children: []},
     ] as any)
     expect(html).toContain('data-content-type="unknown"')
-    expect(html).toContain('Unsupported Block:')
+    expect(html).not.toContain('not supported in this app')
   })
 
   it('rewrites hm:// link hrefs via renderHref', () => {
@@ -413,12 +413,12 @@ describe('server-rendered mention labels', () => {
     queryClient.clear()
   })
 
-  it('renders a Section with normalized layout attributes and its children', () => {
+  it('renders a section Slot with normalized layout attributes and its children', () => {
     const html = render([
       {
         block: {
           id: 'sec1',
-          type: 'Section',
+          type: 'Slot',
           text: '',
           annotations: [],
           attributes: {layout: 'carousel', background: 'inverted', padding: 'L'},
@@ -428,11 +428,54 @@ describe('server-rendered mention labels', () => {
         ],
       },
     ] as any)
-    expect(html).toContain('data-content-type="section"')
+    expect(html).toContain('data-content-type="slot"')
+    expect(html).toContain('data-layout="carousel"')
     expect(html).toContain('data-section-layout="hero"')
     expect(html).toContain('data-section-background="inverted"')
     expect(html).toContain('data-section-padding="L"')
     expect(html).toContain('Inside')
     expect(html).not.toContain('hm-section-toolbar')
+  })
+
+  describe('graceful degradation', () => {
+    const child = (id: string, text: string): HMBlockNode => ({
+      block: {id, type: 'Paragraph', text, annotations: [], attributes: {}},
+      children: [],
+    })
+
+    it('renders the children of a Slot whatever its attributes', () => {
+      const html = render([
+        {
+          block: {
+            id: 'slot1',
+            type: 'Slot',
+            text: '',
+            annotations: [],
+            attributes: {
+              layout: 'split',
+              background: 'ipfs://bafy',
+              somebodyElsesAttr: {nested: true},
+              columnCount: 'x',
+            },
+          },
+          children: [child('p1', 'First child'), child('p2', 'Second child')],
+        },
+      ] as any)
+      expect(html).toContain('First child')
+      expect(html).toContain('Second child')
+    })
+
+    it('renders the children of a block type this client does not know', () => {
+      const html = render([
+        {
+          block: {id: 'x1', type: 'Carousel', text: 'Carousel caption', annotations: [], attributes: {speed: 3}},
+          children: [child('p1', 'Slide one'), child('p2', 'Slide two')],
+        },
+      ] as any)
+      expect(html).toContain('Slide one')
+      expect(html).toContain('Slide two')
+      expect(html).toContain('Carousel caption')
+      expect(html).not.toContain('Unsupported Block')
+    })
   })
 })

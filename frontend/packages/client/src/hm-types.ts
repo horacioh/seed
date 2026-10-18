@@ -519,6 +519,12 @@ export type HMPublishableBlockSlot = {
   type: 'Slot'
   childrenType?: HMBlockChildrenType
   columnCount?: number
+  layout?: string
+  background?: string
+  focalX?: number
+  focalY?: number
+  padding?: string
+  contentWidth?: string
   children?: HMPublishableBlock[]
 }
 
@@ -1012,23 +1018,16 @@ export const HMBlockGroupSchema = z.object({
   id: z.string(),
 })
 
+/**
+ * An invisible container. It carries a list or grid at the top level of a document
+ * (`childrenType`, `columnCount`), and becomes a visible page section when `layout`
+ * is set. Section attributes are loose strings so values written by newer clients
+ * are stored as-is (renderers normalize them with `normalizeSectionAttributes`), and
+ * attributes this client doesn't know are kept rather than dropped.
+ */
 export const HMBlockSlotSchema = z
   .object({
     type: z.literal('Slot'),
-    ...blockBaseProperties,
-    attributes: z.object(parentBlockAttributes).optional().default({}),
-  })
-  .strict()
-
-/**
- * A page section: a container whose children are ordinary blocks, laid out with a
- * preset `layout`. Attributes are deliberately loose strings so unknown values
- * written by newer clients are stored as-is; renderers normalize them with
- * `normalizeSectionAttributes`.
- */
-export const HMBlockSectionSchema = z
-  .object({
-    type: z.literal('Section'),
     ...blockBaseProperties,
     attributes: z
       .object({
@@ -1040,10 +1039,17 @@ export const HMBlockSectionSchema = z
         padding: z.string().optional(),
         contentWidth: z.string().optional(),
       })
+      .passthrough()
       .optional()
       .default({}),
   })
   .strict()
+
+/** Whether a block is a page section: a `Slot` with a `layout` attribute. */
+export function isSectionSlot(block: {type?: string; attributes?: unknown} | null | undefined): boolean {
+  const layout = (block?.attributes as {layout?: unknown} | undefined)?.layout
+  return block?.type === 'Slot' && typeof layout === 'string' && layout !== ''
+}
 
 /** Preset layouts a Section can use. The first entry is the default. */
 export const HM_SECTION_LAYOUTS = ['hero', 'split', 'features', 'fullBleed'] as const
@@ -1131,7 +1137,6 @@ export const HMBlockKnownSchema = z.discriminatedUnion('type', [
   HMBlockQuerySchema,
   HMBlockGroupSchema,
   HMBlockSlotSchema,
-  HMBlockSectionSchema,
   HMBlockLinkSchema,
 ])
 
@@ -1167,8 +1172,6 @@ export type HMBlockEmbed = z.infer<typeof HMBlockEmbedSchema>
 export type HMBlockWebEmbed = z.infer<typeof HMBlockWebEmbedSchema>
 export type HMBlockQuery = z.infer<typeof HMBlockQuerySchema>
 export type HMBlockSlot = z.infer<typeof HMBlockSlotSchema>
-/** A Section block as stored on the wire. */
-export type HMBlockSection = z.infer<typeof HMBlockSectionSchema>
 export type HMBlock = z.infer<typeof HMBlockKnownSchema>
 export type HMBlockNostr = z.infer<typeof HMBlockNostrSchema>
 export type HMBlockTable = z.infer<typeof HMBlockTableSchema>

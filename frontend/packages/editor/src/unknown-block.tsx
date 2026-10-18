@@ -1,4 +1,4 @@
-import {AlertCircle, ChevronDown, ChevronRight} from 'lucide-react'
+import {ChevronDown, ChevronRight} from 'lucide-react'
 import {useState} from 'react'
 import {Block, BlockNoteEditor, defaultProps} from './blocknote/core'
 import {createReactBlockSpec} from './blocknote/react'
@@ -21,6 +21,11 @@ export const UnknownBlock = createReactBlockSpec({
   ),
 })
 
+/**
+ * Blocks this client can't render degrade quietly: readers see the block's own
+ * text (if any) and its children render as usual. Editors also get a small
+ * neutral note that can expand to show the stored data.
+ */
 function UnknownBlockRender({block, editor}: {block: Block<HMBlockSchema>; editor: BlockNoteEditor<HMBlockSchema>}) {
   const [expanded, setExpanded] = useState(false)
   const originalType = (block.props as any).originalType || 'Unknown'
@@ -32,30 +37,24 @@ function UnknownBlockRender({block, editor}: {block: Block<HMBlockSchema>; edito
   } catch {
     parsedData = {raw: originalData}
   }
+  const text = typeof parsedData?.text === 'string' ? parsedData.text.trim() : ''
 
   return (
-    <div
-      className="block-content block-unknown flex flex-1 flex-col overflow-hidden rounded-md border border-red-300 bg-red-100 dark:border-red-800 dark:bg-red-950"
-      contentEditable={false}
-    >
-      <div className="flex cursor-pointer items-center gap-2 p-2" onClick={() => setExpanded(!expanded)}>
-        <AlertCircle className="size-4 text-red-600 dark:text-red-400" />
-        <span className="flex-1 font-sans text-sm text-red-700 dark:text-red-300">
-          Unsupported Block: {originalType}
-        </span>
-        {expanded ? (
-          <ChevronDown className="size-4 text-red-600 dark:text-red-400" />
-        ) : (
-          <ChevronRight className="size-4 text-red-600 dark:text-red-400" />
-        )}
-      </div>
-      {expanded && (
-        <pre className="mx-2 mb-2 overflow-auto rounded-md border border-red-200 bg-red-50/60 p-2 dark:border-red-900 dark:bg-red-950/60">
-          <code className="font-mono text-xs wrap-break-word text-red-900 dark:text-red-200">
-            {JSON.stringify(parsedData, null, 2)}
-          </code>
-        </pre>
-      )}
+    <div className="block-content block-unknown flex flex-1 flex-col" contentEditable={false}>
+      {text ? <p className="whitespace-pre-wrap">{text}</p> : null}
+      {editor.isEditable ? (
+        <div className="text-muted-foreground flex flex-col font-sans text-xs">
+          <button type="button" className="flex items-center gap-1 self-start" onClick={() => setExpanded(!expanded)}>
+            {expanded ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />}
+            <span>{originalType} block (not supported in this app, kept as is)</span>
+          </button>
+          {expanded && (
+            <pre className="bg-muted mt-1 overflow-auto rounded-md p-2">
+              <code className="font-mono wrap-break-word">{JSON.stringify(parsedData, null, 2)}</code>
+            </pre>
+          )}
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -296,7 +296,7 @@ const fixtures: Record<FixtureName, Block<HMBlockSchema>[]> = {
     const h = (id: string, label: string, level = '2', children: any[] = []) =>
       ({id, type: 'heading', props: {level}, content: [text(label)], children}) as any
     const section = (id: string, props: Record<string, string>, children: any[]) =>
-      ({id, type: 'section', props, content: [], children}) as any
+      ({id, type: 'slot', props, content: [], children}) as any
     const button = (id: string, name: string, alignment = 'center') =>
       ({
         id,

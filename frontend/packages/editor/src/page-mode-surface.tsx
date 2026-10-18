@@ -42,6 +42,8 @@ import {
   type SectionBlockType,
   type SectionEditor,
   type SectionTemplate,
+  isSectionSlotBlock,
+  SECTION_CONTENT_SELECTOR,
 } from './section-block'
 import {useMobile} from './use-mobile'
 
@@ -77,7 +79,7 @@ function topLevelNodes(dom: HTMLElement): HTMLElement[] {
 }
 
 function isSectionNode(el: Element | null | undefined): el is HTMLElement {
-  return !!el?.querySelector(':scope > * > [data-content-type="section"]')
+  return !!el?.querySelector(`:scope > * > ${SECTION_CONTENT_SELECTOR}`)
 }
 
 function topLevelNodeOf(dom: HTMLElement, target: Node | null): HTMLElement | null {
@@ -97,7 +99,7 @@ function isTyping(el: Element | null) {
 
 function liveSection(editor: SectionEditor, id: string | null): SectionBlockType | null {
   if (!id) return null
-  return ((editor.topLevelBlocks as SectionBlockType[]).find((b) => b.id === id && b.type === 'section') ??
+  return ((editor.topLevelBlocks as SectionBlockType[]).find((b) => b.id === id && isSectionSlotBlock(b)) ??
     null) as SectionBlockType | null
 }
 
@@ -175,7 +177,7 @@ export function PageModeSurface({editor}: {editor: SectionEditor}) {
       setSelectedSection(editor, node.getAttribute('data-id'))
       const target = event.target as Element
       const textBlock = target.closest('[data-content-type]')
-      if (!textBlock || textBlock.getAttribute('data-content-type') === 'section') {
+      if (!textBlock || textBlock.getAttribute('data-content-type') === 'slot') {
         event.preventDefault()
         tt.commands.blur()
       }
@@ -187,7 +189,7 @@ export function PageModeSurface({editor}: {editor: SectionEditor}) {
       if (!tt.isFocused) return
       const at = tt.view.domAtPos(tt.state.selection.from).node
       const el = at instanceof Element ? at : at.parentElement
-      focused = el?.closest('[data-content-type]:not([data-content-type="section"])') ?? null
+      focused = el?.closest('[data-content-type]:not([data-content-type="slot"])') ?? null
       focused?.classList.add('hm-text-focus')
       const node = topLevelNodeOf(dom, at)
       if (isSectionNode(node)) setSelectedSection(editor, node.getAttribute('data-id'))
@@ -394,11 +396,11 @@ function PreviewBlock({block}: {block: PreviewNode}) {
   ) : null
   let content: ReactNode = null
   const props = block.props ?? {}
-  if (block.type === 'section') {
+  if (block.type === 'slot') {
     const attrs = normalizeSectionAttributes(props)
     content = (
       <div>
-        <div data-content-type="section">
+        <div data-content-type="slot" data-layout={attrs.layout}>
           <div
             className="hm-section-frame"
             data-section-layout={attrs.layout}
