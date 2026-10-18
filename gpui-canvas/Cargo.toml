@@ -1,0 +1,26 @@
+[package]
+name = "gpui-canvas"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+gpui = { package = "gpui-unofficial", version = "1.24" }
+gpui_platform = { package = "gpui-platform-gpui-unofficial", version = "1.24", features = [
+    "x11",
+    "wayland",
+] }
+tonic = "0.14"
+tonic-prost = "0.14"
+prost = "0.14"
+prost-types = "0.14"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+async-channel = "2"
+anyhow = "1"
+
+[build-dependencies]
+tonic-prost-build = "0.14"
+protoc-bin-vendored = "3"
+
+[profile.dev]
+opt-level = 2
