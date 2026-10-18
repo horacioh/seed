@@ -1039,7 +1039,7 @@ export const HMBlockSlotSchema = z
         padding: z.string().optional(),
         contentWidth: z.string().optional(),
       })
-      .passthrough()
+      .catchall(z.any())
       .optional()
       .default({}),
   })
