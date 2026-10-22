@@ -103,3 +103,45 @@ describe('account identity names', () => {
     expect(formatAccountIdentityName('@Alice', {mention: true})).toBe('@Alice')
   })
 })
+
+describe('variable chips', () => {
+  function renderVariable(link: string, docs: Record<string, Record<string, unknown>>) {
+    const client = {request: async () => null} as any
+    const queryClient = new QueryClient({defaultOptions: {queries: {staleTime: Infinity}}})
+    for (const [id, metadata] of Object.entries(docs)) {
+      queryClient.setQueryData(queryResource(client, unpackHmId(id)).queryKey, {
+        type: 'document',
+        document: {metadata},
+      })
+    }
+    const html = renderToStaticMarkup(
+      createElement(
+        QueryClientProvider,
+        {client: queryClient},
+        createElement(
+          UniversalAppProvider,
+          {universalClient: client, openUrl: () => {}, openRoute: () => {}},
+          createElement(MentionToken, {value: link}),
+        ),
+      ),
+    )
+    queryClient.clear()
+    return html
+  }
+
+  it('renders the sum of number attributes instead of a document mention', () => {
+    const html = renderVariable(`hm://alice/budget?formula=${encodeURIComponent('sum(price, tax)')}`, {
+      'hm://alice/budget': {name: 'Budget', price: 100, tax: 21},
+    })
+    expect(html).toContain('data-variable-kind="formula"')
+    expect(html).toContain('121')
+    expect(html).not.toContain('Budget')
+  })
+
+  it('renders attribute values from formula attributes', () => {
+    const html = renderVariable('hm://alice/budget?attr=total', {
+      'hm://alice/budget': {price: 100, tax: 21, total: '=price + tax'},
+    })
+    expect(html).toContain('121')
+  })
+})
