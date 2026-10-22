@@ -23,7 +23,7 @@ export function parseVariableLink(link: string): VariableLink | null {
   const id = unpackHmId(link)
   if (!id) return null
   const query = new URLSearchParams(link.slice(queryStart + 1).split('#')[0])
-  const docId = id.id
+  const docId = versionedDocId(id)
   const formula = query.get('formula')
   if (formula !== null) return {docId, kind: 'formula', expr: formula}
   const attr = query.get('attr')
@@ -37,7 +37,11 @@ export function buildVariableLink(variable: VariableLink): string {
     variable.kind === 'attr'
       ? `attr=${encodeURIComponent(variable.key)}`
       : `formula=${encodeURIComponent(variable.expr)}`
-  return `${variable.docId}?${param}`
+  return `${variable.docId}${variable.docId.includes('?') ? '&' : '?'}${param}`
+}
+
+function versionedDocId(id: {id: string; version: string | null}) {
+  return id.version ? `${id.id}?v=${id.version}` : id.id
 }
 
 /** A parsed formula expression. */
@@ -152,7 +156,7 @@ export function parseFormula(src: string): FormulaNode {
     if (tok.t === 'docref') {
       const id = unpackHmId(tok.v)
       if (!id) throw new FormulaError(`Invalid document reference "${tok.v}"`)
-      return {type: 'ref', docId: id.id, key: tok.key}
+      return {type: 'ref', docId: versionedDocId(id), key: tok.key}
     }
     if (tok.t === 'ident') {
       if (isOp('(')) {

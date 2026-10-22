@@ -249,7 +249,7 @@ export function useVariableValue(variable: VariableLink): FormulaResult {
   docIds.forEach((id, i) => {
     const resource = resources[i]
     const unpacked = unpackedIds[i]
-    const draft = unpacked ? actions.getDraft?.(unpacked) : undefined
+    const draft = unpacked && !unpacked.version ? actions.getDraft?.(unpacked) : undefined
     const published =
       resource?.data && 'document' in resource.data && resource.data.document
         ? resource.data.document.metadata
@@ -421,7 +421,7 @@ function useNumberAttributes(docId: string): [string, unknown][] {
   const unpacked = unpackHmId(docId)
   const resource = useResource(unpacked, {subscribed: true})
   const actions = useDocumentActions()
-  const draft = unpacked ? actions.getDraft?.(unpacked) : undefined
+  const draft = unpacked && !unpacked.version ? actions.getDraft?.(unpacked) : undefined
   const published =
     resource.data && 'document' in resource.data && resource.data.document ? resource.data.document.metadata : {}
   const metadata: Record<string, unknown> = {...published, ...draft?.metadata}

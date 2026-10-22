@@ -16,6 +16,13 @@ describe('variable links', () => {
     expect(parseVariableLink(buildVariableLink(formula))).toEqual(formula)
   })
 
+  it('keeps the pinned version of the referenced document', () => {
+    const pinned = {docId: `${A}?v=bafy123`, kind: 'attr' as const, key: 'price'}
+    expect(parseVariableLink(`${A}?v=bafy123&attr=price`)).toEqual(pinned)
+    expect(parseVariableLink(buildVariableLink(pinned))).toEqual(pinned)
+    expect(parseFormula(`[[${A}?v=bafy123]].price`)).toEqual({type: 'ref', docId: `${A}?v=bafy123`, key: 'price'})
+  })
+
   it('ignores ordinary mentions', () => {
     expect(parseVariableLink(A)).toBeNull()
     expect(parseVariableLink(`${A}?v=bafy123`)).toBeNull()
