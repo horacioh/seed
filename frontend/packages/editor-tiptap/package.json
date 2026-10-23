@@ -1,0 +1,52 @@
+{
+  "name": "@shm/editor-tiptap",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "dev": "vite --config harness/vite.config.ts",
+    "build:harness": "vite build --config harness/vite.config.ts",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit --project tsconfig.app.json"
+  },
+  "dependencies": {
+    "@seed-hypermedia/client": "workspace:*",
+    "@shm/shared": "workspace:*",
+    "@shm/ui": "workspace:*",
+    "@tiptap/core": "3.32.0",
+    "@tiptap/extension-bold": "3.32.0",
+    "@tiptap/extension-code": "3.32.0",
+    "@tiptap/extension-code-block": "3.32.0",
+    "@tiptap/extension-file-handler": "3.32.0",
+    "@tiptap/extension-heading": "3.32.0",
+    "@tiptap/extension-italic": "3.32.0",
+    "@tiptap/extension-link": "3.32.0",
+    "@tiptap/extension-paragraph": "3.32.0",
+    "@tiptap/extension-strike": "3.32.0",
+    "@tiptap/extension-text": "3.32.0",
+    "@tiptap/extension-text-style": "3.32.0",
+    "@tiptap/extension-underline": "3.32.0",
+    "@tiptap/extensions": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/react": "3.32.0",
+    "@tiptap/suggestion": "3.32.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.64",
+    "@types/react-dom": "18.2.21",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^24.0.0",
+    "typescript": "5.8.3",
+    "vite": "6.4.2",
+    "vitest": "4.1.8"
+  }
+}
