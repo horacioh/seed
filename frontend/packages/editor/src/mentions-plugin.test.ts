@@ -6,7 +6,8 @@ import {
   MentionToken,
 } from './mentions-plugin'
 import {Schema} from 'prosemirror-model'
-import {EditorState, TextSelection} from 'prosemirror-state'
+import {EditorState, Plugin, TextSelection} from 'prosemirror-state'
+import {attributeMenuPluginKey, createAttributeMenuPlugin, getAttributeMenuRange} from './attribute-menu'
 import {EditorView} from 'prosemirror-view'
 import {createElement} from 'react'
 import {renderToStaticMarkup} from 'react-dom/server'
@@ -165,23 +166,23 @@ describe('createFormulaTriggerPlugin', () => {
     },
   })
 
-  function typeBrace(text: string, docId: string | null = 'hm://alice/budget', block = 'paragraph') {
+  function editorState(text: string, docId: string | null, block: string, plugins: Plugin[]) {
     const doc = schema.node('doc', null, [schema.node(block as any, null, text ? [schema.text(text)] : [])])
-    const state = EditorState.create({
-      doc,
-      plugins: [createFormulaTriggerPlugin(() => docId ?? undefined)],
-      selection: TextSelection.create(doc, 1 + text.length),
-    })
+    return EditorState.create({doc, plugins, selection: TextSelection.create(doc, 1 + text.length)})
+  }
+
+  function typeEquals(text: string, docId: string | null = 'hm://alice/budget', block = 'paragraph') {
+    const state = editorState(text, docId, block, [createFormulaTriggerPlugin(() => docId ?? undefined)])
     const view = new EditorView(document.createElement('div'), {state})
     const pos = view.state.selection.from
-    const handled = view.someProp('handleTextInput', (f) => f(view, pos, pos, '{', () => view.state.tr))
+    const handled = view.someProp('handleTextInput', (f) => f(view, pos, pos, '=', () => view.state.tr))
     const result = {handled: !!handled, doc: view.state.doc.toJSON()}
     view.destroy()
     return result
   }
 
-  it('turns `{{` into an empty formula chip for the current document', () => {
-    const {handled, doc} = typeBrace('Total: {')
+  it('turns `==` into an empty formula chip for the current document', () => {
+    const {handled, doc} = typeEquals('Total: =')
     expect(handled).toBe(true)
     expect(doc.content[0].content).toEqual([
       {type: 'text', text: 'Total: '},
@@ -190,10 +191,29 @@ describe('createFormulaTriggerPlugin', () => {
     ])
   })
 
-  it('ignores a single brace, braces inside words and code', () => {
-    expect(typeBrace('Total: ').handled).toBe(false)
-    expect(typeBrace('a{').handled).toBe(false)
-    expect(typeBrace('{', 'hm://alice/budget', 'code').handled).toBe(false)
-    expect(typeBrace('{', null).handled).toBe(false)
+  it('ignores a single equals sign, `a==` and code', () => {
+    expect(typeEquals('Total: ').handled).toBe(false)
+    expect(typeEquals('a=').handled).toBe(false)
+    expect(typeEquals('=', 'hm://alice/budget', 'code').handled).toBe(false)
+    expect(typeEquals('=', null).handled).toBe(false)
+  })
+
+  it('opens the attribute menu after `{{` and tracks the query', () => {
+    const {plugin} = createAttributeMenuPlugin()
+    const range = (text: string, block = 'paragraph') => getAttributeMenuRange(editorState(text, null, block, [plugin]))
+    expect(range('Total: {{pri')).toEqual({from: 8, queryStart: 10, to: 13})
+    expect(range('{{')).toEqual({from: 1, queryStart: 3, to: 3})
+    expect(range('({{')).toEqual({from: 2, queryStart: 4, to: 4})
+    expect(range('Total: {')).toBeNull()
+    expect(range('a{{')).toBeNull()
+    expect(range('{{', 'code')).toBeNull()
+  })
+
+  it('keeps a dismissed `{{` menu closed while typing on', () => {
+    const {plugin} = createAttributeMenuPlugin()
+    const state = editorState('Total: {{', null, 'paragraph', [plugin])
+    const dismissed = state.apply(state.tr.setMeta(attributeMenuPluginKey, 8))
+    expect(getAttributeMenuRange(dismissed)).toBeNull()
+    expect(getAttributeMenuRange(dismissed.apply(dismissed.tr.insertText('p')))).toBeNull()
   })
 })

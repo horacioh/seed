@@ -48,6 +48,7 @@ import {HypermediaLinkPreview} from './hm-link-preview'
 import {createHypermediaDocLinkPlugin} from './hypermedia-link-plugin'
 import {InlineAddBlockButton} from './inline-add-block-button'
 import {MentionMenuPositioner} from './mention-menu-positioner'
+import {AttributeMenu, createAttributeMenuPlugin} from './attribute-menu'
 import {createFormulaTriggerPlugin} from './mentions-plugin'
 import {PublishRequiredDialog} from './publish-required-dialog'
 import {hmBlockSchema, HMBlockSchema} from './schema'
@@ -209,6 +210,7 @@ export function DocumentEditor({
   const docEditorRef = useRef<BlockNoteEditor<HMBlockSchema> | null>(null)
   const resourceIdRef = useRef(resourceId)
   resourceIdRef.current = resourceId
+  const [attributeMenu] = useState(createAttributeMenuPlugin)
 
   const sessionActive = useDocumentSelector((snapshot) => snapshot.matches('editing') || snapshot.matches('publishing'))
   const initialContent = useDocumentEditorInitialContent(blocks, sessionActive)
@@ -271,7 +273,7 @@ export function DocumentEditor({
           Extension.create({
             name: 'formula-trigger',
             addProseMirrorPlugins() {
-              return [createFormulaTriggerPlugin(() => resourceIdRef.current.id)]
+              return [createFormulaTriggerPlugin(() => resourceIdRef.current.id), attributeMenu.plugin]
             },
           }),
           Extension.create({
@@ -732,6 +734,7 @@ export function DocumentEditor({
                 siteUid={resourceId.uid}
                 documentId={resourceId}
               />
+              <AttributeMenu editor={editor} controller={attributeMenu.controller} docId={resourceId.id} />
               <HyperlinkToolbarPositioner
                 // @ts-expect-error
                 hyperlinkToolbar={HypermediaLinkPreview}

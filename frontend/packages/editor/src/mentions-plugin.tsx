@@ -5,6 +5,7 @@ import {useDocumentActions} from '@shm/shared/document-actions-context'
 import {
   buildVariableLink,
   evaluateVariable,
+  FORMULA_FUNCTIONS,
   formatFormulaValue,
   parseVariableLink,
   type FormulaResult,
@@ -16,13 +17,12 @@ import {useRenderResourceStack} from '@shm/shared/render-resource-context'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {AccountIdentityName} from '@shm/ui/account-avatar'
 import {useHighlighter} from '@shm/ui/highlight-context'
-import {Button} from '@shm/ui/button'
-import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
 import {SizableText} from '@shm/ui/text'
 import {cn} from '@shm/ui/utils'
-import {forwardRef, useEffect, useMemo, useState} from 'react'
+import Tippy from '@tippyjs/react'
+import {forwardRef, useEffect, useMemo, useRef, useState, type HTMLAttributes} from 'react'
 import {Node} from '@tiptap/core'
-import {Plugin, TextSelection} from '@tiptap/pm/state'
+import {NodeSelection, Plugin, TextSelection} from '@tiptap/pm/state'
 import {NodeViewWrapper, ReactNodeViewRenderer} from '@tiptap/react'
 import './inline-embed.css'
 
@@ -32,21 +32,21 @@ export function inlineEmbedClipboardText(link: string): string {
 }
 
 /**
- * Typing `{{` replaces the braces with an empty formula chip for the document
- * returned by `getDocId`, which opens its attribute/formula picker.
+ * Typing `==` replaces the equals signs with an empty formula chip for the document
+ * returned by `getDocId`, which opens its inline formula editor.
  */
 export function createFormulaTriggerPlugin(getDocId: () => string | undefined) {
   return new Plugin({
     props: {
       handleTextInput(view, from, to, text) {
-        if (text !== '{' || from !== to) return false
+        if (text !== '=' || from !== to) return false
         const docId = getDocId()
         const node = view.state.schema.nodes['inline-embed']
         const {$from} = view.state.selection
         if (!docId || !node || $from.parent.type.spec.code || $from.marks().some((m) => m.type.name === 'code'))
           return false
         const before = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc')
-        if (!/(?:^|[\s(])\{$/.test(before)) return false
+        if (!/(?:^|[\s(])=$/.test(before)) return false
         const chip = node.create({link: buildVariableLink({docId, kind: 'formula', expr: ''})})
         const tr = view.state.tr.replaceWith(from - 1, to, [chip, view.state.schema.text(' ')])
         view.dispatch(tr.setSelection(TextSelection.create(tr.doc, from - 1 + chip.nodeSize + 1)).scrollIntoView())
@@ -54,6 +54,13 @@ export function createFormulaTriggerPlugin(getDocId: () => string | undefined) {
       },
     },
   })
+}
+
+let pendingFormulaText: string | null = null
+
+/** Pre-fills the inline editor of the next empty formula chip that mounts (e.g. text typed after `{{`). */
+export function setPendingFormulaText(text: string) {
+  pendingFormulaText = text
 }
 
 /** Creates the TipTap Node for rendering inline-embed mentions in the document. */
@@ -124,6 +131,17 @@ export function createInlineEmbedNode() {
         new Plugin({
           props: {
             handleKeyDown(view, event) {
+              const sel = view.state.selection
+              if (
+                event.key === 'Enter' &&
+                sel instanceof NodeSelection &&
+                sel.node.type.name === 'inline-embed' &&
+                parseVariableLink(sel.node.attrs.link)
+              ) {
+                const chip = (view.nodeDOM(sel.from) as HTMLElement | null)?.querySelector('[data-variable-chip]')
+                chip?.dispatchEvent(new CustomEvent('hm-variable-edit'))
+                return !!chip
+              }
               if (view.state.selection.from === view.state.selection.to) {
                 const resolved = view.state.doc.resolve(view.state.selection.from)
                 if (
@@ -164,6 +182,16 @@ function InlineEmbedNodeComponent(props: any) {
             variable={variable}
             selected={props.selected}
             onChange={(next) => props.updateAttributes({link: buildVariableLink(next)})}
+            onRemove={() => props.deleteNode()}
+            onExit={(side) => {
+              const pos = props.getPos()
+              if (typeof pos === 'number')
+                props.editor
+                  .chain()
+                  .focus()
+                  .setTextSelection(side === 'after' ? pos + props.node.nodeSize : pos)
+                  .run()
+            }}
           />
         ) : (
           <VariableToken variable={variable} selected={props.selected} />
@@ -299,259 +327,411 @@ function variableSource(variable: VariableLink) {
 }
 
 /** Read-only inline chip showing the computed value of an attribute or formula. */
-export const VariableToken = forwardRef<HTMLSpanElement, {variable: VariableLink; selected?: boolean}>(
-  function VariableToken({variable, selected, ...rest}, ref) {
-    const result = useVariableValue(variable)
-    const label =
-      result.status === 'ok'
-        ? formatFormulaValue(result.value)
-        : result.status === 'pending'
-          ? '…'
-          : variable.kind === 'formula' && !variable.expr.trim()
-            ? 'formula'
-            : '#ERR'
-    return (
-      <span
-        ref={ref}
-        {...rest}
-        data-variable-kind={variable.kind}
-        title={result.status === 'error' ? `${variableSource(variable)} — ${result.message}` : variableSource(variable)}
-        className={cn(
-          'inline-flex items-baseline gap-1 rounded-sm px-1 font-mono tabular-nums',
-          result.status === 'error'
-            ? 'bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-100'
-            : 'bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-100',
-          selected && 'ring-2 ring-sky-500',
-        )}
-        style={{fontSize: '0.92em'}}
-      >
-        {variable.kind === 'formula' ? <span className="opacity-50">ƒ</span> : null}
-        {label}
-      </span>
-    )
-  },
-)
+export const VariableToken = forwardRef<
+  HTMLSpanElement,
+  {variable: VariableLink; selected?: boolean} & HTMLAttributes<HTMLSpanElement>
+>(function VariableToken({variable, selected, ...rest}, ref) {
+  const result = useVariableValue(variable)
+  const label =
+    result.status === 'ok'
+      ? formatFormulaValue(result.value)
+      : result.status === 'pending'
+        ? '…'
+        : variable.kind === 'formula' && !variable.expr.trim()
+          ? 'formula'
+          : '#ERR'
+  return (
+    <span
+      ref={ref}
+      {...rest}
+      data-variable-kind={variable.kind}
+      title={result.status === 'error' ? `${variableSource(variable)} — ${result.message}` : variableSource(variable)}
+      className={cn(
+        'inline-flex items-baseline gap-1 rounded-sm px-1 font-mono tabular-nums',
+        result.status === 'error'
+          ? 'bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-100'
+          : 'bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-100',
+        selected && 'ring-2 ring-sky-500',
+      )}
+      style={{fontSize: '0.92em'}}
+    >
+      {variable.kind === 'formula' ? <span className="opacity-50">ƒ</span> : null}
+      {label}
+    </span>
+  )
+})
 
-/** Editable variable chip: clicking it opens a popover to edit the expression with a live preview. */
+/** Turns committed formula text into a plain attribute link when it names a single attribute. */
+function variableFromSource(source: string, homeDocId: string): VariableLink {
+  const crossDocRef = /^\[\[(hm:\/\/[^\]]+)\]\]\.([A-Za-z_][\w.]*)$/.exec(source)
+  if (crossDocRef) return {docId: crossDocRef[1]!, kind: 'attr', key: crossDocRef[2]!}
+  if (/^[A-Za-z_][\w.]*$/.test(source)) return {docId: homeDocId, kind: 'attr', key: source}
+  return {docId: homeDocId, kind: 'formula', expr: source}
+}
+
+/** Inserts a reference into the formula currently being edited, Excel-style, when another chip is clicked. */
+let activeFormulaInsert: ((docId: string, key: string, title: string) => void) | null = null
+
+/** Editable variable chip: clicking it (or Enter while selected) swaps it for an inline formula field. */
 function VariableEditor({
   variable,
   selected,
   onChange,
+  onRemove,
+  onExit,
 }: {
   variable: VariableLink
   selected?: boolean
   onChange: (next: VariableLink) => void
+  onRemove: () => void
+  onExit: (side: 'before' | 'after') => void
 }) {
   const renderedDoc = [...useRenderResourceStack()].reverse().find((resource) => resource.kind === 'document')?.id
   const homeDocId = renderedDoc ? hmId(renderedDoc.uid, {path: renderedDoc.path}).id : variable.docId
-  const isEmpty = variable.kind === 'formula' && !variable.expr.trim()
-  const [open, setOpen] = useState(isEmpty)
-  const initialExpr =
+  const [editing, setEditing] = useState(() => variable.kind === 'formula' && !variable.expr.trim())
+  const chipRef = useRef<HTMLSpanElement>(null)
+  const target = useResource(unpackHmId(variable.docId))
+  const title =
+    target.data && 'document' in target.data && target.data.document ? getDocumentTitle(target.data.document) : ''
+  useEffect(() => {
+    const el = chipRef.current
+    if (!el) return
+    const open = () => setEditing(true)
+    // Native capture so ProseMirror doesn't steal focus from the formula being edited.
+    const pointAndClick = (event: MouseEvent) => {
+      if (!activeFormulaInsert || variable.kind !== 'attr') return
+      event.preventDefault()
+      event.stopPropagation()
+      activeFormulaInsert(variable.docId, variable.key, title)
+    }
+    el.addEventListener('hm-variable-edit', open)
+    el.addEventListener('mousedown', pointAndClick)
+    return () => {
+      el.removeEventListener('hm-variable-edit', open)
+      el.removeEventListener('mousedown', pointAndClick)
+    }
+  }, [editing, variable, title])
+  if (editing)
+    return (
+      <FormulaInput
+        variable={variable}
+        homeDocId={homeDocId}
+        onCommit={(next, exit) => {
+          if (!next) {
+            if (exit) onExit('before')
+            onRemove()
+            return
+          }
+          setEditing(false)
+          if (buildVariableLink(next) !== buildVariableLink(variable)) onChange(next)
+          if (exit) onExit(exit)
+        }}
+        onCancel={() => {
+          if (variable.kind === 'formula' && !variable.expr.trim()) {
+            onExit('before')
+            onRemove()
+            return
+          }
+          setEditing(false)
+          onExit('after')
+        }}
+      />
+    )
+  return (
+    <VariableToken
+      ref={chipRef}
+      data-variable-chip=""
+      variable={variable}
+      selected={selected}
+      onClick={() => setEditing(true)}
+    />
+  )
+}
+
+type FormulaSuggestion =
+  | {kind: 'attr'; key: string; docId: string}
+  | {kind: 'fn'; name: string}
+  | {kind: 'doc'; id: string; title: string}
+  | {kind: 'external'}
+
+/**
+ * Inline formula field styled like inline code. Shows a live result next to the text, autocompletes attribute
+ * names, functions and other documents (`[[Title]].key`), and accepts point-and-click references.
+ */
+function FormulaInput({
+  variable,
+  homeDocId,
+  onCommit,
+  onCancel,
+}: {
+  variable: VariableLink
+  homeDocId: string
+  onCommit: (next: VariableLink | null, exit: 'before' | 'after' | null) => void
+  onCancel: () => void
+}) {
+  const source =
     variable.kind === 'formula'
       ? variable.expr
       : variable.docId === homeDocId
         ? variable.key
         : `[[${variable.docId}]].${variable.key}`
-  const [draftExpr, setDraftExpr] = useState(initialExpr)
-  useEffect(() => {
-    if (open) setDraftExpr(initialExpr)
-  }, [open])
-  const trimmed = draftExpr.trim().replace(/^=/, '')
-  const crossDocRef = /^\[\[(hm:\/\/[^\]]+)\]\]\.([A-Za-z_][\w.]*)$/.exec(trimmed)
-  const next: VariableLink = crossDocRef
-    ? {docId: crossDocRef[1]!, kind: 'attr', key: crossDocRef[2]!}
-    : /^[A-Za-z_][\w.]*$/.test(trimmed)
-      ? {docId: homeDocId, kind: 'attr', key: trimmed}
-      : {docId: homeDocId, kind: 'formula', expr: trimmed}
-  const appendTerm = (term: string) => setDraftExpr((expr) => (expr.trim() ? `${expr.trimEnd()} + ${term}` : term))
-  const preview = useVariableValue(next)
-  const numberAttributes = useNumberAttributes(homeDocId)
-  const apply = () => {
-    onChange(next)
-    setOpen(false)
+  const refIds = useMemo(() => [...source.matchAll(/\[\[(hm:\/\/[^\]]+)\]\]/g)].map((m) => m[1]!), [])
+  const refResources = useResources(refIds.map((id) => unpackHmId(id)))
+  const [pickedTitles, setPickedTitles] = useState<Map<string, string>>(() => new Map())
+  const titles = new Map(pickedTitles)
+  refIds.forEach((id, i) => {
+    const data = refResources[i]?.data
+    if (data && 'document' in data && data.document) titles.set(id, getDocumentTitle(data.document))
+  })
+  const idForTitle = (title: string) => {
+    for (const [id, t] of titles) if (t === title) return id
+    return null
   }
+  const [value, setValue] = useState(() =>
+    variable.kind === 'formula' && !variable.expr && pendingFormulaText !== null
+      ? pendingFormulaText
+      : source.replace(/\[\[(hm:\/\/[^\]]+)\]\]/g, (m, id) => (titles.has(id) ? `[[${titles.get(id)}]]` : m)),
+  )
+  useEffect(() => {
+    pendingFormulaText = null
+  }, [])
+  const [caret, setCaret] = useState(value.length)
+  const [highlight, setHighlight] = useState(0)
+  const [dismissed, setDismissed] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const done = useRef(false)
+  const storage = value
+    .replace(/\[\[([^\]]+)\]\]/g, (m, inner: string) => {
+      if (inner.startsWith('hm://')) return m
+      const id = idForTitle(inner)
+      return id ? `[[${id}]]` : m
+    })
+    .trim()
+    .replace(/^=/, '')
+  const next = storage ? variableFromSource(storage, homeDocId) : null
+  const preview = useVariableValue(next ?? {docId: homeDocId, kind: 'formula', expr: ''})
+
+  const before = value.slice(0, caret)
+  const docQuery = /\[\[([^\]]*)$/.exec(before)
+  const docAttr = /\[\[([^\]]+)\]\]\.([\w.]*)$/.exec(before)
+  const ident = /(?:^|[^\w.\]])([A-Za-z_]\w*)$/.exec(before)
+  const docAttrId = docAttr ? (docAttr[1]!.startsWith('hm://') ? docAttr[1]! : idForTitle(docAttr[1]!)) : null
+  const localAttrs = useNumberAttributes(homeDocId)
+  const externalAttrs = useNumberAttributes(docAttrId ?? '')
+  const home = unpackHmId(homeDocId)
+  const {suggestions: docs} = useInlineMentions(docQuery?.[1] ?? '', {
+    mode: 'document',
+    enabled: !!docQuery,
+    siteUid: home?.uid,
+  })
+  let items: FormulaSuggestion[] = []
+  let replaceFrom = caret
+  if (dismissed) items = []
+  else if (docQuery) {
+    replaceFrom = caret - docQuery[0].length
+    items = docs
+      .map((d) => ({kind: 'doc' as const, id: hmId(d.id.uid, {path: d.id.path}).id, title: d.title}))
+      .filter((d) => d.id !== homeDocId)
+      .slice(0, 6)
+  } else if (docAttr && docAttrId) {
+    const prefix = docAttr[2]!
+    replaceFrom = caret - prefix.length
+    items = externalAttrs
+      .filter(([key]) => key.toLowerCase().startsWith(prefix.toLowerCase()) && key !== prefix)
+      .map(([key]) => ({kind: 'attr', key, docId: docAttrId}))
+  } else if (ident) {
+    const q = ident[1]!.toLowerCase()
+    replaceFrom = caret - q.length
+    items = [
+      ...localAttrs
+        .filter(([key]) => key.toLowerCase().includes(q) && key !== ident[1])
+        .map(([key]): FormulaSuggestion => ({kind: 'attr', key, docId: homeDocId})),
+      ...Object.keys(FORMULA_FUNCTIONS)
+        .filter((name) => name.startsWith(q))
+        .map((name): FormulaSuggestion => ({kind: 'fn', name})),
+    ]
+  } else if (/(?:^|[\s(,+\-*/])$/.test(before)) {
+    items = [
+      ...localAttrs.map(([key]): FormulaSuggestion => ({kind: 'attr', key, docId: homeDocId})),
+      {kind: 'external'},
+    ]
+  }
+  const active = Math.min(highlight, items.length - 1)
+
+  const setText = (text: string, nextCaret: number) => {
+    setValue(text)
+    setCaret(nextCaret)
+    setHighlight(0)
+    setDismissed(false)
+    requestAnimationFrame(() => inputRef.current?.setSelectionRange(nextCaret, nextCaret))
+  }
+  const pick = (item: FormulaSuggestion) => {
+    const text =
+      item.kind === 'attr'
+        ? item.key
+        : item.kind === 'fn'
+          ? `${item.name}(`
+          : item.kind === 'doc'
+            ? `[[${item.title}]].`
+            : '[['
+    if (item.kind === 'doc') setPickedTitles((m) => new Map(m).set(item.id, item.title))
+    setText(value.slice(0, replaceFrom) + text + value.slice(caret), replaceFrom + text.length)
+  }
+  const commit = (exit: 'before' | 'after' | null) => {
+    if (done.current) return
+    done.current = true
+    onCommit(next, exit)
+  }
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => inputRef.current?.focus())
+    return () => cancelAnimationFrame(frame)
+  }, [])
+  useEffect(() => {
+    activeFormulaInsert = (docId, key, title) => {
+      if (docId !== homeDocId) setPickedTitles((m) => new Map(m).set(docId, title))
+      const term = docId === homeDocId ? key : `[[${title || docId}]].${key}`
+      const head = value.slice(0, caret)
+      const insert = /(?:^|[\s(,+\-*/])$/.test(head) ? term : ` + ${term}`
+      setText(head + insert + value.slice(caret), caret + insert.length)
+      inputRef.current?.focus()
+    }
+    return () => {
+      activeFormulaInsert = null
+    }
+  })
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <VariableToken variable={variable} selected={selected || open} />
-      </PopoverTrigger>
-      <PopoverContent
-        className="flex w-80 flex-col gap-3"
-        align="start"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        // The editor can reclaim focus right after a `{{` input rule inserts the chip; only outside clicks dismiss.
-        onFocusOutside={(e) => e.preventDefault()}
-        contentEditable={false}
+    <span className="inline-flex items-baseline gap-1.5" contentEditable={false}>
+      <Tippy
+        visible={items.length > 0}
+        interactive
+        appendTo={() => document.body}
+        placement="bottom-start"
+        zIndex={100000}
+        content={
+          <div
+            role="listbox"
+            className="border-border bg-background flex w-64 flex-col rounded-md border p-1 shadow-lg"
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            {items.map((item, i) => (
+              <button
+                key={
+                  item.kind === 'attr'
+                    ? `${item.docId}${item.key}`
+                    : item.kind === 'fn'
+                      ? item.name
+                      : item.kind === 'doc'
+                        ? item.id
+                        : 'external'
+                }
+                type="button"
+                role="option"
+                aria-selected={i === active}
+                className={cn(
+                  'flex items-baseline justify-between gap-3 rounded px-2 py-1 text-left text-sm',
+                  i === active ? 'bg-accent' : 'hover:bg-accent/60',
+                )}
+                onMouseEnter={() => setHighlight(i)}
+                onClick={() => pick(item)}
+              >
+                {item.kind === 'attr' ? (
+                  <>
+                    <span className="truncate font-mono">{item.key}</span>
+                    <AttributeValue docId={item.docId} attrKey={item.key} />
+                  </>
+                ) : item.kind === 'fn' ? (
+                  <>
+                    <span className="font-mono">{item.name}(…)</span>
+                    <span className="text-muted-foreground text-xs">function</span>
+                  </>
+                ) : item.kind === 'doc' ? (
+                  <span className="truncate">{item.title}</span>
+                ) : (
+                  <span className="text-muted-foreground">Attribute from another document…</span>
+                )}
+              </button>
+            ))}
+          </div>
+        }
       >
-        <label className="flex flex-col gap-1">
-          <span className="text-muted-foreground text-xs font-medium">Formula</span>
+        <span
+          className="bg-muted inline-flex items-baseline rounded-sm px-1 font-mono ring-2 ring-sky-500/50"
+          style={{fontSize: '0.92em'}}
+        >
+          <span className="opacity-50">=</span>
           <input
-            autoFocus
-            className="border-border bg-background focus:ring-ring rounded-md border px-2 py-1.5 font-mono text-sm outline-none focus:ring-2"
-            placeholder="sum(price, tax)"
-            value={draftExpr}
-            onChange={(e) => setDraftExpr(e.target.value)}
+            ref={inputRef}
+            aria-label="Formula"
+            className="bg-transparent outline-none"
+            style={{width: `${Math.max(value.length, 10) + 1}ch`}}
+            placeholder="price + tax"
+            value={value}
+            onChange={(e) => setText(e.target.value, e.target.selectionStart ?? e.target.value.length)}
+            onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
+            onBlur={() => commit(null)}
             onKeyDown={(e) => {
               e.stopPropagation()
-              if (e.key === 'Enter') {
+              const input = e.currentTarget
+              const collapsed = input.selectionStart === input.selectionEnd
+              if (items.length && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
                 e.preventDefault()
-                apply()
+                setHighlight((active + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length)
+              } else if (items.length && (e.key === 'Enter' || e.key === 'Tab')) {
+                e.preventDefault()
+                pick(items[active]!)
               } else if (e.key === 'Escape') {
-                setOpen(false)
+                e.preventDefault()
+                if (items.length) setDismissed(true)
+                else {
+                  done.current = true
+                  onCancel()
+                }
+              } else if (e.key === 'Enter') {
+                e.preventDefault()
+                commit('after')
+              } else if (e.key === 'ArrowRight' && collapsed && input.selectionStart === value.length) {
+                e.preventDefault()
+                commit('after')
+              } else if (e.key === 'ArrowLeft' && collapsed && input.selectionStart === 0) {
+                e.preventDefault()
+                commit('before')
               }
             }}
           />
-        </label>
-        <div className="flex items-baseline justify-between gap-2 text-sm">
-          <span className="text-muted-foreground">Result</span>
-          <span
-            className={cn(
-              'truncate font-mono tabular-nums',
-              preview.status === 'error' && 'text-amber-700 dark:text-amber-300',
-            )}
-          >
-            {preview.status === 'ok'
-              ? formatFormulaValue(preview.value)
-              : preview.status === 'pending'
-                ? 'Loading…'
-                : trimmed
-                  ? preview.message
-                  : '—'}
-          </span>
-        </div>
-        {numberAttributes.length ? (
-          <div className="flex flex-col gap-1">
-            <span className="text-muted-foreground text-xs font-medium">Attributes in this document</span>
-            <div className="flex flex-wrap gap-1">
-              {numberAttributes.map(([key, value]) => (
-                <button
-                  key={key}
-                  type="button"
-                  className="bg-muted hover:bg-accent rounded px-1.5 py-0.5 font-mono text-xs"
-                  title={String(value)}
-                  onClick={() => appendTerm(key)}
-                >
-                  {key}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="text-muted-foreground text-xs">
-            Add number attributes in the Attributes tab, then reference them by name.
-          </p>
-        )}
-        <OtherDocumentAttributes
-          currentDocId={homeDocId}
-          onInsert={(docId, key) => appendTerm(`[[${docId}]].${key}`)}
-        />
-        <p className="text-muted-foreground text-xs">Functions: sum, avg, min, max, count, round, abs</p>
-        <div className="flex justify-end gap-2">
-          <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <Button size="sm" onClick={apply} disabled={!trimmed}>
-            Apply
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-/** Searches another document and lists its number attributes for insertion as cross-document references. */
-function OtherDocumentAttributes({
-  currentDocId,
-  onInsert,
-}: {
-  currentDocId: string
-  onInsert: (docId: string, key: string) => void
-}) {
-  const [query, setQuery] = useState('')
-  const [picked, setPicked] = useState<{id: string; title: string} | null>(null)
-  const current = unpackHmId(currentDocId)
-  const {suggestions, isFetching} = useInlineMentions(query, {
-    mode: 'document',
-    enabled: !picked && !!query.trim(),
-    siteUid: current?.uid,
-  })
-  const results = suggestions.filter((item) => hmId(item.id.uid, {path: item.id.path}).id !== current?.id).slice(0, 6)
-  if (picked) return <PickedDocumentAttributes doc={picked} onBack={() => setPicked(null)} onInsert={onInsert} />
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-muted-foreground text-xs font-medium">Attributes from another document</span>
-      <input
-        className="border-border bg-background focus:ring-ring rounded-md border px-2 py-1 text-sm outline-none focus:ring-2"
-        placeholder="Search documents"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.stopPropagation()}
-      />
-      {query.trim() ? (
-        <div className="flex max-h-40 flex-col overflow-y-auto">
-          {results.map((item) => (
-            <button
-              key={item.id.id}
-              type="button"
-              className="hover:bg-accent truncate rounded px-1.5 py-1 text-left text-sm"
-              onClick={() => setPicked({id: hmId(item.id.uid, {path: item.id.path}).id, title: item.title})}
-            >
-              {item.title}
-            </button>
-          ))}
-          {!results.length && (
-            <span className="text-muted-foreground px-1.5 py-1 text-xs">
-              {isFetching ? 'Searching…' : 'No documents found'}
-            </span>
+        </span>
+      </Tippy>
+      {storage ? (
+        <span
+          className={cn(
+            'font-mono text-xs tabular-nums',
+            preview.status === 'error' ? 'text-amber-700 dark:text-amber-300' : 'text-muted-foreground',
           )}
-        </div>
+        >
+          {preview.status === 'ok'
+            ? `= ${formatFormulaValue(preview.value)}`
+            : preview.status === 'pending'
+              ? '…'
+              : preview.message}
+        </span>
       ) : null}
-    </div>
+    </span>
   )
 }
 
-function PickedDocumentAttributes({
-  doc,
-  onBack,
-  onInsert,
-}: {
-  doc: {id: string; title: string}
-  onBack: () => void
-  onInsert: (docId: string, key: string) => void
-}) {
-  const attributes = useNumberAttributes(doc.id)
+/** Live value of an attribute, shown next to it in autocomplete lists. */
+export function AttributeValue({docId, attrKey}: {docId: string; attrKey: string}) {
+  const result = useVariableValue({docId, kind: 'attr', key: attrKey})
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex items-baseline justify-between gap-2">
-        <span className="text-muted-foreground truncate text-xs font-medium">Attributes in {doc.title}</span>
-        <button type="button" className="text-muted-foreground hover:text-foreground text-xs" onClick={onBack}>
-          Change
-        </button>
-      </div>
-      {attributes.length ? (
-        <div className="flex flex-wrap gap-1">
-          {attributes.map(([key, value]) => (
-            <button
-              key={key}
-              type="button"
-              className="bg-muted hover:bg-accent rounded px-1.5 py-0.5 font-mono text-xs"
-              title={String(value)}
-              onClick={() => onInsert(doc.id, key)}
-            >
-              {key}
-            </button>
-          ))}
-        </div>
-      ) : (
-        <span className="text-muted-foreground text-xs">This document has no number attributes</span>
-      )}
-    </div>
+    <span className="text-muted-foreground shrink-0 font-mono text-xs tabular-nums">
+      {result.status === 'ok' ? formatFormulaValue(result.value) : result.status === 'pending' ? '…' : '#ERR'}
+    </span>
   )
 }
 
 /** Custom attributes of a document whose value is a number or a formula. */
-function useNumberAttributes(docId: string): [string, unknown][] {
-  const unpacked = unpackHmId(docId)
+export function useNumberAttributes(docId: string): [string, unknown][] {
+  const unpacked = docId ? unpackHmId(docId) : null
   const resource = useResource(unpacked, {subscribed: true})
   const actions = useDocumentActions()
   const draft = unpacked && !unpacked.version ? actions.getDraft?.(unpacked) : undefined
