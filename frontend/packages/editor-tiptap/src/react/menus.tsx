@@ -39,6 +39,8 @@ function suggestionMenu<I>(
   const store = new MenuStore<I>()
   const extension = Extension.create({
     name,
+    // Above `SeedStructure` so an open menu gets Enter/Tab/arrows before the block keymap.
+    priority: 1100,
     addProseMirrorPlugins() {
       return [
         Suggestion<I, I>({
