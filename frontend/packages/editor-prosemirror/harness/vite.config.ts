@@ -2,15 +2,19 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import {defineConfig} from 'vite'
 
-// `@shm/ui/get-file-url` resolves `ipfs://` links against SEED_ASSET_HOST,
-// exactly like the app. Point it at the harness's default site.
-process.env.SEED_ASSET_HOST ??= 'https://seed.horacioh.com'
-
 /** Dev-only harness: loads a real Seed document into the plain ProseMirror editor. */
 export default defineConfig({
   root: __dirname,
   plugins: [react()],
-  envPrefix: ['VITE_', 'SEED_ASSET_HOST'],
+  define: {
+    // `@shm/shared` constants read `process.env`. `@shm/ui/get-file-url` resolves `ipfs://` links against
+    // SEED_ASSET_HOST, exactly like the app, so point it at the harness's default site.
+    'process.env': {
+      NODE_ENV: JSON.stringify('development'),
+      VITE_GATEWAY_URL: JSON.stringify('https://hyper.media'),
+      SEED_ASSET_HOST: JSON.stringify(process.env.SEED_ASSET_HOST ?? 'https://seed.horacioh.com'),
+    },
+  },
   server: {port: 5183, host: true},
   resolve: {
     alias: {
