@@ -88,13 +88,13 @@ Dev dependencies match the ProseKit package. The workspace has one copy of each 
 
 | | ProseKit | CodeMirror |
 | --- | --- | --- |
-| Seed-specific code (`src`, TS / TSX) | 1,253 lines | 1,762 lines |
-| CSS | 238 lines | 214 lines |
-| Tests (excluding shared fixtures) | 239 lines | 446 lines |
-| Harness build, JS gzip | 204 KiB (208,860 B) | 278 KiB (285,096 B) |
-| Harness build, CSS gzip | 1.4 KiB | 1.2 KiB |
+| Seed-specific code (`src`, TS / TSX) | 1,605 lines | 1,762 lines |
+| CSS | 345 lines | 214 lines |
+| Tests (excluding shared fixtures) | 384 lines | 446 lines |
+| Harness build, JS gzip | 289 KiB (295,521 B) | 281 KiB (287,730 B) |
+| Harness build, CSS gzip | 1.8 KiB | 1.5 KiB |
 
-Both harness bundles include the same Seed app code (`@shm/shared`, `@shm/ui` helpers, React), so the difference (≈ 75 KiB gzip) is mostly the editor itself plus the Seed text grammar.
+Measured with both spikes at the same feature level (media included). Both harness bundles include the same Seed app code (`@shm/shared`, `@shm/ui` helpers, React), so the editors themselves end up within a few KiB of each other: CodeMirror's core is smaller than ProseMirror plus ProseKit, but the Seed text grammar and hand-built widgets add back most of the difference.
 
 - **Easier with CodeMirror:** ids that survive any edit (a mapped range set is exactly what CodeMirror is built for), round-tripping unknown data, undo, very large documents, Markdown shortcuts (they are the syntax), and a future source mode or Yjs binding.
 - **Harder with CodeMirror:** the whole document grammar and parser (ProseKit gets this from a schema), rich block UI (media, embeds) as widgets rather than node views, and anything layout-like. Live preview needs careful decoration logic to hide syntax without breaking cursor movement.
@@ -102,7 +102,7 @@ Both harness bundles include the same Seed app code (`@shm/shared`, `@shm/ui` he
 
 # Recommendation
 
-CodeMirror is not a good replacement for BlockNote as the main Seed editor. Seed documents are trees of typed blocks with rich, interactive node content, and the roadmap (tables, grids, Page mode, block-level comments and citations) pushes further in that direction. In CodeMirror every one of those needs a text syntax plus a widget, and the grammar becomes the product. ProseKit models the tree directly, needed fewer lines for the same features, and ships more of the menu UI.
+CodeMirror is not a good replacement for BlockNote as the main Seed editor. Seed documents are trees of typed blocks with rich, interactive node content, and the roadmap (tables, grids, Page mode, block-level comments and citations) pushes further in that direction. In CodeMirror every one of those needs a text syntax plus a widget, and the grammar becomes the product. ProseKit models the tree directly, needed about 10% fewer lines for the same features, and ships more of the menu UI.
 
 CodeMirror is a strong candidate for an **optional source / Markdown mode alongside a tree editor**: the same `EditorAdapter` contract means both editors load and save the same HM blocks with the same ids, so switching modes is lossless. It would also suit a "focus / long-form" writing mode or very large documents. If collaboration on plain text arrives before collaboration on blocks, `y-codemirror.next` is the most mature binding of the candidates.
 
