@@ -108,6 +108,8 @@ export {
   toAPIBlockNode,
 } from './block-diff'
 export type {APIBlockNode, APIBlock} from './block-diff'
+export {collectHMBlockIds, hmDocumentOperations} from './editor-adapter'
+export type {EditorAdapter} from './editor-adapter'
 
 export {
   autoLinkChildToParent,

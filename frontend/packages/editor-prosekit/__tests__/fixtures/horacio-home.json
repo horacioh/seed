@@ -1,0 +1,717 @@
+{
+  "source": "https://seed.horacioh.com/api/Resource?id=hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk",
+  "version": "bafyreibq24tj2yzy2gcxhpbwagpxxkr5gdsojegoqw4lb7ahdd2tfls7hm",
+  "content": [
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "32RPEHs1",
+            "revision": "bafyreibq24tj2yzy2gcxhpbwagpxxkr5gdsojegoqw4lb7ahdd2tfls7hm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [105],
+                "ends": [128],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/about"
+              }
+            ],
+            "text": "I'm Horacio Herrera, a product-minded frontend engineer and designer from Panama 🇵🇦, based in Barcelona. More about my journey →",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "4ZcjNT0G",
+            "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [104],
+                "ends": [119],
+                "attributes": {},
+                "link": "hm://z6Mko5npVz4Bx9Rf4vkRUf2swvb568SDbhLwStaha3HzgrLS"
+              }
+            ],
+            "text": "I build rich-text editors, local-first apps, and collaborative publishing tools. I'm currently building Seed Hypermedia, a desktop and web platform for decentralized knowledge collaboration — combining fine-grained linking, embedding, cryptographic authorship, and community-controlled publishing.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "JNdZiH9L",
+            "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+            "attributes": {},
+            "annotations": [],
+            "text": "My work sits at the intersection of product design, frontend architecture, and open-source software. I've contributed to editor ecosystems like Plate and BlockNote, and I care deeply about tools that help people write, publish, discuss, and organize knowledge.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "0K3BBsUk",
+            "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [19],
+                "ends": [20],
+                "attributes": {},
+                "link": "https://x.com/hhg2288"
+              },
+              {
+                "type": "Link",
+                "starts": [22],
+                "ends": [29],
+                "attributes": {},
+                "link": "https://bsky.app/profile/horacioh.com"
+              },
+              {
+                "type": "Link",
+                "starts": [31],
+                "ends": [38],
+                "attributes": {},
+                "link": "https://www.youtube.com/@horacioh"
+              },
+              {
+                "type": "Link",
+                "starts": [42],
+                "ends": [47],
+                "attributes": {},
+                "link": "https://mailto:hi@horacioh.com"
+              }
+            ],
+            "text": "You can find me in X, Bluesky, Youtube or email",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "Z8gJ8Mg7",
+        "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+        "attributes": {
+          "childrenType": "Group"
+        },
+        "annotations": [
+          {
+            "type": "Bold",
+            "starts": [0],
+            "ends": [5],
+            "attributes": {},
+            "link": ""
+          }
+        ],
+        "text": "Hi! 👋",
+        "link": ""
+      }
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "JEAN-HOME",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [32],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/jean-web-access-behind-tailscale"
+              }
+            ],
+            "text": "Jean Web Access behind Tailscale",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "J7I2preC",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [46],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/state-machines-to-visualize-the-work-of-agents"
+              }
+            ],
+            "text": "State machines to visualize the work of agents",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "USlsRAZ5",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [48],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/notes-about-how-the-document-machine-should-work"
+              }
+            ],
+            "text": "Notes about how the document machine should work",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "jBEE9M27",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [23],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/pure-css-scroll-shadows"
+              }
+            ],
+            "text": "Pure CSS Scroll Shadows",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "6G3v2qsu",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [47],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/what-i-want-for-the-commenting-experience-to-be"
+              }
+            ],
+            "text": "What I want for the commenting experience to be",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "Xr_qmEGA",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [18],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/remodeling-the-web"
+              }
+            ],
+            "text": "Remodeling the web",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "Kr_5vxSA",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [20],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/vibe-code-like-a-pro"
+              }
+            ],
+            "text": "Vibe code like a PRO",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "tA2tFtU8",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [24],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/how-to-background-agents"
+              }
+            ],
+            "text": "How to Background Agents",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "ERHmAAPq",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [60],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/great-product-features-in-the-wild-canva-pause-subscription"
+              }
+            ],
+            "text": "Great product features in the wild: Canva Pause Subscription",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "JHK5q5mB",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [55],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/real-leaders-dont-give-orders"
+              }
+            ],
+            "text": "This is Why Real Leaders Don't Give Orders — Seth Godin",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "N8mT4MkI",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [30],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/why-are-beach-holes-so-deadly"
+              }
+            ],
+            "text": "Why Are Beach Holes So Deadly?",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "2NiodgD6",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [46],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/modeling-resizable-panels-using-state-machines"
+              }
+            ],
+            "text": "Modeling resizable panels using State Machines",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "U8m6-IOa",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [15],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/sr-71-blackbird"
+              }
+            ],
+            "text": "SR-71 BlackBird",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "ZftnjdjN",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [74],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/the-riddle-that-seems-impossible-even-if-you-know-the-answer-by-veritasium"
+              }
+            ],
+            "text": "The Riddle That Seems Impossible Even If You Know The Answer by Veritasium",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "BBKIIwxS",
+            "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [19],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/just-press-record"
+              }
+            ],
+            "text": "Just press record 🔴",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "ixY0TYK5",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [47],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/state-machines-are-great-but-hard-to-establish"
+              }
+            ],
+            "text": "State machines are great, but hard to establish",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "tfU50d5D",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [34],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/do-you-consider-luck-in-your-life"
+              }
+            ],
+            "text": "Do you consider Luck in your Life?",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "AG_tW1Tp",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [75],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/short-posts/10-profitable-newsletter-business-ideas-to-start-2025"
+              }
+            ],
+            "text": "10 (Profitable) Newsletter Business Ideas To Start In 2025 by Greg Isenberg",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "pQm3lV6d",
+        "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+        "attributes": {
+          "childrenType": "Unordered"
+        },
+        "annotations": [],
+        "text": "Latest Short Posts",
+        "link": ""
+      }
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "4VGdxJ7E",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [46],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/codesign-your-electron-application-for-windows"
+              }
+            ],
+            "text": "Codesign your Electron Application for Windows",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "Jt3gqw87",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [79],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/velopack-delta-updates-for-electron-apps-and-why-you-might-not-need-them-yet"
+              }
+            ],
+            "text": "Velopack: Delta Updates for Electron Apps (and Why You Might Not Need Them Yet)",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "yUvdEuC_",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [37],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/deploy-a-seed-site-from-your-own-fork"
+              }
+            ],
+            "text": "Deploy a Seed Site From Your Own Fork",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "GqnFfmIJ",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [70],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/graduated-trust-a-web-of-trust-proposal-for-open-source-in-the-ai-era"
+              }
+            ],
+            "text": "Graduated Trust: A Web-of-Trust Proposal for Open Source in the AI Era",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "V5-mLGIG",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [80],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/pairing-serif--sans-serif-for-headings-vs-body-does-it-actually-help-reading"
+              }
+            ],
+            "text": "Pairing serif & sans-serif for headings vs body — does it actually help reading?",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "GeA8ktN6",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [69],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/como-cuidar-tu-kimono-blanco-de-jiujitsu"
+              }
+            ],
+            "text": "Cómo cuidar tu kimono blanco de JiuJitsu (gi) y mantenerlo como nuevo",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "PEVj_ci8",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [33],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/how-i-organize-my-week-on-sundays"
+              }
+            ],
+            "text": "How I organize my week on sundays",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "yaa1aLfY",
+            "revision": "bafyreictxatklgo3ciizbv7g75ty2gghhh6u6s6vfl2r4o27ypdkp47zxm",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [0],
+                "ends": [31],
+                "attributes": {},
+                "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/writing/unlimited-self-generated-morale"
+              }
+            ],
+            "text": "Unlimited self-generated morale",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "Ptz7wG6h",
+        "revision": "bafyreiemx4e7jy7jznkxtwmahcjslinwk4uyhf6lquaptkncmgusi3kcnu",
+        "attributes": {
+          "childrenType": "Unordered"
+        },
+        "annotations": [],
+        "text": "Last Writings",
+        "link": ""
+      }
+    },
+    {
+      "children": [],
+      "block": {
+        "type": "Paragraph",
+        "id": "OOAY2pt9",
+        "revision": "bafyreiajieoxatxa5lqrq5qtnwk4bjejn5cjc45ajskemumirsfjr4xvki",
+        "attributes": {},
+        "annotations": [],
+        "text": "",
+        "link": ""
+      }
+    },
+    {
+      "children": [],
+      "block": {
+        "type": "Query",
+        "id": "XPqehNlt",
+        "revision": "bafyreibq24tj2yzy2gcxhpbwagpxxkr5gdsojegoqw4lb7ahdd2tfls7hm",
+        "attributes": {
+          "columnCount": 3,
+          "style": "Table",
+          "query": {
+            "includes": [
+              {
+                "space": "z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk",
+                "path": "",
+                "mode": "AllDescendants"
+              }
+            ],
+            "sort": [
+              {
+                "term": "updated",
+                "reverse": true
+              }
+            ],
+            "limit": 10,
+            "filters": []
+          },
+          "banner": false
+        },
+        "annotations": [],
+        "text": "",
+        "link": ""
+      }
+    }
+  ]
+}
