@@ -1,0 +1,214 @@
+.seed-codemirror .cm-editor {
+  font-size: 16px;
+  color: #1f2328;
+}
+.seed-codemirror .cm-scroller {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+.seed-codemirror .cm-editor.cm-focused {
+  outline: none;
+}
+.seed-codemirror .cm-content {
+  padding: 8px 8px 8px 32px;
+}
+.cm-seed-line {
+  position: relative;
+}
+.cm-seed-prefix {
+  position: absolute;
+  margin-left: -20px;
+  width: 18px;
+  text-align: right;
+  color: #57606a;
+}
+.cm-seed-quote {
+  box-shadow: inset 3px 0 0 #0969da;
+  color: #424a53;
+}
+.cm-seed-quote .cm-seed-prefix {
+  display: none;
+}
+.cm-seed-Heading {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+.cm-seed-Code,
+.cm-seed-Math {
+  background: #f6f8fa;
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+}
+.cm-seed-fence {
+  color: #8c959f;
+}
+.cm-seed-mark-Bold {
+  font-weight: 700;
+}
+.cm-seed-mark-Italic {
+  font-style: italic;
+}
+.cm-seed-mark-Underline {
+  text-decoration: underline;
+}
+.cm-seed-mark-Strike {
+  text-decoration: line-through;
+}
+.cm-seed-mark-Code {
+  background: #eff1f3;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}
+.cm-seed-mark-Link {
+  color: #0969da;
+  text-decoration: underline;
+}
+.cm-seed-mark-TextColor,
+.cm-seed-mark-BackgroundColor,
+.cm-seed-mark-Unknown {
+  border-bottom: 1px dotted #8c959f;
+}
+.cm-seed-mention {
+  background: #ddf4ff;
+  color: #0550ae;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+.cm-seed-badge {
+  font-size: 11px;
+  color: #57606a;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-right: 6px;
+}
+.cm-seed-atom {
+  display: block;
+  margin: 4px 0;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 8px;
+  white-space: normal;
+}
+.cm-seed-atom img,
+.cm-seed-atom video {
+  max-width: 100%;
+  border-radius: 4px;
+}
+.cm-seed-atom iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+.cm-seed-atom figcaption {
+  font-size: 14px;
+  color: #57606a;
+}
+.cm-seed-embed-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font:
+    12px ui-monospace,
+    monospace;
+  color: #57606a;
+}
+.cm-seed-embed-bar span {
+  flex: 1;
+}
+.cm-seed-embed-bar button,
+.cm-seed-toolbar button {
+  border: 1px solid #d0d7de;
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.cm-seed-embed-bar button[data-active] {
+  background: #0969da;
+  color: #fff;
+}
+.cm-seed-embed-body h2 {
+  margin: 4px 0;
+  font-size: 1.2em;
+}
+.cm-seed-embed-body p,
+.cm-seed-embed-body h3 {
+  margin: 2px 0;
+}
+.cm-seed-empty {
+  color: #8c959f;
+}
+.cm-seed-button {
+  display: inline-block;
+  background: #0969da;
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 12px;
+}
+.cm-seed-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+}
+.seed-codemirror .cm-tooltip-autocomplete > ul {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  max-height: 18em;
+}
+.seed-codemirror .cm-tooltip-autocomplete > ul > li {
+  padding: 4px 10px;
+}
+.seed-codemirror .cm-completionDetail {
+  color: #57606a;
+  font-style: normal;
+  margin-left: 8px;
+}
+.seed-codemirror .cm-tooltip {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  overflow: hidden;
+}
+.seed-codemirror .cm-tooltip-autocomplete li[aria-selected] .cm-completionDetail {
+  color: inherit;
+}
+.seed-codemirror .cm-scroller {
+  position: relative;
+}
+.seed-codemirror .cm-gutters {
+  background: transparent;
+  border: none;
+}
+.seed-codemirror .cm-seed-handles .cm-gutterElement {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 20px;
+}
+.seed-codemirror .cm-seed-grip {
+  color: #8c959f;
+  cursor: grab;
+  font-size: 12px;
+  letter-spacing: -2px;
+  line-height: inherit;
+  opacity: 0;
+  user-select: none;
+}
+.seed-codemirror .cm-editor:hover .cm-seed-grip {
+  opacity: 0.6;
+}
+.seed-codemirror .cm-seed-grip:hover {
+  opacity: 1 !important;
+}
+.seed-codemirror .cm-seed-drop-indicator {
+  position: absolute;
+  left: 20px;
+  right: 0;
+  height: 2px;
+  background: #0969da;
+  pointer-events: none;
+  z-index: 10;
+}

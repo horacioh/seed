@@ -1,0 +1,40 @@
+{
+  "name": "@shm/editor-codemirror",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "dev": "vite --config harness/vite.config.ts",
+    "build:harness": "vite build --config harness/vite.config.ts",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit --project tsconfig.app.json"
+  },
+  "dependencies": {
+    "@codemirror/autocomplete": "6.20.4",
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.15",
+    "@seed-hypermedia/client": "workspace:*",
+    "@shm/shared": "workspace:*",
+    "@shm/ui": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.64",
+    "@types/react-dom": "18.2.21",
+    "@vitejs/plugin-react": "^4.3.4",
+    "jsdom": "^24.0.0",
+    "typescript": "5.8.3",
+    "vite": "6.4.2",
+    "vitest": "4.1.8"
+  }
+}
