@@ -379,6 +379,8 @@ function VariableEditor({
         className="flex w-80 flex-col gap-3"
         align="start"
         onOpenAutoFocus={(e) => e.preventDefault()}
+        // The editor can reclaim focus right after a `{{` input rule inserts the chip; only outside clicks dismiss.
+        onFocusOutside={(e) => e.preventDefault()}
         contentEditable={false}
       >
         <label className="flex flex-col gap-1">
