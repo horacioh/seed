@@ -1,0 +1,287 @@
+.seed-lexical {
+  position: relative;
+  font:
+    16px/1.6 system-ui,
+    sans-serif;
+  color: #1f2328;
+}
+.seed-lexical-content {
+  outline: none;
+  padding: 8px 8px 8px 48px;
+  white-space: pre-wrap;
+}
+.seed-lexical-content p,
+.seed-lexical-content h1,
+.seed-lexical-content h2,
+.seed-lexical-content h3 {
+  margin: 4px 0;
+}
+.seed-lexical-content h1,
+.seed-lexical-content h2,
+.seed-lexical-content h3 {
+  font-size: 1.5em;
+  font-weight: 700;
+}
+.seed-group {
+  padding-left: 24px;
+}
+.seed-group[data-children-type='Ordered'] {
+  counter-reset: seed-ol;
+}
+.seed-group[data-children-type='Ordered'] > .seed-block,
+.seed-group[data-children-type='Unordered'] > .seed-block {
+  position: relative;
+}
+.seed-group[data-children-type='Ordered'] > .seed-block::before {
+  counter-increment: seed-ol;
+  content: counter(seed-ol) '.';
+  position: absolute;
+  left: -24px;
+  top: 0;
+  color: #57606a;
+}
+.seed-group[data-children-type='Unordered'] > .seed-block::before {
+  content: '•';
+  position: absolute;
+  left: -16px;
+  top: 0;
+  color: #57606a;
+}
+.seed-group[data-children-type='Blockquote'] {
+  border-left: 3px solid #0969da;
+  margin-left: 8px;
+  padding-left: 16px;
+  color: #424a53;
+}
+.seed-unknown {
+  border-left: 2px dotted #d0d7de;
+  padding-left: 8px;
+}
+.seed-math,
+.seed-lexical-content .seed-code-block {
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+}
+.seed-lexical-content .seed-inline-code {
+  background: #eff1f3;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}
+.seed-lexical-content a {
+  color: #0969da;
+}
+.seed-mention {
+  background: #ddf4ff;
+  color: #0550ae;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-weight: 500;
+}
+.seed-atom,
+.seed-embed {
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  margin: 4px 0;
+  padding: 8px 12px;
+  background: #fff;
+}
+.seed-atom img,
+.seed-embed img {
+  max-width: 100%;
+  border-radius: 6px;
+}
+.seed-atom video {
+  max-width: 100%;
+}
+[data-selected] {
+  outline: 2px solid #0969da;
+}
+.seed-button {
+  display: inline-block;
+  background: #1f883d;
+  color: white;
+  border-radius: 6px;
+  padding: 4px 12px;
+}
+.seed-embed-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: #57606a;
+  margin-bottom: 8px;
+}
+.seed-embed-link {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.seed-embed-bar button,
+.seed-toolbar button,
+.seed-block-handle button {
+  border: 1px solid #d0d7de;
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.seed-embed-bar button[data-active],
+.seed-toolbar button[data-active] {
+  background: #0969da;
+  color: white;
+  border-color: #0969da;
+}
+.seed-embed-content {
+  border-left: 3px solid #8250df;
+  padding-left: 12px;
+}
+.seed-embed-content h2 {
+  font-size: 1.25em;
+  margin: 0 0 4px;
+}
+.seed-embed-card {
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 12px;
+}
+.seed-embed-card p {
+  margin: 4px 0 0;
+  color: #57606a;
+  font-size: 14px;
+}
+.seed-embed-empty {
+  color: #57606a;
+  font-size: 14px;
+}
+.seed-ro-quote {
+  border-left: 3px solid #0969da;
+  padding-left: 12px;
+}
+
+.seed-bold {
+  font-weight: 700;
+}
+.seed-italic {
+  font-style: italic;
+}
+.seed-underline {
+  text-decoration: underline;
+}
+.seed-strike {
+  text-decoration: line-through;
+}
+.seed-underline-strike {
+  text-decoration: underline line-through;
+}
+.seed-lexical-content .seed-code-block {
+  display: block;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 4px 0;
+}
+.seed-mention-host {
+  display: inline;
+}
+.seed-math textarea {
+  width: 100%;
+  min-height: 48px;
+  font: inherit;
+  margin-top: 4px;
+}
+.seed-menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  max-height: 320px;
+  overflow: auto;
+  background: white;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.3);
+  padding: 4px;
+  margin-top: 24px;
+  position: relative;
+  z-index: 50;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+.seed-menu-item {
+  display: flex;
+  flex-direction: column;
+  max-width: 360px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.seed-menu-item small {
+  color: #57606a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.seed-menu-item[data-highlighted] {
+  background: #ddf4ff;
+}
+.seed-menu-empty {
+  padding: 6px 8px;
+  color: #57606a;
+}
+.seed-toolbar {
+  position: absolute;
+  z-index: 50;
+  display: flex;
+  gap: 4px;
+  background: white;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.3);
+}
+.seed-block-handle {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  z-index: 10;
+}
+.seed-block-handle button,
+.seed-drag {
+  width: 20px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8c959f;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+.seed-drag {
+  cursor: grab;
+}
+.seed-block-handle button:hover,
+.seed-drag:hover {
+  background: #eff1f3;
+}
+.seed-drop-line {
+  position: absolute;
+  height: 2px;
+  background: #0969da;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .seed-lexical-content {
+    padding-left: 32px;
+  }
+}
