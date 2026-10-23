@@ -476,7 +476,7 @@ function FormulaInput({
       : variable.docId === homeDocId
         ? variable.key
         : `[[${variable.docId}]].${variable.key}`
-  const refIds = useMemo(() => [...source.matchAll(/\[\[(hm:\/\/[^\]]+)\]\]/g)].map((m) => m[1]!), [])
+  const refIds = useMemo(() => Array.from(source.matchAll(/\[\[(hm:\/\/[^\]]+)\]\]/g), (m) => m[1]!), [])
   const refResources = useResources(refIds.map((id) => unpackHmId(id)))
   const [pickedTitles, setPickedTitles] = useState<Map<string, string>>(() => new Map())
   const titles = new Map(pickedTitles)
@@ -485,8 +485,7 @@ function FormulaInput({
     if (data && 'document' in data && data.document) titles.set(id, getDocumentTitle(data.document))
   })
   const idForTitle = (title: string) => {
-    for (const [id, t] of titles) if (t === title) return id
-    return null
+    return Array.from(titles).find(([, t]) => t === title)?.[0] ?? null
   }
   const [value, setValue] = useState(() =>
     variable.kind === 'formula' && !variable.expr && pendingFormulaText !== null
