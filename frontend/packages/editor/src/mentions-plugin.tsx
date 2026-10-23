@@ -1,14 +1,13 @@
-import {HMMetadata, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
+import {BUILTIN_METADATA_KEYS, HMMetadata, UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {hmId, hypermediaUrlToHref, useUniversalAppContext} from '@shm/shared'
 import {getContactMetadata, getDocumentTitle} from '@shm/shared/content'
 import {useDocumentActions} from '@shm/shared/document-actions-context'
 import {
   buildVariableLink,
-  evaluateVariable,
+  displayVariable,
   FORMULA_FUNCTIONS,
-  formatFormulaValue,
   parseVariableLink,
-  type FormulaResult,
+  type VariableDisplayResult,
   type VariableLink,
 } from '@shm/shared/formulas'
 import {useAccount, useResource, useResources} from '@shm/shared/models/entity'
@@ -295,7 +294,7 @@ export function MentionText(props: any) {
  * Evaluates a variable or formula against live document metadata (drafts first, then published), loading
  * cross-document references on demand.
  */
-export function useVariableValue(variable: VariableLink): FormulaResult {
+export function useVariableValue(variable: VariableLink): VariableDisplayResult {
   const [docIds, setDocIds] = useState<string[]>([variable.docId])
   const unpackedIds = useMemo(() => docIds.map((id) => unpackHmId(id)), [docIds.join(',')])
   const resources = useResources(unpackedIds, {subscribed: true})
@@ -313,7 +312,7 @@ export function useVariableValue(variable: VariableLink): FormulaResult {
     else if (published) metadataById.set(id, published)
     else metadataById.set(id, resource?.isLoading ? undefined : null)
   })
-  const result = evaluateVariable(variable, (id) => (metadataById.has(id) ? metadataById.get(id) : undefined))
+  const result = displayVariable(variable, (id) => (metadataById.has(id) ? metadataById.get(id) : undefined))
   const missing = result.status === 'pending' ? result.missing.filter((id) => !docIds.includes(id)) : []
   useEffect(() => {
     if (missing.length) setDocIds((ids) => [...ids, ...missing.filter((id) => !ids.includes(id))])
@@ -334,7 +333,7 @@ export const VariableToken = forwardRef<
   const result = useVariableValue(variable)
   const label =
     result.status === 'ok'
-      ? formatFormulaValue(result.value)
+      ? result.text
       : result.status === 'pending'
         ? '…'
         : variable.kind === 'formula' && !variable.expr.trim()
@@ -347,7 +346,8 @@ export const VariableToken = forwardRef<
       data-variable-kind={variable.kind}
       title={result.status === 'error' ? `${variableSource(variable)} — ${result.message}` : variableSource(variable)}
       className={cn(
-        'inline-flex items-baseline gap-1 rounded-sm px-1 font-mono tabular-nums',
+        'inline-flex items-baseline gap-1 rounded-sm px-1',
+        result.status === 'ok' && !result.numeric ? 'font-sans' : 'font-mono tabular-nums',
         result.status === 'error'
           ? 'bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-100'
           : 'bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-100',
@@ -516,8 +516,8 @@ function FormulaInput({
   const docAttr = /\[\[([^\]]+)\]\]\.([\w.]*)$/.exec(before)
   const ident = /(?:^|[^\w.\]])([A-Za-z_]\w*)$/.exec(before)
   const docAttrId = docAttr ? (docAttr[1]!.startsWith('hm://') ? docAttr[1]! : idForTitle(docAttr[1]!)) : null
-  const localAttrs = useNumberAttributes(homeDocId)
-  const externalAttrs = useNumberAttributes(docAttrId ?? '')
+  const localAttrs = useDocumentAttributes(homeDocId, {numeric: true})
+  const externalAttrs = useDocumentAttributes(docAttrId ?? '', {numeric: true})
   const home = unpackHmId(homeDocId)
   const {suggestions: docs} = useInlineMentions(docQuery?.[1] ?? '', {
     mode: 'document',
@@ -708,11 +708,7 @@ function FormulaInput({
             preview.status === 'error' ? 'text-amber-700 dark:text-amber-300' : 'text-muted-foreground',
           )}
         >
-          {preview.status === 'ok'
-            ? `= ${formatFormulaValue(preview.value)}`
-            : preview.status === 'pending'
-              ? '…'
-              : preview.message}
+          {preview.status === 'ok' ? `= ${preview.text}` : preview.status === 'pending' ? '…' : preview.message}
         </span>
       ) : null}
     </span>
@@ -723,14 +719,14 @@ function FormulaInput({
 export function AttributeValue({docId, attrKey}: {docId: string; attrKey: string}) {
   const result = useVariableValue({docId, kind: 'attr', key: attrKey})
   return (
-    <span className="text-muted-foreground shrink-0 font-mono text-xs tabular-nums">
-      {result.status === 'ok' ? formatFormulaValue(result.value) : result.status === 'pending' ? '…' : '#ERR'}
+    <span className="text-muted-foreground max-w-40 shrink-0 truncate font-mono text-xs tabular-nums">
+      {result.status === 'ok' ? result.text : result.status === 'pending' ? '…' : '#ERR'}
     </span>
   )
 }
 
-/** Custom attributes of a document whose value is a number or a formula. */
-export function useNumberAttributes(docId: string): [string, unknown][] {
+/** Custom (non built-in) attributes of a document with a value; `numeric` keeps only numbers and formulas. */
+export function useDocumentAttributes(docId: string, {numeric = false}: {numeric?: boolean} = {}): [string, unknown][] {
   const unpacked = docId ? unpackHmId(docId) : null
   const resource = useResource(unpacked, {subscribed: true})
   const actions = useDocumentActions()
@@ -738,9 +734,13 @@ export function useNumberAttributes(docId: string): [string, unknown][] {
   const published =
     resource.data && 'document' in resource.data && resource.data.document ? resource.data.document.metadata : {}
   const metadata: Record<string, unknown> = {...published, ...draft?.metadata}
-  return Object.entries(metadata).filter(
-    ([, value]) =>
-      typeof value === 'number' ||
-      (typeof value === 'string' && (value.trim().startsWith('=') || (value.trim() !== '' && !isNaN(Number(value))))),
-  )
+  return Object.entries(metadata).filter(([key, value]) => {
+    if (BUILTIN_METADATA_KEYS.has(key) || key.endsWith('ttributesSchema') || value === null || value === undefined)
+      return false
+    if (typeof value === 'number') return true
+    if (typeof value !== 'string') return !numeric
+    const trimmed = value.trim()
+    if (!trimmed) return false
+    return !numeric || trimmed.startsWith('=') || !isNaN(Number(trimmed))
+  })
 }

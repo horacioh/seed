@@ -1,5 +1,13 @@
 import {describe, expect, it} from 'vitest'
-import {buildVariableLink, evaluateVariable, parseFormula, parseVariableLink, type MetadataLookup} from '../formulas'
+import {
+  buildVariableLink,
+  displayVariable,
+  evaluateVariable,
+  formatAttributeValue,
+  parseFormula,
+  parseVariableLink,
+  type MetadataLookup,
+} from '../formulas'
 
 const A = 'hm://z6MkA/budget'
 const B = 'hm://z6MkB/other'
@@ -79,5 +87,45 @@ describe('evaluateVariable', () => {
       left: {type: 'ref', docId: null, key: 'theme.size'},
       right: {type: 'number', value: 2},
     })
+  })
+})
+
+describe('displayVariable', () => {
+  const meta: MetadataLookup = (id) =>
+    id === 'hm://alice/doc'
+      ? ({
+          status: 'Draft',
+          done: true,
+          tags: ['a', 'b'],
+          due: '2026-10-23',
+          price: 200,
+          tax: '21',
+          total: '=price + tax',
+        } as any)
+      : undefined
+  const show = (key: string) => displayVariable({docId: 'hm://alice/doc', kind: 'attr', key}, meta)
+
+  it('renders non-numeric attributes as their value', () => {
+    expect(show('status')).toEqual({status: 'ok', text: 'Draft', numeric: false})
+    expect(show('done')).toEqual({status: 'ok', text: 'Yes', numeric: false})
+    expect(show('tags')).toEqual({status: 'ok', text: 'a, b', numeric: false})
+    expect(show('due')).toEqual({status: 'ok', text: formatAttributeValue('2026-10-23'), numeric: false})
+  })
+
+  it('keeps numbers and formula attributes numeric', () => {
+    expect(show('price')).toEqual({status: 'ok', text: '200', numeric: true})
+    expect(show('total')).toEqual({status: 'ok', text: '221', numeric: true})
+  })
+
+  it('reports missing and pending attributes', () => {
+    expect(show('nope').status).toBe('error')
+    expect(displayVariable({docId: 'hm://bob/x', kind: 'attr', key: 'a'}, meta)).toEqual({
+      status: 'pending',
+      missing: ['hm://bob/x'],
+    })
+  })
+
+  it('formats dates without shifting the day', () => {
+    expect(formatAttributeValue('2026-10-23')).toContain('23')
   })
 })

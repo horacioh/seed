@@ -7,7 +7,7 @@ import {ChevronLeft, FileText, Sigma} from 'lucide-react'
 import {EditorState, Plugin, PluginKey, TextSelection} from 'prosemirror-state'
 import {useEffect, useReducer, useState} from 'react'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
-import {AttributeValue, setPendingFormulaText, useNumberAttributes} from './mentions-plugin'
+import {AttributeValue, setPendingFormulaText, useDocumentAttributes} from './mentions-plugin'
 
 /** Position of the last dismissed `{{` so Escape keeps that menu closed while typing on. */
 export const attributeMenuPluginKey = new PluginKey<number | null>('AttributeMenu')
@@ -96,8 +96,8 @@ export function AttributeMenu({
     if (!range) setStep('local')
     setHighlight(0)
   }, [!!range, query, step])
-  const localAttrs = useNumberAttributes(docId)
-  const pickedAttrs = useNumberAttributes(typeof step === 'object' ? step.id : '')
+  const localAttrs = useDocumentAttributes(docId)
+  const pickedAttrs = useDocumentAttributes(typeof step === 'object' ? step.id : '')
   const {suggestions: docs, isFetching} = useInlineMentions(query, {
     mode: 'document',
     enabled: !!range && step === 'docs',
@@ -190,7 +190,7 @@ export function AttributeMenu({
         ? 'Searching…'
         : 'No documents found'
       : typeof step === 'object'
-        ? 'No number attributes in this document'
+        ? 'No attributes in this document'
         : null
   return (
     <Tippy
@@ -211,7 +211,7 @@ export function AttributeMenu({
         >
           {header}
           {step === 'local' && !localAttrs.length ? (
-            <p className="text-muted-foreground px-2 py-1 text-xs">Add number attributes in the Attributes tab</p>
+            <p className="text-muted-foreground px-2 py-1 text-xs">Add attributes in the Attributes tab</p>
           ) : null}
           {items.map((item, i) => (
             <button

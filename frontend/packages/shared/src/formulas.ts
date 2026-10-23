@@ -266,3 +266,43 @@ export function evaluateVariable(variable: VariableLink, lookup: MetadataLookup)
 export function formatFormulaValue(value: number): string {
   return value.toLocaleString(undefined, {maximumFractionDigits: 6})
 }
+
+/** The outcome of resolving a variable for display: formulas and numbers stay numeric, other attributes keep their value. */
+export type VariableDisplayResult =
+  | {status: 'ok'; text: string; numeric: boolean}
+  | {status: 'error'; message: string}
+  | {status: 'pending'; missing: string[]}
+
+/** Formats any attribute value (text, number, boolean, date, list) as inline text. */
+export function formatAttributeValue(value: unknown): string {
+  if (typeof value === 'number') return formatFormulaValue(value)
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No'
+  if (Array.isArray(value)) return value.map(formatAttributeValue).join(', ')
+  if (typeof value === 'string') {
+    if (/^\d{4}-\d{2}-\d{2}(?:T|$)/.test(value) && !Number.isNaN(Date.parse(value)))
+      return new Date(value).toLocaleDateString(undefined, {
+        dateStyle: 'medium',
+        ...(value.includes('T') ? {timeStyle: 'short'} : {timeZone: 'UTC'}),
+      })
+    return value
+  }
+  if (value && typeof value === 'object') return JSON.stringify(value)
+  return String(value)
+}
+
+/**
+ * Resolves a variable for inline display. Attributes of any type render their value; numbers, numeric strings and
+ * formula-valued attributes are evaluated like formulas so computed values stay consistent with `evaluateVariable`.
+ */
+export function displayVariable(variable: VariableLink, lookup: MetadataLookup): VariableDisplayResult {
+  if (variable.kind === 'attr') {
+    const metadata = lookup(variable.docId)
+    if (metadata === undefined) return {status: 'pending', missing: [variable.docId]}
+    const value = metadata ? (metadata as Record<string, unknown>)[variable.key] : undefined
+    if (value === undefined || value === null) return {status: 'error', message: `Unknown attribute "${variable.key}"`}
+    if (typeof value !== 'number' && !(typeof value === 'string' && value.trim().startsWith('=')))
+      return {status: 'ok', text: formatAttributeValue(value), numeric: false}
+  }
+  const result = evaluateVariable(variable, lookup)
+  return result.status === 'ok' ? {status: 'ok', text: formatFormulaValue(result.value), numeric: true} : result
+}
