@@ -21,6 +21,8 @@ import {
 import {hmBlocksToEditorContent} from '@seed-hypermedia/client/hmblock-to-editorblock'
 import {nanoid} from 'nanoid'
 import {assign, emit, enqueueActions, fromPromise, raise, setup, spawnChild, StateFrom} from 'xstate'
+import {buildVariableLink, parseVariableLink} from '../formulas'
+import {hmId, unpackHmId} from '../utils/entity-id-url'
 import {collectChildDraftIds} from '../utils/child-draft-refs'
 import {
   getDirectChildrenLosingReferences,
@@ -178,6 +180,21 @@ export function deriveDocumentType(
   return includeIsEmpty(queryInclude) || includeTargetsDocument(queryInclude, documentId) ? 'collection' : 'document'
 }
 
+function retargetVariableLinks(block: EditorBlock, fromId: UnpackedHypermediaId, toId: UnpackedHypermediaId) {
+  if (!Array.isArray(block.content)) return block
+  let changed = false
+  const content = block.content.map((leaf) => {
+    if (leaf.type !== 'inline-embed') return leaf
+    const variable = parseVariableLink(leaf.link)
+    const target = variable && unpackHmId(variable.docId)
+    if (!variable || !target || target.version || target.uid !== fromId.uid) return leaf
+    if ((target.path ?? []).join('/') !== (fromId.path ?? []).join('/')) return leaf
+    changed = true
+    return {...leaf, link: buildVariableLink({...variable, docId: hmId(toId.uid, {path: toId.path}).id})}
+  })
+  return changed ? ({...block, content} as EditorBlock) : block
+}
+
 function retargetQueryBlock(block: EditorBlock, fromId: UnpackedHypermediaId, toId: UnpackedHypermediaId) {
   if (block.type !== 'query') return block
   const rawIncludes = block.props.queryIncludes
@@ -216,8 +233,8 @@ function retargetQueryBlock(block: EditorBlock, fromId: UnpackedHypermediaId, to
 }
 
 /**
- * Retarget query-block includes that still point at the draft placeholder
- * document to the final published document id.
+ * Retarget query-block includes and inline variable/formula links that still
+ * point at the draft placeholder document to the final published document id.
  */
 export function retargetQueryBlockIncludesForPublish(
   blocks: EditorBlock[],
@@ -228,7 +245,7 @@ export function retargetQueryBlockIncludesForPublish(
 
   let changed = false
   const nextBlocks = blocks.map((block) => {
-    const retargetedBlock = retargetQueryBlock(block, fromId, toId)
+    const retargetedBlock = retargetVariableLinks(retargetQueryBlock(block, fromId, toId), fromId, toId)
     let nextBlock = retargetedBlock
     if (block.children?.length) {
       const nextChildren = retargetQueryBlockIncludesForPublish(block.children, fromId, toId)
