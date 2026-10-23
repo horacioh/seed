@@ -403,6 +403,7 @@ function VariableEditor({
       event.preventDefault()
       event.stopPropagation()
       activeFormulaInsert(variable.docId, variable.key, title)
+      el.addEventListener('click', (e) => e.stopImmediatePropagation(), {capture: true, once: true})
     }
     el.addEventListener('hm-variable-edit', open)
     el.addEventListener('mousedown', pointAndClick)
@@ -682,7 +683,7 @@ function FormulaInput({
                 pick(items[active]!)
               } else if (e.key === 'Escape') {
                 e.preventDefault()
-                if (items.length) setDismissed(true)
+                if (items.length && value.trim()) setDismissed(true)
                 else {
                   done.current = true
                   onCancel()

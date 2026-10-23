@@ -48,7 +48,7 @@ import {HypermediaLinkPreview} from './hm-link-preview'
 import {createHypermediaDocLinkPlugin} from './hypermedia-link-plugin'
 import {InlineAddBlockButton} from './inline-add-block-button'
 import {MentionMenuPositioner} from './mention-menu-positioner'
-import {AttributeMenu, createAttributeMenuPlugin} from './attribute-menu'
+import {AttributeMenu, attributeMenuPluginKey, createAttributeMenuPlugin, getAttributeMenuRange} from './attribute-menu'
 import {createFormulaTriggerPlugin} from './mentions-plugin'
 import {PublishRequiredDialog} from './publish-required-dialog'
 import {hmBlockSchema, HMBlockSchema} from './schema'
@@ -345,7 +345,12 @@ export function DocumentEditor({
             priority: 0,
             addKeyboardShortcuts() {
               return {
-                Escape: () => {
+                Escape: ({editor}) => {
+                  const attributeMenu = getAttributeMenuRange(editor.state)
+                  if (attributeMenu) {
+                    editor.view.dispatch(editor.state.tr.setMeta(attributeMenuPluginKey, attributeMenu.from))
+                    return true
+                  }
                   actorRef.send({type: 'edit.cancel'})
                   return true
                 },
