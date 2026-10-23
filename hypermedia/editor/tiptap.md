@@ -1,4 +1,7 @@
-# Tiptap spike
+---
+name: The Tiptap editor spike
+summary: The editor adapter built on stock Tiptap 3 instead of ProseKit, with its BlockNote parity, licenses, upgrade path, risks and a comparison against the ProseKit spike.
+---
 
 A second implementation of the editor adapter from [adapter.md](./adapter.md), built on stock
 [Tiptap 3](https://tiptap.dev) instead of ProseKit. It lives in `frontend/packages/editor-tiptap`
