@@ -14,6 +14,7 @@ import {
   type Transaction,
 } from 'prosekit/pm/state'
 import {createBlockId} from './convert'
+import {videoEmbedLink} from './media'
 
 /** Depth of the innermost `blockNode` around `$pos`, or -1. */
 function blockDepth($pos: ResolvedPos): number {
@@ -93,6 +94,70 @@ export const liftBlock: Command = (state, dispatch) => {
 function newBlock(state: EditorState, content?: PMNode) {
   return state.schema.nodes.blockNode!.create(null, content ?? state.schema.nodes.paragraph!.create())
 }
+
+/**
+ * Replace the content node (paragraph, heading, atom…) of the block around the
+ * cursor, or around document position `at`. Inline content carries over when
+ * both nodes are textblocks.
+ */
+export function replaceBlockContent(make: (schema: EditorState['schema']) => PMNode, at?: number): Command {
+  return (state, dispatch) => {
+    const $pos = at == null ? state.selection.$from : state.doc.resolve(at)
+    const d = blockDepth($pos)
+    if (d < 0) return false
+    const start = $pos.before(d) + 1
+    const content = $pos.node(d).firstChild!
+    const node = make(state.schema)
+    const inline = node.isTextblock && content.isTextblock ? content.content : undefined
+    dispatch?.(
+      state.tr.replaceWith(start, start + content.nodeSize, inline ? node.type.create(node.attrs, inline) : node),
+    )
+    return true
+  }
+}
+
+/**
+ * Insert a media (atom) block at the cursor or at position `at`: it replaces
+ * an empty paragraph, otherwise it becomes a new block after the current one.
+ */
+export function insertMediaBlock(
+  type: 'hmImage' | 'hmVideo' | 'hmFile',
+  attrs: {link: string; text?: string; attributes?: Record<string, unknown>},
+  at?: number,
+): Command {
+  return (state, dispatch) => {
+    const $pos = at == null ? state.selection.$from : state.doc.resolve(Math.min(at, state.doc.content.size))
+    const d = blockDepth($pos)
+    if (d < 0) return false
+    const make = (schema: EditorState['schema']) => schema.nodes[type]!.create(attrs)
+    const content = $pos.node(d).firstChild!
+    if (content.type.name === 'paragraph' && !content.content.size)
+      return replaceBlockContent(make, $pos.pos)(state, dispatch)
+    dispatch?.(state.tr.insert($pos.after(d), newBlock(state, make(state.schema))).scrollIntoView())
+    return true
+  }
+}
+
+/**
+ * Paste of a lone YouTube or Vimeo URL into an empty paragraph: turn the block
+ * into a Video block with the same embed link BlockNote stores.
+ */
+export function pasteVideoLink(text: string): Command {
+  return (state, dispatch) => {
+    const link = videoEmbedLink(text.trim())
+    const {$from, empty} = state.selection
+    if (!link || !empty || $from.parent.type.name !== 'paragraph' || $from.parent.content.size) return false
+    return replaceBlockContent((schema) => schema.nodes.hmVideo!.create({link}))(state, dispatch)
+  }
+}
+
+const videoLinkPastePlugin = new Plugin({
+  key: new PluginKey('seed-video-link-paste'),
+  props: {
+    handlePaste: (view, _event, slice) =>
+      pasteVideoLink(slice.content.textBetween(0, slice.content.size, '\n'))(view.state, view.dispatch),
+  },
+})
 
 /** Enter: split the block (not just its paragraph), keeping the id on the original block. */
 export const splitSeedBlock: Command = (state, dispatch) => {
@@ -188,7 +253,7 @@ function stripBlockIds(fragment: Fragment): Fragment {
       node.type.name === 'blockNode'
         ? {...node.attrs, id: null, original: null, baseline: null, nodeKeys: null}
         : node.attrs
-    nodes.push(node.type.create(attrs, stripBlockIds(node.content), node.marks))
+    nodes.push(node.isText ? node : node.type.create(attrs, stripBlockIds(node.content), node.marks))
   })
   return Fragment.from(nodes)
 }
@@ -241,6 +306,7 @@ function groupTypeRule(regex: RegExp, childrenType: 'Ordered' | 'Unordered' | 'B
 export function defineSeedCommands() {
   return union(
     definePlugin(blockIdsPlugin),
+    definePlugin(videoLinkPastePlugin),
     withPriority(
       defineKeymap({
         Tab: sinkBlock,
@@ -248,7 +314,11 @@ export function defineSeedCommands() {
         Enter: splitSeedBlock,
         Backspace: backspaceSeedBlock,
         'Shift-Enter': (state, dispatch) => {
-          dispatch?.(state.tr.insertText('\n').scrollIntoView())
+          const {$from} = state.selection
+          const tr = $from.parent.type.spec.code
+            ? state.tr.insertText('\n')
+            : state.tr.replaceSelectionWith(state.schema.nodes.hardBreak!.create())
+          dispatch?.(tr.scrollIntoView())
           return true
         },
       }),

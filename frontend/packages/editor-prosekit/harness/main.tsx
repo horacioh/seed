@@ -3,6 +3,8 @@ import {hmDocumentOperations} from '@seed-hypermedia/client/editor-adapter'
 import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 import {unpackHmId} from '@seed-hypermedia/client/hm-types'
 import {rankMentionCandidates} from '@shm/shared/models/mention-ranking'
+import {UniversalAppProvider} from '@shm/shared/routing'
+import type {UniversalClient} from '@shm/shared/universal-client'
 import {TextSelection} from 'prosekit/pm/state'
 import {StrictMode, useEffect, useMemo, useState} from 'react'
 import {createRoot} from 'react-dom/client'
@@ -56,7 +58,8 @@ const services: SeedEditorServices = {
     }
     return documentCache.get(key)!
   },
-  fileUrl: (link) => (link.startsWith('ipfs://') ? `${SITE}/ipfs/${link.slice(7)}` : link),
+  // Stand-in for the app's IPFS upload: a local object URL.
+  uploadFile: async (file) => URL.createObjectURL(file),
 }
 
 function Harness() {
@@ -147,6 +150,14 @@ function Harness() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Harness />
+    {/* Media links resolve through @shm/ui/get-file-url, like the app: ipfs:// via the site's gateway. */}
+    <UniversalAppProvider
+      ipfsFileUrl={`${SITE}/ipfs`}
+      openUrl={(url) => window.open(url, '_blank')}
+      openRoute={null}
+      universalClient={{} as UniversalClient}
+    >
+      <Harness />
+    </UniversalAppProvider>
   </StrictMode>,
 )

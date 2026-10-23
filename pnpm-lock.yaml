@@ -1738,6 +1738,9 @@ importers:
       '@shm/shared':
         specifier: workspace:*
         version: link:../shared
+      '@shm/ui':
+        specifier: workspace:*
+        version: link:../ui
       prosekit:
         specifier: 0.22.4
         version: 0.22.4(@shikijs/types@4.5.0)(@types/hast@3.0.5)(highlight.js@11.9.0)(lowlight@3.1.0)(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-transform@1.10.4)(prosemirror-view@1.42.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)

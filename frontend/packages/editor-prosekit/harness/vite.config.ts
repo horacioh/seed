@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@shm/shared': path.resolve(__dirname, '../../shared/src'),
+      '@shm/ui': path.resolve(__dirname, '../../ui/src'),
       '@seed-hypermedia/client': path.resolve(__dirname, '../../client/src'),
     },
   },

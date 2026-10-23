@@ -126,6 +126,12 @@ function inlineFromHM(schema: Schema, text: string, annotations: Annotation[]): 
       )
       return
     }
+    // A newline in HM text is a line break inside the block, not a new block.
+    if (ch === '\n') {
+      flush()
+      nodes.push(schema.nodes.hardBreak!.create(null, null, marks))
+      return
+    }
     if (run && !sameMarks(marks, runMarks)) flush()
     if (!run) runMarks = marks
     run += ch
@@ -167,6 +173,7 @@ function inlineToHM(content: PMNode): {text: string; annotations: Annotation[]} 
   content.forEach((child) => {
     const len = child.isText ? Array.from(child.text!).length : 1
     if (child.isText) text += child.text
+    else if (child.type.name === 'hardBreak') text += '\n'
     else if (child.type.name === 'hmMention') {
       text += INLINE_EMBED_CHAR
       const base: Annotation = child.attrs.annotation ?? {type: 'Embed', link: child.attrs.link}
@@ -275,13 +282,16 @@ function blockToHM(blockNode: PMNode): AnyBlock {
   const original: AnyBlock | null = blockNode.attrs.original
   if (original && blockNode.attrs.baseline === JSON.stringify(fields)) return original
   if (!original) return fields
+  // A block turned into another type (paragraph → image) drops its old text annotations.
+  const {annotations, ...rest} = original
+  const base = original.type === fields.type || 'annotations' in fields ? original : rest
   const keptAttrs: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(original.attributes ?? {})) {
     const owned =
       ownedAttrs === 'all' ? key !== 'childrenType' || 'childrenType' in fields.attributes : ownedAttrs.includes(key)
     if (!owned) keptAttrs[key] = value
   }
-  return {...original, ...fields, attributes: {...keptAttrs, ...fields.attributes}}
+  return {...base, ...fields, attributes: {...keptAttrs, ...fields.attributes}}
 }
 
 function blockNodeToHM(blockNode: PMNode): HMBlockNode {

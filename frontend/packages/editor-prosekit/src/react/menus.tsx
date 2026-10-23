@@ -1,6 +1,6 @@
-import type {Node as PMNode} from 'prosekit/pm/model'
-import type {Command} from 'prosekit/pm/state'
-import {useEditor} from 'prosekit/react'
+import {definePlugin} from 'prosekit/core'
+import {type Command, Plugin} from 'prosekit/pm/state'
+import {useEditor, useExtension} from 'prosekit/react'
 import {
   AutocompleteEmpty,
   AutocompleteItem,
@@ -16,28 +16,10 @@ import {
   BlockHandleRoot,
 } from 'prosekit/react/block-handle'
 import {InlinePopoverPopup, InlinePopoverPositioner, InlinePopoverRoot} from 'prosekit/react/inline-popover'
-import {useEffect, useState} from 'react'
-import {setChildrenType} from '../commands'
+import {useEffect, useMemo, useState} from 'react'
+import {insertMediaBlock, replaceBlockContent, setChildrenType} from '../commands'
 import type {SeedSchemaExtension} from '../schema'
 import {type MentionItem, useSeedServices} from './services'
-
-/** Replace the content node of the block around the cursor (used by the slash menu). */
-function replaceBlockContent(make: (schema: PMNode['type']['schema']) => PMNode): Command {
-  return (state, dispatch) => {
-    const {$from} = state.selection
-    let d = $from.depth
-    while (d > 0 && $from.node(d).type.name !== 'blockNode') d--
-    if (d <= 0) return false
-    const start = $from.before(d) + 1
-    const content = $from.node(d).firstChild!
-    const node = make(state.schema)
-    const inline = node.isTextblock && content.isTextblock ? content.content : undefined
-    dispatch?.(
-      state.tr.replaceWith(start, start + content.nodeSize, inline ? node.type.create(node.attrs, inline) : node),
-    )
-    return true
-  }
-}
 
 function MentionMenu({kind, regex}: {kind: 'account' | 'document'; regex: RegExp}) {
   const editor = useEditor()
@@ -115,13 +97,8 @@ function SlashMenu() {
         if (link) run(replaceBlockContent((s) => s.nodes.hmEmbed!.create({link, attributes: {view: 'Card'}})))
       },
     ],
-    [
-      'Image',
-      () => {
-        const link = askLink('Image URL or ipfs:// link')
-        if (link) run(replaceBlockContent((s) => s.nodes.hmImage!.create({link})))
-      },
-    ],
+    ['Image', () => run(replaceBlockContent((s) => s.nodes.hmImage!.create()))],
+    ['Video', () => run(replaceBlockContent((s) => s.nodes.hmVideo!.create()))],
     [
       'Button',
       () => {
@@ -144,6 +121,53 @@ function SlashMenu() {
       </AutocompletePositioner>
     </AutocompleteRoot>
   )
+}
+
+/** Dropping or pasting image/video files uploads them and inserts Image/Video blocks. */
+function MediaFileDrop() {
+  const editor = useEditor()
+  const services = useSeedServices()
+  const extension = useMemo(() => {
+    const {uploadFile} = services
+    if (!uploadFile) return null
+    const mediaFiles = (list?: FileList | null) => Array.from(list ?? []).filter((f) => /^(image|video)\//.test(f.type))
+    const insert = (files: File[], at?: number) => {
+      for (const file of files) {
+        uploadFile(file)
+          .then((link) =>
+            editor.exec(
+              insertMediaBlock(
+                file.type.startsWith('image/') ? 'hmImage' : 'hmVideo',
+                {link, attributes: {name: file.name}},
+                at,
+              ),
+            ),
+          )
+          .catch((e) => console.error('upload failed', e))
+      }
+    }
+    return definePlugin(
+      new Plugin({
+        props: {
+          handleDrop(view, event, _slice, moved) {
+            const files = mediaFiles(event.dataTransfer?.files)
+            if (moved || !files.length) return false
+            event.preventDefault()
+            insert(files, view.posAtCoords({left: event.clientX, top: event.clientY})?.pos)
+            return true
+          },
+          handlePaste(_view, event) {
+            const files = mediaFiles(event.clipboardData?.files)
+            if (!files.length) return false
+            insert(files)
+            return true
+          },
+        },
+      }),
+    )
+  }, [editor, services])
+  useExtension(extension)
+  return null
 }
 
 function BlockHandle() {
@@ -201,13 +225,14 @@ function FormattingToolbar() {
   )
 }
 
-/** All Seed editor overlays: mentions, slash menu, block handle and formatting toolbar. */
+/** All Seed editor overlays: mentions, slash menu, media drop, block handle and formatting toolbar. */
 export function SeedEditorMenus() {
   return (
     <>
       <MentionMenu kind="account" regex={/@[^\s@]*$/u} />
       <MentionMenu kind="document" regex={/\[\[[^\]]*$/u} />
       <SlashMenu />
+      <MediaFileDrop />
       <BlockHandle />
       <FormattingToolbar />
     </>

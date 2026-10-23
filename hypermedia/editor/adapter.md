@@ -38,7 +38,9 @@ ProseKit is an npm dependency pinned to an exact version (`prosekit@0.22.4`). No
 
 **Preservation.** Each `blockNode` keeps the loaded HM block in an `original` attr plus a `baseline` of the fields the editor models. On save, if the modeled fields still equal the baseline the original object is returned as is; otherwise the edited fields are written over a copy of the original, so unknown attributes and keys survive edits too. Known annotations keep their own unknown attributes the same way, and unknown annotations ride along as `hmAnnotation` marks, so they follow the text through edits.
 
-**Services.** The editor takes a `SeedEditorServices` object (`searchMentions`, `loadDocument`, `fileUrl`) instead of reaching into app state. The harness wires it to the same `MentionCandidates` API and `rankMentionCandidates` ordering the BlockNote mention menu uses, and to `Resource` for embeds.
+**Services.** The editor takes a `SeedEditorServices` object (`searchMentions`, `loadDocument`, optional `uploadFile(file) => Promise<link>`) instead of reaching into app state. The harness wires it to the same `MentionCandidates` API and `rankMentionCandidates` ordering the BlockNote mention menu uses, to `Resource` for embeds, and `uploadFile` to a local object URL standing in for the IPFS upload. Media links resolve through `@shm/ui/get-file-url` (`useImageUrl` for images, `useFileProxyUrl` for video and files), so the editor sits inside the app's `UniversalAppProvider` and `ipfs://` links hit the same gateway as BlockNote.
+
+**Media.** `src/media.ts` copies BlockNote's `youtubeParser` and the YouTube/Vimeo normalisation from `packages/editor/src/video.tsx`, so a Video block stores the same `https://www.youtube.com/embed/<id>` / `https://player.vimeo.com/video/<id>` link. Player links render as an iframe (YouTube with `rel=0`); `ipfs://` and other links play in `<video>`. As in BlockNote, `autoplay`, `loop` and `muted` are saved from the editor and applied when the document is read.
 
 # The harness
 
@@ -57,14 +59,17 @@ ProseKit is an npm dependency pinned to an exact version (`prosekit@0.22.4`). No
 | `[[` document mentions | Done | Inserts `Embed` `hm://<uid>/<path>`. |
 | Embed block, Content / Card views | Done | Loads and shows the embedded document, view toggle. No Comments view, block or range embeds show the whole document. |
 | Unknown blocks | Done | Editable text + children, everything preserved. BlockNote shows an error banner instead. |
-| Image, video, file, button | Partial | Render and round-trip; no upload, resize or settings forms. |
+| Image | Done | Slash menu, URL, upload button, drop or paste a file. Renders width and caption (or name); selected images get width, caption and replace controls. No drag-to-resize handles. |
+| Video, YouTube, Vimeo | Done | Slash menu, URL, upload, drop or paste a file. `ipfs://` and file links play in `<video>`, YouTube/Vimeo URLs are stored as BlockNote's embed links and play in an iframe. Pasting a YouTube/Vimeo URL on an empty line makes a Video block. Width, autoplay, loop and muted settings. |
+| File, button | Partial | Render and round-trip; no upload or settings forms. |
 | Code block | Partial | Editable, language preserved; no syntax highlighting. |
 | Math | Partial | Editable source, no KaTeX rendering. |
 | Web embed, query, Nostr | Partial | Render a placeholder and round-trip; query results are not loaded. |
-| Slash menu | Partial | Paragraph, heading, code, math, list and quote groups, embeds, image, button. |
+| Slash menu | Partial | Paragraph, heading, code, math, list and quote groups, embeds, image, video, button. |
 | Drag handle / side menu | Partial | ProseKit block handle (add, drag); no block options menu. |
 | Markdown shortcuts | Partial | Lists and quotes; ProseKit has more that are not wired yet. |
-| Paste | Partial | ProseMirror paste with id stripping; no markdown or link-to-embed paste. |
+| Paste | Partial | ProseMirror paste with id stripping, image/video files, YouTube/Vimeo links to Video blocks; no markdown or `hm://` link-to-embed paste. |
+| Line breaks | Done | `\n` in HM text is a ProseMirror `hardBreak` (Shift-Enter inserts one), so re-reading the DOM after typing can't collapse it into a space. |
 | Comments, citations, range selection, draft machine, autosave | Missing | App integration, not part of the spike. |
 | Publish from the harness | Missing | The harness shows the operations; it is not wired to a daemon. |
 
@@ -74,7 +79,7 @@ ProseKit is an npm dependency pinned to an exact version (`prosekit@0.22.4`). No
 - **React 18 and custom elements.** ProseKit's menus are web components. React 18 sets `className` as a literal `classname` attribute on them, so the spike styles them by tag name. React 19 fixes this.
 - **Pre-1.0.** ProseKit is at 0.x and minor versions can break APIs. Pinning an exact version and the tests in this package are what make upgrades safe.
 - **Nested block model.** ProseKit's list and block-handle helpers assume flat ProseMirror documents. Seed's `blockNode` / `blockGroup` tree needed its own Enter, Tab, Shift-Tab and Backspace commands. Drag and drop works on `blockNode`s but hasn't been tested deeply.
-- **What ProseKit doesn't have.** Collaboration, comments, and media uploads are app concerns either way. Code highlighting, KaTeX, tables and a link popover exist as ProseKit extensions and can be added.
+- **What ProseKit doesn't have.** Collaboration, comments and the IPFS upload itself are app concerns either way (the editor only calls `uploadFile`). Code highlighting, KaTeX, tables and a link popover exist as ProseKit extensions and can be added.
 
 # Upgrading ProseKit
 

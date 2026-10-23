@@ -3,8 +3,9 @@ import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 import {createEditor, union} from 'prosekit/core'
 import {TextSelection} from 'prosekit/pm/state'
 import {describe, expect, it} from 'vitest'
-import {defineSeedCommands} from '../src/commands'
+import {defineSeedCommands, insertMediaBlock, pasteVideoLink} from '../src/commands'
 import {fromHM, getSeedSchema, toHM} from '../src/convert'
+import {isVideoPlayerLink, videoEmbedLink, videoIframeSrc} from '../src/media'
 import {defineSeedEditorBase} from '../src/schema'
 import {allBlocks} from './fixtures/all-blocks'
 import home from './fixtures/horacio-home.json'
@@ -235,5 +236,149 @@ describe('hierarchy commands', () => {
     setCursor(editor, posAfter(editor, 'quoted'))
     editor.exec(setParentChildrenType('Ordered'))
     expect((toHM(editor.state.doc)[2]!.block as any).attributes).toEqual({childrenType: 'Ordered'})
+  })
+})
+
+describe('image and video blocks', () => {
+  const media: HMBlockNode[] = [
+    {block: {type: 'Paragraph', id: 'p', text: 'before', annotations: [], attributes: {}}},
+    {block: {type: 'Paragraph', id: 'empty', text: '', annotations: [], attributes: {}}},
+    {
+      block: {
+        type: 'Image',
+        id: 'img',
+        text: 'A caption',
+        link: 'ipfs://bafkreid5t7kjcw4m2uqblfhin6rtwksxm5bmv6gmurkuxpqfzmdpaj4wc4',
+        attributes: {width: 400, name: 'photo.png', futureAttr: {x: 1}},
+      },
+    },
+    {
+      block: {
+        type: 'Video',
+        id: 'vid',
+        text: '',
+        link: 'ipfs://bafybeidyeqmqio6dinoblyqt6svs5xjkf6f5tjeb7oexvx5sf7olnwagpa',
+        attributes: {name: 'protocol.mp4', autoplay: true, loop: true, muted: true, futureAttr: 'kept'},
+      },
+    },
+  ] as unknown as HMBlockNode[]
+
+  it('round-trip link, width, name, autoplay, loop, muted and unknown attributes', () => {
+    expect(JSON.stringify(roundTrip(media))).toBe(JSON.stringify(media))
+    expect(hmDocumentOperations(media, roundTrip(media))).toEqual([])
+  })
+
+  it('keep unknown attributes and the id when a setting changes', () => {
+    const editor = editorWith(media)
+    let videoPos = -1
+    editor.state.doc.descendants((node, pos) => {
+      if (node.type.name === 'hmVideo') videoPos = pos
+    })
+    const node = editor.state.doc.nodeAt(videoPos)!
+    const {loop: _loop, ...rest} = node.attrs.attributes
+    editor.updateState(
+      editor.state.apply(
+        editor.state.tr.setNodeMarkup(videoPos, null, {...node.attrs, attributes: {...rest, width: 320}}),
+      ),
+    )
+    const saved = toHM(editor.state.doc)
+    expect(saved[3]!.block).toEqual({
+      ...media[3]!.block,
+      attributes: {name: 'protocol.mp4', autoplay: true, muted: true, futureAttr: 'kept', width: 320},
+    })
+    expect(hmDocumentOperations(media, saved)).toEqual([
+      {type: 'ReplaceBlock', block: expect.objectContaining({id: 'vid'})},
+    ])
+  })
+
+  it('normalise YouTube and Vimeo URLs to the embed links BlockNote stores', () => {
+    const yt = 'https://www.youtube.com/embed/dQw4w9WgXcQ'
+    expect(videoEmbedLink('https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s')).toBe(yt)
+    expect(videoEmbedLink('https://youtu.be/dQw4w9WgXcQ?si=abc')).toBe(yt)
+    expect(videoEmbedLink('https://www.youtube.com/embed/dQw4w9WgXcQ')).toBe(yt)
+    expect(videoEmbedLink('https://vimeo.com/76979871')).toBe('https://player.vimeo.com/video/76979871')
+    expect(videoEmbedLink('https://www.youtube.com/watch?v=short')).toBeNull()
+    expect(videoEmbedLink('https://example.com/movie.mp4')).toBeNull()
+    expect(videoEmbedLink('ipfs://bafyvideo')).toBeNull()
+    expect(isVideoPlayerLink(yt)).toBe(true)
+    expect(isVideoPlayerLink('https://player.vimeo.com/video/76979871')).toBe(true)
+    expect(isVideoPlayerLink('ipfs://bafyvideo')).toBe(false)
+    expect(videoIframeSrc(yt)).toBe(`${yt}?rel=0`)
+  })
+
+  it('paste a YouTube URL on an empty line to make a Video block', () => {
+    const editor = editorWith(media)
+    setCursor(editor, posAfter(editor, 'before'))
+    expect(editor.exec(pasteVideoLink('https://youtu.be/dQw4w9WgXcQ'))).toBe(false)
+    setCursor(editor, editor.state.doc.child(0).nodeSize + 2)
+    expect(editor.exec(pasteVideoLink('https://example.com/not-a-video'))).toBe(false)
+    expect(editor.exec(pasteVideoLink(' https://youtu.be/dQw4w9WgXcQ\n'))).toBe(true)
+    expect(toHM(editor.state.doc)[1]!.block).toEqual({
+      type: 'Video',
+      id: 'empty',
+      text: '',
+      link: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      attributes: {},
+    })
+  })
+
+  it('insert uploaded files into an empty line or as a new block after the current one', () => {
+    const editor = editorWith(media)
+    setCursor(editor, posAfter(editor, 'before'))
+    editor.exec(insertMediaBlock('hmImage', {link: 'blob:local-1', attributes: {name: 'a.png'}}))
+    setCursor(editor, editor.state.doc.child(0).nodeSize + editor.state.doc.child(1).nodeSize + 2)
+    editor.exec(insertMediaBlock('hmVideo', {link: 'ipfs://bafyuploaded', attributes: {name: 'b.mp4'}}))
+    const saved = toHM(editor.state.doc)
+    expect(saved.slice(0, 3).map((n) => n.block)).toEqual([
+      media[0]!.block,
+      {type: 'Image', id: expect.any(String), text: '', link: 'blob:local-1', attributes: {name: 'a.png'}},
+      {type: 'Video', id: 'empty', text: '', link: 'ipfs://bafyuploaded', attributes: {name: 'b.mp4'}},
+    ])
+    expect(new Set(collectHMBlockIds(saved)).size).toBe(saved.length)
+  })
+})
+
+describe('line breaks', () => {
+  const doc = [
+    {
+      block: {
+        type: 'Paragraph',
+        id: 'br',
+        text: 'Research communities\nConnect papers',
+        annotations: [{type: 'Bold', starts: [0], ends: [21]}],
+        attributes: {},
+      },
+    },
+  ] as unknown as HMBlockNode[]
+
+  it('keep newlines as hard breaks so editing the DOM cannot collapse them', () => {
+    const pm = fromHM(doc)
+    const paragraph = pm.firstChild!.firstChild!
+    expect(paragraph.child(1).type.name).toBe('hardBreak')
+    expect(paragraph.child(1).marks.map((m) => m.type.name)).toEqual(['bold'])
+    expect(JSON.stringify(toHM(pm))).toBe(JSON.stringify(doc))
+  })
+
+  it('insert a newline with Shift-Enter', () => {
+    const editor = editorWith(doc)
+    setCursor(editor, posAfter(editor, 'Connect'))
+    editor.view.someProp('handleKeyDown', (f) =>
+      f(editor.view, new KeyboardEvent('keydown', {key: 'Enter', shiftKey: true})),
+    )
+    expect((toHM(editor.state.doc)[0]!.block as {text: string}).text).toBe('Research communities\nConnect\n papers')
+  })
+
+  it('paste plain text and YouTube links through the real paste path', () => {
+    const editor = editorWith([
+      ...doc,
+      {block: {type: 'Paragraph', id: 'e', text: '', annotations: [], attributes: {}}},
+    ] as HMBlockNode[])
+    setCursor(editor, posAfter(editor, 'Connect'))
+    editor.view.pasteText(' all', new Event('paste') as ClipboardEvent)
+    setCursor(editor, editor.state.doc.child(0).nodeSize + 2)
+    editor.view.pasteText('https://www.youtube.com/watch?v=dQw4w9WgXcQ', new Event('paste') as ClipboardEvent)
+    const saved = toHM(editor.state.doc)
+    expect((saved[0]!.block as {text: string}).text).toBe('Research communities\nConnect all papers')
+    expect(saved[1]!.block).toMatchObject({type: 'Video', id: 'e', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ'})
   })
 })

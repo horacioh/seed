@@ -5,6 +5,7 @@ import {defineCode} from 'prosekit/extensions/code'
 import {defineCodeBlock} from 'prosekit/extensions/code-block'
 import {defineDropIndicator} from 'prosekit/extensions/drop-indicator'
 import {defineGapCursor} from 'prosekit/extensions/gap-cursor'
+import {defineHardBreakSpec} from 'prosekit/extensions/hard-break'
 import {defineHeading} from 'prosekit/extensions/heading'
 import {defineItalic} from 'prosekit/extensions/italic'
 import {defineLink} from 'prosekit/extensions/link'
@@ -164,6 +165,7 @@ export function defineSeedSchema() {
     defineStructure(),
     defineText(),
     defineParagraph(),
+    defineHardBreakSpec(),
     defineHeading(),
     defineCodeBlock(),
     defineSeedBlocks(),
