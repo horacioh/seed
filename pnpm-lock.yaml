@@ -1775,6 +1775,9 @@ importers:
       '@lexical/headless':
         specifier: 0.52.0
         version: 0.52.0(typescript@5.8.3)
+      '@shm/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@types/react':
         specifier: 18.2.64
         version: 18.2.64

@@ -17,14 +17,23 @@ export interface SeedEditorServices {
   searchMentions(query: string, kind: 'account' | 'document', signal?: AbortSignal): Promise<MentionItem[]>
   /** Load an `hm://` document for embeds and mention labels. */
   loadDocument(link: string): Promise<EmbeddedDocument | null>
-  /** Resolve an `ipfs://` (or any) media link to a fetchable URL. */
-  fileUrl(link: string): string
+  /**
+   * Resolve a media link to a fetchable URL. The app passes `ipfs://` links
+   * through `@shm/ui/get-file-url` (`useImageUrl` for images, `useFileProxyUrl`
+   * for video and files), like the BlockNote editor does.
+   */
+  fileUrl(link: string, kind: 'image' | 'video' | 'file'): string
+  /**
+   * Store an uploaded or dropped file and return the link to save in the block
+   * (`ipfs://<cid>` in the app). Without it, uploads use a local object URL.
+   */
+  uploadFile?(file: File): Promise<string>
 }
 
 /** React context carrying {@link SeedEditorServices} to node views and menus. */
 export const SeedServicesContext = createContext<SeedEditorServices | null>(null)
 
-/** Read the editor services; throws outside a Seed ProseKit editor. */
+/** Read the editor services; throws outside a Seed Lexical editor. */
 export function useSeedServices(): SeedEditorServices {
   const services = useContext(SeedServicesContext)
   if (!services) throw new Error('useSeedServices must be used inside <SeedLexicalEditor>')

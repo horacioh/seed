@@ -19,6 +19,7 @@
     "paths": {
       "@shm/shared": ["../shared/src/index.ts"],
       "@shm/shared/*": ["../shared/src/*"],
+      "@shm/ui/*": ["../ui/src/*"],
       "@seed-hypermedia/client": ["../client/src/index.ts"],
       "@seed-hypermedia/client/*": ["../client/src/*"]
     }

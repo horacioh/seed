@@ -24,7 +24,14 @@ import {
 } from 'lexical'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {createPortal} from 'react-dom'
-import {$insertBlockContent, $nearestBlock, $selectNode, $setChildrenType, $setTextType} from '../commands'
+import {
+  $createSeedAtom,
+  $insertBlockContent,
+  $nearestBlock,
+  $selectNode,
+  $setChildrenType,
+  $setTextType,
+} from '../commands'
 import {
   $createSeedBlockNode,
   $createSeedTextBlockNode,
@@ -156,10 +163,6 @@ function MentionMenu({kind}: {kind: 'account' | 'document'}) {
   )
 }
 
-function atomJSON(hmType: string, link: string, attributes: Record<string, unknown> = {}, text = '') {
-  return {type: 'seed-atom', version: 1, $: {hmType, link, text, attributes}} as any
-}
-
 function slashCommands(editor: LexicalEditor): Array<[string, () => void]> {
   const ask = (label: string) => window.prompt(label)?.trim()
   const insert = (make: () => LexicalNode, select = false) =>
@@ -178,8 +181,9 @@ function slashCommands(editor: LexicalEditor): Array<[string, () => void]> {
     })
   const atom = (label: string, hmType: string, attributes?: Record<string, unknown>, text?: string) => () => {
     const link = ask(label)
-    if (link) insert(() => $parseSerializedNode(atomJSON(hmType, link, attributes, text)), true)
+    if (link) insert(() => $createSeedAtom(hmType, link, attributes, text), true)
   }
+  const media = (hmType: string) => () => insert(() => $createSeedAtom(hmType, ''), true)
   return [
     ['Paragraph', () => onBlock((b) => $setTextType(b, 'Paragraph'))],
     ['Heading', () => onBlock((b) => $setTextType(b, 'Heading'))],
@@ -190,9 +194,9 @@ function slashCommands(editor: LexicalEditor): Array<[string, () => void]> {
     ['Quoted children', () => onBlock((b) => $setChildrenType(b, 'Blockquote'))],
     ['Embed (Content)', atom('hm:// link to embed', 'Embed', {view: 'Content'})],
     ['Embed (Card)', atom('hm:// link to embed', 'Embed', {view: 'Card'})],
-    ['Image', atom('Image URL or ipfs:// link', 'Image')],
-    ['Video', atom('Video URL or ipfs:// link', 'Video')],
-    ['File', atom('File URL or ipfs:// link', 'File')],
+    ['Image', media('Image')],
+    ['Video', media('Video')],
+    ['File', media('File')],
     ['Web embed', atom('URL to embed', 'WebEmbed')],
     ['Button', atom('Button link', 'Button', {}, 'Button')],
   ]

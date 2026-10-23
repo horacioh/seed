@@ -17,6 +17,7 @@ Lexical is pinned to `0.52.0`, all `lexical` and `@lexical/*` packages at the sa
 | `src/nodes.ts` | `SeedBlockNode` (one HM block: content first, optional `SeedGroupNode` second), `SeedGroupNode` (children, `childrenType` in NodeState), `SeedTextBlockNode` (paragraph, heading or any unknown text type, the HM type in NodeState), `SeedAtomNode` (decorator for `Embed`, `Image`, `Video`, `File`, `Button`, `WebEmbed`, `Query`, `Nostr`), `SeedMathNode`, the inline `SeedMentionNode`, and Lexical's own `LinkNode` and `CodeNode`. HM data lives in NodeState (`$getState` / `$setState`), so it survives `exportJSON` / `importJSON`, undo, copy and paste. |
 | `src/convert.ts` | `fromHM` / `toHM` and `lexicalAdapter`. Annotation offsets are code points. Bold, italic, underline, strike and code are Lexical text-format bits, links are `LinkNode`s, colours are inline styles, inline `Embed`s are `SeedMentionNode`s over `\uFFFC`, and any other annotation rides on the text nodes it covers as NodeState. |
 | `src/commands.ts` | `registerSeedEditing`: Enter splits blocks, Tab / Shift-Tab, Backspace outdents then joins, `# `, `- `, `1. `, `> ` shortcuts, Lexical's text-format markdown shortcuts, block-level paste, and node transforms that keep the tree valid and ids unique. |
+| `src/media.ts` | `youtubeParser` and `videoEmbedUrl`, copied from `@shm/editor` `utils.ts` / `video.tsx`, so a pasted YouTube or Vimeo URL is stored as the same `youtube.com/embed/<id>` / `player.vimeo.com/video/<id>` link BlockNote writes. |
 | `src/react/*` | `@lexical/react`: `SeedLexicalEditor` (`LexicalComposer` + `RichTextPlugin`), decorators for embeds, media, math (KaTeX) and mentions, `@` / `[[` typeahead menus, slash menu, formatting toolbar, and a block handle with `+` and nested drag and drop. |
 
 **Preservation.** As in the ProseKit spike, every `SeedBlockNode` keeps the loaded HM block (`hmOriginal`) and a baseline of the fields the editor models. If the modeled fields still equal the baseline, `toHM` returns the original object; otherwise edited fields are written over a copy of it, so unknown block types, attributes, top-level fields (`revision`) and key order survive. Unknown annotations are stored without their ranges on the text they cover and are re-ranged on save, so they follow the text through edits.
@@ -31,7 +32,7 @@ Seed's tree is different: any block can have children, and the parent's `childre
 
 # The harness
 
-`pnpm --filter @shm/editor-lexical dev` serves `http://localhost:5182`. Like the ProseKit harness it loads a public document (`?site=https://seed.horacioh.com&id=hm://…`), uses `MentionCandidates` + `rankMentionCandidates` for mentions and `Resource` for embeds, and shows the change operations and HM blocks side by side.
+`pnpm --filter @shm/editor-lexical dev` serves `http://localhost:5182`. Like the ProseKit harness it loads a public document (`?site=https://seed.horacioh.com&id=hm://…`), uses `MentionCandidates` + `rankMentionCandidates` for mentions and `Resource` for embeds, and shows the change operations and HM blocks side by side. It resolves `ipfs://` media with `@shm/ui/get-file-url` inside a `UniversalAppProvider` whose `ipfsFileUrl` is the dev server's `/ipfs`, which serves harness uploads and proxies other CIDs to the site's gateway.
 
 # Parity with the BlockNote editor
 
@@ -46,14 +47,18 @@ Seed's tree is different: any block can have children, and the parent's `childre
 | `[[` document mentions | Done | Inserts `Embed` `hm://<uid>/<path>`. |
 | Embed block, Content / Card views | Done | Loads the embedded document, view toggle. No Comments view; block or range embeds show the whole document. |
 | Unknown blocks | Done | Editable text + children, everything preserved, no error banner. |
-| Image, video, file, button | Partial | Render and round-trip, inserted by URL from the slash menu; no upload, resize or settings forms. |
+| Image | Done | Slash menu inserts an empty block with Upload and URL fields; files can also be dropped or pasted into the editor. Uploads go through the injectable `SeedEditorServices.uploadFile(file) => Promise<link>` (the harness stores the file under its real UnixFS CID in the dev server and returns `ipfs://<cid>`; without the hook the editor uses an object URL). `ipfs://` resolves through `@shm/ui/get-file-url` (`useImageUrl`). Renders `width` and the caption (`text`, else `name`). No resize handle or settings form. |
+| Video (file / `ipfs://`) | Done | Upload, drop or URL. `ipfs://` plays in a `<video>` through `useFileProxyUrl`, honouring `width`, `autoplay`, `loop`, `muted`. |
+| YouTube / Vimeo video | Done | Video block with a player link renders as an `<iframe>`. Page URLs are normalised to the links BlockNote stores, and pasting a YouTube or Vimeo URL on an empty line creates the Video block. |
+| Media round-trip | Done | `link`, `width`, `name`, `autoplay`, `loop`, `muted` and unknown attributes survive `fromHM` → `toHM` byte-for-byte and through edits (`__tests__/media.test.ts`). |
+| File, button | Partial | File uses the same upload / URL placeholder; button renders and round-trips. No settings forms. |
 | Code block | Partial | Lexical `CodeNode`, language preserved; no syntax highlighting wired. |
 | Math | Partial | Editable source with live KaTeX rendering. |
 | Web embed, query, Nostr | Partial | Placeholder and round-trip; query results are not loaded. |
 | Slash menu | Partial | Paragraph, heading, code, math, list and quote groups, embeds, image, video, file, web embed, button. |
 | Drag handle / side menu | Partial | `+` and nested drag and drop of a block with its children; no block options menu. |
 | Markdown shortcuts | Partial | Headings, lists, quotes, bold, italic, code. |
-| Paste | Partial | Lexical and HTML paste become whole blocks with fresh ids; no markdown or link-to-embed paste. |
+| Paste | Partial | Lexical and HTML paste become whole blocks with fresh ids; files become media blocks; YouTube / Vimeo URLs on an empty line become Video blocks. No markdown or `hm://` link-to-embed paste. |
 | Comments, citations, range selection, draft machine, autosave | Missing | App integration, not part of the spike. |
 
 # Lexical: license, gaps and risks

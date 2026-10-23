@@ -3,9 +3,21 @@ import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext'
 import {useLexicalNodeSelection} from '@lexical/react/useLexicalNodeSelection'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
-import {$getNodeByKey, $getState, $setState, type NodeKey} from 'lexical'
-import {useEffect, useMemo, useState} from 'react'
+import {mergeRegister} from '@lexical/utils'
 import {
+  $getNearestNodeFromDOMNode,
+  $getNodeByKey,
+  $getState,
+  $setState,
+  COMMAND_PRIORITY_HIGH,
+  DRAGOVER_COMMAND,
+  DROP_COMMAND,
+  PASTE_COMMAND,
+  type NodeKey,
+} from 'lexical'
+import {useCallback, useEffect, useMemo, useState} from 'react'
+import {
+  $isSeedBlockNode,
   attributesState,
   decoratorRenderers,
   hmTypeState,
@@ -15,6 +27,8 @@ import {
   type SeedMathNode,
   type SeedMentionNode,
 } from '../nodes'
+import {$createSeedAtom, $insertBlockContent, $nearestBlock, $selectedBlock} from '../commands'
+import {isVideoPlayerLink, videoEmbedUrl} from '../media'
 import {type EmbeddedDocument, useSeedServices} from './services'
 
 /** Load an embedded document once per link. */
@@ -58,7 +72,7 @@ function ReadOnlyBlocks({blocks, childrenType}: {blocks: HMBlockNode[]; children
           b.type === 'Heading' ? (
             <h3>{b.text}</h3>
           ) : b.type === 'Image' ? (
-            <img src={services.fileUrl(b.link)} alt={b.text} />
+            <img src={services.fileUrl(b.link, 'image')} alt={b.text} />
           ) : b.text ? (
             <p>{String(b.text).replaceAll('\uFFFC', '•')}</p>
           ) : null
@@ -121,6 +135,84 @@ function EmbedView({nodeKey, link, attributes}: {nodeKey: NodeKey; link: string;
   )
 }
 
+/** Block type for an uploaded or dropped file, by MIME type. */
+function mediaTypeOf(file: File) {
+  return file.type.startsWith('image/') ? 'Image' : file.type.startsWith('video/') ? 'Video' : 'File'
+}
+
+/** Upload through the app's `uploadFile` hook, or a local object URL when it has none. */
+function useUpload() {
+  const services = useSeedServices()
+  return useCallback(
+    (file: File) => (services.uploadFile ? services.uploadFile(file) : Promise.resolve(URL.createObjectURL(file))),
+    [services],
+  )
+}
+
+/** Empty Image/Video/File block: upload, drop or paste a URL to fill it. */
+function MediaPlaceholder({nodeKey, type}: {nodeKey: NodeKey; type: string}) {
+  const [editor] = useLexicalComposerContext()
+  const upload = useUpload()
+  const [url, setUrl] = useState('')
+  const [state, setState] = useState<'idle' | 'dragging' | 'uploading' | 'error'>('idle')
+  const fill = (link: string, attributes: Record<string, unknown> = {}) =>
+    editor.update(() => {
+      const node = $getNodeByKey(nodeKey)
+      if (!node) return
+      $setState(node, linkState, type === 'Video' ? videoEmbedUrl(link) ?? link : link)
+      $setState(node, attributesState, {...$getState(node, attributesState), ...attributes})
+    })
+  const uploadFile = (file: File | undefined) => {
+    if (!file) return
+    setState('uploading')
+    upload(file)
+      .then((link) => fill(link, {name: file.name}))
+      .catch(() => setState('error'))
+  }
+  const accept = type === 'Image' ? 'image/*' : type === 'Video' ? 'video/*' : undefined
+  return (
+    <div
+      className="seed-media-placeholder"
+      data-state={state}
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes('Files')) return
+        e.preventDefault()
+        e.stopPropagation()
+        setState('dragging')
+      }}
+      onDragLeave={() => setState((s) => (s === 'dragging' ? 'idle' : s))}
+      onDrop={(e) => {
+        if (!e.dataTransfer.files.length) return
+        e.preventDefault()
+        e.stopPropagation()
+        uploadFile(e.dataTransfer.files[0])
+      }}
+    >
+      <label className="seed-media-upload">
+        {state === 'uploading' ? 'Uploading…' : `Upload ${type.toLowerCase()}`}
+        <input type="file" accept={accept} hidden onChange={(e) => uploadFile(e.target.files?.[0])} />
+      </label>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (url.trim()) fill(url.trim())
+        }}
+      >
+        <input
+          aria-label={`${type} URL`}
+          placeholder={type === 'Video' ? 'Paste a video, YouTube or Vimeo URL' : `Paste ${type.toLowerCase()} URL`}
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={(e) => e.stopPropagation()}
+          onPaste={(e) => e.stopPropagation()}
+        />
+        <button type="submit">Embed</button>
+      </form>
+      {state === 'error' ? <span className="seed-media-error">Upload failed</span> : null}
+    </div>
+  )
+}
+
 function MediaView(props: {
   nodeKey: NodeKey
   type: string
@@ -131,12 +223,43 @@ function MediaView(props: {
   const services = useSeedServices()
   const {selected, onClick} = useSelectable(props.nodeKey)
   const {type, link, text, attributes} = props
+  const width = typeof attributes.width === 'number' ? {width: attributes.width} : undefined
   let body
-  if (type === 'Image') body = <img src={services.fileUrl(link)} alt={text} width={attributes.width} />
-  else if (type === 'Video') body = <video src={services.fileUrl(link)} controls />
+  if (!link && ['Image', 'Video', 'File'].includes(type))
+    body = <MediaPlaceholder nodeKey={props.nodeKey} type={type} />
+  else if (type === 'Image')
+    body = (
+      <figure style={width}>
+        <img src={services.fileUrl(link, 'image')} alt={text || attributes.name || ''} />
+        {text || attributes.name ? <figcaption>{text || attributes.name}</figcaption> : null}
+      </figure>
+    )
+  else if (type === 'Video')
+    body = (
+      <figure style={width}>
+        {isVideoPlayerLink(link) ? (
+          <iframe
+            src={link}
+            title={attributes.name || 'Video'}
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <video
+            src={services.fileUrl(link, 'video')}
+            controls
+            playsInline
+            autoPlay={!!attributes.autoplay}
+            loop={!!attributes.loop}
+            muted={!!attributes.muted}
+          />
+        )}
+        {text ? <figcaption>{text}</figcaption> : null}
+      </figure>
+    )
   else if (type === 'File')
     body = (
-      <a href={services.fileUrl(link)} target="_blank" rel="noreferrer">
+      <a href={services.fileUrl(link, 'file')} target="_blank" rel="noreferrer">
         📎 {attributes.name || link}
       </a>
     )
@@ -151,9 +274,68 @@ function MediaView(props: {
   return (
     <div className={`seed-atom seed-atom-${type}`} data-selected={selected || undefined} onClick={onClick}>
       {body}
-      {type === 'Image' && text ? <figcaption>{text}</figcaption> : null}
     </div>
   )
+}
+
+/**
+ * Dropping or pasting image, video or other files into the editor uploads
+ * them through `uploadFile` and inserts Image / Video / File blocks at the
+ * drop point (or after the selected block).
+ */
+export function SeedMediaDropPlugin() {
+  const [editor] = useLexicalComposerContext()
+  const upload = useUpload()
+  useEffect(() => {
+    const insertFiles = (files: File[], blockKey: NodeKey | null) => {
+      for (const file of files.reverse())
+        upload(file).then((link) =>
+          editor.update(() => {
+            const node = blockKey ? $getNodeByKey(blockKey) : null
+            const block = $isSeedBlockNode(node) ? node : $selectedBlock()
+            $insertBlockContent($createSeedAtom(mediaTypeOf(file), link, {name: file.name}), block)
+          }),
+        )
+    }
+    const blockKeyAt = (target: EventTarget | null) => {
+      const node = target instanceof Node ? $getNearestNodeFromDOMNode(target) : null
+      return ($nearestBlock(node) ?? $selectedBlock())?.getKey() ?? null
+    }
+    return mergeRegister(
+      editor.registerCommand(
+        DRAGOVER_COMMAND,
+        (e) => {
+          if (!e.dataTransfer?.types.includes('Files')) return false
+          e.preventDefault()
+          return true
+        },
+        COMMAND_PRIORITY_HIGH,
+      ),
+      editor.registerCommand(
+        DROP_COMMAND,
+        (e) => {
+          const files = [...(e.dataTransfer?.files ?? [])]
+          if (!files.length) return false
+          e.preventDefault()
+          insertFiles(files, blockKeyAt(e.target))
+          return true
+        },
+        COMMAND_PRIORITY_HIGH,
+      ),
+      editor.registerCommand(
+        PASTE_COMMAND,
+        (e) => {
+          const files = 'clipboardData' in e ? [...(e.clipboardData?.files ?? [])] : []
+          if (!files.length) return false
+          e.preventDefault()
+          insertFiles(files, $selectedBlock()?.getKey() ?? null)
+          return true
+        },
+        COMMAND_PRIORITY_HIGH,
+      ),
+    )
+  }, [editor, upload])
+  return null
 }
 
 function MathView({nodeKey, text}: {nodeKey: NodeKey; text: string}) {

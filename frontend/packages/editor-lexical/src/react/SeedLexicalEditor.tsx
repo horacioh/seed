@@ -12,7 +12,7 @@ import {useEffect, useState} from 'react'
 import {registerSeedEditing} from '../commands'
 import {fromHM, toHM} from '../convert'
 import {SEED_NODES} from '../nodes'
-import {installSeedDecorators} from './decorators'
+import {installSeedDecorators, SeedMediaDropPlugin} from './decorators'
 import {SeedEditorMenus} from './menus'
 import {type SeedEditorServices, SeedServicesContext} from './services'
 import './style.css'
@@ -76,6 +76,7 @@ export function SeedLexicalEditor({initialContent, onChange, services, onEditor}
           <LinkPlugin />
           <SeedEditingPlugin onEditor={onEditor} />
           <SeedEditorMenus container={container} />
+          <SeedMediaDropPlugin />
           {onChange ? (
             <OnChangePlugin ignoreSelectionChange onChange={(state) => onChange(toHM(state.toJSON()))} />
           ) : null}

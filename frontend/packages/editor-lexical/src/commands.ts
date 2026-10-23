@@ -2,6 +2,7 @@ import {$isCodeNode} from '@lexical/code'
 import {registerMarkdownShortcuts, TEXT_FORMAT_TRANSFORMERS} from '@lexical/markdown'
 import {mergeRegister} from '@lexical/utils'
 import {
+  BLUR_COMMAND,
   $createNodeSelection,
   $getRoot,
   $getSelection,
@@ -12,12 +13,14 @@ import {
   $isParagraphNode,
   $isRangeSelection,
   $isTextNode,
+  $parseSerializedNode,
   $setSelection,
   $setState,
   COMMAND_PRIORITY_NORMAL,
   KEY_BACKSPACE_COMMAND,
   KEY_ENTER_COMMAND,
   KEY_TAB_COMMAND,
+  PASTE_COMMAND,
   ParagraphNode,
   RootNode,
   SELECTION_INSERT_CLIPBOARD_NODES_COMMAND,
@@ -28,6 +31,7 @@ import {
   type RangeSelection,
 } from 'lexical'
 import {createBlockId} from './convert'
+import {videoEmbedUrl} from './media'
 import {
   $createSeedBlockNode,
   $createSeedGroupNode,
@@ -127,8 +131,10 @@ export function $setTextType(block: SeedBlockNode, hmType: string): boolean {
  * Put new content into the selected block when its text is empty, or into a
  * new block after it (slash menu, toolbar inserts). Returns the block used.
  */
-export function $insertBlockContent(content: LexicalNode): SeedBlockNode | null {
-  const block = $selectedBlock()
+export function $insertBlockContent(
+  content: LexicalNode,
+  block: SeedBlockNode | null = $selectedBlock(),
+): SeedBlockNode | null {
   if (!block) return null
   const first = block.getFirstChild()
   if ($isSeedTextBlockNode(first) && first.getTextContentSize() === 0) {
@@ -138,6 +144,33 @@ export function $insertBlockContent(content: LexicalNode): SeedBlockNode | null 
   const next = $createSeedBlockNode().append(content)
   block.insertAfter(next)
   return next
+}
+
+/** A Seed atom block content node (`Image`, `Video`, `File`, `Embed`, …). */
+export function $createSeedAtom(
+  hmType: string,
+  link: string,
+  attributes: Record<string, unknown> = {},
+  text = '',
+): LexicalNode {
+  return $parseSerializedNode({type: 'seed-atom', version: 1, $: {hmType, link, text, attributes}} as any)
+}
+
+/**
+ * Pasting a YouTube or Vimeo URL on an empty line creates a Video block with
+ * the player link BlockNote stores; other pastes fall through to Lexical.
+ */
+export function $pasteVideoLink(event: ClipboardEvent | KeyboardEvent | InputEvent): boolean {
+  const text = 'clipboardData' in event ? event.clipboardData?.getData('text/plain').trim() : undefined
+  const link = text && !/\s/.test(text) ? videoEmbedUrl(text) : null
+  const block = link ? $selectedBlock() : null
+  const first = block?.getFirstChild()
+  if (!link || !block || !$isSeedTextBlockNode(first) || first.getTextContentSize() > 0) return false
+  event.preventDefault()
+  const video = $createSeedAtom('Video', link)
+  $insertBlockContent(video, block)
+  $selectNode(video)
+  return true
 }
 
 /** Select a decorator content node (atoms, math). */
@@ -443,6 +476,16 @@ export function registerSeedEditing(editor: LexicalEditor, {markdown = true} = {
       COMMAND_PRIORITY_NORMAL,
     ),
     editor.registerCommand(KEY_BACKSPACE_COMMAND, $handleBackspace, COMMAND_PRIORITY_NORMAL),
+    editor.registerCommand(PASTE_COMMAND, $pasteVideoLink, COMMAND_PRIORITY_NORMAL),
+    // A node selection left behind on blur would replace the caret of the next click back into the editor.
+    editor.registerCommand(
+      BLUR_COMMAND,
+      () => {
+        if ($isNodeSelection($getSelection())) $setSelection(null)
+        return false
+      },
+      COMMAND_PRIORITY_NORMAL,
+    ),
     editor.registerCommand(
       KEY_TAB_COMMAND,
       (event) => {

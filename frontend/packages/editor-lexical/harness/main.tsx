@@ -3,6 +3,9 @@ import {hmDocumentOperations} from '@seed-hypermedia/client/editor-adapter'
 import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 import {unpackHmId} from '@seed-hypermedia/client/hm-types'
 import {rankMentionCandidates} from '@shm/shared/models/mention-ranking'
+import {UniversalAppProvider} from '@shm/shared/routing'
+import type {UniversalClient} from '@shm/shared/universal-client'
+import {isIpfsUrl, useFileProxyUrl, useImageUrl} from '@shm/ui/get-file-url'
 import {StrictMode, useEffect, useMemo, useState} from 'react'
 import {createRoot} from 'react-dom/client'
 import {SeedLexicalEditor} from '../src/react/SeedLexicalEditor'
@@ -23,7 +26,7 @@ async function fetchResource(link: string): Promise<any> {
 
 const documentCache = new Map<string, Promise<EmbeddedDocument | null>>()
 
-const services: SeedEditorServices = {
+const baseServices: Omit<SeedEditorServices, 'fileUrl'> = {
   async searchMentions(query, kind, signal) {
     const candidates = await client.request('MentionCandidates', {query, mode: kind}, {signal}).catch((e) => {
       console.error('MentionCandidates failed', e)
@@ -55,10 +58,29 @@ const services: SeedEditorServices = {
     }
     return documentCache.get(key)!
   },
-  fileUrl: (link) => (link.startsWith('ipfs://') ? `${SITE}/ipfs/${link.slice(7)}` : link),
+  async uploadFile(file) {
+    const res = await fetch('/ipfs', {method: 'POST', body: file, headers: {'content-type': file.type}})
+    if (!res.ok) throw new Error(`Upload failed: ${res.status}`)
+    return (await res.json()).link
+  },
+}
+
+/** Editor services with `ipfs://` links resolved by `@shm/ui/get-file-url`, as in the app. */
+function useServices(): SeedEditorServices {
+  const imageUrl = useImageUrl()
+  const fileProxyUrl = useFileProxyUrl()
+  return useMemo(
+    () => ({
+      ...baseServices,
+      fileUrl: (link, kind) => (!isIpfsUrl(link) ? link : kind === 'image' ? imageUrl(link) : fileProxyUrl(link)),
+    }),
+    // The resolvers only read the app context, which never changes in the harness.
+    [],
+  )
 }
 
 function Harness() {
+  const services = useServices()
   const [docId, setDocId] = useState(params.get('id') || DEFAULT_DOC)
   const [input, setInput] = useState(docId)
   const [published, setPublished] = useState<{content: HMBlockNode[]; title: string} | null>(null)
@@ -144,6 +166,13 @@ function Harness() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Harness />
+    <UniversalAppProvider
+      ipfsFileUrl={`${location.origin}/ipfs`}
+      openUrl={(url) => window.open(url, '_blank')}
+      openRoute={null}
+      universalClient={{} as UniversalClient}
+    >
+      <Harness />
+    </UniversalAppProvider>
   </StrictMode>,
 )
