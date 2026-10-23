@@ -3,6 +3,7 @@ import {hmDocumentOperations} from '@seed-hypermedia/client/editor-adapter'
 import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 import {unpackHmId} from '@seed-hypermedia/client/hm-types'
 import {rankMentionCandidates} from '@shm/shared/models/mention-ranking'
+import {extractIpfsUrlCid, isIpfsUrl} from '@shm/ui/get-file-url'
 import {StrictMode, useEffect, useMemo, useState} from 'react'
 import {createRoot} from 'react-dom/client'
 import {SeedSveditEditor} from '../src/react/SeedSveditEditor'
@@ -14,6 +15,8 @@ const params = new URLSearchParams(location.search)
 const SITE = params.get('site') || 'https://seed.horacioh.com'
 const DEFAULT_DOC = 'hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk'
 const client = createSeedClient(SITE)
+/** The harness's stand-in gateway (see `vite.config.ts`), playing the role of the app's `ipfsFileUrl`. */
+const IPFS_GATEWAY = '/ipfs'
 
 /** Raw `Resource` JSON, unparsed, so unknown fields reach the editor untouched. */
 async function fetchResource(link: string): Promise<any> {
@@ -56,7 +59,11 @@ const services: SeedEditorServices = {
     }
     return documentCache.get(key)!
   },
-  fileUrl: (link) => (link.startsWith('ipfs://') ? `${SITE}/ipfs/${link.slice(7)}` : link),
+  // Same resolution as `useFileUrl` in `@shm/ui/get-file-url`: `${ipfsFileUrl}/${cid}`.
+  fileUrl: (link) =>
+    isIpfsUrl(link) ? `${IPFS_GATEWAY}/${extractIpfsUrlCid(link)}?site=${encodeURIComponent(SITE)}` : link,
+  // Stand-in for the app's IPFS upload: a local object URL.
+  uploadFile: async (file) => URL.createObjectURL(file),
 }
 
 function Harness() {

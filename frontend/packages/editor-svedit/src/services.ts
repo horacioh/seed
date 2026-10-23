@@ -18,4 +18,9 @@ export interface SeedEditorServices {
   loadDocument(link: string): Promise<EmbeddedDocument | null>
   /** Resolve an `ipfs://` (or any) media link to a fetchable URL. */
   fileUrl(link: string): string
+  /**
+   * Store an uploaded or dropped file and return the `link` to save (the app
+   * uploads to IPFS and returns `ipfs://<cid>`). Without it, uploads are off.
+   */
+  uploadFile?(file: File): Promise<string>
 }

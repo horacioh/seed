@@ -3,6 +3,7 @@
   import type {SveditContext, TextSelection, Transaction} from 'svedit'
   import {insertMention, selectionRange, setBlockType, setLink, setParentChildrenType, spliceText} from '../commands'
   import {formatsOf} from '../convert'
+  import {videoEmbedLink} from '../media'
   import type {InlineStyle} from '../schema'
   import type {SeedConfig} from '../session'
   import type {MenuItem} from './menu-state.svelte'
@@ -84,7 +85,7 @@
       tr.set([block.id, 'link'], link ?? '')
       if (Object.keys(patch).length) setAttr(tr, patch)
     }
-  const SLASH: (SlashEntry & {link?: (tr: Transaction, link?: string) => void})[] = [
+  const SLASH: (SlashEntry & {link?: (tr: Transaction, link?: string) => boolean | void})[] = [
     {title: 'Heading', subtitle: 'Section title', run: (tr) => setBlockType(tr, 'Heading')},
     {title: 'Paragraph', subtitle: 'Plain text', run: (tr) => setBlockType(tr, 'Paragraph')},
     {
@@ -119,8 +120,21 @@
       prompt: 'hm:// link',
       link: withLink('Embed', {view: 'Card'}),
     },
-    {title: 'Image', subtitle: 'From URL', run: () => {}, prompt: 'Image URL', link: withLink('Image')},
-    {title: 'Video', subtitle: 'From URL', run: () => {}, prompt: 'Video URL', link: withLink('Video')},
+    {title: 'Image', subtitle: 'Upload, drop or link', run: (tr) => setBlockType(tr, 'Image')},
+    {title: 'Video', subtitle: 'Upload, drop or link', run: (tr) => setBlockType(tr, 'Video')},
+    {
+      title: 'YouTube / Vimeo',
+      subtitle: 'Embed a video player',
+      run: () => {},
+      prompt: 'YouTube or Vimeo URL',
+      link: (tr, link) => {
+        const player = videoEmbedLink(link?.trim() ?? '')
+        if (player) return withLink('Video')(tr, player)
+        window.alert(`Unsupported video URL: ${link}`)
+        return false
+      },
+    },
+    {title: 'File', subtitle: 'Upload, drop or link', run: (tr) => setBlockType(tr, 'File')},
     {title: 'Web embed', subtitle: 'From URL', run: () => {}, prompt: 'Web URL', link: withLink('WebEmbed')},
   ]
 

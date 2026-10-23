@@ -93,9 +93,40 @@ export const demoDocument: HMBlockNode[] = [
           text: 'An Image block with caption',
           link: 'ipfs://bafkreid5t7kjcw4m2uqblfhin6rtwksxm5bmv6gmurkuxpqfzmdpaj4wc4',
           annotations: [],
-          attributes: {},
+          attributes: {width: 360, name: 'seed-logo.png'},
         },
       },
+      {
+        block: {
+          type: 'Video',
+          id: 'demo-v1',
+          text: 'An ipfs:// video file in a <video> element',
+          link: 'ipfs://bafkreidqfa2xwwanycwqni5j56r5h5htr2uj3jvvmkifc3vnvsyqrprhtu',
+          annotations: [],
+          attributes: {width: 480, name: 'test-pattern.mp4', autoplay: true, loop: true, muted: true},
+        },
+      },
+      {
+        block: {
+          type: 'Video',
+          id: 'demo-v2',
+          text: 'A YouTube video, stored as the embed link BlockNote writes',
+          link: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+          annotations: [],
+          attributes: {width: 560},
+        },
+      },
+      {
+        block: {
+          type: 'Video',
+          id: 'demo-v3',
+          text: 'A Vimeo video',
+          link: 'https://player.vimeo.com/video/76979871',
+          annotations: [],
+          attributes: {width: 560},
+        },
+      },
+      {block: {type: 'Paragraph', id: 'demo-p-media', text: '', annotations: [], attributes: {}}},
       {block: {type: 'Math', id: 'demo-m1', text: 'e^{i\\pi} + 1 = 0', annotations: [], attributes: {}}},
       {
         block: {

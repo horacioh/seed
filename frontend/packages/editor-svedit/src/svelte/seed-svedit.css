@@ -181,12 +181,50 @@
 }
 
 .seed-svedit .hm-media {
-  margin: 0.5rem 0 0;
+  max-width: 100%;
+  margin: 0.5rem auto 0;
 }
 .seed-svedit .hm-media :is(img, video) {
   display: block;
-  max-width: 100%;
+  width: 100%;
   border-radius: 10px;
+}
+.seed-svedit .hm-media-player iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 10px;
+}
+.seed-svedit .hm-media-name {
+  margin-top: 0.25rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--hm-muted);
+}
+.seed-svedit .hm-media-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  padding: 1rem;
+  border: 1.5px dashed var(--hm-line);
+  border-radius: 10px;
+  color: var(--hm-muted);
+  font-size: 0.9rem;
+}
+.seed-svedit .hm-media-picker button {
+  font: inherit;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--hm-line);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+.seed-svedit .hm-media-picker-error {
+  flex-basis: 100%;
+  color: #b3261e;
 }
 .seed-svedit .hm-block[data-block-type='Image'] > .hm-text,
 .seed-svedit .hm-block[data-block-type='Video'] > .hm-text {

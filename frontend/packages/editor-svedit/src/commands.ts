@@ -9,6 +9,7 @@ import {
   SelectParentCommand,
   UndoCommand,
   type DocumentPath,
+  type Session,
   type TextSelection,
   type Transaction,
 } from 'svedit'
@@ -20,7 +21,8 @@ import {
   type SveditRange,
   type SveditText,
 } from './convert'
-import type {InlineStyle} from './schema'
+import {mediaBlockType, videoEmbedLink} from './media'
+import {DOCUMENT_ID, type InlineStyle} from './schema'
 import type {SuggestionMenu} from './svelte/menu-state.svelte'
 
 const segmenter = new Intl.Segmenter()
@@ -237,6 +239,103 @@ export function applyMarkdownShortcut(tr: Transaction): boolean {
   spliceText(tr, sel.path, 0, sel.focus_offset)
   tr.set_selection({...sel, anchor_offset: 0, focus_offset: 0})
   return shortcut(tr)
+}
+
+/** Merge `patch` into a block's JSON `attributes` (a `null` value removes the key). */
+export function setBlockAttributes(tr: Transaction, blockId: string, patch: Record<string, unknown>): void {
+  const attributes = JSON.parse(tr.get([blockId, 'attributes']) || '{}')
+  for (const [key, value] of Object.entries(patch)) {
+    if (value === null) delete attributes[key]
+    else attributes[key] = value
+  }
+  tr.set([blockId, 'attributes'], JSON.stringify(attributes))
+}
+
+/**
+ * Point a media block (`Image`, `Video`, `File`) at a new `link`, e.g. after
+ * an upload. Video URLs from YouTube / Vimeo are stored as player links, like
+ * BlockNote does. Other attributes (`width`, `autoplay`, unknown keys) stay.
+ */
+export function setMediaLink(tr: Transaction, blockId: string, blockType: string, link: string, name?: string): void {
+  tr.set([blockId, 'block_type'], blockType)
+  tr.set([blockId, 'link'], (blockType === 'Video' && videoEmbedLink(link)) || link)
+  if (name) setBlockAttributes(tr, blockId, {name})
+}
+
+/**
+ * Pasting a YouTube or Vimeo URL into an empty block turns it into a Video
+ * block with the player link. Returns false (normal paste) otherwise.
+ */
+export function pasteVideoLink(tr: Transaction, text: string): boolean {
+  const sel = textSelection(tr)
+  const link = videoEmbedLink(text.trim())
+  if (!sel || !link) return false
+  const block = tr.get(sel.path.slice(0, -1))
+  if (block.content.content !== '' || !['Paragraph', 'Video'].includes(block.block_type)) return false
+  setMediaLink(tr, block.id, 'Video', link)
+  return true
+}
+
+/** The node-array path holding block `id` and its index there, searching from the document body. */
+function findBlock(
+  tr: Transaction,
+  id: string,
+  arrayPath: DocumentPath = [DOCUMENT_ID, 'body'],
+): [DocumentPath, number] | null {
+  const nodes: string[] = tr.get(arrayPath).nodes
+  for (const [index, child] of nodes.entries()) {
+    if (child === id) return [arrayPath, index]
+    const found = findBlock(tr, id, [...arrayPath, index, 'children'])
+    if (found) return found
+  }
+  return null
+}
+
+/**
+ * Put a dropped or uploaded file into the document at block `targetId`:
+ * fills it when it is empty (an empty media placeholder or an empty
+ * paragraph), otherwise inserts a new media block after it. Returns the
+ * media block's node id.
+ */
+export function placeMedia(tr: Transaction, targetId: string, blockType: string, link: string, name?: string): string {
+  const target = tr.get(targetId)
+  const empty = !target.link && target.content.content === '' && !target.children.nodes.length
+  if (empty && ['Paragraph', 'Image', 'Video', 'File'].includes(target.block_type)) {
+    setMediaLink(tr, targetId, blockType, link, name)
+    return targetId
+  }
+  const id = tr.generate_id()
+  tr.create(newBlockNode(id, blockType) as any)
+  setMediaLink(tr, id, blockType, link, name)
+  const location = findBlock(tr, targetId)
+  if (location) {
+    const [arrayPath, index] = location
+    const array = tr.get(arrayPath)
+    const nodes = [...array.nodes]
+    nodes.splice(index + 1, 0, id)
+    tr.set([tr.get(arrayPath.slice(0, -1)).id, String(arrayPath.at(-1))], nodeArray(nodes, array))
+  }
+  return id
+}
+
+/**
+ * Upload `files` with the app's `uploadFile` hook and place each one, in
+ * order, at block `targetId` (see {@link placeMedia}). One transaction per
+ * file, applied as soon as its upload finishes.
+ */
+export async function uploadFiles(
+  session: Session<any>,
+  uploadFile: (file: File) => Promise<string>,
+  targetId: string,
+  files: File[],
+): Promise<void> {
+  let at = targetId
+  for (const file of files) {
+    const link = await uploadFile(file)
+    const tr = session.tr
+    at = placeMedia(tr, at, mediaBlockType(file), link, file.name)
+    session.apply(tr)
+  }
 }
 
 /** Svedit inserter for `hm_block`: a new Paragraph after the node cursor. */

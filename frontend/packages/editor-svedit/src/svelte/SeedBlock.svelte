@@ -3,7 +3,9 @@
   import {Node, NodeArrayProperty, TextProperty, type DocumentPath, type SveditContext} from 'svedit'
   import {fromNodeId} from '../schema'
   import type {SeedConfig} from '../session'
+  import {flag, isVideoPlayerLink, videoIframeSrc} from '../media'
   import EmbedView from './EmbedView.svelte'
+  import MediaPicker from './MediaPicker.svelte'
 
   let {path}: {path: DocumentPath} = $props()
   const svedit = getContext<SveditContext>('svedit')
@@ -24,6 +26,7 @@
   )
   const depth = $derived(path.filter((p) => p === 'children').length)
   const fileUrl = $derived(node.link ? seed.services?.fileUrl(node.link) ?? node.link : '')
+  const mediaWidth = $derived(Number(attrs.width) > 0 ? `width: ${Number(attrs.width)}px` : undefined)
   const textTag = $derived(type === 'Heading' ? `h${Math.min(depth + 2, 6)}` : type === 'Code' ? 'pre' : 'p')
   const placeholder = $derived(
     type === 'Heading'
@@ -50,10 +53,35 @@
   data-hm-id={fromNodeId(node.id)}
   data-hm-type={type}
 >
-  {#if type === 'Image' && fileUrl}
-    <figure class="hm-media" contenteditable="false"><img src={fileUrl} alt={node.content.content} /></figure>
-  {:else if type === 'Video' && fileUrl}
-    <figure class="hm-media" contenteditable="false"><video src={fileUrl} controls></video></figure>
+  {#if (type === 'Image' || type === 'Video' || type === 'File') && !node.link}
+    <MediaPicker nodeId={node.id} {type} />
+  {:else if type === 'Image'}
+    <figure class="hm-media" contenteditable="false" style={mediaWidth}>
+      <img src={fileUrl} alt={node.content.content || attrs.name || ''} />
+      {#if attrs.name}<figcaption class="hm-media-name">{attrs.name}</figcaption>{/if}
+    </figure>
+  {:else if type === 'Video' && isVideoPlayerLink(node.link)}
+    <figure class="hm-media hm-media-player" contenteditable="false" style={mediaWidth}>
+      <iframe
+        src={videoIframeSrc(node.link)}
+        title={attrs.name || node.content.content || 'Video'}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </figure>
+  {:else if type === 'Video'}
+    <figure class="hm-media" contenteditable="false" style={mediaWidth}>
+      <!-- svelte-ignore a11y_media_has_caption -->
+      <video
+        src={fileUrl}
+        controls
+        playsinline
+        autoplay={flag(attrs.autoplay)}
+        loop={flag(attrs.loop)}
+        muted={flag(attrs.muted)}
+      ></video>
+      {#if attrs.name}<figcaption class="hm-media-name">{attrs.name}</figcaption>{/if}
+    </figure>
   {:else if type === 'File'}
     <a class="hm-file" contenteditable="false" href={fileUrl} target="_blank" rel="noreferrer">
       <span aria-hidden="true">📎</span>

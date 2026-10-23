@@ -14,14 +14,17 @@ Svedit is an npm dependency pinned to an exact version (`svedit@0.15.1`, peer `s
 | --- | --- |
 | `src/schema.ts` | The Svedit schema. `hm_document.body` and every `hm_block.children` are `node_array`s of `hm_block`, so the HM tree is kept as a tree of references. One generic `hm_block` text node holds every HM block type in `block_type`, plus `children_type`, `link`, `attributes` (JSON), `hm_original`, `hm_baseline` and `hm_node_keys` for preservation. Marks are one `hm_inline` mark (styles, link, inline embed); unknown annotations are an `hm_annotation` annotation. `toNodeId` / `fromNodeId` encode HM ids into Svedit's id grammar. |
 | `src/convert.ts` | `fromHM` / `toHM` and `sveditAdapter`. Converts HM code-point offsets to Svedit grapheme offsets and back, and overlapping HM annotations to disjoint marks and back. |
-| `src/commands.ts` | Transaction helpers and keymap: Tab / Shift-Tab, Enter split, Shift-Enter, style toggles, links, mention insertion, `setBlockType`, list / quote `childrenType`, markdown shortcuts, menu keys, undo / redo. |
+| `src/commands.ts` | Transaction helpers and keymap: Tab / Shift-Tab, Enter split, Shift-Enter, style toggles, links, mention insertion, `setBlockType`, list / quote `childrenType`, markdown shortcuts, menu keys, undo / redo, and media: `setMediaLink`, `placeMedia`, `uploadFiles`, `pasteVideoLink`. |
+| `src/media.ts` | `youtubeParser` and the YouTube / Vimeo link normalisation copied from `@shm/editor` (`utils.ts`, `video.tsx`), so a Video block stores the same `https://www.youtube.com/embed/<id>` / `https://player.vimeo.com/video/<id>` link BlockNote writes. |
 | `src/session.ts` | `createSeedSession`: the Svedit `Session` with Seed's components, commands and services. |
-| `src/svelte/*` | Node components (`SeedDocument`, `SeedBlock`, `SeedInline`, `EmbedView`), the overlay with the formatting toolbar, link input, `@` / `[[` mention menus and slash menu, and `SeedEditor`. |
+| `src/svelte/*` | Node components (`SeedDocument`, `SeedBlock`, `SeedInline`, `EmbedView`, `MediaPicker`), the overlay with the formatting toolbar, link input, `@` / `[[` mention menus and slash menu, and `SeedEditor`. |
 | `src/react/SeedSveditEditor.tsx` | A React component that mounts the Svelte editor with `svelte`'s `mount` / `unmount`. |
 
 **Preservation.** Same rule as ProseKit: each block keeps the loaded HM block (`hm_original`) and a baseline of the modeled fields. Untouched blocks are returned as the original object; edited blocks are written over a copy of it, so unknown attributes and top-level keys survive edits. Unknown annotations keep their JSON in `hm_annotation` and follow the text.
 
-**Services.** `SeedEditorServices` (`searchMentions`, `loadDocument`, `fileUrl`) is the same idea as in ProseKit. The harness wires it to `MentionCandidates` + `rankMentionCandidates` and `Resource`.
+**Services.** `SeedEditorServices` (`searchMentions`, `loadDocument`, `fileUrl`, `uploadFile`) is the same idea as in ProseKit. The harness wires it to `MentionCandidates` + `rankMentionCandidates` and `Resource`. `fileUrl` resolves `ipfs://` links like `useFileUrl` in `@shm/ui/get-file-url` (`${ipfsFileUrl}/${cid}` via `extractIpfsUrlCid`); `uploadFile(file) => Promise<link>` is where the app plugs in its IPFS upload, and the harness returns a local object URL instead.
+
+**Media.** Image, Video and File blocks without a `link` render `MediaPicker` (Upload button, link prompt, drop target). Files dropped anywhere on the editor, or pasted, go through `uploadFile`: they fill an empty media or paragraph block, otherwise a new block is inserted after the one under the drop. Images render with `width` and `name`, and their text is the editable caption. Video blocks whose link is a YouTube / Vimeo player render the iframe; any other link (`ipfs://` or a URL) plays in a `<video>` with `autoplay`, `loop` and `muted` from the attributes. Pasting a YouTube / Vimeo URL into an empty block turns it into a Video block. The harness serves one content-addressed test video (`harness/public/ipfs/<cid>`, a real raw-leaf CIDv1 of the file) as a stand-in gateway and redirects other CIDs to the site's `/ipfs/` gateway.
 
 # How Svedit's model fits Seed
 
@@ -51,14 +54,17 @@ Svedit is an npm dependency pinned to an exact version (`svedit@0.15.1`, peer `s
 | `[[` document mentions | Done | Inserts `Embed` `hm://<uid>/<path>`. |
 | Embed block, Content / Card views | Done | Loads and shows the embedded document; block fragments show that block. No Comments view, no view toggle UI. |
 | Unknown blocks | Done | Editable text + children, everything preserved, no error banner. |
-| Image, video, file, button | Partial | Render and round-trip; inserted from the slash menu by URL; no upload or settings forms. |
+| Image | Done | Slash menu, Upload button, drag and drop and paste through `uploadFile`, or a URL. Renders `width`, `name` and the caption; `ipfs://` goes through the `@shm/ui/get-file-url` resolution. No resize handle or width form (width is kept, not editable). |
+| Video | Done | Same insertion paths as Image. `ipfs://` and file URLs play in `<video>` with `autoplay` / `loop` / `muted`. No settings form for those flags (kept, not editable). |
+| YouTube / Vimeo | Done | Slash menu entry, the Video link prompt, or pasting the URL on an empty line; stored as the BlockNote player link and rendered as an iframe. |
+| File, button | Partial | Render and round-trip; File has the same upload / drop / link picker; no button settings form. |
 | Code block | Partial | Editable, newlines allowed, language preserved; no highlighting. |
 | Math | Partial | Editable source, no KaTeX rendering. |
 | Web embed, query | Partial | Placeholder + round-trip; query results aren't loaded. |
-| Slash menu | Partial | Heading, paragraph, lists, quote, code, math, button, embeds, image, video, web embed. |
+| Slash menu | Partial | Heading, paragraph, lists, quote, code, math, button, embeds, image, video, YouTube / Vimeo, file, web embed. |
 | Markdown shortcuts | Partial | `# `, `- `, `* `, `1. `, `> `, ```` ``` ````. |
 | Drag handle / side menu | Missing | Svedit has node selection and node gaps (insert between blocks) but no drag handle. |
-| Paste | Partial | Svedit's own paste handling; Seed adds no id stripping, markdown or link-to-embed paste yet, and paste wasn't tested in the harness. |
+| Paste | Partial | Svedit's own paste handling, plus Seed's: pasted files are uploaded, and a YouTube / Vimeo URL on an empty line becomes a Video block. No id stripping, markdown or `hm://` link-to-embed paste yet. |
 | Comments, citations, range selection, draft machine, autosave | Missing | App integration, not part of the spike. |
 
 # Svedit: license, gaps and risks

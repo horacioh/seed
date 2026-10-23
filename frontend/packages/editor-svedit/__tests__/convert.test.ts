@@ -7,11 +7,14 @@ import {
   indentBlock,
   insertMention,
   outdentBlock,
+  pasteVideoLink,
   setLink,
   setParentChildrenType,
   toggleStyle,
+  uploadFiles,
 } from '../src/commands'
 import {fromHM, toHM, type SveditDocument} from '../src/convert'
+import {videoEmbedLink, youtubeParser} from '../src/media'
 import {fromNodeId, toNodeId} from '../src/schema'
 import {createSeedSession} from '../src/session'
 import {allBlocks} from './fixtures/all-blocks'
@@ -323,5 +326,135 @@ describe('formatting and mentions', () => {
         {type: 'Embed', link: 'hm://z6MkSite/a/doc', starts: [12], ends: [13]},
       ],
     })
+  })
+})
+
+describe('image, video and YouTube / Vimeo blocks', () => {
+  // Older documents store some attributes as strings (`width: '360'`, `loop: 'true'`); both forms must survive.
+  const media = [
+    {
+      block: {
+        type: 'Image',
+        id: 'img-1',
+        text: 'Caption',
+        link: 'ipfs://bafkreid5t7kjcw4m2uqblfhin6rtwksxm5bmv6gmurkuxpqfzmdpaj4wc4',
+        annotations: [],
+        attributes: {width: '360', name: 'logo.png', futureCrop: {x: 1, y: 2}},
+      },
+    },
+    {
+      block: {
+        type: 'Video',
+        id: 'vid-1',
+        text: '',
+        link: 'ipfs://bafkreidqfa2xwwanycwqni5j56r5h5htr2uj3jvvmkifc3vnvsyqrprhtu',
+        annotations: [],
+        attributes: {width: 480, name: 'clip.mp4', autoplay: true, loop: true, muted: true, poster: 'ipfs://x'},
+      },
+    },
+    {
+      block: {
+        type: 'Video',
+        id: 'vid-yt',
+        text: 'YouTube',
+        link: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+        annotations: [],
+        attributes: {width: '560', autoplay: false, loop: 'true', muted: false},
+      },
+    },
+    {
+      block: {
+        type: 'Video',
+        id: 'vid-vimeo',
+        text: '',
+        link: 'https://player.vimeo.com/video/76979871',
+        annotations: [],
+        attributes: {},
+      },
+    },
+  ] as unknown as HMBlockNode[]
+
+  it('round-trip link, width, name, autoplay, loop, muted and unknown attributes byte-for-byte', () => {
+    expect(JSON.stringify(roundTrip(media))).toBe(JSON.stringify(media))
+    expect(hmDocumentOperations(media, roundTrip(media))).toEqual([])
+  })
+
+  it('keep every media attribute when the caption is edited', () => {
+    const session = createSeedSession(media)
+    select(session, 'Caption')
+    run(session, (tr) => tr.insert_text(' edited'))
+    select(session, 'YouTube')
+    run(session, (tr) => tr.insert_text('!'))
+    const [image, , youtube] = saved(session)
+    expect(image!.block).toEqual({...media[0]!.block, text: 'Caption edited'})
+    expect(youtube!.block).toEqual({...media[2]!.block, text: 'YouTube!'})
+  })
+
+  it('store YouTube and Vimeo URLs as the player links BlockNote writes', () => {
+    expect(youtubeParser('https://www.youtube.com/watch?v=aqz-KE-bpKQ&t=10')).toBe('aqz-KE-bpKQ')
+    expect(videoEmbedLink('https://www.youtube.com/watch?v=aqz-KE-bpKQ')).toBe(
+      'https://www.youtube.com/embed/aqz-KE-bpKQ',
+    )
+    expect(videoEmbedLink('https://youtu.be/aqz-KE-bpKQ?si=abc')).toBe('https://www.youtube.com/embed/aqz-KE-bpKQ')
+    expect(videoEmbedLink('https://www.youtube.com/embed/aqz-KE-bpKQ')).toBe(
+      'https://www.youtube.com/embed/aqz-KE-bpKQ',
+    )
+    expect(videoEmbedLink('https://vimeo.com/76979871')).toBe('https://player.vimeo.com/video/76979871')
+    expect(videoEmbedLink('https://www.youtube.com/watch?v=short')).toBeNull()
+    expect(videoEmbedLink('https://example.com/clip.mp4')).toBeNull()
+    expect(videoEmbedLink('not a url youtube')).toBeNull()
+  })
+
+  it('turn a YouTube URL pasted into an empty block into a Video block, keeping its id', () => {
+    const blocks: HMBlockNode[] = [
+      {block: {type: 'Paragraph', id: 'p-text', text: 'Some text', annotations: [], attributes: {}}},
+      {block: {type: 'Paragraph', id: 'p-empty', text: '', annotations: [], attributes: {}}},
+    ]
+    const session = createSeedSession(blocks)
+    select(session, 'Some text')
+    expect(run(session, (tr) => pasteVideoLink(tr, 'https://youtu.be/aqz-KE-bpKQ'))).toBe(false)
+    session.selection = {
+      type: 'text',
+      path: [session.document_id, 'body', 1, 'content'],
+      anchor_offset: 0,
+      focus_offset: 0,
+    }
+    expect(run(session, (tr) => pasteVideoLink(tr, ' https://www.youtube.com/watch?v=aqz-KE-bpKQ\n'))).toBe(true)
+    expect(saved(session)[1]!.block).toEqual({
+      type: 'Video',
+      id: 'p-empty',
+      text: '',
+      link: 'https://www.youtube.com/embed/aqz-KE-bpKQ',
+      annotations: [],
+      attributes: {},
+    })
+  })
+
+  it('upload files through the uploadFile hook: fill an empty media block, else insert after the target', async () => {
+    const blocks: HMBlockNode[] = [
+      {block: {type: 'Image', id: 'img-empty', text: '', link: '', annotations: [], attributes: {width: 200}}},
+      {block: {type: 'Paragraph', id: 'p-1', text: 'Text', annotations: [], attributes: {}}},
+      {block: {type: 'Paragraph', id: 'p-2', text: 'After', annotations: [], attributes: {}}},
+    ]
+    const session = createSeedSession(blocks)
+    const uploaded: string[] = []
+    const uploadFile = async (file: File) => (uploaded.push(file.name), `ipfs://cid-${file.name}`)
+    await uploadFiles(session, uploadFile, toNodeId('img-empty'), [new File(['x'], 'a.png', {type: 'image/png'})])
+    await uploadFiles(session, uploadFile, toNodeId('p-1'), [
+      new File(['x'], 'b.mp4', {type: 'video/mp4'}),
+      new File(['x'], 'c.pdf', {type: 'application/pdf'}),
+    ])
+    expect(uploaded).toEqual(['a.png', 'b.mp4', 'c.pdf'])
+    const out = saved(session).map((n) => n.block as any)
+    expect(out.map((b) => [b.type, b.link ?? '', b.attributes.name])).toEqual([
+      ['Image', 'ipfs://cid-a.png', 'a.png'],
+      ['Paragraph', '', undefined],
+      ['Video', 'ipfs://cid-b.mp4', 'b.mp4'],
+      ['File', 'ipfs://cid-c.pdf', 'c.pdf'],
+      ['Paragraph', '', undefined],
+    ])
+    expect(out[0].id).toBe('img-empty')
+    expect(out[0].attributes).toEqual({width: 200, name: 'a.png'})
+    expect(new Set(out.map((b) => b.id)).size).toBe(5)
   })
 })
