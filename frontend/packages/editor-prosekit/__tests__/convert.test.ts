@@ -183,6 +183,46 @@ describe('block ids survive load → edit → save', () => {
   })
 })
 
+describe('paste', () => {
+  const blocks = [
+    {block: {type: 'Paragraph', id: 'a', text: 'Alpha', annotations: [], attributes: {}}},
+    {block: {type: 'Paragraph', id: 'b', text: 'Beta', annotations: [], attributes: {}}},
+  ] as HMBlockNode[]
+
+  it('gives pasted blocks fresh ids, even when the clipboard carries existing ones', () => {
+    const editor = editorWith(blocks)
+    setCursor(editor, posAfter(editor, 'Beta'))
+    editor.view.pasteHTML(
+      '<div data-node-type="blockGroup"><div data-node-type="blockNode" data-id="a"><p>Copied <strong>one</strong></p></div>' +
+        '<div data-node-type="blockNode" data-id="b"><p>Copied two</p></div></div>',
+      new Event('paste') as ClipboardEvent,
+    )
+    const saved = toHM(editor.state.doc)
+    const texts = saved.map((n) => (n.block as {text: string}).text)
+    expect(texts.slice(0, 2)).toEqual(['Alpha', expect.stringContaining('Beta')])
+    expect(texts.join('|')).toContain('Copied one')
+    expect(texts.join('|')).toContain('Copied two')
+    const ids = collectHMBlockIds(saved)
+    expect(new Set(ids).size).toBe(ids.length)
+    expect(ids.slice(0, 2)).toEqual(['a', 'b'])
+    const pasted = saved.filter((n) => /Copied/.test((n.block as {text: string}).text) && n.block.id !== 'b')
+    expect(pasted.length).toBeGreaterThan(0)
+    for (const node of pasted) expect(node.block.id).toMatch(/^(?!a$|b$)\w+/)
+  })
+
+  it('pastes multi-paragraph plain text as new blocks with fresh ids', () => {
+    const editor = editorWith(blocks)
+    setCursor(editor, posAfter(editor, 'Beta'))
+    editor.view.pasteText('one\n\ntwo\n\nthree', new Event('paste') as ClipboardEvent)
+    const saved = toHM(editor.state.doc)
+    const ids = collectHMBlockIds(saved)
+    expect(saved.map((n) => (n.block as {text: string}).text)).toEqual(['Alpha', 'Betaone', 'two', 'three'])
+    expect(new Set(ids).size).toBe(ids.length)
+    expect(ids.slice(0, 2)).toEqual(['a', 'b'])
+    expect(ids.slice(2).every((id) => id && id !== 'a' && id !== 'b')).toBe(true)
+  })
+})
+
 describe('hierarchy commands', () => {
   const flat: HMBlockNode[] = ['a', 'b', 'c'].map(
     (id) => ({block: {type: 'Paragraph', id, text: id.repeat(3), annotations: [], attributes: {}}}) as HMBlockNode,

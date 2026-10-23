@@ -253,7 +253,7 @@ function stripBlockIds(fragment: Fragment): Fragment {
       node.type.name === 'blockNode'
         ? {...node.attrs, id: null, original: null, baseline: null, nodeKeys: null}
         : node.attrs
-    nodes.push(node.isText ? node : node.type.create(attrs, stripBlockIds(node.content), node.marks))
+    nodes.push(node.isLeaf ? node : node.type.create(attrs, stripBlockIds(node.content), node.marks))
   })
   return Fragment.from(nodes)
 }
