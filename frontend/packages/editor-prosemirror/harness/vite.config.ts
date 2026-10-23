@@ -10,9 +10,9 @@ export default defineConfig({
     // `@shm/shared` constants read `process.env`. `@shm/ui/get-file-url` resolves `ipfs://` links against
     // SEED_ASSET_HOST, exactly like the app, so point it at the harness's default site.
     'process.env': {
-      NODE_ENV: JSON.stringify('development'),
-      VITE_GATEWAY_URL: JSON.stringify('https://hyper.media'),
-      SEED_ASSET_HOST: JSON.stringify(process.env.SEED_ASSET_HOST ?? 'https://seed.horacioh.com'),
+      NODE_ENV: 'development',
+      VITE_GATEWAY_URL: 'https://hyper.media',
+      SEED_ASSET_HOST: process.env.SEED_ASSET_HOST ?? 'https://seed.horacioh.com',
     },
   },
   server: {port: 5183, host: true},
