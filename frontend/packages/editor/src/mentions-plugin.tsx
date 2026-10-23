@@ -11,6 +11,8 @@ import {
   type VariableLink,
 } from '@shm/shared/formulas'
 import {useAccount, useResource, useResources} from '@shm/shared/models/entity'
+import {useInlineMentions} from '@shm/shared/models/inline-mentions'
+import {useRenderResourceStack} from '@shm/shared/render-resource-context'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {AccountIdentityName} from '@shm/ui/account-avatar'
 import {useHighlighter} from '@shm/ui/highlight-context'
@@ -20,13 +22,38 @@ import {SizableText} from '@shm/ui/text'
 import {cn} from '@shm/ui/utils'
 import {forwardRef, useEffect, useMemo, useState} from 'react'
 import {Node} from '@tiptap/core'
-import {Plugin} from '@tiptap/pm/state'
+import {Plugin, TextSelection} from '@tiptap/pm/state'
 import {NodeViewWrapper, ReactNodeViewRenderer} from '@tiptap/react'
 import './inline-embed.css'
 
 /** Fallback text used when serializing an inline embed to the clipboard. */
 export function inlineEmbedClipboardText(link: string): string {
   return link || ''
+}
+
+/**
+ * Typing `{{` replaces the braces with an empty formula chip for the document
+ * returned by `getDocId`, which opens its attribute/formula picker.
+ */
+export function createFormulaTriggerPlugin(getDocId: () => string | undefined) {
+  return new Plugin({
+    props: {
+      handleTextInput(view, from, to, text) {
+        if (text !== '{' || from !== to) return false
+        const docId = getDocId()
+        const node = view.state.schema.nodes['inline-embed']
+        const {$from} = view.state.selection
+        if (!docId || !node || $from.parent.type.spec.code || $from.marks().some((m) => m.type.name === 'code'))
+          return false
+        const before = $from.parent.textBetween(0, $from.parentOffset, undefined, '\ufffc')
+        if (!/(?:^|[\s(])\{$/.test(before)) return false
+        const chip = node.create({link: buildVariableLink({docId, kind: 'formula', expr: ''})})
+        const tr = view.state.tr.replaceWith(from - 1, to, [chip, view.state.schema.text(' ')])
+        view.dispatch(tr.setSelection(TextSelection.create(tr.doc, from - 1 + chip.nodeSize + 1)).scrollIntoView())
+        return true
+      },
+    },
+  })
 }
 
 /** Creates the TipTap Node for rendering inline-embed mentions in the document. */
@@ -315,18 +342,30 @@ function VariableEditor({
   selected?: boolean
   onChange: (next: VariableLink) => void
 }) {
+  const renderedDoc = [...useRenderResourceStack()].reverse().find((resource) => resource.kind === 'document')?.id
+  const homeDocId = renderedDoc ? hmId(renderedDoc.uid, {path: renderedDoc.path}).id : variable.docId
   const isEmpty = variable.kind === 'formula' && !variable.expr.trim()
   const [open, setOpen] = useState(isEmpty)
-  const [draftExpr, setDraftExpr] = useState(variable.kind === 'attr' ? variable.key : variable.expr)
+  const initialExpr =
+    variable.kind === 'formula'
+      ? variable.expr
+      : variable.docId === homeDocId
+        ? variable.key
+        : `[[${variable.docId}]].${variable.key}`
+  const [draftExpr, setDraftExpr] = useState(initialExpr)
   useEffect(() => {
-    if (open) setDraftExpr(variable.kind === 'attr' ? variable.key : variable.expr)
+    if (open) setDraftExpr(initialExpr)
   }, [open])
   const trimmed = draftExpr.trim().replace(/^=/, '')
-  const next: VariableLink = /^[A-Za-z_][\w.]*$/.test(trimmed)
-    ? {docId: variable.docId, kind: 'attr', key: trimmed}
-    : {docId: variable.docId, kind: 'formula', expr: trimmed}
+  const crossDocRef = /^\[\[(hm:\/\/[^\]]+)\]\]\.([A-Za-z_][\w.]*)$/.exec(trimmed)
+  const next: VariableLink = crossDocRef
+    ? {docId: crossDocRef[1]!, kind: 'attr', key: crossDocRef[2]!}
+    : /^[A-Za-z_][\w.]*$/.test(trimmed)
+      ? {docId: homeDocId, kind: 'attr', key: trimmed}
+      : {docId: homeDocId, kind: 'formula', expr: trimmed}
+  const appendTerm = (term: string) => setDraftExpr((expr) => (expr.trim() ? `${expr.trimEnd()} + ${term}` : term))
   const preview = useVariableValue(next)
-  const numberAttributes = useNumberAttributes(variable.docId)
+  const numberAttributes = useNumberAttributes(homeDocId)
   const apply = () => {
     onChange(next)
     setOpen(false)
@@ -388,7 +427,7 @@ function VariableEditor({
                   type="button"
                   className="bg-muted hover:bg-accent rounded px-1.5 py-0.5 font-mono text-xs"
                   title={String(value)}
-                  onClick={() => setDraftExpr((expr) => (expr.trim() ? `${expr.trimEnd()} + ${key}` : key))}
+                  onClick={() => appendTerm(key)}
                 >
                   {key}
                 </button>
@@ -400,9 +439,11 @@ function VariableEditor({
             Add number attributes in the Attributes tab, then reference them by name.
           </p>
         )}
-        <p className="text-muted-foreground text-xs">
-          Functions: sum, avg, min, max, count, round, abs. Other documents: <code>[[hm://…]].key</code>
-        </p>
+        <OtherDocumentAttributes
+          currentDocId={homeDocId}
+          onInsert={(docId, key) => appendTerm(`[[${docId}]].${key}`)}
+        />
+        <p className="text-muted-foreground text-xs">Functions: sum, avg, min, max, count, round, abs</p>
         <div className="flex justify-end gap-2">
           <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>
             Cancel
@@ -413,6 +454,96 @@ function VariableEditor({
         </div>
       </PopoverContent>
     </Popover>
+  )
+}
+
+/** Searches another document and lists its number attributes for insertion as cross-document references. */
+function OtherDocumentAttributes({
+  currentDocId,
+  onInsert,
+}: {
+  currentDocId: string
+  onInsert: (docId: string, key: string) => void
+}) {
+  const [query, setQuery] = useState('')
+  const [picked, setPicked] = useState<{id: string; title: string} | null>(null)
+  const current = unpackHmId(currentDocId)
+  const {suggestions, isFetching} = useInlineMentions(query, {
+    mode: 'document',
+    enabled: !picked && !!query.trim(),
+    siteUid: current?.uid,
+  })
+  const results = suggestions.filter((item) => hmId(item.id.uid, {path: item.id.path}).id !== current?.id).slice(0, 6)
+  if (picked) return <PickedDocumentAttributes doc={picked} onBack={() => setPicked(null)} onInsert={onInsert} />
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-muted-foreground text-xs font-medium">Attributes from another document</span>
+      <input
+        className="border-border bg-background focus:ring-ring rounded-md border px-2 py-1 text-sm outline-none focus:ring-2"
+        placeholder="Search documents"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => e.stopPropagation()}
+      />
+      {query.trim() ? (
+        <div className="flex max-h-40 flex-col overflow-y-auto">
+          {results.map((item) => (
+            <button
+              key={item.id.id}
+              type="button"
+              className="hover:bg-accent truncate rounded px-1.5 py-1 text-left text-sm"
+              onClick={() => setPicked({id: hmId(item.id.uid, {path: item.id.path}).id, title: item.title})}
+            >
+              {item.title}
+            </button>
+          ))}
+          {!results.length && (
+            <span className="text-muted-foreground px-1.5 py-1 text-xs">
+              {isFetching ? 'Searching…' : 'No documents found'}
+            </span>
+          )}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function PickedDocumentAttributes({
+  doc,
+  onBack,
+  onInsert,
+}: {
+  doc: {id: string; title: string}
+  onBack: () => void
+  onInsert: (docId: string, key: string) => void
+}) {
+  const attributes = useNumberAttributes(doc.id)
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="text-muted-foreground truncate text-xs font-medium">Attributes in {doc.title}</span>
+        <button type="button" className="text-muted-foreground hover:text-foreground text-xs" onClick={onBack}>
+          Change
+        </button>
+      </div>
+      {attributes.length ? (
+        <div className="flex flex-wrap gap-1">
+          {attributes.map(([key, value]) => (
+            <button
+              key={key}
+              type="button"
+              className="bg-muted hover:bg-accent rounded px-1.5 py-0.5 font-mono text-xs"
+              title={String(value)}
+              onClick={() => onInsert(doc.id, key)}
+            >
+              {key}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <span className="text-muted-foreground text-xs">This document has no number attributes</span>
+      )}
+    </div>
   )
 }
 

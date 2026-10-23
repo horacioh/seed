@@ -48,6 +48,7 @@ import {HypermediaLinkPreview} from './hm-link-preview'
 import {createHypermediaDocLinkPlugin} from './hypermedia-link-plugin'
 import {InlineAddBlockButton} from './inline-add-block-button'
 import {MentionMenuPositioner} from './mention-menu-positioner'
+import {createFormulaTriggerPlugin} from './mentions-plugin'
 import {PublishRequiredDialog} from './publish-required-dialog'
 import {hmBlockSchema, HMBlockSchema} from './schema'
 import {getSlashMenuItems} from './slash-menu-items'
@@ -206,6 +207,8 @@ export function DocumentEditor({
   // created before the editor instance exists (e.g. the paste handler's
   // block-fragment landing callback).
   const docEditorRef = useRef<BlockNoteEditor<HMBlockSchema> | null>(null)
+  const resourceIdRef = useRef(resourceId)
+  resourceIdRef.current = resourceId
 
   const sessionActive = useDocumentSelector((snapshot) => snapshot.matches('editing') || snapshot.matches('publishing'))
   const initialContent = useDocumentEditorInitialContent(blocks, sessionActive)
@@ -265,6 +268,12 @@ export function DocumentEditor({
       },
       _tiptapOptions: {
         extensions: [
+          Extension.create({
+            name: 'formula-trigger',
+            addProseMirrorPlugins() {
+              return [createFormulaTriggerPlugin(() => resourceIdRef.current.id)]
+            },
+          }),
           Extension.create({
             name: 'hypermedia-link',
             addProseMirrorPlugins() {

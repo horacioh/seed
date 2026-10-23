@@ -1,5 +1,13 @@
 import {describe, expect, it} from 'vitest'
-import {createInlineEmbedNode, inlineEmbedClipboardText, MentionToken} from './mentions-plugin'
+import {
+  createFormulaTriggerPlugin,
+  createInlineEmbedNode,
+  inlineEmbedClipboardText,
+  MentionToken,
+} from './mentions-plugin'
+import {Schema} from 'prosemirror-model'
+import {EditorState, TextSelection} from 'prosemirror-state'
+import {EditorView} from 'prosemirror-view'
 import {createElement} from 'react'
 import {renderToStaticMarkup} from 'react-dom/server'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
@@ -143,5 +151,49 @@ describe('variable chips', () => {
       'hm://alice/budget': {price: 100, tax: 21, total: '=price + tax'},
     })
     expect(html).toContain('121')
+  })
+})
+
+describe('createFormulaTriggerPlugin', () => {
+  const schema = new Schema({
+    nodes: {
+      doc: {content: 'block+'},
+      paragraph: {content: 'inline*', group: 'block', toDOM: () => ['p', 0]},
+      code: {content: 'text*', group: 'block', code: true, toDOM: () => ['pre', 0]},
+      text: {group: 'inline'},
+      'inline-embed': {inline: true, group: 'inline', atom: true, attrs: {link: {default: ''}}, toDOM: () => ['a']},
+    },
+  })
+
+  function typeBrace(text: string, docId: string | null = 'hm://alice/budget', block = 'paragraph') {
+    const doc = schema.node('doc', null, [schema.node(block as any, null, text ? [schema.text(text)] : [])])
+    const state = EditorState.create({
+      doc,
+      plugins: [createFormulaTriggerPlugin(() => docId ?? undefined)],
+      selection: TextSelection.create(doc, 1 + text.length),
+    })
+    const view = new EditorView(document.createElement('div'), {state})
+    const pos = view.state.selection.from
+    const handled = view.someProp('handleTextInput', (f) => f(view, pos, pos, '{', () => view.state.tr))
+    const result = {handled: !!handled, doc: view.state.doc.toJSON()}
+    view.destroy()
+    return result
+  }
+
+  it('turns `{{` into an empty formula chip for the current document', () => {
+    const {handled, doc} = typeBrace('Total: {')
+    expect(handled).toBe(true)
+    expect(doc.content[0].content).toEqual([
+      {type: 'text', text: 'Total: '},
+      {type: 'inline-embed', attrs: {link: 'hm://alice/budget?formula='}},
+      {type: 'text', text: ' '},
+    ])
+  })
+
+  it('ignores a single brace, braces inside words and code', () => {
+    expect(typeBrace('Total: ').handled).toBe(false)
+    expect(typeBrace('a{').handled).toBe(false)
+    expect(typeBrace('{', 'hm://alice/budget', 'code').handled).toBe(false)
+    expect(typeBrace('{', null).handled).toBe(false)
   })
 })
