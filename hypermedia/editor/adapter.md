@@ -40,7 +40,7 @@ ProseKit is an npm dependency pinned to an exact version (`prosekit@0.22.4`). No
 
 **Services.** The editor takes a `SeedEditorServices` object (`searchMentions`, `loadDocument`, optional `uploadFile(file) => Promise<link>`) instead of reaching into app state. The harness wires it to the same `MentionCandidates` API and `rankMentionCandidates` ordering the BlockNote mention menu uses, to `Resource` for embeds, and `uploadFile` to a local object URL standing in for the IPFS upload. Media links resolve through `@shm/ui/get-file-url` (`useImageUrl` for images, `useFileProxyUrl` for video and files), so the editor sits inside the app's `UniversalAppProvider` and `ipfs://` links hit the same gateway as BlockNote.
 
-**Media.** `src/media.ts` copies BlockNote's `youtubeParser` and the YouTube/Vimeo normalisation from `packages/editor/src/video.tsx`, so a Video block stores the same `https://www.youtube.com/embed/<id>` / `https://player.vimeo.com/video/<id>` link. Player links render as an iframe (YouTube with `rel=0`); `ipfs://` and other links play in `<video>`. As in BlockNote, `autoplay`, `loop` and `muted` are saved from the editor and applied when the document is read.
+**Media.** `src/media.ts` copies BlockNote's `youtubeParser` and the YouTube/Vimeo normalisation from `packages/editor/src/video.tsx`, so a Video block stores the same `https://www.youtube.com/embed/<id>` / `https://player.vimeo.com/video/<id>` link. Player links render as an iframe (YouTube with `rel=0`); `ipfs://` and other links play in `<video>`. `autoplay`, `loop` and `muted` are saved from the editor's settings and also applied to the `<video>` in the editor.
 
 # The harness
 

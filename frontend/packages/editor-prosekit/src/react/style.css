@@ -164,9 +164,14 @@ prosekit-inline-popover-popup button[data-active] {
   padding-left: 12px;
 }
 prosekit-autocomplete-positioner,
-prosekit-inline-popover-positioner {
+prosekit-inline-popover-positioner,
+prosekit-block-handle-positioner {
   z-index: 50;
   width: max-content;
+  /* They are [popover] elements: drop the browser's popover box. */
+  border: 0;
+  padding: 0;
+  background: none;
 }
 prosekit-autocomplete-popup {
   display: flex;
@@ -288,6 +293,12 @@ prosekit-block-handle-draggable:hover {
 .seed-media-picker[data-dragover] {
   background: #ddf4ff;
   border-color: #0969da;
+}
+.seed-media-settings {
+  user-select: none;
+}
+.seed-media-settings input {
+  user-select: text;
 }
 .seed-media-picker form,
 .seed-media-settings {

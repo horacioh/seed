@@ -110,7 +110,6 @@ function EmbedView({node, setAttrs, selected}: ReactNodeViewProps) {
 /** Empty media block: paste a URL, or upload / drop a file through `services.uploadFile`. */
 function MediaPicker({kind, onPick}: {kind: 'image' | 'video'; onPick: (link: string, name?: string) => void}) {
   const services = useSeedServices()
-  const [url, setUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [over, setOver] = useState(false)
@@ -128,9 +127,9 @@ function MediaPicker({kind, onPick}: {kind: 'image' | 'video'; onPick: (link: st
       .catch((e) => setError(`Upload failed: ${e}`))
       .finally(() => setBusy(false))
   }
-  const submit = (e: FormEvent) => {
+  const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const value = url.trim()
+    const value = String(new FormData(e.currentTarget).get('link') ?? '').trim()
     if (!/^(https?|ipfs):\/\//.test(value)) {
       setError('Enter an http(s) or ipfs:// link.')
       return
@@ -155,8 +154,7 @@ function MediaPicker({kind, onPick}: {kind: 'image' | 'video'; onPick: (link: st
     >
       <form onSubmit={submit}>
         <input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          name="link"
           placeholder={kind === 'image' ? 'Image URL or ipfs:// link' : 'YouTube, Vimeo, video URL or ipfs:// link'}
           aria-label={kind === 'image' ? 'Image link' : 'Video link'}
         />
@@ -261,8 +259,20 @@ function ImageOrVideoView({node, setAttrs, selected}: ReactNodeViewProps) {
         />
       </div>
     )
-  // Like BlockNote, autoplay/loop/muted are saved here and applied when the document is read.
-  else body = <video key={link} src={mediaUrl(link, 'file')} controls playsInline preload="metadata" style={style} />
+  else
+    body = (
+      <video
+        key={link}
+        src={mediaUrl(link, 'file')}
+        controls
+        playsInline
+        preload="metadata"
+        autoPlay={Boolean(attributes.autoplay)}
+        loop={Boolean(attributes.loop)}
+        muted={Boolean(attributes.muted)}
+        style={style}
+      />
+    )
   const caption = kind === 'image' ? text || attributes.name : null
   return (
     <figure
