@@ -1,6 +1,7 @@
 import type {ReactNode, PointerEvent as ReactPointerEvent} from 'react'
-import {useCallback, useEffect, useId, useRef, useState} from 'react'
+import {useCallback, useContext, useEffect, useId, useRef, useState} from 'react'
 import {createPortal} from 'react-dom'
+import {MediaWindowContext} from './use-media'
 import {Button} from './button'
 import {Close} from './icons'
 import {Text} from './text'
@@ -53,6 +54,9 @@ export function resolveSheetSnap({
 }
 
 export function MobilePanelSheet({isOpen, title, onClose, children, header, resizable = false}: MobilePanelSheetProps) {
+  const mediaWindow = useContext(MediaWindowContext)
+  const hostWindow = mediaWindow ?? (typeof window !== 'undefined' ? window : undefined)
+  const hostDocument = hostWindow?.document
   const titleId = useId()
   const [isVisible, setIsVisible] = useState(false)
   const [dragY, setDragY] = useState(0)
@@ -75,24 +79,24 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
   const suppressHandleClick = useRef(false)
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || !hostWindow) {
       setIsVisible(false)
       setDragY(0)
       setIsDragging(false)
       return
     }
 
-    const frame = requestAnimationFrame(() => setIsVisible(true))
-    return () => cancelAnimationFrame(frame)
-  }, [isOpen])
+    const frame = hostWindow.requestAnimationFrame(() => setIsVisible(true))
+    return () => hostWindow.cancelAnimationFrame(frame)
+  }, [hostWindow, isOpen])
 
   // Lock body scroll while the sheet is open, and clean up on unmount
   // to prevent the user from getting stuck with a non-scrollable page.
   useEffect(() => {
-    if (!isOpen) return
-    const html = document.documentElement
-    const body = document.body
-    const scrollY = window.scrollY
+    if (!isOpen || !hostDocument || !hostWindow) return
+    const html = hostDocument.documentElement
+    const body = hostDocument.body
+    const scrollY = hostWindow.scrollY
     const prevHtmlOverflow = html.style.overflow
     const prevBodyOverflow = body.style.overflow
     const prevBodyPosition = body.style.position
@@ -109,9 +113,9 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
       body.style.position = prevBodyPosition
       body.style.top = prevBodyTop
       body.style.width = prevBodyWidth
-      window.scrollTo(0, scrollY)
+      hostWindow.scrollTo(0, scrollY)
     }
-  }, [isOpen])
+  }, [hostDocument, hostWindow, isOpen])
 
   // Close on Escape key so the user is never stuck with the panel open
   const handleKeyDown = useCallback(
@@ -122,10 +126,10 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
   )
 
   useEffect(() => {
-    if (!isOpen) return
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, handleKeyDown])
+    if (!isOpen || !hostDocument) return
+    hostDocument.addEventListener('keydown', handleKeyDown)
+    return () => hostDocument.removeEventListener('keydown', handleKeyDown)
+  }, [hostDocument, isOpen, handleKeyDown])
 
   const handleDragStart = useCallback((event: ReactPointerEvent<HTMLButtonElement>) => {
     dragStartY.current = event.clientY
@@ -145,12 +149,12 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return
     setIsDragging(false)
-    const closeThreshold = Math.min(160, window.innerHeight * 0.18)
+    const closeThreshold = Math.min(160, (hostWindow?.innerHeight ?? 0) * 0.18)
     if (dragY > closeThreshold) {
       onClose()
     }
     setDragY(0)
-  }, [dragY, isDragging, onClose])
+  }, [dragY, hostWindow, isDragging, onClose])
 
   const handleResizeStart = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     const sheet = sheetRef.current
@@ -201,21 +205,23 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
         // A pause before letting go isn't a flick.
         velocity: event.timeStamp - state.lastTime > 100 ? 0 : state.velocity,
         startSnap: snap,
-        partialHeight: window.innerHeight * 0.6,
+        partialHeight: (hostWindow?.innerHeight ?? 0) * 0.6,
         fullHeight: state.fullHeight,
-        closeDistance: Math.min(160, window.innerHeight * 0.18),
+        closeDistance: Math.min(160, (hostWindow?.innerHeight ?? 0) * 0.18),
       })
       setDragHeight(null)
       if (target === 'close') onClose()
       else setSnap(target)
     },
-    [dragHeight, snap, onClose],
+    [dragHeight, hostWindow, snap, onClose],
   )
 
   const sheetHeight = dragHeight !== null ? `${dragHeight}px` : snap === 'full' ? '100%' : '60dvh'
 
   // Portal to document.body to escape ancestor transforms (e.g. transform-gpu on SiteHeader)
   // which break position:fixed by creating a new containing block.
+  if (!hostDocument) return children
+
   return createPortal(
     <div
       data-slot="mobile-panel-overlay"
@@ -305,6 +311,6 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
         </div>
       </div>
     </div>,
-    document.body,
+    hostDocument.body,
   )
 }
