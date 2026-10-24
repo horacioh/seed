@@ -23,10 +23,14 @@ export function Titlebar({
   title = 'Seed',
   onToggleSidebar,
   onToggleRight,
+  showSidebar = true,
+  showRightPanel = true,
 }: {
   title?: string
   onToggleSidebar?: () => void
   onToggleRight?: () => void
+  showSidebar?: boolean
+  showRightPanel?: boolean
 }) {
   return (
     <TitlebarWrapper className="bg-background border-b px-3">
@@ -36,12 +40,16 @@ export function Titlebar({
           <span className="font-medium">{title}</span>
         </TitlebarSection>
         <TitlebarSection>
-          <TitleTextButton aria-label="Toggle sidebar" onClick={onToggleSidebar}>
-            <PanelLeft className="size-4" />
-          </TitleTextButton>
-          <TitleTextButton aria-label="Toggle right panel" onClick={onToggleRight}>
-            <PanelRight className="size-4" />
-          </TitleTextButton>
+          {showSidebar && (
+            <TitleTextButton aria-label="Toggle sidebar" onClick={onToggleSidebar}>
+              <PanelLeft className="size-4" />
+            </TitleTextButton>
+          )}
+          {showRightPanel && (
+            <TitleTextButton aria-label="Toggle right panel" onClick={onToggleRight}>
+              <PanelRight className="size-4" />
+            </TitleTextButton>
+          )}
         </TitlebarSection>
       </TitlebarRow>
     </TitlebarWrapper>
@@ -100,7 +108,10 @@ export function Window({
   useEffect(() => {
     setSidebarOpen(showSidebar)
     setRightOpen(showRightPanel)
-  }, [showSidebar, showRightPanel])
+    if ((mobilePanel === 'sidebar' && !showSidebar) || (mobilePanel === 'right' && !showRightPanel)) {
+      setMobilePanel(null)
+    }
+  }, [showSidebar, showRightPanel, mobilePanel])
   const Side = SidebarSlot
   const Right = RightPanel
   const mainContent = Main ? (
@@ -114,24 +125,34 @@ export function Window({
     return (
       <div className="bg-background text-foreground flex h-full min-h-0 flex-col">
         {showTitlebar && (
-          <Titlebar onToggleSidebar={() => setMobilePanel('sidebar')} onToggleRight={() => setMobilePanel('right')} />
+          <Titlebar
+            showSidebar={showSidebar}
+            showRightPanel={showRightPanel}
+            onToggleSidebar={() => showSidebar && setMobilePanel('sidebar')}
+            onToggleRight={() => showRightPanel && setMobilePanel('right')}
+          />
         )}
-        <div className="flex h-11 shrink-0 items-center gap-2 border-b px-3">
-          {showSidebar && (
-            <button className="hover:bg-muted rounded-md px-3 py-1.5 text-sm" onClick={() => setMobilePanel('sidebar')}>
-              Directory
-            </button>
-          )}
-          {showRightPanel && (
-            <button className="hover:bg-muted rounded-md px-3 py-1.5 text-sm" onClick={() => setMobilePanel('right')}>
-              Discussions
-            </button>
-          )}
-        </div>
+        {(showSidebar || showRightPanel) && (
+          <div className="flex h-11 shrink-0 items-center gap-2 border-b px-3">
+            {showSidebar && (
+              <button
+                className="hover:bg-muted rounded-md px-3 py-1.5 text-sm"
+                onClick={() => setMobilePanel('sidebar')}
+              >
+                Directory
+              </button>
+            )}
+            {showRightPanel && (
+              <button className="hover:bg-muted rounded-md px-3 py-1.5 text-sm" onClick={() => setMobilePanel('right')}>
+                Discussions
+              </button>
+            )}
+          </div>
+        )}
         <main className="min-h-0 flex-1 overflow-y-auto">{mainContent}</main>
         {(showSidebar || showRightPanel) && (
           <MobilePanelSheet
-            isOpen={mobilePanel !== null}
+            isOpen={(mobilePanel === 'sidebar' && showSidebar) || (mobilePanel === 'right' && showRightPanel)}
             title={mobilePanel === 'sidebar' ? 'Directory' : 'Discussions'}
             onClose={() => setMobilePanel(null)}
           >
@@ -140,8 +161,8 @@ export function Window({
         )}
       </div>
     )
-  const sidebarVisible = sidebarOpen
-  const rightVisible = rightOpen
+  const sidebarVisible = showSidebar && sidebarOpen
+  const rightVisible = showRightPanel && rightOpen
   const mainWidth = 100 - (sidebarVisible ? sidebarWidth : 0) - (rightVisible ? rightPanelWidth : 0)
   const columns = [
     ...(sidebarVisible ? [`minmax(0, ${sidebarWidth}fr)`, '4px'] : []),
@@ -153,7 +174,7 @@ export function Window({
       {showTitlebar && (
         <Titlebar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} onToggleRight={() => setRightOpen(!rightOpen)} />
       )}
-      <div className="grid min-h-0 flex-1" style={{gridTemplateColumns: columns.join(' ')}}>
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)]" style={{gridTemplateColumns: columns.join(' ')}}>
         {sidebarVisible && (
           <>
             <div className="min-h-0 min-w-0 overflow-y-auto border-r">{sideContent}</div>

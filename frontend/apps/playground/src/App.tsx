@@ -1,13 +1,13 @@
 import {Puck, Render, type Data, usePuck} from '@puckeditor/core'
 import {ArrowLeft, Copy, Maximize, Plus, Trash2, Minus, Play, Share2, Undo2, Redo2} from 'lucide-react'
-import {useEffect, useRef, useState, type ReactNode, type WheelEvent} from 'react'
+import {useCallback, useEffect, useRef, useState, type ReactNode, type WheelEvent} from 'react'
 import {DeviceFrame} from './frame'
 import {SettingsPopover} from './SettingsPopover'
 import {type Artboard, type Board, type Device, deviceSizes} from './model'
 import {createTemplateData, playgroundConfig, type TemplateName} from './registry'
 import {PLAYGROUND_BOARD_STORAGE_KEY} from './defaults'
 import {MediaWindowContext} from '@shm/ui/use-media'
-import {decodeBoard, encodeBoard} from './share'
+import {decodeBoard, encodeBoard, validateBoard} from './share'
 
 const viewports = [
   {label: 'Desktop', width: 1440, icon: 'Monitor' as const},
@@ -33,17 +33,51 @@ function initialBoard(): Board {
   }
 }
 
-function loadBoard(): Board {
-  const shared = location.hash.startsWith('#b=') ? decodeBoard(location.hash.slice(3)) : null
-  if (shared) return shared
+function createInitialBoardState(): {
+  board: Board
+  selectedId?: string
+  fitToBoard: boolean
+  invalidShare: boolean
+  importLimitReached: boolean
+} {
+  const hasShare = location.hash.startsWith('#b=')
+  const shared = hasShare ? decodeBoard(location.hash.slice(3)) : null
+  let board = initialBoard()
   try {
     const stored = localStorage.getItem(PLAYGROUND_BOARD_STORAGE_KEY)
-    const board = stored ? (JSON.parse(stored) as Board) : null
-    if (board?.version === 1 && Array.isArray(board.artboards)) return board
+    const saved = stored ? validateBoard(JSON.parse(stored)) : null
+    if (saved) board = saved
   } catch {
     // Use the starter board when saved state cannot be read.
   }
-  return initialBoard()
+  if (hasShare) history.replaceState(history.state, '', `${location.pathname}${location.search}`)
+  if (!shared) return {board, fitToBoard: false, invalidShare: hasShare, importLimitReached: false}
+
+  const available = Math.max(0, 50 - board.artboards.length)
+  const incoming = shared.artboards.slice(0, available)
+  const existingRight = Math.max(0, ...board.artboards.map((item) => item.x + deviceSizes[item.device].width + 80))
+  const incomingLeft = incoming.length ? Math.min(...incoming.map((item) => item.x)) : 0
+  const offset = existingRight - incomingLeft
+  const imported = incoming.map((item) => ({
+    ...item,
+    id: crypto.randomUUID(),
+    x: item.x + offset,
+    data: cloneData(item.data),
+  }))
+  return {
+    board: {version: 1, artboards: [...board.artboards, ...imported]},
+    selectedId: imported.at(-1)?.id,
+    fitToBoard: imported.length > 0,
+    invalidShare: false,
+    importLimitReached: shared.artboards.length > imported.length,
+  }
+}
+
+let cachedBoardLoad: ReturnType<typeof createInitialBoardState> | undefined
+
+function loadBoard() {
+  if (!cachedBoardLoad) cachedBoardLoad = createInitialBoardState()
+  return cachedBoardLoad
 }
 
 function cloneData(data: Data): Data {
@@ -63,13 +97,17 @@ function BoardView({
   setBoard,
   onEdit,
   onShare,
+  initialSelectedId,
+  fitToBoard,
 }: {
   board: Board
   setBoard: (board: Board) => void
   onEdit: (id: string) => void
   onShare: () => void
+  initialSelectedId?: string
+  fitToBoard: boolean
 }) {
-  const [selectedId, setSelectedId] = useState(board.artboards[0]?.id)
+  const [selectedId, setSelectedId] = useState(initialSelectedId ?? board.artboards[0]?.id)
   const [template, setTemplate] = useState<TemplateName>('Desktop document')
   const [device, setDevice] = useState<Device>('desktop')
   const [playMode, setPlayMode] = useState(false)
@@ -104,6 +142,7 @@ function BoardView({
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return
+      if (event.key === 'Escape' && playMode) setPlayMode(false)
       if (event.key.toLowerCase() === 'p' && !event.metaKey && !event.ctrlKey) setPlayMode((value) => !value)
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'd') {
         event.preventDefault()
@@ -128,9 +167,9 @@ function BoardView({
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [board, selected])
+  }, [board, playMode, selected])
 
-  function zoomToFit() {
+  const zoomToFit = useCallback(() => {
     const bounds = canvasRef.current?.getBoundingClientRect()
     if (!bounds || board.artboards.length === 0) return
     const left = Math.min(...board.artboards.map((item) => item.x))
@@ -140,7 +179,14 @@ function BoardView({
     const scale = Math.min((bounds.width - 96) / (right - left), (bounds.height - 150) / (bottom - top), 1)
     setZoom(scale)
     setPan({x: 48 - left * scale, y: 96 - top * scale})
-  }
+  }, [board.artboards])
+
+  useEffect(() => {
+    if (!fitToBoard || !initialSelectedId) return
+    setSelectedId(initialSelectedId)
+    const frame = requestAnimationFrame(zoomToFit)
+    return () => cancelAnimationFrame(frame)
+  }, [fitToBoard, initialSelectedId, zoomToFit])
 
   function addArtboard() {
     const x = Math.max(80, ...board.artboards.map((item) => item.x + deviceSizes[item.device].width + 80))
@@ -289,6 +335,14 @@ function BoardView({
           panStart.current = null
         }}
       >
+        {playMode && (
+          <button
+            className="bg-background/95 text-foreground absolute top-4 right-4 z-20 rounded-md border px-3 py-2 text-sm shadow"
+            onClick={() => setPlayMode(false)}
+          >
+            Exit preview
+          </button>
+        )}
         <div
           className="absolute top-0 left-0"
           style={{transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`, transformOrigin: 'top left'}}
@@ -423,7 +477,13 @@ function EditorView({
   if (preview) {
     const size = deviceSizes[artboard.device]
     return (
-      <div className="bg-muted/40 h-full overflow-auto p-6">
+      <div className="bg-muted/40 relative h-full overflow-auto p-6">
+        <button
+          className="bg-background/95 text-foreground fixed top-4 right-4 z-20 rounded-md border px-3 py-2 text-sm shadow"
+          onClick={() => setPreview(false)}
+        >
+          Exit preview
+        </button>
         <div className="mx-auto w-fit">
           <DeviceFrame width={size.width} height={size.height}>
             <Render config={playgroundConfig} data={artboard.data} />
@@ -546,15 +606,18 @@ function EditorHeader({
   )
 }
 
+/** Renders the board and editor for the Seed Layout Playground. */
 export default function App() {
-  const [board, setBoard] = useState<Board>(loadBoard)
+  const [initial] = useState(loadBoard)
+  const [board, setBoard] = useState<Board>(initial.board)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [toast, setToast] = useState('')
-  const [invalidShare] = useState(() => location.hash.startsWith('#b=') && !decodeBoard(location.hash.slice(3)))
   useEffect(() => localStorage.setItem(PLAYGROUND_BOARD_STORAGE_KEY, JSON.stringify(board)), [board])
   useEffect(() => {
-    if (invalidShare) setToast('This share link could not be decoded. Your saved board was loaded instead.')
-  }, [invalidShare])
+    if (initial.invalidShare) setToast('This share link could not be decoded. Your saved board was loaded instead.')
+    else if (initial.importLimitReached)
+      setToast('Some shared artboards were omitted because boards are limited to 50.')
+  }, [initial])
   const share = async () => {
     const encoded = encodeBoard(board)
     location.hash = `b=${encoded}`
@@ -611,7 +674,14 @@ export default function App() {
   }
   return (
     <>
-      <BoardView board={board} setBoard={setBoard} onEdit={setEditingId} onShare={share} />
+      <BoardView
+        board={board}
+        setBoard={setBoard}
+        onEdit={setEditingId}
+        onShare={share}
+        initialSelectedId={initial.selectedId}
+        fitToBoard={initial.fitToBoard}
+      />
       {toast && (
         <div
           role="status"

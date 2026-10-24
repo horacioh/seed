@@ -178,8 +178,8 @@ const components: Record<string, any> = {
   },
   SearchInput: {
     label: 'Search input',
-    fields: {placeholder: {type: 'text', label: 'Placeholder'}},
-    defaultProps: {placeholder: 'Search documents'},
+    fields: {},
+    defaultProps: {},
     render: (props: any) => <SearchBlock {...props} />,
   },
   FollowButton: {label: 'Follow button', fields: {}, defaultProps: {}, render: () => <FollowBlock />},
@@ -224,6 +224,18 @@ const components: Record<string, any> = {
   ...freeformComponents,
 }
 
+const fullHeightComponents = new Set([
+  'Window',
+  'Sidebar',
+  'DocumentView',
+  'DirectoryPanel',
+  'Discussions',
+  'Feed',
+  'Collaborators',
+  'DocumentVersionsPanel',
+  'DirectoryPage',
+])
+
 const config = {
   categories: {
     shell: {title: 'Shell', components: ['Window', 'Titlebar', 'Sidebar']},
@@ -258,7 +270,9 @@ const config = {
     primitives: {title: 'Primitives', components: ['Button', 'Badge', 'Text', 'Heading', 'Separator']},
     freeform: {title: 'Freeform', components: ['StickyNote', 'PlaceholderBox']},
   },
-  components: Object.fromEntries(Object.entries(components).map(([name, component]) => [name, withStyle(component)])),
+  components: Object.fromEntries(
+    Object.entries(components).map(([name, component]) => [name, withStyle(component, fullHeightComponents.has(name))]),
+  ),
   root: {render: ({children}: {children: ReactNode}) => <>{children}</>},
 }
 

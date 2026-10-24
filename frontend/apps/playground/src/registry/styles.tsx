@@ -137,16 +137,21 @@ export const styleField = {type: 'custom', label: 'Style', render: StyleField} a
 /** Adds the selected theme-token classes to a component wrapper. */
 export function styledRender<P extends {style?: StyleOverrides}>(
   render: (props: Omit<P, 'style'>) => ReactNode,
+  fullHeight = false,
 ): (props: P) => ReactNode {
-  return ({style, ...props}) => <div className={classesForStyle(style)}>{render(props as Omit<P, 'style'>)}</div>
+  return ({style, ...props}) => (
+    <div className={[fullHeight ? 'h-full min-h-0' : '', classesForStyle(style)].filter(Boolean).join(' ')}>
+      {render(props as Omit<P, 'style'>)}
+    </div>
+  )
 }
 
 /** Adds a shared Style inspector field and wrapper to a Puck component. */
-export function withStyle(component: any) {
+export function withStyle(component: any, fullHeight = false) {
   return {
     ...component,
     fields: {...component.fields, style: styleField},
     defaultProps: {...component.defaultProps, style: {}},
-    render: styledRender(component.render),
+    render: styledRender(component.render, fullHeight),
   }
 }

@@ -9,6 +9,7 @@ const request: WebClientDependencies['request'] = ((key: HMRequest['key'], input
   return client.request(key as never, input as never)
 }) as WebClientDependencies['request']
 
+/** Read-only web client that sends queries to the selected public gateway. */
 export const playgroundUniversalClient = createWebUniversalClient({
   request,
   publish: () => Promise.reject(new Error('read-only playground')),

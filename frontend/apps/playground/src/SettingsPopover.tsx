@@ -2,6 +2,7 @@ import {useState} from 'react'
 import {getGatewayHost, setGatewayHost} from './gateway'
 import {queryClient} from './queryClient'
 
+/** Gateway settings popover for selecting the Playground's read-only data source. */
 export function SettingsPopover() {
   const [host, setHost] = useState(getGatewayHost)
   const [saved, setSaved] = useState(host)

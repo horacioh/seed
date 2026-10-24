@@ -125,8 +125,8 @@ export function FollowBlock() {
 export function JoinBlock() {
   return <JoinButton onClick={() => {}} />
 }
-/** Search input primitive with an editable placeholder. */
-export function SearchBlock({placeholder = 'Search documents'}: {placeholder?: string}) {
+/** Search input primitive with local state and Seed's fixed placeholder. */
+export function SearchBlock() {
   const [value, setValue] = useState('')
   return (
     <SearchInput
