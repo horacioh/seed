@@ -1,5 +1,5 @@
-import {Puck, Render, type Data} from '@puckeditor/core'
-import {ArrowLeft, Copy, Maximize, Plus, Trash2, Minus, Play, Share2} from 'lucide-react'
+import {Puck, Render, type Data, usePuck} from '@puckeditor/core'
+import {ArrowLeft, Copy, Maximize, Plus, Trash2, Minus, Play, Share2, Undo2, Redo2} from 'lucide-react'
 import {useEffect, useRef, useState, type ReactNode, type WheelEvent} from 'react'
 import {DeviceFrame} from './frame'
 import {SettingsPopover} from './SettingsPopover'
@@ -191,7 +191,7 @@ function BoardView({
 
   return (
     <div className="bg-muted/40 text-foreground flex h-full flex-col">
-      <header className="bg-background z-10 flex h-14 shrink-0 items-center gap-3 border-b px-4">
+      <header className="playground-chrome bg-background z-10 flex h-14 shrink-0 items-center gap-3 border-b px-4">
         <strong className="mr-auto text-sm">Seed Layout Playground</strong>
         <select
           className="bg-background h-9 rounded-md border px-2 text-sm"
@@ -301,12 +301,19 @@ function BoardView({
                 className={`bg-background absolute overflow-hidden rounded-lg border shadow-xl ${
                   selectedId === artboard.id ? 'ring-primary ring-2' : ''
                 }`}
-                style={{left: artboard.x, top: artboard.y, width: size.width, height: size.height + 44}}
+                style={{left: artboard.x, top: artboard.y, width: size.width, height: size.height + 44 / zoom}}
                 onClick={() => setSelectedId(artboard.id)}
                 onDoubleClick={() => onEdit(artboard.id)}
               >
                 <div
-                  className="bg-background flex h-11 cursor-grab items-center justify-between border-b px-4 text-sm font-medium active:cursor-grabbing"
+                  className="bg-background flex h-11 cursor-grab items-center justify-between border-b px-4 font-medium active:cursor-grabbing"
+                  style={{
+                    height: 44 / zoom,
+                    paddingLeft: 16 / zoom,
+                    paddingRight: 16 / zoom,
+                    fontSize: 14 / zoom,
+                    lineHeight: `${20 / zoom}px`,
+                  }}
                   onPointerDown={(event) => {
                     event.stopPropagation()
                     setSelectedId(artboard.id)
@@ -426,13 +433,12 @@ function EditorView({
     )
   }
   return (
-    <div className="h-full">
+    <div className="playground-editor h-full">
       <Puck
         key={`${artboard.id}-${artboard.device}`}
         config={playgroundConfig}
         data={artboard.data}
         onChange={onChange}
-        headerTitle={artboard.name}
         viewports={viewports}
         iframe={{enabled: true, syncHostStyles: true, waitForStyles: true}}
         ui={{
@@ -449,46 +455,94 @@ function EditorView({
                 {children}
               </MediaWindowContext.Provider>
             ),
-            header: ({children}: {children: ReactNode; actions: ReactNode}) => (
-              <header className="bg-background flex min-h-12 items-center gap-3 border-b px-3">
-                <button
-                  className="hover:bg-muted flex items-center gap-1 rounded-md px-2 py-1.5 text-sm"
-                  onClick={onBack}
-                >
-                  <ArrowLeft className="size-4" /> Board
-                </button>
-                <input
-                  aria-label="Artboard name"
-                  className="mr-auto w-48 rounded border px-2 py-1 text-sm"
-                  value={artboard.name}
-                  onChange={(event) => onNameChange(event.target.value)}
-                />
-                <select
-                  aria-label="Device viewport"
-                  className="bg-background h-8 rounded-md border px-2 text-sm"
-                  value={artboard.device}
-                  onChange={(event) => onDeviceChange(event.target.value as Device)}
-                >
-                  {Object.keys(deviceSizes).map((name) => (
-                    <option key={name} value={name}>
-                      {name.charAt(0).toUpperCase() + name.slice(1)} · {deviceSizes[name as Device].width}
-                    </option>
-                  ))}
-                </select>
-                <button className="hover:bg-muted rounded-md px-3 py-1.5 text-sm" onClick={() => setPreview(true)}>
-                  Preview
-                </button>
-                <button className="hover:bg-muted rounded-md p-2" onClick={onShare} aria-label="Share">
-                  <Share2 className="size-4" />
-                </button>
-                {children}
-              </header>
+            header: () => (
+              <EditorHeader
+                artboard={artboard}
+                onBack={onBack}
+                onNameChange={onNameChange}
+                onDeviceChange={onDeviceChange}
+                onPreview={() => setPreview(true)}
+                onShare={onShare}
+              />
             ),
             headerActions: () => null,
           } as never
         }
       />
     </div>
+  )
+}
+
+function EditorHeader({
+  artboard,
+  onBack,
+  onNameChange,
+  onDeviceChange,
+  onPreview,
+  onShare,
+}: {
+  artboard: Artboard
+  onBack: () => void
+  onNameChange: (name: string) => void
+  onDeviceChange: (device: Device) => void
+  onPreview: () => void
+  onShare: () => void
+}) {
+  const {history} = usePuck()
+  return (
+    <header className="playground-chrome bg-background flex h-12 w-full items-center gap-2 border-b px-3">
+      <button
+        className="hover:bg-muted flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-sm"
+        onClick={onBack}
+      >
+        <ArrowLeft className="size-4" /> Board
+      </button>
+      <input
+        aria-label="Artboard name"
+        className="bg-background min-w-0 flex-1 rounded border px-2 py-1 text-sm"
+        value={artboard.name}
+        onChange={(event) => onNameChange(event.target.value)}
+      />
+      <select
+        aria-label="Device viewport"
+        className="bg-background h-8 shrink-0 rounded-md border px-2 text-sm"
+        value={artboard.device}
+        onChange={(event) => onDeviceChange(event.target.value as Device)}
+      >
+        {Object.keys(deviceSizes).map((name) => (
+          <option key={name} value={name}>
+            {name.charAt(0).toUpperCase() + name.slice(1)} · {deviceSizes[name as Device].width}
+          </option>
+        ))}
+      </select>
+      <button className="hover:bg-muted shrink-0 rounded-md px-3 py-1.5 text-sm" onClick={onPreview}>
+        Preview
+      </button>
+      <button
+        className="hover:bg-muted flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-sm"
+        onClick={onShare}
+      >
+        <Share2 className="size-4" /> Share
+      </button>
+      <button
+        className="hover:bg-muted rounded-md p-2 disabled:opacity-40"
+        onClick={() => history.back()}
+        disabled={!history.hasPast}
+        aria-label="Undo"
+        title="Undo"
+      >
+        <Undo2 className="size-4" />
+      </button>
+      <button
+        className="hover:bg-muted rounded-md p-2 disabled:opacity-40"
+        onClick={() => history.forward()}
+        disabled={!history.hasFuture}
+        aria-label="Redo"
+        title="Redo"
+      >
+        <Redo2 className="size-4" />
+      </button>
+    </header>
   )
 }
 

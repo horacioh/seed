@@ -24,6 +24,14 @@ import {
 } from './content'
 import {freeformComponents} from './freeform'
 import {primitiveComponents} from './primitives'
+import {
+  ActivityBlock,
+  ExploreCardBlock,
+  FacePileBlock,
+  MembersFacepileBlock,
+  NewspaperCardBlock,
+  QueryResultsBlock,
+} from './candidates'
 
 const choices = (values: string[]) => values.map((value) => ({label: value, value}))
 const yesNo = [
@@ -120,6 +128,42 @@ const components: Record<string, any> = {
     defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
     render: (props: any) => <DirectoryPageBlock {...props} />,
   },
+  Activity: {
+    label: 'Activity item',
+    fields: {resource: resourceField},
+    defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
+    render: (props: any) => <ActivityBlock {...props} />,
+  },
+  ExploreDocumentCard: {
+    label: 'Explore document card',
+    fields: {resource: resourceField},
+    defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
+    render: (props: any) => <ExploreCardBlock {...props} />,
+  },
+  FacePile: {
+    label: 'Face pile',
+    fields: {resource: resourceField},
+    defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
+    render: (props: any) => <FacePileBlock {...props} />,
+  },
+  MembersFacepile: {
+    label: 'Members facepile',
+    fields: {resource: resourceField},
+    defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
+    render: (props: any) => <MembersFacepileBlock {...props} />,
+  },
+  QueryBlockContent: {
+    label: 'Query block content',
+    fields: {resource: resourceField},
+    defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
+    render: (props: any) => <QueryResultsBlock {...props} />,
+  },
+  NewspaperCard: {
+    label: 'Newspaper document card',
+    fields: {resource: resourceField},
+    defaultProps: {resource: DEFAULT_DOCUMENT_RESOURCE},
+    render: (props: any) => <NewspaperCardBlock {...props} />,
+  },
   AccountPage: {
     label: 'Account page',
     fields: {resource: resourceField},
@@ -202,6 +246,12 @@ const config = {
         'SearchInput',
         'FollowButton',
         'JoinButton',
+        'Activity',
+        'ExploreDocumentCard',
+        'FacePile',
+        'MembersFacepile',
+        'QueryBlockContent',
+        'NewspaperCard',
       ],
     },
     layout: {title: 'Layout', components: ['Section', 'Columns', 'Tabs']},

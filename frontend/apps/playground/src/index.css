@@ -20,12 +20,12 @@ body,
 
 body {
   overflow: hidden;
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 
-.hm-prose {
+.playground-chrome,
+.playground-editor {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
