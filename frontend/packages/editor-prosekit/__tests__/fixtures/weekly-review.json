@@ -1,0 +1,334 @@
+{
+  "source": "https://seed.horacioh.com/api/Resource?id=hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-june-17-23-2026",
+  "version": "bafyreicogcqeq456hesohmuj7t3p2xlxbvajglh6hzmvhyjapy65sglf7u",
+  "content": [
+    {
+      "children": [],
+      "block": {
+        "type": "Paragraph",
+        "id": "cBCE_2CU",
+        "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+        "attributes": {},
+        "annotations": [],
+        "text": "This week was about making Seed feel safer and more practical in day-to-day publishing: fewer dead ends in the editor, clearer desktop navigation, and a stronger release pipeline for Windows builds.",
+        "link": ""
+      }
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "7I3EB-k8",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [208],
+                "ends": [215],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/797"
+              },
+              {
+                "type": "Link",
+                "starts": [217],
+                "ends": [224],
+                "attributes": {},
+                "link": "https://github.com/horacioh/seed/commit/1f8fd7b75c1196e88dc583b734f2b3057f13805b"
+              },
+              {
+                "type": "Code",
+                "starts": [224, 245],
+                "ends": [232, 253],
+                "attributes": {},
+                "link": ""
+              },
+              {
+                "type": "Link",
+                "starts": [238],
+                "ends": [245],
+                "attributes": {},
+                "link": "https://github.com/horacioh/seed/commit/7d84ca5202e990ff1697a39718060e54bdb514cf"
+              }
+            ],
+            "text": "Simplified document sharing and cleanup on desktop: the Share menu became “Copy link”, deleted cards are removed more reliably, and embed card clicks route through the same document-card navigation path. See PR #797, commit 1f8fd7b7, and commit 7d84ca52.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "0xCKqzV6",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [192],
+                "ends": [199],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/804"
+              },
+              {
+                "type": "Link",
+                "starts": [201],
+                "ends": [208],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/805"
+              },
+              {
+                "type": "Link",
+                "starts": [210],
+                "ends": [217],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/806"
+              },
+              {
+                "type": "Link",
+                "starts": [223],
+                "ends": [230],
+                "attributes": {},
+                "link": "https://github.com/horacioh/seed/commit/6affde90519c8547ff92c4c448ac0d34d2bb3f2a"
+              },
+              {
+                "type": "Code",
+                "starts": [230],
+                "ends": [238],
+                "attributes": {},
+                "link": ""
+              }
+            ],
+            "text": "Polished desktop chrome: video controls now apply to actual players, the titlebar aligns with the locked sidebar width, bookmark labels truncate cleanly, and tabs can show a people count. See PR #804, PR #805, PR #806, and commit 6affde90.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "S2zg8fpG",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [104],
+                "ends": [111],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/811"
+              },
+              {
+                "type": "Link",
+                "starts": [116],
+                "ends": [123],
+                "attributes": {},
+                "link": "https://github.com/horacioh/seed/commit/041cb6b01ad0da5d571028ee9050fe3bc1743a40"
+              },
+              {
+                "type": "Code",
+                "starts": [123],
+                "ends": [131],
+                "attributes": {},
+                "link": ""
+              }
+            ],
+            "text": "Added DigiCert KeyLocker signing for Windows builds, then tuned the development workflow around it. See PR #811 and commit 041cb6b0.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "tEQs7UoS",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [270],
+                "ends": [277],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/815"
+              },
+              {
+                "type": "Link",
+                "starts": [279],
+                "ends": [286],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/816"
+              },
+              {
+                "type": "Link",
+                "starts": [292],
+                "ends": [299],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/818"
+              }
+            ],
+            "text": "Fixed editor rough edges around image captions, query placeholders, and autosave. Caption clicks no longer select the whole image block, query new-doc placeholders hide when a banner is present, and draft snapshots preserve recoverable edits during autosave writes. See PR #815, PR #816, and PR #818.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "9VOUnObH",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [206],
+                "ends": [213],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/817"
+              }
+            ],
+            "text": "Replaced separate move and republish flows with a unified destination dialog on desktop. This gave document relocation a clearer mental model and added tests for child path handling and republish refs. See PR #817.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "lEuWAcXq",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [176],
+                "ends": [183],
+                "attributes": {},
+                "link": "https://github.com/seed-hypermedia/seed/pull/821"
+              }
+            ],
+            "text": "Added writer promotion for site members, including account canonicalization so delegate aliases dedupe to root accounts and writer grants win over regular membership rows. See PR #821.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "ELDPWYJt",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [92],
+                "ends": [99],
+                "attributes": {},
+                "link": "https://github.com/horacioh/seed/commit/297dcb5beee874ca205420c87f59922bc9fc2c53"
+              },
+              {
+                "type": "Code",
+                "starts": [99, 119],
+                "ends": [107, 127],
+                "attributes": {},
+                "link": ""
+              },
+              {
+                "type": "Link",
+                "starts": [112],
+                "ends": [119],
+                "attributes": {},
+                "link": "https://github.com/horacioh/seed/commit/ad831d68f7686ae16b54726c61f8505537f33ec2"
+              }
+            ],
+            "text": "Added frontend UI polish agent guidance and pinned formatting behavior across the repo. See commit 297dcb5b and commit ad831d68.",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "cXZNMuaK",
+        "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+        "attributes": {
+          "childrenType": "Unordered"
+        },
+        "annotations": [],
+        "text": "What I shipped",
+        "link": ""
+      }
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "HqkH0clI",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Bold",
+                "starts": [78],
+                "ends": [111],
+                "attributes": {},
+                "link": ""
+              }
+            ],
+            "text": "A lot of the work was small on its own, but it all pointed at the same thing: publishing should feel continuous. The user should be able to copy a link, move a document, edit a caption, or promote a collaborator without wondering which subsystem they accidentally crossed into.",
+            "link": ""
+          }
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "XLINwREO",
+                "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Italic",
+                    "starts": [0],
+                    "ends": [109],
+                    "attributes": {},
+                    "link": ""
+                  }
+                ],
+                "text": "How many separate document actions can we collapse into one destination model before it becomes too abstract?",
+                "link": ""
+              }
+            }
+          ],
+          "block": {
+            "type": "Paragraph",
+            "id": "tjrfsLlM",
+            "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+            "attributes": {
+              "childrenType": "Blockquote"
+            },
+            "annotations": [],
+            "text": "My question from this week:",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "mWI5qsh3",
+        "revision": "bafyreia7bwnixljpmmhubsrorscx3aua5k5i4f642pgvp4tywxsvlgga6a",
+        "attributes": {
+          "childrenType": "Group"
+        },
+        "annotations": [],
+        "text": "Notes",
+        "link": ""
+      }
+    }
+  ]
+}
