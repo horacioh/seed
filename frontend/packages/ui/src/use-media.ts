@@ -1,5 +1,8 @@
 import {useIsomorphicLayoutEffect} from '@shm/shared/utils/use-isomorphic-layout-effect'
-import {useMemo, useState} from 'react'
+import {createContext, useContext, useMemo, useState} from 'react'
+
+/** Selects the window whose viewport should drive responsive UI. */
+export const MediaWindowContext = createContext<Window | undefined>(typeof window !== 'undefined' ? window : undefined)
 
 // Define a type for media queries configuration
 export type MediaQueries = Record<string, {[key: string]: string | number}>
@@ -63,6 +66,7 @@ function createMediaProxy(mediaState: MediaQueryState): MediaQueryState {
 
 // Main useMedia hook with configurable media queries
 export function useMedia(customMediaQueries?: MediaQueries): MediaQueryState {
+  const mediaWindow = useContext(MediaWindowContext)
   const mediaQueries = customMediaQueries || defaultMediaQueries
 
   // Create media query strings
@@ -85,7 +89,7 @@ export function useMedia(customMediaQueries?: MediaQueries): MediaQueryState {
   })
 
   useIsomorphicLayoutEffect(() => {
-    if (typeof window === 'undefined') {
+    if (!mediaWindow) {
       return
     }
 
@@ -94,7 +98,7 @@ export function useMedia(customMediaQueries?: MediaQueries): MediaQueryState {
 
     // Create media query lists and listeners for each query
     Object.entries(mediaQueryStrings).forEach(([key, queryString]) => {
-      const mql = window.matchMedia(queryString)
+      const mql = mediaWindow.matchMedia(queryString)
       mediaQueryLists.push({key, mql})
 
       // Create listener for this specific media query
@@ -126,7 +130,7 @@ export function useMedia(customMediaQueries?: MediaQueries): MediaQueryState {
     return () => {
       listeners.forEach((cleanup) => cleanup())
     }
-  }, [mediaQueryStrings])
+  }, [mediaQueryStrings, mediaWindow])
 
   // Return proxied object for performance tracking
   return useMemo(() => createMediaProxy(mediaStates), [mediaStates])
