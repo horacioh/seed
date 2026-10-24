@@ -1,12 +1,13 @@
 import {Puck, Render, type Data} from '@puckeditor/core'
-import {ArrowLeft, Copy, Maximize, Plus, Trash2} from 'lucide-react'
+import {ArrowLeft, Copy, Maximize, Plus, Trash2, Minus, Play, Share2} from 'lucide-react'
 import {useEffect, useRef, useState, type ReactNode, type WheelEvent} from 'react'
 import {DeviceFrame} from './frame'
 import {SettingsPopover} from './SettingsPopover'
 import {type Artboard, type Board, type Device, deviceSizes} from './model'
-import {createTemplateData, playgroundConfig} from './registry'
+import {createTemplateData, playgroundConfig, type TemplateName} from './registry'
 import {PLAYGROUND_BOARD_STORAGE_KEY} from './defaults'
 import {MediaWindowContext} from '@shm/ui/use-media'
+import {decodeBoard, encodeBoard} from './share'
 
 const viewports = [
   {label: 'Desktop', width: 1440, icon: 'Monitor' as const},
@@ -20,12 +21,21 @@ function initialBoard(): Board {
     version: 1,
     artboards: [
       {id: crypto.randomUUID(), name: 'Desktop document', device: 'desktop', x: 80, y: 80, data: createTemplateData()},
-      {id: crypto.randomUUID(), name: 'Mobile document', device: 'mobile', x: 1600, y: 80, data: createTemplateData()},
+      {
+        id: crypto.randomUUID(),
+        name: 'Mobile document',
+        device: 'mobile',
+        x: 1600,
+        y: 80,
+        data: createTemplateData('Mobile document'),
+      },
     ],
   }
 }
 
 function loadBoard(): Board {
+  const shared = location.hash.startsWith('#b=') ? decodeBoard(location.hash.slice(3)) : null
+  if (shared) return shared
   try {
     const stored = localStorage.getItem(PLAYGROUND_BOARD_STORAGE_KEY)
     const board = stored ? (JSON.parse(stored) as Board) : null
@@ -52,14 +62,19 @@ function BoardView({
   board,
   setBoard,
   onEdit,
+  onShare,
 }: {
   board: Board
   setBoard: (board: Board) => void
   onEdit: (id: string) => void
+  onShare: () => void
 }) {
   const [selectedId, setSelectedId] = useState(board.artboards[0]?.id)
-  const [template, setTemplate] = useState<'Desktop document' | 'Mobile document'>('Desktop document')
+  const [template, setTemplate] = useState<TemplateName>('Desktop document')
   const [device, setDevice] = useState<Device>('desktop')
+  const [playMode, setPlayMode] = useState(false)
+  const [renamingId, setRenamingId] = useState<string | null>(null)
+  const [nameDraft, setNameDraft] = useState('')
   const [zoom, setZoom] = useState(0.5)
   const [pan, setPan] = useState({x: 0, y: 0})
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -86,6 +101,35 @@ function BoardView({
     }
   }, [])
 
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return
+      if (event.key.toLowerCase() === 'p' && !event.metaKey && !event.ctrlKey) setPlayMode((value) => !value)
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'd') {
+        event.preventDefault()
+        if (!selected) return
+        const copy = {
+          ...selected,
+          id: crypto.randomUUID(),
+          name: `${selected.name} copy`,
+          x: selected.x + 80,
+          y: selected.y + 80,
+          data: cloneData(selected.data),
+        }
+        setBoard({...board, artboards: [...board.artboards, copy]})
+        setSelectedId(copy.id)
+      }
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        if (!selected) return
+        const remaining = board.artboards.filter((item) => item.id !== selected.id)
+        setBoard({...board, artboards: remaining})
+        setSelectedId(remaining[0]?.id)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [board, selected])
+
   function zoomToFit() {
     const bounds = canvasRef.current?.getBoundingClientRect()
     if (!bounds || board.artboards.length === 0) return
@@ -106,7 +150,7 @@ function BoardView({
       device,
       x,
       y: 80,
-      data: createTemplateData(),
+      data: createTemplateData(template),
     }
     setBoard({...board, artboards: [...board.artboards, item]})
     setSelectedId(item.id)
@@ -152,10 +196,12 @@ function BoardView({
         <select
           className="bg-background h-9 rounded-md border px-2 text-sm"
           value={template}
-          onChange={(event) => setTemplate(event.target.value as typeof template)}
+          onChange={(event) => setTemplate(event.target.value as TemplateName)}
         >
           <option>Desktop document</option>
           <option>Mobile document</option>
+          <option>Desktop feed</option>
+          <option>Blank window</option>
         </select>
         <select
           className="bg-background h-9 rounded-md border px-2 text-sm"
@@ -164,7 +210,7 @@ function BoardView({
         >
           {Object.keys(deviceSizes).map((name) => (
             <option key={name} value={name}>
-              {name}
+              {name.charAt(0).toUpperCase() + name.slice(1)} · {deviceSizes[name as Device].width}
             </option>
           ))}
         </select>
@@ -173,6 +219,18 @@ function BoardView({
           onClick={addArtboard}
         >
           <Plus className="size-4" /> Add artboard
+        </button>
+        <button
+          className={`hover:bg-muted rounded-md px-3 py-2 text-sm ${
+            playMode ? 'bg-primary text-primary-foreground' : ''
+          }`}
+          onClick={() => setPlayMode(!playMode)}
+          aria-pressed={playMode}
+        >
+          <Play className="mr-1 inline size-4" /> {playMode ? 'Playing' : 'Play'}
+        </button>
+        <button className="hover:bg-muted rounded-md p-2" onClick={onShare} aria-label="Share board">
+          <Share2 className="size-4" />
         </button>
         <button
           aria-label="Duplicate artboard"
@@ -190,10 +248,25 @@ function BoardView({
         >
           <Trash2 className="size-4" />
         </button>
-        <button aria-label="Zoom to fit" className="hover:bg-muted rounded-md p-2" onClick={zoomToFit}>
-          <Maximize className="size-4" />
+        <button
+          aria-label="Zoom out"
+          className="hover:bg-muted rounded-md p-2"
+          onClick={() => setZoom((value) => Math.max(0.2, value - 0.1))}
+        >
+          <Minus className="size-4" />
         </button>
-        <span className="text-muted-foreground w-12 text-right text-xs">{Math.round(zoom * 100)}%</span>
+        <span className="text-muted-foreground w-12 text-center text-xs">{Math.round(zoom * 100)}%</span>
+        <button
+          aria-label="Zoom in"
+          className="hover:bg-muted rounded-md p-2"
+          onClick={() => setZoom((value) => Math.min(1.25, value + 0.1))}
+        >
+          <Plus className="size-4" />
+        </button>
+        <button className="hover:bg-muted rounded-md px-2 py-1 text-sm" onClick={zoomToFit}>
+          <Maximize className="size-4" />
+          Fit
+        </button>
         <SettingsPopover />
       </header>
       <div
@@ -229,6 +302,8 @@ function BoardView({
                   selectedId === artboard.id ? 'ring-primary ring-2' : ''
                 }`}
                 style={{left: artboard.x, top: artboard.y, width: size.width, height: size.height + 44}}
+                onClick={() => setSelectedId(artboard.id)}
+                onDoubleClick={() => onEdit(artboard.id)}
               >
                 <div
                   className="bg-background flex h-11 cursor-grab items-center justify-between border-b px-4 text-sm font-medium active:cursor-grabbing"
@@ -259,14 +334,50 @@ function BoardView({
                   onPointerUp={() => {
                     artboardDrag.current = null
                   }}
-                  onDoubleClick={() => onEdit(artboard.id)}
                 >
-                  <span>{artboard.name}</span>
-                  <span className="text-muted-foreground capitalize">{artboard.device}</span>
+                  {renamingId === artboard.id ? (
+                    <input
+                      autoFocus
+                      value={nameDraft}
+                      onPointerDown={(event) => event.stopPropagation()}
+                      onChange={(event) => setNameDraft(event.target.value)}
+                      onBlur={() => {
+                        setBoard({
+                          ...board,
+                          artboards: board.artboards.map((item) =>
+                            item.id === artboard.id ? {...item, name: nameDraft || item.name} : item,
+                          ),
+                        })
+                        setRenamingId(null)
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') event.currentTarget.blur()
+                        if (event.key === 'Escape') setRenamingId(null)
+                      }}
+                      className="w-48 rounded border px-1"
+                    />
+                  ) : (
+                    <button
+                      className="text-left"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        setSelectedId(artboard.id)
+                        setNameDraft(artboard.name)
+                        setRenamingId(artboard.id)
+                      }}
+                    >
+                      {artboard.name}
+                    </button>
+                  )}
+                  <span className="text-muted-foreground">
+                    {artboard.device.charAt(0).toUpperCase() + artboard.device.slice(1)} · {size.width}
+                  </span>
                 </div>
-                <DeviceFrame width={size.width} height={size.height}>
-                  <Render config={playgroundConfig} data={artboard.data} />
-                </DeviceFrame>
+                <div style={{pointerEvents: playMode ? 'auto' : 'none'}}>
+                  <DeviceFrame width={size.width} height={size.height}>
+                    <Render config={playgroundConfig} data={artboard.data} />
+                  </DeviceFrame>
+                </div>
               </section>
             )
           })}
@@ -284,12 +395,36 @@ function EditorView({
   onBack,
   onChange,
   onDeviceChange,
+  onNameChange,
+  onShare,
 }: {
   artboard: Artboard
   onBack: () => void
   onChange: (data: Data) => void
   onDeviceChange: (device: Device) => void
+  onNameChange: (name: string) => void
+  onShare: () => void
 }) {
+  const [preview, setPreview] = useState(false)
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPreview(false)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+  if (preview) {
+    const size = deviceSizes[artboard.device]
+    return (
+      <div className="bg-muted/40 h-full overflow-auto p-6">
+        <div className="mx-auto w-fit">
+          <DeviceFrame width={size.width} height={size.height}>
+            <Render config={playgroundConfig} data={artboard.data} />
+          </DeviceFrame>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className="h-full">
       <Puck
@@ -314,29 +449,44 @@ function EditorView({
                 {children}
               </MediaWindowContext.Provider>
             ),
+            header: ({children}: {children: ReactNode; actions: ReactNode}) => (
+              <header className="bg-background flex min-h-12 items-center gap-3 border-b px-3">
+                <button
+                  className="hover:bg-muted flex items-center gap-1 rounded-md px-2 py-1.5 text-sm"
+                  onClick={onBack}
+                >
+                  <ArrowLeft className="size-4" /> Board
+                </button>
+                <input
+                  aria-label="Artboard name"
+                  className="mr-auto w-48 rounded border px-2 py-1 text-sm"
+                  value={artboard.name}
+                  onChange={(event) => onNameChange(event.target.value)}
+                />
+                <select
+                  aria-label="Device viewport"
+                  className="bg-background h-8 rounded-md border px-2 text-sm"
+                  value={artboard.device}
+                  onChange={(event) => onDeviceChange(event.target.value as Device)}
+                >
+                  {Object.keys(deviceSizes).map((name) => (
+                    <option key={name} value={name}>
+                      {name.charAt(0).toUpperCase() + name.slice(1)} · {deviceSizes[name as Device].width}
+                    </option>
+                  ))}
+                </select>
+                <button className="hover:bg-muted rounded-md px-3 py-1.5 text-sm" onClick={() => setPreview(true)}>
+                  Preview
+                </button>
+                <button className="hover:bg-muted rounded-md p-2" onClick={onShare} aria-label="Share">
+                  <Share2 className="size-4" />
+                </button>
+                {children}
+              </header>
+            ),
+            headerActions: () => null,
           } as never
         }
-        renderHeader={({children}) => (
-          <header className="bg-background flex min-h-12 items-center gap-3 border-b px-3">
-            <button className="hover:bg-muted flex items-center gap-1 rounded-md px-2 py-1.5 text-sm" onClick={onBack}>
-              <ArrowLeft className="size-4" /> Board
-            </button>
-            <strong className="mr-auto text-sm">{artboard.name}</strong>
-            <select
-              aria-label="Device viewport"
-              className="bg-background h-8 rounded-md border px-2 text-sm"
-              value={artboard.device}
-              onChange={(event) => onDeviceChange(event.target.value as Device)}
-            >
-              {Object.keys(deviceSizes).map((name) => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
-            {children}
-          </header>
-        )}
       />
     </div>
   )
@@ -345,28 +495,77 @@ function EditorView({
 export default function App() {
   const [board, setBoard] = useState<Board>(loadBoard)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [toast, setToast] = useState('')
+  const [invalidShare] = useState(() => location.hash.startsWith('#b=') && !decodeBoard(location.hash.slice(3)))
   useEffect(() => localStorage.setItem(PLAYGROUND_BOARD_STORAGE_KEY, JSON.stringify(board)), [board])
+  useEffect(() => {
+    if (invalidShare) setToast('This share link could not be decoded. Your saved board was loaded instead.')
+  }, [invalidShare])
+  const share = async () => {
+    const encoded = encodeBoard(board)
+    location.hash = `b=${encoded}`
+    const tooLong = location.href.length > 16_000
+    try {
+      await navigator.clipboard.writeText(location.href)
+      setToast(tooLong ? 'Share link copied, but it exceeds 16k characters.' : 'Share link copied to clipboard.')
+    } catch {
+      setToast(
+        tooLong
+          ? 'Share link exceeds 16k characters; clipboard access is unavailable.'
+          : 'Could not copy the share link. Check clipboard permissions.',
+      )
+    }
+  }
   const editing = board.artboards.find((item) => item.id === editingId)
 
   if (editing) {
     return (
-      <EditorView
-        artboard={editing}
-        onBack={() => setEditingId(null)}
-        onChange={(data) =>
-          setBoard({
-            ...board,
-            artboards: board.artboards.map((item) => (item.id === editing.id ? {...item, data} : item)),
-          })
-        }
-        onDeviceChange={(device) =>
-          setBoard({
-            ...board,
-            artboards: board.artboards.map((item) => (item.id === editing.id ? {...item, device} : item)),
-          })
-        }
-      />
+      <>
+        <EditorView
+          artboard={editing}
+          onBack={() => setEditingId(null)}
+          onShare={share}
+          onNameChange={(name) =>
+            setBoard({
+              ...board,
+              artboards: board.artboards.map((item) => (item.id === editing.id ? {...item, name} : item)),
+            })
+          }
+          onChange={(data) =>
+            setBoard({
+              ...board,
+              artboards: board.artboards.map((item) => (item.id === editing.id ? {...item, data} : item)),
+            })
+          }
+          onDeviceChange={(device) =>
+            setBoard({
+              ...board,
+              artboards: board.artboards.map((item) => (item.id === editing.id ? {...item, device} : item)),
+            })
+          }
+        />
+        {toast && (
+          <div
+            role="status"
+            className="bg-popover text-popover-foreground fixed right-4 bottom-4 z-[100] rounded-md border px-4 py-3 text-sm shadow-lg"
+          >
+            {toast}
+          </div>
+        )}
+      </>
     )
   }
-  return <BoardView board={board} setBoard={setBoard} onEdit={setEditingId} />
+  return (
+    <>
+      <BoardView board={board} setBoard={setBoard} onEdit={setEditingId} onShare={share} />
+      {toast && (
+        <div
+          role="status"
+          className="bg-popover text-popover-foreground fixed right-4 bottom-4 z-[100] rounded-md border px-4 py-3 text-sm shadow-lg"
+        >
+          {toast}
+        </div>
+      )}
+    </>
+  )
 }
