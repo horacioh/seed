@@ -1,0 +1,1685 @@
+{
+  "source": "https://seed.horacioh.com/api/Resource?id=hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia",
+  "version": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+  "content": [
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "WoBxKuTr",
+            "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+            "attributes": {},
+            "annotations": [
+              {
+                "type": "Link",
+                "starts": [9],
+                "ends": [19],
+                "attributes": {},
+                "link": "hm://z6Mko5npVz4Bx9Rf4vkRUf2swvb568SDbhLwStaha3HzgrLS"
+              },
+              {
+                "type": "Code",
+                "starts": [202],
+                "ends": [207],
+                "attributes": {},
+                "link": ""
+              }
+            ],
+            "text": "    Seed Hypermedia is an augmented web for writing, publishing, and collaborating on documents in a peer-to-peer network. Instead of being locked into a single platform, documents in Seed have durable hm:// addresses, readable paths, version history, comments, citations, and built-in collaboration.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "s0PX57VF",
+            "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+            "attributes": {},
+            "annotations": [],
+            "text": "  It combines some of the strengths of documents, websites, and shared knowledge bases: you can write structured content, organize it into spaces and subpages, link directly to sections, track changes over time, and discover how ideas connect across documents.",
+            "link": ""
+          }
+        },
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "y_hmZkq8",
+            "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+            "attributes": {},
+            "annotations": [],
+            "text": "  In practice, Seed Hypermedia is both a protocol and an app experience: a way to create portable knowledge that is easier to reference, discuss, and preserve beyond any one service or company.",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "kgHy2zXc",
+        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+        "attributes": {
+          "childrenType": "Group"
+        },
+        "annotations": [],
+        "text": "What is Seed Hypermedia?",
+        "link": ""
+      }
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "block": {
+            "type": "Paragraph",
+            "id": "vVROkfUF",
+            "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+            "attributes": {},
+            "annotations": [],
+            "text": "  I work on turning Seed Hypermedia's ideas into product features and a reliable app experience. My role spans product implementation and platform quality, with work across interaction details like links and comments, interface development, release readiness, and overall reliability.",
+            "link": ""
+          }
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "wQfv6r_D",
+                "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                "attributes": {},
+                "annotations": [],
+                "text": "    My work spans several connected areas:",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "pGMuRiXw",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "Product implementation: shaping ideas into concrete features and usable workflows",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "HKxiD-21",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "User experience details: improving interactions such as linking, commenting, and everyday document use",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "4_aytt7k",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Link",
+                        "starts": [75],
+                        "ends": [92],
+                        "attributes": {},
+                        "link": "hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/tech-talks/interface-notions"
+                      }
+                    ],
+                    "text": "Interface development: building and refining the frontend experience — the Interface Notions doc catalogs the component architecture that supports this work",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "Is54w0SE",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "Reliability and quality: identifying issues, improving stability, and helping make the product dependable",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "mVfthV46",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "Release and platform work: supporting the practical work required to ship and maintain the app across environments",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "Xty57IAm",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "Internal coordination: contributing to discussions, priorities, and the translation of ideas into execution",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Paragraph",
+                "id": "z1_klD_o",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Unordered"
+                },
+                "annotations": [],
+                "text": "",
+                "link": ""
+              }
+            }
+          ],
+          "block": {
+            "type": "Heading",
+            "id": "62dTrI-E",
+            "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+            "attributes": {
+              "childrenType": "Group"
+            },
+            "annotations": [],
+            "text": "Areas I work on",
+            "link": ""
+          }
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "NtQjQOvs",
+                "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                "attributes": {},
+                "annotations": [],
+                "text": "    My current focus is on improving the quality of the Seed experience through product implementation, interaction details, and reliability work. This includes helping refine how core features behave in practice, making the app easier to use, and contributing to the day-to-day work needed to move projects from concept to release.",
+                "link": ""
+              }
+            }
+          ],
+          "block": {
+            "type": "Heading",
+            "id": "379uYAtI",
+            "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+            "attributes": {
+              "childrenType": "Group"
+            },
+            "annotations": [],
+            "text": "Current focus",
+            "link": ""
+          }
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "Bgtj2NRC",
+                "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                "attributes": {},
+                "annotations": [],
+                "text": "    I tend to contribute where product thinking and implementation meet. I like working on the details that make a tool feel clear, reliable, and ready for real use. This includes translating rough ideas into concrete behavior, refining workflows through iteration, and helping make sure the final result is both practical and coherent.",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "3LA-ALRO",
+                "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                "attributes": {},
+                "annotations": [],
+                "text": "    I also value documentation as part of the work itself: not only shipping features, but making the reasoning, process, and outcomes easier to understand and revisit.",
+                "link": ""
+              }
+            }
+          ],
+          "block": {
+            "type": "Heading",
+            "id": "K816of1u",
+            "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+            "attributes": {
+              "childrenType": "Group"
+            },
+            "annotations": [],
+            "text": "How I work",
+            "link": ""
+          }
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "80fa7rZS",
+                "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                "attributes": {},
+                "annotations": [],
+                "text": "    This section documents the projects, features, fixes, and ongoing areas of work I have contributed to at Seed Hypermedia. It can include short summaries, dates, my role in each effort, and links to related documents, discussions, or implementation notes.",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "Lg3heTF4",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Link",
+                    "starts": [12],
+                    "ends": [65],
+                    "attributes": {},
+                    "link": "hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/human-interface-library/embeds-design-proposal"
+                  }
+                ],
+                "text": "          > Embed: human-interface-library/embeds-design-proposal",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "KL7_G7Hi",
+                "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                "attributes": {},
+                "annotations": [],
+                "text": "      <!-- embed: hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/tech-talks/improving-editor-block-rendering; title: Improving Editor Block Rendering -->\n      Every document editor makes a promise to the writer: what you see is what you mean (get). When spacing drifts, text shrinks at deeper nesting levels, or interface elements float out of position, that promise quietly breaks. The writer may not be able to name what is wrong, but they feel it - the layout looks off, and confidence erodes.\n      We recently revisited the rendering foundations of our editor and found five visual issues that had accumulated over time. Each one was small on its own. Together, they created a compounding sense of inconsistency that undermined the editing experience.\n      This is the story of how we fixed them - and the single principle that unified all five changes.",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "d7YMDSn2",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        The issues fell into a pattern: each one violated the spatial contract between blocks at different depths and types.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "QJyXWLE7",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [23],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Uneven vertical rhythm. Blocks had more space above them than below, creating a lopsided cadence as content grew. The gap above a paragraph was four times the gap below it. For a single block this is barely perceptible, but across a full document the cumulative effect made the page feel top-heavy.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "_K9u3Fyy",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [24],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Shrinking text at depth. Nested content - a bullet list inside a quote, or a paragraph inside a toggle - rendered slightly smaller than its parent. And because the scaling was relative, each additional level compounded the reduction. By the third level of nesting, text was noticeably smaller than the root, even though nothing in the document model said it should be.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "xSnxbwZ-",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [24],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Misaligned list markers. Bullet points and numbered items did not line up with the nesting indent. The gutter reserved for markers was narrower than the indentation step, so list text started at a different horizontal position than a paragraph at the same depth. This broke the vertical river of content that well-typeset documents rely on.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "0yV2fwwg",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [21],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Flat heading spacing. Every heading - whether a section title or a minor subheading - received the same amount of breathing room. There was no scaling by importance, no collapse rules for consecutive headings, and no suppression of top margin for the first element in a group. The result was spacing that felt arbitrary rather than intentional.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "xJj8EHLD",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [21],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Drifting drag handle. The side menu icon (the 6-dot grid that lets you drag and reorder blocks) was positioned based on assumptions about the old spacing. After the padding changed, it appeared about ten pixels too low — no longer aligned with the first line of text.",
+                        "link": ""
+                      }
+                    }
+                  ],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "FC6AH5FD",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {
+                      "childrenType": "Ordered"
+                    },
+                    "annotations": [],
+                    "text": "",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Image",
+                    "id": "k3ziQIMW",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {
+                      "childrenType": "Group"
+                    },
+                    "annotations": [],
+                    "text": "current editor block layout alignment and spacing",
+                    "link": "https://ipfs.io/ipfs/bafkreid5t7kjcw4m2uqblfhin6rtwksxm5bmv6gmurkuxpqfzmdpaj4wc4"
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "PxNQCQew",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "What We Found",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "FKbmYno1",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [46],
+                        "ends": [141],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              All five fixes follow one rule: at any nesting level, the left edge of text content aligns vertically regardless of block type.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Image",
+                    "id": "y7VF1Lh_",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {
+                      "childrenType": "Group"
+                    },
+                    "annotations": [],
+                    "text": "New alignment and spacing proposal",
+                    "link": "https://ipfs.io/ipfs/bafkreiaogsqzvi5dr5puss3rlwajzl4vp2nmihsw67hupplyclwltzjl74"
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "ZqKTGxPP",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        A paragraph, a heading, a bullet item, and a code block at the same depth should all start at the same horizontal position. List markers sit _outside_ this content edge, in a dedicated gutter. Headings get proportional breathing room, but their text still starts on the same vertical line as everything else at that level.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "T5B6bvsG",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        This is the content-start alignment principle. It is the same approach used by Notion, Typst, and Tailwind Typography - and it is the foundation that modern document tools converge on because it produces layouts that feel structured without being rigid.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Image",
+                    "id": "FIdyXUlw",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {
+                      "childrenType": "Group"
+                    },
+                    "annotations": [],
+                    "text": "Content-Start Alignment Principle mockup",
+                    "link": "https://ipfs.io/ipfs/bafkreif4j7gf2ffzvqe5pbbjablauilxl2wxudabsyuhcafu7q6xmts6ca"
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "dkkPP9pN",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "The Principle",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "_qe8RzaM",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [24],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Symmetric block spacing. We replaced the asymmetric top-heavy padding with equal spacing above and below each block. A small sibling margin between consecutive blocks preserves visual separation. The result: blocks stack with a predictable, even rhythm at every depth.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "zya-9_zX",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [21],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Consistent text size. We removed the relative font scaling on inline content. Text now renders at the document base size regardless of how deeply it is nested. A paragraph three levels deep reads the same as one at the root - because it should.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "dSMDfk2V",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [20],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Matched list gutter. The gutter width for list markers now matches the nesting indent exactly. When you create a bullet list under a paragraph, the bullet text aligns with the paragraph text above it. Numbered items, nested bullets, and mixed lists all follow the same spatial grid.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "u2d9G1Fx",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [23],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Scaled heading margins. Headings now receive breathing room proportional to their level. A major section heading gets more space than a minor subheading, following a 2:1 top-to-bottom ratio. Consecutive headings collapse their spacing to avoid double gaps. The first heading in any group suppresses its top margin entirely. This hierarchy of whitespace gives documents a natural visual rhythm that mirrors their semantic structure.",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "gqW4YCl_",
+                        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                        "attributes": {},
+                        "annotations": [
+                          {
+                            "type": "Bold",
+                            "starts": [0],
+                            "ends": [23],
+                            "attributes": {},
+                            "link": ""
+                          }
+                        ],
+                        "text": "Repositioned side menu. The drag handle now aligns with the center of the first line of text in every block - paragraphs, headings, lists, media, and code blocks alike. The horizontal offset was also adjusted to clear the wider list gutter without overlapping markers. The handle follows the content, not the container.",
+                        "link": ""
+                      }
+                    }
+                  ],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "CdE7S5ek",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {
+                      "childrenType": "Ordered"
+                    },
+                    "annotations": [],
+                    "text": "",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "H6o-LAj3",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "What Changed",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "J0J7CGpN",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        These changes are invisible when done right. Nobody opens a document and thinks what excellent vertical rhythm. But they _do_ notice when things are off - when a heading feels cramped, when nested text looks oddly small, or when the drag handle hovers in the wrong spot.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "cWRSY5H5",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        Consistent rendering is a form of trust. It tells the writer that the tool understands the structure they are building, and it tells the reader that the content was crafted with care. By committing to content-start alignment as an invariant - not just an aspiration - we have given both writer and reader a more reliable foundation.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "DmfsgroW",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Link",
+                        "starts": [157],
+                        "ends": [205],
+                        "attributes": {},
+                        "link": "https://github.com/seed-hypermedia/seed/pull/399"
+                      },
+                      {
+                        "type": "Link",
+                        "starts": [221],
+                        "ends": [234],
+                        "attributes": {},
+                        "link": "https://unsplash.com/@theshubhamdhage?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+                      }
+                    ],
+                    "text": "              The editor should disappear into the writing. These five fixes help it get closer to that goal.\n      You can see the changes made in this PR: https://github.com/seed-hypermedia/seed/pull/399\n      Photo by Shubham Dhage on Unsplash\n      <!-- /embed: hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/tech-talks/improving-editor-block-rendering -->",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "VkvvucTc",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "      <!-- embed: hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/tech-talks/the-case-against-electron-trpc-when-type-safety-becomes-a-performance-tax; title: The Case Against electron-trpc: When Type Safety Becomes a Performance Tax -->",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "rlaaV4xv",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "Why This Matters",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "Pd1lv-s9",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        When we first integrated electron-trpc into our Electron desktop application, the promise was compelling: end-to-end type safety, a single source of truth for our API layer, and the developer experience benefits of autocomplete and automatic refactoring. What we didn't anticipate was the performance tax we'd be paying at runtime—a cost our users bear every time they launch the application.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "M6abwhtf",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [182],
+                        "ends": [189],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The reality is clear. Our current implementation forces every data access through a seven-layer abstraction stack: from UI components through the tRPC client, into the ipcLink adapter, across Electron's IPC boundary, through the main process IPC handler, into the router, and finally to the procedure implementation. Compare this to standard Electron IPC, which requires only three layers: component to contextBridge API to IPC handler. We're paying a 133% complexity tax for type safety that exists only during development.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "OJ3X9hLw",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [283],
+                        "ends": [298],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [302],
+                        "ends": [324],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The numbers tell a sobering story. I analyzed our codebase and found 109 tRPC procedures across 26 modules, totaling 3,615 lines of code—roughly 40% of our entire desktop application codebase. Of these 109 procedures, 42 are simple getters and setters: operations like getSetting(key) or setFavorite(id, value). These trivial operations gain nothing from tRPC's sophisticated machinery, yet they still pay the full cost of serialization, deserialization, router traversal, and type inference at runtime.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "S4OWmI4a",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [572],
+                        "ends": [601],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The bundle size impact is measurable: 28KB of additional JavaScript (tRPC client, SuperJSON transformer, and electron-trpc itself) that gets parsed and evaluated during startup. But the real performance killer isn't the bundle size—it's the runtime overhead. Every single call requires SuperJSON to serialize the request, send it across IPC, deserialize on the main process side, traverse the router tree, execute the procedure, serialize the response, send it back across IPC, and deserialize again. For a simple getter that returns a boolean, this is like using a shotgun to kill a fly.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "KfhCstso",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        Perhaps most troubling is what we discovered about our startup sequence. Because all 26 tRPC modules are eagerly loaded at application start, we're forcing the JavaScript engine to parse and evaluate thousands of lines of API code even for routes the user may never visit. There's no code splitting, no lazy loading, no optimization for the critical path. Every user pays the full cost of our entire API surface, regardless of which features they actually use.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Image",
+                    "id": "JBzODZ0k",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {
+                      "childrenType": "Group"
+                    },
+                    "annotations": [],
+                    "text": "image",
+                    "link": "https://ipfs.io/ipfs/bafybeieypd2gtgbttltmj5cmlvi2taakxt4cmnjfizbrrmoub2bjlw5imi"
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "7AKUZBWS",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "Problem",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "mmUZnkvL",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        The path forward requires surgical precision, not wholesale replacement. We don't need to rip out electron-trpc entirely—we need to recognize where it adds value and where it extracts a performance cost that exceeds its benefits.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "BCrs7Znd",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [140],
+                        "ends": [171],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              For the 39% of our procedures that are simple getters and setters, standard Electron IPC is the clear winner. A function like getSetting(key: string): string doesn't need Zod validation, doesn't benefit from complex type inference, and certainly doesn't warrant the overhead of SuperJSON transformation. These should be implemented as direct IPC calls exposed through contextBridge, giving us type safety at the interface boundary without the runtime overhead. We can still maintain TypeScript types for these APIs—they just won't be automatically derived from tRPC routers.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "yb0WHn2f",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        For complex operations—draft management with its file I/O and migration logic, web content importing with its multi-step transformations, or any procedure with sophisticated input validation—electron-trpc remains valuable. These operations already have significant execution time measured in hundreds of milliseconds, so the additional IPC overhead is noise. The type safety and validation genuinely prevent bugs in these complex code paths.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "Sh9L__3y",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [376],
+                        "ends": [392],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The second critical change is implementing proper code splitting. Our tRPC routers should be lazy-loaded by feature area. When a user opens the settings window, that's when we load the settings router. When they access drafts, that's when the drafts API becomes available. This requires restructuring our router tree to support dynamic imports and deferring the createIPCHandler call until routers are actually needed. It's more complex than our current eager-loading approach, but it's the difference between a 2-second startup and a 5-second startup.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "_N7uj3RV",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [522],
+                        "ends": [578],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              Finally, we need to stop blocking the window creation on our full initialization sequence. The current pattern—spawn daemon, wait for it to become ready (up to 10 seconds), initialize drafts with file I/O, then finally show the window—is user-hostile. Instead, we should show the window immediately with a proper loading state, then initialize the daemon and drafts in parallel while providing real-time progress updates. This isn't strictly an electron-trpc issue, but it's symptomatic of the same mindset: prioritizing developer convenience over user experience.",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "FLHTIs80",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "Solution",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "FbDas6tb",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        The most dangerous rabbit hole when migrating away from electron-trpc is the temptation to build your own type-safe IPC abstraction. You'll be tempted to think:",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "48W8YHtn",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [105],
+                        "ends": [111],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              \"_we can keep the type safety without the overhead by building a lighter-weight version._\" Don't.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "ki4JNkjW",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [313],
+                        "ends": [335],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [357],
+                        "ends": [375],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The complexity of maintaining type synchronization between main and renderer processes, handling serialization edge cases, managing subscriptions, and keeping everything working as your API evolves will consume weeks of engineering time for marginal gains. If you're moving away from electron-trpc, move toward simplicity, not toward building electron-trpc-lite.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "3LuysvrN",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        Another trap is trying to maintain 100% feature parity during migration. You'll find yourself recreating tRPC's subscription mechanism, its batching capabilities, its middleware system. Each recreation adds back the complexity you're trying to remove. Instead, ask whether you actually use these features. In our codebase, we use subscriptions in exactly one place for query invalidation—we could replace that with a simple event emitter in five minutes. Batching? We're not making multiple related calls that would benefit from it. Middleware? We don't have any. Don't rebuild features you're not using.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "w6YTRCA4",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [530],
+                        "ends": [555],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The third rabbit hole is perfectionism around migration strategy. You'll want to create detailed plans for migrating all 109 procedures, establishing patterns, writing comprehensive tests for the new IPC layer. This planning phase will expand to fill weeks while your users continue to experience slow startup times. Instead, pick the lowest-hanging fruit—those 42 simple getters and setters—and migrate them in a single focused session. Prove the pattern works, measure the impact, then decide whether to continue. Progress beats perfection.",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "1I8XZ18P",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "Rabbit Holes",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "leej7dqp",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [87],
+                        "ends": [100],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              The scope of this effort is deliberately constrained. We're not removing electron-trpc entirely, we're not rewriting the entire IPC layer, and we're not solving every performance issue in the application. We're making three targeted changes that address the most egregious performance problems with the highest return on investment.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "kf7O4tNy",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [358],
+                        "ends": [371],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [400],
+                        "ends": [407],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [486],
+                        "ends": [490],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [495],
+                        "ends": [504],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              First, migrate simple getters and setters (the 42 identified procedures) to direct IPC. This includes settings, favorites, recents, and similar single-value operations. These should be completed in a single pull request to avoid having two patterns for simple operations living in the codebase simultaneously. The pattern should be consistent: contextBridge exposes a typed API object, ipcMain handlers implement the logic, and components use the exposed API directly. No tRPC, no SuperJSON, no router traversal.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "bt_oYHJz",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        Second, implement lazy loading for tRPC routers that remain. This means splitting the monolithic router into feature-based modules that can be dynamically imported. The drafts router loads when the drafts feature is accessed. The web importing router loads when import functionality is needed. The settings router can stay eagerly loaded since it's needed for initial app configuration. This will require modifying how we create the IPC handlers and potentially introducing a router registry pattern, but it's a one-time infrastructure change that benefits all routers.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "U2uwOGBI",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [126],
+                        "ends": [142],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [431],
+                        "ends": [444],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              Third, improve the startup sequence to handle daemon initialization gracefully. Work is already underway in the feat/app-startup branch to check daemon state and show a dedicated loading window when the daemon is migrating, rather than blocking the main window creation. This approach gives users immediate visual feedback and prevents the blank screen experience during daemon startup. While not strictly related to electron-trpc, it's the most visible performance problem users experience, and completing this work removes the artificial coupling between daemon readiness and window visibility.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Image",
+                    "id": "VPF0SbRN",
+                    "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                    "attributes": {
+                      "childrenType": "Group"
+                    },
+                    "annotations": [],
+                    "text": "image",
+                    "link": "https://ipfs.io/ipfs/bafybeiawbu3w7d6vszex3jf2qj2a6hu7iefhag7bo6tfdi6ac3sakmmpqm"
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "YJwT78UB",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        What's explicitly out of scope: rewriting complex operations like draft management or web importing. These procedures have sophisticated logic and benefit from tRPC's type safety. Also out of scope: building abstractions to make the migration _\"cleaner\"_ or trying to maintain identical APIs between the old and new approaches. Different paradigms can have different interfaces—that's fine.",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "aIbdtRvL",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "Scope",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "m1sdQGGs",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [14],
+                        "ends": [94],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              Do not attempt to build a custom type-safe IPC framework as part of this effort. The goal is to reduce complexity, not to replace one abstraction with another that we have to maintain. If you find yourself writing code that generates types from schemas or automatically syncs interfaces between processes, stop immediately. You're rebuilding tRPC and you will regret it.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "ApI5WSmr",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        Do not migrate complex procedures away from electron-trpc just for consistency. If a procedure has multiple input parameters, complex validation logic, or sophisticated error handling, it's probably fine to keep it in tRPC. The performance overhead is only problematic when it's disproportionate to the operation's inherent cost. A draft creation operation that does file I/O, validation, and database writes can afford an extra 2 milliseconds of IPC overhead. A boolean getter cannot.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "XeEzW-Ts",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Bold",
+                        "starts": [276],
+                        "ends": [389],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              Do not introduce new dependencies to solve these problems. There will be temptation to bring in libraries for IPC message validation, for type generation, for performance monitoring. Each dependency is a future maintenance burden and a potential attack surface. Electron's built-in IPC with TypeScript interfaces is sufficient for our needs in this particular simple usecases. If it feels too manual compared to tRPC, that's because you're doing less work at runtime—which is the entire point.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "i4lmpAPU",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        Do not skip measuring the impact of changes. Before migrating procedures, establish baseline metrics: startup time, time to first render, bundle size. After migration, measure again. If you're not seeing measurable improvements, you may be optimizing the wrong thing. Performance work without measurement is just guessing, and guessing wastes time that could be spent on features users actually want.",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "a_ZiKl1W",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Code",
+                        "starts": [72],
+                        "ends": [85],
+                        "attributes": {},
+                        "link": ""
+                      },
+                      {
+                        "type": "Code",
+                        "starts": [404],
+                        "ends": [417],
+                        "attributes": {},
+                        "link": ""
+                      }
+                    ],
+                    "text": "              Finally, do not let this migration become a referendum on electron-trpc as a technology. It's a well-built library that solves real problems for many applications. It's not the right fit for _our_ application given _our_ performance requirements and _our_ API patterns. That's a specific conclusion about specific circumstances, not a universal truth. When you're done with this migration, electron-trpc will still be a good choice for applications where the DX benefits outweigh the runtime costs—applications with complex APIs, web-based backends that need IPC adapters, or tools where load time isn't critical. We're just not one of those applications.\n      <!-- /embed: hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/tech-talks/the-case-against-electron-trpc-when-type-safety-becomes-a-performance-tax -->",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "9pwBOSxB",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Link",
+                        "starts": [14],
+                        "ends": [54],
+                        "attributes": {},
+                        "link": "hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/discussions/experiment-forum-view"
+                      }
+                    ],
+                    "text": "            > Embed: discussions/experiment-forum-view",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "H93ioatK",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Link",
+                        "starts": [14],
+                        "ends": [84],
+                        "attributes": {},
+                        "link": "hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/discussions/experiment-improve-performance-in-site-interactions"
+                      }
+                    ],
+                    "text": "            > Embed: discussions/experiment-improve-performance-in-site-interactions",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "Tga2YeP1",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "      <!-- embed: hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/discussions/all-documents-directory#CtXmQ3sD+; title: All Documents - directory; block: CtXmQ3sD+ -->",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "yqNJPXJ2",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "No-Gos",
+                "link": ""
+              }
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "nhERrcnG",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        I vibe coded a version of this feature so y'all can see how it can be. This is a mockup and is not part of the main code yet. if we believe that this is the way it can be done, then we can continue and define better more specifics about it",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "RaStVLTV",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {},
+                    "annotations": [
+                      {
+                        "type": "Link",
+                        "starts": [14],
+                        "ends": [19],
+                        "attributes": {},
+                        "link": "https://ipfs.io/ipfs/bafybeifhqfyl7xye4ykqkqthwz2fcum6yd6mpmrsyupba4eqysjut4gpfu"
+                      }
+                    ],
+                    "text": "              Video",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "GOtExOvi",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "        If you cannot see the video, here are some of the highlights:",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "LQ48nlDv",
+                        "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                        "attributes": {},
+                        "annotations": [],
+                        "text": "you can access the all documents page for a site from the three dot options menu, the same way we do for document versions and directory",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "K3K7KVdS",
+                        "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                        "attributes": {},
+                        "annotations": [],
+                        "text": "it shows all the documents for the site, in a tree, so it respects the hierarchy",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "vyxnU3D4",
+                        "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                        "attributes": {},
+                        "annotations": [],
+                        "text": "you can filter documents by name, change sorting, move, rename, delete and even do all this actions in bulk (by selecting multiple documents",
+                        "link": ""
+                      }
+                    },
+                    {
+                      "children": [],
+                      "block": {
+                        "type": "Paragraph",
+                        "id": "o3lPUp2a",
+                        "revision": "bafyreidsvjlcleegfvnirwnhbshatgjjhijgzdessexltnikef7ef4i3by",
+                        "attributes": {},
+                        "annotations": [],
+                        "text": "we can consider add pagination if we believe is too heavy for the backend.",
+                        "link": ""
+                      }
+                    }
+                  ],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "il2XDgXn",
+                    "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                    "attributes": {
+                      "childrenType": "Unordered"
+                    },
+                    "annotations": [],
+                    "text": "",
+                    "link": ""
+                  }
+                },
+                {
+                  "children": [],
+                  "block": {
+                    "type": "Paragraph",
+                    "id": "yvGO_HXI",
+                    "revision": "bafyreicqnvro2khra3so6p5encmmdu5czy3tjtrf2qjc5pgygcf5mzse7e",
+                    "attributes": {},
+                    "annotations": [],
+                    "text": "      <!-- /embed: hm://z6MkuBbsB1HbSNXLvJCRCrPhimY6g7tzhr4qvcYKPuSZzhno/discussions/all-documents-directory#CtXmQ3sD+ -->",
+                    "link": ""
+                  }
+                }
+              ],
+              "block": {
+                "type": "Heading",
+                "id": "IQ2LeS5H",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {
+                  "childrenType": "Group"
+                },
+                "annotations": [],
+                "text": "Demo Mockup",
+                "link": ""
+              }
+            }
+          ],
+          "block": {
+            "type": "Heading",
+            "id": "LV5O8PMX",
+            "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+            "attributes": {
+              "childrenType": "Group"
+            },
+            "annotations": [],
+            "text": "Work and contributions",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "e64SaX8x",
+        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+        "attributes": {
+          "childrenType": "Group"
+        },
+        "annotations": [],
+        "text": "What I do in Seed Hypermedia",
+        "link": ""
+      }
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "etwbqYq2",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Link",
+                    "starts": [0],
+                    "ends": [36],
+                    "attributes": {},
+                    "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-june-10-june-16-2026"
+                  }
+                ],
+                "text": "Weekly Review: June 10–June 16, 2026",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "X20EgMns",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Link",
+                    "starts": [0],
+                    "ends": [34],
+                    "attributes": {},
+                    "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-june-3-june-9-2026"
+                  }
+                ],
+                "text": "Weekly Review: June 3–June 9, 2026",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "DON1fBv6",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Link",
+                    "starts": [0],
+                    "ends": [34],
+                    "attributes": {},
+                    "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-may-27-june-2-2026"
+                  }
+                ],
+                "text": "Weekly Review: May 27–June 2, 2026",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "KfGIch0A",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Link",
+                    "starts": [0],
+                    "ends": [30],
+                    "attributes": {},
+                    "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-may-20-26-2026"
+                  }
+                ],
+                "text": "Weekly Review: May 20-26, 2026",
+                "link": ""
+              }
+            },
+            {
+              "children": [],
+              "block": {
+                "type": "Paragraph",
+                "id": "YB8KfTAM",
+                "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+                "attributes": {},
+                "annotations": [
+                  {
+                    "type": "Link",
+                    "starts": [0],
+                    "ends": [30],
+                    "attributes": {},
+                    "link": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-2026-20"
+                  }
+                ],
+                "text": "Weekly Review: May 12–19, 2026",
+                "link": ""
+              }
+            }
+          ],
+          "block": {
+            "type": "Paragraph",
+            "id": "PVGay5lN",
+            "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+            "attributes": {
+              "childrenType": "Unordered"
+            },
+            "annotations": [],
+            "text": "",
+            "link": ""
+          }
+        }
+      ],
+      "block": {
+        "type": "Heading",
+        "id": "dwZ9ut0B",
+        "revision": "bafyreie7quksr237djwiiejag4io3mwytffuguc2lsv3xpcf3g3vynghai",
+        "attributes": {
+          "childrenType": "Group"
+        },
+        "annotations": [],
+        "text": "Weekly Reviews and Progress",
+        "link": ""
+      }
+    }
+  ]
+}
