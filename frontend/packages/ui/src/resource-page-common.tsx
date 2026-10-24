@@ -17,8 +17,10 @@ import {
 import {
   createInspectNavRoute,
   DocumentPanelRoute,
+  extractRefs,
   findContentBlock,
   getBlockText,
+  getDraftMentionRefs,
   getDraftNodesOutline,
   getMetadataName,
   getNodesOutline,
@@ -44,6 +46,7 @@ import type {
   DocumentContentProps,
   LinkExtensionOptions,
 } from '@shm/shared/document-content-props'
+import {CONTENT_IMAGE_POLICY, COVER_IMAGE_POLICY, processImage, processImageIfSupported} from './image-processing'
 import {findDraftForPath, isDraftPlaceholderPath, useDraftsForAccountSafe} from '@shm/shared/draft-breadcrumb-context'
 import {parseExploreQuery, type HMExploreResultType} from '@shm/shared/explore'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
@@ -59,9 +62,12 @@ import {
   useResources,
   useSiteMembers,
 } from '@shm/shared/models/entity'
+import {useMentionNames} from '@shm/shared/models/inline-mentions'
+import {blockToPlainText} from '@shm/shared/content-to-text'
 import {useExploreResults} from '@shm/shared/models/explore'
 import {useInteractionSummary} from '@shm/shared/models/interaction-summary'
 import {queryQueryBlock} from '@shm/shared/models/queries'
+import {sortTermToDocumentSort} from '@shm/shared/models/query-block-sort'
 import {QueryBlockDraftSlotData, useQueryBlockDrafts} from '@shm/shared/query-block-drafts-context'
 import {useDebounce} from '@shm/shared/utils/use-debounce'
 import {
@@ -94,6 +100,7 @@ import {
 } from '@shm/shared/models/use-document-machine'
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
 import {getRoutePanel} from '@shm/shared/routes'
+import {ActivityContent, ActivityHeader} from './activity-panel'
 import {useOpenUrl, useUniversalClient} from '@shm/shared/routing'
 import {getBreadcrumbDocumentIds, isDraftPathSegment} from '@shm/shared/utils/breadcrumbs'
 import {
@@ -825,6 +832,8 @@ function getActiveView(routeKey: string): ActiveView {
 }
 
 export interface CommentEditorProps {
+  /** Called after the comment is published successfully. */
+  onCommentSubmitted?: (comment: HMComment) => void
   docId: UnpackedHypermediaId
   quotingBlockId?: string
   /** Codepoint range within the quoted block. Absent ⇒ whole-block quote. */
@@ -944,6 +953,7 @@ export interface ResourcePageProps {
 function getPanelTitle(panelKey: string | null): string {
   switch (panelKey) {
     case 'activity':
+    case 'feed':
       return 'Activity'
     case 'comments':
       return 'Discussions'
@@ -1600,7 +1610,6 @@ export interface PageShellProps {
   headerData: HeaderData
   document?: HMDocument
   children: React.ReactNode
-  isMainFeedVisible?: boolean
   rightActions?: React.ReactNode
   editNavPane?: React.ReactNode
   editNavPanePortalRef?: (node: HTMLDivElement | null) => void
@@ -1622,7 +1631,6 @@ export function PageShell({
   headerData,
   document,
   children,
-  isMainFeedVisible = false,
   rightActions,
   editNavPane,
   editNavPanePortalRef,
@@ -1665,7 +1673,6 @@ export function PageShell({
         isCenterLayout={headerData.isCenterLayout}
         document={document}
         siteHomeDocument={headerData.siteHomeDocument}
-        isMainFeedVisible={isMainFeedVisible}
         notifyServiceHost={NOTIFY_SERVICE_HOST}
         rightActions={rightActions}
         editNavPane={editNavPanePortalRef ? undefined : editNavPane}
@@ -1700,7 +1707,6 @@ export function PageWrapper({
   headerData,
   document,
   children,
-  isMainFeedVisible = false,
   rightActions,
   editNavPane,
   editNavPanePortalRef,
@@ -1716,7 +1722,6 @@ export function PageWrapper({
   headerData: HeaderData
   document?: HMDocument
   children: React.ReactNode
-  isMainFeedVisible?: boolean
   rightActions?: React.ReactNode
   editNavPane?: React.ReactNode
   editNavPanePortalRef?: (node: HTMLDivElement | null) => void
@@ -1747,7 +1752,6 @@ export function PageWrapper({
       docId={docId}
       headerData={headerData}
       document={document}
-      isMainFeedVisible={isMainFeedVisible}
       rightActions={rightActions}
       editNavPane={editNavPane}
       editNavPanePortalRef={editNavPanePortalRef}
@@ -2020,7 +2024,7 @@ function DocumentBody({
   const changeCover = useCallback(
     async (file: File) => {
       if (!fileUpload) return
-      const cid = await fileUpload(file)
+      const cid = await fileUpload(await processImage(file, COVER_IMAGE_POLICY))
       beginEditIfNeeded()
       send({type: 'change', metadata: {cover: cid.startsWith('ipfs://') ? cid : `ipfs://${cid}`}})
     },
@@ -2101,6 +2105,7 @@ function DocumentBody({
     route.key === 'comments'
       ? {
           openComment: route.openComment,
+          replyCommentId: route.replyCommentId,
           targetBlockId: route.targetBlockId,
           blockId: route.blockId,
           blockRange: route.blockRange,
@@ -2246,6 +2251,14 @@ function DocumentBody({
 
   const breadcrumbResults = useResources(resourceFetchIds, {subscribed: true})
 
+  const focusedBlock = useMemo(
+    () => (routeBlockRef && document.content ? findContentBlock(document.content, routeBlockRef)?.block : null),
+    [routeBlockRef, document.content],
+  )
+  const focusedBlockMentionNames = useMentionNames(
+    useMemo(() => (focusedBlock ? extractRefs([{block: focusedBlock, children: []}]) : []), [focusedBlock]),
+  )
+
   const breadcrumbs = useMemo((): BreadcrumbEntry[] | undefined => {
     if (isHomeDoc) return undefined
     const lastIdx = breadcrumbIds.length - 1
@@ -2342,18 +2355,16 @@ function DocumentBody({
     }
 
     // Append block text when a block is focused
-    if (routeBlockRef && document.content) {
-      const blockNode = findContentBlock(document.content, routeBlockRef)
-      if (blockNode?.block) {
-        let text = getBlockText(blockNode.block)
-        const routeId = 'id' in route && typeof route.id === 'object' ? route.id : null
-        const blockRange = routeId?.blockRange ?? null
-        if (blockRange && typeof blockRange.start === 'number' && typeof blockRange.end === 'number') {
-          text = text.slice(blockRange.start, blockRange.end)
-        }
-        const truncated = text.length > 40 ? text.slice(0, 40) + '…' : text
-        if (truncated) items.push({label: `"${truncated}"`})
-      }
+    if (focusedBlock) {
+      const routeId = 'id' in route && typeof route.id === 'object' ? route.id : null
+      const blockRange = routeId?.blockRange ?? null
+      const range =
+        blockRange && typeof blockRange.start === 'number' && typeof blockRange.end === 'number'
+          ? {start: blockRange.start, end: blockRange.end}
+          : undefined
+      const text = blockToPlainText(focusedBlock, focusedBlockMentionNames, range)
+      const truncated = text.length > 40 ? text.slice(0, 40) + '…' : text
+      if (truncated) items.push({label: `"${truncated}"`})
     }
 
     return items
@@ -2369,8 +2380,8 @@ function DocumentBody({
     existingDraft,
     ctx.metadata?.name,
     activeView,
-    routeBlockRef,
-    document.content,
+    focusedBlock,
+    focusedBlockMentionNames,
     route,
   ])
 
@@ -3066,6 +3077,17 @@ function DocumentBody({
     }
   }
 
+  // The space Activity panel brings its own header. Switching tabs replaces the history entry.
+  const activityPanelHeader =
+    panelRoute?.key === 'feed' ? (
+      <ActivityHeader
+        tab={panelRoute.tab}
+        onTabChange={(tab) => replaceRoute({...route, panel: {...panelRoute, tab}} as NavRoute)}
+        onExpand={() => navigate({key: 'feed', id: hmId(panelRoute.id?.uid ?? docId.uid), tab: panelRoute.tab})}
+        onClose={handlePanelClose}
+      />
+    ) : undefined
+
   // Mobile: use document scroll with bottom bar and panel sheet
   if (isMobile) {
     return (
@@ -3081,50 +3103,65 @@ function DocumentBody({
             isOpen={mobilePanelOpen}
             title={panelRoute?.key === 'activity' && panelRoute.targetBlockId ? 'Citations' : getPanelTitle(panelKey)}
             onClose={handlePanelClose}
+            header={activityPanelHeader}
+            resizable={panelRoute?.key === 'feed'}
           >
-            <DiscussionsPageContent
-              docId={commentsPanelTarget.docId}
-              showTitle={false}
-              showOpenInPanel={false}
-              contentMaxWidth={contentMaxWidth}
-              targetDomain={siteUrl}
-              openComment={commentsPanelTarget.openComment}
-              targetBlockId={panelRoute?.key === 'comments' ? panelRoute.targetBlockId : undefined}
-              blockId={panelRoute?.key === 'comments' ? panelRoute.blockId : undefined}
-              blockRange={panelRoute?.key === 'comments' ? panelRoute.blockRange : undefined}
-              commentEditor={
-                CommentEditor ? (
-                  <CommentEditor
-                    key={
-                      panelRoute?.key === 'comments'
-                        ? getCommentEditorRouteKey({
-                            openComment: panelRoute.openComment,
-                            targetBlockId: panelRoute.targetBlockId,
-                            blockRange: panelRoute.blockRange,
-                          })
-                        : undefined
-                    }
-                    docId={commentsPanelTarget.docId}
-                    quotingBlockId={panelRoute?.key === 'comments' ? panelRoute.targetBlockId : undefined}
-                    quotingRange={
-                      panelRoute?.key === 'comments' ? extractQuotingRange(panelRoute.blockRange) : undefined
-                    }
-                    commentId={commentsPanelTarget.openComment}
-                    isReplying={
-                      panelRoute?.key === 'comments' ? panelRoute.isReplying ?? !!panelRoute.openComment : false
-                    }
-                    replyCommentVersion={panelRoute?.key === 'comments' ? panelRoute.replyCommentVersion : undefined}
-                    rootReplyCommentVersion={
-                      panelRoute?.key === 'comments' ? panelRoute.rootReplyCommentVersion : undefined
-                    }
-                    // On mobile, opening the keyboard during the sheet entrance
-                    // causes visible viewport jumps. Let the drawer settle and
-                    // let users tap the composer when they are ready to type.
-                    focusOnMount={false}
-                  />
-                ) : undefined
-              }
-            />
+            {panelRoute?.key === 'feed' ? (
+              // The feed fills its parent's height and clips the rest. A parent without a fixed height lets it grow,
+              // so the sheet scrolls it.
+              <div>
+                <ActivityContent
+                  spaceId={hmId(panelRoute.id?.uid ?? docId.uid)}
+                  tab={panelRoute.tab}
+                  targetDomain={siteUrl}
+                />
+              </div>
+            ) : (
+              <DiscussionsPageContent
+                docId={commentsPanelTarget.docId}
+                showTitle={false}
+                showOpenInPanel={false}
+                contentMaxWidth={contentMaxWidth}
+                targetDomain={siteUrl}
+                openComment={commentsPanelTarget.openComment}
+                replyCommentId={panelRoute?.key === 'comments' ? panelRoute.replyCommentId : undefined}
+                targetBlockId={panelRoute?.key === 'comments' ? panelRoute.targetBlockId : undefined}
+                blockId={panelRoute?.key === 'comments' ? panelRoute.blockId : undefined}
+                blockRange={panelRoute?.key === 'comments' ? panelRoute.blockRange : undefined}
+                commentEditor={
+                  CommentEditor ? (
+                    <CommentEditor
+                      key={
+                        panelRoute?.key === 'comments'
+                          ? getCommentEditorRouteKey({
+                              openComment: panelRoute.openComment,
+                              targetBlockId: panelRoute.targetBlockId,
+                              blockRange: panelRoute.blockRange,
+                            })
+                          : undefined
+                      }
+                      docId={commentsPanelTarget.docId}
+                      quotingBlockId={panelRoute?.key === 'comments' ? panelRoute.targetBlockId : undefined}
+                      quotingRange={
+                        panelRoute?.key === 'comments' ? extractQuotingRange(panelRoute.blockRange) : undefined
+                      }
+                      commentId={commentsPanelTarget.openComment}
+                      isReplying={
+                        panelRoute?.key === 'comments' ? panelRoute.isReplying ?? !!panelRoute.openComment : false
+                      }
+                      replyCommentVersion={panelRoute?.key === 'comments' ? panelRoute.replyCommentVersion : undefined}
+                      rootReplyCommentVersion={
+                        panelRoute?.key === 'comments' ? panelRoute.rootReplyCommentVersion : undefined
+                      }
+                      // On mobile, opening the keyboard during the sheet entrance
+                      // causes visible viewport jumps. Let the drawer settle and
+                      // let users tap the composer when they are ready to type.
+                      focusOnMount={false}
+                    />
+                  ) : undefined
+                }
+              />
+            )}
           </MobilePanelSheet>
         )}
       </>
@@ -3157,6 +3194,7 @@ function DocumentBody({
         isCitationsPanel={panelRoute?.key === 'activity' && !!panelRoute.targetBlockId}
         filterEventType={panelRoute?.key === 'activity' ? panelRoute.filterEventType : undefined}
         onFilterChange={handleFilterChange}
+        header={activityPanelHeader}
       >
         <div className="relative flex h-full min-h-0 flex-col">
           {documentTopBar}
@@ -3359,6 +3397,10 @@ function PanelContentRenderer({
           <CollaboratorsPage docId={docId} />
         </div>
       )
+    case 'feed':
+      return (
+        <ActivityContent spaceId={hmId(panelRoute.id?.uid ?? docId.uid)} tab={panelRoute.tab} targetDomain={siteUrl} />
+      )
 
     default:
       return null
@@ -3422,6 +3464,7 @@ function CommentsPanelContent({
         contentMaxWidth={contentMaxWidth}
         targetDomain={targetDomain}
         openComment={openComment}
+        replyCommentId={panelRoute.replyCommentId}
         targetBlockId={panelRoute.targetBlockId}
         blockId={panelRoute.blockId}
         blockRange={panelRoute.blockRange}
@@ -4063,7 +4106,8 @@ export function DocumentViewContent({
   )
 }
 
-function DocumentCollection({
+/** Renders a collection with saved settings and temporary reader controls. */
+export function DocumentCollection({
   docId,
   queryBlock,
   canEdit,
@@ -4088,13 +4132,23 @@ function DocumentCollection({
       return []
     }
   }, [docId.path, docId.uid, props?.queryIncludes])
-  const querySort = useMemo(() => {
+  const savedQuerySort = useMemo(() => {
     try {
       return normalizeQuerySort(JSON.parse(props?.querySort || '[]'))
     } catch {
       return []
     }
   }, [props?.querySort])
+  const [viewerSort, setViewerSort] = useState<{
+    documentId: string
+    sort: typeof savedQuerySort | null
+  }>({documentId: docId.id, sort: null})
+  if (viewerSort.documentId !== docId.id) {
+    setViewerSort({documentId: docId.id, sort: null})
+  }
+  const querySort = !canEdit && viewerSort.documentId === docId.id ? viewerSort.sort ?? savedQuerySort : savedQuerySort
+  const serverQuerySort =
+    !canEdit && querySort.some(({term, reverse}) => !sortTermToDocumentSort(term, reverse)) ? savedQuerySort : querySort
   const queryLimit = Number.parseInt(props?.queryLimit || '', 10) || undefined
   const style = (props?.style as 'Card' | 'List' | 'Table') || 'Table'
   const columnCount = props?.columnCount || '3'
@@ -4108,7 +4162,7 @@ function DocumentCollection({
     if (!includes.length) return null
     const filters = viewerFilters.filter((filter) => filter.value.trim())
     return {
-      query: {includes, sort: querySort, limit: queryLimit},
+      query: {includes, sort: serverQuerySort, limit: queryLimit},
       ...((debouncedViewerSearch || filters.length) && {
         viewer: {
           ...(debouncedViewerSearch ? {search: debouncedViewerSearch} : {}),
@@ -4116,7 +4170,7 @@ function DocumentCollection({
         },
       }),
     }
-  }, [debouncedViewerSearch, includes, queryLimit, querySort, viewerFilters])
+  }, [debouncedViewerSearch, includes, queryLimit, serverQuerySort, viewerFilters])
   const query = useQuery(queryQueryBlock(client, queryInput))
   const tableConfig = useMemo<HMQueryTableConfig | undefined>(() => {
     try {
@@ -4146,16 +4200,20 @@ function DocumentCollection({
 
   const handleTableSortingChange = useCallback(
     (sorting: import('@tanstack/react-table').SortingState) => {
-      if (!canEdit) return
+      const sort = sorting.map(({id, desc}) => ({term: id, reverse: desc}))
+      if (!canEdit) {
+        setViewerSort({documentId: docId.id, sort})
+        return
+      }
       beginEditIfNeeded()
       send({
         type: 'collection.query.change',
         props: {
-          querySort: JSON.stringify(sorting.map(({id, desc}) => ({term: id, reverse: desc}))),
+          querySort: JSON.stringify(sort),
         },
       })
     },
-    [canEdit, beginEditIfNeeded, send],
+    [canEdit, docId.id, beginEditIfNeeded, send],
   )
 
   const renderContent = (slot: QueryBlockDraftSlotData | null) => {
@@ -4327,6 +4385,7 @@ function MainContent({
   showCollapsed: boolean
   discussionsParams?: {
     openComment?: string
+    replyCommentId?: string
     targetBlockId?: string
     blockId?: string
     blockRange?: import('@seed-hypermedia/client/hm-types').BlockRange | null
@@ -4510,6 +4569,7 @@ function MainContent({
           contentMaxWidth={contentMaxWidth}
           targetDomain={siteUrl}
           openComment={discussionsParams?.openComment}
+          replyCommentId={discussionsParams?.replyCommentId}
           targetBlockId={discussionsParams?.targetBlockId}
           blockId={discussionsParams?.blockId}
           blockRange={discussionsParams?.blockRange}
@@ -4654,20 +4714,31 @@ function ContentViewWithOutline({
   // existingDraftContent may arrive in HMBlockNode[] or
   // EditorBlock[] shape. Pick the outline builder that matches.
   const outlineSource = existingDraftContent ?? document.content ?? []
-  const outline = useMemo(() => {
-    const first = outlineSource[0] as any
-    const isEditorFormat = first != null && 'type' in first && !('block' in first)
-    return isEditorFormat
-      ? getDraftNodesOutline(outlineSource as any, docId)
-      : getNodesOutline(outlineSource as any, docId)
-  }, [outlineSource, docId])
+  const firstOutlineBlock = outlineSource[0] as any
+  const isEditorFormat = firstOutlineBlock != null && 'type' in firstOutlineBlock && !('block' in firstOutlineBlock)
+  const outlineMentionNames = useMentionNames(
+    useMemo(
+      () => (isEditorFormat ? getDraftMentionRefs(outlineSource as any) : extractRefs(outlineSource)),
+      [outlineSource, isEditorFormat],
+    ),
+  )
+  const outline = useMemo(
+    () =>
+      isEditorFormat
+        ? getDraftNodesOutline(outlineSource as any, docId, undefined, outlineMentionNames)
+        : getNodesOutline(outlineSource, docId, undefined, outlineMentionNames),
+    [outlineSource, isEditorFormat, docId, outlineMentionNames],
+  )
   const handleFileAttachment = useMemo<DocumentContentProps['handleFileAttachment'] | undefined>(() => {
     if (!fileUpload) return undefined
     return async (file: File) => {
-      const cid = await fileUpload(file)
+      const attachment = await processImageIfSupported(file, CONTENT_IMAGE_POLICY)
+      const cid = await fileUpload(attachment)
       return {
         url: cid.startsWith('ipfs://') ? cid : `ipfs://${cid}`,
         displaySrc: '',
+        mime: attachment.type,
+        name: attachment.name,
       }
     }
   }, [fileUpload])

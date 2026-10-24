@@ -349,8 +349,6 @@ export function getUnconditionalInvalidations(event: Event): Array<string[]> {
     invalidations.push([queryKeys.SEARCH])
     invalidations.push([queryKeys.ACTIVITY_FEED])
     invalidations.push([queryKeys.FEED])
-    invalidations.push([queryKeys.LIBRARY])
-    invalidations.push([queryKeys.SITE_LIBRARY])
     invalidations.push([queryKeys.LIST_ROOT_DOCUMENTS])
     invalidations.push([queryKeys.ROOT_DOCUMENTS])
   }
@@ -464,8 +462,6 @@ function processEventsInner(events: Event[]) {
     appInvalidateQueries([queryKeys.SEARCH])
     appInvalidateQueries([queryKeys.ACTIVITY_FEED])
     appInvalidateQueries([queryKeys.FEED])
-    appInvalidateQueries([queryKeys.LIBRARY])
-    appInvalidateQueries([queryKeys.SITE_LIBRARY])
     appInvalidateQueries([queryKeys.LIST_ROOT_DOCUMENTS])
     appInvalidateQueries([queryKeys.ROOT_DOCUMENTS])
   }
@@ -473,6 +469,7 @@ function processEventsInner(events: Event[]) {
   // Comment changes: keep object-shaped comment view keys broad, but target
   // string-keyed comment indexes when the activity event carries enough data.
   if (seenBlobTypes.has('comment')) {
+    appInvalidateQueries([queryKeys.QUERY_BLOCK])
     appInvalidateQueries([queryKeys.DOCUMENT_COMMENTS])
     appInvalidateQueries([queryKeys.DOCUMENT_DISCUSSION])
     appInvalidateQueries([queryKeys.BLOCK_DISCUSSIONS])
@@ -534,8 +531,6 @@ function processEventsInner(events: Event[]) {
   if (seenBlobTypes.has('contact')) {
     appInvalidateQueries([queryKeys.DOCUMENT_COLLABORATORS])
     appInvalidateQueries([queryKeys.SEARCH])
-    appInvalidateQueries([queryKeys.LIBRARY])
-    appInvalidateQueries([queryKeys.SITE_LIBRARY])
     appInvalidateQueries([queryKeys.CONTACTS_SUBJECT])
     for (const {author, extraAttrs} of contactData) {
       appInvalidateQueries([queryKeys.CONTACTS_ACCOUNT, author])
@@ -562,27 +557,18 @@ function processEventsInner(events: Event[]) {
     }
   }
 
-  // Document update changes: invalidate listing/library caches. Global library has
-  // no account argument, but site-library and root-document caches can be targeted
-  // from the Ref resource safely.
+  // Document update changes: refresh the root-document caches when a root Ref
+  // arrives. A batch whose Ref resources could not be parsed counts as one, so
+  // a malformed event errs on refreshing rather than going stale.
   if (seenBlobTypes.has('ref')) {
     // QueryBlock powers collection tables. This main-process invalidation is
     // broadcast to every renderer window, keeping a collection current when a
     // child was published elsewhere.
     appInvalidateQueries([queryKeys.QUERY_BLOCK])
-    appInvalidateQueries([queryKeys.LIBRARY])
 
-    const siteUids = new Set<string>()
-    let hasRootRef = false
+    let hasRootRef = refIds.length === 0
     for (const id of refIds) {
-      siteUids.add(id.uid)
       if ((id.path || []).length === 0) hasRootRef = true
-    }
-    if (siteUids.size > 0) {
-      siteUids.forEach((uid) => appInvalidateQueries([queryKeys.SITE_LIBRARY, uid]))
-    } else {
-      appInvalidateQueries([queryKeys.SITE_LIBRARY])
-      hasRootRef = true
     }
 
     if (hasRootRef) {

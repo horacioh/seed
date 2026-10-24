@@ -37,6 +37,16 @@ export const HMBlockChildrenTypeSchema = z
   .nullable() // null or missing childrenType means "Group"
 export type HMBlockChildrenType = z.infer<typeof HMBlockChildrenTypeSchema>
 
+/** Horizontal alignment of a block's text. A missing key means `left`, the default. */
+export const HMBlockTextAlignmentSchema = z.union([
+  z.literal('left'),
+  z.literal('center'),
+  z.literal('right'),
+  z.literal('justify'),
+])
+/** One of the four `textAlignment` attribute values. */
+export type HMBlockTextAlignment = z.infer<typeof HMBlockTextAlignmentSchema>
+
 export const HMEmbedViewSchema = z.union([
   z.literal('Content'),
   z.literal('Card'),
@@ -217,6 +227,8 @@ const textBlockProperties = {
 const parentBlockAttributes = {
   childrenType: HMBlockChildrenTypeSchema.optional(),
   columnCount: z.number().optional(),
+  // An unknown value is dropped rather than failing the block, which would turn it into an unknown block.
+  textAlignment: HMBlockTextAlignmentSchema.optional().catch(undefined),
 }
 
 export const HMBlockParagraphSchema = z
@@ -1311,17 +1323,21 @@ export const ParsedFragmentSchema = BlockRangeSchema.extend({
 })
 export type ParsedFragment = z.infer<typeof ParsedFragmentSchema>
 
+// blockId is the block that carries the link (the citation's sourceContext): a block of
+// the citing document, or a block of the citing comment.
 const HMCitationCommentSourceSchema = z.object({
   type: z.literal('c'),
   id: unpackedHmIdSchema,
   author: z.string().optional(),
   time: HMTimestampSchema.optional(),
+  blockId: z.string().optional(),
 })
 const HMCitationDocumentSourceSchema = z.object({
   type: z.literal('d'),
   id: unpackedHmIdSchema,
   author: z.string().optional(),
   time: HMTimestampSchema.optional(),
+  blockId: z.string().optional(),
 })
 
 export const HMCitationSchema = z.object({
@@ -1936,6 +1952,10 @@ export const HMListEventsInputSchema = z.object({
   filterAuthors: z.array(z.string()).optional(),
   filterEventType: z.array(z.string()).optional(),
   filterResource: z.string().optional(),
+  // Citations of one block of filterResource, one entry per citing block, read from ListCitations
+  // instead of the feed: the feed keeps one event per publication, so a document that links one
+  // block from many blocks has at most one of them there. Document citations only, a single page.
+  targetBlockId: z.string().optional(),
   currentAccount: z.string().optional(),
   // Feed ordering. 'claimed' (default) orders by the event's claimed/create time; 'observed' orders by
   // when the server locally observed the blob — needed by pollers that must see late-propagating events
@@ -2031,6 +2051,8 @@ export const HMRawCitationSchema = z.object({
   targetFragment: z.string().optional(),
   isExactVersion: z.boolean().optional(),
   targetBlockRevision: z.string().optional(),
+  // The link type, `doc/Link`, `doc/Embed`, `comment/Embed`...
+  citationType: z.string().optional(),
   mentionType: z.string().optional(),
   isExact: z.boolean().optional(),
 })
