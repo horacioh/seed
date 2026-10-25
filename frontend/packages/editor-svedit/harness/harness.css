@@ -1,0 +1,107 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f6f8fa;
+}
+.harness header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 16px;
+  background: #fff;
+  border-bottom: 1px solid #d0d7de;
+  flex-wrap: wrap;
+}
+.harness header form {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  min-width: 240px;
+}
+.harness header input {
+  flex: 1;
+  font:
+    13px ui-monospace,
+    monospace;
+  padding: 4px 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+.harness header button,
+.harness-tabs button {
+  border: 1px solid #d0d7de;
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.harness-tabs button[data-active] {
+  background: #0969da;
+  color: #fff;
+  border-color: #0969da;
+}
+.harness-site {
+  color: #57606a;
+  font-size: 12px;
+}
+.harness main {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 16px;
+  padding: 16px;
+  height: calc(100vh - 50px);
+}
+.harness-editor {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 16px 24px;
+  overflow: auto;
+}
+.harness-title {
+  margin: 0 0 8px 48px;
+  font-size: 28px;
+}
+.harness-error {
+  color: #cf222e;
+}
+.harness-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+.harness-tabs {
+  display: flex;
+  gap: 6px;
+}
+.harness-panel pre {
+  flex: 1;
+  margin: 0;
+  overflow: auto;
+  background: #0d1117;
+  color: #e6edf3;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+}
+@media (max-width: 800px) {
+  .harness main {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    padding: 8px;
+  }
+  .harness-editor {
+    padding: 12px;
+    max-height: 70vh;
+  }
+  .harness-title {
+    margin-left: 0;
+  }
+  .harness-panel pre {
+    max-height: 50vh;
+  }
+}
