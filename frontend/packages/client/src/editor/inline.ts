@@ -172,7 +172,12 @@ export function inlineToHM(runs: InlineRun[]): {text: string; annotations: HMAnn
     else if (run.kind === 'break') text += '\n'
     else {
       text += INLINE_EMBED_CHAR
-      order.push({...(run.annotation ?? {}), type: 'Embed', link: run.link, starts: [pos], ends: [pos + 1]})
+      const range = {starts: [pos], ends: [pos + 1]}
+      if (run.annotation) order.push({...run.annotation, type: 'Embed', link: run.link, ...range})
+      else {
+        const attributes = run.mentionKind ? {attributes: {mentionKind: run.mentionKind}} : {}
+        order.push({type: 'Embed', link: run.link, ...range, ...attributes})
+      }
     }
     for (const mark of run.marks) {
       const key = markKey(mark)

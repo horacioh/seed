@@ -57,6 +57,15 @@ describe('inline', () => {
     ])
   })
 
+  it('saves the kind of a new mention', () => {
+    const runs = [{kind: 'mention', link: 'hm://alice', mentionKind: 'account', marks: []}] as const
+    const saved = inlineToHM([...runs])
+    expect(saved.annotations).toEqual([
+      {type: 'Embed', link: 'hm://alice', starts: [0], ends: [1], attributes: {mentionKind: 'account'}},
+    ])
+    expect(inlineFromHM(saved.text, saved.annotations)[0]).toMatchObject({mentionKind: 'account'})
+  })
+
   it('keeps annotations it does not model as opaque marks and merges touching ranges', () => {
     const highlight = {type: 'Highlight', starts: [0], ends: [3], attributes: {tone: 'warm'}}
     const runs = inlineFromHM('abcdef', [highlight])
