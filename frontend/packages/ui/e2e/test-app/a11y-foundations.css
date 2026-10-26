@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+@import '@shm/ui/theme.css';
+
+@source '../../src';

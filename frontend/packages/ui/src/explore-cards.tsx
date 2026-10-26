@@ -57,7 +57,7 @@ export function ExploreDocumentCard({document, spaceName}: {document: HMDocument
   return (
     <div className={cn(exploreCardClassName, 'relative')}>
       <div className="flex items-start justify-between gap-3">
-        <span className="bg-brand-12 text-brand-3 dark:bg-brand-3/25 dark:text-brand-8 min-w-0 truncate rounded px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
+        <span className="bg-brand-12 text-brand-3 dark:bg-brand-3/25 dark:text-brand-8 min-w-0 truncate rounded px-2 py-0.5 text-xs font-semibold tracking-wider uppercase">
           {tag}
         </span>
         <span className="text-muted-foreground shrink-0 text-xs">
@@ -135,7 +135,7 @@ export function ExploreSpaceCard({space}: {space: HMDocumentInfo}) {
       <div className="flex items-center gap-2">
         <HMIcon size={24} id={id} name={name} icon={space.metadata?.icon} />
         <span className="min-w-0 flex-1 truncate font-semibold">{name}</span>
-        <span className="bg-muted text-muted-foreground shrink-0 rounded px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
+        <span className="bg-muted text-muted-foreground shrink-0 rounded px-2 py-0.5 text-xs font-semibold tracking-wider uppercase">
           {role}
         </span>
       </div>
@@ -159,7 +159,7 @@ export function ExplorePersonCard({account}: {account: ExploreAccount & {role?: 
           {name}
         </a>
         {role ? (
-          <span className="bg-muted text-muted-foreground shrink-0 rounded px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
+          <span className="bg-muted text-muted-foreground shrink-0 rounded px-2 py-0.5 text-xs font-semibold tracking-wider uppercase">
             {role}
           </span>
         ) : null}

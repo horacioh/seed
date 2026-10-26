@@ -78,7 +78,7 @@ export function SessionListItem({
           <span className="flex w-full items-center gap-2">
             <span className="flex w-2 flex-none items-center justify-center">{mark}</span>
             <span className="min-w-0 flex-1 truncate text-sm font-medium">{title}</span>
-            {activity ? <span className="text-muted-foreground shrink-0 text-[10px]">{activity.short}</span> : null}
+            {activity ? <span className="text-muted-foreground shrink-0 text-xs">{activity.short}</span> : null}
           </span>
           <span className="text-muted-foreground flex w-full min-w-0 items-center gap-1 pl-4 text-xs">
             {agentName ? (

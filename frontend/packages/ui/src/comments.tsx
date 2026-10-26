@@ -1114,7 +1114,7 @@ function EditedIndicator({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="text-muted-foreground ml-1 cursor-pointer text-[11px] hover:underline">(edited)</button>
+        <button className="text-muted-foreground ml-1 cursor-pointer text-xs hover:underline">(edited)</button>
       </PopoverTrigger>
       <PopoverContent side="bottom" align="start" className="w-72 p-0">
         {open ? (
@@ -1175,7 +1175,7 @@ function CommentVersionList({commentId, onSelect}: {commentId: string; onSelect:
               >
                 <div className="flex items-center gap-2">
                   <SizableText size="xs">Version {versionNumber}</SizableText>
-                  <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-[10px] leading-none font-medium">
+                  <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-xs leading-none font-medium">
                     current
                   </span>
                 </div>

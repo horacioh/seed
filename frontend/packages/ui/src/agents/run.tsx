@@ -132,7 +132,7 @@ function AgentRunPage({
             <header className="flex flex-col gap-1.5">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <span
-                  className={`rounded-full border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap ${runStatusClass(
+                  className={`rounded-full border px-2 py-0.5 text-xs font-medium whitespace-nowrap ${runStatusClass(
                     focus.status,
                   )}`}
                 >

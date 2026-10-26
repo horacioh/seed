@@ -229,7 +229,7 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
             </h3>
             <button
               onClick={handleClear}
-              className="font-mono text-[10px] text-neutral-400 transition-colors hover:text-neutral-600"
+              className="font-mono text-xs text-neutral-400 transition-colors hover:text-neutral-600"
             >
               clear
             </button>
@@ -249,9 +249,9 @@ function DebugPanel({onClose, store}: {onClose: () => void; store?: InspectEvent
                   </div>
                   <div className="flex items-center gap-2">
                     {evt.stateValue != null && (
-                      <span className="font-mono text-[10px] text-neutral-500">{formatStateValue(evt.stateValue)}</span>
+                      <span className="font-mono text-xs text-neutral-500">{formatStateValue(evt.stateValue)}</span>
                     )}
-                    <span className="font-mono text-[10px] text-neutral-400">
+                    <span className="font-mono text-xs text-neutral-400">
                       {new Date(evt.timestamp).toLocaleTimeString()}
                     </span>
                   </div>

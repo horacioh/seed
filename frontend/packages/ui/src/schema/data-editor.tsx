@@ -41,7 +41,7 @@ const MAX_DEPTH = 14
 type Env = Record<string, any>
 
 const selectCls =
-  'border-border bg-input text-foreground dark:bg-input/30 h-9 rounded-md border px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]'
+  'border-border bg-input text-foreground dark:bg-input/30 h-9 rounded-md border px-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-[3px]'
 
 // --- default-value synthesis (a valid-ish starting point) ------------------
 

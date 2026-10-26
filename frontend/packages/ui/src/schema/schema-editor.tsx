@@ -378,7 +378,7 @@ const InlineInput = forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
       ref={ref}
       spellCheck={false}
       className={cn(
-        'placeholder:text-muted-foreground/60 hover:bg-muted/70 focus:bg-background focus:ring-ring/40 -mx-1 [field-sizing:content] min-w-0 rounded bg-transparent px-1 outline-none focus:ring-2',
+        'placeholder:text-muted-foreground/60 hover:bg-muted/70 focus:bg-background focus:ring-ring -mx-1 [field-sizing:content] min-w-0 rounded bg-transparent px-1 outline-none focus:ring-2',
         className,
       )}
       {...props}
@@ -409,7 +409,7 @@ function IconAction({
         aria-label={label}
         onClick={onClick}
         className={cn(
-          'text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/40 inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded outline-none focus-visible:ring-2',
+          'text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded outline-none focus-visible:ring-2',
           reveal &&
             'opacity-0 group-focus-within/row:opacity-100 group-hover/row:opacity-100 focus-visible:opacity-100',
           className,
@@ -1007,7 +1007,7 @@ function StructFieldsEditor({
                 placeholder="Add a description"
                 aria-label={`Description of ${q(name)}`}
                 className={cn(
-                  'placeholder:text-muted-foreground/60 hover:bg-muted/70 focus:bg-background focus:ring-ring/40 text-muted-foreground -mx-1 [field-sizing:content] resize-none rounded bg-transparent px-1 text-xs outline-none focus:ring-2',
+                  'placeholder:text-muted-foreground/60 hover:bg-muted/70 focus:bg-background focus:ring-ring text-muted-foreground -mx-1 [field-sizing:content] resize-none rounded bg-transparent px-1 text-xs outline-none focus:ring-2',
                 )}
                 // Not trimmed while typing: a controlled input would swallow every trailing space.
                 onChange={(e) => update(name, {description: e.target.value.trim() ? e.target.value : undefined})}
@@ -1049,7 +1049,7 @@ function StructFieldsEditor({
                   aria-label={`Required ${q(name)}`}
                   onClick={() => update(name, {required: !required})}
                   className={cn(
-                    'hover:bg-muted focus-visible:ring-ring/40 cursor-pointer rounded px-1 py-0.5 text-xs outline-none focus-visible:ring-2',
+                    'hover:bg-muted focus-visible:ring-ring cursor-pointer rounded px-1 py-0.5 text-xs outline-none focus-visible:ring-2',
                     required
                       ? 'text-muted-foreground/70 opacity-0 group-focus-within/row:opacity-100 group-hover/row:opacity-100'
                       : 'text-muted-foreground',

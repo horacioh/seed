@@ -728,9 +728,7 @@ function ExploreResultRow({
         <span className="min-w-0 flex-1">
           <span className="flex items-center gap-2">
             <span className="text-sm font-semibold">{highlightExploreText(title, terms)}</span>
-            <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
-              {result.type}
-            </span>
+            <span className="text-muted-foreground text-xs font-semibold tracking-widest uppercase">{result.type}</span>
           </span>
           <span className="text-muted-foreground mt-1 block text-xs">
             {result.breadcrumb?.join(' · ') || 'Explore result'}
@@ -744,7 +742,7 @@ function ExploreResultRow({
           {result.matchedFields?.length ? (
             <span className="mt-2 flex flex-wrap gap-1.5">
               {result.matchedFields.map((field) => (
-                <span key={field.label} className="bg-muted rounded px-2 py-1 font-mono text-[11px]">
+                <span key={field.label} className="bg-muted rounded px-2 py-1 font-mono text-xs">
                   {field.label} {field.value}
                 </span>
               ))}

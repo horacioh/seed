@@ -7,14 +7,14 @@ import {cn} from '../utils'
 import {Label} from './label'
 
 const checkboxVariants = cva(
-  'peer ring ring-px ring-border bg-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
+  'peer ring ring-px ring-input-border bg-input dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border-input-border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       variant: {
         primary:
           'data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary',
         brand:
-          'data-[state=checked]:bg-brand-5 data-[state=checked]:text-white dark:data-[state=checked]:bg-brand-5 data-[state=checked]:border-brand-5',
+          'data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary',
         destructive:
           'data-[state=checked]:bg-destructive data-[state=checked]:text-destructive-foreground dark:data-[state=checked]:bg-destructive data-[state=checked]:border-destructive',
         secondary:

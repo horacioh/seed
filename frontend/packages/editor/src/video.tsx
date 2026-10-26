@@ -184,7 +184,9 @@ function SegmentedToggle({
           disabled={disabled}
           className={cn(
             'cursor-default rounded-md px-3 py-1 text-xs font-medium transition-colors select-none',
-            value === option.value ? 'bg-brand text-white shadow-sm' : 'text-muted-foreground hover:text-foreground',
+            value === option.value
+              ? 'bg-brand text-primary-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground',
             disabled && 'pointer-events-none',
           )}
           onClick={() => onChange(option.value)}

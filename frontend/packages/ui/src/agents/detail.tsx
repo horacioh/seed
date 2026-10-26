@@ -1113,7 +1113,7 @@ function AgentCollaboratorRow({
           {metadata?.name || abbreviateUid(member.accountId)}
         </SizableText>
         {member.status === 'pending' ? (
-          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
             Pending
           </span>
         ) : null}
@@ -1748,7 +1748,7 @@ function AgentToolsTab({
                     {group.title}
                   </SizableText>
                   {!groupAvailable ? (
-                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                       {setupAction ? 'Setup required' : 'Unavailable'}
                     </span>
                   ) : null}
@@ -1907,11 +1907,11 @@ function AgentToolsTab({
               <SizableText size="sm" weight="bold" className="shrink-0 font-mono">
                 {tool.name}
               </SizableText>
-              <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+              <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                 {tool.runtime === 'python' ? 'Python' : 'TypeScript'}
               </span>
               {!tool.enabled ? (
-                <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                <span className="bg-muted text-muted-foreground shrink-0 rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                   Disabled
                 </span>
               ) : null}

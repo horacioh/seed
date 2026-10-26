@@ -262,7 +262,7 @@ function DraggableNavItem({
             {item.text || 'Untitled item'}
           </span>
           {isIncomplete ? (
-            <span className="rounded-full border border-amber-300/60 bg-amber-100/70 px-2 py-0.5 text-[11px] font-medium text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200">
+            <span className="rounded-full border border-amber-300/60 bg-amber-100/70 px-2 py-0.5 text-xs font-medium text-amber-900 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200">
               Incomplete
             </span>
           ) : null}

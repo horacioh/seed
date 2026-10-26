@@ -93,6 +93,8 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@shm/a11y-testing": "workspace:*",
+    "@types/culori": "4.0.1",
     "@ipld/dag-cbor": "^9.2.5",
     "@playwright/test": "1.57.0",
     "@vitejs/plugin-react": "^4.3.4",
@@ -101,7 +103,8 @@
     "vite": "6.4.2",
     "vitest": "4.1.8",
     "@tailwindcss/node": "4.1.18",
-    "@tailwindcss/oxide": "4.1.18"
+    "@tailwindcss/oxide": "4.1.18",
+    "culori": "4.0.2"
   },
   "peerDependencies": {
     "react": ">=18.2.0 <20",

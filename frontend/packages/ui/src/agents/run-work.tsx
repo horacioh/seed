@@ -72,14 +72,14 @@ function TimerProgress({
       }`}
     >
       <Clock3 className="size-3 flex-none" />
-      <span className="flex-none text-[10px] font-medium tabular-nums">{remainingLabel}</span>
+      <span className="flex-none text-xs font-medium tabular-nums">{remainingLabel}</span>
       <span className={`bg-primary/15 h-1 overflow-hidden rounded-full ${wide ? 'min-w-12 flex-1' : 'w-10'}`}>
         <span
           className="bg-primary block h-full rounded-full transition-[width] duration-1000 motion-reduce:transition-none"
           style={{width: `${elapsedFraction * 100}%`}}
         />
       </span>
-      {wide ? <span className="text-muted-foreground flex-none text-[10px]">until {wakeLabel}</span> : null}
+      {wide ? <span className="text-muted-foreground flex-none text-xs">until {wakeLabel}</span> : null}
     </div>
   )
 }
@@ -293,7 +293,7 @@ function ChildRunPresence({
       <KindIcon className="text-muted-foreground size-3 flex-none" />
       {timer ? <TimerProgress run={run} timer={timer} /> : null}
       {live && activityDetail ? (
-        <span className="text-muted-foreground min-w-0 flex-1 truncate text-[10px]">{activityDetail}</span>
+        <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs">{activityDetail}</span>
       ) : null}
       {run.error ? (
         <RunErrorChip
@@ -355,7 +355,7 @@ export function RunErrorChip({
           role="button"
           tabIndex={0}
           title="Show full error"
-          className="text-destructive hover:bg-destructive/10 min-w-0 flex-1 cursor-pointer truncate rounded px-0.5 text-left text-[10px] underline decoration-dotted underline-offset-2"
+          className="text-destructive hover:bg-destructive/10 min-w-0 flex-1 cursor-pointer truncate rounded px-0.5 text-left text-xs underline decoration-dotted underline-offset-2"
           onClick={(event) => event.stopPropagation()}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === ' ') event.stopPropagation()
@@ -371,25 +371,25 @@ export function RunErrorChip({
       >
         <div className="flex min-w-0 items-center justify-between gap-2">
           <span className="min-w-0 truncate text-xs font-medium">{runTitle(run)}</span>
-          <span className="text-destructive bg-destructive/10 flex-none rounded-full px-1.5 py-0.5 font-mono text-[10px]">
+          <span className="text-destructive bg-destructive/10 flex-none rounded-full px-1.5 py-0.5 font-mono text-xs">
             {error.code}
           </span>
         </div>
-        <pre className="text-destructive max-h-40 overflow-auto text-[11px] break-words whitespace-pre-wrap select-text">
+        <pre className="text-destructive max-h-40 overflow-auto text-xs break-words whitespace-pre-wrap select-text">
           {error.message}
         </pre>
         {errorToolPart && renderToolPart ? (
           <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">Failing tool call</span>
+            <span className="text-muted-foreground text-xs tracking-wide uppercase">Failing tool call</span>
             <div className="min-w-0 [&_.mr-6]:mr-0">{renderToolPart(errorToolPart)}</div>
           </div>
         ) : null}
         {excerpt ? (
           <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">
+            <span className="text-muted-foreground text-xs tracking-wide uppercase">
               workflow source, line {errorLine}
             </span>
-            <pre className="bg-muted/60 max-h-32 overflow-auto rounded-md p-2 text-[11px] select-text">
+            <pre className="bg-muted/60 max-h-32 overflow-auto rounded-md p-2 text-xs select-text">
               {excerpt.map((line) => (
                 <div key={line.number} className={line.number === errorLine ? 'text-destructive font-medium' : ''}>
                   {String(line.number).padStart(4)} {line.text}
@@ -400,22 +400,22 @@ export function RunErrorChip({
         ) : null}
         {error.detail !== undefined ? (
           <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">Detail</span>
-            <pre className="bg-muted/60 max-h-32 overflow-auto rounded-md p-2 text-[11px] whitespace-pre-wrap select-text">
+            <span className="text-muted-foreground text-xs tracking-wide uppercase">Detail</span>
+            <pre className="bg-muted/60 max-h-32 overflow-auto rounded-md p-2 text-xs whitespace-pre-wrap select-text">
               {JSON.stringify(error.detail, null, 2)}
             </pre>
           </div>
         ) : null}
         {error.stack ? (
           <div className="flex min-w-0 flex-col gap-1">
-            <span className="text-muted-foreground text-[10px] tracking-wide uppercase">Stack</span>
-            <pre className="text-muted-foreground max-h-24 overflow-auto text-[10px] select-text">{error.stack}</pre>
+            <span className="text-muted-foreground text-xs tracking-wide uppercase">Stack</span>
+            <pre className="text-muted-foreground max-h-24 overflow-auto text-xs select-text">{error.stack}</pre>
           </div>
         ) : null}
         {onOpen ? (
           <button
             type="button"
-            className="border-border hover:bg-muted self-start rounded-md border px-2 py-1 text-[11px]"
+            className="border-border hover:bg-muted self-start rounded-md border px-2 py-1 text-xs"
             onClick={onOpen}
           >
             Open sub-session
@@ -512,7 +512,7 @@ export function PlanStepRow({
     </>
   )
   return (
-    <div className={`group flex min-w-0 items-center gap-1 ${compact ? 'text-[11px]' : 'text-xs'}`}>
+    <div className={`group flex min-w-0 items-center gap-1 ${compact ? 'text-xs' : 'text-xs'}`}>
       {child && onOpen ? (
         <button
           type="button"
@@ -582,13 +582,13 @@ export function RunChildRow({
       {onOpen ? (
         <button
           type="button"
-          className="hover:bg-muted flex min-w-0 flex-1 items-center gap-1.5 rounded px-1 py-0.5 text-left text-[11px]"
+          className="hover:bg-muted flex min-w-0 flex-1 items-center gap-1.5 rounded px-1 py-0.5 text-left text-xs"
           onClick={onOpen}
         >
           {content}
         </button>
       ) : (
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1 py-0.5 text-[11px]">{content}</div>
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1 py-0.5 text-xs">{content}</div>
       )}
       {isLive && onCancel ? <CancelRunButton run={run} onCancel={onCancel} pending={cancelPending} /> : null}
     </div>
@@ -759,7 +759,7 @@ export function RunWorkHierarchy({
           <button
             type="button"
             aria-expanded={showTools}
-            className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-xs"
             onClick={() => setToolsOpen(!showTools)}
           >
             {showTools ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}

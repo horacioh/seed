@@ -367,12 +367,12 @@ export function sourceLinesFromArgs(args: Record<string, unknown> | undefined): 
 export function HandoffBody({handoffMarkdown, sources}: {handoffMarkdown: string; sources: string[]}) {
   return (
     <div className="flex shrink-0 flex-col gap-3">
-      <div className="bg-background/70 max-h-96 shrink-0 overflow-auto rounded-md border px-3 py-2 text-xs [&_h2]:mt-2 [&_h2]:mb-1 [&_h2]:text-[11px] [&_h2]:font-semibold [&_h2]:tracking-[0.12em] [&_h2]:uppercase [&_h2:first-child]:mt-0">
+      <div className="bg-background/70 max-h-96 shrink-0 overflow-auto rounded-md border px-3 py-2 text-xs [&_h2]:mt-2 [&_h2]:mb-1 [&_h2]:text-xs [&_h2]:font-semibold [&_h2]:tracking-[0.12em] [&_h2]:uppercase [&_h2:first-child]:mt-0">
         <Markdown>{handoffMarkdown}</Markdown>
       </div>
       {sources.length ? (
         <div>
-          <div className="text-muted-foreground mb-1 text-[10px] font-medium tracking-[0.18em] uppercase">Sources</div>
+          <div className="text-muted-foreground mb-1 text-xs font-medium tracking-[0.18em] uppercase">Sources</div>
           <ul className="bg-background/70 rounded-md border px-3 py-2 text-xs">
             {sources.map((source, index) => (
               <li key={index} className="py-0.5 break-all">
@@ -615,7 +615,7 @@ function ContinuationProjectionDialog({
         </DialogHeader>
         <div className="flex shrink-0 flex-col gap-3">
           <div className="flex flex-col gap-1.5">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Lineage</div>
+            <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Lineage</div>
             <div className="bg-muted grid gap-x-4 gap-y-1 rounded-md p-2 sm:grid-cols-2">
               {lineage
                 .filter((row): row is [string, string] => !!row[1])
@@ -632,17 +632,17 @@ function ContinuationProjectionDialog({
           <HandoffBody handoffMarkdown={projection.handoffMarkdown} sources={projection.sources} />
           {projection.excerpts ? (
             <div className="space-y-1">
-              <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">
+              <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
                 Loaded excerpts
               </div>
-              <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+              <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-xs whitespace-pre-wrap">
                 {projection.excerpts}
               </pre>
             </div>
           ) : null}
           <div className="space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Projection</div>
-            <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+            <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Projection</div>
+            <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-xs whitespace-pre-wrap">
               {projection.raw}
             </pre>
           </div>
@@ -664,7 +664,7 @@ export function ContinuedMessageChip({
   return (
     <button
       type="button"
-      className="text-muted-foreground hover:text-foreground mt-1 flex items-center gap-1 text-[10px]"
+      className="text-muted-foreground hover:text-foreground mt-1 flex items-center gap-1 text-xs"
       onClick={() => openSession({sessionId: continuedFrom.sessionId, serverUrl})}
       title="This message was carried over from the previous session"
     >

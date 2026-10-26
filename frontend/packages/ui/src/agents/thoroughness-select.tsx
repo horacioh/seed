@@ -35,14 +35,14 @@ export function ThoroughnessPicker({
           <Layers className="size-3" />
           Thoroughness
         </span>
-        <span className="text-muted-foreground text-[10px]">
+        <span className="text-muted-foreground text-xs">
           depth {limits.maxDepth} · {limits.maxChildren}/turn
         </span>
       </div>
       <div
         role="radiogroup"
         aria-label="Thoroughness"
-        className={cn('bg-muted/60 flex rounded-md p-0.5', compact ? 'text-[11px]' : 'text-xs')}
+        className={cn('bg-muted/60 flex rounded-md p-0.5', compact ? 'text-xs' : 'text-xs')}
       >
         {THOROUGHNESS_LEVELS.map((level) => {
           const isActive = level === effective

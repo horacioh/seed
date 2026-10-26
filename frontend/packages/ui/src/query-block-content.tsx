@@ -754,7 +754,7 @@ function FilterValuePicker({
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="border-border focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-9 w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm font-normal transition-[color,box-shadow] outline-none hover:border-black/10 focus-visible:ring-[3px]"
+          className="border-border focus-visible:border-ring focus-visible:ring-ring dark:bg-input/30 flex h-9 w-full items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm font-normal transition-[color,box-shadow] outline-none hover:border-black/10 focus-visible:ring-[3px]"
           aria-label="Filter value"
         >
           <span className={cn('min-w-0 truncate', !value && 'text-muted-foreground')}>

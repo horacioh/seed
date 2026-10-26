@@ -202,9 +202,9 @@ export function SchemaTypeInput({
               <span className="min-w-0 truncate text-sm">
                 Exactly <code className="bg-muted rounded px-1 font-mono text-xs">{JSON.stringify(literal.value)}</code>
               </span>
-              <span className="text-muted-foreground shrink-0 text-[10px]">{literal.kind} literal</span>
+              <span className="text-muted-foreground shrink-0 text-xs">{literal.kind} literal</span>
             </button>
-            <p className="text-muted-foreground px-2 pb-1 text-[10px] leading-snug">
+            <p className="text-muted-foreground px-2 pb-1 text-xs leading-snug">
               A literal accepts only this one value — in a union, one of the choices.
               {exactOption
                 ? ` Enter picks the ${exactOption.label} type; quote it ("${query.trim()}") for the text instead.`
@@ -223,7 +223,7 @@ export function SchemaTypeInput({
             data-testid="schema-type-option"
           >
             <span className="text-sm">{o.label}</span>
-            {o.hint && <span className="text-muted-foreground text-[10px]">{o.hint}</span>}
+            {o.hint && <span className="text-muted-foreground text-xs">{o.hint}</span>}
           </button>
         ))}
         {shownOptions.length > 0 && documents.length > 0 && <div className="border-border my-1 border-t" />}
@@ -251,7 +251,7 @@ export function SchemaTypeInput({
                 className="hover:bg-muted flex w-full flex-col items-start rounded px-2 py-1 text-left"
               >
                 <span className="text-sm">{name}</span>
-                <span className="text-muted-foreground font-mono text-[10px]">{where}</span>
+                <span className="text-muted-foreground font-mono text-xs">{where}</span>
               </button>
             )
           })

@@ -387,7 +387,7 @@ function DraftVersionItem({
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-foreground text-sm font-medium">Unpublished Changes</span>
           {hasNewerPublishedVersion ? (
-            <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300">
+            <span className="rounded-full bg-amber-500/10 px-1.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
               Newer version above
             </span>
           ) : null}
@@ -888,7 +888,7 @@ function EventCommentWithReply({
           <div className="group flex w-full items-center justify-between gap-2">
             <p className="min-h-[20px] flex-1 overflow-hidden leading-[14px]">
               <AuthorNameLink author={event.replyParentAuthor} />{' '}
-              <span className="text-muted-foreground ml-0.5 flex-none text-[11px]">
+              <span className="text-muted-foreground ml-0.5 flex-none text-xs">
                 <Timestamp time={event.replyingComment?.updateTime} />
               </span>
             </p>

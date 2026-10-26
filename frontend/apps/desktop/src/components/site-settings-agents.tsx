@@ -313,7 +313,7 @@ function PublishedAgentRow({
             {agent ? agent.definition.name : 'Unavailable agent'}
           </SizableText>
           {isDefault ? (
-            <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">
+            <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-bold uppercase">
               Default
             </span>
           ) : null}

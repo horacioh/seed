@@ -359,7 +359,7 @@ function DocumentListItemBreadcrumbs({breadcrumbs}: {breadcrumbs: HMBreadcrumb[]
         <Fragment key={breadcrumb.path}>
           <Button
             variant="link"
-            className="px-0 text-[10px]"
+            className="px-0 text-xs"
             size="xs"
             onClick={(e) => {
               e.stopPropagation()
@@ -381,7 +381,7 @@ function DocumentListItemCommentCount({count}: {count: number}) {
   return (
     <div className="flex items-center gap-1">
       <MessageSquare className="text-muted-foreground size-3.5" />
-      <SizableText className="text-muted-foreground font-sans text-[10px]">{count}</SizableText>
+      <SizableText className="text-muted-foreground font-sans text-xs">{count}</SizableText>
     </div>
   )
 }

@@ -44,7 +44,7 @@ export function QueuedChatMessages<Message = string>({
   return (
     <div className="border-border border-t px-3 py-1">
       {messages.map((message, index) => (
-        <div key={index} className="text-muted-foreground truncate text-[10px] italic">
+        <div key={index} className="text-muted-foreground truncate text-xs italic">
           Queued: {getText(message)}
         </div>
       ))}

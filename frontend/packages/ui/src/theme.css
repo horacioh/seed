@@ -16,7 +16,7 @@
   --brand-2: hsl(180, 36%, 22%);
   --brand-3: hsl(166, 30%, 29%);
   --brand-4: hsl(166, 55%, 31%);
-  --brand-5: oklch(0.5726 0.1056 177.0838);
+  --brand-5: oklch(0.52 0.1056 177.0838);
   --brand-6: hsl(148, 44%, 47%);
   --brand-7: hsl(144, 55%, 57%);
   --brand-8: hsl(144, 73%, 68%);
@@ -45,11 +45,12 @@
   --icon: #757575;
   --accent: oklch(0.9552 0.0294 146.9093);
   --accent-foreground: oklch(0 0 0);
-  --destructive: oklch(0.6368 0.2078 25.3313);
+  --destructive: oklch(0.577 0.2078 25.3313);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.9276 0.0058 264.5313);
+  --input-border: oklch(0.62 0.0058 264.5313);
   --input: var(--muted);
-  --ring: oklch(0.5726 0.1056 177.0838);
+  --ring: var(--brand);
   --selection: color-mix(in oklab, var(--primary) 22%, transparent);
   --selection-strong: color-mix(in oklab, var(--primary) 30%, transparent);
   --chart-1: oklch(0.7686 0.1647 70.0804);
@@ -59,12 +60,12 @@
   --chart-5: oklch(0.4137 0.1054 45.9038);
   --sidebar: oklch(0.9846 0.0017 247.8389);
   --sidebar-foreground: oklch(0.2686 0 0);
-  --sidebar-primary: oklch(0.5726 0.1056 177.0838);
+  --sidebar-primary: var(--brand);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.9552 0.0294 146.9093);
   --sidebar-accent-foreground: oklch(0 0 0);
   --sidebar-border: oklch(0.9276 0.0058 264.5313);
-  --sidebar-ring: oklch(0.5726 0.1056 177.0838);
+  --sidebar-ring: var(--brand);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-serif: Georgia, 'Times New Roman', Times, 'Source Serif 4', serif;
@@ -99,7 +100,7 @@
   --brand-10: hsl(166, 30%, 29%);
   --brand-11: hsl(180, 36%, 22%);
   --brand-12: hsl(180, 29%, 17%);
-  --brand: var(--brand-8);
+  --brand: var(--primary);
   --highlight: hsl(180, 48%, 18%);
   --link: lch(59.472 70 288.421);
   --link-hover: lch(65 70 288.421);
@@ -111,8 +112,8 @@
   --card-foreground: oklch(0.9219 0 0);
   --popover: oklch(0.2686 0 0);
   --popover-foreground: oklch(0.9219 0 0);
-  --primary: oklch(0.5726 0.1056 177.0838);
-  --primary-foreground: oklch(1 0 0);
+  --primary: oklch(0.75 0.11 177.0838);
+  --primary-foreground: oklch(0.2046 0 0);
   --secondary: oklch(0.9258 0.055 145.9246);
   --secondary-foreground: oklch(0 0 0);
   --muted: oklch(0.2686 0 0);
@@ -120,11 +121,12 @@
   --icon: oklch(0.7155 0 0);
   --accent: oklch(0.3564 0.0649 179.3744);
   --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.6368 0.2078 25.3313);
+  --destructive: oklch(0.577 0.2078 25.3313);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.2686 0 0);
+  --input-border: oklch(0.55 0 0);
   --input: var(--muted);
-  --ring: oklch(0.7155 0 0);
+  --ring: var(--primary);
   --selection: color-mix(in oklab, var(--primary) 32%, transparent);
   --selection-strong: color-mix(in oklab, var(--primary) 40%, transparent);
   --chart-1: oklch(0.8369 0.1644 84.4286);
@@ -134,12 +136,12 @@
   --chart-5: oklch(0.4732 0.1247 46.2007);
   --sidebar: oklch(0.1684 0 0);
   --sidebar-foreground: oklch(0.9219 0 0);
-  --sidebar-primary: oklch(0.5261 0.088 173.2501);
-  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: oklch(0.3876 0.0451 195.4511);
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.3876 0.0451 195.4511);
-  --sidebar-ring: oklch(0.3876 0.0451 195.4511);
+  --sidebar-ring: var(--primary);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-serif: Source Serif 4, serif;
@@ -200,6 +202,7 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
+  --color-input-border: var(--input-border);
   --color-ring: var(--ring);
   --color-selection: var(--selection);
   --color-selection-strong: var(--selection-strong);

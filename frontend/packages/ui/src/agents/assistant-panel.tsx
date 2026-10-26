@@ -504,7 +504,7 @@ export function AssistantPanel({
             <div className="flex min-w-0 flex-1 flex-col">
               <span className="truncate text-xs font-medium">{sessionTitle || 'Untitled session'}</span>
               {!filterAgent && selection.sessionAgent ? (
-                <span className="text-muted-foreground truncate text-[10px]">
+                <span className="text-muted-foreground truncate text-xs">
                   {selection.sessionAgent.agent.definition.name}
                 </span>
               ) : null}
@@ -757,11 +757,11 @@ function AssistantAgentPicker({
             groups.map((group) => (
               <div key={group.serverUrl} className="flex flex-col">
                 <div className="flex items-center gap-2 px-2 pt-2 pb-1">
-                  <span className="text-muted-foreground text-[10px] font-medium tracking-wide uppercase">
+                  <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                     {describeAgentServer(group.serverUrl, localServerUrl)}
                   </span>
                   {advertisedServerUrl && group.serverUrl === advertisedServerUrl ? (
-                    <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-[10px] font-medium">
+                    <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-xs font-medium">
                       This space
                     </span>
                   ) : null}
@@ -788,7 +788,7 @@ function AssistantAgentPicker({
                         </span>
                         <AgentActivityMark tone={row?.tone} label={row?.label} />
                       </span>
-                      <span className="text-muted-foreground w-full truncate text-[10px]">
+                      <span className="text-muted-foreground w-full truncate text-xs">
                         {row?.short ?? option.agent.definition.model}
                       </span>
                     </button>

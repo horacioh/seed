@@ -250,7 +250,7 @@ function SystemMessageRow({content, rawMarkdownButton}: {content: string; rawMar
     <div className="flex items-start gap-1">
       <div
         data-testid="system-message"
-        className="border-border/70 text-muted-foreground my-0.5 ml-6 min-w-0 flex-1 border-l-2 py-0.5 pl-2.5 text-[11px] leading-4 [&_.hm-prose]:!text-[11px] [&_p]:!my-0"
+        className="border-border/70 text-muted-foreground my-0.5 ml-6 min-w-0 flex-1 border-l-2 py-0.5 pl-2.5 text-xs leading-4 [&_.hm-prose]:!text-xs [&_p]:!my-0"
       >
         <Markdown>{content}</Markdown>
       </div>
@@ -270,7 +270,7 @@ function EventMetaSection({meta, times}: {meta?: SessionEventMeta; times?: Event
   if (!rows.length) return null
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Details</div>
+      <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Details</div>
       <div className="bg-muted grid gap-x-4 gap-y-1 rounded-md p-2 sm:grid-cols-2">
         {rows.map((row) => (
           <div key={row.label} className="flex min-w-0 items-baseline justify-between gap-2 text-xs">
@@ -495,7 +495,7 @@ function DeliberationDivider({durationMs, first}: {durationMs: number; first: bo
   return (
     <div
       className={cn(
-        'text-muted-foreground/80 flex items-center gap-2 px-1 text-[10px] select-none',
+        'text-muted-foreground/80 flex items-center gap-2 px-1 text-xs select-none',
         first ? 'mb-1' : 'my-1',
       )}
       aria-label="Deliberation"
@@ -543,7 +543,7 @@ function StatusUpdateRow({item}: {item: ChatToolPart}) {
         {item.isError ? <ToolChip tone="error">Failed</ToolChip> : null}
         {typeof turnMs === 'number' && turnMs >= 0 ? (
           <span
-            className="text-muted-foreground mt-0.5 shrink-0 text-[10px] tabular-nums"
+            className="text-muted-foreground mt-0.5 shrink-0 text-xs tabular-nums"
             title="Model turn: provider request sent → response complete"
           >
             {formatStepDuration(turnMs)}
@@ -635,14 +635,14 @@ function ContinuationDetailsDialog({
             </div>
           ) : null}
           <div className="space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Call</div>
-            <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+            <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Call</div>
+            <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-xs whitespace-pre-wrap">
               {formatToolDebugValue(args)}
             </pre>
           </div>
           <div className="space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Result</div>
-            <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+            <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Result</div>
+            <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 text-xs whitespace-pre-wrap">
               {formatToolDebugValue(rawOutput)}
             </pre>
           </div>
@@ -734,7 +734,7 @@ function MessageContextInfo({lines}: {lines: string[]}) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="text-muted-foreground hover:text-foreground mt-1.5 flex items-center gap-1 rounded-full border border-current/20 px-1.5 py-0.5 text-[10px] opacity-80"
+          className="text-muted-foreground hover:text-foreground mt-1.5 flex items-center gap-1 rounded-full border border-current/20 px-1.5 py-0.5 text-xs opacity-80"
           title="What the agent was told about your current window"
         >
           {isBrowser ? <Globe className="size-3" /> : <Info className="size-3" />}
@@ -744,7 +744,7 @@ function MessageContextInfo({lines}: {lines: string[]}) {
       <PopoverContent align="start" className="w-96 max-w-[90vw] p-3">
         <div className="text-muted-foreground mb-2 text-xs font-medium">Context shared with the agent</div>
         {pageUrl ? <div className="mb-2 text-xs break-all">{pageUrl}</div> : null}
-        <pre className="bg-muted max-h-64 overflow-auto rounded-md p-2 font-mono text-[11px] whitespace-pre-wrap">
+        <pre className="bg-muted max-h-64 overflow-auto rounded-md p-2 font-mono text-xs whitespace-pre-wrap">
           {lines.join('\n')}
         </pre>
       </PopoverContent>
@@ -806,7 +806,7 @@ function formatToolDebugValue(value: unknown): string {
 function ToolChip({children, tone}: {children: React.ReactNode; tone?: 'error'}) {
   return (
     <span
-      className={`rounded-full border px-1.5 py-0.5 text-[9px] font-medium whitespace-nowrap ${
+      className={`rounded-full border px-1.5 py-0.5 text-xs font-medium whitespace-nowrap ${
         tone === 'error'
           ? 'border-destructive/30 bg-destructive/10 text-destructive'
           : 'bg-background/75 text-muted-foreground border'
@@ -838,7 +838,7 @@ function ToolResourceLink({url, label}: {url: string; label: string}) {
         event.stopPropagation()
         openUrl(url, event.metaKey || event.shiftKey)
       }}
-      className="text-muted-foreground hover:text-foreground max-w-32 shrink-0 truncate text-left text-[10px] decoration-1 underline-offset-2 hover:underline"
+      className="text-muted-foreground hover:text-foreground max-w-32 shrink-0 truncate text-left text-xs decoration-1 underline-offset-2 hover:underline"
     >
       {label}
     </button>
@@ -987,7 +987,7 @@ function TruncatedPayloadNotice({
   }, [payload, onLoaded])
   const loading = requested && query.isLoading
   return (
-    <div className="text-muted-foreground flex items-center gap-2 text-[11px]">
+    <div className="text-muted-foreground flex items-center gap-2 text-xs">
       <span>{query.error ? 'Could not load the full payload.' : `${label} is truncated for display.`}</span>
       <button
         type="button"
@@ -1030,7 +1030,7 @@ function ToolCallServersSection({args}: {args: ChatToolPart['args'] | undefined}
   if (requested) rows.push({label: 'Requested server', value: requested})
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Servers</div>
+      <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Servers</div>
       <div className="bg-muted grid gap-x-4 gap-y-1 rounded-md p-2 sm:grid-cols-2">
         {rows.map((row) => (
           <div key={row.label} className="flex min-w-0 items-baseline justify-between gap-2 text-xs">
@@ -1075,15 +1075,15 @@ function ToolCallDebugDialog({
           <ToolCallServersSection args={args} />
           {typeof args?.script === 'string' && args.script ? (
             <div className="min-h-0 space-y-1">
-              <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Script</div>
-              <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 font-mono text-[11px] whitespace-pre">
+              <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Script</div>
+              <pre className="bg-muted max-h-64 overflow-auto rounded-xl p-3 font-mono text-xs whitespace-pre">
                 {args.script}
               </pre>
             </div>
           ) : null}
           <div className="min-h-0 space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Input</div>
-            <pre className="bg-muted max-h-48 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+            <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Input</div>
+            <pre className="bg-muted max-h-48 overflow-auto rounded-xl p-3 text-xs whitespace-pre-wrap">
               {formatToolDebugValue(args)}
             </pre>
             {item.callTruncated && !fullCallPayload ? (
@@ -1091,8 +1091,8 @@ function ToolCallDebugDialog({
             ) : null}
           </div>
           <div className="min-h-0 space-y-1">
-            <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">Output</div>
-            <pre className="bg-muted max-h-72 overflow-auto rounded-xl p-3 text-[11px] whitespace-pre-wrap">
+            <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">Output</div>
+            <pre className="bg-muted max-h-72 overflow-auto rounded-xl p-3 text-xs whitespace-pre-wrap">
               {formatToolDebugValue(output)}
             </pre>
             {item.resultTruncated && !fullResultPayload ? (
@@ -1382,7 +1382,7 @@ function getCommentLinks(item: ChatToolPart) {
 function ToolDetailSection({label, children}: {label: string; children: React.ReactNode}) {
   return (
     <div className="space-y-1.5">
-      <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">{label}</div>
+      <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">{label}</div>
       {children}
     </div>
   )
@@ -1399,7 +1399,7 @@ function ToolDetailList({children}: {children: React.ReactNode}) {
 function ToolDetailItem({label, children}: {label: string; children: React.ReactNode}) {
   return (
     <div className="min-w-0 space-y-0.5">
-      <div className="text-muted-foreground text-[10px]">{label}</div>
+      <div className="text-muted-foreground text-xs">{label}</div>
       <div className="min-w-0 text-[12px] break-words">{children}</div>
     </div>
   )
@@ -1413,7 +1413,7 @@ function ToolRenderedContent({content}: {content: {markdown?: string; blocks?: H
   if (content.blocks?.length) {
     return (
       <div className="text-foreground rounded-md bg-transparent px-1 py-0.5 [&_.ProseMirror]:!bg-transparent [&_.bn-container]:!bg-transparent [&_.bn-editor]:!bg-transparent [&_.hm-prose]:!font-sans [&_.hm-prose]:!text-base">
-        <Suspense fallback={<pre className="text-[11px] whitespace-pre-wrap">Loading rich content…</pre>}>
+        <Suspense fallback={<pre className="text-xs whitespace-pre-wrap">Loading rich content…</pre>}>
           <RichMessageBlocks blocks={content.blocks} />
         </Suspense>
       </div>
@@ -1469,7 +1469,7 @@ function MemoryEntryLink({entry}: {entry: Record<string, unknown>}) {
         className="font-normal"
       />
       {size !== undefined && !isDir ? (
-        <span className="text-muted-foreground shrink-0 text-[10px]">{size} bytes</span>
+        <span className="text-muted-foreground shrink-0 text-xs">{size} bytes</span>
       ) : null}
     </div>
   )
@@ -2050,7 +2050,7 @@ function WriteCommandDetails({item}: {item: ChatToolPart}) {
 
       {metadata && isRecord(metadata) && Object.keys(metadata).length > 0 ? (
         <ToolDetailSection label="Metadata">
-          <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
+          <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-xs whitespace-pre-wrap">
             {formatToolDebugValue(metadata)}
           </pre>
         </ToolDetailSection>
@@ -2115,7 +2115,7 @@ function ToolOutputPre({children, className}: {children: React.ReactNode; classN
   return (
     <pre
       className={cn(
-        'bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 font-mono text-[11px] leading-4 whitespace-pre-wrap',
+        'bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 font-mono text-xs leading-4 whitespace-pre-wrap',
         className,
       )}
     >
@@ -2246,7 +2246,7 @@ function DelegateWorkDetails({
       {serverUrl && signingAccount && runId ? (
         <DelegateRunView serverUrl={serverUrl} accountUid={signingAccount} runId={runId} seed={spawnedChild} />
       ) : isPending ? (
-        <div className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
+        <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
           <Loader2 className="size-3 shrink-0 animate-spin" />
           {sessionId ? 'The child is working — open its transcript to watch.' : 'Starting the child…'}
         </div>
@@ -2274,7 +2274,7 @@ function OpenRunLink({runId, serverUrl}: {runId: string; serverUrl: string}) {
   return (
     <button
       type="button"
-      className="text-primary self-start text-[11px] hover:underline"
+      className="text-primary self-start text-xs hover:underline"
       onClick={(event) => clickNavigate({key: 'agent-run', runId, serverUrl}, event)}
     >
       Open run →
@@ -2288,7 +2288,7 @@ function OpenTranscriptLink({sessionId, serverUrl}: {sessionId: string; serverUr
   return (
     <button
       type="button"
-      className="text-primary self-start text-[11px] hover:underline"
+      className="text-primary self-start text-xs hover:underline"
       onClick={(event) => openSession({sessionId, serverUrl, event})}
     >
       Open transcript →
@@ -2366,7 +2366,7 @@ function DelegateRunView({
   const children = useMemo(() => (focus ? descendantsOf(runsById, focus.id) : []), [runsById, focus?.id])
 
   if (!focus) {
-    return direct.isLoading ? <div className="text-muted-foreground text-[11px]">Loading the child run…</div> : null
+    return direct.isLoading ? <div className="text-muted-foreground text-xs">Loading the child run…</div> : null
   }
   return (
     <div className="flex min-w-0 flex-col gap-2">
@@ -2549,7 +2549,7 @@ export function ToolCallLine({
           </button>
           {isPending ? <Loader2 className="size-3 shrink-0 animate-spin" /> : <Icon className="size-3 shrink-0" />}
           {item.actor === 'user' ? (
-            <span className="border-primary/40 bg-primary/10 text-primary shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-[9px] font-medium tracking-wide uppercase">
+            <span className="border-primary/40 bg-primary/10 text-primary shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-xs font-medium tracking-wide uppercase">
               You
             </span>
           ) : null}
@@ -2593,7 +2593,7 @@ export function ToolCallLine({
               <div className="flex min-w-0 shrink items-center gap-1.5 overflow-hidden whitespace-nowrap">
                 {links.map((link, index) => (
                   <Fragment key={link.url}>
-                    {index ? <span className="text-muted-foreground shrink-0 text-[10px] opacity-60">·</span> : null}
+                    {index ? <span className="text-muted-foreground shrink-0 text-xs opacity-60">·</span> : null}
                     <ToolResourceLink url={link.url} label={link.label} />
                   </Fragment>
                 ))}
@@ -2604,7 +2604,7 @@ export function ToolCallLine({
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
             {runDurationMs !== undefined ? (
               <span
-                className="text-muted-foreground text-[10px] tabular-nums"
+                className="text-muted-foreground text-xs tabular-nums"
                 aria-label={isPending ? 'Running for' : 'Ran for'}
                 title="How long the tool ran"
               >
@@ -2628,14 +2628,14 @@ export function ToolCallLine({
           </div>
         </div>
         {!expanded && liveTailPreview ? (
-          <pre className="bg-background/60 text-foreground/80 mt-1.5 overflow-hidden rounded-md border p-2 font-mono text-[10px] leading-4 break-all whitespace-pre-wrap">
+          <pre className="bg-background/60 text-foreground/80 mt-1.5 overflow-hidden rounded-md border p-2 font-mono text-xs leading-4 break-all whitespace-pre-wrap">
             {liveTailPreview}
           </pre>
         ) : null}
         {expanded ? (
           <div className="mt-2 space-y-2 border-t pt-2">
             {item.isError && item.result ? (
-              <pre className="border-destructive/30 bg-destructive/5 text-destructive max-h-48 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
+              <pre className="border-destructive/30 bg-destructive/5 text-destructive max-h-48 overflow-auto rounded-md border p-2 text-xs whitespace-pre-wrap">
                 {item.result}
               </pre>
             ) : null}
@@ -2653,7 +2653,7 @@ export function ToolCallLine({
               <>
                 {details.map((detail) => (
                   <div key={`${detail.label}:${detail.path || detail.source}`} className="space-y-1">
-                    <div className="text-muted-foreground text-[10px] font-medium tracking-[0.18em] uppercase">
+                    <div className="text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase">
                       {detail.label}
                     </div>
                     {detail.format === 'markdown' && typeof detail.value === 'string' ? (
@@ -2666,7 +2666,7 @@ export function ToolCallLine({
                         <ToolDetailText value={detail.value} />
                       </ToolDetailCard>
                     ) : (
-                      <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-[11px] whitespace-pre-wrap">
+                      <pre className="bg-background/60 text-foreground max-h-72 overflow-auto rounded-md border p-2 text-xs whitespace-pre-wrap">
                         {formatToolDebugValue(detail.value)}
                       </pre>
                     )}

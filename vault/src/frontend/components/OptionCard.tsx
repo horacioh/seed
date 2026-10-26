@@ -40,7 +40,7 @@ export function OptionCard({
       <div
         className={cn(
           'flex size-10 shrink-0 items-center justify-center rounded-full',
-          recommended ? 'bg-brand text-white' : 'text-foreground bg-black/5 dark:bg-white/10',
+          recommended ? 'bg-brand text-primary-foreground' : 'text-foreground bg-black/5 dark:bg-white/10',
         )}
       >
         <Icon className="size-5" />

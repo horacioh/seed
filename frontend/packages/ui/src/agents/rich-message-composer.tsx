@@ -203,7 +203,7 @@ export function AgentRichMessageComposer({
     <div className={frameClassName}>
       {attachmentUpload ? (
         <div className="px-3 pt-2">
-          <div className="text-muted-foreground mb-1 flex items-center justify-between gap-2 text-[11px]">
+          <div className="text-muted-foreground mb-1 flex items-center justify-between gap-2 text-xs">
             <span className="min-w-0 truncate">Uploading {attachmentUpload.name}…</span>
             <span className="flex-none">
               {Math.floor((attachmentUpload.sent / Math.max(1, attachmentUpload.total)) * 100)}%

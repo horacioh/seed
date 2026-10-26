@@ -627,7 +627,7 @@ function SchemaNodeView({
           <code className="rounded-full bg-zinc-900 px-3 py-1 text-xs font-semibold text-white">{name}</code>
         ) : null}
         {required ? (
-          <span className="rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-rose-700 uppercase">
+          <span className="rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold tracking-[0.16em] text-rose-700 uppercase">
             required
           </span>
         ) : null}
@@ -812,7 +812,7 @@ function StatusPill({
     <span
       className={`inline-flex items-center rounded-full font-semibold tracking-[0.16em] uppercase ${getPillClasses(
         tone,
-      )} ${compact ? 'px-2.5 py-1 text-[10px]' : 'px-3 py-1.5 text-[11px]'}`}
+      )} ${compact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-xs'}`}
     >
       {label}
     </span>
@@ -822,9 +822,7 @@ function StatusPill({
 function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'slate' | 'emerald'}) {
   return (
     <span
-      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase ${getPillClasses(
-        tone,
-      )}`}
+      className={`rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.14em] uppercase ${getPillClasses(tone)}`}
     >
       {label}
     </span>
@@ -859,7 +857,7 @@ function KeyValueList({
         <div className="mt-4 space-y-2">
           {rows.map((row) => (
             <div key={`${row.key}-${row.value}`} className="rounded-lg border border-white bg-white px-3 py-2">
-              <p className="text-[11px] font-semibold tracking-[0.18em] text-zinc-500 uppercase">{row.key}</p>
+              <p className="text-xs font-semibold tracking-[0.18em] text-zinc-500 uppercase">{row.key}</p>
               <p className="mt-1 font-mono text-sm break-all text-zinc-800">{row.value}</p>
             </div>
           ))}

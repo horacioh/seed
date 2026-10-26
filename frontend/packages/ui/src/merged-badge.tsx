@@ -7,7 +7,7 @@ export function MergedBadge({count, size = 'md', className}: {count: number; siz
   return (
     <Badge
       variant="outline"
-      className={cn('text-muted-foreground gap-0.5', size === 'sm' ? 'text-[10px]' : 'text-xs', className)}
+      className={cn('text-muted-foreground gap-0.5', size === 'sm' ? 'text-xs' : 'text-xs', className)}
     >
       <Merge size={size === 'sm' ? 10 : 12} strokeWidth={2} />
       Merged · {count} versions
