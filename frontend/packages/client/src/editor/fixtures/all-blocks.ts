@@ -3,7 +3,7 @@ import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 const b = (block: Record<string, unknown>, children?: HMBlockNode[]): HMBlockNode =>
   ({block, ...(children ? {children} : {})}) as unknown as HMBlockNode
 
-/** One block of every type the ProseKit adapter models, plus hierarchy and formatting. */
+/** One block of every type Seed editors model, plus hierarchy and formatting. */
 export const allBlocks: HMBlockNode[] = [
   b({type: 'Heading', id: 'h1', text: 'Title', annotations: [], attributes: {childrenType: 'Group'}}, [
     b({

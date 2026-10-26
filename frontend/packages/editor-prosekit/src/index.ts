@@ -10,7 +10,7 @@ export {
   sinkBlock,
   splitSeedBlock,
 } from './commands'
-export {isVideoPlayerLink, videoEmbedLink, videoIframeSrc, youtubeParser} from './media'
+export {isVideoPlayerLink, videoEmbedLink, videoIframeSrc, youtubeParser} from '@seed-hypermedia/client/editor/media'
 export {createBlockId, fromHM, getSeedSchema, INLINE_EMBED_CHAR, prosekitAdapter, toHM} from './convert'
 export {SeedProseKitEditor, defineSeedEditorExtension, type SeedProseKitEditorProps} from './react/SeedProseKitEditor'
 export {

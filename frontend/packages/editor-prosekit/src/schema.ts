@@ -50,7 +50,7 @@ export const NODE_TO_HM: Record<string, string> = Object.fromEntries(
  * (its content node) plus an optional `blockGroup` with its children. The
  * group's `childrenType` is the parent block's `attributes.childrenType`.
  *
- * `blockNode.attrs.original` keeps the HM block exactly as loaded, so fields
+ * `blockNode.attrs.snapshot` (a kit `BlockSnapshot`) keeps the HM block as loaded, so fields
  * this editor does not model survive the round trip.
  */
 function defineStructure() {
@@ -63,9 +63,7 @@ function defineStructure() {
       draggable: true,
       attrs: {
         id: {default: null},
-        original: {default: null},
-        baseline: {default: null},
-        nodeKeys: {default: null},
+        snapshot: {default: null},
       },
       parseDOM: [{tag: 'div[data-node-type="blockNode"]', getAttrs: (el) => ({id: el.getAttribute('data-id')})}],
       toDOM: (node) => ['div', {'data-node-type': 'blockNode', 'data-id': node.attrs.id, class: 'seed-block'}, 0],
@@ -115,7 +113,7 @@ function defineSeedBlocks() {
     }),
     // Any block type this editor doesn't understand: its text and inline
     // annotations stay editable, children render through the block group,
-    // and the full original block lives in `blockNode.attrs.original`.
+    // and the full original block lives in `blockNode.attrs.snapshot`.
     defineNodeSpec({
       name: 'hmUnknown',
       group: 'block',
