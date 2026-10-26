@@ -131,6 +131,9 @@ jobs:
           - suite: desktop
             filter: '@shm/desktop'
             command: 'test:unit'
+          - suite: a11y-testing
+            filter: '@shm/a11y-testing'
+            command: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

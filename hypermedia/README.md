@@ -15,7 +15,7 @@ A page publishes at its path: `protocol/documents.md` is `/protocol/documents`. 
 | `protocol.md`, `protocol/` | the Hypermedia protocol, one page per concept |
 | root pages | one page per blob or value type (`change`, `ref`, `capability`, `metadata`, `string`, `hm-url`…), each defining its schema |
 | `block/`, `change/`, `ref/`, `contact/`, `metadata/`, `query/`, `blob/` | the detail types of a root page |
-| `build.md`, `build/` | task guides: the Seed API, gRPC, the SDK, the CLI, agents, keys, sign-in, self-hosting, contributing |
+| `build.md`, `build/` | task guides: the Seed API, gRPC, the SDK, the CLI, agents, keys, sign-in, self-hosting, accessibility, contributing |
 | `apps.md`, `apps/` | one map page per piece of Seed software |
 | `schema.md`, `schema/` | Hypermedia Schemas: the meta-schema, the chapters, one page per term |
 | `example.md`, `example/` | example schemas and instances |
