@@ -1,19 +1,22 @@
+import {adapterConformanceCases} from '@seed-hypermedia/client/editor/conformance'
 import {collectHMBlockIds, hmDocumentOperations} from '@seed-hypermedia/client/editor-adapter'
 import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 import {createEditor, union} from 'prosekit/core'
+import {DOMSerializer, type Node as PMNode} from 'prosekit/pm/model'
 import {TextSelection} from 'prosekit/pm/state'
 import {describe, expect, it} from 'vitest'
 import {defineSeedCommands, insertMediaBlock, pasteVideoLink} from '../src/commands'
-import {fromHM, getSeedSchema, toHM} from '../src/convert'
-import {isVideoPlayerLink, videoEmbedLink, videoIframeSrc} from '../src/media'
+import {fromHM, getSeedSchema, prosekitAdapter, toHM} from '../src/convert'
+import {isVideoPlayerLink, videoEmbedLink, videoIframeSrc} from '@seed-hypermedia/client/editor/media'
 import {defineSeedEditorBase} from '../src/schema'
-import {allBlocks} from './fixtures/all-blocks'
-import home from './fixtures/horacio-home.json'
-import seedHypermedia from './fixtures/seed-hypermedia.json'
-import weeklyReview from './fixtures/weekly-review.json'
+import {allBlocks, editorFixtures} from '@seed-hypermedia/client/editor/fixtures/index'
 
 const roundTrip = (blocks: HMBlockNode[]) => toHM(fromHM(blocks))
-const realDocs = {home, seedHypermedia, weeklyReview} as unknown as Record<string, {content: HMBlockNode[]}>
+const realDocs: Record<string, {content: HMBlockNode[]}> = {
+  home: {content: editorFixtures['horacio home']!},
+  seedHypermedia: {content: editorFixtures['seed hypermedia']!},
+  weeklyReview: {content: editorFixtures['weekly review']!},
+}
 
 /** An editor state with the real Seed extension (keymaps + id plugin), no DOM view. */
 function editorWith(blocks: HMBlockNode[]) {
@@ -38,6 +41,47 @@ function setCursor(editor: ReturnType<typeof editorWith>, pos: number) {
   const state = editor.state
   editor.updateState(state.apply(state.tr.setSelection(TextSelection.create(state.doc, pos))))
 }
+
+/** Position range of the content node of the block with id `id`. */
+function contentRange(doc: PMNode, id: string): [number, number] {
+  let range: [number, number] | null = null
+  doc.descendants((node, pos) => {
+    if (range || node.type.name !== 'blockNode' || node.attrs.id !== id) return !range
+    range = [pos + 2, pos + 1 + node.firstChild!.nodeSize - 1]
+    return false
+  })
+  if (!range) throw new Error(`block not found: ${id}`)
+  return range
+}
+
+describe('adapter conformance', () => {
+  const cases = adapterConformanceCases(prosekitAdapter, {
+    fixtures: editorFixtures,
+    hooks: {
+      setBlockText(doc, id, text) {
+        const editor = editorWith(prosekitAdapter.toHM(doc))
+        const [from, to] = contentRange(editor.state.doc, id)
+        editor.updateState(editor.state.apply(editor.state.tr.insertText(text, from, to)))
+        return editor.state.doc
+      },
+      pasteBlocks(doc, afterId, blocks) {
+        const editor = editorWith(prosekitAdapter.toHM(doc))
+        setCursor(editor, contentRange(editor.state.doc, afterId)[1])
+        const html = blocks
+          .map(
+            (n) =>
+              `<div data-node-type="blockNode" data-id="${n.block.id}"><p>${
+                (n.block as {text: string}).text
+              }</p></div>`,
+          )
+          .join('')
+        editor.view.pasteHTML(`<div data-node-type="blockGroup">${html}</div>`, new Event('paste') as ClipboardEvent)
+        return editor.state.doc
+      },
+    },
+  })
+  for (const c of cases) it(c.name, c.run)
+})
 
 describe('fromHM → toHM round trip', () => {
   it('is lossless for every supported block type', () => {
@@ -89,7 +133,7 @@ describe('fromHM → toHM round trip', () => {
       text: '😀 bold\uFFFC',
       annotations: [
         {type: 'Bold', starts: [2], ends: [6]},
-        {type: 'Embed', link: 'hm://z6MkA', starts: [6], ends: [7]},
+        {type: 'Embed', link: 'hm://z6MkA', starts: [6], ends: [7], attributes: {mentionKind: 'account'}},
       ],
       attributes: {},
     })
@@ -208,6 +252,29 @@ describe('paste', () => {
     const pasted = saved.filter((n) => /Copied/.test((n.block as {text: string}).text) && n.block.id !== 'b')
     expect(pasted.length).toBeGreaterThan(0)
     for (const node of pasted) expect(node.block.id).toMatch(/^(?!a$|b$)\w+/)
+  })
+
+  it('keeps mention kinds and opaque annotations when copied blocks are pasted', () => {
+    const annotations = [
+      {type: 'Embed', link: 'hm://alice', starts: [0], ends: [1], attributes: {mentionKind: 'account'}},
+      {type: 'Embed', link: 'hm://site/doc', starts: [2], ends: [3], attributes: {mentionKind: 'document'}},
+      {type: 'Range', starts: [4], ends: [8], attributes: {note: 1}},
+    ]
+    const source = [
+      {block: {type: 'Paragraph', id: 'm', text: '\uFFFC \uFFFC text', annotations, attributes: {}}},
+    ] as HMBlockNode[]
+    const editor = editorWith([...source, ...blocks])
+    const html = document.createElement('div')
+    html.appendChild(DOMSerializer.fromSchema(editor.schema).serializeFragment(editor.state.doc.content))
+    setCursor(editor, posAfter(editor, 'Beta'))
+    editor.view.pasteHTML(html.innerHTML, new Event('paste') as ClipboardEvent)
+    const pasted = toHM(editor.state.doc).filter(
+      (n) => n.block.id !== 'm' && (n.block as {text: string}).text.includes('\uFFFC'),
+    )
+    expect(pasted).toHaveLength(1)
+    // The first pasted paragraph joins "Beta", so its ranges shift by four.
+    const shifted = annotations.map((a) => ({...a, starts: [a.starts[0]! + 4], ends: [a.ends[0]! + 4]}))
+    expect((pasted[0]!.block as {annotations: unknown}).annotations).toEqual(shifted)
   })
 
   it('pastes multi-paragraph plain text as new blocks with fresh ids', () => {

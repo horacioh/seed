@@ -16,5 +16,5 @@
     }
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.spec.ts"]
+  "exclude": ["src/editor/fixtures", "src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.spec.ts"]
 }

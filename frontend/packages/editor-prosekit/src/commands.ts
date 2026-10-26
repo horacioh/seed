@@ -13,8 +13,8 @@ import {
   TextSelection,
   type Transaction,
 } from 'prosekit/pm/state'
-import {createBlockId} from './convert'
-import {videoEmbedLink} from './media'
+import {createBlockId} from '@seed-hypermedia/client/editor/ids'
+import {videoEmbedLink} from '@seed-hypermedia/client/editor/media'
 
 /** Depth of the innermost `blockNode` around `$pos`, or -1. */
 function blockDepth($pos: ResolvedPos): number {
@@ -249,10 +249,7 @@ export function setChildrenType(childrenType: 'Group' | 'Ordered' | 'Unordered' 
 function stripBlockIds(fragment: Fragment): Fragment {
   const nodes: PMNode[] = []
   fragment.forEach((node) => {
-    const attrs =
-      node.type.name === 'blockNode'
-        ? {...node.attrs, id: null, original: null, baseline: null, nodeKeys: null}
-        : node.attrs
+    const attrs = node.type.name === 'blockNode' ? {...node.attrs, id: null, snapshot: null} : node.attrs
     nodes.push(node.isLeaf ? node : node.type.create(attrs, stripBlockIds(node.content), node.marks))
   })
   return Fragment.from(nodes)
@@ -280,9 +277,7 @@ const blockIdsPlugin = new Plugin({
         tr.setNodeMarkup(pos, null, {
           ...node.attrs,
           id: createBlockId(),
-          original: null,
-          baseline: null,
-          nodeKeys: null,
+          snapshot: null,
         })
       } else seen.add(id)
       return true

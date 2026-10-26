@@ -1,9 +1,8 @@
 /**
- * Video link handling shared by the commands and node views. Copied from the
- * BlockNote editor (`packages/editor/src/utils.ts` `youtubeParser` and the
- * `submitVideo` / `getVideoIframeSrc` logic in `video.tsx`) so the stored
- * `link` is exactly what BlockNote writes; importing `@shm/editor` would pull
- * Tiptap 2 and the whole BlockNote fork into this package.
+ * Video link handling shared by every editor. Matches the BlockNote editor
+ * (`packages/editor/src/utils.ts` `youtubeParser` and the `submitVideo` /
+ * `getVideoIframeSrc` logic in `video.tsx`) so the stored `link` is exactly
+ * what BlockNote writes.
  */
 
 /** The 11-character YouTube video id in a watch, share, embed or `/v/` URL, or `false`. */

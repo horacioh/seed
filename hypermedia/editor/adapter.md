@@ -23,7 +23,24 @@ hmDocumentOperations(published: HMBlockNode[], edited: HMBlockNode[]): DocumentO
 - **Block ids survive.** `fromHM` keeps every id, `toHM` writes it back, and new blocks get fresh ids. Pasted blocks are stripped of ids and duplicates are re-issued, so a copy never steals another block's id.
 - **Never delete what you don't understand.** `toHM(fromHM(blocks))` is byte-for-byte equal to `blocks` (`JSON.stringify` equality, so key order too). Unknown block types, unknown attributes, unknown annotations and unknown top-level block fields (such as `revision`) round-trip. Unknown blocks render as editable text with their children, never as an error banner.
 
-The tests in `editor-prosekit/__tests__/convert.test.ts` pin these rules, including three real documents published on `seed.horacioh.com` (saved as fixtures with their source URL) and an untouched load producing zero operations.
+## The editor kit
+
+The six spikes (ProseKit, Svedit, Lexical, plain ProseMirror, Tiptap, CodeMirror) each re-wrote the same editor-independent logic, and the copies drifted (the paste id-stripping bug was fixed in two copies but not in the original). That logic now lives once in `@seed-hypermedia/client/editor/*`, with no editor, React or DOM imports. An adapter only maps between the kit's neutral shapes and its own model:
+
+| Module | What it owns |
+| --- | --- |
+| `editor/blocks` | `HM_BLOCK_KINDS` (`text`, `code`, `math`, `atom`), `blockKind(type)` (`unknown` for anything else), `ownedAttributes(kind)`, `CHILDREN_TYPES`. Adding a block type is one edit. |
+| `editor/inline` | `inlineFromHM(text, annotations)` → `InlineRun[]` (marked text, `mention` over `\uFFFC`, `break` for `\n`) and `inlineToHM(runs)`. Code point offsets and range merging live here. Marks are `simple`, `link`, `color`, or `opaque`, which carries any annotation the kit doesn't model unchanged. |
+| `editor/preserve` | `snapshotBlock(node, produced)` at load, `restoreBlock(snapshot, produced)` at save (returns the loaded object when nothing modelled changed; otherwise keeps every unowned key and attribute), `withChildrenType`, and `assembleBlockNode` (node key order, empty `children`, unknown node keys). The `BlockSnapshot` is plain JSON, so it can sit in a node attr, a side map keyed by id, or CodeMirror state. |
+| `editor/ids` | `createBlockId`, `withFreshIds(tree)` for paste/duplicate in editors that copy HM trees, and `validateHMTree` (missing / duplicate ids, unknown `childrenType`), which schema-less editors (Lexical, CodeMirror) should run on their output. |
+| `editor/media` | `youtubeParser`, `videoEmbedLink`, `isVideoPlayerLink`, `videoIframeSrc`, matching what BlockNote stores. |
+| `editor/services` | The framework-free `SeedEditorServices` interface (`searchMentions`, `loadDocument`, `uploadFile?`). Each editor passes it to its UI its own way (ProseKit: a React context). |
+| `editor/conformance` | `adapterConformanceCases(adapter, {fixtures, hooks})`: runner-independent cases (each throws on failure) for byte-for-byte round trips, zero operations on an untouched load, stable and valid ids, an `unknownDataFixture` and a `mediaFixture`. With `hooks.setBlockText` / `hooks.pasteBlocks` it also checks that an edit keeps unknown data and touches only the edited block, and that pasted blocks get fresh ids. |
+| `editor/fixtures` | The shared test fixtures (`editorFixtures`: all block types plus the three real documents). Test-only, not in the build. |
+
+A new adapter gets the whole contract suite with `for (const c of adapterConformanceCases(adapter, {fixtures: editorFixtures, hooks})) it(c.name, c.run)`.
+
+The conformance cases and the tests in `editor-prosekit/__tests__/convert.test.ts` pin these rules, including three real documents published on `seed.horacioh.com` (saved as fixtures with their source URL) and an untouched load producing zero operations.
 
 # How Seed sits on top of ProseKit
 
@@ -32,15 +49,15 @@ ProseKit is an npm dependency pinned to an exact version (`prosekit@0.22.4`). No
 | File | What it adds |
 | --- | --- |
 | `src/schema.ts` | The Seed document shape: `doc > blockNode+`, `blockNode > content blockGroup?`, `blockGroup > blockNode+` with a `childrenType` attr (`Group`, `Ordered`, `Unordered`, `Blockquote`, `Grid` and anything else). Content nodes come from ProseKit (`paragraph`, `heading`, `codeBlock`) or are Seed node specs: `hmMath`, atom blocks (`hmEmbed`, `hmImage`, `hmVideo`, `hmFile`, `hmButton`, `hmWebEmbed`, `hmQuery`, `hmNostr`), `hmUnknown` for any other block type, the inline `hmMention` node, and a generic `hmAnnotation` mark for unknown annotations. Marks are ProseKit's bold, italic, underline, strike, code, link, text and background color. |
-| `src/convert.ts` | `fromHM` / `toHM` and `prosekitAdapter`. Annotation offsets are code points, as in HM. Inline `Embed` annotations become `hmMention` nodes over the `\uFFFC` placeholder. |
+| `src/convert.ts` | `fromHM` / `toHM` and `prosekitAdapter`: maps kit `InlineRun`s to ProseKit marks and `hmMention` / `hardBreak` nodes, and kit block kinds to node types. |
 | `src/commands.ts` | Structural editing on the nested model: Tab / Shift-Tab, Enter that splits blocks (not just paragraphs), Backspace that outdents then joins, `- `, `1. ` and `> ` shortcuts that set the parent's `childrenType`, and the id plugin. |
 | `src/react/*` | `prosekit/react` bindings: node views (embeds, media, mentions), `@` and `[[` mention menus, slash menu, block handle, formatting toolbar, and `SeedProseKitEditor`. |
 
-**Preservation.** Each `blockNode` keeps the loaded HM block in an `original` attr plus a `baseline` of the fields the editor models. On save, if the modeled fields still equal the baseline the original object is returned as is; otherwise the edited fields are written over a copy of the original, so unknown attributes and keys survive edits too. Known annotations keep their own unknown attributes the same way, and unknown annotations ride along as `hmAnnotation` marks, so they follow the text through edits.
+**Preservation.** Each `blockNode` keeps the kit's `BlockSnapshot` (the loaded block plus a `baseline` of the fields the editor models) in a `snapshot` attr, and `restoreBlock` does the rest: untouched blocks come back as the original object, edited ones keep unknown attributes and keys. Known annotations keep their own unknown attributes the same way, and unknown annotations ride along as `hmAnnotation` marks, so they follow the text through edits.
 
 **Services.** The editor takes a `SeedEditorServices` object (`searchMentions`, `loadDocument`, optional `uploadFile(file) => Promise<link>`) instead of reaching into app state. The harness wires it to the same `MentionCandidates` API and `rankMentionCandidates` ordering the BlockNote mention menu uses, to `Resource` for embeds, and `uploadFile` to a local object URL standing in for the IPFS upload. Media links resolve through `@shm/ui/get-file-url` (`useImageUrl` for images, `useFileProxyUrl` for video and files), so the editor sits inside the app's `UniversalAppProvider` and `ipfs://` links hit the same gateway as BlockNote.
 
-**Media.** `src/media.ts` copies BlockNote's `youtubeParser` and the YouTube/Vimeo normalisation from `packages/editor/src/video.tsx`, so a Video block stores the same `https://www.youtube.com/embed/<id>` / `https://player.vimeo.com/video/<id>` link. Player links render as an iframe (YouTube with `rel=0`); `ipfs://` and other links play in `<video>`. `autoplay`, `loop` and `muted` are saved from the editor's settings and also applied to the `<video>` in the editor.
+**Media.** `@seed-hypermedia/client/editor/media` copies BlockNote's `youtubeParser` and the YouTube/Vimeo normalisation from `packages/editor/src/video.tsx`, so a Video block stores the same `https://www.youtube.com/embed/<id>` / `https://player.vimeo.com/video/<id>` link. Player links render as an iframe (YouTube with `rel=0`); `ipfs://` and other links play in `<video>`. `autoplay`, `loop` and `muted` are saved from the editor's settings and also applied to the `<video>` in the editor.
 
 # The harness
 

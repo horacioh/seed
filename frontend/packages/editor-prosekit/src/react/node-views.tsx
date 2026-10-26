@@ -3,7 +3,7 @@ import {union} from 'prosekit/core'
 import {defineReactNodeView, type ReactNodeViewProps} from 'prosekit/react'
 import {isIpfsUrl, useFileProxyUrl, useImageUrl} from '@shm/ui/get-file-url'
 import {type FormEvent, useEffect, useState} from 'react'
-import {isVideoPlayerLink, videoEmbedLink, videoIframeSrc} from '../media'
+import {isVideoPlayerLink, videoEmbedLink, videoIframeSrc} from '@seed-hypermedia/client/editor/media'
 import {ATOM_BLOCK_TYPES} from '../schema'
 import {type EmbeddedDocument, useSeedServices} from './services'
 
