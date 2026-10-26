@@ -30,7 +30,7 @@ import {expectNoAxeViolations} from '@shm/a11y-testing/dom'
 await expectNoAxeViolations(document)
 ```
 
-Run the report-only jsx-a11y scan with `pnpm lint:a11y`. It scans the UI, editor, web, desktop and emails sources and is not a CI gate.
+Run the report-only jsx-a11y scan with `pnpm lint:a11y`. It scans the UI, editor, web, desktop, emails and vault frontend sources and is not a CI gate.
 
 ## Manual screen-reader matrix
 

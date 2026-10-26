@@ -8,7 +8,7 @@
     "hypermedia:push": "cd frontend/apps/cli && bun run src/sync-hypermedia.ts push",
     "hypermedia:pull": "cd frontend/apps/cli && bun run src/sync-hypermedia.ts pull",
     "shared:test": "pnpm --filter @shm/shared test",
-    "lint:a11y": "oxlint -c .oxlintrc.a11y.json frontend/packages/ui/src frontend/packages/editor/src frontend/apps/web/app frontend/apps/desktop/src frontend/apps/emails",
+    "lint:a11y": "oxlint -c .oxlintrc.a11y.json frontend/packages/ui/src frontend/packages/editor/src frontend/apps/web/app frontend/apps/desktop/src frontend/apps/emails vault/src/frontend",
     "format:check": "pnpm -r --parallel run format:check && (cd agents && bun run format:check) && (cd vault && bun run format:check)",
     "typecheck": "pnpm -r --parallel run typecheck",
     "security:check": "pnpm audit",
