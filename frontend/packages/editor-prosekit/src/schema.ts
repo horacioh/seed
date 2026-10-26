@@ -136,8 +136,26 @@ function defineSeedInline() {
       atom: true,
       selectable: true,
       attrs: {link: {default: ''}, mentionKind: {default: null}, annotation: {default: null}},
-      parseDOM: [{tag: 'span[data-hm-mention]', getAttrs: (el) => ({link: el.getAttribute('data-hm-mention')})}],
-      toDOM: (node) => ['span', {'data-hm-mention': node.attrs.link, class: 'seed-mention'}, node.attrs.link],
+      parseDOM: [
+        {
+          tag: 'span[data-hm-mention]',
+          getAttrs: (el) => ({
+            link: el.getAttribute('data-hm-mention'),
+            mentionKind: el.getAttribute('data-mention-kind'),
+            annotation: annotationFromDOM(el),
+          }),
+        },
+      ],
+      toDOM: (node) => [
+        'span',
+        {
+          'data-hm-mention': node.attrs.link,
+          'data-mention-kind': node.attrs.mentionKind,
+          'data-annotation': annotationToDOM(node.attrs.annotation),
+          class: 'seed-mention',
+        },
+        node.attrs.link,
+      ],
     }),
     // Any annotation the editor doesn't model (Range, TextSize, future types,
     // or a known type carrying extra fields). Several can overlap, and they
@@ -147,8 +165,15 @@ function defineSeedInline() {
       excludes: '',
       inclusive: false,
       attrs: {annotation: {default: null}},
-      parseDOM: [{tag: 'span[data-hm-annotation]'}],
-      toDOM: (mark) => ['span', {'data-hm-annotation': mark.attrs.annotation?.type ?? ''}, 0],
+      parseDOM: [{tag: 'span[data-hm-annotation]', getAttrs: (el) => ({annotation: annotationFromDOM(el)})}],
+      toDOM: (mark) => [
+        'span',
+        {
+          'data-hm-annotation': mark.attrs.annotation?.type ?? '',
+          'data-annotation': annotationToDOM(mark.attrs.annotation),
+        },
+        0,
+      ],
     }),
   )
 }
@@ -186,3 +211,18 @@ export function defineSeedEditorBase() {
 
 /** The extension type of the Seed ProseKit editor, for typed `useEditor`. */
 export type SeedSchemaExtension = ReturnType<typeof defineSeedSchema>
+
+// Annotation payloads ride along in the DOM so copy/paste keeps them.
+function annotationToDOM(annotation: unknown): string | null {
+  return annotation ? JSON.stringify(annotation) : null
+}
+
+function annotationFromDOM(el: HTMLElement): unknown {
+  const raw = el.getAttribute('data-annotation')
+  if (!raw) return null
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}

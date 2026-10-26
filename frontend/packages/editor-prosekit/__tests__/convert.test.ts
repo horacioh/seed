@@ -2,7 +2,7 @@ import {adapterConformanceCases} from '@seed-hypermedia/client/editor/conformanc
 import {collectHMBlockIds, hmDocumentOperations} from '@seed-hypermedia/client/editor-adapter'
 import type {HMBlockNode} from '@seed-hypermedia/client/hm-types'
 import {createEditor, union} from 'prosekit/core'
-import type {Node as PMNode} from 'prosekit/pm/model'
+import {DOMSerializer, type Node as PMNode} from 'prosekit/pm/model'
 import {TextSelection} from 'prosekit/pm/state'
 import {describe, expect, it} from 'vitest'
 import {defineSeedCommands, insertMediaBlock, pasteVideoLink} from '../src/commands'
@@ -252,6 +252,29 @@ describe('paste', () => {
     const pasted = saved.filter((n) => /Copied/.test((n.block as {text: string}).text) && n.block.id !== 'b')
     expect(pasted.length).toBeGreaterThan(0)
     for (const node of pasted) expect(node.block.id).toMatch(/^(?!a$|b$)\w+/)
+  })
+
+  it('keeps mention kinds and opaque annotations when copied blocks are pasted', () => {
+    const annotations = [
+      {type: 'Embed', link: 'hm://alice', starts: [0], ends: [1], attributes: {mentionKind: 'account'}},
+      {type: 'Embed', link: 'hm://site/doc', starts: [2], ends: [3], attributes: {mentionKind: 'document'}},
+      {type: 'Range', starts: [4], ends: [8], attributes: {note: 1}},
+    ]
+    const source = [
+      {block: {type: 'Paragraph', id: 'm', text: '\uFFFC \uFFFC text', annotations, attributes: {}}},
+    ] as HMBlockNode[]
+    const editor = editorWith([...source, ...blocks])
+    const html = document.createElement('div')
+    html.appendChild(DOMSerializer.fromSchema(editor.schema).serializeFragment(editor.state.doc.content))
+    setCursor(editor, posAfter(editor, 'Beta'))
+    editor.view.pasteHTML(html.innerHTML, new Event('paste') as ClipboardEvent)
+    const pasted = toHM(editor.state.doc).filter(
+      (n) => n.block.id !== 'm' && (n.block as {text: string}).text.includes('\uFFFC'),
+    )
+    expect(pasted).toHaveLength(1)
+    // The first pasted paragraph joins "Beta", so its ranges shift by four.
+    const shifted = annotations.map((a) => ({...a, starts: [a.starts[0]! + 4], ends: [a.ends[0]! + 4]}))
+    expect((pasted[0]!.block as {annotations: unknown}).annotations).toEqual(shifted)
   })
 
   it('pastes multi-paragraph plain text as new blocks with fresh ids', () => {
