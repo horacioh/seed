@@ -133,7 +133,7 @@ describe('fromHM → toHM round trip', () => {
       text: '😀 bold\uFFFC',
       annotations: [
         {type: 'Bold', starts: [2], ends: [6]},
-        {type: 'Embed', link: 'hm://z6MkA', starts: [6], ends: [7]},
+        {type: 'Embed', link: 'hm://z6MkA', starts: [6], ends: [7], attributes: {mentionKind: 'account'}},
       ],
       attributes: {},
     })
