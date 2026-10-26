@@ -121,6 +121,25 @@ describe('ids', () => {
     )
   })
 
+  it('points copied columnId references at the copied columns', () => {
+    const b = (block: Record<string, unknown>, children?: HMBlockNode[]) =>
+      ({block, ...(children ? {children} : {})}) as unknown as HMBlockNode
+    const table = [
+      b({type: 'Table', id: 't'}, [
+        b({type: 'Column', id: 'col'}),
+        b({type: 'Cell', id: 'cell', attributes: {columnId: 'col', other: 1}}),
+        b({type: 'Cell', id: 'outside', attributes: {columnId: 'elsewhere'}}),
+      ]),
+    ]
+    let n = 0
+    const [copied] = withFreshIds(table, () => `new-${n++}`)
+    expect(copied!.children!.map((c) => (c.block as Record<string, any>).attributes)).toEqual([
+      undefined,
+      {columnId: 'new-1', other: 1},
+      {columnId: 'elsewhere'},
+    ])
+  })
+
   it('reports missing and duplicate ids and unknown childrenType values', () => {
     const p = (id: string, attributes = {}) => ({block: {type: 'Paragraph', id, attributes}}) as unknown as HMBlockNode
     expect(validateHMTree([p('a'), {...p('b', {childrenType: 'Grid'}), children: [p('a'), p('')]}])).toEqual([

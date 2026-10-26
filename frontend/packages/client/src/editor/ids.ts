@@ -14,14 +14,31 @@ export function createBlockId(): string {
 
 /**
  * A copy of `blocks` with a fresh id on every block, for paste and duplicate.
- * Everything else, including unknown fields, is kept.
+ * `attributes.columnId` references to a copied block (table cells → columns)
+ * follow it to its new id. Everything else, including unknown fields, is kept.
  */
 export function withFreshIds(blocks: HMBlockNode[], newId: () => string = createBlockId): HMBlockNode[] {
-  return blocks.map((node) => ({
-    ...node,
-    block: {...node.block, id: newId()},
-    ...(node.children ? {children: withFreshIds(node.children, newId)} : {}),
-  })) as HMBlockNode[]
+  const fresh: string[] = []
+  const renamed = new Map<string, string>()
+  const assign = (nodes: HMBlockNode[]) =>
+    nodes.forEach((node) => {
+      const id = newId()
+      fresh.push(id)
+      if (!renamed.has(node.block.id)) renamed.set(node.block.id, id)
+      if (node.children) assign(node.children)
+    })
+  assign(blocks)
+  let next = 0
+  const copy = (nodes: HMBlockNode[]): HMBlockNode[] =>
+    nodes.map((node) => {
+      const block: Record<string, any> = {...node.block, id: fresh[next++]}
+      const columnId = block.attributes?.columnId
+      if (typeof columnId === 'string' && renamed.has(columnId)) {
+        block.attributes = {...block.attributes, columnId: renamed.get(columnId)}
+      }
+      return {...node, block, ...(node.children ? {children: copy(node.children)} : {})} as HMBlockNode
+    })
+  return copy(blocks)
 }
 
 /** A problem {@link validateHMTree} found. */
