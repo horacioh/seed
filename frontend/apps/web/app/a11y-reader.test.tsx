@@ -389,6 +389,9 @@ describe.sequential('web reader accessibility contract', () => {
     measurement?.removeAttribute('aria-hidden')
     measurement?.removeAttribute('inert')
     document.querySelector('main')?.remove()
+    const outsideLandmark = document.createElement('p')
+    outsideLandmark.textContent = 'Reader content outside landmarks'
+    document.body.append(outsideLandmark)
 
     expect(document.querySelectorAll('main')).toHaveLength(0)
     expect(measurement?.hasAttribute('aria-hidden')).toBe(false)
