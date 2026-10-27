@@ -1,4 +1,4 @@
-import { MjmlColumn, MjmlImage, MjmlSection } from '@faire/mjml-react'
+import {MjmlColumn, MjmlImage, MjmlSection} from '@faire/mjml-react'
 
 /** Logo header for all outbound emails. */
 export function EmailHeader() {
@@ -7,7 +7,7 @@ export function EmailHeader() {
       <MjmlColumn>
         <MjmlImage
           src="https://seed.hyper.media/landing-assets/email-logo.png"
-          alt="Seed Logo"
+          alt="Seed Hypermedia"
           width="48px"
           height="48px"
           padding="0"

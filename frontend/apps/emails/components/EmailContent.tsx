@@ -5,6 +5,7 @@ import {DAEMON_FILE_URL} from '@shm/shared/constants'
 import {formattedDateShort} from '@shm/shared/utils/date'
 import React from 'react'
 import {Notification} from '../notifier'
+import {EMAIL_PALETTE} from '../email-palette'
 
 export function getDaemonFileUrl(ipfsUrl?: string) {
   if (ipfsUrl) {
@@ -24,12 +25,12 @@ export function EmailContent({notification}: {notification: Notification}) {
 
   return (
     <>
-      <MjmlSection backgroundColor="#f9f9f9" borderRadius="6px">
+      <MjmlSection backgroundColor={EMAIL_PALETTE.commentSurface} borderRadius="6px">
         <MjmlColumn width="10%" verticalAlign="top">
           {authorAvatar.length ? (
             // <MjmlImage
             //   src={authorAvatar}
-            //   alt="Sender Avatar"
+            //   alt=""
             //   width="28px"
             //   height="28px"
             //   borderRadius="50%"
@@ -38,7 +39,7 @@ export function EmailContent({notification}: {notification: Notification}) {
             <MjmlRaw>
               <img
                 src={authorAvatar}
-                alt="Sender Avatar"
+                alt=""
                 style={{
                   width: '28px',
                   height: '28px',
@@ -54,12 +55,12 @@ export function EmailContent({notification}: {notification: Notification}) {
                   width: '28px',
                   height: '28px',
                   borderRadius: '50%',
-                  backgroundColor: '#ccc',
+                  backgroundColor: EMAIL_PALETTE.muted,
                   textAlign: 'center',
                   lineHeight: '28px',
                   fontWeight: 'bold',
                   fontSize: '14px',
-                  color: '#ffffff',
+                  color: EMAIL_PALETTE.surface,
                   fontFamily: 'sans-serif',
                   marginLeft: '23px',
                 }}
@@ -72,7 +73,12 @@ export function EmailContent({notification}: {notification: Notification}) {
         <MjmlColumn width="90%" verticalAlign="middle">
           <MjmlText fontSize="12px" fontWeight="bold" paddingBottom="4px" paddingRight="10px">
             {authorName}
-            {createdAt && <span style={{color: '#888', fontWeight: 'normal', fontSize: '12px'}}> {createdAt}</span>}
+            {createdAt && (
+              <span style={{color: EMAIL_PALETTE.subtleText, fontWeight: 'normal', fontSize: '12px'}}>
+                {' '}
+                {createdAt}
+              </span>
+            )}
           </MjmlText>
         </MjmlColumn>
         <NotificationContent notification={notification} />
@@ -126,7 +132,7 @@ function MentionContent({notification}: {notification: Extract<Notification, {re
           mentioned {notification.subjectAccountMeta?.name ?? 'you'} in{' '}
           <span
             style={{
-              backgroundColor: '#eee',
+              backgroundColor: EMAIL_PALETTE.subtleSurface,
               borderRadius: '4px',
               padding: '4px 8px',
               display: 'inline-block',
@@ -143,7 +149,7 @@ function MentionContent({notification}: {notification: Extract<Notification, {re
 function ReplyContent({notification}: {notification: Extract<Notification, {reason: 'reply'}>}) {
   return (
     <MjmlColumn width="100%" verticalAlign="middle">
-      <MjmlText fontSize="14px" color="#666" paddingBottom="8px">
+      <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="8px">
         New reply:
       </MjmlText>
       <MjmlSection padding="0 0 8px 23px">
@@ -158,7 +164,7 @@ function ReplyContent({notification}: {notification: Extract<Notification, {reas
 function NewDiscussionContent({notification}: {notification: Extract<Notification, {reason: 'site-new-discussion'}>}) {
   return (
     <MjmlColumn width="100%" verticalAlign="middle">
-      <MjmlText fontSize="14px" color="#666" paddingBottom="8px">
+      <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="8px">
         Started a discussion:
       </MjmlText>
       <MjmlSection padding="0 0 8px 23px">
@@ -168,11 +174,11 @@ function NewDiscussionContent({notification}: {notification: Extract<Notificatio
       </MjmlSection>
       <MjmlSection padding="0 0 16px 0">
         <MjmlColumn>
-          <MjmlText fontSize="14px" color="#888">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText}>
             on:{' '}
             <span
               style={{
-                backgroundColor: '#eee',
+                backgroundColor: EMAIL_PALETTE.subtleSurface,
                 borderRadius: '4px',
                 padding: '2px 6px',
                 display: 'inline-block',
@@ -190,7 +196,7 @@ function NewDiscussionContent({notification}: {notification: Extract<Notificatio
 function DiscussionContent({notification}: {notification: Extract<Notification, {reason: 'discussion'}>}) {
   return (
     <MjmlColumn width="100%" verticalAlign="middle">
-      <MjmlText fontSize="14px" color="#666" paddingBottom="8px">
+      <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="8px">
         Started a discussion:
       </MjmlText>
       <MjmlSection padding="0 0 8px 23px">
@@ -200,11 +206,11 @@ function DiscussionContent({notification}: {notification: Extract<Notification, 
       </MjmlSection>
       <MjmlSection padding="0 0 16px 0">
         <MjmlColumn>
-          <MjmlText fontSize="14px" color="#888">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText}>
             on:{' '}
             <span
               style={{
-                backgroundColor: '#eee',
+                backgroundColor: EMAIL_PALETTE.subtleSurface,
                 borderRadius: '4px',
                 padding: '2px 6px',
                 display: 'inline-block',
@@ -222,7 +228,7 @@ function DiscussionContent({notification}: {notification: Extract<Notification, 
 function UserCommentContent({notification}: {notification: Extract<Notification, {reason: 'user-comment'}>}) {
   return (
     <MjmlColumn width="100%" verticalAlign="middle">
-      <MjmlText fontSize="14px" color="#666" paddingBottom="8px">
+      <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="8px">
         Commented:
       </MjmlText>
       <MjmlSection padding="0 0 8px 23px">
@@ -232,11 +238,11 @@ function UserCommentContent({notification}: {notification: Extract<Notification,
       </MjmlSection>
       <MjmlSection padding="0 0 16px 0">
         <MjmlColumn>
-          <MjmlText fontSize="14px" color="#888">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText}>
             on:{' '}
             <span
               style={{
-                backgroundColor: '#eee',
+                backgroundColor: EMAIL_PALETTE.subtleSurface,
                 borderRadius: '4px',
                 padding: '2px 6px',
                 display: 'inline-block',
@@ -265,7 +271,7 @@ export function renderMention({
       <MjmlSection padding="0">
         <MjmlColumn>
           {/* "Mentioned:" label */}
-          <MjmlText fontSize="14px" color="#666" paddingBottom="8px">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="8px">
             Mentioned:
           </MjmlText>
         </MjmlColumn>
@@ -279,11 +285,11 @@ export function renderMention({
       {/* Target document */}
       <MjmlSection padding="0 0 16px 0">
         <MjmlColumn>
-          <MjmlText fontSize="14px" color="#888">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText}>
             on:{' '}
             <span
               style={{
-                backgroundColor: '#eee',
+                backgroundColor: EMAIL_PALETTE.subtleSurface,
                 borderRadius: '4px',
                 padding: '2px 6px',
                 display: 'inline-block',
@@ -309,7 +315,7 @@ function renderChange({targetDocName, isNewDocument}: {targetDocName: string; is
           <MjmlText fontSize="14px">
             <span
               style={{
-                backgroundColor: '#eee',
+                backgroundColor: EMAIL_PALETTE.subtleSurface,
                 borderRadius: '4px',
                 padding: '4px 8px',
                 display: 'inline-block',
@@ -338,7 +344,7 @@ export function QuotedContent({
   if (variant === 'border') {
     return (
       <MjmlSection padding="8px 24px 16px">
-        <MjmlColumn borderLeft="3px solid #068f7b" paddingLeft="16px">
+        <MjmlColumn borderLeft={`3px solid ${EMAIL_PALETTE.brand}`} paddingLeft="16px">
           {renderBlocks(blocks, '', resolvedNames)}
         </MjmlColumn>
       </MjmlSection>
@@ -347,7 +353,7 @@ export function QuotedContent({
 
   return (
     <MjmlSection padding="0 24px 16px">
-      <MjmlColumn backgroundColor="#f3f4f6" borderRadius="8px" padding="12px 16px">
+      <MjmlColumn backgroundColor={EMAIL_PALETTE.subtleSurface} borderRadius="8px" padding="12px 16px">
         {renderBlocks(blocks, '', resolvedNames)}
       </MjmlColumn>
     </MjmlSection>
@@ -387,7 +393,9 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
   if (type === 'Heading') {
     return (
       <MjmlText align="left" paddingBottom="8px" fontSize="24px" fontWeight="bold">
-        <span dangerouslySetInnerHTML={{__html: innerHtml}} />
+        <h2 style={{margin: 0, fontSize: '24px'}}>
+          <span dangerouslySetInnerHTML={{__html: innerHtml}} />
+        </h2>
       </MjmlText>
     )
   }
@@ -404,9 +412,9 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
 
     return (
       <>
-        <MjmlImage src={src} alt={text || 'Image'} width={width as number} paddingBottom="8px" />
+        <MjmlImage src={src} alt={text || ''} width={width as number} paddingBottom="8px" />
         {text && (
-          <MjmlText fontSize="12px" color="#666" paddingBottom="12px" align="center">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="12px" align="center">
             {text}
           </MjmlText>
         )}
@@ -417,13 +425,13 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
   if (type === 'Video') {
     if (link?.includes('youtube.com') || link?.includes('youtu.be')) {
       return (
-        <MjmlButton href={link} backgroundColor="#FF0000" fontSize="14px" align="left">
+        <MjmlButton href={link} backgroundColor={EMAIL_PALETTE.accentRed} fontSize="14px" align="left">
           Watch Video on YouTube
         </MjmlButton>
       )
     } else {
       return (
-        <MjmlButton href={notifUrl} backgroundColor="#068f7b" fontSize="14px" align="left">
+        <MjmlButton href={notifUrl} backgroundColor={EMAIL_PALETTE.brand} fontSize="14px" align="left">
           Watch Video in the Comment
         </MjmlButton>
       )
@@ -433,13 +441,13 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
   if (type === 'WebEmbed') {
     if (link?.includes('instagram.com')) {
       return (
-        <MjmlButton href={link} backgroundColor="#346DB7" fontSize="14px" align="left">
+        <MjmlButton href={link} backgroundColor={EMAIL_PALETTE.accentBlue} fontSize="14px" align="left">
           Open in Instagram
         </MjmlButton>
       )
     } else if (link?.includes('x.com')) {
       return (
-        <MjmlButton href={link} backgroundColor="#346DB7" fontSize="14px" align="left">
+        <MjmlButton href={link} backgroundColor={EMAIL_PALETTE.accentBlue} fontSize="14px" align="left">
           Open in X.com
         </MjmlButton>
       )
@@ -449,15 +457,21 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
   if (type === 'Button') {
     const buttonAttrs = attributes as {fields?: {name?: {kind?: {value?: string}}}}
     return (
-      <MjmlButton href={link} backgroundColor="#068f7b" fontSize="14px" align="left">
-        {buttonAttrs.fields?.name?.kind?.value || link}
+      <MjmlButton href={link} backgroundColor={EMAIL_PALETTE.brand} fontSize="14px" align="left">
+        {buttonAttrs.fields?.name?.kind?.value || 'Open linked content'}
       </MjmlButton>
     )
   }
 
   if (type === 'Math') {
     return (
-      <MjmlText align="left" paddingBottom="8px" fontSize="14px" fontFamily="monospace" color="#888">
+      <MjmlText
+        align="left"
+        paddingBottom="8px"
+        fontSize="14px"
+        fontFamily="monospace"
+        color={EMAIL_PALETTE.subtleText}
+      >
         {text}
       </MjmlText>
     )
@@ -470,8 +484,8 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
         paddingBottom="8px"
         fontSize="14px"
         fontFamily="monospace"
-        color="#666"
-        backgroundColor="#f2f2f2"
+        color={EMAIL_PALETTE.subtleText}
+        backgroundColor={EMAIL_PALETTE.codeBackground}
         padding="12px"
         // borderRadius="4px"
       >
@@ -482,8 +496,8 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
 
   if (type === 'Embed') {
     return (
-      <MjmlButton href={link} backgroundColor="#346DB7" fontSize="14px" align="left">
-        Open Embed
+      <MjmlButton href={link} backgroundColor={EMAIL_PALETTE.accentBlue} fontSize="14px" align="left">
+        Open embedded content
       </MjmlButton>
     )
   }
@@ -530,7 +544,7 @@ export function renderInlineTextWithAnnotations(
           })
         }
       }
-      annotatedText = `<a href="${href}" style="color: #346DB7;">${annotatedText}</a>`
+      annotatedText = `<a href="${href}" style="color: ${EMAIL_PALETTE.brand}; text-decoration: underline;">${annotatedText}</a>`
     } else if (annotation.type === 'Embed') {
       const annotationLink = annotation.link as string | undefined
       const resolved = resolvedNames?.[annotationLink || ''] || annotationLink
@@ -545,7 +559,7 @@ export function renderInlineTextWithAnnotations(
           })
         }
       }
-      annotatedText = `<a href="${href}" style="color: #008060;">${resolved}</a>`
+      annotatedText = `<a href="${href}" style="color: ${EMAIL_PALETTE.brand}; text-decoration: underline;">${resolved}</a>`
     }
 
     result.push(annotatedText)
@@ -567,8 +581,8 @@ function getNotificationMeta(notification: Notification) {
     ('comment' in notification && notification.comment
       ? notification.comment.author
       : 'authorAccountId' in notification
-      ? notification.authorAccountId
-      : 'Unknown')
+        ? notification.authorAccountId
+        : 'Unknown')
 
   const authorAvatar = authorMeta?.icon ? getDaemonFileUrl(authorMeta.icon) : ''
 

@@ -134,6 +134,9 @@ jobs:
           - suite: a11y-testing
             filter: '@shm/a11y-testing'
             command: test
+          - suite: emails
+            filter: '@shm/emails'
+            command: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

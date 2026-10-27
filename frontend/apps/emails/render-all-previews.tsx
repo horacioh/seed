@@ -6,16 +6,18 @@
  * Then open email-previews/index.html in your browser.
  */
 import {HMBlockNode} from '@seed-hypermedia/client/hm-types'
-import fs from 'fs'
 import {createLoginConfirmationEmail} from './email-confirmation'
 import {
   createCommentEmail,
+  createDesktopNotificationsEmail,
   createDiscussionEmail,
   createDocUpdateEmail,
   createMentionEmail,
   createNotificationVerificationEmail,
+  createNotificationsEmail,
   createReplyEmail,
   createWelcomeEmail,
+  type FullNotification,
 } from './notifier'
 
 const mockBlocks: HMBlockNode[] = [
@@ -51,118 +53,125 @@ const mentionBlocks: HMBlockNode[] = [
       type: 'Paragraph',
       attributes: {},
       text: '@Bea — I think this approach solves the accessibility issue.',
-      annotations: [
-        {type: 'Embed', starts: [0], ends: [4], link: 'hm://bea-account-id'},
-      ],
+      annotations: [{type: 'Embed', starts: [0], ends: [4], link: 'hm://bea-account-id'}],
     },
     children: [],
   },
 ]
 
-const previews: Array<{name: string; result: {subject: string; text: string; html: string}}> = [
+const notifications = [
   {
-    name: 'verification',
-    result: await createNotificationVerificationEmail({
-      verificationUrl: 'https://hyper.media/hm/api/notify/verify-email?token=verify123',
-      recipientName: 'First Name',
-    }),
-  },
-  {
-    name: 'login',
-    result: await createLoginConfirmationEmail({
-      loginUrl: 'https://hyper.media/login?token=login123',
-      recipientName: 'First Name',
-    }),
-  },
-  {
-    name: 'welcome',
-    result: await createWelcomeEmail({
-      recipientName: 'First Name',
-      siteName: '<sitename>',
-      siteUrl: 'https://seedteamtalks.hyper.media',
-    }),
-  },
-  {
-    name: 'discussion',
-    result: await createDiscussionEmail({
-      authorName: 'Gabo',
-      documentName: 'Inspiration',
-      commentBlocks: mockBlocks,
+    accountId: 'bea-account',
+    accountMeta: {name: 'Bea'},
+    notif: {
+      reason: 'mention',
+      authorAccountId: 'gabo-account',
+      authorMeta: {name: 'Gabo'},
+      targetMeta: {name: 'Design Guidelines'},
+      targetId: {id: 'design-guidelines'},
+      subjectAccountId: 'bea-account',
+      subjectAccountMeta: {name: 'Bea'},
+      url: 'https://seedteamtalks.hyper.media/d/abc123',
       actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
-      unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
-      siteUrl: 'https://seedteamtalks.hyper.media',
-    }),
+      eventId: 'event-1',
+      eventAtMs: 1740000000000,
+      source: 'document',
+    },
   },
-  {
-    name: 'comment',
-    result: await createCommentEmail({
-      authorName: 'Horacio',
-      documentName: 'User Onboarding',
-      sectionName: 'Design',
-      commentBlocks: mockBlocks,
-      actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
-      unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
-      siteUrl: 'https://seedteamtalks.hyper.media',
-    }),
-  },
-  {
-    name: 'mention',
-    result: await createMentionEmail({
-      authorName: 'Eric Alex',
-      subjectName: 'you',
-      documentName: 'Design Guidelines',
-      commentBlocks: mentionBlocks,
-      actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
-      unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
-      siteUrl: 'https://seedteamtalks.hyper.media',
-      resolvedNames: {'hm://bea-account-id': 'Bea'},
-    }),
-  },
-  {
-    name: 'reply',
-    result: await createReplyEmail({
-      authorName: 'Gabo',
-      documentName: 'User test Round III',
-      sectionName: 'Design',
-      commentBlocks: mockBlocks,
-      actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
-      unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
-      siteUrl: 'https://seedteamtalks.hyper.media',
-    }),
-  },
-  {
-    name: 'doc-update',
-    result: await createDocUpdateEmail({
-      authorName: 'Gabo',
-      documentName: 'Inspiration',
-      sectionName: 'Design',
-      changes: ['Updated the hero section layout', 'Added new color tokens', 'Removed deprecated spacing variables'],
-      actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
-      unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
-      siteUrl: 'https://seedteamtalks.hyper.media',
-    }),
-  },
-]
+] as unknown as FullNotification[]
 
-const outputDir = './email-previews'
-if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
-
-for (const {name, result} of previews) {
-  fs.writeFileSync(`${outputDir}/${name}.html`, result.html)
-  console.log(`Subject: ${result.subject}`)
-  console.log(`  -> ${outputDir}/${name}.html`)
+/** Render all frontend email templates for previews and accessibility tests. */
+export async function createPreviews() {
+  return [
+    {
+      name: 'verification',
+      result: await createNotificationVerificationEmail({
+        verificationUrl: 'https://hyper.media/hm/api/notify/verify-email?token=verify123',
+        recipientName: 'First Name',
+      }),
+    },
+    {
+      name: 'login',
+      result: await createLoginConfirmationEmail({
+        loginUrl: 'https://hyper.media/login?token=login123',
+        recipientName: 'First Name',
+      }),
+    },
+    {
+      name: 'welcome',
+      result: await createWelcomeEmail({
+        recipientName: 'First Name',
+        siteName: '<sitename>',
+        siteUrl: 'https://seedteamtalks.hyper.media',
+      }),
+    },
+    {
+      name: 'discussion',
+      result: await createDiscussionEmail({
+        authorName: 'Gabo',
+        documentName: 'Inspiration',
+        commentBlocks: mockBlocks,
+        actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
+        unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
+        siteUrl: 'https://seedteamtalks.hyper.media',
+      }),
+    },
+    {
+      name: 'comment',
+      result: await createCommentEmail({
+        authorName: 'Horacio',
+        documentName: 'User Onboarding',
+        sectionName: 'Design',
+        commentBlocks: mockBlocks,
+        actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
+        unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
+        siteUrl: 'https://seedteamtalks.hyper.media',
+      }),
+    },
+    {
+      name: 'mention',
+      result: await createMentionEmail({
+        authorName: 'Eric Alex',
+        subjectName: 'you',
+        documentName: 'Design Guidelines',
+        commentBlocks: mentionBlocks,
+        actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
+        unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
+        siteUrl: 'https://seedteamtalks.hyper.media',
+        resolvedNames: {'hm://bea-account-id': 'Bea'},
+      }),
+    },
+    {
+      name: 'reply',
+      result: await createReplyEmail({
+        authorName: 'Gabo',
+        documentName: 'User test Round III',
+        sectionName: 'Design',
+        commentBlocks: mockBlocks,
+        actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
+        unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
+        siteUrl: 'https://seedteamtalks.hyper.media',
+      }),
+    },
+    {
+      name: 'doc-update',
+      result: await createDocUpdateEmail({
+        authorName: 'Gabo',
+        documentName: 'Inspiration',
+        sectionName: 'Design',
+        changes: ['Updated the hero section layout', 'Added new color tokens', 'Removed deprecated spacing variables'],
+        actionUrl: 'https://seedteamtalks.hyper.media/d/abc123',
+        unsubscribeUrl: 'https://hyper.media/hm/email-notifications?token=test123',
+        siteUrl: 'https://seedteamtalks.hyper.media',
+      }),
+    },
+    {
+      name: 'notifications',
+      result: (await createNotificationsEmail('bea@example.com', {adminToken: 'test-token'}, notifications))!,
+    },
+    {
+      name: 'desktop-notifications',
+      result: (await createDesktopNotificationsEmail('bea@example.com', {adminToken: 'test-token'}, notifications))!,
+    },
+  ]
 }
-
-// Index page with links to all previews
-const indexHtml = `<!DOCTYPE html>
-<html><head><title>Email Previews</title>
-<style>body{font-family:system-ui;max-width:600px;margin:40px auto;padding:0 20px}
-a{display:block;padding:12px 0;font-size:18px;color:#068f7b;text-decoration:none;border-bottom:1px solid #eee}
-a:hover{color:#045c50}</style></head>
-<body><h1>Email Template Previews</h1>
-${previews.map(({name}) => `<a href="${name}.html">${name}</a>`).join('\n')}
-</body></html>`
-fs.writeFileSync(`${outputDir}/index.html`, indexHtml)
-
-console.log(`\nAll previews written to ${outputDir}/`)
-console.log(`Open ${outputDir}/index.html in a browser to browse them.`)

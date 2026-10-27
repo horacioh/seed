@@ -12,6 +12,9 @@ import {
 import {EmailFooter} from './components/EmailFooter'
 import {EmailHeader} from './components/EmailHeader'
 import {EmailHeadDefaults, renderReactToMjml} from './notifier'
+import {EMAIL_PALETTE} from './email-palette'
+
+const MJML_ROOT_ATTRIBUTES = {dir: 'ltr'}
 
 export type LoginConfirmationEmailProps = {
   loginUrl: string
@@ -34,47 +37,47 @@ If you don't recognise this activity, please change your password immediately.
 This link will expire in 15 minutes.`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml lang="en" {...MJML_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>A new sign-in was detected on your Seed Hypermedia account</MjmlPreview>
       </EmailHeadDefaults>
-      <MjmlBody width={500} backgroundColor="#f4f4f5">
-        <MjmlWrapper backgroundColor="#ffffff" padding="0">
-        <EmailHeader />
+      <MjmlBody width={500} backgroundColor={EMAIL_PALETTE.bodyBackground}>
+        <MjmlWrapper backgroundColor={EMAIL_PALETTE.surface} padding="0">
+          <EmailHeader />
 
-        <MjmlSection padding="24px 24px 0">
-          <MjmlColumn>
-            <MjmlText fontSize="20px" fontWeight="bold" lineHeight="1.3" padding="0 0 16px">
-              New sign-in to your account
-            </MjmlText>
-            <MjmlText fontSize="14px" lineHeight="1.6" padding="0 0 4px">
-              {greeting}
-            </MjmlText>
-            <MjmlText fontSize="14px" lineHeight="1.6" padding="0 0 16px">
-              We detected a new sign-in to your Seed Hypermedia. This is your login link.
-            </MjmlText>
-            <MjmlButton
-              href={loginUrl}
-              backgroundColor="#068f7b"
-              color="#ffffff"
-              borderRadius="6px"
-              fontSize="14px"
-              fontWeight="600"
-              innerPadding="12px 24px"
-              align="center"
-              padding="0 0 16px"
-            >
-              Log in to Hyper.media
-            </MjmlButton>
-            <MjmlText fontSize="13px" color="#6b7280" lineHeight="1.5" padding="0 0 24px">
-              If you don't recognise this activity, please change your password immediately. This link will expire in 15
-              minutes.
-            </MjmlText>
-          </MjmlColumn>
-        </MjmlSection>
+          <MjmlSection padding="24px 24px 0">
+            <MjmlColumn>
+              <MjmlText fontSize="20px" fontWeight="bold" lineHeight="1.3" padding="0 0 16px">
+                <h1 style={{margin: 0, fontSize: '20px', lineHeight: '1.3'}}>New sign-in to your account</h1>
+              </MjmlText>
+              <MjmlText fontSize="14px" lineHeight="1.6" padding="0 0 4px">
+                {greeting}
+              </MjmlText>
+              <MjmlText fontSize="14px" lineHeight="1.6" padding="0 0 16px">
+                We detected a new sign-in to your Seed Hypermedia. This is your login link.
+              </MjmlText>
+              <MjmlButton
+                href={loginUrl}
+                backgroundColor={EMAIL_PALETTE.brand}
+                color={EMAIL_PALETTE.surface}
+                borderRadius="6px"
+                fontSize="14px"
+                fontWeight="600"
+                innerPadding="12px 24px"
+                align="center"
+                padding="0 0 16px"
+              >
+                Log in to Hyper.media
+              </MjmlButton>
+              <MjmlText fontSize="14px" color={EMAIL_PALETTE.muted} lineHeight="1.5" padding="0 0 24px">
+                If you don't recognise this activity, please change your password immediately. This link will expire in
+                15 minutes.
+              </MjmlText>
+            </MjmlColumn>
+          </MjmlSection>
 
-        <EmailFooter />
+          <EmailFooter />
         </MjmlWrapper>
       </MjmlBody>
     </Mjml>,

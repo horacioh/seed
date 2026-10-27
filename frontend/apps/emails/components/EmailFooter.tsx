@@ -1,4 +1,5 @@
 import {MjmlColumn, MjmlSection, MjmlText} from '@faire/mjml-react'
+import {EMAIL_PALETTE} from '../email-palette'
 
 /** Props for the unified email footer. */
 export interface EmailFooterProps {
@@ -10,7 +11,7 @@ export interface EmailFooterProps {
   manageNotificationsUrl?: string
 }
 
-const linkStyle: React.CSSProperties = {color: '#068f7b', textDecoration: 'underline'}
+const linkStyle: React.CSSProperties = {color: EMAIL_PALETTE.brand, textDecoration: 'underline'}
 
 /** Unified footer rendered at the bottom of every outbound email. */
 export function EmailFooter({siteUrl, unsubscribeUrl, manageNotificationsUrl}: EmailFooterProps) {
@@ -24,20 +25,20 @@ export function EmailFooter({siteUrl, unsubscribeUrl, manageNotificationsUrl}: E
       {siteUrl ? (
         <MjmlSection padding="24px 24px 16px">
           <MjmlColumn>
-            <MjmlText fontSize="13px" color="#6b7280" align="center" lineHeight="1.6" padding="0">
+            <MjmlText fontSize="13px" color={EMAIL_PALETTE.muted} align="center" lineHeight="1.6" padding="0">
               With 💚
               <br />
-              <a href={siteUrl} style={{color: '#068f7b', textDecoration: 'none'}}>
-                {siteUrl}
+              <a href={siteUrl} style={linkStyle}>
+                Visit Seed Hypermedia
               </a>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
       ) : null}
 
-      <MjmlSection backgroundColor="#fdf8ee" padding="24px 24px 20px" borderRadius="0">
+      <MjmlSection backgroundColor={EMAIL_PALETTE.footerBackground} padding="24px 24px 20px" borderRadius="0">
         <MjmlColumn>
-          <MjmlText fontSize="12px" color="#6b7280" lineHeight="1.6" align="center" padding="0 0 12px">
+          <MjmlText fontSize="12px" color={EMAIL_PALETTE.muted} lineHeight="1.6" align="center" padding="0 0 12px">
             You're receiving this email because someone signed up for an account using this address. This is a
             transactional email related to your account security.
           </MjmlText>
