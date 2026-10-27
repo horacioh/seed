@@ -267,10 +267,11 @@ describe('vault accessibility', () => {
       </MemoryRouter>,
     )
 
-    const trigger = screen.getByRole('button', {name: 'a11y@example.com'})
+    const trigger = screen.getByRole('button', {name: 'Account a11y@example.com'})
     const controlledMenu = document.getElementById('account-menu-actions')
     expect(trigger.getAttribute('aria-expanded')).toBe('false')
     expect(trigger.getAttribute('aria-controls')).toBe('account-menu-actions')
+    expect(trigger.hasAttribute('aria-haspopup')).toBe(false)
     expect(controlledMenu).not.toBeNull()
     expect((await axe.run(screen.getByRole('banner'), axeOptions)).violations).toEqual([])
 
@@ -290,10 +291,12 @@ describe('vault accessibility', () => {
 
     fireEvent.click(trigger)
     await waitFor(() => expect(document.activeElement).toBe(logOut))
-    fireEvent.click(screen.getByRole('button', {name: 'Outside'}))
+    const outside = screen.getByRole('button', {name: 'Outside'})
+    outside.focus()
+    fireEvent.click(outside)
     await waitFor(() => {
       expect(trigger.getAttribute('aria-expanded')).toBe('false')
-      expect(document.activeElement).toBe(trigger)
+      expect(document.activeElement).toBe(outside)
     })
   })
 })

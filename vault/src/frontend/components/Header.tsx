@@ -19,9 +19,9 @@ export function Header() {
             className="!text-foreground hover:!text-foreground flex shrink-0 items-center justify-center gap-2 !no-underline hover:!no-underline"
           >
             <img src={logoUrl} alt="" className="size-6 rounded-full" />
-            <p className="text-foreground shrink-0 text-center font-bold whitespace-nowrap select-none md:text-left">
+            <span className="text-foreground sr-only shrink-0 text-center font-bold whitespace-nowrap select-none sm:not-sr-only md:text-left">
               Hypermedia Identity
-            </p>
+            </span>
           </Link>
         </div>
       </div>
@@ -46,7 +46,6 @@ function AccountMenu({email, onSignOut}: {email: string; onSignOut: () => void})
     const handler = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         close()
-        triggerRef.current?.focus()
       }
     }
     const keyHandler = (event: KeyboardEvent) => {
@@ -65,12 +64,11 @@ function AccountMenu({email, onSignOut}: {email: string; onSignOut: () => void})
   }, [open, close])
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative max-w-full min-w-0">
       <button
         ref={triggerRef}
         type="button"
-        aria-label={email}
-        aria-haspopup="true"
+        aria-label={`Account ${email}`}
         aria-expanded={open}
         aria-controls="account-menu-actions"
         onClick={() => setOpen((value) => !value)}

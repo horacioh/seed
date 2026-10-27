@@ -1,6 +1,6 @@
 import {expect, test, type Locator, type Page} from '@playwright/test'
 import {expectNoA11yViolations} from '@shm/a11y-testing/playwright'
-import {mkdir, readFile} from 'node:fs/promises'
+import {mkdir, readFile, writeFile} from 'node:fs/promises'
 import {join} from 'node:path'
 
 const webUrl = process.env.A11Y_WEB_URL || process.env.A11Y_BASE_URL || 'http://localhost:3000/'
@@ -22,8 +22,121 @@ async function scan(page: Page) {
   await expectNoA11yViolations(page, {modes: [...modes]})
 }
 
+async function settleAnimations(page: Page) {
+  await page.evaluate(async () => {
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+    const transitions = document.getAnimations().filter((animation) => animation.constructor.name === 'CSSTransition')
+    await Promise.all(transitions.map((transition) => transition.finished.catch(() => undefined)))
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+  })
+}
+
+async function setTheme(page: Page, theme: 'light' | 'dark') {
+  await page.emulateMedia({colorScheme: theme})
+  await page.evaluate((isDark) => document.documentElement.classList.toggle('dark', isDark), theme === 'dark')
+  await settleAnimations(page)
+}
+
+async function captureScreenshot(page: Page, filename: string, width: number, height: number) {
+  await page.setViewportSize({width, height})
+  await settleAnimations(page)
+  await page.screenshot({path: join(artifactDir, filename), fullPage: true})
+}
+
+async function expectHeaderLayout(page: Page, titleVisible: boolean) {
+  const brandLink = page.getByRole('link', {name: 'Hypermedia Identity'})
+  const brandTitle = brandLink.locator('span')
+  const accountTrigger = page.getByRole('button', {name: `Account ${vaultEmail}`, exact: true})
+  const [brandBounds, accountBounds] = await Promise.all([brandLink.boundingBox(), accountTrigger.boundingBox()])
+  expect(brandBounds).not.toBeNull()
+  expect(accountBounds).not.toBeNull()
+  expect(brandBounds!.x + brandBounds!.width).toBeLessThanOrEqual(accountBounds!.x)
+  await expect(brandTitle).toHaveCSS('position', titleVisible ? 'static' : 'absolute')
+  await expect(accountTrigger.locator('span')).toHaveCSS('white-space', 'nowrap')
+  await expect(accountTrigger.locator('span')).toHaveCSS('text-overflow', 'ellipsis')
+}
+
+async function readContrast(locator: Locator) {
+  return locator.evaluate((element) => {
+    type Color = {r: number; g: number; b: number; a: number}
+    const parseColor = (value: string): Color => {
+      if (value.startsWith('oklch(')) {
+        const channels = value.match(/[\d.]+%?/g)
+        if (!channels || channels.length < 3) throw new Error(`Unsupported computed color: ${value}`)
+        const lightness = parseFloat(channels[0]) / (channels[0].endsWith('%') ? 100 : 1)
+        const chroma = parseFloat(channels[1])
+        const hue = (parseFloat(channels[2]) * Math.PI) / 180
+        const a = chroma * Math.cos(hue)
+        const b = chroma * Math.sin(hue)
+        const lRoot = lightness + 0.3963377774 * a + 0.2158037573 * b
+        const mRoot = lightness - 0.1055613458 * a - 0.0638541728 * b
+        const sRoot = lightness - 0.0894841775 * a - 1.291485548 * b
+        const l = lRoot ** 3
+        const m = mRoot ** 3
+        const s = sRoot ** 3
+        const encode = (channel: number) => {
+          const normalized = Math.max(0, Math.min(1, channel))
+          return 255 * (normalized <= 0.0031308 ? 12.92 * normalized : 1.055 * normalized ** (1 / 2.4) - 0.055)
+        }
+        return {
+          r: encode(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+          g: encode(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+          b: encode(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+          a: channels[3] ? parseFloat(channels[3]) / (channels[3].endsWith('%') ? 100 : 1) : 1,
+        }
+      }
+      const channels = value.match(/[\d.]+/g)?.map(Number)
+      if (!channels || channels.length < 3) throw new Error(`Unsupported computed color: ${value}`)
+      return {r: channels[0], g: channels[1], b: channels[2], a: channels[3] ?? 1}
+    }
+    const composite = (foreground: Color, background: Color): Color => {
+      const alpha = foreground.a + background.a * (1 - foreground.a)
+      return {
+        r: (foreground.r * foreground.a + background.r * background.a * (1 - foreground.a)) / alpha,
+        g: (foreground.g * foreground.a + background.g * background.a * (1 - foreground.a)) / alpha,
+        b: (foreground.b * foreground.a + background.b * background.a * (1 - foreground.a)) / alpha,
+        a: alpha,
+      }
+    }
+    const luminance = (color: Color) => {
+      const channel = (value: number) => {
+        const normalized = value / 255
+        return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+      }
+      return 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b)
+    }
+
+    const style = window.getComputedStyle(element)
+    const backgroundLayers: Color[] = []
+    let backgroundElement: Element | null = element
+    while (backgroundElement) {
+      const color = parseColor(window.getComputedStyle(backgroundElement).backgroundColor)
+      if (color.a > 0) {
+        backgroundLayers.push(color)
+        if (color.a >= 1) break
+      }
+      backgroundElement = backgroundElement.parentElement
+    }
+
+    let background = parseColor(window.getComputedStyle(document.documentElement).backgroundColor)
+    if (background.a < 1) background = {r: 255, g: 255, b: 255, a: 1}
+    for (const layer of backgroundLayers.reverse()) background = composite(layer, background)
+
+    const foreground = composite(parseColor(style.color), background)
+    const ratio =
+      (Math.max(luminance(foreground), luminance(background)) + 0.05) /
+      (Math.min(luminance(foreground), luminance(background)) + 0.05)
+    return {
+      theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+      color: style.color,
+      background: `rgb(${Math.round(background.r)}, ${Math.round(background.g)}, ${Math.round(background.b)})`,
+      ratio,
+    }
+  })
+}
+
 async function logOut(page: Page) {
-  const accountTrigger = page.getByRole('button', {name: vaultEmail, exact: true})
+  const accountTrigger = page.getByRole('button', {name: `Account ${vaultEmail}`, exact: true})
   await expect(accountTrigger).toBeVisible()
   await tabTo(page, accountTrigger)
   await page.keyboard.press('Enter')
@@ -35,13 +148,24 @@ async function logOut(page: Page) {
 }
 
 async function captureStep(page: Page, name: string) {
-  await page.emulateMedia({colorScheme: 'light'})
-  await page.evaluate(() => document.documentElement.classList.remove('dark'))
+  await setTheme(page, 'light')
+  await captureScreenshot(page, `${name}-desktop-light.png`, 1280, 900)
+  if (name === 'signup-password') await expectHeaderLayout(page, true)
+  await captureScreenshot(page, `${name}-mobile-light.png`, 375, 812)
+  if (name === 'signup-password') await expectHeaderLayout(page, false)
+  if (name === 'signup-email') {
+    await captureScreenshot(page, 'signup-email-mobile-320-light.png', 320, 812)
+  }
+  if (name === 'signup-password') {
+    await page.setViewportSize({width: 320, height: 812})
+    await settleAnimations(page)
+    await expectHeaderLayout(page, false)
+    await setTheme(page, 'dark')
+    await captureScreenshot(page, 'signup-password-mobile-dark.png', 375, 812)
+    await setTheme(page, 'light')
+  }
   await page.setViewportSize({width: 1280, height: 900})
-  await page.screenshot({path: join(artifactDir, `${name}-desktop-light.png`), fullPage: true})
-  await page.setViewportSize({width: 375, height: 812})
-  await page.screenshot({path: join(artifactDir, `${name}-mobile-light.png`), fullPage: true})
-  await page.setViewportSize({width: 1280, height: 900})
+  await settleAnimations(page)
 }
 
 async function readVerificationCode() {
@@ -120,11 +244,17 @@ test('keyboard-only vault signup, recovery, and settings are accessible', async 
   await expect(page.getByRole('heading', {name: /save your recovery words/i})).toBeVisible()
   await scan(page)
   await captureStep(page, 'recovery-words')
-  await page.emulateMedia({colorScheme: 'dark'})
-  await page.evaluate(() => document.documentElement.classList.add('dark'))
+  await setTheme(page, 'dark')
+  const darkContrast = {
+    emailTrigger: await readContrast(page.getByRole('button', {name: `Account ${vaultEmail}`, exact: true})),
+    copyWords: await readContrast(page.getByRole('button', {name: 'Copy recovery words'})),
+  }
+  await writeFile(join(artifactDir, 'dark-contrast-review.json'), `${JSON.stringify(darkContrast, null, 2)}\n`)
+  console.log(`Dark recovery contrast: ${JSON.stringify(darkContrast)}`)
+  expect(darkContrast.emailTrigger.ratio).toBeGreaterThanOrEqual(4.5)
+  expect(darkContrast.copyWords.ratio).toBeGreaterThanOrEqual(4.5)
   await page.screenshot({path: join(artifactDir, 'recovery-words-desktop-dark.png'), fullPage: true})
-  await page.emulateMedia({colorScheme: 'light'})
-  await page.evaluate(() => document.documentElement.classList.remove('dark'))
+  await setTheme(page, 'light')
   const recoveryWords = await page.locator('ol li').allTextContents()
   expect(recoveryWords).toHaveLength(12)
   const continueFromRecovery = page.getByRole('button', {name: /continue|saved/i})
@@ -159,9 +289,9 @@ test('keyboard-only vault signup, recovery, and settings are accessible', async 
   await identitySettingsButton.click()
   await expect(page.getByRole('heading', {name: /identity settings/i})).toBeVisible()
   await scan(page)
-  await page.emulateMedia({colorScheme: 'dark'})
-  await page.evaluate(() => document.documentElement.classList.add('dark'))
+  await setTheme(page, 'dark')
   await page.screenshot({path: join(artifactDir, 'vault-settings-desktop-dark.png'), fullPage: true})
+  await setTheme(page, 'light')
 
   await logOut(page)
   await page.goto(vaultUrl)
