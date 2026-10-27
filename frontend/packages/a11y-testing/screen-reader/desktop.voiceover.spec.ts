@@ -1,6 +1,6 @@
 import {expect} from '@playwright/test'
 import {voiceOverTest as test} from './fixtures'
-import {launchPackagedApp} from './launch-electron'
+import {launchUnpackagedApp} from './launch-electron'
 
 test.afterEach(async ({voiceOver}, testInfo) => {
   await testInfo.attach('spoken-phrase-log.txt', {
@@ -9,8 +9,8 @@ test.afterEach(async ({voiceOver}, testInfo) => {
   })
 })
 
-test('packaged desktop shell announcements', async ({voiceOver}) => {
-  const app = await launchPackagedApp()
+test('desktop shell announcements', async ({voiceOver}) => {
+  const app = await launchUnpackagedApp()
 
   try {
     const page = await app.firstWindow()
