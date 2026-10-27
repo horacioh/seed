@@ -34,6 +34,23 @@ test('home shell landmarks and keyboard window controls are accessible', async (
   const {app, appWindow: page} = homePage.appData
 
   await expect(page.locator('#main-content')).toHaveCount(1)
+  const sidebar = page.locator('[data-a11y-region="sidebar"]')
+  const sidebarScrollRegion = sidebar.locator(':scope > .flex-1.overflow-y-auto')
+  const joinedSite = sidebar.getByRole('button', {name: /Seed|Hypermedia|Untitled/i}).first()
+  await expect(sidebar.getByText('Joined Spaces', {exact: true})).toBeVisible()
+  await expect(joinedSite).toBeVisible()
+  await expect(page.getByRole('separator', {name: 'Resize sidebar'})).toHaveCSS('position', 'absolute')
+  await expect
+    .poll(async () => {
+      const [scrollBox, siteBox] = await Promise.all([sidebarScrollRegion.boundingBox(), joinedSite.boundingBox()])
+      return Boolean(
+        scrollBox &&
+          siteBox &&
+          siteBox.y >= scrollBox.y &&
+          siteBox.y + siteBox.height <= scrollBox.y + scrollBox.height,
+      )
+    })
+    .toBe(true)
   await expectNoA11yViolations(page, a11yOptions)
 
   await page.locator('[data-titlebar-omnibar-region]').click()

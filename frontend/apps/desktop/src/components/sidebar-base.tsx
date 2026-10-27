@@ -157,6 +157,7 @@ export function GenericSidebarContainer({
             <PanelResizeHandle
               aria-label="Resize sidebar"
               className="panel-resize-handle focus-visible:ring-ring absolute top-0 right-0 z-10 h-full focus-visible:ring-2"
+              style={{position: 'absolute'}}
             />
           ) : null}
           <div className="flex-1 overflow-y-auto pb-8">{children}</div>
