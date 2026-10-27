@@ -57,11 +57,7 @@ vi.mock('./embed-editor', () => ({
 
 vi.mock('./media-container', () => ({
   MediaContainer: ({children, onPress}: any) => (
-    <div
-      data-testid="media-container"
-      data-has-on-press={String(!!onPress)}
-      onClick={onPress ? (e) => onPress(e.nativeEvent) : undefined}
-    >
+    <div data-testid="media-container" data-has-on-press={String(!!onPress)}>
       {children}
     </div>
   ),

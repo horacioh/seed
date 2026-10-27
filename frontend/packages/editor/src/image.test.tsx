@@ -16,8 +16,10 @@ vi.mock('@shm/ui/get-file-url', () => ({
 
 vi.mock('@shm/ui/resize-handle', () => ({
   ResizeHandle: ({onMouseDown, style}: any) => (
-    <div
+    <button
+      type="button"
       data-testid={style?.left !== undefined ? 'left-resize-handle' : 'right-resize-handle'}
+      aria-label="Resize image"
       onMouseDown={onMouseDown}
     />
   ),
@@ -38,7 +40,7 @@ vi.mock('./media-render', () => ({
 vi.mock('./media-container', () => ({
   MediaContainer: ({children, width, onHoverIn}: any) => (
     <div data-testid="media-container" data-width={width}>
-      <button data-testid="show-resize-handles" onClick={onHoverIn} />
+      <button type="button" data-testid="show-resize-handles" aria-label="Show resize handles" onClick={onHoverIn} />
       {children}
     </div>
   ),

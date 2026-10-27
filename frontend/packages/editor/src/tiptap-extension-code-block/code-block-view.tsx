@@ -226,9 +226,7 @@ export const CodeBlockView = ({props, languages}: {props: NodeViewProps; languag
             )}
           </Button>
         </Tooltip>
-        <span className="sr-only" role="status">
-          {copyState === 'idle' ? '' : copyLabel}
-        </span>
+        <output className="sr-only">{copyState === 'idle' ? '' : copyLabel}</output>
       </div>
 
       {/* Portaled dropdown list */}
@@ -244,15 +242,15 @@ export const CodeBlockView = ({props, languages}: {props: NodeViewProps; languag
               }}
               onMouseEnter={() => cancelClose()}
               onMouseLeave={() => scheduleClose()}
-              onMouseDown={(e) => {
-                // Don't blur editor when clicking options
-                e.preventDefault()
-                e.stopPropagation()
-              }}
             >
               {allLanguages.map((item) => (
                 <Button
                   key={item}
+                  type="button"
+                  onMouseDown={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                  }}
                   onClick={() => handleChange(item)}
                   className="hover:bg-accent dark:hover:bg-accent flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-sm"
                 >

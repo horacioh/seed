@@ -94,24 +94,17 @@ const FileDisplay = ({editor, block, assign}: DisplayComponentProps) => {
             asChild
           >
             {saveCidAsFile ? (
-              <a
-                download
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation()
                   saveCidAsFile(fileCid, fileName)
                 }}
               >
                 download
-              </a>
+              </button>
             ) : (
-              <a
-                href={getDaemonFileUrl(url, fileName)}
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
-                download={fileName}
-              >
+              <a href={getDaemonFileUrl(url, fileName)} download={fileName}>
                 download
               </a>
             )}

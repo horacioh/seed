@@ -77,6 +77,7 @@ test.describe('editor accessibility', () => {
     await page.goto('/?fixture=nested&edit=1')
     await editorHelpers.waitForEditorReady()
     await editorHelpers.selectText('Parent')
+    await expect.poll(() => editorHelpers.getSelectedText()).toBe('Parent')
     await editorHelpers.pressKey('Control+Shift+ArrowUp')
     await expect
       .poll(async () => (await editorHelpers.getBlocks()).map((block) => block.id))
@@ -190,7 +191,7 @@ test.describe('editor accessibility', () => {
     await expectNoA11yViolations(page, {modes: [...modes]})
     await page.keyboard.press('Escape')
     await expect(gallery).toBeHidden()
-    await expect(page.locator('[contenteditable="true"]').first()).toBeFocused()
+    await expect(page.getByRole('button', {name: 'Select image block'})).toBeFocused()
   })
 
   test('image alt text can be authored from its focused control', async ({page}) => {
@@ -238,6 +239,8 @@ test.describe('editor accessibility', () => {
 
   test('image drag-handle menu opens the alt-text dialog', async ({page}) => {
     await page.goto('/?fixture=allBlocks&real=1&edit=1')
+    await page.locator('[data-content-type="paragraph"]').first().click()
+    await expect(page.locator('[contenteditable="true"]').first()).toBeFocused()
     await page
       .locator('[data-content-type="image"]')
       .first()
@@ -260,6 +263,8 @@ test.describe('editor accessibility', () => {
     test(`selected media block deletion with ${key} is announced`, async ({page, editorHelpers}) => {
       await page.goto('/?fixture=allBlocks&real=1&edit=1')
       await editorHelpers.waitForEditorReady()
+      await page.locator('[data-content-type="paragraph"]').first().click()
+      await expect(page.locator('[contenteditable="true"]').first()).toBeFocused()
       const images = page.locator('[data-content-type="image"]')
       const imageCount = await images.count()
       const blockId = await page.evaluate(

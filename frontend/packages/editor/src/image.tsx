@@ -3,6 +3,7 @@ import {Button} from '@shm/ui/button'
 import {useImageUrl} from '@shm/ui/get-file-url'
 import {ResizeHandle} from '@shm/ui/resize-handle'
 import {toast} from '@shm/ui/toast'
+import {cn} from '@shm/ui/utils'
 import {AlertTriangle} from 'lucide-react'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {RiImage2Line} from 'react-icons/ri'
@@ -418,7 +419,7 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
 
   // Sets the resize params, allowing the user to begin resizing the image by
   // moving the cursor left or right.
-  const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+  const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     setShowHandle(true)
@@ -432,7 +433,7 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     editor.setTextCursorPosition(block.id, 'start')
   }
 
-  const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+  const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     setShowHandle(true)
 
@@ -443,6 +444,22 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       initialClientX: event.clientX,
     }
     editor.setTextCursorPosition(block.id, 'start')
+  }
+
+  const resizeByKeyboard = (handleUsed: 'left' | 'right') => (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const step = event.shiftKey ? 50 : 10
+    const direction = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0
+    if (!direction) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    const nextWidth = Math.max(
+      256,
+      Math.min(getEditorWidth(), currentWidth + (handleUsed === 'left' ? -direction : direction) * step),
+    )
+    width = nextWidth
+    setCurrentWidth(nextWidth)
+    assign({props: {width: nextWidth.toString()}})
   }
 
   return (
@@ -465,12 +482,26 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       urlInputPlaceholder="Paste an image URL"
       deleteLabel="Delete image"
     >
-      {showHandle && (
-        <>
-          <ResizeHandle style={{left: 4}} onMouseDown={leftResizeHandleMouseDownHandler} />
-          <ResizeHandle style={{right: 4}} onMouseDown={rightResizeHandleMouseDownHandler} />
-        </>
-      )}
+      <ResizeHandle
+        aria-label="Resize image from left edge"
+        className={cn(
+          !showHandle && 'pointer-events-none opacity-0',
+          'focus-visible:pointer-events-auto focus-visible:opacity-100',
+        )}
+        style={{left: 4}}
+        onMouseDown={leftResizeHandleMouseDownHandler}
+        onKeyDown={resizeByKeyboard('left')}
+      />
+      <ResizeHandle
+        aria-label="Resize image from right edge"
+        className={cn(
+          !showHandle && 'pointer-events-none opacity-0',
+          'focus-visible:pointer-events-auto focus-visible:opacity-100',
+        )}
+        style={{right: 4}}
+        onMouseDown={rightResizeHandleMouseDownHandler}
+        onKeyDown={resizeByKeyboard('right')}
+      />
       {imageSrc && (
         <img
           style={{

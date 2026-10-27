@@ -97,11 +97,7 @@ export function MobileMentionsDialog({
             aria-label={mode === 'account' ? 'Accounts' : 'Documents'}
             aria-busy={loading}
           >
-            {loading && (
-              <p role="status" className="text-muted-foreground p-4">
-                Searching…
-              </p>
-            )}
+            {loading && <output className="text-muted-foreground block p-4">Searching…</output>}
             {error && (
               <div role="alert" className="p-4">
                 Unable to load mentions or resolve the published version.{' '}
@@ -111,9 +107,9 @@ export function MobileMentionsDialog({
               </div>
             )}
             {!loading && !error && !results.length && (
-              <p role="status" className="text-muted-foreground p-4">
+              <output className="text-muted-foreground block p-4">
                 No {mode === 'account' ? 'accounts' : 'documents'} found
-              </p>
+              </output>
             )}
             {results.map((item) => (
               <Button

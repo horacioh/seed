@@ -56,11 +56,15 @@ describe('LinkTypeDropdown', () => {
 
     act(() => {
       root.render(
-        <div data-testid="link-type-parent" onMouseDown={onParentMouseDown} onClick={onParentClick}>
+        <div data-testid="link-type-parent">
           <LinkTypeDropdown selected="embed" onSelect={vi.fn()} isHmLink />
         </div>,
       )
     })
+
+    const parent = document.querySelector('[data-testid="link-type-parent"]')
+    parent?.addEventListener('mousedown', onParentMouseDown)
+    parent?.addEventListener('click', onParentClick)
 
     const trigger = getDropdownTrigger()
     dispatchMouseDown(trigger)

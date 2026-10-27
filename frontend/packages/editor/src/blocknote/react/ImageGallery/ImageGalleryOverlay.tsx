@@ -64,7 +64,11 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
     }
 
     if (!wasOpenRef.current) {
-      openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      const activeImage = pluginState.images[pluginState.activeIndex]
+      openerRef.current =
+        Array.from((view.dom as HTMLElement).querySelectorAll<HTMLElement>('[data-media-block-id]')).find(
+          (element) => element.dataset.mediaBlockId === activeImage?.blockId,
+        ) ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null)
       wasOpenRef.current = true
       requestAnimationFrame(() => dialogRef.current?.querySelector<HTMLElement>('button')?.focus())
     }
@@ -91,7 +95,7 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
 
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [pluginState?.isOpen, handleNext, handlePrev, handleClose])
+  }, [pluginState?.activeIndex, pluginState?.images, pluginState?.isOpen, handleNext, handlePrev, handleClose, view])
 
   if (!pluginState?.isOpen) return null
 

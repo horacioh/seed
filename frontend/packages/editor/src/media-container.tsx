@@ -15,6 +15,7 @@ import {getBlockInfoWithManualOffset} from './blocknote/core/extensions/Blocks/h
 import {isInGridContainer} from './blocknote/core/extensions/Blocks/nodes/BlockChildren'
 import {MultipleNodeSelection} from './blocknote/core/extensions/SideMenu/MultipleNodeSelection'
 import {InlineContent} from './blocknote/react/ReactBlockSpec'
+import {isBlockSelected} from './block-selection-wrapper'
 import {markBlockUploaded, MediaType} from './media-render'
 import {MediaSelectionMenu} from './media-selection-menu'
 import {HMBlockSchema} from './schema'
@@ -348,7 +349,7 @@ export const MediaContainer = ({
   }
 
   return (
-    <fieldset
+    <div
       className="relative flex w-full min-w-0 flex-col items-center gap-2 self-center border-0 p-0"
       draggable={canAuthor ? 'true' : 'false'}
       onMouseDownCapture={(e) => {
@@ -363,9 +364,10 @@ export const MediaContainer = ({
             e.preventDefault()
             e.stopPropagation()
           }
+        } else if (canAuthor && (editor.isEditable || isEmbed) && !isBlockSelected(editor, block.id)) {
+          selectBlock(e)
         }
       }}
-      onClick={onPress ? undefined : canAuthor ? selectBlock : undefined}
       onDragStart={(e: any) => {
         // Uncomment to allow drag only if block is selected
         // if (!selected) {
@@ -381,10 +383,10 @@ export const MediaContainer = ({
         editor.sideMenu!.blockDragEnd()
       }}
     >
-      <legend className="sr-only">Media block</legend>
       <button
         type="button"
         data-media-container-action
+        data-media-block-id={block.id}
         aria-label={`${onPress ? 'Open' : 'Select'} ${mediaType} block`}
         className="sr-only focus:not-sr-only focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
         onClick={(event) => {
@@ -475,6 +477,6 @@ export const MediaContainer = ({
           onKeyDown={handleImageCaptionKeyDown}
         />
       )}
-    </fieldset>
+    </div>
   )
 }

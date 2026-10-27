@@ -12,12 +12,11 @@ test.beforeEach(async ({page}) => {
 
 test('real HEIC decoding retains crop detail and runs without a conversion service', async ({page}) => {
   const externalRequests: string[] = []
+  const pageOrigin = new URL(page.url()).origin
   page.on('request', (request) => {
-    if (
-      request.method() !== 'GET' ||
-      (!request.url().startsWith('http://localhost:5180/') && !request.url().startsWith('blob:'))
-    ) {
-      externalRequests.push(request.url())
+    const requestUrl = request.url()
+    if (request.method() !== 'GET' || (!requestUrl.startsWith(`${pageOrigin}/`) && !requestUrl.startsWith('blob:'))) {
+      externalRequests.push(requestUrl)
     }
   })
   const result = await page.evaluate(async (bytes) => {
@@ -167,5 +166,5 @@ test('unhandled file drops are canceled without blocking text drops or child tar
     return {fileCanceled: fileDrop.defaultPrevented, textCanceled: textDrop.defaultPrevented, handled}
   })
   expect(result).toEqual({fileCanceled: true, textCanceled: false, handled: true})
-  await expect(page).toHaveURL('http://localhost:5180/images.html')
+  await expect(page).toHaveURL(/\/images\.html$/)
 })

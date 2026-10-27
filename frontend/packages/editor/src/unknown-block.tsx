@@ -38,17 +38,21 @@ function UnknownBlockRender({block, editor}: {block: Block<HMBlockSchema>; edito
       className="block-content block-unknown flex flex-1 flex-col overflow-hidden rounded-md border border-red-300 bg-red-100 dark:border-red-800 dark:bg-red-950"
       contentEditable={false}
     >
-      <div className="flex cursor-pointer items-center gap-2 p-2" onClick={() => setExpanded(!expanded)}>
-        <AlertCircle className="size-4 text-red-600 dark:text-red-400" />
+      <button
+        type="button"
+        className="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent p-2 text-left"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <AlertCircle className="size-4 text-red-600 dark:text-red-400" aria-hidden="true" />
         <span className="flex-1 font-sans text-sm text-red-700 dark:text-red-300">
           Unsupported Block: {originalType}
         </span>
         {expanded ? (
-          <ChevronDown className="size-4 text-red-600 dark:text-red-400" />
+          <ChevronDown className="size-4 text-red-600 dark:text-red-400" aria-hidden="true" />
         ) : (
-          <ChevronRight className="size-4 text-red-600 dark:text-red-400" />
+          <ChevronRight className="size-4 text-red-600 dark:text-red-400" aria-hidden="true" />
         )}
-      </div>
+      </button>
       {expanded && (
         <pre className="mx-2 mb-2 overflow-auto rounded-md border border-red-200 bg-red-50/60 p-2 dark:border-red-900 dark:bg-red-950/60">
           <code className="font-mono text-xs wrap-break-word text-red-900 dark:text-red-200">

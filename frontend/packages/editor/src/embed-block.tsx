@@ -201,99 +201,107 @@ function DraftEmbedPlaceholder({
   }
 
   return (
-    <div
-      ref={containerRef}
-      contentEditable={false}
-      onMouseDown={() => {
-        wasSelectedAtMouseDown.current = isBlockSelected(editor, blockId)
-      }}
-      onClick={(e) => {
-        e.stopPropagation()
-        // First click selects (handled by the editor's click handling);
-        // a click on an already-selected card opens the draft.
-        if (wasSelectedAtMouseDown.current) void handleOpen()
-      }}
-      className={cn('my-2', documentCardContainerClassName())}
-    >
-      <DocumentCardShell
-        interactive
-        thumbnail={<DocumentCardThumbnail coverImage={metadata?.cover} iconImage={metadata?.icon} />}
-        title={
-          <input
-            ref={inputRef}
-            type="text"
-            value={title}
-            onChange={stopEditorPropagation}
-            onInputCapture={handleTitleInput}
-            onBeforeInputCapture={stopEditorPropagation}
-            onKeyDownCapture={handleTitleKeyDown}
-            onMouseDownCapture={stopEditorPropagation}
-            onPointerDownCapture={stopEditorPropagation}
-            onClickCapture={stopEditorPropagation}
-            onPasteCapture={stopEditorPropagation}
-            onFocus={(e) => {
-              stopEditorPropagation(e)
-              // Editing the title means working with this card: select it,
-              // but keep DOM focus in the input.
-              if (editor.isEditable && !isBlockSelected(editor, blockId)) {
-                selectBlockNodeById(editor, blockId, {focus: false})
-              }
-            }}
-            onCompositionStartCapture={stopEditorPropagation}
-            onCompositionUpdateCapture={stopEditorPropagation}
-            onCompositionEndCapture={stopEditorPropagation}
-            onBlur={(e) => {
-              e.stopPropagation()
-              void flushName(title)
-            }}
-            readOnly={!draftActions?.onUpdateDraftName}
-            placeholder="Untitled document"
-            className={cn(
-              'text-foreground placeholder:text-muted-foreground/80 focus-visible:outline-ring block w-full truncate border-none bg-transparent font-sans text-lg leading-tight! font-bold focus-visible:outline-2 focus-visible:outline-offset-2',
-              !title && 'text-muted-foreground/80',
-            )}
-          />
-        }
-        summary={<p className="text-muted-foreground mt-2 line-clamp-2 font-sans text-sm">{summary}</p>}
-        badges={<DraftBadge />}
-        actions={
-          // Stop clicks on the menu from bubbling to the card's open-draft handler.
-          <div onClick={(e) => e.stopPropagation()}>
-            <OptionsDropdown
-              align="end"
-              side="top"
-              ariaLabel="Draft options"
-              menuItems={[
-                {
-                  key: 'open',
-                  label: 'Open draft',
-                  icon: <Pencil className="size-4" />,
-                  disabled: !draftActions?.onOpenDraft || !draft,
-                  onClick: () => void handleOpen(),
-                },
-                ...(draftActions?.onMoveDraft
-                  ? [
-                      {
-                        key: 'move',
-                        label: 'Move',
-                        icon: <Forward className="size-4" />,
-                        disabled: !draft,
-                        onClick: () => draftActions.onMoveDraft?.(draftId, {embedBlockId: blockId}),
-                      },
-                    ]
-                  : []),
-                {
-                  key: 'remove',
-                  label: 'Remove card',
-                  icon: <Trash2 className="size-4" />,
-                  variant: 'destructive',
-                  onClick: () => editor.removeBlocks([blockId]),
-                },
-              ]}
+    <div ref={containerRef} contentEditable={false} className={cn('relative my-2', documentCardContainerClassName())}>
+      {draft && draftActions?.onOpenDraft ? (
+        <button
+          type="button"
+          aria-label={`Open draft ${title || 'Untitled document'}`}
+          className="focus-visible:ring-ring absolute inset-0 z-0 border-0 bg-transparent p-0 text-left focus-visible:ring-2"
+          onMouseDownCapture={(event) => {
+            if (!editor.isEditable || event.button !== 0 || event.shiftKey) return
+            const wasSelected = isBlockSelected(editor, blockId)
+            wasSelectedAtMouseDown.current = wasSelected
+            if (!wasSelected) {
+              event.preventDefault()
+              selectBlockNodeById(editor, blockId)
+            }
+          }}
+          onClick={(event) => {
+            event.stopPropagation()
+            if (wasSelectedAtMouseDown.current || event.detail === 0) void handleOpen()
+          }}
+        />
+      ) : null}
+      <div className="pointer-events-none relative z-10">
+        <DocumentCardShell
+          interactive
+          thumbnail={<DocumentCardThumbnail coverImage={metadata?.cover} iconImage={metadata?.icon} />}
+          title={
+            <input
+              ref={inputRef}
+              type="text"
+              value={title}
+              onChange={stopEditorPropagation}
+              onInputCapture={handleTitleInput}
+              onBeforeInputCapture={stopEditorPropagation}
+              onKeyDownCapture={handleTitleKeyDown}
+              onMouseDownCapture={stopEditorPropagation}
+              onPointerDownCapture={stopEditorPropagation}
+              onClickCapture={stopEditorPropagation}
+              onPasteCapture={stopEditorPropagation}
+              onFocus={(e) => {
+                stopEditorPropagation(e)
+                // Editing the title means working with this card: select it,
+                // but keep DOM focus in the input.
+                if (editor.isEditable && !isBlockSelected(editor, blockId)) {
+                  selectBlockNodeById(editor, blockId, {focus: false})
+                }
+              }}
+              onCompositionStartCapture={stopEditorPropagation}
+              onCompositionUpdateCapture={stopEditorPropagation}
+              onCompositionEndCapture={stopEditorPropagation}
+              onBlur={(e) => {
+                e.stopPropagation()
+                void flushName(title)
+              }}
+              readOnly={!draftActions?.onUpdateDraftName}
+              placeholder="Untitled document"
+              className={cn(
+                'text-foreground placeholder:text-muted-foreground/80 focus-visible:outline-ring pointer-events-auto relative z-10 block min-h-6 w-full truncate border-none bg-transparent font-sans text-lg leading-tight! font-bold focus-visible:outline-2 focus-visible:outline-offset-2',
+                !title && 'text-muted-foreground/80',
+              )}
             />
-          </div>
-        }
-      />
+          }
+          summary={<p className="text-muted-foreground mt-2 line-clamp-2 font-sans text-sm">{summary}</p>}
+          badges={<DraftBadge />}
+          actions={
+            <div className="pointer-events-auto relative z-10">
+              <OptionsDropdown
+                align="end"
+                side="top"
+                ariaLabel="Draft options"
+                menuItems={[
+                  {
+                    key: 'open',
+                    label: 'Open draft',
+                    icon: <Pencil className="size-4" />,
+                    disabled: !draftActions?.onOpenDraft || !draft,
+                    onClick: () => void handleOpen(),
+                  },
+                  ...(draftActions?.onMoveDraft
+                    ? [
+                        {
+                          key: 'move',
+                          label: 'Move',
+                          icon: <Forward className="size-4" />,
+                          disabled: !draft,
+                          onClick: () => draftActions.onMoveDraft?.(draftId, {embedBlockId: blockId}),
+                        },
+                      ]
+                    : []),
+                  {
+                    key: 'remove',
+                    label: 'Remove card',
+                    icon: <Trash2 className="size-4" />,
+                    variant: 'destructive',
+                    onClick: () => editor.removeBlocks([blockId]),
+                  },
+                ]}
+              />
+            </div>
+          }
+        />
+      </div>
     </div>
   )
 }
@@ -576,8 +584,6 @@ function SelectedEmbedActions({
   return (
     <div
       contentEditable={false}
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
       className={cn(
         'absolute right-2 bottom-2 z-10 flex items-center gap-1 rounded-md',
         'border-border bg-background border px-1 py-0.5 shadow-sm',
@@ -737,9 +743,6 @@ export const EmbedLauncherInput = ({
               left: inputRect.left,
               width: inputRect.width,
             }}
-            // Keep focus on the input when clicking inside the dropdown
-            // background.
-            onMouseDown={(e) => e.preventDefault()}
           >
             {isDisplayingRecents && (
               <SizableText color="muted" family="default" className="mx-4 text-red-500">

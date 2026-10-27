@@ -168,7 +168,7 @@ describe('MediaContainer image caption', () => {
 
     const mediaChild = container.querySelector('[data-testid="media-child"]') as HTMLElement
     act(() => {
-      mediaChild.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
+      mediaChild.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true, button: 0}))
     })
 
     expect(editorGate.beginEditIfNeeded).toHaveBeenCalledOnce()
@@ -198,8 +198,10 @@ describe('MediaContainer image caption', () => {
     const thirdMediaChild = container.querySelector('[data-testid="media-child-3"]') as HTMLElement
 
     act(() => {
-      firstMediaChild.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true}))
-      thirdMediaChild.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, shiftKey: true}))
+      firstMediaChild.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true, button: 0}))
+      thirdMediaChild.dispatchEvent(
+        new MouseEvent('mousedown', {bubbles: true, cancelable: true, button: 0, shiftKey: true}),
+      )
     })
 
     expect(editor.__view.state.selection instanceof MultipleNodeSelection).toBe(true)

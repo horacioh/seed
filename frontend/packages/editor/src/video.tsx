@@ -164,11 +164,13 @@ function SegmentedToggle({
   value,
   onChange,
   disabled,
+  onKeyDown,
 }: {
   options: {label: string; value: string}[]
   value: string
   onChange: (value: string) => void
   disabled?: boolean
+  onKeyDown?: React.KeyboardEventHandler<HTMLButtonElement>
 }) {
   return (
     <div
@@ -190,6 +192,7 @@ function SegmentedToggle({
             disabled && 'pointer-events-none',
           )}
           onClick={() => onChange(option.value)}
+          onKeyDown={onKeyDown}
         >
           {option.label}
         </button>
@@ -213,16 +216,14 @@ function VideoOptions({
   muted: boolean
   setMuted: (v: boolean) => void
 }) {
+  const stopEditorKeyDown = (event: React.KeyboardEvent<HTMLElement>) => event.stopPropagation()
+
   return (
-    <div
-      className="flex w-full cursor-default flex-col gap-2 px-2 py-2 text-sm select-none"
-      onSelect={(e) => e.stopPropagation()}
-      onKeyDown={(e) => e.stopPropagation()}
-    >
-      <div className="text-muted-foreground px-1 text-xs font-medium tracking-wide uppercase">Video settings</div>
+    <fieldset className="m-0 flex w-full cursor-default flex-col gap-2 border-0 px-2 py-2 text-sm select-none">
+      <legend className="text-muted-foreground px-1 text-xs font-medium tracking-wide uppercase">Video settings</legend>
       <div className="flex items-center justify-between gap-2 px-1">
         <span className="cursor-default text-sm select-none">Autoplay</span>
-        <Switch checked={autoplay} onCheckedChange={setAutoplay} />
+        <Switch checked={autoplay} onCheckedChange={setAutoplay} onKeyDown={stopEditorKeyDown} />
       </div>
       <div className="flex items-center justify-between gap-2 px-1">
         <span className="cursor-default text-sm select-none">Loop</span>
@@ -233,6 +234,7 @@ function VideoOptions({
           ]}
           value={loop ? 'loop' : 'once'}
           onChange={(v) => setLoop(v === 'loop')}
+          onKeyDown={stopEditorKeyDown}
         />
       </div>
       {autoplay ? (
@@ -246,6 +248,7 @@ function VideoOptions({
               ]}
               value="off"
               onChange={() => {}}
+              onKeyDown={stopEditorKeyDown}
               disabled
             />
           </div>
@@ -260,10 +263,11 @@ function VideoOptions({
             ]}
             value={muted ? 'off' : 'on'}
             onChange={(v) => setMuted(v === 'off')}
+            onKeyDown={stopEditorKeyDown}
           />
         </div>
       )}
-    </div>
+    </fieldset>
   )
 }
 
@@ -430,7 +434,7 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
 
   // Sets the resize params, allowing the user to begin resizing the video by
   // moving the cursor left or right.
-  const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+  const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     setShowHandle(true)
@@ -444,7 +448,7 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     editor.setTextCursorPosition(block.id, 'start')
   }
 
-  const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+  const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     setShowHandle(true)
@@ -456,6 +460,23 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
       initialClientX: event.clientX,
     }
     editor.setTextCursorPosition(block.id, 'start')
+  }
+
+  const resizeByKeyboard = (handleUsed: 'left' | 'right') => (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const step = event.shiftKey ? 50 : 10
+    const direction = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0
+    if (!direction) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    const maxWidth = editor.domElement.firstElementChild!.clientWidth
+    const nextWidth = Math.max(
+      minWidth,
+      Math.min(maxWidth, currentWidth + (handleUsed === 'left' ? -direction : direction) * step),
+    )
+    width = nextWidth
+    setCurrentWidth(nextWidth)
+    assign({props: {width: nextWidth.toString()}})
   }
 
   return (
@@ -496,12 +517,26 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
       }
     >
       <div className="relative aspect-[16/9] w-full">
-        {showHandle && (
-          <>
-            <ResizeHandle style={{left: 4}} onMouseDown={leftResizeHandleMouseDownHandler} />
-            <ResizeHandle style={{right: 4}} onMouseDown={rightResizeHandleMouseDownHandler} />
-          </>
-        )}
+        <ResizeHandle
+          aria-label="Resize video from left edge"
+          className={cn(
+            !showHandle && 'pointer-events-none opacity-0',
+            'focus-visible:pointer-events-auto focus-visible:opacity-100',
+          )}
+          style={{left: 4}}
+          onMouseDown={leftResizeHandleMouseDownHandler}
+          onKeyDown={resizeByKeyboard('left')}
+        />
+        <ResizeHandle
+          aria-label="Resize video from right edge"
+          className={cn(
+            !showHandle && 'pointer-events-none opacity-0',
+            'focus-visible:pointer-events-auto focus-visible:opacity-100',
+          )}
+          style={{right: 4}}
+          onMouseDown={rightResizeHandleMouseDownHandler}
+          onKeyDown={resizeByKeyboard('right')}
+        />
         {block.props.displaySrc || isIpfsUrl(block.props.url || '') ? (
           <video
             key={videoSrc}
