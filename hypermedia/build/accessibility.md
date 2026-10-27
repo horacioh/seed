@@ -14,6 +14,8 @@ This harness PR adds report-only checks and turns on no gates. A surface's test 
 
 ## Use the helpers
 
+In the desktop app, press **F6** to cycle through the titlebar, sidebar, main content, and open side panels. Press **Shift+F6** to cycle in reverse. Hidden or closed regions are skipped.
+
 The Playwright helper audits light and dark by default. It also supports forced colors, reduced motion, 320 CSS-pixel reflow and a 200% zoom-equivalent viewport.
 
 ```ts

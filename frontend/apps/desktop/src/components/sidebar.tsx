@@ -553,7 +553,9 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
     return (
       <SidebarSection title="My Space">
         <div className="relative">
-          <div
+          <button
+            type="button"
+            aria-label={`Open ${document.metadata.name}`}
             className={cn(
               'border-border hover:bg-sidebar-accent my-2 flex cursor-pointer items-center gap-2 rounded-lg border p-2 pr-8',
               active && 'border-accent bg-accent text-accent-foreground hover:bg-accent/90',
@@ -569,7 +571,7 @@ function MySiteSection({selectedAccountId}: {selectedAccountId?: string}) {
             />
             <span className="min-w-0 flex-1 truncate text-sm font-bold select-none">{document.metadata.name}</span>
             <UnreadNotificationsDot count={unreadNotifications} />
-          </div>
+          </button>
           <OptionsDropdown
             side="right"
             align="start"

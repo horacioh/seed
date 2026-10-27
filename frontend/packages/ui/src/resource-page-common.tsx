@@ -1711,9 +1711,7 @@ export function PageShell({
           navigate({key: 'document', id})
         }}
       >
-        <main id="main-content" tabIndex={-1}>
-          {children}
-        </main>
+        <section aria-label="Document content">{children}</section>
       </SiteFileBrowserLayout>
     </div>
   )

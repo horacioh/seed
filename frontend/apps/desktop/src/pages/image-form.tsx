@@ -57,6 +57,7 @@ export function ImageForm({
     <div className="bg-muted flex-1 overflow-hidden rounded-md">
       <img
         src={url}
+        alt="Selected preview"
         key={url}
         style={{
           width: '100%',

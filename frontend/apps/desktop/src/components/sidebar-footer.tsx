@@ -90,7 +90,8 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
           <ScrollArea className="h-full flex-1 overflow-y-auto">
             {accountOptions?.map((option) =>
               option ? (
-                <div
+                <button
+                  type="button"
                   key={option.id.uid}
                   className={cn(
                     'hover:bg-sidebar-accent flex flex-row items-center gap-4 rounded-md p-2',
@@ -104,7 +105,7 @@ export function SidebarFooter({isSidebarVisible = false}: {isSidebarVisible?: bo
                 >
                   <AccountAvatar id={option.id} name={option.metadata?.name} icon={option.metadata?.icon} />
                   {option.metadata?.name || `?${option.id.uid?.slice(-8)}`}
-                </div>
+                </button>
               ) : null,
             )}
           </ScrollArea>

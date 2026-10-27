@@ -503,7 +503,6 @@ function NetworkSettings() {
                   value={pendingCustomName}
                   onChange={(e) => setPendingCustomName(e.target.value)}
                   placeholder="network-name"
-                  autoFocus
                 />
                 <SizableText size="xs" className="text-muted-foreground">
                   Peers only connect to each other when they use the same network name.

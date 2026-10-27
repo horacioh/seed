@@ -291,27 +291,25 @@ function PublishedAgentRow({
   accessDisabled: boolean
 }) {
   return (
-    <div
-      data-testid="published-agent"
-      role={onOpen ? 'button' : undefined}
-      tabIndex={onOpen ? 0 : undefined}
-      onClick={onOpen}
-      onKeyDown={(event) => {
-        if (onOpen && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault()
-          onOpen()
-        }
-      }}
-      className={cn('flex items-center gap-3 px-3 py-2.5', onOpen && 'hover:bg-muted/50 cursor-pointer')}
-    >
+    <div data-testid="published-agent" className="flex items-center gap-3 px-3 py-2.5">
       <div className="bg-primary/10 text-primary flex size-9 flex-none items-center justify-center rounded-lg">
         <Bot className="size-4" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <SizableText weight="bold" className="truncate">
-            {agent ? agent.definition.name : 'Unavailable agent'}
-          </SizableText>
+          {onOpen ? (
+            <button
+              type="button"
+              className="focus-visible:ring-ring min-w-0 truncate text-left font-bold focus-visible:ring-2"
+              onClick={onOpen}
+            >
+              {agent ? agent.definition.name : 'Unavailable agent'}
+            </button>
+          ) : (
+            <SizableText weight="bold" className="truncate">
+              {agent ? agent.definition.name : 'Unavailable agent'}
+            </SizableText>
+          )}
           {isDefault ? (
             <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-bold uppercase">
               Default
@@ -329,10 +327,17 @@ function PublishedAgentRow({
         ) : null}
       </div>
       {/* The row opens the agent; its controls act on the space, so they must not also navigate. */}
-      <div className="flex items-center gap-2" onClick={(event) => event.stopPropagation()}>
+      <div className="flex items-center gap-2">
         {onMakeDefault ? (
           <Tooltip content="Open the agents panel on this agent for new visitors">
-            <Button variant="outline" size="sm" onClick={onMakeDefault}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(event) => {
+                event.stopPropagation()
+                onMakeDefault()
+              }}
+            >
               Make default
             </Button>
           </Tooltip>
@@ -341,7 +346,15 @@ function PublishedAgentRow({
           <AccessSelect agent={agent} disabled={accessDisabled} onChange={onAccessChange} />
         ) : null}
         <Tooltip content="Remove from this space">
-          <Button variant="ghost" size="sm" aria-label="Remove from this space" onClick={onRemove}>
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label="Remove from this space"
+            onClick={(event) => {
+              event.stopPropagation()
+              onRemove()
+            }}
+          >
             <X className="size-4" />
           </Button>
         </Tooltip>

@@ -217,7 +217,8 @@ describe('browser page lifecycle', () => {
     )
     const icon = container.querySelector('img')!
     // Icon, then the page-chosen title: the address is in the omnibar, not here.
-    expect(icon.nextElementSibling?.getAttribute('role')).toBe('status')
+    expect(icon.nextElementSibling?.tagName).toBe('OUTPUT')
+    expect(icon.nextElementSibling?.getAttribute('aria-live')).toBe('polite')
     expect(icon.nextElementSibling?.textContent).toBe('First page')
     const refresh = container.querySelector('[aria-label="Reload page"]')!
     expect(refresh.nextElementSibling?.getAttribute('aria-label')).toBe('Open in default browser')
@@ -229,7 +230,7 @@ describe('browser page lifecycle', () => {
 
   it('names the page in the header without its address or a lock', async () => {
     await attachAndCommit()
-    const header = container.querySelector('[role="status"]')!.parentElement!
+    const header = container.querySelector('output[aria-live="polite"]')!.parentElement!
     expect(header.textContent).toContain('First page')
     expect(header.textContent).not.toContain('example.com')
     expect(header.querySelector('[data-testid="browser-origin"]')).toBeNull()
@@ -245,7 +246,7 @@ describe('browser page lifecycle', () => {
         historyIndex: 2,
       }),
     )
-    expect(container.querySelector('[role="status"]')?.textContent).toBe('xn--pple-43d.com')
+    expect(container.querySelector('output[aria-live="polite"]')?.textContent).toBe('xn--pple-43d.com')
     expect(container.textContent).not.toContain('/login')
   })
 

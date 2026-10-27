@@ -10,7 +10,7 @@ import {
 } from '@shm/shared'
 import {ContentTypeFilter, SearchType} from '@shm/shared/client/.generated/entities/v1alpha/entities_pb'
 import {useResource} from '@shm/shared/models/entity'
-import {Fragment, PropsWithChildren, useEffect, useMemo, useRef, useState} from 'react'
+import {Fragment, type InputHTMLAttributes, PropsWithChildren, useEffect, useMemo, useRef, useState} from 'react'
 import {Button} from './button'
 import {ScrollArea} from './components/scroll-area'
 import {Search} from './icons'
@@ -581,7 +581,10 @@ export function SearchInput({
     value: string
     onChangeText: (text: string) => void
     disabled: boolean
-  }
+  } & Pick<
+    InputHTMLAttributes<HTMLInputElement>,
+    'role' | 'aria-expanded' | 'aria-controls' | 'aria-activedescendant' | 'list'
+  >
   onEscape: () => void
   onArrowUp: () => void
   onArrowDown: () => void

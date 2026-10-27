@@ -316,7 +316,6 @@ function NavItemForm({
       </FormField>
       <FormField name="label" label="Label">
         <Input
-          autoFocus={autoFocusLabel}
           value={item?.text}
           id="label"
           onChange={(e) => onUpdate({...item, text: e.target.value})}
@@ -585,7 +584,7 @@ function SearchUI({
           const isSelected = normalizedFocusedIndex === itemIndex
 
           return (
-            <div key={item.key} data-nav-link-result="true" tabIndex={-1} onMouseDown={(e) => e.preventDefault()}>
+            <div key={item.key} data-nav-link-result="true" role="presentation" onMouseDown={(e) => e.preventDefault()}>
               <SearchResultItem
                 item={{
                   ...item,

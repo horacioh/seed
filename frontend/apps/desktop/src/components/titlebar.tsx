@@ -19,9 +19,11 @@ export function TitleBar(props: TitleBarProps & HTMLAttributes<HTMLDivElement>) 
   const {platform} = useAppContext()
   let Component = getTitleBar(platform)
   return (
-    <Suspense fallback={<TitlebarWrapper className="flex-none" />}>
-      <Component {...props} />
-    </Suspense>
+    <header data-a11y-region="titlebar" tabIndex={-1}>
+      <Suspense fallback={<TitlebarWrapper className="flex-none" />}>
+        <Component {...props} />
+      </Suspense>
+    </header>
   )
 }
 

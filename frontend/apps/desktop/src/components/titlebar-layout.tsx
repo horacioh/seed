@@ -32,7 +32,7 @@ export function TitlebarMainRow({
       </div>
       <div className="window-drag flex min-w-0 flex-1 items-center" data-titlebar-main-region>
         <div className="window-drag flex shrink-0 items-center" data-titlebar-navigation-region>
-          {navigation}
+          <nav aria-label="Navigation">{navigation}</nav>
         </div>
         <div className="flex min-w-0 flex-1 items-center overflow-hidden px-2" data-titlebar-omnibar-region>
           {omnibar}

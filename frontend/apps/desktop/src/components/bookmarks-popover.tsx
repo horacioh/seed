@@ -214,23 +214,16 @@ function BookmarkRow({
     (bookmark.viewTerm ? VIEW_TERM_ICONS[bookmark.viewTerm] : null) ||
     (bookmark.key === 'profile' ? User : FileText)
 
-  const navigate = (event: React.MouseEvent<HTMLDivElement> | React.KeyboardEvent<HTMLDivElement>) => {
-    linkProps.onClick?.(event as React.MouseEvent<HTMLDivElement>)
+  const navigate = (event: React.MouseEvent<HTMLButtonElement>) => {
+    linkProps.onClick?.(event as unknown as React.MouseEvent<HTMLDivElement>)
     onNavigate()
   }
 
   return (
-    <div
-      role="link"
-      tabIndex={0}
+    <button
+      type="button"
       className="group hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-ring flex min-h-12 cursor-pointer items-center gap-3 border-b px-4 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-inset"
       onClick={navigate}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          navigate(event)
-        }
-      }}
     >
       {leading || (
         <span className="bg-muted-foreground/15 text-foreground flex size-8 shrink-0 items-center justify-center rounded-full">
@@ -255,6 +248,6 @@ function BookmarkRow({
           <X className="size-4" />
         </Button>
       </Tooltip>
-    </div>
+    </button>
   )
 }

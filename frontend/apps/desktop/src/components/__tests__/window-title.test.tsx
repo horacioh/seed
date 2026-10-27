@@ -44,15 +44,17 @@ describe('WindowTitle', () => {
     state.route = {key: 'document', id}
 
     act(() => root.render(<WindowTitle />))
-    expect(document.title).toBe('Document A')
+    expect(document.title).toBe('Document A – Seed')
+    expect(container.querySelectorAll('[aria-live="polite"]')).toHaveLength(1)
+    expect(container.querySelector('[aria-live="polite"]')?.textContent).toBe('Document A – Seed')
 
     state.route = {key: 'activity', id, filterEventType: activitySlugToFilter('citations')}
     act(() => root.render(<WindowTitle />))
-    expect(document.title).toBe('Document A – Citations')
+    expect(document.title).toBe('Document A – Citations – Seed')
 
     state.route = {key: 'document', id, panel: {key: 'comments'}}
     act(() => root.render(<WindowTitle />))
-    expect(document.title).toBe('Document A')
+    expect(document.title).toBe('Document A – Seed')
   })
 
   it('uses Seed until the active resource resolves', () => {
@@ -63,6 +65,6 @@ describe('WindowTitle', () => {
 
     state.resourceName = 'Document A'
     act(() => root.render(<WindowTitle />))
-    expect(document.title).toBe('Document A')
+    expect(document.title).toBe('Document A – Seed')
   })
 })

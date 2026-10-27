@@ -261,7 +261,10 @@ export function SiteFileBrowserLayout({
                   <div className="min-h-0 flex-1">{browser}</div>
                 </aside>
               </Panel>
-              <PanelResizeHandle className="panel-resize-handle" />
+              <PanelResizeHandle
+                aria-label="Resize file browser"
+                className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
+              />
             </>
           ) : null}
           <Panel id="site-main-content" order={2} minSize={60}>

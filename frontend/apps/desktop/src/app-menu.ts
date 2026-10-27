@@ -156,6 +156,14 @@ export function createAppMenu() {
             dispatchFocusedWindowAppEvent({type: 'toggle_sidebar'})
           },
         },
+        {
+          id: 'focus_next_region',
+          label: 'Focus Next Region',
+          accelerator: 'F6',
+          click: () => {
+            dispatchFocusedWindowAppEvent({type: 'focus_next_region'})
+          },
+        },
         {type: 'separator'},
         {
           id: 'route_contacts',

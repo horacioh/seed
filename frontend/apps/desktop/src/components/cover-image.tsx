@@ -42,7 +42,7 @@ export function CoverImage({
   const coverImage = (
     <div
       className={cn(
-        'relative h-0 w-full bg-transparent opacity-0 transition-all duration-300',
+        'relative h-0 w-full bg-transparent opacity-0 transition-all duration-300 motion-reduce:transition-none',
         show && 'h-[25vh] opacity-100',
         url && 'bg-accent',
       )}
@@ -50,6 +50,8 @@ export function CoverImage({
       {url ? (
         <img
           src={url}
+          alt=""
+          aria-hidden="true"
           title={label}
           style={{
             width: '100%',
@@ -70,7 +72,7 @@ export function CoverImage({
         <div className="absolute top-0 right-0 left-0 z-10 w-full">
           {showOutline ? <div /> : null}
           <div className="px-2">
-            <div className="flex items-center gap-2 px-4 pt-6 opacity-0 group-hover:opacity-100">
+            <div className="flex items-center gap-2 px-4 pt-6 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none">
               <Tooltip content="Remove Cover image">
                 <Button variant="destructive" onClick={onRemoveCover}>
                   <Trash className="size-4" />

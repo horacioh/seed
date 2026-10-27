@@ -59,9 +59,20 @@ export const SearchInput = forwardRef<
     hideInput?: boolean
     /** Callback when loading state changes */
     onLoadingChange?: (loading: boolean) => void
+    /** Announces the active result to an externally rendered combobox. */
+    onActiveDescendantChange?: (id?: string) => void
   }
 >(function SearchInput(
-  {onClose, onSelect, allowWebURL, externalSearch, onExternalSearchChange, hideInput = false, onLoadingChange},
+  {
+    onClose,
+    onSelect,
+    allowWebURL,
+    externalSearch,
+    onExternalSearchChange,
+    hideInput = false,
+    onLoadingChange,
+    onActiveDescendantChange,
+  },
   ref,
 ) {
   const [internalSearch, setInternalSearch] = useState('')
@@ -279,6 +290,12 @@ export const SearchInput = forwardRef<
   const resultItems = isDisplayingRecents ? recentItems : [...(queryItem ? [queryItem] : []), ...searchItems]
   const footerItems = [exploreItem]
   const activeItems = [...resultItems, ...footerItems]
+  const activeItem = activeItems[focusedIndex]
+  const activeOptionId = activeItem ? `omnibar-option-${encodeURIComponent(activeItem.key)}` : undefined
+
+  useEffect(() => {
+    onActiveDescendantChange?.(activeOptionId)
+  }, [activeOptionId, onActiveDescendantChange])
 
   // Expose keyboard handlers via ref
   const handleArrowUp = useCallback(() => {
@@ -415,8 +432,25 @@ export const SearchInput = forwardRef<
   if (hideInput) {
     return (
       <div className="flex h-full w-full flex-col gap-2">
-        <div className="max-h-[200px] min-h-0 flex-1 overflow-y-auto">{content || <p>working…</p>}</div>
-        {searchFooter}
+        <datalist id="omnibar-results">
+          {activeItems.map((item, index) => (
+            <option
+              key={item.key}
+              id={`omnibar-option-${encodeURIComponent(item.key)}`}
+              value={item.title}
+              aria-label={item.title}
+              aria-selected={focusedIndex === index}
+            />
+          ))}
+        </datalist>
+        <div
+          id="omnibar-results-panel"
+          aria-label="Search results"
+          className="max-h-[200px] min-h-0 flex-1 overflow-y-auto"
+        >
+          {content || <p>working…</p>}
+          {searchFooter}
+        </div>
       </div>
     )
   }
@@ -428,6 +462,11 @@ export const SearchInput = forwardRef<
         value: search,
         onChangeText: setSearch,
         disabled: !!actionPromise,
+        role: 'combobox',
+        'aria-expanded': true,
+        'aria-controls': 'omnibar-results',
+        'aria-activedescendant': activeOptionId,
+        list: 'omnibar-results',
       }}
       loading={searchResults.isLoading}
       onArrowDown={() => {
@@ -448,8 +487,23 @@ export const SearchInput = forwardRef<
       }}
       focusedIndex={focusedIndex}
     >
-      {content || <p>working…</p>}
-      {searchFooter}
+      <>
+        <datalist id="omnibar-results">
+          {activeItems.map((item, index) => (
+            <option
+              key={item.key}
+              id={`omnibar-option-${encodeURIComponent(item.key)}`}
+              value={item.title}
+              aria-label={item.title}
+              aria-selected={focusedIndex === index}
+            />
+          ))}
+        </datalist>
+        <div id="omnibar-results-panel" aria-label="Search results">
+          {content || <p>working…</p>}
+          {searchFooter}
+        </div>
+      </>
     </SearchInputUI>
   )
 })

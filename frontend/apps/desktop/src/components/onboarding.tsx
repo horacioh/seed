@@ -573,6 +573,7 @@ function ProfileStep({onSkip, onNext, onPrev}: {onSkip?: () => void; onNext: () 
             <Label htmlFor="account-name">Account Name</Label>
             <Input
               id="account-name"
+              autoComplete="nickname"
               value={formData.name}
               onChange={(e) => {
                 const text = e.target.value
@@ -746,7 +747,7 @@ function VaultStep({
 
       <div className="flex w-full max-w-[520px] flex-1 flex-col gap-4 pt-4">
         <div className="border-border bg-background/70 flex flex-col gap-3 rounded-lg border p-4">
-          <label className="flex cursor-pointer items-start gap-3">
+          <label aria-label="Local only" className="flex cursor-pointer items-start gap-3">
             <input
               type="radio"
               name="vault-mode"
@@ -761,7 +762,7 @@ function VaultStep({
               </Text>
             </div>
           </label>
-          <label className="flex cursor-pointer items-start gap-3">
+          <label aria-label="Remote sync" className="flex cursor-pointer items-start gap-3">
             <input
               type="radio"
               name="vault-mode"
@@ -784,6 +785,7 @@ function VaultStep({
               <Label htmlFor="onboarding-vault-url">Remote Vault URL</Label>
               <Input
                 id="onboarding-vault-url"
+                autoComplete="url"
                 value={remoteVaultURL}
                 onChange={(event) => setRemoteVaultURL(event.currentTarget.value)}
                 placeholder="https://example.com/vault"
@@ -1248,7 +1250,8 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
     <StepWrapper>
       <StepTitle>READY TO GO</StepTitle>
       <div className="no-window-drag mt-8 flex max-w-[400px] flex-col gap-4">
-        <div
+        <button
+          type="button"
           className="flex h-auto items-center gap-4 rounded-md bg-blue-200 p-4 transition-colors hover:bg-blue-300"
           onClick={() => openUrl('https://discord.gg/7Y7DrhQZFs')}
         >
@@ -1261,7 +1264,7 @@ function ReadyStep({onComplete}: {onComplete: () => void}) {
               Here you will be able to get support and send feedback.
             </SizableText>
           </div>
-        </div>
+        </button>
         <div className="bg-brand-8/20 dark:bg-brand-6/20 flex h-auto items-center gap-4 rounded-md p-4 transition-colors">
           <ContentIcon className="size-13 shrink-0" />
           <div className="flex flex-1 flex-col">
@@ -1324,10 +1327,19 @@ export function OnboardingDebugBox() {
 }
 
 function StepTitle({children}: {children: React.ReactNode}) {
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => {
+    headingRef.current?.focus()
+  }, [])
+
   return (
-    <Text size="4xl" className="no-window-drag text-primary text-center">
+    <h1
+      ref={headingRef}
+      tabIndex={-1}
+      className="no-window-drag text-primary text-center text-4xl outline-none focus:outline-none"
+    >
       {children}
-    </Text>
+    </h1>
   )
 }
 
@@ -1352,18 +1364,32 @@ function StepWrapper({children, onPrev}: {children: React.ReactNode; onPrev?: ()
 
 function OnboardingProgress({currentStep, showVaultStep}: {currentStep: OnboardingStep; showVaultStep: boolean}) {
   const showExistingStep = currentStep === 'existing' || currentStep === 'import'
+  const steps = [
+    'welcome',
+    'profile',
+    ...(showVaultStep ? ['vault'] : []),
+    showExistingStep ? 'existing' : 'recovery',
+    'ready',
+  ]
+  const activeStep = currentStep === 'import' ? 'existing' : currentStep
+  const stepNumber = steps.indexOf(activeStep) + 1
 
   return (
-    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform gap-2 pt-4">
-      <OnboardingProgressStep active={currentStep === 'welcome'} />
-      <OnboardingProgressStep active={currentStep === 'profile'} />
-      {showVaultStep ? <OnboardingProgressStep active={currentStep === 'vault'} /> : null}
-      {showExistingStep ? (
-        <OnboardingProgressStep active={currentStep === 'existing' || currentStep === 'import'} />
-      ) : (
-        <OnboardingProgressStep active={currentStep === 'recovery'} />
-      )}
-      <OnboardingProgressStep active={currentStep === 'ready'} />
+    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 transform flex-col items-center gap-2 pt-4">
+      <span className="text-muted-foreground text-xs" aria-live="polite" aria-atomic="true">
+        Step {stepNumber} of {steps.length}
+      </span>
+      <div className="flex gap-2" aria-hidden="true">
+        <OnboardingProgressStep active={currentStep === 'welcome'} />
+        <OnboardingProgressStep active={currentStep === 'profile'} />
+        {showVaultStep ? <OnboardingProgressStep active={currentStep === 'vault'} /> : null}
+        {showExistingStep ? (
+          <OnboardingProgressStep active={currentStep === 'existing' || currentStep === 'import'} />
+        ) : (
+          <OnboardingProgressStep active={currentStep === 'recovery'} />
+        )}
+        <OnboardingProgressStep active={currentStep === 'ready'} />
+      </div>
     </div>
   )
 }

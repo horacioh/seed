@@ -157,7 +157,10 @@ export function PanelLayout({
 
         {panelKey !== null && (
           <>
-            <PanelResizeHandle className="panel-resize-handle" />
+            <PanelResizeHandle
+              aria-label="Resize panel"
+              className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
+            />
             <Panel
               id="accessory"
               ref={accessoryPanelRef}
@@ -167,28 +170,30 @@ export function PanelLayout({
               onResize={onPanelWidthChange}
               className="border-l"
             >
-              <div className="h-full rounded-lg">
-                <div className={cn('dark:bg-background flex h-full flex-col bg-white')}>
-                  <div className="border-border border-b px-5 py-3">
-                    {header ?? (
-                      <>
-                        <div className="flex items-center justify-between gap-2">
-                          <Text weight="semibold" size="lg" className="flex-1">
-                            {title}
-                          </Text>
-                          <Button size="icon" aria-label={`Close ${title} panel`} onClick={onPanelClose}>
-                            <X className="size-4" />
-                          </Button>
-                        </div>
-                        {showActivityFilters && onFilterChange && (
-                          <FeedFilters filterEventType={filterEventType} onFilterChange={onFilterChange} />
-                        )}
-                      </>
-                    )}
+              <aside aria-label={title || 'Panel'} data-a11y-region="panel" tabIndex={-1}>
+                <div className="h-full rounded-lg">
+                  <div className={cn('dark:bg-background flex h-full flex-col bg-white')}>
+                    <div className="border-border border-b px-5 py-3">
+                      {header ?? (
+                        <>
+                          <div className="flex items-center justify-between gap-2">
+                            <Text weight="semibold" size="lg" className="flex-1">
+                              {title}
+                            </Text>
+                            <Button size="icon" aria-label={`Close ${title} panel`} onClick={onPanelClose}>
+                              <X className="size-4" />
+                            </Button>
+                          </div>
+                          {showActivityFilters && onFilterChange && (
+                            <FeedFilters filterEventType={filterEventType} onFilterChange={onFilterChange} />
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <div className="flex-1 overflow-hidden">{panelContent}</div>
                   </div>
-                  <div className="flex-1 overflow-hidden">{panelContent}</div>
                 </div>
-              </div>
+              </aside>
             </Panel>
           </>
         )}

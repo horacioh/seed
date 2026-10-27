@@ -16,7 +16,7 @@ export function GenericSidebarContainer({
 
   const sidebarWidth = useStream(ctx.sidebarWidth)
   const ref = useRef<ImperativePanelHandle>(null)
-  const panelContentRef = useRef<HTMLDivElement>(null)
+  const panelContentRef = useRef<HTMLElement>(null)
   const prevIsLocked = useRef<boolean | undefined>(undefined)
   const media = useMedia()
 
@@ -138,15 +138,23 @@ export function GenericSidebarContainer({
           ctx.onSidebarResize(size)
         }}
       >
-        <div
+        <nav
           ref={panelContentRef}
+          aria-label="Sidebar"
+          data-a11y-region="sidebar"
+          tabIndex={-1}
           className="relative flex h-full w-full flex-col transition-all duration-200 ease-in-out"
         >
           <div className="flex-1 overflow-y-auto pb-8">{children}</div>
           {footer ? <div className="w-full items-end">{footer({isVisible: isLocked})}</div> : null}
-        </div>
+        </nav>
       </Panel>
-      {isLocked ? <PanelResizeHandle className="panel-resize-handle" /> : null}
+      {isLocked ? (
+        <PanelResizeHandle
+          aria-label="Resize sidebar"
+          className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
+        />
+      ) : null}
     </>
   )
 }

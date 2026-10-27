@@ -186,7 +186,13 @@ function UploadStep({
           <>
             <Upload className="text-muted-foreground size-12" />
             <label className="cursor-pointer">
-              <input type="file" accept=".xml" onChange={onFileUpload} className="hidden" />
+              <input
+                type="file"
+                accept=".xml"
+                onChange={onFileUpload}
+                className="hidden"
+                aria-label="Select a WordPress export file"
+              />
               <Button variant="outline" asChild>
                 <span>Select WXR File</span>
               </Button>

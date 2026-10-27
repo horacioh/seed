@@ -10,9 +10,11 @@ import {useEnsureLocalAssistantAgent} from '@/models/local-assistant'
 import {useSelectedAccountId} from '@/selected-account'
 import {SidebarContextProvider, useSidebarContext} from '@/sidebar-context'
 import {draftDocumentRouteId} from '@/utils/draft-route'
+import {focusNextShellRegion} from '@/utils/focus-regions'
 import {useNavigate} from '@/utils/useNavigate'
 import {useListenAppEvent} from '@/utils/window-events'
 import {getWindowType} from '@/utils/window-types'
+import {MainContent} from '@/components/main-wrapper'
 import {hmId} from '@shm/shared'
 import {defaultRoute, NavRoute} from '@shm/shared/routes'
 import {useStream} from '@shm/shared/use-stream'
@@ -67,6 +69,17 @@ var AgentSession = lazy(() => import('@shm/ui/agents/session'))
 var AgentRun = lazy(() => import('@shm/ui/agents/run'))
 var Profile = lazy(() => import('./profile'))
 var SiteSettingsEmails = lazy(() => import('./site-settings-emails'))
+
+function SkipToContent() {
+  return (
+    <a
+      href="#main-content"
+      className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:px-3 focus:py-2 focus:ring-2"
+    >
+      Skip to content
+    </a>
+  )
+}
 
 /**
  * Redirect persisted `key: 'draft'` routes (from before draft-route removal)
@@ -178,6 +191,27 @@ export default function Main({className}: {className?: string}) {
   // to unmount. Document routes share a single page component and rely on staying
   // mounted so the site header and editor state do not flash between navigations.
   const routeKey = useMemo(() => getRouteKey(navR), [navR])
+  const previousRouteKey = useRef(routeKey)
+  useEffect(() => {
+    if (previousRouteKey.current !== routeKey) {
+      previousRouteKey.current = routeKey
+      if (!document.activeElement || document.activeElement === document.body) {
+        document.getElementById('main-content')?.focus()
+      }
+    }
+  }, [routeKey])
+  useListenAppEvent('focus_next_region', () => {
+    focusNextShellRegion()
+  })
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'F6' || event.altKey || event.ctrlKey || event.metaKey || event.defaultPrevented) return
+      event.preventDefault()
+      focusNextShellRegion(event.shiftKey)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
   useListen<NavRoute>(
     'open_route',
     (event) => {
@@ -209,6 +243,7 @@ export default function Main({className}: {className?: string}) {
     return (
       <div className={cn(windowContainerStyles, 'p-0', className)}>
         <WindowTitle />
+        <SkipToContent />
         <ErrorBoundary
           resetKeys={[routeKey]}
           FallbackComponent={AppErrorPage}
@@ -216,9 +251,13 @@ export default function Main({className}: {className?: string}) {
             window.location.reload()
           }}
         >
-          {titlebar}
+          <header data-a11y-region="titlebar" tabIndex={-1}>
+            {titlebar}
+          </header>
           <Suspense fallback={<Fallback />}>
-            <PageComponent />
+            <MainContent>
+              <PageComponent />
+            </MainContent>
           </Suspense>
         </ErrorBoundary>
       </div>
@@ -229,6 +268,7 @@ export default function Main({className}: {className?: string}) {
     return (
       <div className={cn(windowContainerStyles, 'p-0', className)}>
         <WindowTitle />
+        <SkipToContent />
         <ErrorBoundary
           resetKeys={[routeKey]}
           FallbackComponent={AppErrorPage}
@@ -236,9 +276,11 @@ export default function Main({className}: {className?: string}) {
             window.location.reload()
           }}
         >
-          <Suspense fallback={<Fallback />}>
-            <PageComponent />
-          </Suspense>
+          <MainContent>
+            <Suspense fallback={<Fallback />}>
+              <PageComponent />
+            </Suspense>
+          </MainContent>
         </ErrorBoundary>
       </div>
     )
@@ -247,6 +289,7 @@ export default function Main({className}: {className?: string}) {
   return (
     <div className={cn(windowContainerStyles, 'p-0', className)}>
       <WindowTitle />
+      <SkipToContent />
       <PanelGroup direction="horizontal" autoSaveId="main-assistant" className="min-h-0 flex-1">
         <Panel id="app-content" order={1}>
           <div className="grid h-full min-h-0 grid-cols-1 grid-rows-[auto_minmax(0,1fr)_auto]">
@@ -265,16 +308,18 @@ export default function Main({className}: {className?: string}) {
                     {/* Route-scoped suspense: a page chunk still loading shows its own placeholder
                         inside the panel. Without this, the lazy import suspends all the way to the
                         root boundary and the whole window — chrome included — becomes a spinner. */}
-                    <Suspense fallback={<Fallback />}>
-                      {(browserMounted || navR.key === 'web') && <WebBrowser />}
-                      {navR.key !== 'web' && (
-                        <AssistantPanelToggleContext.Provider value={assistantPanelToggle}>
-                          <NotificationInboxProvider value={DesktopNotificationInbox}>
-                            <PageComponent />
-                          </NotificationInboxProvider>
-                        </AssistantPanelToggleContext.Provider>
-                      )}
-                    </Suspense>
+                    <MainContent>
+                      <Suspense fallback={<Fallback />}>
+                        {(browserMounted || navR.key === 'web') && <WebBrowser />}
+                        {navR.key !== 'web' && (
+                          <AssistantPanelToggleContext.Provider value={assistantPanelToggle}>
+                            <NotificationInboxProvider value={DesktopNotificationInbox}>
+                              <PageComponent />
+                            </NotificationInboxProvider>
+                          </AssistantPanelToggleContext.Provider>
+                        )}
+                      </Suspense>
+                    </MainContent>
                   </ErrorBoundary>
                 </Panel>
               </PanelContent>
@@ -289,9 +334,14 @@ export default function Main({className}: {className?: string}) {
         </Panel>
         {shouldRenderAssistantPanel && (
           <>
-            <PanelResizeHandle className="panel-resize-handle" />
+            <PanelResizeHandle
+              aria-label="Resize panel"
+              className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
+            />
             <Panel id="assistant" order={2} minSize={15} maxSize={40} defaultSize={25} className="border-l">
-              <AssistantPanel initialSessionId={assistantSessionId} onSessionChange={handleSessionChange} />
+              <aside aria-label="Assistant" data-a11y-region="panel" tabIndex={-1} className="h-full">
+                <AssistantPanel initialSessionId={assistantSessionId} onSessionChange={handleSessionChange} />
+              </aside>
             </Panel>
           </>
         )}

@@ -377,7 +377,7 @@ export function BrowserAgentTools({
             >
               Copy log
             </Button>
-            {copyStatus ? <span role="status">{copyStatus}</span> : null}
+            {copyStatus ? <output aria-live="polite">{copyStatus}</output> : null}
           </div>
         </details>
       ) : null}

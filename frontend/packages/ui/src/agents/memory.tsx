@@ -756,7 +756,10 @@ export function AgentMemoryTab({
           <Panel id="agent-memory-tree" order={1} defaultSize={25} minSize={12} maxSize={60}>
             {treePane}
           </Panel>
-          <PanelResizeHandle className="panel-resize-handle visible" />
+          <PanelResizeHandle
+            aria-label="Resize agent memory panel"
+            className="panel-resize-handle focus-visible:ring-ring visible focus-visible:ring-2"
+          />
           <Panel id="agent-memory-file" order={2} minSize={40}>
             {filePane}
           </Panel>

@@ -213,11 +213,11 @@ describe('SpaceAgentsSettings', () => {
     expect(publishedRows()[1]).toContain('Make default')
   })
 
-  it('opens the agent page when a published row is clicked', () => {
+  it('opens the agent page when its name is activated', () => {
     mockState.metadata = {agentServerUrl: 'https://agents.example', spaceAgents: {docs: 0}}
     mockState.agents = [agent('docs', 'Docs Helper')]
     render()
-    click(container.querySelector('[data-testid="published-agent"]'))
+    click(container.querySelector('[data-testid="published-agent"] button'))
     expect(mocks.navigate).toHaveBeenCalledWith({
       key: 'agent',
       agentId: 'docs',
@@ -250,7 +250,7 @@ describe('SpaceAgentsSettings', () => {
     expect(buttonByText('Save')?.disabled).toBe(true)
 
     // "Make default" on the second row; the first row has no such button.
-    click(container.querySelectorAll('[data-testid="published-agent"]')[1]!.querySelector('button'))
+    click(buttonByText('Make default'))
     expect(publishedRows()[0]).toContain('Support')
 
     click(container.querySelectorAll('[aria-label="Remove from this space"]')[2])

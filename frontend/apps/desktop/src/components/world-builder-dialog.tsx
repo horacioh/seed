@@ -93,18 +93,18 @@ export function WorldBuilderDialog({input, onClose}: {input: WorldBuilderDialogI
           accepts pages of that type, and a starter page in each.
         </p>
       </div>
-      <label className="flex flex-col gap-1 text-sm">
+      <label htmlFor="world-name" className="flex flex-col gap-1 text-sm">
         <span className="text-muted-foreground text-xs font-medium">World name</span>
         <Input
+          id="world-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. The Shattered Coast"
           aria-label="World name"
-          autoFocus
         />
       </label>
       <div className="grid grid-cols-2 gap-3">
-        <label className="flex flex-col gap-1 text-sm">
+        <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground text-xs font-medium">Genre</span>
           <Select value={genre} onValueChange={(v) => setGenre(v as (typeof WORLD_GENRES)[number])}>
             <SelectTrigger aria-label="Genre">
@@ -118,31 +118,44 @@ export function WorldBuilderDialog({input, onClose}: {input: WorldBuilderDialogI
               ))}
             </SelectContent>
           </Select>
-        </label>
+        </div>
         <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground text-xs font-medium">Chronicle begins (epoch)</span>
           <DateValueField value={epoch} mode="date" onValue={setEpoch} onClear={() => setEpoch('')} />
         </div>
       </div>
-      <label className="flex flex-col gap-1 text-sm">
+      <label htmlFor="world-tagline" className="flex flex-col gap-1 text-sm">
         <span className="text-muted-foreground text-xs font-medium">Tagline (optional)</span>
-        <Input value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="One line about this world" />
+        <Input
+          id="world-tagline"
+          value={tagline}
+          onChange={(e) => setTagline(e.target.value)}
+          placeholder="One line about this world"
+        />
       </label>
-      <div className="flex flex-col gap-1 text-sm">
-        <span className="text-muted-foreground text-xs font-medium">Types to include</span>
+      <fieldset className="m-0 min-w-0 border-0 p-0">
+        <legend className="text-muted-foreground text-xs font-medium">Types to include</legend>
         <div className="flex flex-wrap gap-4">
           {WORLD_KIT_TYPES.map((t) => (
-            <label key={t} className="flex cursor-pointer items-center gap-1.5">
-              <Checkbox checked={types.has(t)} onCheckedChange={(on) => toggle(t, on === true)} />
-              {WORLD_KIT[t].singular}
-            </label>
+            <div key={t} className="flex cursor-pointer items-center gap-1.5">
+              <Checkbox
+                aria-label={WORLD_KIT[t].singular}
+                checked={types.has(t)}
+                onCheckedChange={(on) => toggle(t, on === true)}
+              />
+              <span>{WORLD_KIT[t].singular}</span>
+            </div>
           ))}
-          <label className="text-muted-foreground flex cursor-pointer items-center gap-1.5">
-            <Checkbox checked={starters} onCheckedChange={(on) => setStarters(on === true)} />
-            starter pages
-          </label>
+          <div className="text-muted-foreground flex cursor-pointer items-center gap-1.5">
+            <Checkbox
+              aria-label="Starter pages"
+              checked={starters}
+              onCheckedChange={(on) => setStarters(on === true)}
+            />
+            <span>starter pages</span>
+          </div>
         </div>
-      </div>
+      </fieldset>
       <div className="flex items-center justify-end gap-2 border-t pt-3">
         {progress && <span className="text-muted-foreground mr-auto text-sm">{progress}</span>}
         <Button variant="ghost" onClick={onClose} disabled={!!progress}>

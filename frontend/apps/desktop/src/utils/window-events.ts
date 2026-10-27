@@ -33,6 +33,7 @@ export type AppWindowEvent =
   | {type: 'find_in_page'}
   | {type: 'discover'}
   | {type: 'toggle_sidebar'}
+  | {type: 'focus_next_region'}
   | {type: 'toggle_accessory'; index: number}
   | {type: 'window_state_changed'}
   | {type: 'connectPeer'; connectionUrl: string}

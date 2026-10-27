@@ -708,6 +708,9 @@ importers:
       '@reforged/maker-appimage':
         specifier: ^5.1.0
         version: 5.1.1
+      '@shm/a11y-testing':
+        specifier: workspace:*
+        version: link:../../packages/a11y-testing
       '@types/katex':
         specifier: 0.16.7
         version: 0.16.7

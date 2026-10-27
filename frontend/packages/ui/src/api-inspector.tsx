@@ -298,7 +298,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
           </Panel>
         </aside>
 
-        <main className="min-h-0 overflow-y-auto pr-1">
+        <section aria-label="API inspector details" className="min-h-0 overflow-y-auto pr-1">
           <div className="space-y-4 pb-4">
             {selectedDefinition ? (
               <>
@@ -541,7 +541,7 @@ export function ApiInspector({apiHost}: ApiInspectorProps) {
               <MutedState message="Choose an endpoint from the schema index to start exploring." />
             )}
           </div>
-        </main>
+        </section>
       </div>
     </div>
   )

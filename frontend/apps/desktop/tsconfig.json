@@ -28,6 +28,8 @@
       "@seed-hypermedia/agents-protocol": ["../../../agents/protocol/src/index.ts"],
       "@shm/shared": ["../../packages/shared/src/index.ts"],
       "@shm/shared/*": ["../../packages/shared/src/*"],
+      "@shm/a11y-testing": ["../../packages/a11y-testing/src/index.ts"],
+      "@shm/a11y-testing/*": ["../../packages/a11y-testing/src/*"],
       "@shm/editor/*": ["../../packages/editor/src/*"]
     }
   },
