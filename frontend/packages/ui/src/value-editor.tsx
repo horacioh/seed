@@ -2586,6 +2586,7 @@ function SuggestionPopover<T>({
   return (
     <div
       id={id}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Async suggestions keep active-descendant focus in the input
       role="listbox"
       tabIndex={-1}
       className="border-border bg-popover absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border p-1 shadow-lg"
@@ -2600,6 +2601,7 @@ function SuggestionPopover<T>({
           key={getKey(item)}
           id={`${id}-option-${index}`}
           type="button"
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich value options cannot use native select without moving focus
           role="option"
           aria-selected={activeIndex === index}
           className="hover:bg-accent focus-visible:bg-accent flex w-full items-start justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm outline-none"

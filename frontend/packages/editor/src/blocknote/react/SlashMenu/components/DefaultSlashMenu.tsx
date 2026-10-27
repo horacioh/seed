@@ -11,6 +11,7 @@ export function DefaultSlashMenu<BSchema extends BlockSchema>(props: SlashMenuPr
   return (
     <div
       id={props.listboxId}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Slash menu keeps active-descendant focus in the editor
       role="listbox"
       aria-label="Block suggestions"
       aria-orientation="vertical"

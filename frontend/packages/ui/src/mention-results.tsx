@@ -33,6 +33,7 @@ export function MentionResults({
   return (
     <div
       id={id}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Active-descendant suggestions keep focus in the editor
       role="listbox"
       aria-label={mode === 'account' ? 'Accounts' : 'Documents'}
       aria-busy={loading}
@@ -63,6 +64,7 @@ export function MentionResults({
           ref={(el) => {
             rows.current[i] = el
           }}
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Native options cannot present rich mentions while preserving input focus
           role="option"
           aria-selected={selected === i}
           disabled={loading || error}

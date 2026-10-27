@@ -93,6 +93,7 @@ export function MobileMentionsDialog({
           </div>
           <div
             className="min-h-0 flex-1 overflow-y-auto"
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Mobile mentions preserve active-descendant focus in the search input
             role="listbox"
             aria-label={mode === 'account' ? 'Accounts' : 'Documents'}
             aria-busy={loading}
@@ -114,6 +115,7 @@ export function MobileMentionsDialog({
             {results.map((item) => (
               <Button
                 key={item.id.id}
+                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich mention options cannot use native select while preserving search focus
                 role="option"
                 aria-selected={false}
                 disabled={loading || error}

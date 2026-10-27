@@ -894,6 +894,7 @@ function TriggerEntityPicker({
         <Input
           id={inputId}
           className="h-10 rounded-lg shadow-none"
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Custom async combobox keeps active-descendant focus in its input
           role="combobox"
           aria-autocomplete="list"
           aria-expanded={open}
@@ -933,6 +934,7 @@ function TriggerEntityPicker({
           <div
             className="border-border bg-popover z-20 mt-1 max-h-48 overflow-auto rounded-md border p-1 shadow-sm"
             id={listId}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Async suggestion listbox preserves the trigger input's focus
             role="listbox"
             aria-label={label}
             aria-busy={search.isFetching}
@@ -942,6 +944,7 @@ function TriggerEntityPicker({
                 key={item.value}
                 id={`${listId}-${index}`}
                 type="button"
+                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich trigger options require active-descendant keyboard selection
                 role="option"
                 aria-selected={index === active}
                 tabIndex={-1}

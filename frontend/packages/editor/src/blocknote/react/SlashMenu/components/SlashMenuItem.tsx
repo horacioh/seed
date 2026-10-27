@@ -16,6 +16,7 @@ export function SlashMenuItem(props: SlashMenuItemProps) {
   return (
     <div
       id={props.id}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Slash options insert blocks while editor focus remains active
       role="option"
       aria-selected={props.isSelected}
       tabIndex={-1}
