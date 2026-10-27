@@ -224,7 +224,7 @@ describe('web space settings', () => {
     state.identity = null
     state.identityLoaded = false
     render()
-    expect(container.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Loading account')
+    expect(container.querySelector('output[aria-label="Loading account"]')).not.toBeNull()
     expect(container.textContent).not.toContain('Sign in as the space owner')
   })
   it('removes the owner controls when the account changes', () => {

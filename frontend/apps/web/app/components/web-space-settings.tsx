@@ -95,9 +95,9 @@ export function WebSpaceSettingsPage({
             Space Settings
           </Button>
           {!identityLoaded ? (
-            <div role="status" aria-label="Loading account" className="flex justify-center py-10">
+            <output aria-label="Loading account" className="flex justify-center py-10">
               <Spinner />
-            </div>
+            </output>
           ) : !canManage ? (
             <p className="text-muted-foreground">Sign in as the space owner to change these settings.</p>
           ) : resource.isInitialLoading ? (
@@ -252,7 +252,8 @@ function ImagePicker({
     return () => URL.revokeObjectURL(url)
   }, [value])
   return (
-    <div role="group" aria-label={label}>
+    <fieldset className="m-0 border-0 p-0">
+      <legend className="sr-only">{label}</legend>
       <ImageForm
         url={value instanceof File ? preview : value ? imageUrl(value) : ''}
         height={square || logo ? 100 : 160}
@@ -276,7 +277,7 @@ function ImagePicker({
           Remove {label.toLowerCase()}
         </Button>
       ) : null}
-    </div>
+    </fieldset>
   )
 }
 

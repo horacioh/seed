@@ -538,7 +538,7 @@ export function WebHostingDialog({
   if (!identityLoaded || resource.isInitialLoading)
     return (
       <PublishStep title="Web Domain">
-        <p role="status">Loading hosting settings…</p>
+        <output className="block">Loading hosting settings…</output>
       </PublishStep>
     )
   if (!identity?.capabilityCid || identity.delegatedAccountUid !== id.uid)
@@ -707,7 +707,7 @@ function HostingDialogContent({
     return (
       <>
         <DialogTitle>Web Domain</DialogTitle>
-        <p role="status">Loading hosting settings…</p>
+        <output className="block">Loading hosting settings…</output>
       </>
     )
   if (!identity?.capabilityCid || identity.delegatedAccountUid !== id.uid)
@@ -956,7 +956,7 @@ export function WebDomainSetupPage({siteId, hostname}: {siteId: UnpackedHypermed
   const owner = !!identity?.capabilityCid && identity.delegatedAccountUid === siteId.uid
   let content
   if (!identityLoaded || !host.isSessionLoaded || resource.isInitialLoading)
-    content = <p role="status">Loading domain setup…</p>
+    content = <output className="block">Loading domain setup…</output>
   else if (!owner)
     content = <p>Sign in as the space owner to continue domain setup. Your setup address will stay here.</p>
   else if (!document || document.visibility === 'PRIVATE')
@@ -980,7 +980,8 @@ export function WebDomainSetupPage({siteId, hostname}: {siteId: UnpackedHypermed
         fullPage
       />
     )
-  else if (host.sites.isInitialLoading || host.sites.isFetching) content = <p role="status">Checking domain status…</p>
+  else if (host.sites.isInitialLoading || host.sites.isFetching)
+    content = <output className="block">Checking domain status…</output>
   else if (host.sites.error)
     content = (
       <div className="flex flex-col items-start gap-4">
@@ -1089,7 +1090,7 @@ export function WebDomainSettings({siteId, page = false}: {siteId: UnpackedHyper
     return (
       <>
         {title}
-        <p role="status">Loading web domain…</p>
+        <output className="block">Loading web domain…</output>
       </>
     )
   if (!document) return <p>This account doesn't have a space yet.</p>

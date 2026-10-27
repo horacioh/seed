@@ -114,7 +114,7 @@ describe('web assistant panel', () => {
 
     act(() => controls!.open())
     expect(container.querySelector('[data-testid="web-assistant-panel"]')).not.toBeNull()
-    expect(container.querySelector('[role="separator"][aria-orientation="vertical"]')).not.toBeNull()
+    expect(container.querySelector('hr[aria-orientation="vertical"]')).not.toBeNull()
     expect(container.querySelector('[data-testid="panel-content"]')).not.toBeNull()
     expect(mountCount).toBe(mountsAtStart)
 

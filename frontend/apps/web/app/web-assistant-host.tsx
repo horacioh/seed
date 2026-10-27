@@ -143,8 +143,7 @@ export function WebAssistantHost({children}: {children: React.ReactNode}) {
       </AssistantPanelToggleContext.Provider>
       {showSidePanel ? (
         <>
-          <div
-            role="separator"
+          <hr
             aria-orientation="vertical"
             aria-label="Resize agents panel"
             className={cn('panel-resize-handle visible sticky top-0 h-dvh shrink-0 self-start', dragging && 'active')}
@@ -186,12 +185,12 @@ function FullScreenPanel({onBack}: {onBack: () => void}) {
   }, [onBack])
 
   return (
-    <div
-      role="dialog"
+    <dialog
+      open
       aria-modal="true"
       aria-label="Agents"
       data-testid="web-assistant-panel-fullscreen"
-      className="bg-background fixed inset-0 z-50 flex h-dvh w-full flex-col"
+      className="bg-background fixed inset-0 z-50 m-0 flex h-dvh max-h-full w-full max-w-none flex-col border-0 p-0"
     >
       <div className="border-border flex shrink-0 items-center border-b px-1 py-1 pt-[env(safe-area-inset-top)]">
         <Button variant="ghost" size="sm" onClick={onBack} className="gap-2" aria-label="Back to page">
@@ -202,7 +201,7 @@ function FullScreenPanel({onBack}: {onBack: () => void}) {
       <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom)]">
         <PanelBody />
       </div>
-    </div>
+    </dialog>
   )
 }
 
