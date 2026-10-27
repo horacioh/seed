@@ -3,6 +3,7 @@ import React from 'react'
 import {hmId} from '@shm/shared'
 import {createRoot, type Root} from 'react-dom/client'
 import {act} from 'react-dom/test-utils'
+import {expectNoAxeViolations} from '@shm/a11y-testing/dom'
 import {afterEach, describe, expect, it, vi} from 'vitest'
 import {commentBookmarkTitle, CommentDiscussions} from '../comments'
 import {TooltipProvider} from '../tooltip'
@@ -130,10 +131,10 @@ vi.mock('@shm/shared/utils/navigation', () => ({
 }))
 
 let root: Root | null = null
-let container: HTMLDivElement | null = null
+let container: HTMLElement | null = null
 
 function renderCommentDiscussions(selection?: {blockId: string; blockRange: {start: number; end: number}}) {
-  container = document.createElement('div')
+  container = document.createElement('main')
   document.body.appendChild(container)
   root = createRoot(container)
 
@@ -144,7 +145,7 @@ function renderCommentDiscussions(selection?: {blockId: string; blockRange: {sta
           targetId={hmId('alice', {path: ['doc']})}
           commentId="alice/comment"
           selection={selection}
-          commentEditor={<div data-testid="comment-editor">Editor</div>}
+          commentEditor={<textarea data-testid="comment-editor" aria-label="Reply" />}
         />
       </TooltipProvider>,
     )
@@ -167,6 +168,26 @@ afterEach(() => {
 })
 
 describe('CommentDiscussions', () => {
+  it('renders accessible comments and reply editors', async () => {
+    document.documentElement.lang = 'en'
+    document.title = 'Comments'
+    useCommentParentsMock.mockReturnValue({thread: [parentComment, focusedComment]})
+    useDocumentCommentsMock.mockReturnValue({
+      data: {
+        comments: [parentComment, focusedComment],
+        authors: {alice: {metadata: {name: 'Alice'}}},
+      },
+      error: null,
+      isLoading: false,
+    })
+
+    renderCommentDiscussions()
+
+    await expectNoAxeViolations(document)
+    expect(document.querySelector('article[aria-label^="Comment by Alice on"]')).not.toBeNull()
+    expect(document.querySelector('textarea[aria-label="Reply"]')).not.toBeNull()
+  })
+
   it('keeps the comment editor mounted in the reply composer slot while the focused thread is loading', () => {
     renderCommentDiscussions()
 

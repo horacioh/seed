@@ -1,66 +1,40 @@
-import {createStyles, Menu} from '@mantine/core'
 import groupBy from 'lodash/groupBy'
-import forEach from 'lodash/forEach'
 
 import {BlockSchema} from '../../../core'
 import {SlashMenuItem} from './SlashMenuItem'
 import {SlashMenuProps} from './SlashMenuPositioner'
 
 export function DefaultSlashMenu<BSchema extends BlockSchema>(props: SlashMenuProps<BSchema>) {
-  const {classes} = createStyles({
-    root: {
-      maxHeight: 500,
-      overflowY: 'auto',
-    },
-  })(undefined, {
-    name: 'SlashMenu',
-  })
-  const renderedItems: any[] = []
-  let index = 0
-
   const groups = groupBy(props.filteredItems, (i) => i.group)
-  // const showNostr = trpc.experiments.get.useQuery().data?.nostr
-
-  forEach(groups, (groupedItems) => {
-    renderedItems.push(<Menu.Label key={groupedItems[0]?.group}>{groupedItems[0]?.group}</Menu.Label>)
-
-    for (const item of groupedItems) {
-      // if (item.name !== 'Nostr' || showNostr) {
-      renderedItems.push(
-        <SlashMenuItem
-          key={item.name}
-          name={item.name}
-          icon={item.icon}
-          hint={item.hint}
-          shortcut={item.shortcut}
-          isSelected={props.keyboardHoveredItemIndex === index}
-          set={() => props.itemCallback(item)}
-        />,
-      )
-      // }
-      index++
-    }
-  })
+  const selectedItem = props.filteredItems[props.keyboardHoveredItemIndex]
 
   return (
-    <Menu
-      /** Hacky fix to get the desired menu behaviour. The trigger="hover"
-       * attribute allows focus to remain on the editor, allowing for suggestion
-       * filtering. The closeDelay=10000000 attribute allows the menu to stay open
-       * practically indefinitely, as normally hovering off it would cause it to
-       * close due to trigger="hover".
-       */
-      defaultOpened={true}
-      trigger={'hover'}
-      closeDelay={10000000}
+    <div
+      id={props.listboxId}
+      role="listbox"
+      aria-label="Block suggestions"
+      aria-orientation="vertical"
+      className="bg-popover text-popover-foreground max-h-72 w-full overflow-y-auto rounded-md border p-1 shadow-md"
     >
-      <Menu.Dropdown
-        // TODO: This should go back in the plugin.
-        onMouseDown={(event) => event.preventDefault()}
-        className={classes.root}
-      >
-        {renderedItems.length > 0 ? renderedItems : <Menu.Item>No match found</Menu.Item>}
-      </Menu.Dropdown>
-    </Menu>
+      {Object.entries(groups).map(([group, items]) => (
+        <div key={group}>
+          <div aria-hidden="true" className="text-muted-foreground px-2 py-1 text-xs">
+            {group}
+          </div>
+          {items.map((item) => (
+            <SlashMenuItem
+              key={item.name}
+              id={`${props.listboxId}-option-${encodeURIComponent(item.name)}`}
+              icon={item.icon}
+              name={item.name}
+              hint={item.hint}
+              shortcut={item.shortcut}
+              isSelected={selectedItem?.name === item.name}
+              onSelect={() => props.itemCallback(item)}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
   )
 }

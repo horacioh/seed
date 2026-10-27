@@ -7,7 +7,7 @@ export type DragHandleMenuProps<BSchema extends BlockSchema> = {
   block: Block<BSchema>
 }
 
-export const DragHandleMenu = (props: {children: ReactNode}) => {
+export const DragHandleMenu = (props: {children: ReactNode; onEscape?: () => void}) => {
   const {classes} = createStyles({
     root: {
       minWidth: 180,
@@ -16,5 +16,20 @@ export const DragHandleMenu = (props: {children: ReactNode}) => {
     name: 'DragHandleMenu',
   })
 
-  return <Menu.Dropdown className={classes.root}>{props.children}</Menu.Dropdown>
+  return (
+    <Menu.Dropdown
+      className={classes.root}
+      role="menu"
+      aria-label="Block options"
+      onKeyDownCapture={(event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          event.stopPropagation()
+          props.onEscape?.()
+        }
+      }}
+    >
+      {props.children}
+    </Menu.Dropdown>
+  )
 }

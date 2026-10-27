@@ -418,8 +418,7 @@ test.describe('Slash Menu', () => {
   test('Should open slash menu when typing /', async ({editorHelpers, page}) => {
     await editorHelpers.typeText('/')
 
-    // Wait for slash menu - Mantine Menu component
-    const slashMenu = page.locator('.mantine-Menu-dropdown')
+    const slashMenu = page.getByRole('listbox', {name: 'Block suggestions'})
     await expect(slashMenu).toBeVisible({timeout: 5000})
   })
 
@@ -431,7 +430,7 @@ test.describe('Slash Menu', () => {
     await page.waitForTimeout(200)
 
     // Menu should be hidden
-    const slashMenu = page.locator('.mantine-Menu-dropdown')
+    const slashMenu = page.getByRole('listbox', {name: 'Block suggestions'})
     await expect(slashMenu).not.toBeVisible({timeout: 2000})
   })
 
@@ -443,7 +442,7 @@ test.describe('Slash Menu', () => {
     await page.waitForTimeout(50)
 
     // Menu should still be visible
-    const slashMenu = page.locator('.mantine-Menu-dropdown')
+    const slashMenu = page.getByRole('listbox', {name: 'Block suggestions'})
     await expect(slashMenu).toBeVisible()
   })
 
@@ -455,7 +454,7 @@ test.describe('Slash Menu', () => {
     await page.waitForTimeout(200)
 
     // Menu should close
-    const slashMenu = page.locator('.mantine-Menu-dropdown')
+    const slashMenu = page.getByRole('listbox', {name: 'Block suggestions'})
     await expect(slashMenu).not.toBeVisible({timeout: 2000})
 
     // Block type should change to embed (first slash menu item)

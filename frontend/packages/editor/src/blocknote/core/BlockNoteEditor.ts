@@ -25,11 +25,12 @@ import {TextCursorPosition} from './extensions/Blocks/api/cursorPositionTypes'
 import {ColorStyle, FontStyle, StringStyle, Styles, ToggledStyle} from './extensions/Blocks/api/inlineContentTypes'
 import {Selection} from './extensions/Blocks/api/selectionTypes'
 import {getBlockInfoFromPos, getBlockInfoFromSelection} from './extensions/Blocks/helpers/getBlockInfoFromPos'
+import {getGroupInfoFromPos} from './extensions/Blocks/helpers/getGroupInfoFromPos'
 
 import type {DomainResolverFn} from '@seed-hypermedia/client'
 import type {HMBlockChildrenType} from '@seed-hypermedia/client/hm-types'
 import type {LinkExtensionOptions} from '@shm/shared/document-content-props'
-import {Transaction} from 'prosemirror-state'
+import {EditorState, NodeSelection, TextSelection, Transaction} from 'prosemirror-state'
 import {MentionMenuProsemirrorPlugin} from '../../mention-menu-plugin'
 import {HMBlockSchema, hmBlockSchema} from '../../schema'
 import {insertBlocks} from './api/blockManipulation/commands/insertBlocks'
@@ -61,6 +62,13 @@ import {mergeCSSClasses} from './shared/utils'
 export type EditorRenderType = 'document' | 'viewer' | 'embed' | 'comment'
 
 export type BlockNoteEditorOptions<BSchema extends BlockSchema> = {
+  /**
+   * Accessible name for the editable region.
+   *
+   * @default "Document content"
+   */
+  ariaLabel?: string
+
   // Note: enableBlockNoteExtensions/disableHistoryExtension are internal options
   enableBlockNoteExtensions: boolean
 
@@ -201,6 +209,22 @@ export type HandleFileAttachmentFunction = (file: File) => Promise<{
   }
 }>
 
+/**
+ * Returns a block's index and sibling group in the current document state.
+ * @param state The ProseMirror editor state.
+ * @param id The block ID.
+ * @returns The block index, sibling count, and sibling group.
+ */
+export function getBlockSiblingIndex(state: EditorState, id: string): {index: number; count: number; group: Node} {
+  const {posBeforeNode} = getNodeById(id, state.doc)
+  const group = getGroupInfoFromPos(posBeforeNode, state).group
+  let index = -1
+  group.forEach((child, _offset, childIndex) => {
+    if (child.attrs.id === id) index = childIndex
+  })
+  return {index, count: group.childCount, group}
+}
+
 const blockNoteTipTapOptions = {
   enableInputRules: true as boolean,
   enablePasteRules: true as boolean,
@@ -237,6 +261,7 @@ export class BlockNoteEditor<BSchema extends BlockSchema = HMBlockSchema> {
   public readonly getResourceUrl?: (blockId?: string | null) => string | undefined
 
   public readonly domainResolver?: DomainResolverFn
+  private accessibilityAnnouncementListeners = new Set<(message: string) => void>()
 
   constructor(private readonly options: Partial<BlockNoteEditorOptions<BSchema>> = {}) {
     // apply defaults
@@ -246,6 +271,7 @@ export class BlockNoteEditor<BSchema extends BlockSchema = HMBlockSchema> {
       linkExtensionOptions?: LinkExtensionOptions
     } = {
       defaultStyles: true,
+      ariaLabel: 'Document content',
       // BSchema generic constraints make proper typing complex - using `as any` for hmBlockSchema fallback
       blockSchema: options.blockSchema || (hmBlockSchema as any),
       editable: options.editable || true,
@@ -392,6 +418,9 @@ export class BlockNoteEditor<BSchema extends BlockSchema = HMBlockSchema> {
       editorProps: {
         attributes: {
           ...newOptions.domAttributes?.editor,
+          role: 'textbox',
+          'aria-multiline': 'true',
+          'aria-label': newOptions.ariaLabel,
           class: mergeCSSClasses(
             // @ts-ignore
             styles.bnEditor,
@@ -416,6 +445,24 @@ export class BlockNoteEditor<BSchema extends BlockSchema = HMBlockSchema> {
 
   dispatch(tr: Transaction) {
     this._tiptapEditor.view.dispatch(tr)
+  }
+
+  /**
+   * Announces a supported accessibility action to views that own the editor's live region.
+   * @param message The concise message to announce.
+   */
+  public announceAccessibilityMessage(message: string) {
+    this.accessibilityAnnouncementListeners.forEach((listener) => listener(message))
+  }
+
+  /**
+   * Subscribes to editor accessibility announcements.
+   * @param listener Receives messages from supported editor actions.
+   * @returns A function that removes the listener.
+   */
+  public onAccessibilityAnnouncement(listener: (message: string) => void) {
+    this.accessibilityAnnouncementListeners.add(listener)
+    return () => this.accessibilityAnnouncementListeners.delete(listener)
   }
 
   public get prosemirrorView() {
@@ -480,6 +527,52 @@ export class BlockNoteEditor<BSchema extends BlockSchema = HMBlockSchema> {
     })
 
     return newBlock
+  }
+
+  /**
+   * Moves a block within its current sibling group, preserving its children and selection.
+   * @param blockIdentifier The block to move.
+   * @param direction The sibling direction.
+   * @returns Whether a sibling position was available.
+   */
+  public moveBlock(blockIdentifier: BlockIdentifier, direction: 'up' | 'down'): boolean {
+    const id = typeof blockIdentifier === 'string' ? blockIdentifier : blockIdentifier.id
+    const view = this._tiptapEditor.view
+    const state = view.state
+    const {node, posBeforeNode} = getNodeById(id, state.doc)
+    const blockInfo = getBlockInfoFromPos(state, posBeforeNode)
+    const {index, count, group} = getBlockSiblingIndex(state, id)
+    const targetIndex = index + (direction === 'up' ? -1 : 1)
+    if (index < 0 || targetIndex < 0 || targetIndex >= count) return false
+
+    const targetId = group.child(targetIndex).attrs.id as string
+    const target = getNodeById(targetId, state.doc)
+    const currentSelection = state.selection
+    const selectionInBlock =
+      currentSelection.from >= blockInfo.block.beforePos && currentSelection.to <= blockInfo.block.afterPos
+    const selectionKind = currentSelection instanceof NodeSelection ? 'node' : 'text'
+    const anchorOffset = selectionInBlock ? currentSelection.anchor - blockInfo.blockContent.beforePos - 1 : 0
+    const headOffset = selectionInBlock ? currentSelection.head - blockInfo.blockContent.beforePos - 1 : 0
+    const insertionPos =
+      direction === 'up' ? target.posBeforeNode : target.posBeforeNode + target.node.nodeSize - node.nodeSize
+    let transaction = state.tr.delete(posBeforeNode, posBeforeNode + node.nodeSize)
+    transaction = transaction.insert(insertionPos, node)
+    if (selectionKind === 'node') {
+      transaction = transaction.setSelection(NodeSelection.create(transaction.doc, insertionPos))
+    } else {
+      const contentStart = insertionPos + blockInfo.blockContent.beforePos - blockInfo.block.beforePos + 1
+      const maxOffset = blockInfo.blockContent.node.content.size
+      transaction = transaction.setSelection(
+        TextSelection.create(
+          transaction.doc,
+          contentStart + Math.min(Math.max(anchorOffset, 0), maxOffset),
+          contentStart + Math.min(Math.max(headOffset, 0), maxOffset),
+        ),
+      )
+    }
+    view.dispatch(transaction.scrollIntoView())
+    view.focus()
+    return true
   }
 
   /**

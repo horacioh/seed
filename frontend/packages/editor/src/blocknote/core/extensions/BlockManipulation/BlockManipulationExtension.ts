@@ -1,13 +1,17 @@
 import {Extension} from '@tiptap/core'
 import {EditorView} from '@tiptap/pm/view'
 import {Node} from 'prosemirror-model'
-import {NodeSelection, Plugin, PluginKey, TextSelection} from 'prosemirror-state'
+import {NodeSelection, Plugin, PluginKey, Selection, TextSelection} from 'prosemirror-state'
 import {findNextBlock, findPreviousBlock} from '../../../../block-utils'
 import {mentionSuggestionPluginKey} from '../../../../mention-suggestion-plugin'
 import {getBlockInfoFromPos, getBlockInfoFromSelection} from '../Blocks/helpers/getBlockInfoFromPos'
 import {isInGridContainer} from '../Blocks/nodes/BlockChildren'
+import {getNodeById} from '../../api/util/nodeUtil'
+import {sideMenuPluginKey} from '../SideMenu/SideMenuPlugin'
 
 import {selectableNodeTypes} from '../Blocks/api/selectable-node-types'
+
+const editorSelectionsBeforeMenu = new WeakMap<EditorView, Selection>()
 
 export {selectableNodeTypes}
 
@@ -60,17 +64,60 @@ function shouldOpenSelectedEmbed(node: Node, nodePos: number, view: EditorView, 
 
 export const BlockManipulationExtension = Extension.create<{
   openUrl?: (url: string, newWindow?: boolean) => void
+  onAnnouncement?: (message: string) => void
+  moveBlock?: (blockId: string, direction: 'up' | 'down') => boolean
+  showFormattingToolbar?: () => void
 }>({
   name: 'BlockManupulation',
 
   addOptions() {
     return {
       openUrl: undefined,
+      onAnnouncement: undefined,
+      moveBlock: undefined,
+      showFormattingToolbar: undefined,
     }
   },
 
   addKeyboardShortcuts() {
+    const moveSelectedBlock = (direction: 'up' | 'down') => {
+      const {view, state} = this.editor
+      const blockInfo = getBlockInfoFromSelection(state)
+      const blockId = blockInfo.block.node.attrs.id as string
+      if (!this.options.moveBlock?.(blockId, direction)) {
+        if (direction === 'up') this.options.onAnnouncement?.('Block is already at the top')
+        return true
+      }
+      view.focus()
+      this.options.onAnnouncement?.(direction === 'up' ? 'Moved block up' : 'Moved block down')
+      return true
+    }
+
     return {
+      'Mod-Shift-ArrowUp': () => moveSelectedBlock('up'),
+      'Mod-Shift-ArrowDown': () => moveSelectedBlock('down'),
+      'Alt-F10': () => {
+        const {view, state} = this.editor
+        if (!state.selection.empty && !(state.selection instanceof NodeSelection)) {
+          this.options.showFormattingToolbar?.()
+          requestAnimationFrame(
+            () => document.querySelector<HTMLElement>('[role="toolbar"] button:not([disabled])')?.focus(),
+          )
+          return true
+        }
+        editorSelectionsBeforeMenu.set(view, state.selection)
+        const blockInfo = getBlockInfoFromSelection(state)
+        const blockId = blockInfo.block.node.attrs.id as string
+        view.dispatch(
+          state.tr
+            .setSelection(NodeSelection.create(state.doc, blockInfo.block.beforePos))
+            .setMeta(sideMenuPluginKey, blockId),
+        )
+        requestAnimationFrame(
+          () => view.dom.parentElement?.querySelector<HTMLElement>('[data-drag-handle] button')?.focus(),
+        )
+        return true
+      },
       // 'Shift-Enter': () => {
       //   const {view, state} = this.editor
       //   const {selection} = state
@@ -112,6 +159,24 @@ export const BlockManipulationExtension = Extension.create<{
     let lastMousedownInCaption = false
 
     return [
+      new Plugin({
+        key: new PluginKey('BlockMenuEscapeFocus'),
+        view(view) {
+          const handleEscape = (event: KeyboardEvent) => {
+            if (event.key !== 'Escape' || !(event.target instanceof Element)) return
+            if (!event.target.closest('[data-drag-handle], [role="menu"]')) return
+            const selection = editorSelectionsBeforeMenu.get(view)
+            if (!selection) return
+            event.preventDefault()
+            event.stopPropagation()
+            editorSelectionsBeforeMenu.delete(view)
+            view.dispatch(view.state.tr.setSelection(selection))
+            view.focus()
+          }
+          document.addEventListener('keydown', handleEscape, true)
+          return {destroy: () => document.removeEventListener('keydown', handleEscape, true)}
+        },
+      }),
       // Veto select caption transactions unless the user actually
       // clicked in the caption.
       new Plugin({

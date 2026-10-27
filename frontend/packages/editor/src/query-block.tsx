@@ -401,7 +401,8 @@ function QuerySettings({
             ref={triggerRef}
             size="icon"
             variant="ghost"
-            className={`hover:bg-background bg-white transition-opacity dark:bg-black ${
+            aria-label="Edit Query"
+            className={`hover:bg-background bg-white focus-within:opacity-100 motion-safe:transition-opacity dark:bg-black ${
               popoverState.open ? 'opacity-100' : 'opacity-0'
             } group-hover:opacity-100`}
             onClick={() => popoverState.onOpenChange(!popoverState.open)}
@@ -417,11 +418,6 @@ function QuerySettings({
               ref={popoverRef}
               className="bg-background fixed z-40 flex w-[350px] max-w-[90vw] flex-col gap-4 rounded-lg p-4 shadow-lg"
               style={{top: popoverRect.top, right: popoverRect.right}}
-              // Prevent ProseMirror from intercepting focus-stealing events when
-              // the editor is still read-only. Without this the search input
-              // below cannot be focused until the doc is in edit mode.
-              onMouseDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
             >
               <QuerySearch
                 selectedDocName={queryDocName}
@@ -671,7 +667,12 @@ function QuerySearch({
       </Button>
       {showSearch && SearchInputComponent ? (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowSearch(false)} />
+          <button
+            type="button"
+            aria-label="Close document search"
+            className="fixed inset-0 z-40 cursor-default border-0 bg-transparent p-0"
+            onClick={() => setShowSearch(false)}
+          />
           <div className="no-window-drag border-muted bg-background absolute -top-2 -left-2 z-40 h-[260px] min-h-[80%] w-[calc(100%+16px)] max-w-[800px] rounded-md border p-2 shadow-lg">
             <SearchInputComponent
               onClose={() => setShowSearch(false)}

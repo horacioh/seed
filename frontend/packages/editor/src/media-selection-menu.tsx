@@ -85,10 +85,6 @@ export function MediaSelectionMenu({
         'dark:bg-neutral-900',
       )}
       data-testid={testId('selection-menu')}
-      // Selection menu shouldn't bubble pointer events into the editor and
-      // accidentally move the cursor or kill the block selection.
-      onPointerDown={(e) => e.stopPropagation()}
-      onClick={(e) => e.stopPropagation()}
     >
       <DropdownMenu
         open={dropdownOpen}
@@ -104,6 +100,7 @@ export function MediaSelectionMenu({
             size="icon"
             variant="ghost"
             data-testid={testId('more')}
+            aria-label="Media options"
             className="hover:bg-black/10 dark:hover:bg-white/10"
           >
             <MoreHorizontal className="size-4" />
@@ -152,13 +149,14 @@ export function MediaSelectionMenu({
               </DropdownMenuItem>
             </>
           ) : (
-            <div className="flex flex-col gap-2 p-1" onKeyDown={(e) => e.stopPropagation()}>
+            <div className="flex flex-col gap-2 p-1">
               <div className="flex items-center gap-1">
                 <Button
                   type="button"
                   size="icon"
                   variant="ghost"
                   data-testid={testId('url-back')}
+                  aria-label="Back"
                   className="size-7 hover:bg-black/10 dark:hover:bg-white/10"
                   onClick={() => setMode('main')}
                 >
@@ -170,7 +168,6 @@ export function MediaSelectionMenu({
               </div>
               <input
                 type="url"
-                autoFocus
                 data-testid={testId('url-input')}
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}

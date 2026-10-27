@@ -54,6 +54,7 @@ export function LinkMenuItem(props: LinkMenuItemProps) {
 
   return (
     <Menu.Item
+      role="menuitem"
       className={classes.root}
       icon={props.icon}
       onClick={props.set}

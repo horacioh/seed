@@ -3,5 +3,9 @@ import {PolymorphicComponentProps} from '@mantine/utils'
 
 export const DragHandleMenuItem = (props: PolymorphicComponentProps<'button'>) => {
   const {children, ...remainingProps} = props
-  return <Menu.Item {...remainingProps}>{children}</Menu.Item>
+  return (
+    <Menu.Item role="menuitem" {...remainingProps}>
+      {children}
+    </Menu.Item>
+  )
 }

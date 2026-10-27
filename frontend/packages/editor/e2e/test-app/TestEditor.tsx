@@ -218,6 +218,7 @@ type FixtureName =
   | 'withEmbed'
   | 'withTwoEmbeds'
   | 'draftAndPublished'
+  | 'nested'
   | 'allBlocks'
 
 const text = (text: string) =>
@@ -286,6 +287,18 @@ const fixtures: Record<FixtureName, Block<HMBlockSchema>[]> = {
     p('p-bottom', [text('Below the cards')]),
   ],
 
+  nested: [
+    p('nested-before', [text('Before')]),
+    {
+      id: 'nested-parent',
+      type: 'paragraph',
+      props: {},
+      content: [text('Parent')],
+      children: [p('nested-child', [text('Child')])],
+    } as any,
+    p('nested-after', [text('After')]),
+  ],
+
   // One block of every selectable node type (selectable-node-types.ts) plus
   // text blocks, for the cross-block-type selection-consistency suite.
   // A tiny 1x1 gif data URL keeps the image offline-renderable.
@@ -294,7 +307,10 @@ const fixtures: Record<FixtureName, Block<HMBlockSchema>[]> = {
     {
       id: 'blk-image',
       type: 'image',
-      props: {url: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', name: ''},
+      props: {
+        url: 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==',
+        name: 'image-secret-filename.png',
+      },
       content: [text('the caption')],
       children: [],
     } as any,
@@ -629,37 +645,40 @@ export function TestEditor() {
                 w.TEST_OPEN_ROUTE.push(args)
               }}
             >
-              <SelectedAccountContactsProvider>
-                {sp.get('comment') === '1' ? (
-                  <div data-testid="comment-harness">
-                    <CommentEditor
-                      hideAvatar
-                      focusOnMount
-                      submitOnEnter
-                      universalClient={mockUniversalClient as any}
-                      documentId={editModeId}
-                      siteUid={editModeId.uid}
-                      perspectiveAccountUid={selectedMentionAccount || 'bafy-writer'}
-                      mentionThread={
-                        sp.get('thread') === '1'
-                          ? {
-                              replyAuthorUid: 'bafy-mention-account',
-                              participants: [{uid: 'bafy-mention-account', latestCommentTime: Date.now() - 120_000}],
-                            }
-                          : undefined
-                      }
-                      handleSubmit={() => {
-                        document
-                          .querySelector('[data-testid="comment-harness"]')
-                          ?.setAttribute('data-submitted', 'true')
-                      }}
-                      submitButton={() => <button type="button">Submit comment</button>}
-                    />
-                  </div>
-                ) : (
-                  <RealModeApp fixtureName={fixtureName} />
-                )}
-              </SelectedAccountContactsProvider>
+              <main className="test-harness" data-testid="editor-harness">
+                <h1 className="sr-only">Editor accessibility fixture</h1>
+                <SelectedAccountContactsProvider>
+                  {sp.get('comment') === '1' ? (
+                    <div data-testid="comment-harness">
+                      <CommentEditor
+                        hideAvatar
+                        focusOnMount
+                        submitOnEnter
+                        universalClient={mockUniversalClient as any}
+                        documentId={editModeId}
+                        siteUid={editModeId.uid}
+                        perspectiveAccountUid={selectedMentionAccount || 'bafy-writer'}
+                        mentionThread={
+                          sp.get('thread') === '1'
+                            ? {
+                                replyAuthorUid: 'bafy-mention-account',
+                                participants: [{uid: 'bafy-mention-account', latestCommentTime: Date.now() - 120_000}],
+                              }
+                            : undefined
+                        }
+                        handleSubmit={() => {
+                          document
+                            .querySelector('[data-testid="comment-harness"]')
+                            ?.setAttribute('data-submitted', 'true')
+                        }}
+                        submitButton={() => <button type="button">Submit comment</button>}
+                      />
+                    </div>
+                  ) : (
+                    <RealModeApp fixtureName={fixtureName} />
+                  )}
+                </SelectedAccountContactsProvider>
+              </main>
             </UniversalAppProvider>
           </NavContextProvider>
         </QueryClientProvider>
@@ -728,7 +747,8 @@ function RawModeApp({fixtureName}: {fixtureName: FixtureName}) {
               console.log('openRoute', args)
             }}
           >
-            <div className="test-harness" data-testid="editor-harness">
+            <main className="test-harness" data-testid="editor-harness">
+              <h1 className="sr-only">Editor accessibility fixture</h1>
               <div className="test-info" data-testid="editor-info">
                 <strong>Block count:</strong> {editorContent.length} | <strong>Editor ready:</strong>{' '}
                 {editor.ready ? 'Yes' : 'No'}
@@ -749,7 +769,7 @@ function RawModeApp({fixtureName}: {fixtureName: FixtureName}) {
                   </BlockNoteView>
                 </MaybeEditMode>
               </div>
-            </div>
+            </main>
           </UniversalAppProvider>
         </NavContextProvider>
       </QueryClientProvider>

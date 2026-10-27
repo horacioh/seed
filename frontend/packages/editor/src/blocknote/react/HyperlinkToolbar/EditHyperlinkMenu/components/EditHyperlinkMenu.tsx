@@ -77,12 +77,12 @@ export const EditHyperlinkMenu = forwardRef<HTMLDivElement, EditHyperlinkMenuPro
             ) : null}
             <Tooltip content="Remove link">
               {/* @ts-expect-error */}
-              <Button size="iconSm" onClick={props.deleteHyperlink}>
+              <Button size="iconSm" aria-label="Remove link" onClick={props.deleteHyperlink}>
                 <Unlink className="size-4" />
               </Button>
             </Tooltip>
             <Tooltip content="Open in a new Window">
-              <Button size="iconSm" onClick={() => props.openUrl(url, true)}>
+              <Button size="iconSm" aria-label="Open in a new Window" onClick={() => props.openUrl(url, true)}>
                 <ExternalLink className="size-4" />
               </Button>
             </Tooltip>

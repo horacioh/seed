@@ -1,6 +1,7 @@
 import {BlockNoteEditor, BlockSchema, mergeCSSClasses} from '../core'
 import {MantineProvider, createStyles} from '@mantine/core'
 import {EditorContent} from '@tiptap/react'
+import {NodeSelection} from 'prosemirror-state'
 import {HTMLAttributes, ReactNode, useEffect, useMemo, useState} from 'react'
 import {Theme, blockNoteToMantineTheme} from './BlockNoteTheme'
 import {darkDefaultTheme, lightDefaultTheme} from './defaultThemes'
@@ -20,8 +21,34 @@ function BaseBlockNoteView<BSchema extends BlockSchema>(
   const {classes} = createStyles({root: {}})(undefined, {
     name: 'Editor',
   })
+  const [announcement, setAnnouncement] = useState('')
 
   const {editor, children, className, ...rest} = props
+
+  useEffect(() => {
+    const unsubscribe = editor.onAccessibilityAnnouncement(setAnnouncement)
+    return () => {
+      unsubscribe?.()
+    }
+  }, [editor])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!event.altKey || event.key !== 'F10') return
+      const {selection} = editor.prosemirrorView.state
+      if (selection.empty || selection instanceof NodeSelection) return
+      event.preventDefault()
+      event.stopPropagation()
+      editor.formattingToolbar?.show()
+      requestAnimationFrame(
+        () => document.querySelector<HTMLElement>('[role="toolbar"] button:not([disabled])')?.focus(),
+      )
+    }
+
+    const editorElement = editor.domElement
+    editorElement.addEventListener('keydown', handleKeyDown, true)
+    return () => editorElement.removeEventListener('keydown', handleKeyDown, true)
+  }, [editor])
 
   return (
     <EditorContent
@@ -50,6 +77,9 @@ function BaseBlockNoteView<BSchema extends BlockSchema>(
           <LinkMenuPositioner editor={props.editor} />
         </>
       )}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
     </EditorContent>
   )
 }

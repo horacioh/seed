@@ -48,8 +48,10 @@ export const ToggledStyleButton = <BSchema extends BlockSchema>(props: {
     <ToolbarButton
       onClick={() => toggleStyle(props.toggledStyle)}
       isSelected={active}
+      isToggle
       mainTooltip={props.toggledStyle.slice(0, 1).toUpperCase() + props.toggledStyle.slice(1)}
       secondaryTooltip={formatKeyboardShortcut(shortcuts[props.toggledStyle])}
+      shortcut={shortcuts[props.toggledStyle]}
       icon={icons[props.toggledStyle]}
     />
   )

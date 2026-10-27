@@ -65,6 +65,7 @@ export const MobileLinkToolbarButton = <BSchema extends BlockSchema>(props: {edi
   return (
     <>
       <Button
+        aria-label="Link"
         size="icon"
         variant="ghost"
         className={cn(
@@ -90,7 +91,13 @@ export const MobileLinkToolbarButton = <BSchema extends BlockSchema>(props: {edi
             <DialogHeader className="border-b p-4">
               <div className="flex items-center justify-between">
                 <DialogTitle>Add Link</DialogTitle>
-                <Button size="icon" variant="ghost" onClick={() => setIsOpen(false)} className="size-8">
+                <Button
+                  aria-label="Close link dialog"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setIsOpen(false)}
+                  className="size-8"
+                >
                   <X className="size-4" />
                 </Button>
               </div>

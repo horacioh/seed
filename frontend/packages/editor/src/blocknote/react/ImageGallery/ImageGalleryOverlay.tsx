@@ -2,7 +2,7 @@ import {BlockNoteEditor} from '../../core/BlockNoteEditor'
 import {BlockSchema} from '../../core/extensions/Blocks/api/blockTypes'
 import {imageGalleryPluginKey} from '../../core/extensions/ImageGallery/ImageGalleryPlugin'
 import {ChevronLeft, ChevronRight, X} from 'lucide-react'
-import {useCallback, useEffect} from 'react'
+import {useCallback, useEffect, useRef} from 'react'
 import {createPortal} from 'react-dom'
 import {useEditorForceUpdate} from '../hooks/useEditorForceUpdate'
 
@@ -41,6 +41,9 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
 
   const view = editor.prosemirrorView
   const pluginState = imageGalleryPluginKey.getState(view.state)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const openerRef = useRef<HTMLElement | null>(null)
+  const wasOpenRef = useRef(false)
 
   const dispatch = useCallback(
     (action: Parameters<typeof view.state.tr.setMeta>[1]) => {
@@ -54,12 +57,36 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
   const handlePrev = useCallback(() => dispatch({type: 'prev'}), [dispatch])
 
   useEffect(() => {
-    if (!pluginState?.isOpen) return
+    if (!pluginState?.isOpen) {
+      if (wasOpenRef.current) openerRef.current?.focus()
+      wasOpenRef.current = false
+      return
+    }
+
+    if (!wasOpenRef.current) {
+      openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      wasOpenRef.current = true
+      requestAnimationFrame(() => dialogRef.current?.querySelector<HTMLElement>('button')?.focus())
+    }
 
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'ArrowRight') handleNext()
       else if (e.key === 'ArrowLeft') handlePrev()
       else if (e.key === 'Escape') handleClose()
+      else if (e.key === 'Tab') {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), [tabindex="0"]')
+        if (!focusable?.length) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (!first || !last) return
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
 
     document.addEventListener('keydown', onKeyDown)
@@ -79,15 +106,14 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
   const resolvedSrc = resolveImageUrl ? resolveImageUrl(activeImage.url) : activeImage.url
 
   const overlay = (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
-      onClick={handleClose}
-      role="dialog"
-      aria-modal
+    <dialog
+      ref={dialogRef}
+      open
+      className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/90 p-0"
+      aria-modal={true}
       aria-label="Image gallery"
     >
-      {/* Prevent clicks on the inner wrapper from bubbling to the backdrop. */}
-      <div className="relative flex size-full items-center justify-center" onClick={(e) => e.stopPropagation()}>
+      <div className="relative flex size-full items-center justify-center">
         {/* Previous button */}
         {hasPrev && (
           <button
@@ -96,7 +122,7 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
               e.stopPropagation()
               handlePrev()
             }}
-            className="absolute top-1/2 left-4 -translate-y-1/2 p-2 text-white/80 hover:text-white"
+            className="focus-visible:outline-ring absolute top-1/2 left-4 -translate-y-1/2 p-2 text-white/80 outline-offset-2 hover:text-white focus-visible:outline-2"
             aria-label="Previous image"
           >
             <ChevronLeft size={32} />
@@ -106,9 +132,9 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
         <img
           key={activeIndex}
           src={resolvedSrc}
-          alt={activeImage.name}
+          alt={activeImage.alt || ''}
+          data-missing-alt={!activeImage.alt || undefined}
           className="max-h-[90vh] max-w-[90vw] object-contain"
-          onClick={(e) => e.stopPropagation()}
         />
 
         {/* Next button */}
@@ -119,7 +145,7 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
               e.stopPropagation()
               handleNext()
             }}
-            className="absolute top-1/2 right-4 -translate-y-1/2 p-2 text-white/80 hover:text-white"
+            className="focus-visible:outline-ring absolute top-1/2 right-4 -translate-y-1/2 p-2 text-white/80 outline-offset-2 hover:text-white focus-visible:outline-2"
             aria-label="Next image"
           >
             <ChevronRight size={32} />
@@ -133,7 +159,7 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
             e.stopPropagation()
             handleClose()
           }}
-          className="absolute top-4 right-4 text-white/80 hover:text-white"
+          className="focus-visible:outline-ring absolute top-4 right-4 text-white/80 outline-offset-2 hover:text-white focus-visible:outline-2"
           aria-label="Close gallery"
         >
           <X size={24} />
@@ -146,7 +172,7 @@ export function ImageGalleryOverlay<BSchema extends BlockSchema>({
           </div>
         )}
       </div>
-    </div>
+    </dialog>
   )
 
   return createPortal(overlay, document.body)

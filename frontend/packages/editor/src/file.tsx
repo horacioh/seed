@@ -89,7 +89,7 @@ const FileDisplay = ({editor, block, assign}: DisplayComponentProps) => {
             variant="accent"
             size="xs"
             className={cn(
-              'sel-btn absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100',
+              'sel-btn absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity',
             )}
             asChild
           >

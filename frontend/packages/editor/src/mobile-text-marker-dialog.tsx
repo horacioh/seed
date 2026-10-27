@@ -53,7 +53,13 @@ export function MobileTextMarkerDialog({isOpen, onClose, currentValue, onChange}
           <DialogHeader className="border-b p-4">
             <div className="flex items-center justify-between">
               <DialogTitle>Text Marker</DialogTitle>
-              <Button size="icon" variant="ghost" onClick={onClose} className="size-8">
+              <Button
+                aria-label="Close text marker dialog"
+                size="icon"
+                variant="ghost"
+                onClick={onClose}
+                className="size-8"
+              >
                 <X className="size-4" />
               </Button>
             </div>

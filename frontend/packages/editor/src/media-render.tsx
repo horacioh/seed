@@ -386,7 +386,7 @@ function MediaForm({
   return (
     <div
       className={cn(
-        'bg-muted relative flex flex-col rounded-md border-2 transition-colors outline-none',
+        'bg-muted relative flex flex-col rounded-md border-2 transition-colors',
         drag ? 'border-foreground/20 dark:border-foreground/30' : 'border-border',
         drag && 'border-dashed',
         editor.commentEditor && !drag && 'border-border bg-black/5 dark:bg-white/10',

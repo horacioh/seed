@@ -81,6 +81,7 @@
     "yjs": "13.6.4"
   },
   "devDependencies": {
+    "@shm/a11y-testing": "workspace:*",
     "@eslint/js": "^9.17.0",
     "@playwright/test": "1.57.0",
     "@types/react": "18.2.64",

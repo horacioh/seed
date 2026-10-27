@@ -12,6 +12,8 @@ export type ImageGalleryItem = {
   url: string
   /** Optional display name for the image. */
   name?: string
+  /** Authored alternative text for the image. */
+  alt?: string
 }
 
 /** Plugin state managed by the image gallery plugin. */
@@ -56,8 +58,9 @@ export function collectImageBlocks(doc: Node): ImageGalleryItem[] {
 
       const blockId: string = parent?.attrs?.id ?? ''
       const name: string | undefined = node.attrs.name || undefined
+      const alt: string | undefined = node.attrs.alt || undefined
 
-      result.push({blockId, url, name})
+      result.push({blockId, url, name, alt})
       // Do not descend into image nodes.
       return false
     }

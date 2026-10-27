@@ -167,6 +167,9 @@ export const getBlockNoteExtensions = <BSchema extends HMBlockSchema>(opts: {
       // block manipulations:
       BlockManipulationExtension.configure({
         openUrl: opts.linkExtensionOptions?.openUrl,
+        onAnnouncement: (message) => opts.editor.announceAccessibilityMessage(message),
+        moveBlock: (blockId, direction) => opts.editor.moveBlock(blockId, direction),
+        showFormattingToolbar: () => opts.editor.formattingToolbar?.show(),
       }),
       SlotNormalizationExtension.configure({editor: opts.editor as any}),
       KeyboardShortcutsExtension.configure({editor: opts.editor}),

@@ -7,6 +7,8 @@ import {hmId} from '@shm/shared'
 import {queryKeys} from '@shm/shared/models/query-keys'
 import {TooltipProvider} from '@shm/ui/tooltip'
 import {createElement} from 'react'
+import {createRoot} from 'react-dom/client'
+import {act} from 'react-dom/test-utils'
 import {renderToString} from 'react-dom/server'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 
@@ -26,6 +28,7 @@ const mockUniversalAppContext = {
   onCopyReference: () => {},
   languagePack: undefined,
   universalClient: {
+    documents: {searchDocuments: async () => ({documents: []})},
     request: async () => null,
     publish: async () => ({cids: []}),
   },
@@ -65,17 +68,77 @@ vi.mock('@shm/shared/models/search', async (importOriginal) => {
   return {...actual, useSearch: () => ({data: [], isLoading: false})}
 })
 
-vi.mock('@shm/editor/comment-editor', () => ({CommentEditor: () => null}))
-
-vi.mock('@/auth', () => ({
-  useLocalKeyPair: () => null,
-  useCreateAccount: () => ({content: null, createAccount: () => {}}),
-  useVaultSuccessDialog: () => null,
-  AccountFooterActions: () => null,
-  EditProfileDialog: () => null,
-  LogoutButton: () => null,
-  LogoutDialog: () => null,
+vi.mock('@remix-run/react', () => ({
+  useLocation: () => ({pathname: '/', search: '', hash: '', state: null}),
+  useNavigate: () => () => {},
 }))
+
+vi.mock('@shm/shared/models/comments', async (importOriginal) => {
+  const actual = (await importOriginal()) as any
+  return {
+    ...actual,
+    useDocumentComments: () => ({data: {comments: [], authors: {}}, error: null, isLoading: false}),
+    useCommentReplyCount: () => ({data: 0}),
+    useCommentVersions: () => ({data: {versions: []}, isLoading: false}),
+  }
+})
+
+vi.mock('@shm/shared/comments-service-provider', () => ({
+  useCommentsServiceContext: () => ({showDeletedContent: false}),
+  useDeleteComment: () => ({mutate: () => {}, isLoading: false}),
+  useHackyAuthorsSubscriptions: () => {},
+  useUpdateComment: () => ({mutate: () => {}, isLoading: false}),
+}))
+
+vi.mock('@shm/shared/document-actions-context', () => ({
+  useDocumentActions: () => ({isBookmarked: () => false, onBookmarkToggle: () => {}}),
+}))
+
+vi.mock('@shm/shared/readonly-viewer-context', () => ({
+  useReadOnlyViewer:
+    () =>
+    ({blocks}: any) =>
+      createElement('p', null, blocks.map((node: any) => node.block.text).join('')),
+}))
+
+vi.mock('@shm/shared/translation', async (importOriginal) => {
+  const actual = (await importOriginal()) as any
+  return {
+    ...actual,
+    useTxString: () => (value: string) => value,
+    useTx: () => (value: string) => value,
+  }
+})
+
+vi.mock('@shm/ui/universal-dialog', () => ({
+  useAppDialog: () => ({open: () => {}}),
+}))
+
+vi.mock('./comment-draft-utils', () => ({
+  useCommentDraftPersistence: () => ({
+    draft: null,
+    draftMediaRefs: null,
+    isLoading: false,
+    saveDraft: () => {},
+    clearDraft: () => {},
+    draftId: 'a11y-test',
+    editorGeneration: 0,
+  }),
+}))
+
+vi.mock('@/auth', async (importOriginal) => {
+  const actual = (await importOriginal()) as any
+  return {
+    ...actual,
+    useLocalKeyPair: () => null,
+    useCreateAccount: () => ({content: null, createAccount: () => {}}),
+    useVaultSuccessDialog: () => null,
+    AccountFooterActions: () => null,
+    EditProfileDialog: () => null,
+    LogoutButton: () => null,
+    LogoutDialog: () => null,
+  }
+})
 
 vi.mock('@shm/shared/utils/navigation', async (importOriginal) => {
   const actual = (await importOriginal()) as any
@@ -100,12 +163,7 @@ vi.mock('@shm/shared/routing', async (importOriginal) => {
   const actual = (await importOriginal()) as any
   return {
     ...actual,
-    useUniversalClient: () => ({
-      documents: {searchDocuments: async () => ({documents: []})},
-      request: async () => null,
-      publish: async () => ({cids: []}),
-      subscribeEntity: undefined,
-    }),
+    useUniversalClient: () => mockUniversalAppContext.universalClient,
   }
 })
 
@@ -164,6 +222,7 @@ function createHydratedQueryClient(document: HMDocument, homeDocument: HMDocumen
   const queryClient = new QueryClient({defaultOptions: {queries: {staleTime: Infinity}}})
   const documents = [
     {id: guideId, document},
+    {id: hmId(TEST_UID, {path: ['guide'], version: TEST_VERSION}), document},
     {id: hmId(TEST_UID, {path: ['guide'], latest: true}), document},
     {id: hmId(TEST_UID, {latest: true}), document: homeDocument},
     {id: hmId(TEST_UID), document: homeDocument},
@@ -181,9 +240,19 @@ function withProviders(queryClient: QueryClient, child: React.ReactElement) {
   return createElement(QueryClientProvider, {client: queryClient}, createElement(TooltipProvider, {children: child}))
 }
 
-describe('web reader accessibility contract', () => {
+describe.sequential('web reader accessibility contract', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: () => ({
+        matches: false,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+      }),
+    })
     mockUniversalAppContext.origin = 'http://localhost:3000'
     mockUniversalAppContext.originHomeId = {
       uid: TEST_UID,
@@ -243,7 +312,61 @@ describe('web reader accessibility contract', () => {
 
     const measurement = document.querySelector('[aria-hidden="true"][inert]')
     expect(measurement).not.toBeNull()
-  })
+  }, 120000)
+
+  it('renders the real web comment editor and UI comment thread accessibly', async () => {
+    const [{default: WebCommenting}, {CommentGroup}] = await Promise.all([
+      import('./commenting'),
+      import('@shm/ui/comments'),
+    ])
+    const comment = {
+      id: 'reader-author/comment',
+      version: 'comment-version',
+      author: TEST_UID,
+      targetAccount: TEST_UID,
+      targetPath: 'guide',
+      targetVersion: TEST_VERSION,
+      content: [{block: {id: 'comment-text', type: 'Paragraph', text: 'A comment on this document.'}}],
+      createTime: {seconds: 1792281600, nanos: 0},
+      updateTime: {seconds: 1792281600, nanos: 0},
+      visibility: 'PUBLIC',
+    }
+    const thread = createElement(
+      'section',
+      {'aria-label': 'Comments'},
+      createElement(CommentGroup, {
+        commentGroup: {type: 'commentGroup', comments: [comment]} as any,
+      }),
+    )
+    const guideDocument = createReaderDocument('Accessibility Guide', 'A nested reader document')
+    const queryClient = createHydratedQueryClient(guideDocument, guideDocument)
+    document.documentElement.lang = 'en'
+    document.title = 'Accessibility Guide'
+    const container = document.createElement('div')
+    document.body.replaceChildren(container)
+    const root = createRoot(container)
+    await act(async () => {
+      root.render(
+        withProviders(
+          queryClient,
+          createElement(
+            'main',
+            null,
+            createElement(WebCommenting, {
+              docId: hmId(TEST_UID, {path: ['guide'], version: TEST_VERSION}),
+              focusOnMount: true,
+            }),
+            thread,
+          ),
+        ),
+      )
+    })
+    await expectNoAxeViolations(document)
+    expect(document.querySelector('[role="textbox"][aria-label="Comment"]')).not.toBeNull()
+    expect(document.querySelector('[aria-label="Create account to publish comment"]')).not.toBeNull()
+    expect(document.querySelector('article[aria-label^="Comment by"]')).not.toBeNull()
+    await act(async () => root.unmount())
+  }, 120000)
 
   it('detects missing main and hidden-measurement protections', async () => {
     const {ResourcePage} = await import('@shm/ui/resource-page-common')
@@ -271,5 +394,5 @@ describe('web reader accessibility contract', () => {
     expect(measurement?.hasAttribute('aria-hidden')).toBe(false)
     expect(measurement?.hasAttribute('inert')).toBe(false)
     await expect(expectNoAxeViolations(document)).rejects.toThrow(/landmark-one-main|region/)
-  })
+  }, 120000)
 })

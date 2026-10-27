@@ -249,7 +249,7 @@ function DraftEmbedPlaceholder({
             readOnly={!draftActions?.onUpdateDraftName}
             placeholder="Untitled document"
             className={cn(
-              'text-foreground placeholder:text-muted-foreground/80 block w-full truncate border-none bg-transparent font-sans text-lg leading-tight! font-bold outline-none',
+              'text-foreground placeholder:text-muted-foreground/80 focus-visible:outline-ring block w-full truncate border-none bg-transparent font-sans text-lg leading-tight! font-bold focus-visible:outline-2 focus-visible:outline-offset-2',
               !title && 'text-muted-foreground/80',
             )}
           />
@@ -581,7 +581,7 @@ function SelectedEmbedActions({
       className={cn(
         'absolute right-2 bottom-2 z-10 flex items-center gap-1 rounded-md',
         'border-border bg-background border px-1 py-0.5 shadow-sm',
-        'opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100',
+        'opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity',
         isSelected && 'opacity-100',
       )}
     >

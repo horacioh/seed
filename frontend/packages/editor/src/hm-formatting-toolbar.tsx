@@ -28,6 +28,7 @@ import {prosemirrorPosToBlockTextOffset} from './blocknote/core/extensions/Range
 import {
   BlockTypeDropdownItem,
   FormattingToolbarProps,
+  Toolbar,
   useEditorContentChange,
   useEditorSelectionChange,
 } from './blocknote/react'
@@ -400,7 +401,9 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
 
   return (
     <>
-      <div
+      <Toolbar
+        role="toolbar"
+        aria-label="Formatting"
         data-testid="formatting-toolbar"
         className="border-border bg-background z-50 w-fit rounded-md border p-1 shadow-md"
         onPointerDown={(e) => {
@@ -456,6 +459,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                     type="button"
                     size="icon"
                     variant="ghost"
+                    aria-label="Comment"
                     className="rounded-md hover:bg-black/10 dark:hover:bg-white/10"
                     onClick={() => {
                       const frag = getSelectionFragment(props.editor)
@@ -473,6 +477,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                     type="button"
                     size="icon"
                     variant="ghost"
+                    aria-label="Copy Link"
                     className="rounded-md hover:bg-black/10 dark:hover:bg-white/10"
                     onClick={() => {
                       const frag = getSelectionFragment(props.editor)
@@ -497,6 +502,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                   type="button"
                   size="icon"
                   variant="ghost"
+                  aria-label="Text marker"
                   className="h-9 w-9 shrink-0 hover:bg-black/10 dark:hover:bg-white/10"
                   onClick={() => setIsTextMarkerDialogOpen(true)}
                 >
@@ -506,6 +512,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
                   type="button"
                   size="icon"
                   variant="ghost"
+                  aria-label="Text type"
                   className="h-9 w-9 shrink-0 hover:bg-black/10 dark:hover:bg-white/10"
                   onClick={() => setIsTextTypeDialogOpen(true)}
                 >
@@ -585,7 +592,7 @@ export function HMFormattingToolbar<Schema extends Record<string, BlockSpec<stri
             )}
           </div>
         </div>
-      </div>
+      </Toolbar>
 
       {/* Mobile dialogs */}
       {isMobile && (
@@ -641,6 +648,17 @@ function ToggleStyleButton<Schema extends Record<string, BlockSpec<string, PropS
         type="button"
         size="icon"
         variant="ghost"
+        aria-label={name}
+        aria-pressed={active}
+        aria-keyshortcuts={
+          {
+            bold: 'Control+B Meta+B',
+            italic: 'Control+I Meta+I',
+            underline: 'Control+U Meta+U',
+            strike: 'Control+Shift+X Meta+Shift+X',
+            code: 'Control+E Meta+E',
+          }[toggleStyle]
+        }
         className={cn(
           'rounded-md border border-black/10 dark:border-white/10',
           'hover:bg-black/10 dark:hover:bg-white/10',

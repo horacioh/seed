@@ -448,7 +448,8 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
             objectFit: 'contain',
           }}
           src={imageSrc}
-          alt={block.props.name || block.props.alt}
+          alt={block.props.alt || ''}
+          data-missing-alt={!block.props.alt || undefined}
           contentEditable={false}
           draggable={false}
         />

@@ -81,6 +81,7 @@ export function useCommentEditor(
   domainResolver?: DomainResolverFn,
   disableTrailingNode?: boolean,
   submitOnEnter?: boolean,
+  ariaLabel: string = 'Comment',
 ) {
   // Use refs so extensions created once by useBlockNote can access the latest callbacks.
   // useBlockNote only creates the editor on the first render, but these callbacks may
@@ -97,6 +98,7 @@ export function useCommentEditor(
   submitOnEnterRef.current = submitOnEnter
 
   const editor = useBlockNote<typeof hmBlockSchema>({
+    ariaLabel,
     onEditorContentChange(editor: BlockNoteEditor<typeof hmBlockSchema>) {
       // console.log("editor content changed", editor.topLevelBlocks);
     },
@@ -377,6 +379,7 @@ export function CommentEditor({
     domainResolver,
     disableTrailingNode,
     submitOnEnter,
+    isReplying ? 'Reply' : 'Comment',
   )
   // Check if we have non-empty draft content
   const hasDraftContent = blocksHaveDraftContent(initialBlocks)
@@ -1007,27 +1010,6 @@ export function CommentEditor({
             setIsDraggingOver(true)
           }}
           onDrop={onDrop}
-          onMouseDown={(e) => {
-            const target = e.target as HTMLElement
-
-            if (
-              target.closest(
-                'button, input, textarea, select, a, [role="button"], .ProseMirror, [contenteditable="true"]',
-              )
-            ) {
-              return
-            }
-
-            e.preventDefault()
-            e.stopPropagation()
-
-            if (isExpanded) {
-              focusEditor({moveCursorToEnd: true})
-              return
-            }
-
-            activateEditor({moveCursorToEnd: true})
-          }}
         >
           <div
             className={cn(
@@ -1038,20 +1020,6 @@ export function CommentEditor({
 
             // minHeight={isExpanded ? 105 : 40}
             // paddingHorizontal="$4"
-            onClick={(e) => {
-              const target = e.target as HTMLElement
-
-              // Check if the clicked element is not an input, button, or textarea
-              if (target.closest('input, textarea, select, button')) {
-                return // Don't focus the editor in this case
-              }
-              e.stopPropagation()
-              if (isExpanded) {
-                focusEditor()
-                return
-              }
-              activateEditor()
-            }}
           >
             {isExpanded ? (
               <HyperMediaEditorView

@@ -175,7 +175,9 @@ const WebEmbedDisplay = ({editor, block, assign}: DisplayComponentProps) => {
         // open the link only when the block was already selected at mousedown.
         if (wasSelectedAtMouseDown.current && block.props.link) {
           openUrl(block.props.link)
+          return true
         }
+        return false
       }}
       styleProps={{
         padding: '$3',

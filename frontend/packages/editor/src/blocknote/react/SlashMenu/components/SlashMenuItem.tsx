@@ -1,80 +1,42 @@
-import {Badge, createStyles, Menu, Stack, Text} from '@mantine/core'
-import {useEffect, useRef} from 'react'
-
-const MIN_LEFT_MARGIN = 5
+import {ReactNode} from 'react'
 
 export type SlashMenuItemProps = {
+  id: string
+  icon: ReactNode
   name: string
-  icon: JSX.Element
   hint: string | undefined
   shortcut?: string
   isSelected: boolean
-  set: () => void
+  onSelect: () => void
 }
 
 export function SlashMenuItem(props: SlashMenuItemProps) {
-  const itemRef = useRef<HTMLButtonElement>(null)
-  const {classes} = createStyles({root: {}})(undefined, {
-    name: 'SuggestionListItem',
-  })
-
-  function isSelected() {
-    const isKeyboardSelected = props.isSelected
-    // props.selectedIndex !== undefined && props.selectedIndex === props.index;
-    const isMouseSelected = itemRef.current?.matches(':hover')
-
-    return isKeyboardSelected || isMouseSelected
-  }
-
-  // Updates HTML "data-hovered" attribute which Mantine uses to set mouse hover styles.
-  // Allows users to "hover" menu items when navigating using the keyboard.
-  function updateSelection() {
-    isSelected()
-      ? itemRef.current?.setAttribute('data-hovered', 'true')
-      : itemRef.current?.removeAttribute('data-hovered')
-  }
-
-  useEffect(() => {
-    // Updates whether the item is selected with the keyboard (triggered on selectedIndex prop change).
-    updateSelection()
-
-    if (
-      isSelected() &&
-      itemRef.current &&
-      itemRef.current.getBoundingClientRect().left > MIN_LEFT_MARGIN
-      // This check is needed because initially the menu is initialized somewhere above outside the screen (with left = 1)
-      // scrollIntoView() is called before the menu is set in the right place, and without the check would scroll to the top of the page every time
-    ) {
-      itemRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      })
-    }
-  })
+  const label = [props.name, props.hint, props.shortcut].filter(Boolean).join(' ')
 
   return (
-    <Menu.Item
-      className={classes.root}
-      icon={props.icon}
-      onClick={props.set}
-      closeMenuOnClick={false}
-      key={props.name}
-      // Ensures an item selected with both mouse & keyboard doesn't get deselected on mouse leave.
-      onMouseLeave={() => {
-        setTimeout(() => {
-          updateSelection()
-        }, 1)
+    <div
+      id={props.id}
+      role="option"
+      aria-selected={props.isSelected}
+      tabIndex={-1}
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={props.onSelect}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          props.onSelect()
+        }
       }}
-      ref={itemRef}
-      rightSection={props.shortcut && <Badge size={'xs'}>{props.shortcut}</Badge>}
+      className="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none"
+      data-selected={props.isSelected || undefined}
+      title={label}
     >
-      <Stack>
-        {/*Might need separate classes.*/}
-        <Text size={14} weight={500}>
-          {props.name}
-        </Text>
-        <Text size={10}>{props.hint}</Text>
-      </Stack>
-    </Menu.Item>
+      <span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center">
+        {props.icon}
+      </span>
+      <span className="min-w-0 flex-1 truncate">{props.name}</span>
+      {props.hint && <span className="text-muted-foreground truncate">{props.hint}</span>}
+      {props.shortcut && <span className="text-muted-foreground">{props.shortcut}</span>}
+    </div>
   )
 }

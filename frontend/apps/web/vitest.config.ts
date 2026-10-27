@@ -16,6 +16,8 @@ export default defineConfig({
       '@shm/shared': path.resolve(__dirname, '../../packages/shared/src'),
       '@shm/editor': path.resolve(__dirname, '../../packages/editor/src'),
       '@shm/ui': path.resolve(__dirname, '../../packages/ui/src'),
+      '@/blocknote': path.resolve(__dirname, '../../packages/editor/src/blocknote'),
+      '@/editor.css': path.resolve(__dirname, '../../packages/editor/src/editor.css'),
       '@': path.resolve(__dirname, './app'),
     },
   },

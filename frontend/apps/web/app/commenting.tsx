@@ -208,6 +208,7 @@ export default function WebCommenting({
       const comment = {...context!.optimisticComment, version: response.cids[0]!}
       applyOptimisticComment(queryClient, docId, comment, undefined, quoting)
       onCommentSubmitted?.(comment)
+      requestAnimationFrame(() => document.getElementById(`comment-${comment.id}`)?.focus())
       if (isPerfEnabled()) markCommentSubmitEnd()
       onSuccess?.({
         response,
@@ -518,6 +519,11 @@ export default function WebCommenting({
         siteUid={docId.uid}
         documentId={docId}
       />
+      {postComment.isError && (
+        <p role="alert" className="text-destructive text-sm">
+          Unable to publish comment. Please try again.
+        </p>
+      )}
       {createAccountContent}
       {emailNotificationsPromptContent}
     </div>

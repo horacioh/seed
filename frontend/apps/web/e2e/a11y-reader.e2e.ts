@@ -14,6 +14,20 @@ test.describe('published web reader accessibility', () => {
     })
   }
 
+  test('keeps the comments panel and focused comment editor accessible', async ({page}) => {
+    await page.goto(paths[0] || '/')
+    const commentsTab = page.locator('[data-tab="comments"]:visible').first()
+    await expect(commentsTab).toBeVisible()
+    await commentsTab.click()
+    await expectNoA11yViolations(page, {modes: ['light', 'dark', 'reflow-320', 'zoom-200']})
+
+    const commentEditor = page.getByRole('textbox', {name: 'Comment'}).first()
+    await expect(commentEditor).toBeVisible()
+    await commentEditor.focus()
+    await expect(commentEditor).toBeFocused()
+    await expectNoA11yViolations(page, {modes: ['light', 'dark', 'reflow-320', 'zoom-200']})
+  })
+
   test('offers skip navigation before reader controls', async ({page}) => {
     await page.goto(paths[0] || '/')
     await page.keyboard.press('Tab')

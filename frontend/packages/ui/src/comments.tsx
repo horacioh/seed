@@ -169,7 +169,9 @@ export function CommentDiscussions({
   useLayoutEffect(() => {
     if (!showParents && !replyCommentId) return
 
-    focusedCommentRef.current?.scrollIntoView({behavior: 'instant', block: replyCommentId ? 'nearest' : 'start'})
+    if (typeof focusedCommentRef.current?.scrollIntoView === 'function') {
+      focusedCommentRef.current.scrollIntoView({behavior: 'instant', block: replyCommentId ? 'nearest' : 'start'})
+    }
   }, [showParents, commentId, replyCommentId])
 
   const commentEditorSlot =
@@ -600,7 +602,7 @@ export const CommentGroup = memo(function CommentGroup({
   const firstComment = commentGroup.comments[0]
 
   return (
-    <div className="relative flex flex-col gap-2 p-2">
+    <ol aria-label="Replies" className="relative flex flex-col gap-2 p-2">
       {/* {commentGroup.comments.length > 1 && (
         <div
           className="absolute w-px bg-border"
@@ -616,26 +618,29 @@ export const CommentGroup = memo(function CommentGroup({
         const isLastCommentInGroup = !!lastComment && comment === lastComment
         const isFirstCommentInGroup = !!lastComment && comment === firstComment
         return (
-          <Comment
-            isLast={isLastCommentInGroup}
-            isFirst={isFirstCommentInGroup}
-            externalTarget={
-              isFirstCommentInGroup && commentGroup.type === 'externalCommentGroup' ? commentGroup.target : undefined
-            }
-            key={comment.id}
-            comment={comment}
-            onCommentDeleted={onCommentDeleted}
-            authorMetadata={comment.author ? authors?.[comment.author]?.metadata : null}
-            authorId={comment.author}
-            enableReplies={enableReplies}
-            highlight={
-              highlightedCommentId ? comment.id === highlightedCommentId : highlightLastComment && isLastCommentInGroup
-            }
-            targetDomain={targetDomain}
-          />
+          <li key={comment.id}>
+            <Comment
+              isLast={isLastCommentInGroup}
+              isFirst={isFirstCommentInGroup}
+              externalTarget={
+                isFirstCommentInGroup && commentGroup.type === 'externalCommentGroup' ? commentGroup.target : undefined
+              }
+              comment={comment}
+              onCommentDeleted={onCommentDeleted}
+              authorMetadata={comment.author ? authors?.[comment.author]?.metadata : null}
+              authorId={comment.author}
+              enableReplies={enableReplies}
+              highlight={
+                highlightedCommentId
+                  ? comment.id === highlightedCommentId
+                  : highlightLastComment && isLastCommentInGroup
+              }
+              targetDomain={targetDomain}
+            />
+          </li>
         )
       })}
-    </div>
+    </ol>
   )
 })
 
@@ -785,7 +790,12 @@ export const Comment = memo(function Comment({
   return (
     <>
       {deleteCommentDialog.content}
-      <div className={cn('group relative flex gap-1 rounded-lg p-2', isEntirelyHighlighted && 'bg-accent')}>
+      <article
+        id={`comment-${comment.id}`}
+        tabIndex={-1}
+        aria-label={`Comment by ${authorMetadata?.name || 'Someone'} on ${formattedDateShort(comment.createTime)}`}
+        className={cn('group relative flex gap-1 rounded-lg p-2', isEntirelyHighlighted && 'bg-accent')}
+      >
         {heading ? null : (
           <div className="relative mt-0.5 flex min-w-5 flex-col items-center">
             {isFirst ? null : <div className="bg-border absolute top-[-40px] left-1/2 h-[40px] w-px" />}
@@ -865,6 +875,7 @@ export const Comment = memo(function Comment({
                     // size="icon"
                     size="xs"
                     variant="ghost"
+                    aria-label="Copy Comment Link"
                     className="text-muted-foreground hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
                     onClick={() => {
                       if (!docId) return
@@ -894,6 +905,7 @@ export const Comment = memo(function Comment({
                   side="bottom"
                   size="xs"
                   align="end"
+                  ariaLabel="More comment options"
                   className="hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
                   menuItems={options}
                 />
@@ -949,7 +961,7 @@ export const Comment = memo(function Comment({
             </div>
           )}
         </div>
-      </div>
+      </article>
     </>
   )
 })

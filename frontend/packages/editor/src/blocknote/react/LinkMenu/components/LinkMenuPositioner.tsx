@@ -85,9 +85,7 @@ export const LinkMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSch
 
   return (
     <Tippy
-      // Always append to document.body so the popup escapes any container
-      // stacking context.
-      appendTo={document.body}
+      appendTo={props.editor.domElement.parentElement ?? document.body}
       content={linkMenuElement}
       getReferenceClientRect={getReferenceClientRect}
       interactive={true}

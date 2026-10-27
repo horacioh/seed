@@ -256,11 +256,14 @@ export const test = base.extend<{
 
       async openSlashMenu() {
         await this.typeText('/')
-        await page.waitForSelector('.mantine-Menu-dropdown, [class*="mantine-"][class*="Menu"]', {timeout: 5000})
+        await page.getByRole('listbox', {name: 'Block suggestions'}).waitFor()
       },
 
       async clickSlashMenuItem(name: string) {
-        const menuItem = page.locator(`.mantine-Menu-dropdown >> text="${name}"`)
+        const menuItem = page
+          .getByRole('listbox', {name: 'Block suggestions'})
+          .getByRole('option')
+          .filter({hasText: name})
         await menuItem.click()
       },
 
