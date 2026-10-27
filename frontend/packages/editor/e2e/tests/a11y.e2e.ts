@@ -66,6 +66,13 @@ test.describe('editor accessibility', () => {
     await expect(page.locator('[aria-live="polite"]')).toHaveText('Block is already at the top')
   })
 
+  test('keyboard block movement announces when the block is already at the bottom', async ({page, editorHelpers}) => {
+    await page.goto('/?fixture=empty&edit=1')
+    await editorHelpers.waitForEditorReady()
+    await editorHelpers.pressKey('Control+Shift+ArrowDown')
+    await expect(page.locator('[aria-live="polite"]')).toHaveText('Block is already at the bottom')
+  })
+
   test('keyboard block movement preserves nested children and the selected text', async ({page, editorHelpers}) => {
     await page.goto('/?fixture=nested&edit=1')
     await editorHelpers.waitForEditorReady()

@@ -1,7 +1,6 @@
 import {BlockNoteEditor, BlockSchema, mergeCSSClasses} from '../core'
 import {MantineProvider, createStyles} from '@mantine/core'
 import {EditorContent} from '@tiptap/react'
-import {NodeSelection} from 'prosemirror-state'
 import {HTMLAttributes, ReactNode, useEffect, useMemo, useState} from 'react'
 import {Theme, blockNoteToMantineTheme} from './BlockNoteTheme'
 import {darkDefaultTheme, lightDefaultTheme} from './defaultThemes'
@@ -30,24 +29,6 @@ function BaseBlockNoteView<BSchema extends BlockSchema>(
     return () => {
       unsubscribe?.()
     }
-  }, [editor])
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!event.altKey || event.key !== 'F10') return
-      const {selection} = editor.prosemirrorView.state
-      if (selection.empty || selection instanceof NodeSelection) return
-      event.preventDefault()
-      event.stopPropagation()
-      editor.formattingToolbar?.show()
-      requestAnimationFrame(
-        () => document.querySelector<HTMLElement>('[role="toolbar"] button:not([disabled])')?.focus(),
-      )
-    }
-
-    const editorElement = editor.domElement
-    editorElement.addEventListener('keydown', handleKeyDown, true)
-    return () => editorElement.removeEventListener('keydown', handleKeyDown, true)
   }, [editor])
 
   return (

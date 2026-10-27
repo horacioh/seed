@@ -85,7 +85,9 @@ export const BlockManipulationExtension = Extension.create<{
       const blockInfo = getBlockInfoFromSelection(state)
       const blockId = blockInfo.block.node.attrs.id as string
       if (!this.options.moveBlock?.(blockId, direction)) {
-        if (direction === 'up') this.options.onAnnouncement?.('Block is already at the top')
+        this.options.onAnnouncement?.(
+          direction === 'up' ? 'Block is already at the top' : 'Block is already at the bottom',
+        )
         return true
       }
       view.focus()
@@ -101,7 +103,8 @@ export const BlockManipulationExtension = Extension.create<{
         if (!state.selection.empty && !(state.selection instanceof NodeSelection)) {
           this.options.showFormattingToolbar?.()
           requestAnimationFrame(
-            () => document.querySelector<HTMLElement>('[role="toolbar"] button:not([disabled])')?.focus(),
+            () =>
+              view.dom.parentElement?.querySelector<HTMLElement>('[role="toolbar"] button:not([disabled])')?.focus(),
           )
           return true
         }
