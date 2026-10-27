@@ -7,6 +7,8 @@ export interface ScreenReader {
   lastSpokenPhrase(): Promise<string>
   /** Returns phrases captured since the screen reader started. */
   spokenPhraseLog(): Promise<string[]>
+  /** Presses a key in the focused application. */
+  press(key: string): Promise<void>
 }
 
 /** Adds the web navigation commands used by both browser screen readers. */
