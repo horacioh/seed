@@ -52,6 +52,24 @@ afterEach(() => {
 })
 
 describe('MobilePanelSheet', () => {
+  it('removes a closed sheet from the accessibility tree and tab order', () => {
+    container = document.createElement('div')
+    document.body.appendChild(container)
+    root = createRoot(container)
+    act(() => {
+      root!.render(
+        <MobilePanelSheet isOpen={false} title="Account menu" onClose={vi.fn()}>
+          <button type="button">Account settings</button>
+        </MobilePanelSheet>,
+      )
+    })
+
+    const dialog = document.body.querySelector<HTMLElement>('[data-slot="mobile-panel-sheet"]')
+
+    expect(dialog?.getAttribute('aria-hidden')).toBe('true')
+    expect(dialog?.inert).toBe(true)
+  })
+
   it('renders as a polished bottom sheet instead of a flat full-screen panel', () => {
     renderSheet()
 

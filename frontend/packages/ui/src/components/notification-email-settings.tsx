@@ -142,14 +142,25 @@ export function NotificationEmailSettings({
                 Enter the email address that will receive notifications for this account.
               </DialogDescription>
             </DialogHeader>
+            <Label htmlFor="notification-email-address">Email address</Label>
             <Input
+              id="notification-email-address"
+              name="email"
               type="email"
+              autoComplete="email"
               placeholder="you@example.com"
               value={emailInput}
               disabled={disabled || saving}
+              required
+              aria-describedby={emailDialogOpen && error ? 'notification-email-error' : undefined}
               autoFocus
               onChange={(event) => setEmailInput(event.target.value)}
             />
+            {emailDialogOpen && error ? (
+              <p id="notification-email-error" className="text-destructive text-sm" role="alert">
+                {error}
+              </p>
+            ) : null}
             <DialogFooter>
               <Button type="button" variant="outline" disabled={saving} onClick={() => setEmailDialogOpen(false)}>
                 Cancel
@@ -174,12 +185,16 @@ export function NotificationEmailSettings({
 
       {statusMessage ? (
         <div role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
-          <Loader2 className="size-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           <p>{statusMessage}</p>
         </div>
       ) : null}
 
-      {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      {error && !emailDialogOpen ? (
+        <p className="text-destructive text-sm" role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   )
 }

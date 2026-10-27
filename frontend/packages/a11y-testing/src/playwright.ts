@@ -107,6 +107,10 @@ export async function expectNoA11yViolations(
 type A11yViolationList = Parameters<typeof formatViolations>[0][number][]
 
 async function settleLayout(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    const transitions = document.getAnimations().filter((animation) => animation.constructor.name === 'CSSTransition')
+    await Promise.all(transitions.map((transition) => transition.finished.catch(() => undefined)))
+  })
   await page.evaluate(
     () =>
       new Promise<void>((resolve) => {

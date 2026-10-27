@@ -57,7 +57,10 @@ export function IdentityRecoveredView() {
         <div className="bg-brand/15 flex size-14 items-center justify-center rounded-full">
           <Check className="text-brand size-7" />
         </div>
-        <h2 className="text-center text-xl font-bold">
+        <h1
+          tabIndex={-1}
+          className="text-center text-xl font-bold outline-none focus:outline-none focus-visible:outline-none"
+        >
           Your identity is recovered.
           {principals.length > 1 ? (
             <>
@@ -65,7 +68,7 @@ export function IdentityRecoveredView() {
               Which account would you like to use?
             </>
           ) : null}
-        </h2>
+        </h1>
 
         {/* Only ask which account when there's a choice. */}
         {principals.length > 1 ? (

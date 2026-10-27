@@ -75,6 +75,7 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
   const suppressHandleClick = useRef(false)
 
   useEffect(() => {
+    if (sheetRef.current) sheetRef.current.inert = !isOpen
     if (!isOpen) {
       setIsVisible(false)
       setDragY(0)
@@ -229,6 +230,7 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
       <div
         role="dialog"
         aria-modal="true"
+        aria-hidden={!isOpen}
         aria-labelledby={header ? undefined : titleId}
         aria-label={header ? title : undefined}
         data-slot="mobile-panel-sheet"

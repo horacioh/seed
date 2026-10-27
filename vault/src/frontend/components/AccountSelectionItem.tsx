@@ -24,8 +24,9 @@ export function AccountSelectionItem({
   return (
     <button
       type="button"
+      aria-pressed={isSelected}
       className={cn(
-        'flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
+        'flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none',
         isSelected ? 'bg-black/5 dark:bg-white/10' : 'hover:bg-black/5 dark:hover:bg-white/5',
       )}
       onClick={onClick}
@@ -38,7 +39,7 @@ export function AccountSelectionItem({
             alt=""
           />
         ) : (
-          <User className="text-primary size-5" />
+          <User className="text-primary size-5" aria-hidden="true" />
         )}
       </div>
       <div
@@ -50,7 +51,7 @@ export function AccountSelectionItem({
       >
         {getProfileDisplayName(profile, profileLoadState)}
       </div>
-      {isSelected ? <Check className="text-brand size-4 shrink-0" /> : null}
+      {isSelected ? <Check className="text-brand size-4 shrink-0" aria-hidden="true" /> : null}
     </button>
   )
 }

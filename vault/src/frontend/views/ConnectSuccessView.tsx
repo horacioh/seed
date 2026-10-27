@@ -31,7 +31,7 @@ export function ConnectSuccessView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-left text-2xl font-bold">
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-2xl font-bold">
           {name ? `You're all set, ${name}` : "You're all set"}
         </CardTitle>
         <CardDescription className="text-left">Time to build knowledge, share and create discussions.</CardDescription>

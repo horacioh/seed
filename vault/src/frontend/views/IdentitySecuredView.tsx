@@ -16,7 +16,9 @@ export function IdentitySecuredView() {
           <Check className="text-brand size-7" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-xl font-bold">Your identity is secured</h2>
+          <h1 tabIndex={-1} className="text-xl font-bold outline-none focus:outline-none focus-visible:outline-none">
+            Your identity is secured
+          </h1>
           <p className="text-muted-foreground text-sm">
             Your password has been set and your recovery words have been generated.
           </p>

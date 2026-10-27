@@ -1,4 +1,6 @@
+import {ErrorMessage} from '@/frontend/components/ErrorMessage'
 import {PasswordInput} from '@/frontend/components/PasswordInput'
+import {Spinner} from '@/frontend/components/Spinner'
 import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardHeader, CardTitle} from '@/frontend/components/ui/card'
 import * as navigation from '@/frontend/navigation'
@@ -10,12 +12,12 @@ import type React from 'react'
  * Password sign-in for an existing user.
  */
 export function PasswordSignInView() {
-  const {email, password, loading, error, sessionChecked} = useAppState()
+  const {email, password, loading, error, sessionExpired, sessionChecked} = useAppState()
   const actions = useActions()
   const navigate = navigation.useHashNavigate()
 
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
   if (!email) {
     return <navigation.HashNavigate to="/" replace />
@@ -30,7 +32,9 @@ export function PasswordSignInView() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-left text-xl">Sign in with password</CardTitle>
+          <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+            Sign in with password
+          </CardTitle>
           <button
             type="button"
             aria-label="Close"
@@ -42,12 +46,14 @@ export function PasswordSignInView() {
         </div>
       </CardHeader>
       <CardContent>
+        {sessionExpired ? <ErrorMessage message="Your session expired. Sign in again to continue." /> : null}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Invisible (not display:none, which password managers may skip) username field, so a
               saved password is stored under this email and picked out from other saved logins. */}
           <input
             type="text"
             name="username"
+            aria-label="Email address"
             value={email}
             autoComplete="username"
             className="pointer-events-none absolute m-0 h-0 w-0 opacity-0"
@@ -64,7 +70,6 @@ export function PasswordSignInView() {
               if (error) actions.setError('')
             }}
             autoComplete="current-password"
-            autoFocus
             error={error}
           />
 

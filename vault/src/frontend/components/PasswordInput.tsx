@@ -11,10 +11,10 @@ interface PasswordInputProps {
   value: string
   onChange: (value: string) => void
   autoComplete: string
-  autoFocus?: boolean
   showStrength?: boolean
   placeholder?: string
   error?: string
+  describedBy?: string
 }
 
 const strengthConfig: Record<number, string> = {
@@ -32,13 +32,15 @@ export function PasswordInput({
   value,
   onChange,
   autoComplete,
-  autoFocus,
   showStrength,
   placeholder = 'Enter password',
   error,
+  describedBy,
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false)
   const strength = showStrength ? sharedPassword.checkPasswordStrength(value) : 0
+  const errorId = error ? `${id}-error` : undefined
+  const descriptionIds = [describedBy, errorId].filter(Boolean).join(' ') || undefined
 
   return (
     <div className="mb-4 space-y-2">
@@ -51,11 +53,11 @@ export function PasswordInput({
           className="pr-10"
           placeholder={placeholder}
           aria-invalid={error ? true : undefined}
+          aria-describedby={descriptionIds}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           required
           autoComplete={autoComplete}
-          autoFocus={autoFocus}
         />
         <Button
           type="button"
@@ -64,6 +66,7 @@ export function PasswordInput({
           className="absolute top-0 right-0 h-full w-10 hover:bg-transparent"
           onClick={() => setShowPassword(!showPassword)}
           aria-label={showPassword ? 'Hide password' : 'Show password'}
+          aria-pressed={showPassword}
           title={showPassword ? 'Hide password' : 'Show password'}
         >
           {showPassword ? (
@@ -73,7 +76,11 @@ export function PasswordInput({
           )}
         </Button>
       </div>
-      {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      {error ? (
+        <p id={errorId} className="text-destructive text-sm" role="alert">
+          {error}
+        </p>
+      ) : null}
       {showStrength && value ? (
         <div className="mt-2 h-1 overflow-hidden rounded-sm bg-black/10 dark:bg-white/10">
           <div className={`h-full transition-all duration-300 ${strengthConfig[strength]}`} />

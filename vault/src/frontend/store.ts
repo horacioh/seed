@@ -129,6 +129,9 @@ function initialState(
     failedSignInAttempts: 0,
     newEmail: '', // For email change flow.
     sessionChecked: false,
+    sessionExpired: false,
+    sessionCheckError: '',
+    sessionCheckPending: false,
     /** Active delegation request parsed from URL params. Null when not in delegation flow. */
     delegationRequest: null as hmauth.DelegationRequest | null,
     /** Whether the user has given consent for the current delegation. */
@@ -775,10 +778,14 @@ function createActions(state: AppState, client: api.ClientInterface, navigator: 
     },
 
     async checkSession() {
+      const hadAuthenticatedSession = !!state.session?.authenticated
+      state.sessionCheckPending = true
       try {
         const data = await client.getSession()
+        state.sessionCheckError = ''
         state.relyingPartyOrigin = data.relyingPartyOrigin
         if (data.authenticated && data.email) {
+          state.sessionExpired = false
           state.session = data
           state.email = data.email
 
@@ -791,10 +798,24 @@ function createActions(state: AppState, client: api.ClientInterface, navigator: 
           if (!data.credentials?.password && !data.credentials?.passkey) {
             navigator.go('/auth/choose')
           }
+        } else if (hadAuthenticatedSession) {
+          state.sessionExpired = true
+          state.session = null
+          state.decryptedDEK = null
+          state.password = ''
+          state.vaultData = null
+          state.vaultVersion = 0
+          state.vaultLoaded = false
+          state.selectedAccountIndex = -1
+          state.recoveryWords = []
+          state.failedSignInAttempts = 0
+          clearStoredRecoveryWords()
         }
       } catch (e) {
         console.error('Session check failed:', e)
+        state.sessionCheckError = "We couldn't check your session. Check your connection and try again."
       } finally {
+        state.sessionCheckPending = false
         state.sessionChecked = true
         try {
           state.passkeySupported = localCrypto.isWebAuthnSupported()
@@ -2322,6 +2343,7 @@ function createActions(state: AppState, client: api.ClientInterface, navigator: 
     async handleLogout() {
       await client.logout()
       state.session = null
+      state.sessionExpired = false
       state.decryptedDEK = null
       state.password = ''
       state.vaultData = null

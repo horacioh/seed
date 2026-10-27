@@ -25,8 +25,19 @@ function CardHeader({className, ...props}: React.ComponentProps<'div'>) {
   )
 }
 
-function CardTitle({className, ...props}: React.ComponentProps<'div'>) {
-  return <div data-slot="card-title" className={cn('leading-none font-semibold', className)} {...props} />
+function CardTitle({as: Component = 'div', className, ...props}: React.ComponentProps<'div'> & {as?: 'div' | 'h1'}) {
+  const programmaticHeading = Component === 'h1' && props.tabIndex === -1
+  return (
+    <Component
+      data-slot="card-title"
+      className={cn(
+        'leading-none font-semibold',
+        programmaticHeading && 'outline-none focus:outline-none focus-visible:outline-none',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 function CardDescription({className, ...props}: React.ComponentProps<'div'>) {

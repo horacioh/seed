@@ -1,4 +1,5 @@
 import {ErrorMessage} from '@/frontend/components/ErrorMessage'
+import {Spinner} from '@/frontend/components/Spinner'
 import {OptionCard} from '@/frontend/components/OptionCard'
 import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/frontend/components/ui/card'
@@ -19,6 +20,7 @@ export function LoginView() {
     sessionChecked,
     userHasPassword,
     userHasPasskey,
+    sessionExpired,
     vaultConnectionRequest,
   } = useAppState()
   const actions = useActions()
@@ -29,7 +31,7 @@ export function LoginView() {
   // page load without either — e.g. reloading /login while logged out — none
   // of it exists, so wait for the session check and then restart at pre-login.
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
   if (!email) {
     return <navigation.HashNavigate to="/" replace />
@@ -40,7 +42,7 @@ export function LoginView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-left text-xl">
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
           {connectingDesktop ? (
             'Connect your desktop app'
           ) : (
@@ -62,6 +64,7 @@ export function LoginView() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
+        {sessionExpired ? <ErrorMessage message="Your session expired. Sign in again to continue." /> : null}
         <ErrorMessage message={error} />
 
         {passkeySupported && userHasPasskey ? (

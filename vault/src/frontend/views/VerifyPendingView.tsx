@@ -2,7 +2,6 @@ import {type FormEvent, useEffect, useState} from 'react'
 import {Alert, AlertDescription} from '@/frontend/components/ui/alert'
 import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/frontend/components/ui/card'
-import {Label} from '@/frontend/components/ui/label'
 import {CodeInput} from '@shm/ui/components/code-input'
 import {StepIndicator} from '@/frontend/components/StepIndicator'
 import * as navigation from '@/frontend/navigation'
@@ -24,7 +23,16 @@ function Countdown({expireTime}: {expireTime: number}) {
   const remainingSeconds = timeLeft % 60
   const formattedTime = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
 
-  return <p>Code expires in {formattedTime}.</p>
+  return (
+    <>
+      <p>Code expires in {formattedTime}.</p>
+      {timeLeft === 0 ? (
+        <output aria-live="polite" className="block">
+          Your verification code has expired. Resend a new code to continue.
+        </output>
+      ) : null}
+    </>
+  )
 }
 
 /** View shown while waiting for the user to enter an email verification code. */
@@ -43,20 +51,27 @@ export function VerifyPendingView() {
     <Card>
       <CardHeader>
         <StepIndicator currentStep={2} />
-        <CardTitle className="text-left text-xl">Check your inbox</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          Check your inbox
+        </CardTitle>
         <CardDescription className="text-left">
           We sent a 4-digit code to <strong>{email}</strong>
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <CodeInput
-            value={code}
-            onChange={(newCode) => setCode(newCode)}
-            onComplete={(fullCode) => {
-              if (!loading) actions.handleRegisterVerify(fullCode)
-            }}
-          />
+          <fieldset className="m-0 min-w-0 border-0 p-0">
+            <legend className="sr-only">4-digit verification code</legend>
+            <CodeInput
+              value={code}
+              onChange={(newCode) => setCode(newCode)}
+              onComplete={(fullCode) => {
+                if (!loading) actions.handleRegisterVerify(fullCode)
+              }}
+              aria-invalid={!!error}
+              aria-describedby={error ? 'verification-error' : undefined}
+            />
+          </fieldset>
 
           <Button type="submit" loading={loading} disabled={code.length !== 4} className="w-full">
             Verify
@@ -69,6 +84,7 @@ export function VerifyPendingView() {
             Didn't get it? Check spam or{' '}
             <button
               type="button"
+              aria-label="Resend verification code"
               className="text-primary underline hover:opacity-80"
               onClick={() => actions.handleStartRegistration()}
               disabled={loading}
@@ -80,7 +96,7 @@ export function VerifyPendingView() {
         </div>
 
         {error && (
-          <Alert variant="destructive" className="mt-6">
+          <Alert id="verification-error" variant="destructive" className="mt-6">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}

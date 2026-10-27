@@ -28,7 +28,9 @@ export function SetPasswordView() {
     <Card>
       <CardHeader>
         <FlowHeader step={3} />
-        <CardTitle className="text-left text-xl">Create a password</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          Create a password
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -36,6 +38,7 @@ export function SetPasswordView() {
           <input
             type="text"
             name="username"
+            aria-label="Email address"
             value={email}
             autoComplete="username"
             className="pointer-events-none absolute m-0 h-0 w-0 opacity-0"
@@ -52,7 +55,6 @@ export function SetPasswordView() {
               if (error) actions.setError('')
             }}
             autoComplete="new-password"
-            autoFocus
             showStrength
           />
 

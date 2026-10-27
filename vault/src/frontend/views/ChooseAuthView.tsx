@@ -19,7 +19,9 @@ export function ChooseAuthView() {
     <Card>
       <CardHeader>
         <FlowHeader step={2} />
-        <CardTitle className="text-left text-xl">Pick how to secure your account</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          Pick how to secure your account
+        </CardTitle>
         <CardDescription className="text-left">Your data will be protected by encryption.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">

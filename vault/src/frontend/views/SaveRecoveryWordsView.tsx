@@ -16,6 +16,7 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
   const actions = useActions()
   const navigate = navigation.useHashNavigate()
   const [copied, setCopied] = useState(false)
+  const [downloaded, setDownloaded] = useState(false)
 
   useEffect(() => {
     actions.prepareRecoveryWords()
@@ -32,6 +33,7 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
       // Space separated, so pasting into the recovery form fills every field.
       await navigator.clipboard.writeText(recoveryWords.join(' '))
       setCopied(true)
+      setDownloaded(false)
     } catch (e) {
       console.error('Failed to copy recovery words:', e)
       actions.setError("We couldn't copy your recovery words. Please write them down or download them.")
@@ -48,6 +50,8 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
       anchor.download = 'hypermedia-recovery-words.txt'
       anchor.click()
       URL.revokeObjectURL(url)
+      setDownloaded(true)
+      setCopied(false)
     } catch (e) {
       console.error('Failed to download recovery words:', e)
       actions.setError("We couldn't download your recovery words. Please try again.")
@@ -61,7 +65,9 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
       <CardHeader>
         {fromSettings ? null : <FlowHeader step={3} />}
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-left text-xl">Save your recovery words</CardTitle>
+          <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+            Save your recovery words
+          </CardTitle>
           {fromSettings ? (
             <button
               type="button"
@@ -78,13 +84,13 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <ErrorMessage message={error} />
+        <ErrorMessage id="recovery-save-error" message={error} />
 
         <div className="space-y-2">
           <ol className="bg-brand/10 grid grid-cols-3 gap-2 rounded-lg p-3">
             {recoveryWords.map((word, i) => (
               <li key={i} className="bg-background/70 rounded-md px-3 py-2 text-sm font-medium">
-                <span className="text-muted-foreground mr-1">{i + 1}.</span>
+                <span className="text-foreground/70 mr-1">{i + 1}.</span>
                 {word}
               </li>
             ))}
@@ -97,6 +103,7 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
               className="text-brand shrink-0"
               disabled={!recoveryWords.length}
               onClick={handleCopy}
+              aria-label={copied ? 'Recovery words copied' : 'Copy recovery words'}
             >
               {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
               {copied ? 'Copied' : 'Copy words'}
@@ -123,6 +130,9 @@ export function SaveRecoveryWordsView({fromSettings = false}: {fromSettings?: bo
             I've saved my words
           </Button>
         </div>
+        <output aria-live="polite" className="sr-only">
+          {copied ? 'Recovery words copied to clipboard.' : downloaded ? 'Recovery document downloaded.' : ''}
+        </output>
       </CardContent>
     </Card>
   )

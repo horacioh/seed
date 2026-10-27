@@ -717,7 +717,7 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
             {avatarIcon}
           </button>
           {joinButton}
-          <MobilePanelSheet isOpen={mobileMenuOpen} title="" onClose={() => setMobileMenuOpen(false)}>
+          <MobilePanelSheet isOpen={mobileMenuOpen} title="Account menu" onClose={() => setMobileMenuOpen(false)}>
             <div className="flex items-center gap-3 px-4 py-4">
               {avatarIcon}
               <div className="min-w-0">

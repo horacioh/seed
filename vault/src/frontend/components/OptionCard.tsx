@@ -29,7 +29,7 @@ export function OptionCard({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        'flex w-full gap-3 rounded-lg border p-4 text-left transition-colors',
+        'flex w-full gap-3 rounded-lg border p-4 text-left transition-colors focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:outline-none',
         description ? 'items-start' : 'items-center',
         recommended
           ? 'border-brand bg-brand/5'
@@ -49,10 +49,10 @@ export function OptionCard({
         <div className="flex items-center gap-2">
           <span className="font-semibold">{title}</span>
           {badge ? (
-            <span className="bg-brand/15 text-brand rounded-full px-2 py-0.5 text-xs font-medium">{badge}</span>
+            <span className="bg-brand/15 text-foreground rounded-full px-2 py-0.5 text-xs font-medium">{badge}</span>
           ) : null}
         </div>
-        {description ? <p className="text-muted-foreground text-sm">{description}</p> : null}
+        {description ? <p className="text-foreground/70 text-sm">{description}</p> : null}
       </div>
     </button>
   )

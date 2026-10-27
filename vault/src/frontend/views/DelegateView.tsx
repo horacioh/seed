@@ -2,6 +2,7 @@ import {AccountSelectionItem} from '@/frontend/components/AccountSelectionItem'
 import {CreateAccountDialog} from '@/frontend/components/CreateAccountDialog'
 import {ErrorMessage} from '@/frontend/components/ErrorMessage'
 import {RecoveryWordsReminder} from '@/frontend/components/RecoveryWordsReminder'
+import {Spinner} from '@/frontend/components/Spinner'
 import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/frontend/components/ui/card'
 import * as navigation from '@/frontend/navigation'
@@ -56,7 +57,7 @@ export function DelegateView() {
 
   // URL has params but store hasn't synced yet — wait for the effect.
   if (!delegationRequest) {
-    return null
+    return <Spinner label="Loading authorization request" />
   }
 
   const hasAccounts = accounts.length > 0
@@ -71,7 +72,9 @@ export function DelegateView() {
                 <User className="text-primary size-6" />
               </div>
             </div>
-            <CardTitle className="text-center">No Accounts</CardTitle>
+            <CardTitle as="h1" tabIndex={-1} className="text-center">
+              No Accounts
+            </CardTitle>
             <CardDescription className="text-center">
               You need to create an account before you can authorize access.
             </CardDescription>
@@ -104,7 +107,9 @@ export function DelegateView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-left text-xl">Confirm your account</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          Confirm your account
+        </CardTitle>
         <CardDescription className="text-left">
           Join <span className="text-foreground font-medium">{siteDisplayName}</span> to comment, reply, and
           participate.
