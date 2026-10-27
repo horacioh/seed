@@ -65,6 +65,18 @@ export const DefaultDragHandleMenu = <BSchema extends HMBlockSchema>(
           Edit alt text
         </DragHandleMenuItem>
       )}
+      {props.block.type === 'video' && (
+        <DragHandleMenuItem
+          onClick={() => {
+            const input = Array.from(
+              props.editor.domElement?.querySelectorAll<HTMLInputElement>('[data-video-captions-input]') ?? [],
+            ).find((candidate) => candidate.dataset.blockId === props.block.id)
+            input?.click()
+          }}
+        >
+          Captions…
+        </DragHandleMenuItem>
+      )}
       <RemoveBlockButton {...props}>Delete</RemoveBlockButton>
       <TurnIntoMenu {...props} />
       <CopyLinkToBlockButton {...props} />

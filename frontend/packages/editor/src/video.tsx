@@ -1,11 +1,12 @@
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
+import {Button} from '@shm/ui/button'
 import {Switch} from '@shm/ui/components/switch'
 import {isIpfsUrl, useFileProxyUrl} from '@shm/ui/get-file-url'
 import {ResizeHandle} from '@shm/ui/resize-handle'
 import {toast} from '@shm/ui/toast'
 import {Tooltip} from '@shm/ui/tooltip'
 import {cn} from '@shm/ui/utils'
-import {CheckCircle2} from 'lucide-react'
+import {AlertTriangle, CheckCircle2} from 'lucide-react'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {RiVideoAddLine} from 'react-icons/ri'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
@@ -75,6 +76,12 @@ export const VideoBlock = createReactBlockSpec({
     muted: {
       values: ['false', 'true'],
       default: 'false',
+    },
+    captions: {
+      default: '',
+    },
+    captionsLang: {
+      default: '',
     },
   },
   // No inline content is ever rendered for this block: a leaf node (like
@@ -305,6 +312,8 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     [assign],
   )
   const [showSuccess, setShowSuccess] = useState(() => consumeUploaded(block.id))
+  const [captionsError, setCaptionsError] = useState('')
+  const captionsInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!showSuccess) return
@@ -343,6 +352,36 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
     }
     return ''
   })()
+  const captionsSrc = block.props.captions
+    ? isIpfsUrl(block.props.captions)
+      ? getFileUrl(block.props.captions)
+      : block.props.captions
+    : ''
+  const documentLanguage =
+    editor.domElement?.ownerDocument?.documentElement.lang ||
+    (typeof document === 'undefined' ? '' : document.documentElement.lang)
+  const lang = block.props.captionsLang || documentLanguage || 'en'
+  const hasUploadedVideo =
+    isIpfsUrl(block.props.url || '') || Boolean(block.props.mediaRef) || Boolean(block.props.displaySrc)
+
+  const handleCaptionsFile = async (file: File) => {
+    setCaptionsError('')
+    const fileText = await file.text()
+    if (!fileText.replace(/^\uFEFF/, '').startsWith('WEBVTT')) {
+      setCaptionsError('Captions must be a WebVTT (.vtt) file')
+      editor.announceAccessibilityMessage('Captions must be a WebVTT (.vtt) file')
+      return
+    }
+
+    try {
+      const result = await editor.handleFileAttachment?.(file)
+      if (!result?.url) throw new Error('Captions upload did not return a URL')
+      editor.updateBlock(block, {props: {captions: result.url}})
+      editor.announceAccessibilityMessage('Captions added')
+    } catch {
+      setCaptionsError('Unable to upload captions file')
+    }
+  }
 
   // Min video width in px.
   const minWidth = 256
@@ -517,11 +556,81 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
       }
     >
       <div className="relative aspect-[16/9] w-full">
+        {canEdit && editor.isEditable && hasUploadedVideo ? (
+          <>
+            <input
+              ref={captionsInputRef}
+              type="file"
+              accept=".vtt,text/vtt"
+              hidden
+              aria-hidden="true"
+              tabIndex={-1}
+              data-video-captions-input
+              data-block-id={block.id}
+              onChange={(event) => {
+                const file = event.target.files?.[0]
+                if (file) void handleCaptionsFile(file)
+                event.target.value = ''
+              }}
+            />
+            <div
+              className={cn(
+                'absolute top-2 left-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity',
+                captionsError && 'opacity-100',
+              )}
+            >
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                data-media-container-action
+                aria-describedby={captionsError ? `video-captions-error-${block.id}` : undefined}
+                className="h-8 gap-1.5 px-2 text-xs"
+                onClick={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  captionsInputRef.current?.click()
+                }}
+              >
+                {!block.props.captions && <AlertTriangle aria-hidden="true" className="size-4" />}
+                {block.props.captions ? 'Replace captions' : 'Add captions'}
+              </Button>
+              {block.props.captions ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  data-media-container-action
+                  className="h-8 px-2 text-xs"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    editor.updateBlock(block, {props: {captions: '', captionsLang: ''}})
+                    setCaptionsError('')
+                    editor.announceAccessibilityMessage('Captions removed')
+                  }}
+                >
+                  Remove captions
+                </Button>
+              ) : null}
+              {captionsError ? (
+                <p
+                  id={`video-captions-error-${block.id}`}
+                  role="alert"
+                  className="bg-background rounded px-2 py-1 text-xs"
+                >
+                  {captionsError}
+                </p>
+              ) : null}
+            </div>
+          </>
+        ) : null}
         <ResizeHandle
           aria-label="Resize video from left edge"
           className={cn(
             !showHandle && 'pointer-events-none opacity-0',
             'focus-visible:pointer-events-auto focus-visible:opacity-100',
+            "before:border-border before:bg-foreground w-6 border-0 bg-transparent before:absolute before:top-0 before:bottom-0 before:left-0 before:w-2 before:rounded-md before:border before:content-['']",
           )}
           style={{left: 4}}
           onMouseDown={leftResizeHandleMouseDownHandler}
@@ -532,12 +641,14 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
           className={cn(
             !showHandle && 'pointer-events-none opacity-0',
             'focus-visible:pointer-events-auto focus-visible:opacity-100',
+            "before:border-border before:bg-foreground w-6 border-0 bg-transparent before:absolute before:top-0 before:right-0 before:bottom-0 before:w-2 before:rounded-md before:border before:content-['']",
           )}
           style={{right: 4}}
           onMouseDown={rightResizeHandleMouseDownHandler}
           onKeyDown={resizeByKeyboard('right')}
         />
         {block.props.displaySrc || isIpfsUrl(block.props.url || '') ? (
+          // oxlint-disable-next-line jsx-a11y/media-has-caption -- captions track renders when the author uploaded one; uploaded videos without captions are flagged by the pre-publish checker
           <video
             key={videoSrc}
             contentEditable={false}
@@ -554,6 +665,7 @@ const VideoDisplay = ({editor, block, assign}: DisplayComponentProps) => {
               // @ts-ignore
               type={getSourceType(block.props.name)}
             />
+            {captionsSrc && <track kind="captions" src={captionsSrc} srcLang={lang} label="Captions" default />}
             <p className="font-sans">Error with the video file.</p>
           </video>
         ) : block.props.url ? (
