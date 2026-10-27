@@ -23,10 +23,15 @@
     "format:write": "prettier --write .",
     "test": "vitest --run",
     "test:e2e": "playwright test",
+    "test:screen-reader": "playwright test --config=playwright.screen-reader.config.ts",
+    "typecheck:screen-reader": "tsc --noEmit --project screen-reader/tsconfig.json",
     "typecheck": "tsc --noEmit --project tsconfig.app.json"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
+    "@guidepup/guidepup": "0.34.0",
+    "@guidepup/playwright": "0.19.1",
+    "@guidepup/setup": "0.28.0",
     "@playwright/test": "1.57.0",
     "axe-core": "4.13.0",
     "jsdom": "^24.1.3",

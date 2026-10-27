@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": [
+    "./*.spec.ts",
+    "./fixtures.ts",
+    "./launch-electron.ts",
+    "./scenarios.ts",
+    "../playwright.screen-reader.config.ts"
+  ]
+}
