@@ -255,21 +255,20 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
   const linkProps = linkState.kind === 'external' && !IS_DESKTOP ? externalLinkProps : internalLinkProps
 
   return (
-    <a className="flex items-center gap-1 break-all text-blue-500" {...linkProps}>
-      <span>{linkState.label}</span>
+    <div className="flex items-center gap-1 break-all text-blue-500">
+      <a className="flex items-center gap-1 break-all text-blue-500" {...linkProps}>
+        <span>{linkState.label}</span>
+      </a>
       {linkState.status === 'verified' && linkState.verifiedMessage ? (
         <HoverCard>
           <HoverCardTrigger asChild>
-            <span
-              className="flex shrink-0 items-center text-emerald-600"
+            <button
+              type="button"
               aria-label="Domain verification details"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-              }}
+              className="flex shrink-0 appearance-none items-center border-0 bg-transparent p-0 text-emerald-600"
             >
-              <Check className="size-4" />
-            </span>
+              <Check className="size-4" aria-hidden="true" />
+            </button>
           </HoverCardTrigger>
           <HoverCardContent align="start" className="w-72">
             <div className="space-y-2 text-sm">
@@ -282,16 +281,13 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
       {linkState.status === 'warning' && linkState.warningMessage ? (
         <HoverCard>
           <HoverCardTrigger asChild>
-            <span
-              className="flex shrink-0 items-center text-amber-600"
+            <button
+              type="button"
               aria-label="Domain verification details"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-              }}
+              className="flex shrink-0 appearance-none items-center border-0 bg-transparent p-0 text-amber-600"
             >
-              <AlertCircle className="size-4" />
-            </span>
+              <AlertCircle className="size-4" aria-hidden="true" />
+            </button>
           </HoverCardTrigger>
           <HoverCardContent align="start" className="w-72">
             <div className="space-y-2 text-sm">
@@ -301,7 +297,7 @@ function SiteLink({account}: {account?: HMMetadataPayload | null}) {
           </HoverCardContent>
         </HoverCard>
       ) : null}
-    </a>
+    </div>
   )
 }
 

@@ -222,7 +222,7 @@ export function documentCardContainerClassName({
   hasCover = false,
 }: {banner?: boolean; hasCover?: boolean} = {}) {
   return cn(
-    'group/item hover:bg-accent dark:hover:bg-accent @container flex w-full overflow-hidden rounded-lg border border-border bg-white shadow-md transition-colors duration-300 dark:bg-black',
+    'group/item relative hover:bg-accent dark:hover:bg-accent @container flex w-full overflow-hidden rounded-lg border border-border bg-white shadow-md transition-colors duration-300 dark:bg-black',
     banner && hasCover && 'rounded-xl md:min-h-[240px] lg:min-h-[280px]',
     banner && !hasCover && 'rounded-xl',
   )
@@ -325,7 +325,10 @@ export function DocumentCardShell({
           {summary}
           {details}
         </div>
-        <div data-testid="document-card-action-row" className="flex items-center justify-between py-2 pr-2 pl-3">
+        <div
+          data-testid="document-card-action-row"
+          className="relative z-10 flex items-center justify-between py-2 pr-2 pl-3"
+        >
           <div className="flex items-center gap-3">{actionDetails}</div>
           {actions}
         </div>
@@ -465,17 +468,22 @@ export function DocumentCard({
         />
       }
       title={
-        titleLinkOnly && linkAttributes.href ? (
+        (navigateProp || titleLinkOnly) && linkAttributes.href ? (
           <a
             {...linkAttributes}
+            href={linkAttributes.href}
             onMouseDown={(e) => {
               e.stopPropagation()
             }}
-            onClick={(e) => {
+            onClickCapture={(e) => {
               e.stopPropagation()
               routeOnClick?.(e)
             }}
-            className={cn(titleClassName, 'max-w-full cursor-pointer no-underline hover:underline')}
+            className={cn(
+              titleClassName,
+              'max-w-full cursor-pointer no-underline hover:underline',
+              navigateProp && !titleLinkOnly && 'after:absolute after:inset-0 after:z-0',
+            )}
           >
             {title}
           </a>
@@ -530,14 +538,6 @@ export function DocumentCard({
       }
     />
   )
-
-  if (navigateProp && linkProps) {
-    return (
-      <a {...sharedProps} {...linkAttributes} onClick={routeOnClick} {...(props as any)}>
-        {content}
-      </a>
-    )
-  }
 
   return (
     <div {...sharedProps} {...props}>

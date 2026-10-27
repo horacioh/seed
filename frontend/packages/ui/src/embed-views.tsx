@@ -58,17 +58,31 @@ export function ErrorBlock({
   return (
     <Tooltip content={debugData ? (open ? 'Hide debug Data' : 'Show debug data') : ''}>
       <div className="block-content block-unknown flex flex-1 flex-col">
-        <div
-          className="flex-start flex items-center gap-2 overflow-hidden rounded-md border border-red-300 bg-red-100 p-2"
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleOpen((v) => !v)
-          }}
-        >
-          <SizableText color="destructive" className="font-sans text-sm">
-            {message ? message : 'Error'}
-          </SizableText>
-          <AlertCircle color="danger" className="size-3" />
+        <div className="flex-start flex items-center gap-2 overflow-hidden rounded-md border border-red-300 bg-red-100 p-2">
+          {debugData ? (
+            <button
+              type="button"
+              aria-label={open ? 'Hide debug data' : 'Show debug data'}
+              aria-expanded={open}
+              className="flex min-w-0 flex-1 items-center gap-2 border-0 bg-transparent p-0 text-left"
+              onClick={(event) => {
+                event.stopPropagation()
+                toggleOpen((v) => !v)
+              }}
+            >
+              <SizableText color="destructive" className="font-sans text-sm">
+                {message ? message : 'Error'}
+              </SizableText>
+              <AlertCircle color="danger" className="size-3" />
+            </button>
+          ) : (
+            <>
+              <SizableText color="destructive" className="font-sans text-sm">
+                {message ? message : 'Error'}
+              </SizableText>
+              <AlertCircle color="danger" className="size-3" />
+            </>
+          )}
           {children}
         </div>
         {open ? (
@@ -467,7 +481,8 @@ export function BlockEmbedContent({
       <ErrorBlock message="Resource not found">
         <Button
           variant="destructive"
-          onClick={() => {
+          onClick={(event) => {
+            event.stopPropagation()
             copyUrlToClipboardWithFeedback(block.link, 'Missing Resource')
           }}
         >
@@ -569,11 +584,7 @@ export function BlockEmbedComments({
     <EmbedWrapper id={id} parentBlockId={parentBlockId} hideBorder openOnClick={openOnClick}>
       <RenderResourceProvider resource={{kind: 'document', id}}>
         {CommentEditor ? (
-          <div
-            onClick={(e) => {
-              e.stopPropagation()
-            }}
-          >
+          <div data-embed-interactive>
             <CommentEditor docId={id} />
           </div>
         ) : null}

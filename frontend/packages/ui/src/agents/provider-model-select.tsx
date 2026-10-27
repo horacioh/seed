@@ -230,11 +230,7 @@ function ProviderModelSection({
               className={cn('hover:bg-muted flex w-full items-center gap-1 rounded-sm', isActive && 'bg-muted')}
             >
               {onToggleModel ? (
-                <button
-                  type="button"
-                  role="checkbox"
-                  aria-checked={isEnabled}
-                  aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${modelLabel(model)} for quick switching`}
+                <label
                   title={
                     isActive
                       ? 'The current model is always available'
@@ -242,16 +238,24 @@ function ProviderModelSection({
                         ? 'Remove from the model switcher'
                         : 'Add to the model switcher'
                   }
-                  disabled={isActive}
                   className={cn(
-                    'ml-2 flex size-4 shrink-0 items-center justify-center rounded-xs border',
+                    'focus-within:ring-ring ml-2 flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-xs border focus-within:ring-2',
                     isEnabled ? 'bg-primary border-primary text-primary-foreground' : 'border-border bg-transparent',
                     isActive && 'opacity-50',
                   )}
-                  onClick={() => onToggleModel({provider: provider.name, model: model.id}, !isEnabled)}
                 >
-                  {isEnabled ? <Check className="size-3" /> : null}
-                </button>
+                  <input
+                    type="checkbox"
+                    checked={isEnabled}
+                    disabled={isActive}
+                    aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${modelLabel(model)} for quick switching`}
+                    onChange={(event) =>
+                      onToggleModel({provider: provider.name, model: model.id}, event.target.checked)
+                    }
+                    className="sr-only"
+                  />
+                  {isEnabled ? <Check className="size-3" aria-hidden="true" /> : null}
+                </label>
               ) : null}
               <button
                 type="button"

@@ -72,10 +72,12 @@ export function DocumentDeletionReferences({documentIds}: {documentIds: string[]
         indexed references and may be incomplete.
       </p>
       {!current ? (
-        <p role="status">Checking known references…</p>
+        <output className="block">Checking known references…</output>
       ) : (
         <>
-          {current.failed && <p role="status">Could not check all known references. Other links may also break.</p>}
+          {current.failed && (
+            <output className="block">Could not check all known references. Other links may also break.</output>
+          )}
           {current.sources.length ? (
             <DeletionDocumentList documents={current.sources} label={`Known references (${current.sources.length})`} />
           ) : !current.failed ? (

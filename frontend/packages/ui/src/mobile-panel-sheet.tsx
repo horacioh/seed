@@ -58,7 +58,7 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
   const [dragY, setDragY] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const dragStartY = useRef(0)
-  const sheetRef = useRef<HTMLDivElement>(null)
+  const sheetRef = useRef<HTMLDialogElement>(null)
   const [snap, setSnap] = useState<SheetSnap>('partial')
   // The sheet's height while it's being dragged. Between drags it rests at its snap height.
   const [dragHeight, setDragHeight] = useState<number | null>(null)
@@ -220,15 +220,20 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
   return createPortal(
     <div
       data-slot="mobile-panel-overlay"
-      onClick={onClose}
       className={cn(
         'fixed inset-0 z-50 flex h-dvh items-end justify-center overflow-hidden bg-black/25 pt-10 backdrop-blur-[2px]',
         'transition-opacity duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
         isOpen ? `pointer-events-auto ${isVisible ? 'opacity-100' : 'opacity-0'}` : 'pointer-events-none opacity-0',
       )}
     >
-      <div
-        role="dialog"
+      <button
+        type="button"
+        aria-label="Close panel"
+        onClick={onClose}
+        className="focus-visible:ring-ring absolute inset-0 appearance-none border-0 bg-transparent p-0 focus-visible:ring-2 focus-visible:outline-none"
+      />
+      <dialog
+        open={isOpen}
         aria-modal="true"
         aria-hidden={!isOpen}
         aria-labelledby={header ? undefined : titleId}
@@ -236,13 +241,12 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
         data-slot="mobile-panel-sheet"
         data-snap={resizable ? snap : undefined}
         ref={sheetRef}
-        onClick={(event) => event.stopPropagation()}
         style={{
           transform: isOpen && isVisible ? `translateY(${dragY}px)` : 'translateY(2rem)',
           ...(resizable ? {height: sheetHeight, maxHeight: '100%'} : {}),
         }}
         className={cn(
-          'bg-background border-border flex w-full flex-col overflow-hidden rounded-t-3xl border-t shadow-[0_-20px_60px_rgba(0,0,0,0.22)]',
+          'bg-background relative z-10 m-0 flex w-full max-w-none flex-col overflow-hidden rounded-t-3xl border-0 border-t p-0 shadow-[0_-20px_60px_rgba(0,0,0,0.22)]',
           !resizable && 'h-[90dvh] max-h-[90dvh]',
           'will-change-transform motion-reduce:transition-none',
           isDragging || dragHeight !== null
@@ -305,7 +309,7 @@ export function MobilePanelSheet({isOpen, title, onClose, children, header, resi
         <div className="flex flex-1 flex-col overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]">
           {children}
         </div>
-      </div>
+      </dialog>
     </div>,
     document.body,
   )

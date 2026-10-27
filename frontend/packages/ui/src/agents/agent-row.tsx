@@ -1,7 +1,7 @@
 import type {AgentActivity} from '@seed-hypermedia/agents-protocol'
+import {useRouteLink} from '@shm/shared'
 import {agentRowActivity, useAgentActivityReadState} from './activity'
 import {AgentActivityMark} from './activity-dot'
-import {useNavigate} from './navigation'
 import {SizableText} from '@shm/ui/text'
 import {Tooltip} from '@shm/ui/tooltip'
 
@@ -37,14 +37,15 @@ export function AgentListRow({
   /** The agent's latest-activity rollup, for the unread mark beside its name. */
   activity?: AgentActivity
 }) {
-  const navigate = useNavigate()
+  const linkProps = useRouteLink({key: 'agent', agentId, serverUrl})
   const statusIndicator = getAgentStatusIndicator(status)
   const readState = useAgentActivityReadState()
   const row = agentRowActivity(activity, serverUrl, name, readState.data)
   return (
-    <div
-      className="border-border hover:bg-muted/60 flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-3 transition-colors"
-      onClick={() => navigate({key: 'agent', agentId, serverUrl})}
+    <a
+      {...linkProps}
+      href={linkProps.href}
+      className="border-border hover:bg-muted/60 flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-3 text-inherit no-underline transition-colors"
     >
       <div className="flex min-w-0 items-center gap-2">
         <SizableText weight="bold" className="min-w-0 truncate">
@@ -66,6 +67,6 @@ export function AgentListRow({
       <Tooltip content={statusIndicator.label} asChild>
         <span className={`size-2.5 shrink-0 rounded-full ${statusIndicator.className}`} />
       </Tooltip>
-    </div>
+    </a>
   )
 }

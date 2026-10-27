@@ -52,43 +52,57 @@ export type UIAvatarProps = {
 
 export function UIAvatar({url, id, label, alt, size = 20, onPress, className}: UIAvatarProps) {
   let text = label ? label[0] : id ? id[0] : '?'
+  const avatarClassName = cn(
+    'relative z-1 flex items-center justify-center overflow-hidden',
+    onPress && 'cursor-pointer',
+    !url && 'ring-px ring-border ring',
+    className,
+  )
+  const avatarStyle = {
+    width: size,
+    height: size,
+  }
+  const avatarContent =
+    id && !url ? (
+      <Identicon value={id} size={size} />
+    ) : url ? (
+      <img
+        src={url}
+        className="min-h-full min-w-full bg-[var(--color1)] object-cover"
+        alt={onPress ? '' : alt ?? (label || id || 'Account Avatar')}
+      />
+    ) : (
+      <SizableText
+        weight="semibold"
+        className="block text-center text-black select-none"
+        style={{
+          fontSize: size * 0.55,
+          width: size / 2,
+          height: size / 2,
+          lineHeight: `${size / 2}px`,
+        }}
+      >
+        {text?.toUpperCase() || '?'}
+      </SizableText>
+    )
+
+  if (onPress) {
+    return (
+      <button
+        type="button"
+        aria-label={alt || label || 'Open account'}
+        className={cn(avatarClassName, 'appearance-none border-0 bg-transparent p-0 text-inherit')}
+        style={avatarStyle}
+        onClick={onPress}
+      >
+        {avatarContent}
+      </button>
+    )
+  }
 
   return (
-    <div
-      className={cn(
-        'relative z-1 flex items-center justify-center overflow-hidden',
-        onPress && 'cursor-pointer',
-        !url && 'ring-px ring-border ring',
-        className,
-      )}
-      style={{
-        width: size,
-        height: size,
-      }}
-      onClick={onPress}
-    >
-      {id && !url ? (
-        <Identicon value={id} size={size} />
-      ) : url ? (
-        <img
-          src={url}
-          className="min-h-full min-w-full bg-[var(--color1)] object-cover"
-          alt={alt ?? (label || id || 'Account Avatar')}
-        />
-      ) : (
-        <SizableText
-          weight="semibold"
-          className="block text-center text-black select-none"
-          style={{
-            fontSize: size * 0.55,
-            width: size / 2,
-            height: size / 2,
-            lineHeight: `${size / 2}px`,
-          }}
-        >
-          {text?.toUpperCase() || '?'}
-        </SizableText>
-      )}
+    <div className={avatarClassName} style={avatarStyle}>
+      {avatarContent}
     </div>
   )
 }

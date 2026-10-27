@@ -469,13 +469,12 @@ export function ExplorePage(props: ExplorePageProps) {
       </header>
 
       {willSearch ? (
-        <nav className="border-border flex flex-wrap gap-1 border-b" role="tablist" aria-label="Explore result types">
+        <nav className="border-border flex flex-wrap gap-1 border-b" aria-label="Explore result types">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
+              aria-pressed={activeTab === tab.id}
               onClick={() => {
                 setTabPicked(true)
                 setActiveTab(tab.id)

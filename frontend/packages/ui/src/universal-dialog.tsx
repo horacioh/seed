@@ -64,21 +64,23 @@ export function AppDialog<TriggerComponentProps extends {}, ContentComponentProp
         </TriggerComponent>
       </Component.Trigger>
       <Component.Portal>
-        {/* Stop React synthetic events from bubbling through portal to parent components */}
-        <div onClick={(e) => e.stopPropagation()}>
-          <NavContextProvider value={nav}>
-            <Component.Overlay onClick={() => setIsOpen(false)} />
-            <Component.Content>
-              <ContentComponent
-                isOpen={isOpen}
-                onClose={() => {
-                  setIsOpen(false)
-                }}
-                {...contentComponentProps}
-              />
-            </Component.Content>
-          </NavContextProvider>
-        </div>
+        <NavContextProvider value={nav}>
+          <Component.Overlay
+            onClick={(event) => {
+              event.stopPropagation()
+              setIsOpen(false)
+            }}
+          />
+          <Component.Content onClickCapture={(event) => event.stopPropagation()}>
+            <ContentComponent
+              isOpen={isOpen}
+              onClose={() => {
+                setIsOpen(false)
+              }}
+              {...contentComponentProps}
+            />
+          </Component.Content>
+        </NavContextProvider>
       </Component.Portal>
     </Component.Root>
   )
@@ -147,29 +149,32 @@ export function useAppDialog<DialogInput>(
           open={!!openState}
         >
           <Component.Portal>
-            {/* Stop React synthetic events from bubbling through portal to parent components */}
-            <div onClick={(e) => e.stopPropagation()}>
-              <NavContextProvider value={nav}>
-                <Component.Overlay onClick={isClosePrevented ? undefined : close} />
-                <Component.Content
-                  className={options?.className}
-                  contentClassName={options?.contentClassName}
-                  showCloseButton={showCloseButton}
-                >
-                  {openState && (
-                    <DialogContentComponent
-                      input={openState}
-                      setDialogCloseProtection={setCloseProtection}
-                      onClose={() => {
-                        setCloseProtection(null)
-                        setOpenState(null)
-                        onClose?.()
-                      }}
-                    />
-                  )}
-                </Component.Content>
-              </NavContextProvider>
-            </div>
+            <NavContextProvider value={nav}>
+              <Component.Overlay
+                onClick={(event) => {
+                  event.stopPropagation()
+                  if (!isClosePrevented) close()
+                }}
+              />
+              <Component.Content
+                className={options?.className}
+                contentClassName={options?.contentClassName}
+                showCloseButton={showCloseButton}
+                onClickCapture={(event) => event.stopPropagation()}
+              >
+                {openState && (
+                  <DialogContentComponent
+                    input={openState}
+                    setDialogCloseProtection={setCloseProtection}
+                    onClose={() => {
+                      setCloseProtection(null)
+                      setOpenState(null)
+                      onClose?.()
+                    }}
+                  />
+                )}
+              </Component.Content>
+            </NavContextProvider>
           </Component.Portal>
         </Component.Root>
       ),

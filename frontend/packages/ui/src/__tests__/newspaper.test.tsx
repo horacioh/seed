@@ -81,7 +81,7 @@ function renderDocumentCard({
         universalClient={{request: vi.fn(), publish: vi.fn()} as any}
       >
         <DocumentActionsProvider getDraft={getDraft}>
-          <div data-testid="parent" onClick={parentClick}>
+          <div data-testid="parent">
             <DocumentCard
               data-testid="card"
               docId={docId}
@@ -113,6 +113,7 @@ describe('DocumentCard title-only navigation', () => {
   it('navigates from the title link and stops propagation to the editor block', () => {
     const {docId, openRoute, parentClick} = renderDocumentCard()
     const titleLink = container.querySelector('a') as HTMLAnchorElement
+    container.querySelector('[data-testid="parent"]')?.addEventListener('click', parentClick)
 
     act(() => {
       titleLink.dispatchEvent(new MouseEvent('mousedown', {bubbles: true, cancelable: true}))

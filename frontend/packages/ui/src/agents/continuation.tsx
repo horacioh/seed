@@ -104,8 +104,8 @@ export function ContextUsageMeter({
   )} tokens used (${percent}%)`
   return (
     <Tooltip content={label} asChild>
-      <span className={cn('inline-flex shrink-0 items-center', tone, className)} aria-label={label} role="img">
-        <svg width={size} height={size} viewBox="0 0 20 20" className="shrink-0">
+      <output className={cn('inline-flex shrink-0 items-center', tone, className)} aria-label={label}>
+        <svg width={size} height={size} viewBox="0 0 20 20" className="shrink-0" aria-hidden="true">
           <circle cx="10" cy="10" r={radius} fill="none" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
           <circle
             cx="10"
@@ -120,7 +120,7 @@ export function ContextUsageMeter({
             transform="rotate(-90 10 10)"
           />
         </svg>
-      </span>
+      </output>
     </Tooltip>
   )
 }
@@ -419,15 +419,11 @@ export function ContinuationTransitionCard({
           : 'border-violet-200 bg-violet-50 dark:border-violet-900 dark:bg-violet-950/40',
       )}
     >
-      {/* The whole line toggles the handoff; inner buttons stop propagation. The line WRAPS —
-          a title must stay readable in the panel's width, not fit or vanish. */}
-      <div
-        className="flex min-w-0 cursor-pointer flex-wrap items-center gap-x-1.5 gap-y-1 select-none"
-        onClick={() => setExpanded((current) => !current)}
-      >
+      <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
         <button
           type="button"
           title={expanded ? 'Hide handoff' : 'Show handoff'}
+          aria-label={expanded ? 'Hide handoff' : 'Show handoff'}
           aria-expanded={expanded}
           onClick={(event) => {
             event.stopPropagation()
@@ -467,6 +463,7 @@ export function ContinuationTransitionCard({
           <button
             type="button"
             title="View every detail of this handoff"
+            aria-label="View handoff details"
             onClick={(event) => {
               event.stopPropagation()
               onInspect?.()
@@ -519,14 +516,11 @@ export function ContinuationHandoffCard({
         compact ? '' : 'mr-6',
       )}
     >
-      {/* The whole line toggles the handoff and WRAPS; inner buttons stop propagation. */}
-      <div
-        className="flex min-w-0 cursor-pointer flex-wrap items-center gap-x-1.5 gap-y-1 select-none"
-        onClick={() => setExpanded((current) => !current)}
-      >
+      <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
         <button
           type="button"
           title={expanded ? 'Hide handoff' : 'Show handoff'}
+          aria-label={expanded ? 'Hide handoff' : 'Show handoff'}
           aria-expanded={expanded}
           onClick={(event) => {
             event.stopPropagation()
@@ -560,6 +554,7 @@ export function ContinuationHandoffCard({
           <button
             type="button"
             title="View every detail of this handoff"
+            aria-label="View handoff details"
             onClick={(event) => {
               event.stopPropagation()
               setDetailsOpen(true)

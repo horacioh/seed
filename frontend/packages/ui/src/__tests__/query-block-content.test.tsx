@@ -579,7 +579,7 @@ describe('QueryBlockContent selected card comments', () => {
     act(() => {
       root.render(
         <TooltipProvider>
-          <div onClick={() => parentClicks++}>
+          <div data-testid="parent">
             <QueryBlockContent
               items={items}
               style="Card"
@@ -591,6 +591,7 @@ describe('QueryBlockContent selected card comments', () => {
         </TooltipProvider>,
       )
     })
+    container.querySelector('[data-testid="parent"]')?.addEventListener('click', () => parentClicks++)
 
     const counts = container.querySelectorAll('[title="Comments"]')
     expect(counts).toHaveLength(1)
@@ -642,12 +643,13 @@ describe('QueryBlockContent card view navigation', () => {
     })
   }
 
-  it('wraps the whole card in an anchor when navigateCards is true and titleLinkOnly is false', () => {
+  it('stretches the card title link across the card when navigation is enabled', () => {
     renderCard({navigateCards: true, titleLinkOnly: false})
 
     const links = container.querySelectorAll('a')
     expect(links).toHaveLength(1)
     expect(links[0]?.textContent).toContain('Item 0')
+    expect(links[0]?.querySelector('button')).toBeNull()
   })
 
   it('links only the card title when titleLinkOnly is true', () => {
@@ -707,7 +709,7 @@ describe('QueryBlockContent card view navigation', () => {
       root.render(<QueryBlockContent items={items} style="Card" banner accountsMetadata={{}} />)
     })
 
-    const titles = Array.from(container.querySelectorAll('p')).filter(
+    const titles = Array.from(container.querySelectorAll('p, a')).filter(
       (element) => element.textContent?.startsWith('Item '),
     )
     expect(titles[0]?.className).toContain('text-2xl')

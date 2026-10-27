@@ -4,25 +4,13 @@ import {getRoutePanel, type DocumentPanelRoute, type DocumentRoute, type NavRout
 import {useRouteLink} from '@shm/shared/routing'
 import {useNavRoute} from '@shm/shared/utils/navigation'
 import {packHmId} from '@shm/shared/utils/entity-id-url'
-import {HTMLAttributes, MouseEvent, PropsWithChildren, ReactNode, useMemo, useRef} from 'react'
+import {HTMLAttributes, PropsWithChildren, ReactNode, useMemo} from 'react'
 import {blockStyles} from './blocks-content-utils'
 import {useHighlighter} from './highlight-context'
 import {cn} from './utils'
 import {ChevronDown, ChevronUp} from 'lucide-react'
-import {Button} from './button'
+import {buttonVariants} from './button'
 import {Tooltip} from './tooltip'
-
-function isInteractiveEmbedClickTarget(event: MouseEvent<HTMLElement>) {
-  const target = event.target as HTMLElement | null
-  if (!target?.closest) return false
-
-  const embedEl = target.closest('[data-content-type="embed"]')
-  const interactiveEl = target.closest(
-    'a[href], .link[href], button, input, textarea, select, [role="button"], [data-embed-interactive]',
-  )
-
-  return !!interactiveEl && interactiveEl !== embedEl
-}
 
 /** Builds a document route for an embed while retaining the currently active panel. */
 export function getEmbedDocumentRoute(id: UnpackedHypermediaId, currentRoute: NavRoute): DocumentRoute {
@@ -68,50 +56,14 @@ export function EmbedWrapper({
 
   const linkProps = useRouteLink(openOnClick && effectiveRoute ? effectiveRoute : null)
   const {onClick: routeOnClick, tag: _routeTag, ...linkAttributes} = linkProps
-  const sourceLink = useRef<HTMLAnchorElement>(null)
   const canNavigate = !!(openOnClick && effectiveRoute)
-
-  const openSource = (event: MouseEvent<HTMLElement>) => {
-    const middleClick = event.type === 'auxclick' && event.button === 1
-    if (event.type === 'auxclick' && !middleClick) return
-    if (isInteractiveEmbedClickTarget(event)) return
-
-    const selection = window.getSelection()
-    if (selection && selection.toString().length > 0) {
-      event.preventDefault()
-      return
-    }
-    // A middle-click uses the same new-tab route as Ctrl-click on the source link.
-    if (middleClick) event.preventDefault()
-    event.stopPropagation()
-    const link = sourceLink.current
-    if (!link) return
-    const previousTarget = link.getAttribute('target')
-    // Browsers do not apply modifier navigation to synthetic clicks.
-    if (middleClick || event.ctrlKey || event.metaKey || event.shiftKey) link.target = '_blank'
-    try {
-      link.dispatchEvent(
-        new window.MouseEvent('click', {
-          bubbles: true,
-          cancelable: true,
-          ctrlKey: event.ctrlKey || middleClick,
-          metaKey: event.metaKey,
-          shiftKey: event.shiftKey,
-          altKey: event.altKey,
-        }),
-      )
-    } finally {
-      if (previousTarget === null) link.removeAttribute('target')
-      else link.setAttribute('target', previousTarget)
-    }
-  }
 
   if (!id) return null
   return (
     <div
       contentEditable={false}
       className={cn(
-        'block-embed hm-prose flex flex-col',
+        'block-embed hm-prose relative flex flex-col',
         blockStyles,
         !hideBorder && 'border-l-primary border-l-3',
         'focus-within:outline-ring m-0 rounded-none focus-within:outline-2 focus-within:outline-offset-2',
@@ -125,17 +77,41 @@ export function EmbedWrapper({
         id && id.blockRange && 'expanded' in id.blockRange && id.blockRange.expanded ? id?.blockRef : undefined
       }
       data-resourceid={id?.blockRef ? undefined : id?.id}
-      onClick={canNavigate ? openSource : undefined}
-      onAuxClick={canNavigate ? openSource : undefined}
       {...highlight(id)}
       {...props}
     >
       {canNavigate ? (
-        <a ref={sourceLink} {...linkAttributes} onClick={routeOnClick} className="sr-only">
-          Open embedded content
-        </a>
+        <a
+          {...linkAttributes}
+          href={linkAttributes.href}
+          aria-label="Open embedded content"
+          onClickCapture={(event) => {
+            event.stopPropagation()
+            const selection = window.getSelection()
+            if (selection?.toString().length) {
+              event.preventDefault()
+              return
+            }
+            routeOnClick?.(event)
+          }}
+          onAuxClick={(event) => {
+            if (event.button !== 1) return
+            const selection = window.getSelection()
+            if (selection?.toString().length) {
+              event.preventDefault()
+              event.stopPropagation()
+              return
+            }
+            event.preventDefault()
+            event.stopPropagation()
+            event.currentTarget.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, ctrlKey: true}))
+          }}
+          className="focus-visible:ring-ring absolute inset-0 z-0 rounded-md focus-visible:ring-[3px] focus-visible:outline-none"
+        />
       ) : null}
-      {children}
+      <div className="pointer-events-none relative z-10 [&_[contenteditable=true]]:pointer-events-auto [&_[data-embed-interactive]]:pointer-events-auto [&_[role=button]]:pointer-events-auto [&_[role=checkbox]]:pointer-events-auto [&_[role=menuitem]]:pointer-events-auto [&_[role=radio]]:pointer-events-auto [&_[role=switch]]:pointer-events-auto [&_[role=tab]]:pointer-events-auto [&_a[href]]:pointer-events-auto [&_button]:pointer-events-auto [&_input]:pointer-events-auto [&_select]:pointer-events-auto [&_textarea]:pointer-events-auto">
+        {children}
+      </div>
     </div>
   )
 }
@@ -158,14 +134,16 @@ export function FragmentEmbedControls({
     <div className="bg-muted/30 relative min-h-8 rounded-sm py-1">
       {children}
       <Tooltip content={toggleLabel} asChild>
-        <Button
+        <button
           type="button"
-          variant="ghost"
-          size="iconSm"
-          className={cn(
-            'text-muted-foreground hover:text-foreground active:bg-accent absolute right-1 size-6',
-            expanded ? 'top-1' : 'top-1/2 -translate-y-1/2',
-          )}
+          className={buttonVariants({
+            variant: 'ghost',
+            size: 'iconSm',
+            className: cn(
+              'text-muted-foreground hover:text-foreground active:bg-accent absolute right-1 size-6',
+              expanded ? 'top-1' : 'top-1/2 -translate-y-1/2',
+            ),
+          })}
           aria-label={toggleLabel}
           aria-expanded={expanded}
           onMouseDown={(event) => event.stopPropagation()}
@@ -176,7 +154,7 @@ export function FragmentEmbedControls({
           }}
         >
           <Caret className="size-3" aria-hidden="true" />
-        </Button>
+        </button>
       </Tooltip>
     </div>
   )

@@ -330,6 +330,7 @@ function useIsDarkTheme(): boolean {
 function MermaidDiagram({code}: {code: string}) {
   const isDark = useIsDarkTheme()
   const openLink = useTranscriptLinkOpener()
+  const diagramRef = React.useRef<HTMLDivElement>(null)
   useMermaidStyles()
   const [svg, setSvg] = React.useState<string | null>(null)
   const [failed, setFailed] = React.useState(false)
@@ -362,16 +363,24 @@ function MermaidDiagram({code}: {code: string}) {
     }
   }, [code, isDark])
 
-  // Every anchor baked into the SVG routes through the transcript opener instead of native
-  // navigation, so hm:// and ~/memory/ targets work and unknown schemes go nowhere.
-  const handleClick = (event: React.MouseEvent) => {
-    const anchor = (event.target as Element | null)?.closest?.('a')
-    if (!anchor) return
-    event.preventDefault()
-    event.stopPropagation()
-    const href = anchor.getAttribute('href') ?? anchor.getAttribute('xlink:href')
-    if (href) openLink(href, event)
-  }
+  React.useEffect(() => {
+    const diagram = diagramRef.current
+    if (!diagram) return
+    const handleClick = (event: MouseEvent) => {
+      const anchor = (event.target as Element | null)?.closest?.('a')
+      if (!anchor) return
+      event.preventDefault()
+      event.stopPropagation()
+      const href = anchor.getAttribute('href') ?? anchor.getAttribute('xlink:href')
+      if (href) openLink(href, event as unknown as React.MouseEvent)
+    }
+    diagram.addEventListener('click', handleClick)
+    diagram.addEventListener('auxclick', handleClick)
+    return () => {
+      diagram.removeEventListener('click', handleClick)
+      diagram.removeEventListener('auxclick', handleClick)
+    }
+  }, [openLink, svg])
 
   if (failed || !svg) {
     return (
@@ -382,9 +391,8 @@ function MermaidDiagram({code}: {code: string}) {
   }
   return (
     <div
+      ref={diagramRef}
       className="hm-mermaid my-2 flex justify-center overflow-x-auto [&_svg]:max-w-full"
-      onClick={handleClick}
-      onAuxClick={handleClick}
       dangerouslySetInnerHTML={{__html: svg}}
     />
   )

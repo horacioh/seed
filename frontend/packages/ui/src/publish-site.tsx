@@ -64,7 +64,7 @@ export function PublishDomainStatus({
   const StatusIcon = failed ? AlertCircle : status === 'ready' ? Check : Loader2
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-3" role="status" aria-live="polite">
+      <output className="flex items-center gap-3" aria-live="polite">
         <StatusIcon
           className={`size-5 shrink-0 ${
             !failed && status !== 'ready' ? 'animate-spin motion-reduce:animate-none' : ''
@@ -76,7 +76,7 @@ export function PublishDomainStatus({
             <p className="text-muted-foreground text-sm">Checking for updates…</p>
           ) : null}
         </div>
-      </div>
+      </output>
       {status === 'checking' || status === 'waiting-dns' || status === 'error' ? (
         <DNSInstructions hostname={hostname} siteUrl={siteUrl} />
       ) : status === 'initializing' ? (

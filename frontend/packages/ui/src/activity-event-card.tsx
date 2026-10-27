@@ -146,27 +146,42 @@ function CardShell({
 }) {
   const linkProps = useRouteLink(route)
   const time = getEventTime(event)
+  const canNavigate = !!(route && linkProps.href)
   return (
     <div
-      className="bg-background hover:bg-muted/40 flex cursor-pointer flex-col gap-2 rounded-lg border p-3 transition-colors"
-      onClick={linkProps.onClick}
+      className={cn(
+        'bg-background hover:bg-muted/40 isolate flex flex-col gap-2 rounded-lg border p-3 transition-colors',
+        canNavigate && 'relative cursor-pointer',
+      )}
     >
-      <div className="flex items-start gap-2">
-        {event.author?.id ? (
-          <AccountAvatar
-            className="mt-0.5 shrink-0"
-            size={24}
-            id={event.author.id}
-            name={event.author.metadata?.name}
-            icon={event.author.metadata?.icon}
-          />
-        ) : null}
-        <p className="min-w-0 flex-1 text-sm font-semibold">
-          <AuthorNameLink author={event.author} /> {children}
-        </p>
-        <span className="text-muted-foreground shrink-0 pt-0.5 text-xs">{time ? <Timestamp time={time} /> : null}</span>
+      {canNavigate ? (
+        <a
+          href={linkProps.href}
+          aria-label="Open activity"
+          onClick={linkProps.onClick}
+          className="focus-visible:ring-ring absolute inset-0 z-0 rounded-lg focus-visible:ring-2 focus-visible:outline-none"
+        />
+      ) : null}
+      <div className="[&_[data-activity-comment-clip]_img]:relative [&_[data-activity-comment-clip]_img]:z-10 [&_[data-activity-comment-clip]_video]:relative [&_[data-activity-comment-clip]_video]:z-10 [&_a]:relative [&_a]:z-10 [&_button]:relative [&_button]:z-10">
+        <div className="flex items-start gap-2">
+          {event.author?.id ? (
+            <AccountAvatar
+              className="mt-0.5 shrink-0"
+              size={24}
+              id={event.author.id}
+              name={event.author.metadata?.name}
+              icon={event.author.metadata?.icon}
+            />
+          ) : null}
+          <p className="min-w-0 flex-1 text-sm font-semibold">
+            <AuthorNameLink author={event.author} /> {children}
+          </p>
+          <span className="text-muted-foreground shrink-0 pt-0.5 text-xs">
+            {time ? <Timestamp time={time} /> : null}
+          </span>
+        </div>
+        {body}
       </div>
-      {body}
     </div>
   )
 }
@@ -197,6 +212,7 @@ function CommentCardBody({comment, replyingComment}: {comment: HMComment; replyi
       {replyingComment ? <CommentQuote comment={replyingComment} /> : quoteId ? <BlockQuote id={quoteId} /> : null}
       <div
         ref={clipRef}
+        data-activity-comment-clip
         // About three lines on desktop and web, two on phones, until "See all" is shown.
         className={cn('relative min-w-0 break-words', !isExpanded && 'max-h-14 overflow-hidden sm:max-h-20')}
         onClickCapture={(event) => {
@@ -267,7 +283,7 @@ type OpenMedia = {type: 'image' | 'video'; src: string}
 function MediaDialog({media, onClose}: {media: OpenMedia | null; onClose: () => void}) {
   return (
     <Dialog open={!!media} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl" onClick={(event) => event.stopPropagation()}>
+      <DialogContent className="max-w-3xl" onClickCapture={(event) => event.stopPropagation()}>
         <DialogTitle className="sr-only">{media?.type === 'video' ? 'Video' : 'Image'}</DialogTitle>
         {media?.type === 'image' ? (
           <img src={media.src} alt="" className="max-h-[80vh] w-full object-contain" />

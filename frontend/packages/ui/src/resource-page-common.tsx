@@ -1809,9 +1809,9 @@ function TransientResourceBanner({error}: {error: TransientResourceError}) {
       break
   }
   return (
-    <div role="status" className={cn('px-4 py-2 text-xs', tone)} data-testid="transient-resource-banner">
+    <output className={cn('block px-4 py-2 text-xs', tone)} data-testid="transient-resource-banner">
       {message}
-    </div>
+    </output>
   )
 }
 

@@ -47,6 +47,7 @@ export function AccountAvatar({
       <HoverCardTrigger asChild>
         <a
           {...linkProps}
+          href={linkProps.href}
           aria-label={`Open ${displayName} profile`}
           className="no-window-drag inline-flex shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2"
           onClick={(event) => {
@@ -107,8 +108,9 @@ export function AccountIdentityName({
   if (maxLength === undefined) return <>{label}</>
   return (
     <Tooltip content={name} asChild>
-      <span tabIndex={0} aria-label={name}>
-        {label}
+      <span>
+        <span aria-hidden="true">{label}</span>
+        <span className="sr-only">{name}</span>
       </span>
     </Tooltip>
   )

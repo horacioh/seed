@@ -41,11 +41,7 @@ export function MentionResults({
         className,
       )}
     >
-      {loading && !suggestions.length && (
-        <p role="status" className="text-muted-foreground px-4 py-2">
-          Searching…
-        </p>
-      )}
+      {loading && !suggestions.length && <output className="text-muted-foreground block px-4 py-2">Searching…</output>}
       {error && (
         <p role="alert" className="px-4 py-2">
           Unable to load mentions or resolve the published version.{' '}
@@ -55,9 +51,9 @@ export function MentionResults({
         </p>
       )}
       {!loading && !error && !suggestions.length && (
-        <p role="status" className="text-muted-foreground px-4 py-2">
+        <output className="text-muted-foreground block px-4 py-2">
           No {mode === 'account' ? 'accounts' : 'documents'} found
-        </p>
+        </output>
       )}
       {suggestions.map((item, i) => (
         <button

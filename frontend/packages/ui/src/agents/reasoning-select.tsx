@@ -95,21 +95,16 @@ export function ReasoningPie({level, className}: {level: ReasoningLevel | undefi
     wedge = `M ${c} ${c} L ${c} ${c - r} A ${r} ${r} 0 ${fraction > 0.5 ? 1 : 0} 1 ${x.toFixed(3)} ${y.toFixed(3)} Z`
   }
   return (
-    <svg
-      viewBox="0 0 14 14"
-      width={12}
-      height={12}
-      role="img"
-      aria-label={label}
-      className={`shrink-0 ${className ?? ''}`}
-    >
-      <circle cx={c} cy={c} r={r} fill="none" stroke="currentColor" strokeWidth={1.25} opacity={0.45} />
-      {fraction >= 1 ? (
-        <circle cx={c} cy={c} r={r} fill="currentColor" />
-      ) : wedge ? (
-        <path d={wedge} fill="currentColor" />
-      ) : null}
-    </svg>
+    <output aria-label={label} className={`inline-flex shrink-0 ${className ?? ''}`}>
+      <svg viewBox="0 0 14 14" width={12} height={12} className="shrink-0" aria-hidden="true">
+        <circle cx={c} cy={c} r={r} fill="none" stroke="currentColor" strokeWidth={1.25} opacity={0.45} />
+        {fraction >= 1 ? (
+          <circle cx={c} cy={c} r={r} fill="currentColor" />
+        ) : wedge ? (
+          <path d={wedge} fill="currentColor" />
+        ) : null}
+      </svg>
+    </output>
   )
 }
 

@@ -74,7 +74,7 @@ describe('MobilePanelSheet', () => {
     renderSheet()
 
     const overlay = document.body.querySelector('[data-slot="mobile-panel-overlay"]')
-    const dialog = document.body.querySelector('[role="dialog"]')
+    const dialog = document.body.querySelector('dialog')
     const dragHandle = document.body.querySelector('[aria-hidden="true"]')
 
     expect(overlay?.className).toContain('items-end')

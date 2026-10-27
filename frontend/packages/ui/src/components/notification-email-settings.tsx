@@ -183,10 +183,10 @@ export function NotificationEmailSettings({
       ) : null}
 
       {statusMessage ? (
-        <div role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
+        <output className="text-muted-foreground flex items-center gap-2 text-sm">
           <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           <p>{statusMessage}</p>
-        </div>
+        </output>
       ) : null}
 
       {error && !emailDialogOpen ? (

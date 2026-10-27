@@ -2530,14 +2530,11 @@ export function ToolCallLine({
           colorClass,
         )}
       >
-        {/* The whole header row toggles expansion; inner links/buttons stop propagation. */}
-        <div
-          className="flex min-w-0 cursor-pointer items-center gap-1.5 select-none"
-          onClick={() => setExpanded((current) => !current)}
-        >
+        <div className="flex min-w-0 items-center gap-1.5">
           <button
             type="button"
             title={expanded ? 'Hide tool details' : 'Show tool details'}
+            aria-label={expanded ? 'Hide tool details' : 'Show tool details'}
             aria-expanded={expanded}
             onClick={(event) => {
               event.stopPropagation()

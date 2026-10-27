@@ -12,6 +12,7 @@ import {useAgentRunTreeSubscription, useRunTree, type AgentRunTreeLiveState} fro
 import {SessionStatusDot} from './session-children'
 import {useOpenAgentRun} from './open-session-context'
 import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
+import {cn} from '@shm/ui/utils'
 import type {ChatToolPart} from './chat-parts'
 import {Bot, Check, ChevronDown, ChevronRight, CircleDashed, Clock3, Loader2, Minus, Workflow, X} from 'lucide-react'
 import React, {useMemo, useState} from 'react'
@@ -314,14 +315,7 @@ function scriptErrorLine(stack: string): number | undefined {
   return match ? Number(match[1]) : undefined
 }
 
-/**
- * A child run's failure, openable in place: truncated in the row, complete on click.
- *
- * The row it sits in is often itself a button (clicking a child row opens its run page), so the
- * chip is a non-button trigger and every interaction inside it stops propagating — including from
- * the portaled popover content, whose React events still bubble through the component tree to the
- * row.
- */
+/** A child run's failure, openable in place: truncated in the row, complete on click. */
 export function RunErrorChip({
   run,
   error,
@@ -351,18 +345,14 @@ export function RunErrorChip({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <span
-          role="button"
-          tabIndex={0}
+        <button
+          type="button"
           title="Show full error"
-          className="text-destructive hover:bg-destructive/10 min-w-0 flex-1 cursor-pointer truncate rounded px-0.5 text-left text-xs underline decoration-dotted underline-offset-2"
+          className="text-destructive hover:bg-destructive/10 pointer-events-auto relative z-10 min-w-0 flex-1 cursor-pointer truncate rounded border-0 bg-transparent px-0.5 text-left text-xs underline decoration-dotted underline-offset-2"
           onClick={(event) => event.stopPropagation()}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') event.stopPropagation()
-          }}
         >
           {error.message}
-        </span>
+        </button>
       </PopoverTrigger>
       <PopoverContent
         align="end"
@@ -578,19 +568,28 @@ export function RunChildRow({
     </>
   )
   return (
-    <div className="group flex min-w-0 items-center gap-1">
+    <div className="group relative flex min-w-0 items-center gap-1">
       {onOpen ? (
         <button
           type="button"
-          className="hover:bg-muted flex min-w-0 flex-1 items-center gap-1.5 rounded px-1 py-0.5 text-left text-xs"
+          aria-label={`Open run ${runTitle(run)}`}
+          className="hover:bg-muted focus-visible:ring-ring absolute inset-0 z-0 rounded border-0 bg-transparent p-0 text-left focus-visible:ring-2"
           onClick={onOpen}
-        >
-          {content}
-        </button>
-      ) : (
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 px-1 py-0.5 text-xs">{content}</div>
-      )}
-      {isLive && onCancel ? <CancelRunButton run={run} onCancel={onCancel} pending={cancelPending} /> : null}
+        />
+      ) : null}
+      <div
+        className={cn(
+          'relative z-10 flex min-w-0 flex-1 items-center gap-1.5 px-1 py-0.5 text-xs',
+          onOpen && 'pointer-events-none',
+        )}
+      >
+        {content}
+      </div>
+      {isLive && onCancel ? (
+        <div className="relative z-10 shrink-0">
+          <CancelRunButton run={run} onCancel={onCancel} pending={cancelPending} />
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -172,7 +172,12 @@ export function SiteFileBrowserLayout({
         <div className="min-h-0 flex-1">{children}</div>
         {mobileOpen
           ? createPortal(
-              <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true" aria-label="File browser">
+              <dialog
+                open
+                className="fixed inset-0 z-50 m-0 flex max-h-full max-w-none border-0 bg-transparent p-0"
+                aria-modal="true"
+                aria-label="File browser"
+              >
                 <aside
                   aria-label="Site documents"
                   className="dark:bg-background motion-safe:animate-in motion-safe:slide-in-from-left flex h-dvh w-[80dvw] max-w-[80dvw] shrink-0 flex-col bg-white shadow-2xl motion-safe:duration-200 motion-safe:ease-out"
@@ -207,7 +212,7 @@ export function SiteFileBrowserLayout({
                   className="motion-safe:animate-in motion-safe:fade-in h-dvh flex-1 bg-black/45 motion-safe:duration-200"
                   onClick={() => onMobileOpenChange(false)}
                 />
-              </div>,
+              </dialog>,
               document.body,
             )
           : null}

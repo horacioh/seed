@@ -92,7 +92,7 @@ export function InlineDraftListItem({
   }
 
   const actions = (
-    <div className={cn('flex items-center gap-1', inTable && 'justify-end')} onClick={(e) => e.stopPropagation()}>
+    <div className={cn('pointer-events-auto relative z-10 flex items-center gap-1', inTable && 'justify-end')}>
       <OptionsDropdown
         align="end"
         button={
@@ -132,36 +132,41 @@ export function InlineDraftListItem({
   const content = (
     <div
       ref={containerRef}
-      onClick={(e) => {
-        e.stopPropagation()
-        openDraft()
-      }}
       className={cn(
-        'group/item flex w-full cursor-pointer items-center',
+        'group/item relative flex w-full cursor-pointer items-center',
         !inTable && 'rounded border-2 border-dashed border-yellow-400/50 bg-white px-4 py-2 shadow-sm dark:bg-black',
       )}
     >
-      <FileText className={cn('text-muted-foreground shrink-0', inTable ? 'mr-2 size-4' : 'mr-3 size-7')} />
-      <div className={cn('flex flex-1 items-center overflow-hidden', inTable ? 'gap-1' : 'gap-3')}>
-        <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
-          <input
-            ref={inputRef}
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            onKeyDown={handleKeyDown}
-            onClick={(e) => e.stopPropagation()}
-            placeholder="Untitled document"
-            aria-label="Draft name"
-            style={inTable ? {width: `${(title || 'Untitled document').length}ch`} : undefined}
-            className={cn(
-              'text-foreground border-none bg-transparent font-sans text-sm outline-none placeholder:text-gray-400',
-              inTable ? 'max-w-full min-w-0 truncate font-medium' : 'w-full font-bold',
-            )}
-          />
-          <DraftBadge className="shrink-0" />
+      <button
+        type="button"
+        aria-label={`Open draft ${title || 'Untitled document'}`}
+        className="absolute inset-0 z-0 appearance-none border-0 bg-transparent p-0 text-left"
+        onClick={openDraft}
+      />
+      <div className="pointer-events-none relative z-10 flex w-full items-center">
+        <FileText className={cn('text-muted-foreground shrink-0', inTable ? 'mr-2 size-4' : 'mr-3 size-7')} />
+        <div
+          className={cn('pointer-events-none flex flex-1 items-center overflow-hidden', inTable ? 'gap-1' : 'gap-3')}
+        >
+          <div className="flex flex-1 items-center gap-1.5 overflow-hidden">
+            <input
+              ref={inputRef}
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              onKeyDownCapture={handleKeyDown}
+              placeholder="Untitled document"
+              aria-label="Draft name"
+              className={cn(
+                'text-foreground pointer-events-auto border-none bg-transparent font-sans text-sm outline-none placeholder:text-gray-400',
+                inTable ? 'max-w-full min-w-0 truncate font-medium' : 'w-full font-bold',
+              )}
+              style={inTable ? {width: `${(title || 'Untitled document').length}ch`} : undefined}
+            />
+            <DraftBadge className="shrink-0" />
+          </div>
+          {!inTable && actions}
         </div>
-        {!inTable && actions}
       </div>
     </div>
   )

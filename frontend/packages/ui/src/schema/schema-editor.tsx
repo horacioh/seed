@@ -272,7 +272,7 @@ function useSchemaHistory(schema: HypermediaSchema, onSchema: (s: HypermediaSche
     lastEditAt.current = 0
     onSchema(next)
   }
-  const onKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: KeyboardEvent) => {
     if (!(e.metaKey || e.ctrlKey) || e.altKey) return
     const key = e.key.toLowerCase()
     if (key === 'z') {
@@ -302,9 +302,11 @@ export function SchemaEditor({
   const {change: onSchema, onKeyDown} = useSchemaHistory(schema, onSchemaProp)
   const fits = structFormFits(schema)
   const [mode, setMode] = useState<'form' | 'json'>(fits ? 'form' : 'json')
+  const schemaEditorRef = useRef<HTMLFieldSetElement>(null)
   const showForm = mode === 'form' && fits
   const modeToggle = (
-    <div className="bg-muted/60 flex items-center rounded-md p-0.5" role="tablist" aria-label="Schema editor mode">
+    <fieldset className="bg-muted/60 m-0 inline-flex items-center rounded-md border-0 p-0.5">
+      <legend className="sr-only">Schema editor mode</legend>
       {(['form', 'json'] as const).map((m) => {
         const selected = showForm ? m === 'form' : m === 'json'
         const Icon = m === 'form' ? Rows3 : Braces
@@ -321,8 +323,7 @@ export function SchemaEditor({
           >
             <button
               type="button"
-              role="tab"
-              aria-selected={selected}
+              aria-pressed={selected}
               disabled={m === 'form' && !fits}
               onClick={() => setMode(m)}
               className={cn(
@@ -337,10 +338,17 @@ export function SchemaEditor({
           </Tooltip>
         )
       })}
-    </div>
+    </fieldset>
   )
+  useEffect(() => {
+    const root = schemaEditorRef.current
+    if (!root) return
+    root.addEventListener('keydown', onKeyDown)
+    return () => root.removeEventListener('keydown', onKeyDown)
+  }, [onKeyDown])
   return (
-    <div className="flex flex-col gap-2" onKeyDown={onKeyDown} data-testid="schema-editor-root">
+    <fieldset ref={schemaEditorRef} className="m-0 flex flex-col gap-2 border-0 p-0" data-testid="schema-editor-root">
+      <legend className="sr-only">Schema editor</legend>
       {showForm ? (
         <StructSchemaForm schema={schema} onSchema={onSchema} toolbar={hideModeToggle ? null : modeToggle} />
       ) : (
@@ -349,7 +357,7 @@ export function SchemaEditor({
           <RawSchemaEditor schema={schema} onSchema={onSchema} />
         </>
       )}
-    </div>
+    </fieldset>
   )
 }
 
@@ -1042,21 +1050,23 @@ function StructFieldsEditor({
                     : 'Optional — a value may leave this field out. Click to require it.'
                 }
               >
-                <button
-                  type="button"
-                  role="checkbox"
-                  aria-checked={required}
-                  aria-label={`Required ${q(name)}`}
-                  onClick={() => update(name, {required: !required})}
+                <label
                   className={cn(
-                    'hover:bg-muted focus-visible:ring-ring cursor-pointer rounded px-1 py-0.5 text-xs outline-none focus-visible:ring-2',
+                    'hover:bg-muted focus-within:ring-ring cursor-pointer rounded px-1 py-0.5 text-xs outline-none focus-within:ring-2',
                     required
                       ? 'text-muted-foreground/70 opacity-0 group-focus-within/row:opacity-100 group-hover/row:opacity-100'
                       : 'text-muted-foreground',
                   )}
                 >
+                  <input
+                    type="checkbox"
+                    checked={required}
+                    aria-label={`Required ${q(name)}`}
+                    onChange={(event) => update(name, {required: event.target.checked})}
+                    className="sr-only"
+                  />
                   {required ? 'required' : 'optional'}
-                </button>
+                </label>
               </Tooltip>
               <IconAction
                 label={`Remove ${q(name)}`}

@@ -108,7 +108,7 @@ describe('fragment embed interactions', () => {
     const id = renderFragment()
     const event = new MouseEvent('auxclick', {bubbles: true, cancelable: true, button: 1})
     act(() => {
-      container.querySelector('p')!.dispatchEvent(event)
+      container.querySelector('a[aria-label="Open embedded content"]')!.dispatchEvent(event)
     })
     expect(navigated.href).toBe(packHmId(id))
     expect(navigated.newWindow).toBe(true)
@@ -118,11 +118,12 @@ describe('fragment embed interactions', () => {
   it('does not open the source for selected text, nested links, or right-clicks', () => {
     renderFragment()
     const paragraph = container.querySelector('p')!
+    const sourceLink = container.querySelector('a[aria-label="Open embedded content"]')!
     const range = document.createRange()
     range.selectNodeContents(paragraph)
     window.getSelection()!.addRange(range)
     act(() => {
-      paragraph.dispatchEvent(new MouseEvent('auxclick', {bubbles: true, cancelable: true, button: 1}))
+      sourceLink.dispatchEvent(new MouseEvent('auxclick', {bubbles: true, cancelable: true, button: 1}))
     })
     expect(navigated.href).toBe('')
     window.getSelection()!.removeAllRanges()
@@ -139,7 +140,7 @@ describe('fragment embed interactions', () => {
     expect(nestedEvent.defaultPrevented).toBe(false)
 
     act(() => {
-      paragraph.dispatchEvent(new MouseEvent('auxclick', {bubbles: true, cancelable: true, button: 2}))
+      sourceLink.dispatchEvent(new MouseEvent('auxclick', {bubbles: true, cancelable: true, button: 2}))
     })
     expect(navigated.href).toBe('')
   })
@@ -156,9 +157,9 @@ describe('fragment embed interactions', () => {
     act(() => caret.click())
     expect(container.querySelector('p')?.textContent).toBe('fragment')
     expect(caret.getAttribute('aria-expanded')).toBe('false')
-    const link = container.querySelector('a')!
+    const link = container.querySelector<HTMLAnchorElement>('a[aria-label="Open embedded content"]')!
     expect(link.getAttribute('href')).toBe(packHmId(id))
-    act(() => container.querySelector('p')!.click())
+    act(() => link.click())
     expect(navigated.href).toBe(packHmId(id))
   })
 
@@ -250,7 +251,7 @@ describe('comment fragment embeds', () => {
     expect(navigated.href).toBe('')
     act(() => caret.click())
     expect(container.querySelector('p')?.textContent).toBe('fragment')
-    act(() => container.querySelector('p')!.click())
+    act(() => container.querySelector<HTMLAnchorElement>('a[aria-label="Open embedded content"]')!.click())
     expect(navigated.href).toBe('/hm/site/document/:comments/author/comment?v=comment-version#source[7:15]')
     expect(navigated.route).toMatchObject({
       key: 'comments',

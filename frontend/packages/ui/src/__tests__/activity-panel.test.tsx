@@ -26,15 +26,15 @@ function render(element: React.ReactElement) {
 }
 
 function tab(label: string) {
-  return Array.from(container.querySelectorAll('[role="tab"]')).find((el) => el.textContent?.trim() === label)
+  return Array.from(container.querySelectorAll('button')).find((el) => el.textContent?.trim() === label)
 }
 
 describe('ActivityHeader', () => {
   it('treats a missing tab as All updates and switches to To you', () => {
     const onTabChange = vi.fn()
     render(<ActivityHeader tab={undefined} onTabChange={onTabChange} />)
-    expect(tab('All updates')?.getAttribute('aria-selected')).toBe('true')
-    expect(tab('To you')?.getAttribute('aria-selected')).toBe('false')
+    expect(tab('All updates')?.getAttribute('aria-pressed')).toBe('true')
+    expect(tab('To you')?.getAttribute('aria-pressed')).toBe('false')
     act(() => tab('To you')!.dispatchEvent(new MouseEvent('click', {bubbles: true})))
     expect(onTabChange).toHaveBeenCalledWith('to-you')
   })

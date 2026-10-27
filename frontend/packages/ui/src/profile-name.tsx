@@ -106,8 +106,19 @@ export function ProfileName({
         </>
       ) : (
         <div className="flex min-w-0 items-center gap-1">
-          <h1 className="truncate text-2xl font-bold" onDoubleClick={beginEditing}>
-            {petname || publicName}
+          <h1 className="truncate text-2xl font-bold">
+            {onSave ? (
+              <button
+                type="button"
+                aria-label={`Edit ${petname || publicName}`}
+                className="focus-visible:outline-ring max-w-full truncate border-0 bg-transparent p-0 text-left text-inherit focus-visible:outline-2 focus-visible:outline-offset-2"
+                onClick={beginEditing}
+              >
+                {petname || publicName}
+              </button>
+            ) : (
+              petname || publicName
+            )}
           </h1>
           {onSave && (
             <Button

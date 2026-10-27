@@ -956,7 +956,7 @@ function TriggerEntityPicker({
               </button>
             ))}
             {!results.length ? (
-              <p role="status" className="text-muted-foreground p-3 text-sm">
+              <output className="text-muted-foreground block p-3 text-sm">
                 {search.isFetching
                   ? 'Searching…'
                   : search.isError
@@ -964,7 +964,7 @@ function TriggerEntityPicker({
                     : query
                       ? 'No results found.'
                       : 'Type a name to search.'}
-              </p>
+              </output>
             ) : null}
           </div>
         ) : null}

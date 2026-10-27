@@ -24,7 +24,7 @@ import {useAccount} from '@shm/shared/models/entity'
 import {queryAccount} from '@shm/shared/models/queries'
 import {queryClient, useQueryClient} from '@shm/shared/models/query-client'
 import {useUniversalClient} from '@shm/shared/routing'
-import {Button} from '@shm/ui/button'
+import {Button, buttonVariants} from '@shm/ui/button'
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -322,28 +322,47 @@ function AddModelProviderForm({
           <SizableText size="sm" weight="bold">
             Authentication
           </SizableText>
-          <div className="border-border flex gap-1 self-start rounded-lg border p-1" role="radiogroup">
-            <Button
-              type="button"
-              size="sm"
-              variant={authMode === 'api-key' ? 'secondary' : 'ghost'}
-              aria-checked={authMode === 'api-key'}
-              role="radio"
-              onClick={() => setAuthMode('api-key')}
-            >
-              API key
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={authMode === 'subscription' ? 'secondary' : 'ghost'}
-              aria-checked={authMode === 'subscription'}
-              role="radio"
-              onClick={() => setAuthMode('subscription')}
-            >
-              {metadata.subscription.label}
-            </Button>
-          </div>
+          <fieldset className="border-border m-0 flex gap-1 self-start rounded-lg border p-1">
+            <legend className="sr-only">Authentication</legend>
+            <label>
+              <input
+                type="radio"
+                name={`${fieldId}-auth-mode`}
+                value="api-key"
+                checked={authMode === 'api-key'}
+                onChange={() => setAuthMode('api-key')}
+                className="peer sr-only"
+              />
+              <span
+                className={buttonVariants({
+                  size: 'sm',
+                  variant: authMode === 'api-key' ? 'secondary' : 'ghost',
+                  className: 'peer-focus-visible:ring-ring cursor-pointer peer-focus-visible:ring-2',
+                })}
+              >
+                API key
+              </span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name={`${fieldId}-auth-mode`}
+                value="subscription"
+                checked={authMode === 'subscription'}
+                onChange={() => setAuthMode('subscription')}
+                className="peer sr-only"
+              />
+              <span
+                className={buttonVariants({
+                  size: 'sm',
+                  variant: authMode === 'subscription' ? 'secondary' : 'ghost',
+                  className: 'peer-focus-visible:ring-ring cursor-pointer peer-focus-visible:ring-2',
+                })}
+              >
+                {metadata.subscription.label}
+              </span>
+            </label>
+          </fieldset>
         </div>
       ) : null}
       {!subscriptionMode && metadata.showBaseUrlField ? (

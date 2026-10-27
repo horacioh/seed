@@ -50,14 +50,15 @@ export function ActivityHeader({
         <Text weight="semibold" size="lg">
           Activity
         </Text>
-        <div className="flex items-center gap-1" role="tablist" aria-label="Activity">
+        <fieldset className="flex items-center gap-1 border-0 p-0">
+          <legend className="sr-only">Activity</legend>
           {activityTabs.map(({value, label, Icon}) => (
             <Button
               key={value}
+              type="button"
               size="sm"
               variant="outline"
-              role="tab"
-              aria-selected={activeTab === value}
+              aria-pressed={activeTab === value}
               className={cn('rounded-full', activeTab === value && 'border-brand bg-brand-12 text-brand-4')}
               onClick={() => onTabChange(value)}
             >
@@ -65,7 +66,7 @@ export function ActivityHeader({
               {label}
             </Button>
           ))}
-        </div>
+        </fieldset>
       </div>
       <div className="flex shrink-0 items-center gap-1">
         {onExpand ? (

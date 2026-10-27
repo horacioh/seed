@@ -441,6 +441,8 @@ export function ValueEditorProvider({
   // The single tab-stop; defaults to the first row so Tab can enter the tree.
   const [tabbableId, setTabbableId] = useState<string | null>(null)
   const [menu, setMenu] = useState<{x: number; y: number; actions: ContextMenuAction[]} | null>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const suppressOutsideClickRef = useRef(false)
   const registry = useRef(new Map<string, RowInfo>())
   const elements = useRef(new Map<string, HTMLElement>())
 
@@ -593,13 +595,41 @@ export function ValueEditorProvider({
       }
     }
 
+    const onMenuPointerDown = (event: PointerEvent) => {
+      if (!menuRef.current || menuRef.current.contains(event.target as Node)) return
+      suppressOutsideClickRef.current = true
+      event.preventDefault()
+      event.stopPropagation()
+      setMenu(null)
+    }
+
+    const onMenuClick = (event: MouseEvent) => {
+      if (!suppressOutsideClickRef.current) return
+      suppressOutsideClickRef.current = false
+      event.preventDefault()
+      event.stopPropagation()
+    }
+
+    const onMenuContextMenu = (event: MouseEvent) => {
+      if (!menuRef.current && !suppressOutsideClickRef.current) return
+      event.preventDefault()
+      event.stopPropagation()
+      setMenu(null)
+    }
+
     document.addEventListener('copy', onCopy)
     document.addEventListener('paste', onPaste)
     document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onMenuPointerDown, true)
+    document.addEventListener('click', onMenuClick, true)
+    document.addEventListener('contextmenu', onMenuContextMenu, true)
     return () => {
       document.removeEventListener('copy', onCopy)
       document.removeEventListener('paste', onPaste)
       document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onMenuPointerDown, true)
+      document.removeEventListener('click', onMenuClick, true)
+      document.removeEventListener('contextmenu', onMenuContextMenu, true)
     }
   }, [])
 
@@ -609,41 +639,33 @@ export function ValueEditorProvider({
         {children}
         {menu && (
           <div
-            className="fixed inset-0 z-[100]"
-            onClick={() => setMenu(null)}
-            onContextMenu={(e) => {
-              e.preventDefault()
-              setMenu(null)
+            ref={menuRef}
+            className="bg-popover text-popover-foreground fixed z-[100] flex min-w-44 flex-col rounded-md border p-1 shadow-md"
+            style={{
+              left: Math.min(menu.x, typeof window !== 'undefined' ? window.innerWidth - 200 : menu.x),
+              top: Math.min(
+                menu.y,
+                typeof window !== 'undefined' ? window.innerHeight - menu.actions.length * 34 - 12 : menu.y,
+              ),
             }}
           >
-            <div
-              className="bg-popover text-popover-foreground absolute flex min-w-44 flex-col rounded-md border p-1 shadow-md"
-              style={{
-                left: Math.min(menu.x, typeof window !== 'undefined' ? window.innerWidth - 200 : menu.x),
-                top: Math.min(
-                  menu.y,
-                  typeof window !== 'undefined' ? window.innerHeight - menu.actions.length * 34 - 12 : menu.y,
-                ),
-              }}
-            >
-              {menu.actions.map((action) => (
-                <button
-                  key={action.key}
-                  type="button"
-                  className={cn(
-                    'hover:bg-accent flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors',
-                    action.destructive && 'text-destructive',
-                  )}
-                  onClick={() => {
-                    setMenu(null)
-                    action.onClick()
-                  }}
-                >
-                  {action.icon}
-                  {action.label}
-                </button>
-              ))}
-            </div>
+            {menu.actions.map((action) => (
+              <button
+                key={action.key}
+                type="button"
+                className={cn(
+                  'hover:bg-accent flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors',
+                  action.destructive && 'text-destructive',
+                )}
+                onClick={() => {
+                  setMenu(null)
+                  action.onClick()
+                }}
+              >
+                {action.icon}
+                {action.label}
+              </button>
+            ))}
           </div>
         )}
       </SelectionStateContext.Provider>
@@ -2565,6 +2587,7 @@ function SuggestionPopover<T>({
     <div
       id={id}
       role="listbox"
+      tabIndex={-1}
       className="border-border bg-popover absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border p-1 shadow-lg"
       onMouseDown={(event) => event.preventDefault()}
       onScroll={(event) => {

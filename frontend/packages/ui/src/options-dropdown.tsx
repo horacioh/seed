@@ -39,10 +39,7 @@ function MenuItemHelpIcon({content}: {content: string}) {
         onMouseEnter={measure}
         onFocus={measure}
         className="text-muted-foreground ml-auto inline-flex"
-        onClick={(e) => {
-          e.stopPropagation()
-          e.preventDefault()
-        }}
+        data-menu-item-help
       >
         <HelpCircle className="size-3.5" />
       </span>
@@ -118,6 +115,11 @@ function renderMenuItem(item: MenuItemType, close: () => void) {
     <DropdownMenuItem
       variant={item.variant}
       disabled={item.disabled}
+      onClickCapture={(event) => {
+        if (!(event.target as HTMLElement).closest('[data-menu-item-help]')) return
+        event.preventDefault()
+        event.stopPropagation()
+      }}
       onClick={(e) => {
         e.stopPropagation()
         if (item.disabled) return

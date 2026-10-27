@@ -24,7 +24,7 @@ import {useNavigate} from '@shm/shared/utils/navigation'
 import {ChevronRight, Copy, Forward, GitFork, MessageSquare, Pencil} from 'lucide-react'
 import {Fragment, useMemo} from 'react'
 import {LibraryEntryUpdateSummary} from './activity'
-import {Button} from './button'
+import {Button, buttonVariants} from './button'
 import {copyUrlToClipboardWithFeedback} from './copy-to-clipboard'
 import {createCopyLinkMenuItem, getWebCopyLinkHostname} from './copy-link-menu'
 import {FacePile} from './face-pile'
@@ -255,16 +255,27 @@ export function DocumentListItem({
   const hasActions = commentCount > 0 || menuItems.length > 0
 
   return (
-    <Button
-      asChild
-      variant="ghost"
+    <div
       {...highlighter(id)}
       className={cn(
-        'group/item h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black',
-        className,
+        buttonVariants({
+          variant: 'ghost',
+          className: cn(
+            'group/item relative h-auto w-full items-center justify-start border-none bg-transparent bg-white px-4 py-2 shadow-sm hover:shadow-md dark:bg-black',
+            className,
+          ),
+        }),
       )}
     >
-      <a data-resourceid={id.id} {...linkProps} onClick={handleClick}>
+      <a
+        data-resourceid={id.id}
+        {...linkProps}
+        href={linkProps.href}
+        aria-label={getMetadataName(metadata)}
+        onClick={handleClick}
+        className="focus-visible:ring-ring absolute inset-0 z-0 rounded-md focus-visible:ring-[3px] focus-visible:outline-none"
+      />
+      <div className="pointer-events-none relative z-10 flex w-full items-center">
         {indent && <div className="size-8 shrink-0" />}
         {expandable && (
           <button
@@ -273,7 +284,7 @@ export function DocumentListItem({
             aria-expanded={expandable.expanded}
             disabled={!canExpand}
             className={cn(
-              'no-window-drag text-muted-foreground hover:bg-muted/70 -ml-2 flex size-7 shrink-0 items-center justify-center rounded-md transition-colors',
+              'no-window-drag text-muted-foreground hover:bg-muted/70 pointer-events-auto relative z-10 -ml-2 flex size-7 shrink-0 items-center justify-center rounded-md transition-colors',
               !canExpand && 'pointer-events-none invisible',
             )}
             onClick={(e) => {
@@ -308,7 +319,7 @@ export function DocumentListItem({
               </SizableText>
             )}
             {hasActions && (
-              <div className="flex items-center gap-1">
+              <div className="pointer-events-auto relative z-10 flex items-center gap-1">
                 {commentCount > 0 && (
                   <Tooltip content="View discussions">
                     <Button
@@ -345,8 +356,8 @@ export function DocumentListItem({
             </div>
           )}
         </div>
-      </a>
-    </Button>
+      </div>
+    </div>
   )
 }
 
@@ -357,16 +368,7 @@ function DocumentListItemBreadcrumbs({breadcrumbs}: {breadcrumbs: HMBreadcrumb[]
     <div className="flex gap-1">
       {displayCrumbs.map((breadcrumb, idx) => (
         <Fragment key={breadcrumb.path}>
-          <Button
-            variant="link"
-            className="px-0 text-xs"
-            size="xs"
-            onClick={(e) => {
-              e.stopPropagation()
-            }}
-          >
-            {breadcrumb.name}
-          </Button>
+          <span className="text-primary px-0 text-xs underline-offset-4 hover:underline">{breadcrumb.name}</span>
           {idx === displayCrumbs.length - 1 ? null : (
             <SizableText className="text-muted-foreground font-sans text-sm">/</SizableText>
           )}

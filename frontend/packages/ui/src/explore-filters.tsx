@@ -260,41 +260,55 @@ export function ExploreDateMenu({
   return (
     <div className="bg-popover text-popover-foreground absolute top-full left-0 z-30 mt-2 flex w-64 flex-col rounded-md border shadow-md">
       <div className="p-2">
-        <div
-          className="bg-muted flex items-center gap-0.5 rounded-md border border-black/10 p-0.5 dark:border-white/10"
-          role="radiogroup"
-          aria-label="Date field"
-        >
+        <fieldset className="bg-muted m-0 flex items-center gap-0.5 rounded-md border border-black/10 p-0.5 dark:border-white/10">
+          <legend className="sr-only">Date field</legend>
           {(['created', 'updated'] as const).map((value) => (
-            <Button
+            <label
               key={value}
-              size="sm"
-              variant="ghost"
-              role="radio"
-              aria-checked={field === value}
-              className={cn('h-7 flex-1', field === value && 'bg-background shadow-sm')}
-              onClick={() => setField(value)}
+              className={cn(
+                'focus-within:ring-ring relative flex h-7 flex-1 cursor-pointer items-center justify-center rounded-md text-xs focus-within:ring-2',
+                field === value
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
             >
+              <input
+                type="radio"
+                name={`${dateRangeId}-field`}
+                value={value}
+                checked={field === value}
+                onChange={() => setField(value)}
+                className="sr-only"
+              />
               {value === 'created' ? 'Created' : 'Updated'}
-            </Button>
+            </label>
           ))}
-        </div>
+        </fieldset>
       </div>
-      <div className="flex flex-col p-1" role="radiogroup" aria-label="Date range">
+      <fieldset className="m-0 flex flex-col border-0 p-1">
+        <legend className="sr-only">Date range</legend>
         {datePresets.map((option) => (
-          <button
+          <label
             key={option.value}
-            type="button"
-            role="radio"
-            aria-checked={preset === option.value}
-            className="hover:bg-accent flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm"
-            onClick={() => setPreset(option.value)}
+            className="hover:bg-accent focus-within:ring-ring relative flex w-full cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left text-sm focus-within:ring-2"
           >
-            {preset === option.value ? <Check className="size-3.5" /> : <span className="size-3.5" />}
+            <input
+              type="radio"
+              name={`${dateRangeId}-preset`}
+              value={option.value}
+              checked={preset === option.value}
+              onChange={() => setPreset(option.value)}
+              className="sr-only"
+            />
+            {preset === option.value ? (
+              <Check className="size-3.5" aria-hidden="true" />
+            ) : (
+              <span className="size-3.5" aria-hidden="true" />
+            )}
             {option.label}
-          </button>
+          </label>
         ))}
-      </div>
+      </fieldset>
       {preset === 'custom' ? (
         <div className="flex flex-col gap-2 border-t border-black/10 p-2 dark:border-white/10">
           <label htmlFor={`${dateRangeId}-from`} className="flex flex-col gap-1 text-xs">
