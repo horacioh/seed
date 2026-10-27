@@ -54,6 +54,12 @@ export default defineConfig({
           command: 'bun run --cwd ../../../vault dev',
           stdout: 'pipe',
           stderr: 'pipe',
+          env: {
+            SEED_VAULT_HTTP_PORT: '3030',
+            SEED_VAULT_RP_ID: 'localhost',
+            SEED_VAULT_RP_ORIGIN: 'http://localhost:3030',
+            SEED_VAULT_BACKEND_HTTP_BASE_URL: 'http://localhost:58001',
+          },
           url: 'http://localhost:3030/vault',
           reuseExistingServer: !process.env.CI,
         },
