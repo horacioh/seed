@@ -199,6 +199,7 @@ describe('PublishPopoverBody', () => {
             annotations: [{type: 'Link', starts: [0], ends: [10], link: 'https://example.com'}],
           },
         },
+        {block: {id: 'video-1', type: 'Video', text: '', link: 'ipfs://video-cid', attributes: {}}},
       ],
     })
     const onFocusBlock = vi.fn()
@@ -213,6 +214,7 @@ describe('PublishPopoverBody', () => {
         'Image 2: replace filename "cat.png" with descriptive alt text',
         'Heading 3 is empty',
         'Link "click here" needs descriptive text',
+        'Video 1: add captions',
       ])
       expect(issueButtons[0]?.getAttribute('aria-label')).toBe('Go to Image 1: add alt text (flower.jpg)')
       expect(issueButtons[0]?.className).toContain('underline')

@@ -60,4 +60,23 @@ describe('checkDocumentAccessibility', () => {
       })),
     )
   })
+
+  it('flags uploaded videos without captions using an ordinal among video blocks', () => {
+    const issues = checkDocumentAccessibility([
+      node('video-one', {type: 'Video', text: '', link: 'ipfs://video-one', attributes: {}}),
+      node('video-embed', {type: 'Video', text: '', link: 'https://youtube.com/embed/abc', attributes: {}}),
+      node('video-captioned', {
+        type: 'Video',
+        text: '',
+        link: 'ipfs://video-captioned',
+        attributes: {captions: 'ipfs://captions'},
+      }),
+      node('video-four', {type: 'Video', text: '', link: 'ipfs://video-four', attributes: {}}),
+    ])
+
+    expect(issues).toEqual([
+      {blockId: 'video-one', kind: 'video-missing-captions', message: 'Video 1: add captions'},
+      {blockId: 'video-four', kind: 'video-missing-captions', message: 'Video 4: add captions'},
+    ])
+  })
 })

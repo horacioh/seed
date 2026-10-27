@@ -3,7 +3,7 @@ import type {HMAnnotation, HMBlockNode} from '@seed-hypermedia/client/hm-types'
 /** An advisory accessibility finding tied to a persisted document block. */
 export type DocumentA11yIssue = {
   blockId: string
-  kind: 'image-missing-alt' | 'image-alt-is-filename' | 'empty-heading' | 'vague-link-text'
+  kind: 'image-missing-alt' | 'image-alt-is-filename' | 'empty-heading' | 'vague-link-text' | 'video-missing-captions'
   message: string
 }
 
@@ -31,6 +31,7 @@ export function checkDocumentAccessibility(blocks: HMBlockNode[]): DocumentA11yI
   const issues: DocumentA11yIssue[] = []
   let imageOrdinal = 0
   let headingOrdinal = 0
+  let videoOrdinal = 0
 
   const visit = (nodes: HMBlockNode[]) => {
     for (const node of nodes) {
@@ -61,6 +62,15 @@ export function checkDocumentAccessibility(blocks: HMBlockNode[]): DocumentA11yI
             blockId: block.id,
             kind: 'empty-heading',
             message: `Heading ${headingOrdinal} is empty`,
+          })
+        }
+      } else if (block.type === 'Video') {
+        videoOrdinal += 1
+        if (block.link?.startsWith('ipfs://') && !block.attributes?.captions) {
+          issues.push({
+            blockId: block.id,
+            kind: 'video-missing-captions',
+            message: `Video ${videoOrdinal}: add captions`,
           })
         }
       }

@@ -860,6 +860,7 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
   if (objectUrl && kind === 'video') {
     return (
       <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
+        {/* oxlint-disable-next-line jsx-a11y/media-has-caption -- preview of the user's own uploaded file; no caption source exists */}
         <video src={objectUrl} controls className="max-h-full max-w-full rounded-md" />
       </div>
     )
@@ -867,6 +868,7 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
   if (objectUrl && kind === 'audio') {
     return (
       <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
+        {/* oxlint-disable-next-line jsx-a11y/media-has-caption -- preview of the user's own uploaded file; no caption source exists */}
         <audio src={objectUrl} controls className="w-full max-w-md" />
       </div>
     )

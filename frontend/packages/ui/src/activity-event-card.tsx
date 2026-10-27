@@ -222,7 +222,14 @@ function CommentCardBody({comment, replyingComment}: {comment: HMComment; replyi
           if (!media || !src) return
           event.preventDefault()
           event.stopPropagation()
-          setOpenMedia({type: media.tagName === 'VIDEO' ? 'video' : 'image', src})
+          const captionsTrack =
+            media.tagName === 'VIDEO' ? media.querySelector<HTMLTrackElement>('track[kind="captions"]') : null
+          setOpenMedia({
+            type: media.tagName === 'VIDEO' ? 'video' : 'image',
+            src,
+            ...(captionsTrack?.src ? {captionsSrc: captionsTrack.src} : {}),
+            ...(captionsTrack?.srclang ? {captionsLang: captionsTrack.srclang} : {}),
+          })
         }}
       >
         <CommentContent comment={{...comment, content}} size="sm" />
@@ -277,7 +284,7 @@ function BlockQuote({id}: {id: UnpackedHypermediaId}) {
   return quote ? <QuoteBox>{quote}</QuoteBox> : null
 }
 
-type OpenMedia = {type: 'image' | 'video'; src: string}
+type OpenMedia = {type: 'image' | 'video'; src: string; captionsSrc?: string; captionsLang?: string}
 
 // Clicks inside the dialog would otherwise bubble through the portal to the card and open the comment.
 function MediaDialog({media, onClose}: {media: OpenMedia | null; onClose: () => void}) {
@@ -288,7 +295,12 @@ function MediaDialog({media, onClose}: {media: OpenMedia | null; onClose: () => 
         {media?.type === 'image' ? (
           <img src={media.src} alt="" className="max-h-[80vh] w-full object-contain" />
         ) : media ? (
-          <video src={media.src} controls autoPlay className="max-h-[80vh] w-full" />
+          // oxlint-disable-next-line jsx-a11y/media-has-caption -- captions track mirrors the source video's captions when available
+          <video src={media.src} controls autoPlay className="max-h-[80vh] w-full">
+            {media.captionsSrc && (
+              <track kind="captions" src={media.captionsSrc} srcLang={media.captionsLang} label="Captions" default />
+            )}
+          </video>
         ) : null}
       </DialogContent>
     </Dialog>
