@@ -357,7 +357,7 @@ export const MediaContainer = ({
         if (onMediaMouseDown) onMediaMouseDown(e as unknown as React.MouseEvent<HTMLDivElement, MouseEvent>)
         if (onPress) {
           const handled = canAuthor && e.shiftKey ? (selectBlock(e), true) : onPress(e.nativeEvent)
-        if (handled) {
+          if (handled) {
             e.preventDefault()
             e.stopPropagation()
           }
