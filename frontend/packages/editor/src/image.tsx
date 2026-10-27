@@ -1,13 +1,16 @@
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
+import {Button} from '@shm/ui/button'
 import {useImageUrl} from '@shm/ui/get-file-url'
 import {ResizeHandle} from '@shm/ui/resize-handle'
 import {toast} from '@shm/ui/toast'
+import {AlertTriangle} from 'lucide-react'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {RiImage2Line} from 'react-icons/ri'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
 import {Block} from './blocknote/core/extensions/Blocks/api/blockTypes'
 import {defaultProps} from './blocknote/core/extensions/Blocks/api/defaultBlocks'
 import {createReactBlockSpec} from './blocknote/react'
+import {useImageAltTextDialog} from './image-alt-text-dialog'
 import {MediaContainer} from './media-container'
 import {DisplayComponentProps, FALLBACK_EDITOR_WIDTH, MediaRender, MediaType} from './media-render'
 import {HMBlockSchema} from './schema'
@@ -161,6 +164,8 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
 export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   const getImageUrl = useImageUrl()
   const {canEdit} = useEditorGate()
+  const openAltTextDialog = useImageAltTextDialog()
+  const altText = block.props.alt?.trim() ?? ''
 
   /** Re-embed handler for the selection menu's "Insert from URL" item. */
   const handleMenuUrl = useCallback(
@@ -283,6 +288,32 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     console.warn('No valid image source found for block:', block.id)
     return ''
   })()
+  const altTextAction = (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      data-media-container-action
+      aria-haspopup="dialog"
+      className="h-8 gap-1.5 px-2 text-xs"
+      onClick={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        openAltTextDialog({
+          currentAlt: block.props.alt ?? '',
+          opener: event.currentTarget,
+          fallbackFocus: () => editor.focus(),
+          onSave: (alt) => {
+            editor.updateBlock(block, {props: {alt}})
+            editor.announceAccessibilityMessage('Alt text saved')
+          },
+        })
+      }}
+    >
+      {!altText && <AlertTriangle aria-hidden="true" className="size-4" />}
+      {altText ? 'Edit alt text' : 'Add alt text'}
+    </Button>
+  )
   // Min image width in px.
   const minWidth = 64
   // Max image height in px.
@@ -429,6 +460,7 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       onHoverOut={imageMouseLeaveHandler}
       width={`${Math.round((currentWidth / getEditorWidth()) * 10000) / 100}%`}
       onSubmitUrl={handleMenuUrl}
+      actionContent={altTextAction}
       urlMenuLabel="Insert from URL"
       urlInputPlaceholder="Paste an image URL"
       deleteLabel="Delete image"

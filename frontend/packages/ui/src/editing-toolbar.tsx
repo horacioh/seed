@@ -1,9 +1,11 @@
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
+import {checkDocumentAccessibility} from '@shm/shared'
 import {type DocumentMachineEvent} from '@shm/shared/models/document-machine'
 import {useAccount} from '@shm/shared/models/entity'
 import {
   selectDocument,
+  selectBlocks,
   selectDraftId,
   selectEffectivePublishPath,
   selectMetadata,
@@ -18,7 +20,7 @@ import {useUnpublishedChangeCount} from '@shm/shared/models/use-unpublished-chan
 import {type AnyTimestamp, formattedDateMedium, formattedDateShort, normalizeDate} from '@shm/shared/utils/date'
 import {pathNameify} from '@shm/shared/utils/path'
 import {Check, ChevronRight, Clock, Copy, FileDiff, Pencil, Trash, X} from 'lucide-react'
-import React, {forwardRef, useState} from 'react'
+import React, {forwardRef, useMemo, useState} from 'react'
 import {Button} from './button'
 import {PathInput} from './path-input'
 import {Popover, PopoverAnchor, PopoverContent} from './components/popover'
@@ -39,6 +41,8 @@ export type EditingToolbarCallbacks = {
   onDiscardConfirm?: (draftId: string, send: (e: DocumentMachineEvent) => void) => void
   /** Navigate to document versions panel. Row hidden when undefined. */
   onGoToVersions?: (docId: UnpackedHypermediaId) => void
+  /** Focus and scroll to a document block from an accessibility issue. */
+  onFocusBlock?: (blockId: string) => void
   /**
    * Walks the editor's content for embed blocks pointing at
    * unpublished child drafts.
@@ -93,6 +97,7 @@ export function PublishPopoverBody({
   unpublishedChildCount = 0,
   getDocumentUrl,
   onGoToVersions,
+  onFocusBlock,
 }: {
   docId: UnpackedHypermediaId
   changeCount: number
@@ -103,6 +108,8 @@ export function PublishPopoverBody({
   unpublishedChildCount?: number
 } & EditingToolbarCallbacks) {
   const publishedDoc = useDocumentSelector(selectDocument)
+  const blocks = useDocumentSelector(selectBlocks)
+  const accessibilityIssues = useMemo(() => checkDocumentAccessibility(blocks ?? []), [blocks])
   const metadata = useDocumentSelector(selectMetadata)
   const renameState = useDocumentSelector(selectRenameState)
   const renameError = useDocumentSelector(selectRenameError)
@@ -250,6 +257,7 @@ export function PublishPopoverBody({
                 size="icon"
                 variant="ghost"
                 className="shrink-0"
+                aria-label="Copy URL"
                 onClick={() => {
                   copyTextToClipboard(documentUrl).then(() => toast.success('Copied document URL'))
                 }}
@@ -324,6 +332,26 @@ export function PublishPopoverBody({
         </div>
       ) : null}
 
+      {accessibilityIssues.length > 0 ? (
+        <section aria-labelledby="publish-accessibility-heading">
+          <h3 id="publish-accessibility-heading" className="text-base font-medium">
+            Accessibility
+          </h3>
+          <div aria-live="polite" className="mt-2 flex flex-col gap-1">
+            {accessibilityIssues.map((issue) => (
+              <button
+                key={`${issue.blockId}:${issue.kind}`}
+                type="button"
+                className="hover:bg-muted rounded px-2 py-1.5 text-left text-sm"
+                onClick={() => onFocusBlock?.(issue.blockId)}
+              >
+                {issue.message}
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <Separator className="bg-black/10 dark:bg-white/10" />
 
       <div className="flex flex-col gap-2 pt-1">
@@ -393,6 +421,7 @@ export function PublishButtonWithPopover({
   onGoToVersions,
   getUnpublishedChildCount,
   onPublishIntercept,
+  onFocusBlock,
 }: {
   docId: UnpackedHypermediaId
   existingMenuItems: MenuItemType[]
@@ -470,6 +499,7 @@ export function PublishButtonWithPopover({
             unpublishedChildCount={effectiveUnpublishedChildCount}
             getDocumentUrl={getDocumentUrl}
             onGoToVersions={onGoToVersions}
+            onFocusBlock={onFocusBlock}
           />
         </PopoverContent>
       </Popover>

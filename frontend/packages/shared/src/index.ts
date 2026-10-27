@@ -3,6 +3,7 @@ export * from './client'
 export * from './comments'
 export * from './comments-service-provider'
 export * from './content'
+export * from './document-accessibility'
 export * from './interaction-summary'
 // create-web-universal-client is not barrel-exported because it imports from
 // @seed-hypermedia/client, which causes Vite pre-bundle cache conflicts when

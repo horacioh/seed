@@ -9,7 +9,7 @@ test.describe('editor accessibility', () => {
     await expect(editorHelpers.getContentArea()).toHaveAttribute('role', 'textbox')
     await expect(editorHelpers.getContentArea()).toHaveAttribute('aria-multiline', 'true')
     await expect(editorHelpers.getContentArea()).toHaveAttribute('aria-label', 'Document content')
-    await expect(page.locator('[aria-live="polite"]')).toHaveCount(1)
+    await expect(page.locator('[data-editor-live-region]')).toHaveCount(1)
     await expectNoA11yViolations(page, {modes: [...modes]})
   })
 
@@ -190,6 +190,69 @@ test.describe('editor accessibility', () => {
     await expectNoA11yViolations(page, {modes: [...modes]})
     await page.keyboard.press('Escape')
     await expect(gallery).toBeHidden()
+    await expect(page.locator('[contenteditable="true"]').first()).toBeFocused()
+  })
+
+  test('image alt text can be authored from its focused control', async ({page}) => {
+    await page.goto('/?fixture=allBlocks&real=1&edit=1')
+    const image = page.locator('img').first()
+    const addAltText = page.getByRole('button', {name: 'Add alt text'})
+    await addAltText.focus()
+    await expect(addAltText).toBeFocused()
+
+    if (process.env.A11Y_ARTIFACT_DIR) {
+      await page.screenshot({path: `${process.env.A11Y_ARTIFACT_DIR}/alt-button-focused.png`, fullPage: true})
+    }
+
+    await page.keyboard.press('Enter')
+    const dialog = page.getByRole('dialog', {name: 'Alt text'})
+    const textarea = page.getByRole('textbox', {name: 'Alt text'})
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toContainText(
+      "Describe the image for people who can't see it. Leave empty only if it's purely decorative.",
+    )
+    await expect(textarea).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(dialog).toContainText('Save')
+    await expect(dialog).toContainText('Cancel')
+    await expect(dialog.locator(':focus')).toHaveCount(1)
+
+    if (process.env.A11Y_ARTIFACT_DIR) {
+      await page.screenshot({path: `${process.env.A11Y_ARTIFACT_DIR}/alt-dialog.png`})
+    }
+
+    await textarea.fill('A small yellow flower')
+    await page.getByRole('button', {name: 'Save'}).click()
+    await expect(dialog).toBeHidden()
+    await expect(image).toHaveAttribute('alt', 'A small yellow flower')
+    await expect(page.locator('[data-editor-live-region]')).toHaveText('Alt text saved')
+    await expect(addAltText).not.toBeVisible()
+    await expect(page.getByRole('button', {name: 'Edit alt text'})).toBeFocused()
+
+    await page.getByRole('button', {name: 'Edit alt text'}).press('Enter')
+    await expect(dialog).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
+    await expect(page.getByRole('button', {name: 'Edit alt text'})).toBeFocused()
+  })
+
+  test('image drag-handle menu opens the alt-text dialog', async ({page}) => {
+    await page.goto('/?fixture=allBlocks&real=1&edit=1')
+    await page
+      .locator('[data-content-type="image"]')
+      .first()
+      .click({position: {x: 16, y: 12}})
+    await page.keyboard.press('Alt+F10')
+    const handle = page.getByRole('button', {name: 'Block options'})
+    await expect(handle).toBeFocused()
+    await page.keyboard.press('Enter')
+    const editAltText = page.getByRole('menuitem', {name: 'Edit alt text'})
+    await expect(editAltText).toBeVisible()
+    await editAltText.click()
+    const dialog = page.getByRole('dialog', {name: 'Alt text'})
+    await expect(dialog).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(dialog).toBeHidden()
     await expect(page.locator('[contenteditable="true"]').first()).toBeFocused()
   })
 })

@@ -121,11 +121,13 @@ export function EditingDocToolsRight({
   existingMenuItems,
   getUnpublishedChildCount,
   beforePublish,
+  onFocusBlock,
 }: {
   docId: UnpackedHypermediaId
   existingMenuItems: MenuItemType[]
   getUnpublishedChildCount?: () => number
   beforePublish?: ReactNode
+  onFocusBlock?: (blockId: string) => void
 }) {
   const {callbacks, deleteDraftDialog} = useDesktopToolbarCallbacks(docId)
   const unpublishedChildCount = useUnpublishedChildCount()
@@ -137,6 +139,7 @@ export function EditingDocToolsRight({
         unpublishedChildCount={unpublishedChildCount}
         getUnpublishedChildCount={getUnpublishedChildCount}
         beforePublish={beforePublish}
+        onFocusBlock={onFocusBlock}
         {...callbacks}
       />
       {deleteDraftDialog.content}

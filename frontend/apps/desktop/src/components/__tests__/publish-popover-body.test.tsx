@@ -4,6 +4,7 @@ import {createRoot, Root} from 'react-dom/client'
 import {act} from 'react-dom/test-utils'
 import {hmId} from '@shm/shared/utils/entity-id-url'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {expectNoAxeViolations} from '@shm/a11y-testing/dom'
 
 const {selectMock, useResourceMock, useAccountMock} = vi.hoisted(() => ({
   selectMock: {
@@ -14,6 +15,7 @@ const {selectMock, useResourceMock, useAccountMock} = vi.hoisted(() => ({
     renameError: null as string | null,
     publishPath: null as string[] | null,
     effectivePublishPath: [] as string[],
+    blocks: [] as any[],
   },
   useResourceMock: vi.fn(),
   useAccountMock: vi.fn(),
@@ -28,6 +30,7 @@ vi.mock('@shm/shared/models/use-document-machine', () => ({
         document: selectMock.document,
         draftId: selectMock.draftId,
         metadata: selectMock.metadata,
+        blocks: selectMock.blocks,
       },
     }
     return selector(snapshot)
@@ -36,6 +39,7 @@ vi.mock('@shm/shared/models/use-document-machine', () => ({
   selectDocument: (s: any) => s.context.document,
   selectDraftId: (s: any) => s.context.draftId,
   selectMetadata: (s: any) => s.context.metadata,
+  selectBlocks: (s: any) => s.context.blocks,
   selectRenameState: () => selectMock.renameState,
   selectRenameError: () => selectMock.renameError,
   selectPublishPath: () => selectMock.publishPath,
@@ -104,13 +108,18 @@ vi.mock('@shm/ui/tooltip', async () => {
 import {PublishPopoverBody} from '../editing-toolbar'
 ;(globalThis as typeof globalThis & {IS_REACT_ACT_ENVIRONMENT?: boolean}).IS_REACT_ACT_ENVIRONMENT = true
 
-function setSnapshot(opts: {document?: any; draftId?: string | null; metadata?: Record<string, any>}) {
+function setSnapshot(opts: {document?: any; draftId?: string | null; metadata?: Record<string, any>; blocks?: any[]}) {
   selectMock.document = opts.document ?? null
   selectMock.draftId = opts.draftId ?? null
   selectMock.metadata = opts.metadata ?? {}
+  selectMock.blocks = opts.blocks ?? []
 }
 
-function renderPopover(docId: ReturnType<typeof hmId>, onPublish: () => void) {
+function renderPopover(
+  docId: ReturnType<typeof hmId>,
+  onPublish: () => void,
+  onFocusBlock: (blockId: string) => void = vi.fn(),
+) {
   const container = document.createElement('div')
   document.body.appendChild(container)
   const root = createRoot(container)
@@ -123,6 +132,7 @@ function renderPopover(docId: ReturnType<typeof hmId>, onPublish: () => void) {
         onClose={vi.fn()}
         publishDisabled={false}
         getDocumentUrl={() => 'https://example.com/parent/my-cool-doc'}
+        onFocusBlock={onFocusBlock}
       />,
     )
   })
@@ -145,6 +155,7 @@ describe('PublishPopoverBody', () => {
     selectMock.document = null
     selectMock.draftId = null
     selectMock.metadata = {}
+    selectMock.blocks = []
     selectMock.renameState = 'idle'
     selectMock.renameError = null
     selectMock.publishPath = null
@@ -166,6 +177,28 @@ describe('PublishPopoverBody', () => {
     try {
       expect(findInput(container)).toBeNull()
       expect(container.querySelector('button[aria-label="Edit path"]')).toBeTruthy()
+    } finally {
+      cleanup(root, container)
+    }
+  })
+
+  it('lists accessibility issues, focuses their block, and keeps Publish advisory', async () => {
+    setSnapshot({
+      draftId: 'draft-1',
+      blocks: [{block: {id: 'image-1', type: 'Image', text: '', attributes: {}, link: ''}}],
+    })
+    const onFocusBlock = vi.fn()
+    const docId = hmId('acct-1', {path: ['draft']})
+    const {container, root} = renderPopover(docId, vi.fn(), onFocusBlock)
+    try {
+      const section = container.querySelector('section[aria-labelledby="publish-accessibility-heading"]')
+      expect(section?.textContent).toContain('Accessibility')
+      const issueButton = section?.querySelector('button')
+      expect(issueButton?.textContent).toBe('Add alt text to this image.')
+      expect(container.querySelector('button:disabled')).toBeNull()
+      await expectNoAxeViolations(container)
+      act(() => issueButton?.click())
+      expect(onFocusBlock).toHaveBeenCalledWith('image-1')
     } finally {
       cleanup(root, container)
     }

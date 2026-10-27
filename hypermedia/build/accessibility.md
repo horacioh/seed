@@ -40,6 +40,10 @@ Run the published web reader gate against a running web gateway with:
 A11Y_PATHS=/,/guide A11Y_BASE_URL=http://localhost:3000 pnpm --filter @shm/web test:a11y
 ```
 
+## Editor adapter contract
+
+Every editor adapter must pass `runEditorA11yContract` before merging. The contract covers named multiline text entry, keyboard block movement (including nested blocks), block options and focus restoration, insert-menu semantics, formatting-toolbar keyboard access and pressed state, image alt-text authoring, live announcements for move and delete, and zero axe violations in light, dark, and 320 CSS-pixel reflow modes. BlockNote runs the shared contract in the editor Playwright harness. ProseKit must run the same suite from `origin/devin/1793032977-editor-adapter-kit` before its adapter merges.
+
 ## Manual screen-reader matrix
 
 Check representative flows with NVDA on Firefox and Chrome, JAWS on Chrome, VoiceOver on macOS Safari and iOS Safari, TalkBack, and Orca.

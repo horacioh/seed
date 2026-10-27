@@ -1225,6 +1225,10 @@ export default function DesktopResourcePage() {
             docId={docId}
             existingMenuItems={menuItems}
             getUnpublishedChildCount={getUnpublishedChildCount}
+            onFocusBlock={(blockId) => {
+              editorRef.current?.setTextCursorPosition(blockId, 'start')
+              editorRef.current?.focus()
+            }}
             beforePublish={<DesktopDocumentCreateButton locationId={docId} />}
           />
         )

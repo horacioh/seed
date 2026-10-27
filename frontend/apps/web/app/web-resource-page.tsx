@@ -483,6 +483,10 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
           panel: createDocumentVersionsPanelRoute(id),
         } as any)
       },
+      onFocusBlock: (blockId: string) => {
+        editorRef.current?.setTextCursorPosition(blockId, 'start')
+        editorRef.current?.focus()
+      },
       // Pending space home drafts publish by first creating an account.
       // Stashes a publish-draft intent, then open the account dialog
       // and resume after the vault sign in.
@@ -502,6 +506,7 @@ export function WebResourcePage({docId, CommentEditor, ssrContentHTML}: WebResou
       origin,
       originHomeId,
       navigate,
+      editorRef,
       publishSpaceDraft,
       replaceRoute,
       docId,

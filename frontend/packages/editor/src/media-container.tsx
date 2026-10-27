@@ -38,6 +38,7 @@ interface ContainerProps {
   urlInputPlaceholder?: string
   deleteLabel?: string
   extraMenuContent?: React.ReactNode
+  actionContent?: React.ReactNode
 }
 
 type BlockRange = {
@@ -120,6 +121,7 @@ export const MediaContainer = ({
   urlInputPlaceholder,
   deleteLabel,
   extraMenuContent,
+  actionContent,
 }: ContainerProps) => {
   const [drag, setDrag] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -436,7 +438,8 @@ export const MediaContainer = ({
               }}
             />
             {onSubmitUrl ? (
-              <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity">
+              <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity">
+                {actionContent}
                 <MediaSelectionMenu
                   onReplaceFile={() => fileInputRef.current?.click()}
                   onSubmitUrl={onSubmitUrl}

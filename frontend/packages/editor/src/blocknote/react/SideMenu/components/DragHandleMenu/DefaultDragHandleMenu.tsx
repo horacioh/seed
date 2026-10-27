@@ -20,11 +20,15 @@ import {CopyLinkToBlockButton} from './DefaultButtons/CopyLinkToBlockButton'
 import {RemoveBlockButton} from './DefaultButtons/RemoveBlockButton'
 import {DragHandleMenu, DragHandleMenuProps} from './DragHandleMenu'
 import {DragHandleMenuItem} from './DragHandleMenuItem'
+import {useImageAltTextDialog} from '../../../../../image-alt-text-dialog'
 
 export const DefaultDragHandleMenu = <BSchema extends HMBlockSchema>(
   props: DragHandleMenuProps<BSchema> & {onEscape?: () => void},
 ) => {
+  if (!props.editor.getBlock(props.block.id)) return null
+
   const {index, count} = getBlockSiblingIndex(props.editor._tiptapEditor.state, props.block.id)
+  const openAltTextDialog = useImageAltTextDialog()
 
   return (
     <DragHandleMenu onEscape={props.onEscape}>
@@ -44,6 +48,23 @@ export const DefaultDragHandleMenu = <BSchema extends HMBlockSchema>(
       >
         Move down
       </DragHandleMenuItem>
+      {props.block.type === 'image' && (
+        <DragHandleMenuItem
+          onClick={(event) => {
+            openAltTextDialog({
+              currentAlt: props.block.props.alt ?? '',
+              opener: event.currentTarget,
+              fallbackFocus: () => props.editor.focus(),
+              onSave: (alt) => {
+                props.editor.updateBlock(props.block, {props: {alt}} as any)
+                props.editor.announceAccessibilityMessage('Alt text saved')
+              },
+            })
+          }}
+        >
+          Edit alt text
+        </DragHandleMenuItem>
+      )}
       <RemoveBlockButton {...props}>Delete</RemoveBlockButton>
       <TurnIntoMenu {...props} />
       <CopyLinkToBlockButton {...props} />
