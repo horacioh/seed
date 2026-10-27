@@ -262,6 +262,7 @@ jobs:
         shell: bash
         env:
           A11Y_ARTIFACT_DIR: ${{ runner.temp }}/a11y-shell
+          A11Y_ELECTRON_SETUID_SANDBOX: '1'
           DEBUG: pw:browser
           ELECTRON_ENABLE_LOGGING: '1'
         run: |

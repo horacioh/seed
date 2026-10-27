@@ -1,6 +1,10 @@
-import {expect, type Page} from '@playwright/test'
+import {mkdir, writeFile} from 'node:fs/promises'
+import path from 'node:path'
+import {expect, type Page, type TestInfo} from '@playwright/test'
 
 export interface ScreenReader {
+  /** Returns the most recently spoken phrase. */
+  lastSpokenPhrase(): Promise<string>
   /** Returns phrases captured since the screen reader started. */
   spokenPhraseLog(): Promise<string[]>
 }
@@ -11,11 +15,20 @@ export interface WebScreenReader extends ScreenReader {
   nextLandmark(): Promise<void>
 }
 
-/** Waits until the screen reader log contains a case-insensitive phrase. */
+/** Waits until the latest screen reader phrase contains a case-insensitive fragment. */
 export async function expectSpoken(reader: ScreenReader, phrase: string) {
   await expect
-    .poll(async () => (await reader.spokenPhraseLog()).join('\n').toLocaleLowerCase())
+    .poll(async () => (await reader.lastSpokenPhrase()).toLocaleLowerCase())
     .toContain(phrase.toLocaleLowerCase())
+}
+
+/** Saves the complete phrase log alongside each Playwright test result. */
+export async function attachSpokenPhraseLog(reader: ScreenReader, testInfo: TestInfo) {
+  const body = (await reader.spokenPhraseLog()).join('\n')
+  const filePath = testInfo.outputPath('spoken-phrase-log.txt')
+  await mkdir(path.dirname(filePath), {recursive: true})
+  await writeFile(filePath, body, 'utf8')
+  await testInfo.attach('spoken-phrase-log.txt', {path: filePath, contentType: 'text/plain'})
 }
 
 /** Checks that the first Tab reaches and activates the reader skip link. */
@@ -35,23 +48,30 @@ export async function runHeadingScenario(page: Page, reader: WebScreenReader) {
   const title = (await heading.innerText()).trim()
   for (let index = 0; index < 10; index += 1) {
     await reader.nextHeading()
-    const phrases = (await reader.spokenPhraseLog()).join('\n').toLocaleLowerCase()
-    if (phrases.includes(title.toLocaleLowerCase()) && phrases.includes('heading level 1')) return
+    const phrase = (await reader.lastSpokenPhrase()).toLocaleLowerCase()
+    if (phrase.includes(title.toLocaleLowerCase()) && phrase.includes('heading') && phrase.includes('level 1')) {
+      await expectSpoken(reader, title)
+      await expectSpoken(reader, 'heading')
+      await expectSpoken(reader, 'level 1')
+      return
+    }
   }
 
   await expectSpoken(reader, title)
-  await expectSpoken(reader, 'heading level 1')
+  await expectSpoken(reader, 'heading')
+  await expectSpoken(reader, 'level 1')
 }
 
 /** Checks that landmark navigation reaches the site navigation and main. */
 export async function runLandmarkScenario(page: Page, reader: WebScreenReader) {
   await page.goto(process.env.A11Y_READER_URL ?? 'http://localhost:3000/')
-  for (let index = 0; index < 10; index += 1) {
-    await reader.nextLandmark()
+  for (const phrase of ['site navigation', 'main']) {
+    for (let index = 0; index < 10; index += 1) {
+      await reader.nextLandmark()
+      if ((await reader.lastSpokenPhrase()).toLocaleLowerCase().includes(phrase)) break
+    }
+    await expectSpoken(reader, phrase)
   }
-
-  await expectSpoken(reader, 'site navigation')
-  await expectSpoken(reader, 'main')
 }
 
 /** Checks the editor name, movement, block options, and slash-menu announcements. */

@@ -9,7 +9,6 @@ const env = await setupTestEnv({
   daemonP2pPort: 58000,
 })
 
-const daemonUrl = 'http://localhost:58001'
 const homeOperations = [
   {type: 'SetAttributes', attrs: [{key: ['name'], value: 'A11y Reader Demo'}]},
   {
@@ -46,8 +45,8 @@ const homeOperations = [
   {type: 'MoveBlocks', parent: 'navigation', blocks: ['a11y-nav-guide', 'a11y-nav-nested']},
 ]
 
-await createDocumentUpdate(daemonUrl, FIXTURE_ACCOUNT, '', homeOperations as any)
-await createDocumentUpdate(daemonUrl, FIXTURE_ACCOUNT, 'a11y-reader', [
+await createDocumentUpdate(env.web.baseUrl, FIXTURE_ACCOUNT, '', homeOperations as any)
+await createDocumentUpdate(env.web.baseUrl, FIXTURE_ACCOUNT, 'a11y-reader', [
   {type: 'SetAttributes', attrs: [{key: ['name'], value: 'Accessibility Guide'}]},
   {
     type: 'ReplaceBlock',
@@ -55,7 +54,7 @@ await createDocumentUpdate(daemonUrl, FIXTURE_ACCOUNT, 'a11y-reader', [
   },
   {type: 'MoveBlocks', parent: '', blocks: ['a11y-guide-heading']},
 ])
-await createDocumentUpdate(daemonUrl, FIXTURE_ACCOUNT, 'a11y-reader/nested', [
+await createDocumentUpdate(env.web.baseUrl, FIXTURE_ACCOUNT, 'a11y-reader/nested', [
   {type: 'SetAttributes', attrs: [{key: ['name'], value: 'Nested Accessibility Guide'}]},
   {
     type: 'ReplaceBlock',

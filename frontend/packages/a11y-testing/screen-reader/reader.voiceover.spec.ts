@@ -1,5 +1,6 @@
 import {voiceOverTest} from './fixtures'
 import {
+  attachSpokenPhraseLog,
   runEditorScenario,
   runHeadingScenario,
   runLandmarkScenario,
@@ -8,10 +9,7 @@ import {
 } from './scenarios'
 
 voiceOverTest.afterEach(async ({voiceOver}, testInfo) => {
-  await testInfo.attach('spoken-phrase-log.txt', {
-    body: (await voiceOver.spokenPhraseLog()).join('\n'),
-    contentType: 'text/plain',
-  })
+  await attachSpokenPhraseLog(voiceOver, testInfo)
 })
 
 voiceOverTest('web reader skip link', async ({page, voiceOver}) => {

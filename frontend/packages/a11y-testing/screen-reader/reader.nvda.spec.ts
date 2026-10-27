@@ -1,5 +1,6 @@
 import {nvdaTest} from './fixtures'
 import {
+  attachSpokenPhraseLog,
   runEditorScenario,
   runHeadingScenario,
   runLandmarkScenario,
@@ -8,10 +9,7 @@ import {
 } from './scenarios'
 
 nvdaTest.afterEach(async ({nvda}, testInfo) => {
-  await testInfo.attach('spoken-phrase-log.txt', {
-    body: (await nvda.spokenPhraseLog()).join('\n'),
-    contentType: 'text/plain',
-  })
+  await attachSpokenPhraseLog(nvda, testInfo)
 })
 
 nvdaTest('web reader skip link', async ({page, nvda}) => {
