@@ -66,11 +66,11 @@ export async function startWebServer(config: WebServerConfig): Promise<WebServer
   }
 
   // Use remix-serve to run the built app
-  const webProcess = spawn('pnpm', ['start:prod'], {
+  const pnpmCommand = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
+  const webProcess = spawn(pnpmCommand, ['start:prod'], {
     cwd: webAppDir,
     stdio: 'pipe',
     env,
-    shell: true,
   })
 
   let isReady = false
