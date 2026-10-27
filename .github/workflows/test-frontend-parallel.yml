@@ -61,6 +61,9 @@ jobs:
       - name: Validate Code Formatting
         run: pnpm format:check
 
+      - name: Run accessibility lint gate
+        run: pnpm lint:a11y
+
   # Job 1b: TypeScript check. Heaviest of the static-analysis jobs — runs in
   # parallel with lint and the vitest matrix.
   typecheck:

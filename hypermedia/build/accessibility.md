@@ -10,7 +10,7 @@ Seed targets WCAG 2.2 AA and EN 301 549. The current program covers the desktop 
 
 ## Gate policy
 
-This harness PR adds report-only checks and turns on no gates. A surface's test suite should land only after that surface has zero violations; from then on, it fails on any violation. Do not add baseline or allowlist files. Every `disableRules` use must have a comment explaining why the rule is disabled.
+The `pnpm lint:a11y` scan is a blocking CI gate and must report zero findings. Do not add baseline or allowlist files. A justified rule suppression must be line-scoped and include `-- reason`; reviewers reject suppressions without a clear, specific justification.
 
 ## Use the helpers
 
@@ -32,7 +32,11 @@ import {expectNoAxeViolations} from '@shm/a11y-testing/dom'
 await expectNoAxeViolations(document)
 ```
 
-Run the report-only jsx-a11y scan with `pnpm lint:a11y`. It scans the UI, editor, web, desktop, emails and vault frontend sources and is not a CI gate.
+Run the blocking jsx-a11y scan with `pnpm lint:a11y`. It scans the UI, editor, web, desktop, emails and vault frontend sources.
+
+## Video captions
+
+Uploaded video blocks can store an optional WebVTT captions file as an `ipfs://` link in `captions`, with an optional BCP 47 language tag in `captionsLang`. The editor provides Add, Replace and Remove captions actions, and the reader renders captions through a native `<track kind="captions">`. Before publishing, uploaded videos without captions are reported as accessibility issues; external video embeds are not checked. Raw agent-memory file previews remain justified exceptions because they have no caption source.
 
 Run the published web reader gate against a running web gateway with:
 
