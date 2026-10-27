@@ -250,8 +250,8 @@ function ReadForm({busy, onBack, onRun}: {busy: boolean; onBack: () => void; onR
       onBack={onBack}
       onRun={() => onRun({address: address.trim()})}
     >
-      <input
-        autoFocus
+      <FocusOnMountInput
+        focusOnMount
         className={fieldClass}
         placeholder="~/memory/notes.md · hm://… · https://…"
         value={address}
@@ -279,8 +279,8 @@ function WriteForm({busy, onBack, onRun}: {busy: boolean; onBack: () => void; on
   }
   return (
     <FormShell title="Write" busy={busy} canRun={!!address.trim()} onBack={onBack} onRun={submit}>
-      <input
-        autoFocus
+      <FocusOnMountInput
+        focusOnMount
         className={fieldClass}
         placeholder="~/memory/notes.md · hm://account/path"
         value={address}
@@ -340,8 +340,8 @@ function CallableForm({
           }
         }}
       >
-        <textarea
-          autoFocus
+        <FocusOnMountTextarea
+          focusOnMount
           className={`${fieldClass} min-h-24`}
           value={rawJson}
           onChange={(event) => setRawJson(event.target.value)}
@@ -413,8 +413,8 @@ function CallableForm({
               ))}
             </select>
           ) : (
-            <input
-              autoFocus={index === 0}
+            <FocusOnMountInput
+              focusOnMount={index === 0}
               className={fieldClass}
               placeholder={prop.description?.slice(0, 60)}
               value={String(values[key] ?? '')}
@@ -425,4 +425,26 @@ function CallableForm({
       ))}
     </FormShell>
   )
+}
+
+function FocusOnMountInput({
+  focusOnMount,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {focusOnMount?: boolean}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  React.useEffect(() => {
+    if (focusOnMount) inputRef.current?.focus()
+  }, [focusOnMount])
+  return <input ref={inputRef} {...props} />
+}
+
+function FocusOnMountTextarea({
+  focusOnMount,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {focusOnMount?: boolean}) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  React.useEffect(() => {
+    if (focusOnMount) textareaRef.current?.focus()
+  }, [focusOnMount])
+  return <textarea ref={textareaRef} {...props} />
 }

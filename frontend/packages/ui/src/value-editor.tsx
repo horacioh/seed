@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {useDebounce} from '@shm/shared/utils/use-debounce'
-import {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react'
+import {createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState} from 'react'
 import {Button} from './button'
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from './components/dialog'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from './components/dropdown-menu'
@@ -1161,13 +1161,13 @@ export function ValueEditor({
         value={value}
         literalOptions={literalOptions}
         onValue={onValue}
-        renderFallback={(onFocusChange, autoFocus) => (
+        renderFallback={(onFocusChange, focusOnMount) => (
           <NumberInput
             value={value}
             onValue={onValue}
             rules={rules}
             path={path}
-            autoFocus={autoFocus}
+            focusOnMount={focusOnMount}
             onFocusChange={onFocusChange}
           />
         )}
@@ -1234,7 +1234,7 @@ function ScalarLeafEditor({
   value: unknown
   literalOptions: LiteralOption[] | undefined
   onValue: (value: unknown) => void
-  renderFallback: (onFocusChange: (focused: boolean) => void, autoFocus: boolean) => React.ReactNode
+  renderFallback: (onFocusChange: (focused: boolean) => void, focusOnMount: boolean) => React.ReactNode
 }) {
   const [editingCustom, setEditingCustom] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -1434,7 +1434,7 @@ function StringLeafEditor({
         <div className="flex items-center gap-1">
           <CommitOnBlurInput
             initialValue={value}
-            autoFocus={editingText}
+            focusOnMount={editingText}
             placeholder={ipfsMode ? 'ipfs:// URL or CID' : 'Empty Text'}
             // Save while typing (debounced) so edits persist without blurring.
             autosave
@@ -2031,14 +2031,14 @@ function NumberInput({
   value,
   onValue,
   rules,
-  autoFocus,
+  focusOnMount,
   onFocusChange,
   path,
 }: {
   value: number
   onValue: (value: unknown) => void
   rules: ValueEditorRules
-  autoFocus?: boolean
+  focusOnMount?: boolean
   onFocusChange?: (focused: boolean) => void
   path?: ValuePath
 }) {
@@ -2087,7 +2087,7 @@ function NumberInput({
               ? `number-suggestions-${pathId(path ?? [])}-option-${activeIndex}`
               : undefined
           }
-          autoFocus={autoFocus}
+          focusOnMount={focusOnMount}
           onFocus={() => {
             setSuggestionsOpen(true)
             setActiveIndex(null)
@@ -2172,7 +2172,7 @@ function CommitOnBlurInput({
   initialValue,
   placeholder,
   className,
-  autoFocus,
+  focusOnMount,
   onCommit,
   onFocusChange,
   normalize,
@@ -2183,7 +2183,7 @@ function CommitOnBlurInput({
   initialValue: string
   placeholder?: string
   className?: string
-  autoFocus?: boolean
+  focusOnMount?: boolean
   onCommit: (text: string) => void
   onFocusChange?: (focused: boolean) => void
   /** Rewrite the text before it commits (e.g. gateway URL → `ipfs://`). Returns null to leave it unchanged. */
@@ -2256,7 +2256,7 @@ function CommitOnBlurInput({
             ? `text-suggestions-${pathId(suggestionPath ?? [])}-option-${activeIndex}`
             : undefined
         }
-        autoFocus={autoFocus}
+        focusOnMount={focusOnMount}
         onFocus={() => {
           focusedRef.current = true
           setSuggestionsOpen(true)
@@ -2661,6 +2661,7 @@ function FieldDialog({
   onKeyTextChange?: (keyText: string) => void
   onSubmit: (name: string, type: NewFieldType) => void
 }) {
+  const typeId = useId()
   const [name, setName] = useState(initialName)
   const [type, setType] = useState<NewFieldType>(initialType)
   const [error, setError] = useState<string | null>(null)
@@ -2800,7 +2801,7 @@ function FieldDialog({
                   }
                   value={name}
                   placeholder="Field name"
-                  autoFocus
+                  focusOnMount
                   onFocus={() => {
                     setSuggestionsOpen(true)
                     setActiveIndex(null)
@@ -2859,9 +2860,11 @@ function FieldDialog({
             </div>
           )}
           <div className="flex flex-col gap-1">
-            <label className="text-muted-foreground text-xs">Type</label>
+            <label htmlFor={typeId} className="text-muted-foreground text-xs">
+              Type
+            </label>
             <Select value={type} onValueChange={(v) => setType(v as NewFieldType)}>
-              <SelectTrigger>
+              <SelectTrigger id={typeId}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

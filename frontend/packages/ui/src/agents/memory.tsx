@@ -696,7 +696,7 @@ export function AgentMemoryTab({
           }}
         >
           <Input
-            autoFocus
+            focusOnMount
             value={newFilePath}
             onChange={(event) => setNewFilePath(event.target.value)}
             placeholder="notes/topic.md"
@@ -720,7 +720,7 @@ export function AgentMemoryTab({
           }}
         >
           <Input
-            autoFocus
+            focusOnMount
             value={webUrl}
             onChange={(event) => setWebUrl(event.target.value)}
             placeholder="https://example.com/file.png"

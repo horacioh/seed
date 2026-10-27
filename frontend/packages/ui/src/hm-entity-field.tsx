@@ -60,7 +60,7 @@ export function HMEntityField({
   onOpen,
   onClear,
   onCancel,
-  autoFocus,
+  focusOnMount,
   ariaLabel,
 }: {
   value: string
@@ -77,7 +77,7 @@ export function HMEntityField({
   /** Offer an ✕ that removes the reference (the field becomes editable text again). */
   onClear?: () => void
   /** Focus the search input when it first mounts empty (a field the user just asked for). */
-  autoFocus?: boolean
+  focusOnMount?: boolean
 }) {
   const [editing, setEditing] = useState(false)
   const unpacked = value ? unpackHmId(value) : null
@@ -138,7 +138,7 @@ export function HMEntityField({
       onCancel={conforms ? () => setEditing(false) : onCancel}
       // Focus only when the user asked to change the reference — an empty field mounting on a
       // page (several of them, say) must not steal focus and blur-commit its neighbours.
-      autoFocus={editing || !!autoFocus}
+      focusOnMount={editing || !!focusOnMount}
       ariaLabel={ariaLabel}
     />
   )
@@ -251,7 +251,7 @@ function HMEntitySearchInput({
   target,
   onCommit,
   onCancel,
-  autoFocus,
+  focusOnMount,
   ariaLabel,
 }: {
   initialText: string
@@ -260,7 +260,7 @@ function HMEntitySearchInput({
   target?: string
   onCommit: (value: string) => void
   onCancel?: () => void
-  autoFocus?: boolean
+  focusOnMount?: boolean
   ariaLabel?: string
 }) {
   const [text, setText] = useState(initialText)
@@ -365,7 +365,7 @@ function HMEntitySearchInput({
       <div className="flex items-center gap-1">
         <Input
           value={text}
-          autoFocus={autoFocus}
+          focusOnMount={focusOnMount}
           aria-label={ariaLabel}
           role={mode === 'profile' ? 'combobox' : undefined}
           aria-autocomplete={mode === 'profile' ? 'list' : undefined}

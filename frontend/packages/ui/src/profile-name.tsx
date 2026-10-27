@@ -55,7 +55,7 @@ export function ProfileName({
         <>
           <div className="flex items-center gap-1" aria-busy={saving}>
             <Input
-              autoFocus
+              focusOnMount
               aria-label="Contact name"
               aria-describedby={descriptionId}
               value={value}

@@ -496,7 +496,7 @@ export function InspectIpfsPage({
   } else if (mode === 'edit' && kind === 'text') {
     body = (
       <Textarea
-        autoFocus
+        focusOnMount
         value={editText ?? ''}
         onChange={(e) => setEditText(e.target.value)}
         spellCheck={false}

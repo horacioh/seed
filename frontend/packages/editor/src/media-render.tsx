@@ -461,7 +461,7 @@ function MediaForm({
                     // native input never receives the pasted text.
                     e.stopPropagation()
                   }}
-                  autoFocus
+                  focusOnMount
                 />
               )}
               {['image', 'video'].includes(mediaType) ? (

@@ -39,7 +39,7 @@ export function PasswordInput({
   value,
   onChange,
   autoComplete,
-  autoFocus,
+  focusOnMount,
   showStrength,
 }: {
   id: string
@@ -47,7 +47,7 @@ export function PasswordInput({
   value: string
   onChange: (value: string) => void
   autoComplete: string
-  autoFocus?: boolean
+  focusOnMount?: boolean
   showStrength?: boolean
 }) {
   const [showPassword, setShowPassword] = useState(false)
@@ -67,7 +67,7 @@ export function PasswordInput({
           onChange={(e) => onChange(e.target.value)}
           required
           autoComplete={autoComplete}
-          autoFocus={autoFocus}
+          focusOnMount={focusOnMount}
         />
         <Button
           type="button"

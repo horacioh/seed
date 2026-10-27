@@ -343,6 +343,9 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
   const [customVaultUrl, setCustomVaultUrl] = useState('https://hyper.media')
   const [showCustomVaultInput, setShowCustomVaultInput] = useState(false)
   const customVaultInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (showCustomVaultInput) customVaultInputRef.current?.focus()
+  }, [showCustomVaultInput])
 
   const handleVaultSignIn = async (urlOverride?: string, email?: string) => {
     const vaultUrl = urlOverride || defaultVaultUrl
@@ -451,7 +454,6 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
             value={customVaultUrl}
             onChange={(e) => setCustomVaultUrl(e.target.value)}
             placeholder={defaultVaultUrl}
-            autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter' && customVaultUrl.trim()) {
                 handleVaultSignIn(customVaultUrl.trim())

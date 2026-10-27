@@ -3,7 +3,7 @@ import {abbreviateUid} from '@shm/shared/utils/abbreviate'
 import {hmId} from '@shm/shared/utils/entity-id-url'
 import {Check, ChevronDown, X} from 'lucide-react'
 import type {ReactNode} from 'react'
-import {useState} from 'react'
+import {useId, useState} from 'react'
 import {Button} from './button'
 import {Checkbox} from './components/checkbox'
 import {Input} from './components/input'
@@ -192,7 +192,7 @@ export function ExploreAuthorMenu({
     <div className="bg-popover text-popover-foreground absolute top-full left-0 z-30 mt-2 flex w-64 flex-col divide-y divide-black/10 rounded-md border shadow-md dark:divide-white/10">
       <div className="p-1">
         <Input
-          autoFocus
+          focusOnMount
           value={search}
           onChangeText={setSearch}
           placeholder="Search people"
@@ -250,6 +250,7 @@ export function ExploreDateMenu({
   initial: ExploreDateSelection
   onApply: (selection: ExploreDateSelection) => void
 }) {
+  const dateRangeId = useId()
   const [field, setField] = useState<ExploreTimeField>(initial.field)
   const [preset, setPreset] = useState<ExploreDateSelection['preset']>(initial.preset)
   const [from, setFrom] = useState(initial.preset === 'custom' ? initial.from ?? '' : '')
@@ -296,9 +297,10 @@ export function ExploreDateMenu({
       </div>
       {preset === 'custom' ? (
         <div className="flex flex-col gap-2 border-t border-black/10 p-2 dark:border-white/10">
-          <label className="flex flex-col gap-1 text-xs">
+          <label htmlFor={`${dateRangeId}-from`} className="flex flex-col gap-1 text-xs">
             From
             <Input
+              id={`${dateRangeId}-from`}
               type="date"
               value={from}
               onChangeText={setFrom}
@@ -306,9 +308,10 @@ export function ExploreDateMenu({
               className="h-8 border-black/10 dark:border-white/10 dark:scheme-dark"
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs">
+          <label htmlFor={`${dateRangeId}-to`} className="flex flex-col gap-1 text-xs">
             To
             <Input
+              id={`${dateRangeId}-to`}
               type="date"
               value={to}
               onChangeText={setTo}

@@ -478,7 +478,6 @@ export function PublishSiteFlow({
             <Input
               id={inputId}
               type="url"
-              autoFocus
               autoComplete="off"
               spellCheck={false}
               required

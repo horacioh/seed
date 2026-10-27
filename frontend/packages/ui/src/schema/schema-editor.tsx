@@ -912,7 +912,7 @@ function TargetTypeInput({
         mode="schema"
         value={value}
         ariaLabel={ariaLabel}
-        autoFocus={editing}
+        focusOnMount={editing}
         onValue={(next) => {
           onChange(typeof next === 'string' ? next : '')
           setEditing(false)

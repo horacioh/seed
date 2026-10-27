@@ -9,7 +9,7 @@ import {TableCell, TableRow} from './components/table'
 
 export interface InlineDraftListItemProps {
   draft: HMListedDraft
-  autoFocus?: boolean
+  focusOnMount?: boolean
   /** Visible table columns; when set, renders a row with a separate actions cell. */
   tableColumns?: {id: string; size: number}[]
   onOpenDraft: (draftId: string) => void
@@ -20,7 +20,7 @@ export interface InlineDraftListItemProps {
 
 export function InlineDraftListItem({
   draft,
-  autoFocus,
+  focusOnMount,
   tableColumns,
   onOpenDraft,
   onDeleteDraft,
@@ -34,13 +34,13 @@ export function InlineDraftListItem({
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
-    if (!autoFocus || !containerRef.current) return
+    if (!focusOnMount || !containerRef.current) return
     containerRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest'})
     const timer = setTimeout(() => {
       inputRef.current?.focus()
     }, 300)
     return () => clearTimeout(timer)
-  }, [autoFocus])
+  }, [focusOnMount])
 
   // Sync external changes
   useEffect(() => {

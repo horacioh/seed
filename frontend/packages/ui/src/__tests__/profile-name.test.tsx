@@ -56,6 +56,7 @@ describe('ProfileName', () => {
     const onSave = vi.fn()
     render({publicName: 'Alice', petname: 'Ally', onSave})
     click('Edit contact name')
+    expect(document.activeElement).toBe(container.querySelector('input'))
     change('Discard')
     act(() => container.querySelector('input')!.dispatchEvent(new FocusEvent('focusout', {bubbles: true})))
     expect(onSave).not.toHaveBeenCalled()

@@ -45,7 +45,7 @@ import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {Camera, Copy, ExternalLink, FileKey, Plus, Trash2} from 'lucide-react'
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useId, useRef, useState} from 'react'
 import {generateAgentName} from './agent-name'
 import {DEFAULT_AGENT_TOOLS} from './agent-tools'
 import {modelReasoningSupport, type ReasoningLevel, type Thoroughness} from '@seed-hypermedia/agents-protocol'
@@ -224,6 +224,7 @@ function AddModelProviderForm({
   onCancel?: () => void
   submitLabel?: string
 }) {
+  const fieldId = useId()
   const activeQueryClient = useQueryClient()
   const saveProvider = useSaveModelProvider(serverUrl, selectedAccountId)
   const health = useAgentServerHealth(serverUrl)
@@ -285,12 +286,12 @@ function AddModelProviderForm({
         void handleSave()
       }}
     >
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-provider`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Provider
         </SizableText>
         <Select value={type} onValueChange={(value) => setType(value as ModelProviderType)}>
-          <SelectTrigger>
+          <SelectTrigger id={`${fieldId}-provider`}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -305,11 +306,16 @@ function AddModelProviderForm({
           </SelectContent>
         </Select>
       </label>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-provider-label`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Provider Label
         </SizableText>
-        <Input value={name} onChange={(event) => setName(event.target.value)} placeholder={metadata.label} />
+        <Input
+          id={`${fieldId}-provider-label`}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder={metadata.label}
+        />
       </label>
       {metadata.subscription && subscriptionAvailable ? (
         <div className="flex flex-col gap-1">
@@ -341,11 +347,12 @@ function AddModelProviderForm({
         </div>
       ) : null}
       {!subscriptionMode && metadata.showBaseUrlField ? (
-        <label className="flex flex-col gap-1">
+        <label htmlFor={`${fieldId}-base-url`} className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             Base URL
           </SizableText>
           <Input
+            id={`${fieldId}-base-url`}
             value={baseUrl}
             onChange={(event) => setBaseUrl(event.target.value)}
             placeholder={metadata.defaultBaseUrl || 'https://my-llm.example.com/v1'}
@@ -361,11 +368,16 @@ function AddModelProviderForm({
           onConnected={setOauthSecretName}
         />
       ) : (
-        <label className="flex flex-col gap-1">
+        <label htmlFor={`${fieldId}-api-key`} className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             {metadata.requiresApiKey ? 'API key' : 'API key (optional)'}
           </SizableText>
-          <Input type="password" value={apiKey} onChange={(event) => setApiKey(event.target.value)} />
+          <Input
+            id={`${fieldId}-api-key`}
+            type="password"
+            value={apiKey}
+            onChange={(event) => setApiKey(event.target.value)}
+          />
         </label>
       )}
       <div className="flex justify-end gap-2">
@@ -624,7 +636,6 @@ function NewAgentAccountDialog({
         Create a new server-side HM account key. You can rename it and set up its profile afterward.
       </DialogDescription>
       <Input
-        autoFocus
         value={name}
         onChange={(event) => setName(event.target.value)}
         placeholder="Account name"
@@ -730,7 +741,6 @@ export function EditAgentAccountDialog({
           )}
         </label>
         <Input
-          autoFocus
           value={label}
           onChange={(event) => setLabel(event.target.value)}
           placeholder="Account name"
@@ -932,6 +942,7 @@ export function CreateAgentDialog({
   }
   onClose: () => void
 }) {
+  const fieldId = useId()
   const [selectedServerUrl, setSelectedServerUrl] = useState(input.serverUrls[0] || getDefaultAgentServerUrl() || '')
   const localServerUrl = useLocalAgentServerUrl()
   const providers = useModelProviders(selectedServerUrl, input.selectedAccountId)
@@ -1032,11 +1043,12 @@ export function CreateAgentDialog({
   }
 
   const serverSelector = (
-    <label className="flex flex-col gap-1">
+    <label htmlFor={`${fieldId}-server`} className="flex flex-col gap-1">
       <SizableText size="sm" weight="bold">
         Agent Home
       </SizableText>
       <SelectDropdown
+        triggerId={`${fieldId}-server`}
         options={input.serverUrls.map((serverUrl) => ({
           value: serverUrl,
           // The desktop-managed server is a named place; its localhost address is an
@@ -1082,18 +1094,19 @@ export function CreateAgentDialog({
         </DialogDescription>
       </div>
       {serverSelector}
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-name`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
-        <Input autoFocus value={name} onChange={(event) => setName(event.target.value)} />
+        <Input id={`${fieldId}-name`} focusOnMount value={name} onChange={(event) => setName(event.target.value)} />
       </label>
       <div className="grid gap-3 md:grid-cols-2">
-        <label className="flex flex-col gap-1">
+        <label htmlFor={`${fieldId}-model`} className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             Model
           </SizableText>
           <ProviderModelSelect
+            id={`${fieldId}-model`}
             serverUrl={selectedServerUrl}
             accountUid={input.selectedAccountId}
             value={{provider: providerName, model}}
@@ -1181,6 +1194,7 @@ export function EditAgentNameDialog({
   input: {currentName: string; accountStatus: AgentAccountRenameStatus; onRename: (name: string) => Promise<void>}
   onClose: () => void
 }) {
+  const nameId = useId()
   const [name, setName] = useState(input.currentName)
   const [saving, setSaving] = useState(false)
 
@@ -1221,11 +1235,17 @@ export function EditAgentNameDialog({
               : 'This agent has no linked account to rename.'}
         </DialogDescription>
       </div>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={nameId} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
-        <Input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Agent" />
+        <Input
+          id={nameId}
+          focusOnMount
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Agent"
+        />
       </label>
       <div className="flex justify-end gap-2">
         <Button type="button" variant="ghost" onClick={onClose}>

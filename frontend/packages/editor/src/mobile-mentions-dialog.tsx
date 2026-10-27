@@ -35,6 +35,7 @@ export function MobileMentionsDialog({
   onRestoreFocus: () => void
 }) {
   const wasOpen = useRef(isOpen)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     if (wasOpen.current && !isOpen) onRestoreFocus()
     wasOpen.current = isOpen
@@ -63,6 +64,10 @@ export function MobileMentionsDialog({
         }
         aria-describedby={undefined}
         showCloseButton={false}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          searchInputRef.current?.focus()
+        }}
         onCloseAutoFocus={(event) => {
           event.preventDefault()
           onRestoreFocus()
@@ -79,11 +84,11 @@ export function MobileMentionsDialog({
           </DialogHeader>
           <div className="border-b p-4">
             <Input
+              ref={searchInputRef}
               aria-label={mode === 'account' ? 'Search accounts' : 'Search documents'}
               placeholder={mode === 'account' ? 'Search accounts…' : 'Search documents…'}
               value={query}
               onChange={(event) => onQuery(event.target.value)}
-              autoFocus
             />
           </div>
           <div

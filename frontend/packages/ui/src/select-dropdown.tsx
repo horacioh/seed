@@ -163,6 +163,7 @@ export interface SelectDropdownProps<T extends {value: string; label: string}> {
   placeholder?: string
   className?: string
   disabled?: boolean
+  triggerId?: string
 }
 
 export type SelectOptions = {value: string; label: string}
@@ -175,11 +176,12 @@ export function SelectDropdown<T extends {value: string; label: string}>({
   placeholder,
   className,
   disabled,
+  triggerId,
   ...props
 }: SelectDropdownProps<T>) {
   return (
     <Select value={value} onValueChange={onValue} disabled={disabled} {...props}>
-      <SelectTrigger className={className} style={{width}}>
+      <SelectTrigger id={triggerId} className={className} style={{width}}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

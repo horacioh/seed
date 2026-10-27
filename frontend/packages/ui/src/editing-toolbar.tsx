@@ -182,7 +182,7 @@ export function PublishPopoverBody({
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <PathInput
-                autoFocus
+                focusOnMount
                 value={renameSegment ?? ''}
                 onValueChange={setRenameSegment}
                 onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.target.select()}

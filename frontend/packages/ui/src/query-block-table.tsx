@@ -275,7 +275,7 @@ export function QueryBlockTable({
             <InlineDraftListItem
               key={`draft-${draft.id}`}
               draft={draft}
-              autoFocus={autoFocus}
+              focusOnMount={autoFocus}
               tableColumns={table.getVisibleLeafColumns().map((column) => ({id: column.id, size: column.getSize()}))}
               onOpenDraft={tableDrafts.onOpenDraft!}
               onDeleteDraft={tableDrafts.onDeleteDraft!}

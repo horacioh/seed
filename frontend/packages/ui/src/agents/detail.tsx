@@ -100,7 +100,7 @@ import {
 } from 'lucide-react'
 import {AccountAvatar} from '@shm/ui/account-avatar'
 import {SigningIdentityIcon} from './signing-identity-icon'
-import React, {useEffect, useMemo, useRef, useState} from 'react'
+import React, {useEffect, useId, useMemo, useRef, useState} from 'react'
 import {activityConditions, getSeedTool} from '@seed-hypermedia/agents-protocol'
 import {
   AGENT_BROWSER_TOOL,
@@ -162,6 +162,7 @@ function AgentDetailPage({
   /** Memory file the route asked to open, set when a tool row linked to it. */
   memoryPath?: string
 }) {
+  const modelSelectId = useId()
   const selectedAccountId = useSelectedAccountId()
   const navigate = useNavigate()
   const replaceRoute = useNavigate('replace')
@@ -731,11 +732,12 @@ function AgentDetailPage({
               {tab === 'settings' ? (
                 <section className="flex max-w-2xl flex-col gap-4">
                   <div className="grid gap-3 md:grid-cols-2">
-                    <label className="flex flex-col gap-1">
+                    <label htmlFor={modelSelectId} className="flex flex-col gap-1">
                       <SizableText size="sm" weight="bold">
                         Model
                       </SizableText>
                       <ProviderModelSelect
+                        id={modelSelectId}
                         serverUrl={serverUrl}
                         accountUid={selectedAccountId}
                         agentId={agentId}
@@ -1215,6 +1217,7 @@ function AuthoredToolDialog({
   }
   onClose: () => void
 }) {
+  const fieldId = useId()
   const {tool, readOnly = false} = input
   const saveTool = useSaveAgentTool(input.serverUrl, input.accountUid)
   const [name, setName] = useState(tool?.name ?? '')
@@ -1269,11 +1272,12 @@ function AuthoredToolDialog({
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <label htmlFor={`${fieldId}-name`} className="flex min-w-0 flex-1 flex-col gap-1.5">
           <SizableText size="sm" weight="bold">
             Name
           </SizableText>
           <Input
+            id={`${fieldId}-name`}
             className="font-mono"
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -1283,7 +1287,7 @@ function AuthoredToolDialog({
             maxLength={64}
             required
             disabled={readOnly || saveTool.isLoading}
-            autoFocus={!tool}
+            focusOnMount={!tool}
           />
         </label>
         <label className="flex flex-col gap-1.5 sm:w-40">
@@ -1302,11 +1306,12 @@ function AuthoredToolDialog({
         </label>
       </div>
 
-      <label className="flex flex-col gap-1.5">
+      <label htmlFor={`${fieldId}-summary`} className="flex flex-col gap-1.5">
         <SizableText size="sm" weight="bold">
           List summary
         </SizableText>
         <Input
+          id={`${fieldId}-summary`}
           value={summary}
           onChange={(event) => setSummary(event.target.value)}
           placeholder="One short sentence; derived from the description when blank"
@@ -1315,11 +1320,12 @@ function AuthoredToolDialog({
         />
       </label>
 
-      <label className="flex flex-col gap-1.5">
+      <label htmlFor={`${fieldId}-description`} className="flex flex-col gap-1.5">
         <SizableText size="sm" weight="bold">
           Description sent to the model
         </SizableText>
         <Textarea
+          id={`${fieldId}-description`}
           className="min-h-24 resize-y"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
@@ -1329,11 +1335,12 @@ function AuthoredToolDialog({
         />
       </label>
 
-      <label className="flex flex-col gap-1.5">
+      <label htmlFor={`${fieldId}-source`} className="flex flex-col gap-1.5">
         <SizableText size="sm" weight="bold">
           Source
         </SizableText>
         <Textarea
+          id={`${fieldId}-source`}
           className="min-h-56 resize-y font-mono text-xs"
           value={source}
           onChange={(event) => setSource(event.target.value)}
@@ -1344,11 +1351,12 @@ function AuthoredToolDialog({
       </label>
 
       <div className="grid gap-3 md:grid-cols-2">
-        <label className="flex min-w-0 flex-col gap-1.5">
+        <label htmlFor={`${fieldId}-input-schema`} className="flex min-w-0 flex-col gap-1.5">
           <SizableText size="sm" weight="bold">
             Input schema
           </SizableText>
           <Textarea
+            id={`${fieldId}-input-schema`}
             className="min-h-48 resize-y font-mono text-xs"
             value={inputSchema}
             onChange={(event) => setInputSchema(event.target.value)}
@@ -1357,11 +1365,12 @@ function AuthoredToolDialog({
             disabled={readOnly || saveTool.isLoading}
           />
         </label>
-        <label className="flex min-w-0 flex-col gap-1.5">
+        <label htmlFor={`${fieldId}-output-schema`} className="flex min-w-0 flex-col gap-1.5">
           <SizableText size="sm" weight="bold">
             Output schema <span className="text-muted-foreground font-normal">(optional)</span>
           </SizableText>
           <Textarea
+            id={`${fieldId}-output-schema`}
             className="min-h-48 resize-y font-mono text-xs"
             value={outputSchema}
             onChange={(event) => setOutputSchema(event.target.value)}
@@ -2565,6 +2574,7 @@ function CombineAgentTriggersDialog({
   }
   onClose: () => void
 }) {
+  const fieldId = useId()
   const combine = useCombineAgentTriggers(input.serverUrl, input.selectedAccountId)
   const [otherId, setOtherId] = useState(input.others[0]?.id ?? '')
   const [useOtherAction, setUseOtherAction] = useState(false)
@@ -2578,11 +2588,12 @@ function CombineAgentTriggersDialog({
         Conditions will share one action in “{input.target.name}”. The other trigger will be retired, with its history
         retained. Existing runs continue.
       </DialogDescription>
-      <label className="grid gap-1">
+      <label htmlFor={`${fieldId}-other-trigger`} className="grid gap-1">
         <SizableText size="sm" weight="bold">
           Combine with
         </SizableText>
         <SelectDropdown
+          triggerId={`${fieldId}-other-trigger`}
           value={otherId}
           options={input.others.map(({id, name}) => ({value: id, label: name}))}
           onValue={setOtherId}
@@ -2596,11 +2607,12 @@ function CombineAgentTriggersDialog({
         </SizableText>
         {other ? <SizableText size="sm">{<TriggerSourceSummary source={other.source} />}</SizableText> : null}
       </div>
-      <label className="grid gap-1">
+      <label htmlFor={`${fieldId}-action-source`} className="grid gap-1">
         <SizableText size="sm" weight="bold">
           Use the action and instructions from
         </SizableText>
         <SelectDropdown
+          triggerId={`${fieldId}-action-source`}
           value={useOtherAction ? 'other' : 'target'}
           options={[
             {value: 'target', label: input.target.name},
@@ -2656,6 +2668,7 @@ function CreateAgentTriggerDialog({
   input: {serverUrl: string; selectedAccountId: string | null | undefined; agentId: string}
   onClose: () => void
 }) {
+  const nameInputId = useId()
   const navigate = useNavigate()
   const createTrigger = useCreateAgentTrigger(input.serverUrl, input.selectedAccountId)
   const [sourceDraftOpen, setSourceDraftOpen] = useState(false)
@@ -2719,11 +2732,12 @@ function CreateAgentTriggerDialog({
           involved.
         </DialogDescription>
       </div>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={nameInputId} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
         <Input
+          id={nameInputId}
           value={name}
           onChange={(event) => {
             nameEdited.current = true
@@ -2943,13 +2957,14 @@ function WebhookEndpointSection({
 }
 
 function WebhookCredential({label, value, onCopy}: {label: string; value: string; onCopy: () => void}) {
+  const inputId = useId()
   return (
-    <label className="flex flex-col gap-1">
+    <label htmlFor={inputId} className="flex flex-col gap-1">
       <SizableText size="sm" weight="bold">
         {label}
       </SizableText>
       <div className="flex min-w-0 gap-2">
-        <Input className="min-w-0 flex-1 font-mono" value={value} readOnly />
+        <Input id={inputId} className="min-w-0 flex-1 font-mono" value={value} readOnly />
         <Button type="button" variant="outline" onClick={onCopy} aria-label={`Copy ${label.toLowerCase()}`}>
           <Copy className="size-4" /> Copy
         </Button>

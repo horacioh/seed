@@ -7,7 +7,7 @@ import {Notice} from '@shm/ui/notice'
 import {SizableText} from '@shm/ui/text'
 import {cn} from '@shm/ui/utils'
 import {Check, ChevronsUpDown, Plus} from 'lucide-react'
-import {useMemo, useState} from 'react'
+import {useMemo, useRef, useState} from 'react'
 import {curateProviderModels, modelLabel} from './model-utils'
 import {ProviderIcon} from './provider-icons'
 
@@ -20,6 +20,7 @@ import {ProviderIcon} from './provider-icons'
  * dropdown + model dropdown in agent settings and agent creation.
  */
 export function ProviderModelSelect({
+  id,
   serverUrl,
   accountUid,
   agentId,
@@ -30,6 +31,7 @@ export function ProviderModelSelect({
   onAddProvider,
   disabled,
 }: {
+  id?: string
   serverUrl: string | undefined
   accountUid: string | null | undefined
   /** Set when editing an existing agent so shared agents list the owner's providers. */
@@ -46,6 +48,7 @@ export function ProviderModelSelect({
 }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const providers = useModelProviders(serverUrl, accountUid, agentId)
 
   const trimmedQuery = query.trim()
@@ -61,6 +64,7 @@ export function ProviderModelSelect({
       }}
     >
       <PopoverTrigger
+        id={id}
         type="button"
         disabled={disabled}
         className={cn(
@@ -82,11 +86,14 @@ export function ProviderModelSelect({
       <PopoverContent
         align="start"
         className="w-[var(--radix-popover-trigger-width)] min-w-[320px] p-0"
-        onOpenAutoFocus={(event) => event.preventDefault()}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          searchInputRef.current?.focus()
+        }}
       >
         <div className="border-border border-b p-2">
           <Input
-            autoFocus
+            ref={searchInputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search models…"

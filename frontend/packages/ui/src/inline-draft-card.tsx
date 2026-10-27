@@ -8,7 +8,7 @@ import {cn} from './utils'
 
 export interface InlineDraftCardProps {
   draft: HMListedDraft
-  autoFocus?: boolean
+  focusOnMount?: boolean
   banner?: boolean
   onOpenDraft: (draftId: string) => void
   onDeleteDraft: (draftId: string) => void
@@ -18,7 +18,7 @@ export interface InlineDraftCardProps {
 
 export function InlineDraftCard({
   draft,
-  autoFocus,
+  focusOnMount,
   banner,
   onOpenDraft,
   onDeleteDraft,
@@ -31,13 +31,13 @@ export function InlineDraftCard({
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
-    if (!autoFocus || !containerRef.current) return
+    if (!focusOnMount || !containerRef.current) return
     containerRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest'})
     const timer = setTimeout(() => {
       inputRef.current?.focus()
     }, 300)
     return () => clearTimeout(timer)
-  }, [autoFocus])
+  }, [focusOnMount])
 
   // Sync external changes
   useEffect(() => {

@@ -103,7 +103,6 @@ export function ChangeEmailDialog({
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
                   disabled={isStarting}
-                  autoFocus
                   required
                 />
               </div>

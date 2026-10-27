@@ -3817,7 +3817,7 @@ function BindingSchemaSection({
         {defining ? (
           <div className="flex flex-wrap items-center gap-2">
             <div className="min-w-64 flex-1">
-              <HMEntityField mode="schema" value="" onValue={setReference} onOpen={openUrl} autoFocus />
+              <HMEntityField mode="schema" value="" onValue={setReference} onOpen={openUrl} focusOnMount />
             </div>
             <SizableText size="xs" className="text-muted-foreground">
               or

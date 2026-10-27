@@ -18,7 +18,7 @@ import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {ChevronRight, Plus, RefreshCw, Trash2} from 'lucide-react'
-import React, {useState} from 'react'
+import React, {useId, useState} from 'react'
 import type {McpServerInfo, McpServerTransport, McpToolInfo} from './client'
 import {useDeleteMcpServer, useMcpServers, useRefreshMcpServer, useSaveMcpServer} from './models'
 
@@ -293,6 +293,7 @@ function AddMcpServerDialog({
   input: {serverUrl: string | undefined; accountUid: string | null; onSaved?: (server: McpServerInfo) => void}
   onClose: () => void
 }) {
+  const fieldId = useId()
   const saveServer = useSaveMcpServer(input.serverUrl, input.accountUid)
   const [url, setUrl] = useState('')
   const [name, setName] = useState('')
@@ -334,26 +335,27 @@ function AddMcpServerDialog({
         <DialogTitle>Add MCP server</DialogTitle>
         <DialogDescription>Its tools join this agent's toolbox the moment it connects.</DialogDescription>
       </div>
-      <label className="flex flex-col gap-1.5">
+      <label htmlFor={`${fieldId}-url`} className="flex flex-col gap-1.5">
         <SizableText size="sm" weight="bold">
           Server URL
         </SizableText>
         <Input
+          id={`${fieldId}-url`}
           value={url}
           onChange={(event) => handleUrlChange(event.target.value)}
           placeholder="https://mcp.example.com/mcp"
           type="url"
           required
-          autoFocus
           disabled={busy}
         />
       </label>
       <div className="flex gap-3">
-        <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <label htmlFor={`${fieldId}-name`} className="flex min-w-0 flex-1 flex-col gap-1.5">
           <SizableText size="sm" weight="bold">
             Name
           </SizableText>
           <Input
+            id={`${fieldId}-name`}
             className="font-mono"
             value={name}
             onChange={(event) => {
@@ -367,12 +369,13 @@ function AddMcpServerDialog({
             disabled={busy}
           />
         </label>
-        <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+        <label htmlFor={`${fieldId}-auth-value`} className="flex min-w-0 flex-1 flex-col gap-1.5">
           <SizableText size="sm" weight="bold">
             {authHeader === 'Authorization' ? 'Authorization' : authHeader}{' '}
             <span className="text-muted-foreground font-normal">(optional)</span>
           </SizableText>
           <Input
+            id={`${fieldId}-auth-value`}
             type="password"
             value={authValue}
             onChange={(event) => setAuthValue(event.target.value)}
@@ -384,7 +387,7 @@ function AddMcpServerDialog({
       </div>
       {advanced ? (
         <div className="flex gap-3">
-          <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <label htmlFor={`${fieldId}-auth-header`} className="flex min-w-0 flex-1 flex-col gap-1.5">
             <SizableText size="sm" weight="bold">
               Transport
             </SizableText>
@@ -399,11 +402,12 @@ function AddMcpServerDialog({
               <option value="sse">SSE</option>
             </select>
           </label>
-          <label className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <label htmlFor={`${fieldId}-auth-header`} className="flex min-w-0 flex-1 flex-col gap-1.5">
             <SizableText size="sm" weight="bold">
               Auth header name
             </SizableText>
             <Input
+              id={`${fieldId}-auth-header`}
               className="font-mono"
               value={authHeader}
               onChange={(event) => setAuthHeader(event.target.value)}

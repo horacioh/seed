@@ -153,7 +153,6 @@ export function NotificationEmailSettings({
               disabled={disabled || saving}
               required
               aria-describedby={emailDialogOpen && error ? 'notification-email-error' : undefined}
-              autoFocus
               onChange={(event) => setEmailInput(event.target.value)}
             />
             {emailDialogOpen && error ? (

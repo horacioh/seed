@@ -343,7 +343,6 @@ export function ExplorePage(props: ExplorePageProps) {
             <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
             <Input
               ref={inputRef}
-              autoFocus
               value={draft}
               onChangeText={setDraft}
               placeholder={scopeUid ? `Search in ${scopeLabel}` : 'Search across all your spaces...'}

@@ -33,10 +33,11 @@ import {
 import {PathInput} from '@shm/ui/path-input'
 import {UploadCloud} from '@shm/ui/icons'
 import {toast} from '@shm/ui/toast'
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useId, useRef, useState} from 'react'
 
 /** Hosting management appears only for sites returned by the signed-in owner's hosting account. */
 function HostedSiteSettings({siteId, siteUrl}: {siteId: UnpackedHypermediaId; siteUrl: string}) {
+  const fieldId = useId()
   const host = useHostSession({includeSites: true})
   const [loginOpen, setLoginOpen] = useState(false)
   const [action, setAction] = useState<{type: 'rename' | 'transfer'; site: HostedSite} | null>(null)
@@ -246,9 +247,10 @@ function HostedSiteSettings({siteId, siteUrl}: {siteId: UnpackedHypermediaId; si
               </DialogHeader>
               {action.type === 'rename' ? (
                 <>
-                  <label className="flex flex-col gap-2 text-sm font-medium">
+                  <label htmlFor={`${fieldId}-subdomain`} className="flex flex-col gap-2 text-sm font-medium">
                     New subdomain
                     <Input
+                      id={`${fieldId}-subdomain`}
                       value={name}
                       disabled={busy || !!movedUrl || pendingMoves.some((move) => move.id === action.site.id)}
                       required
@@ -271,9 +273,10 @@ function HostedSiteSettings({siteId, siteUrl}: {siteId: UnpackedHypermediaId; si
                 </>
               ) : (
                 <>
-                  <label className="flex flex-col gap-2 text-sm font-medium">
+                  <label htmlFor={`${fieldId}-recipient-email`} className="flex flex-col gap-2 text-sm font-medium">
                     Recipient email
                     <Input
+                      id={`${fieldId}-recipient-email`}
                       type="email"
                       value={email}
                       required
@@ -358,6 +361,7 @@ function HostingLogin({
   onBack: () => void
   skipVaultLogin?: boolean
 }) {
+  const emailInputId = useId()
   const host = useHostSession({onAuthenticated})
   const [email, setEmail] = useState(skipVaultLogin ? '' : host.vaultEmail || '')
   const [vaultPending, setVaultPending] = useState(!skipVaultLogin && host.canLoginWithVault)
@@ -444,9 +448,10 @@ function HostingLogin({
             </p>
           </>
         ) : (
-          <label className="flex flex-col gap-2 text-sm font-medium">
+          <label htmlFor={emailInputId} className="flex flex-col gap-2 text-sm font-medium">
             Email Address
             <Input
+              id={emailInputId}
               type="email"
               placeholder="me@email.com"
               autoComplete="email"
@@ -619,6 +624,7 @@ function HostingDialogContent({
   skipVaultLogin: boolean
   onSwitchAccount: () => void
 }) {
+  const fieldId = useId()
   const identity = useLocalKeyPair()
   const identityLoaded = useLocalKeyPairLoaded()
   const host = useHostSession({includeSites: true})
@@ -764,9 +770,10 @@ function HostingDialogContent({
             void publish()
           }}
         >
-          <label className="flex flex-col gap-2 text-sm font-medium">
+          <label htmlFor={`${fieldId}-subdomain`} className="flex flex-col gap-2 text-sm font-medium">
             Subdomain
             <PathInput
+              id={`${fieldId}-subdomain`}
               kind="subdomain"
               placeholder="my-space-name"
               value={subdomain}
@@ -803,9 +810,10 @@ function HostingDialogContent({
               void createDomain()
             }}
           >
-            <label className="flex flex-col gap-2 text-sm font-medium">
+            <label htmlFor={`${fieldId}-domain`} className="flex flex-col gap-2 text-sm font-medium">
               Domain Name
               <PathInput
+                id={`${fieldId}-domain`}
                 kind="domain"
                 value={hostname}
                 onValueChange={setHostname}

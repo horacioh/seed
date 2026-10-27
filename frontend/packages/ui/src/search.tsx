@@ -591,7 +591,7 @@ export function SearchInput({
           <Spinner className="absolute top-1/2 right-7 z-3 size-4 -translate-y-1/2 text-black/50 dark:text-white/50" />
         ) : null}
         <Input
-          autoFocus={true}
+          focusOnMount
           placeholder="Search Hypermedia documents"
           className="w-full px-1 pr-8 pl-8"
           {...inputProps}
