@@ -33,18 +33,27 @@ export default defineConfig({
     ? undefined
     : [
         {
+          name: 'reader-site',
           command: 'bun screen-reader/start-reader-site.ts',
+          stdout: 'pipe',
+          stderr: 'pipe',
           url: 'http://localhost:3000',
           timeout: 300_000,
           reuseExistingServer: !process.env.CI,
         },
         {
+          name: 'editor-harness',
           command: 'pnpm --dir ../editor test:harness -- --host 0.0.0.0',
+          stdout: 'pipe',
+          stderr: 'pipe',
           url: 'http://localhost:5180',
           reuseExistingServer: !process.env.CI,
         },
         {
+          name: 'vault',
           command: 'bun --cwd ../../../vault run dev',
+          stdout: 'pipe',
+          stderr: 'pipe',
           url: 'http://localhost:3030/vault',
           reuseExistingServer: !process.env.CI,
         },
