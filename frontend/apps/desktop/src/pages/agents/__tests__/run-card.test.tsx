@@ -312,25 +312,23 @@ describe('SessionRunCard (pinned)', () => {
     expect(container.textContent).toContain('Analyze BIB File')
     // The error is present but yields space (truncated), never flex-none — and it is its own
     // click target for interrogation, so it must not pretend to be plain text.
-    const errorSpan = Array.from(container.querySelectorAll('span')).find(
-      (span) => span.textContent?.startsWith('Invalid request'),
+    const errorButton = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.startsWith('Invalid request'),
     )
-    expect(errorSpan?.getAttribute('role')).toBe('button')
-    expect(errorSpan?.className).toContain('truncate')
-    expect(errorSpan?.className).not.toContain('flex-none')
+    expect(errorButton?.tagName.toLowerCase()).toBe('button')
+    expect(errorButton?.className).toContain('truncate')
+    expect(errorButton?.className).not.toContain('flex-none')
     // Clicking the error opens the full message (code + complete text), NOT the child's run page:
     // the chip swallows the click so interrogating a failure never navigates away from the card.
-    click(errorSpan)
+    click(errorButton)
     expect(mockState.navigate).not.toHaveBeenCalled()
     const popover = Array.from(document.querySelectorAll('pre')).find((pre) => pre.textContent === longError)
     expect(popover).toBeTruthy()
     expect(document.body.textContent).toContain('provider-error')
     // The row is still clickable and opens the child's run page.
-    const row = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent?.includes('Analyze BIB File'),
-    )
+    const row = container.querySelector('button[aria-label="Open run Analyze BIB File"]')
     expect(row).toBeTruthy()
-    click(row)
+    click(row ?? undefined)
     expect(mockState.navigate).toHaveBeenCalledWith({
       key: 'agent-run',
       runId: 'child-1',
@@ -365,10 +363,10 @@ describe('SessionRunCard (pinned)', () => {
       },
     ]
     render(<SessionRunCard {...baseProps} />)
-    const errorSpan = Array.from(container.querySelectorAll('span')).find(
-      (span) => span.getAttribute('role') === 'button' && span.textContent === 'Site quota exceeded',
+    const errorButton = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent === 'Site quota exceeded',
     )
-    click(errorSpan)
+    click(errorButton)
     // The popover names the exact call the run died on — not just the message.
     expect(document.body.textContent).toContain('Failing tool call')
     expect(document.body.textContent).toContain('publish')
@@ -399,10 +397,10 @@ describe('SessionRunCard (pinned)', () => {
       }),
     ]
     render(<SessionRunCard {...baseProps} />)
-    const errorSpan = Array.from(container.querySelectorAll('span')).find(
-      (span) => span.getAttribute('role') === 'button' && span.textContent?.includes('MissingGlobal'),
+    const errorButton = Array.from(container.querySelectorAll('button')).find(
+      (button) => button.textContent?.includes('MissingGlobal'),
     )
-    click(errorSpan)
+    click(errorButton)
     expect(document.body.textContent).toContain('workflow source, line 3')
     expect(document.body.textContent).toContain('return new MissingGlobal()')
     expect(document.body.textContent).toContain('workflow.js:3:14')
