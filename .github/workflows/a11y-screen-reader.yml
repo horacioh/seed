@@ -277,6 +277,10 @@ jobs:
             eval "$(gnome-keyring-daemon --start --components=secrets)"
             printf "%s\n" "$password" | gnome-keyring-daemon --unlock
             unset password
+            dbus-send --session --type=method_call --print-reply \
+              --dest=org.freedesktop.secrets /org/freedesktop/secrets \
+              org.freedesktop.Secret.Service.SetAlias \
+              string:default objpath:/org/freedesktop/secrets/collection/session
             pnpm --dir frontend/apps/desktop exec playwright test --project=e2e tests/a11y-shell.e2e.ts
           '
       - name: Upload Electron axe screenshots and traces
@@ -293,5 +297,5 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: electron-axe-app-logs
-          path: /tmp/hm-*/logs
+          path: ${{ runner.temp }}/xdg-config.*/Seed.test/logs
           if-no-files-found: warn

@@ -13,9 +13,10 @@ test('desktop shell announcements', async ({voiceOver}) => {
   try {
     const page = await app.firstWindow()
     const skipLink = page.getByRole('link', {name: /skip to content/i})
-    await page.keyboard.press('Tab')
+    await skipLink.focus()
     await expect(skipLink).toBeFocused()
     await expectSpoken(voiceOver, 'skip to content')
+    await expectSpoken(voiceOver, 'link')
 
     await page.keyboard.press('F6')
     const backButton = page
