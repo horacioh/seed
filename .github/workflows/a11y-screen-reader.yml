@@ -192,6 +192,7 @@ jobs:
           VITE_DESKTOP_HTTP_PORT: '58001'
           VITE_DESKTOP_GRPC_PORT: '58002'
           VITE_DESKTOP_APPDATA: Seed.test
+          NODE_OPTIONS: --max_old_space_size=4096
           GITHUB_TOKEN: ${{ github.token }}
       - name: Configure VoiceOver
         working-directory: frontend/packages/a11y-testing
@@ -261,6 +262,8 @@ jobs:
         shell: bash
         env:
           A11Y_ARTIFACT_DIR: ${{ runner.temp }}/a11y-shell
+          DEBUG: pw:browser
+          ELECTRON_ENABLE_LOGGING: '1'
         run: |
           set -euo pipefail
           export XDG_RUNTIME_DIR="$(mktemp -d "${RUNNER_TEMP}/xdg-runtime.XXXXXX")"
