@@ -301,6 +301,7 @@ export function DocumentTools({
         ref={measureRef}
         className="pointer-events-none absolute flex items-center gap-2 opacity-0 md:gap-4"
         aria-hidden="true"
+        {...({inert: ''} as Record<string, string>)}
       >
         {buttons.map((button) => (
           <PageTab

@@ -99,6 +99,7 @@ export function PageTab({
         >
           <a
             {...linkProps}
+            aria-label={label || tooltip}
             data-tab={route.key}
             className="inline-flex h-9 items-center gap-2 rounded-l-full pr-2 pl-4 transition-colors hover:bg-black/5 dark:hover:bg-white/10"
           >
@@ -117,7 +118,7 @@ export function PageTab({
       variant={active ? 'accent' : 'ghost'}
       {...props}
     >
-      <a {...linkProps} data-tab={route.key}>
+      <a {...linkProps} aria-label={label || tooltip} data-tab={route.key}>
         {linkContent}
       </a>
     </Button>

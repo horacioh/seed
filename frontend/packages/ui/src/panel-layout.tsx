@@ -176,7 +176,7 @@ export function PanelLayout({
                           <Text weight="semibold" size="lg" className="flex-1">
                             {title}
                           </Text>
-                          <Button size="icon" onClick={onPanelClose}>
+                          <Button size="icon" aria-label={`Close ${title} panel`} onClick={onPanelClose}>
                             <X className="size-4" />
                           </Button>
                         </div>

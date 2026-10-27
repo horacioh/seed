@@ -168,6 +168,7 @@ export function SiteHeader({
       <Button
         variant="ghost"
         size="icon"
+        aria-label="Open navigation menu"
         className={cn('md:hidden')}
         onClick={() => {
           setIsMobileMenuOpen(true)
@@ -239,7 +240,7 @@ export function SiteHeader({
         })}
       >
         <div className={cn('flex min-w-0 overflow-hidden', isCenterLayout ? 'flex-1 justify-center' : '')}>
-          <SiteLogo id={headerHomeId} metadata={draftMetadata || homeDoc.document?.metadata} />
+          <SiteLogo id={headerHomeId} metadata={draftMetadata || homeDoc.document?.metadata} asHeading={isHomeView} />
         </div>
         {routeType != 'draft' && isCenterLayout ? (
           <div className="flex items-center gap-2 md:absolute md:right-0">
@@ -291,14 +292,14 @@ export function SiteHeader({
               <div className="relative z-0">
                 {/* Always show the same navigation items as the desktop header */}
                 {navigationItems.length > 0 && (
-                  <div className="mt-2.5 mb-4 flex flex-col gap-2 px-1">
+                  <nav aria-label="Site" className="mt-2.5 mb-4 flex flex-col gap-2 px-1">
                     <NavItems
                       items={navigationItems}
                       onClick={() => {
                         setIsMobileMenuOpen(false)
                       }}
                     />
-                  </div>
+                  </nav>
                 )}
                 {!IS_DESKTOP && (
                   <div className="mb-4 flex flex-col gap-2 px-1">
@@ -502,7 +503,8 @@ export function SiteHeaderMenu({
   })
 
   return (
-    <div
+    <nav
+      aria-label="Site"
       ref={containerRef}
       className={cn(
         'relative hidden w-full flex-1 items-center gap-5 overflow-hidden p-0',
@@ -511,7 +513,11 @@ export function SiteHeaderMenu({
       )}
     >
       {/* Hidden measurement container */}
-      <div className="pointer-events-none absolute top-0 left-0 flex items-center gap-5 p-0 opacity-0 md:flex md:p-2">
+      <div
+        aria-hidden="true"
+        {...({inert: ''} as Record<string, string>)}
+        className="pointer-events-none absolute top-0 left-0 flex items-center gap-5 p-0 opacity-0 md:flex md:p-2"
+      >
         {items?.map((item) => {
           return (
             <div
@@ -557,7 +563,7 @@ export function SiteHeaderMenu({
         <Tooltip content="More Menu items">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="ghost" className="rounded-full">
+              <Button size="sm" variant="ghost" aria-label="More menu items" className="rounded-full">
                 <ChevronDown className="size-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -580,7 +586,7 @@ export function SiteHeaderMenu({
           {editNavPane}
         </div>
       )}
-    </div>
+    </nav>
   )
 }
 
@@ -595,13 +601,15 @@ export function MobileMenu({
 }) {
   return (
     <div
+      aria-hidden={!open}
+      {...(!open ? ({inert: ''} as Record<string, string>) : {})}
       className={cn(
         'bg-background fixed inset-0 z-50 flex h-dvh max-h-dvh flex-col transition-transform duration-200 md:hidden',
         open ? 'translate-x-0' : 'translate-x-full',
       )}
     >
       <div className="flex flex-0 items-center justify-end p-4">
-        <Button variant="ghost" size="icon" onClick={onClose}>
+        <Button variant="ghost" size="icon" aria-label="Close navigation menu" onClick={onClose}>
           <Close className="size-4" />
         </Button>
       </div>

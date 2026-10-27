@@ -15,7 +15,8 @@ export function JoinButton({onClick, disabled}: JoinButtonProps) {
     <Button
       variant="brand"
       size="sm"
-      className="plausible-event-name=click-join-button text-white"
+      aria-label="Join"
+      className="plausible-event-name=click-join-button"
       onClick={onClick}
       disabled={disabled}
     >

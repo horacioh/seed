@@ -1345,12 +1345,18 @@ importers:
         specifier: 3.25.76
         version: 3.25.76
     devDependencies:
+      '@playwright/test':
+        specifier: 1.57.0
+        version: 1.57.0
       '@remix-run/dev':
         specifier: 2.17.5
         version: 2.17.5(@remix-run/react@2.17.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.8.3))(@remix-run/serve@2.17.5(typescript@5.8.3))(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(ts-node@10.9.2(@types/node@24.19.1)(typescript@5.8.3))(tsx@4.21.0)(typescript@5.8.3)(vite@6.4.4(@types/node@24.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
       '@remix-run/testing':
         specifier: 2.17.5
         version: 2.17.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.8.3)
+      '@shm/a11y-testing':
+        specifier: workspace:*
+        version: link:../../packages/a11y-testing
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13

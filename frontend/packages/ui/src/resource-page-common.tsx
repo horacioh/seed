@@ -153,7 +153,6 @@ import {
 } from './components/alert-dialog'
 import {Popover, PopoverAnchor, PopoverContent, PopoverTrigger} from './components/popover'
 import {ScrollArea} from './components/scroll-area'
-import {Tabs, TabsList, TabsTrigger} from './components/tabs'
 import {DirectoryPageContent} from './directory-page'
 import {DiscussionsPageContent} from './discussions-page'
 import {DocumentCover} from './document-cover'
@@ -1649,6 +1648,16 @@ export function PageShell({
   const navigate = useNavigate()
   const [isFileBrowserOpen, setIsFileBrowserOpen] = useState(false)
   const itemsForHeader = liveNavigationItems ?? headerData.items
+  const documentLanguage =
+    typeof document?.metadata?.language === 'string'
+      ? document.metadata.language
+      : typeof headerData.siteHomeDocument?.metadata?.language === 'string'
+        ? headerData.siteHomeDocument.metadata.language
+        : 'en'
+
+  useEffect(() => {
+    window.document.documentElement.lang = documentLanguage
+  }, [documentLanguage])
 
   return (
     <div
@@ -1658,12 +1667,20 @@ export function PageShell({
       // web paint ever reads them.
       data-header-layout={headerData.isCenterLayout ? 'center' : 'bar'}
       className={cn(
-        'dark:bg-background flex max-h-full flex-col bg-white',
+        'dark:bg-background flex max-h-full flex-col overflow-x-clip bg-white',
         // On desktop: fill viewport height for element scrolling (use dvh for mobile browsers)
         // On mobile: natural height for document scrolling
         isMobile ? 'min-h-dvh' : 'h-dvh',
       )}
     >
+      {!IS_DESKTOP ? (
+        <a
+          href="#main-content"
+          className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:px-4 focus:py-2 focus:ring-2 focus:outline-none"
+        >
+          Skip to content
+        </a>
+      ) : null}
       <SiteHeader
         siteHomeId={siteHomeId}
         docId={docId}
@@ -1694,7 +1711,9 @@ export function PageShell({
           navigate({key: 'document', id})
         }}
       >
-        {children}
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
       </SiteFileBrowserLayout>
     </div>
   )
@@ -4222,25 +4241,35 @@ export function DocumentCollection({
       <QueryBlockContent
         toolbarActions={
           <div className="flex items-center gap-2">
-            <Tabs
-              value={style}
-              onValueChange={(value) => updateQueryProps({style: value as 'Card' | 'List' | 'Table'})}
-            >
-              <TabsList>
-                <TabsTrigger value="Table">
-                  <TableIcon />
-                  Table
-                </TabsTrigger>
-                <TabsTrigger value="List">
-                  <ListIcon />
-                  List
-                </TabsTrigger>
-                <TabsTrigger value="Card">
-                  <LayoutGrid />
-                  Cards
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex items-center gap-1">
+              <Button
+                variant={style === 'Table' ? 'secondary' : 'ghost'}
+                size="sm"
+                aria-pressed={style === 'Table'}
+                onClick={() => updateQueryProps({style: 'Table'})}
+              >
+                <TableIcon />
+                Table
+              </Button>
+              <Button
+                variant={style === 'List' ? 'secondary' : 'ghost'}
+                size="sm"
+                aria-pressed={style === 'List'}
+                onClick={() => updateQueryProps({style: 'List'})}
+              >
+                <ListIcon />
+                List
+              </Button>
+              <Button
+                variant={style === 'Card' ? 'secondary' : 'ghost'}
+                size="sm"
+                aria-pressed={style === 'Card'}
+                onClick={() => updateQueryProps({style: 'Card'})}
+              >
+                <LayoutGrid />
+                Cards
+              </Button>
+            </div>
             <Popover>
               <Tooltip content="Query settings">
                 <PopoverTrigger asChild>

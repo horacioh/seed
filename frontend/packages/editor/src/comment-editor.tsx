@@ -1101,11 +1101,23 @@ export function CommentEditor({
                     [[
                   </Button>
 
-                  <Button size="icon" variant="ghost" className="size-8" onClick={handleImageClick}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="size-8"
+                    aria-label="Add image"
+                    onClick={handleImageClick}
+                  >
                     <ImageIcon className="size-4" />
                   </Button>
 
-                  <Button size="icon" variant="ghost" className="size-8" onClick={() => setIsSlashDialogOpen(true)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="size-8"
+                    aria-label="Open slash commands"
+                    onClick={() => setIsSlashDialogOpen(true)}
+                  >
                     <SlashSquareIcon className="size-4" />
                   </Button>
                 </div>

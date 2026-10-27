@@ -17,11 +17,13 @@ export function PageMessageBox({
   message,
   children,
   spinner,
+  titleAsHeading = false,
 }: {
   title: string
   message: string
   children?: ReactNode
   spinner?: boolean
+  titleAsHeading?: boolean
 }) {
   return (
     <div className="flex h-full w-full flex-col">
@@ -32,9 +34,15 @@ export function PageMessageBox({
               <Spinner className="fill-link size-6" />
             </div>
           ) : null}
-          <SizableText size="2xl" weight="bold">
-            {title}
-          </SizableText>
+          {titleAsHeading ? (
+            <SizableText asChild size="2xl" weight="bold">
+              <h1>{title}</h1>
+            </SizableText>
+          ) : (
+            <SizableText size="2xl" weight="bold">
+              {title}
+            </SizableText>
+          )}
 
           <SizableText asChild className="text-muted-foreground">
             <p>{message}</p>
@@ -98,7 +106,7 @@ export function PageNotFound({entityType = 'document'}: {entityType?: 'document'
     profile: {title: 'Profile Not Found', message: 'This profile could not be found on the network.'},
   }
   const {title, message} = labels[entityType]
-  return <PageMessageBox title={title} message={message} />
+  return <PageMessageBox title={title} message={message} titleAsHeading />
 }
 
 /**

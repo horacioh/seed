@@ -438,6 +438,7 @@ export function AgentHeader({
               ref={measureRef}
               className="pointer-events-none absolute flex items-center gap-2 opacity-0 md:gap-4"
               aria-hidden="true"
+              {...({inert: ''} as Record<string, string>)}
             >
               {tabs.map((tab) => (
                 <PageTab

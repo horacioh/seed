@@ -498,6 +498,7 @@ export default function WebCommenting({
             >
               <button
                 disabled={isSubmitting || disabled}
+                aria-label={userKeyPair ? 'Publish comment' : 'Create account to publish comment'}
                 className={cn(
                   buttonVariants({size: 'icon', variant: 'default'}),
                   publishButtonEventClass,
@@ -811,13 +812,14 @@ export function WebInlineEditBox({comment, onSave, onCancel, isSaving}: InlineEd
         hideAvatar
         submitButton={({getContent, reset, disabled}) => (
           <>
-            <Button variant="ghost" size="icon" onClick={onCancel} disabled={isSaving}>
+            <Button variant="ghost" size="icon" aria-label="Cancel edit" onClick={onCancel} disabled={isSaving}>
               <X className="size-4" />
             </Button>
             <Tooltip content="Save edit">
               <Button
                 variant="default"
                 size="icon"
+                aria-label="Save edit"
                 onClick={(e) => {
                   e.stopPropagation()
                   handleSubmit(getContent, reset)

@@ -10,6 +10,8 @@ config.json
 config.off.json
 service-config.json
 service-config.off.json
+test-results/
+playwright-report/
 
 COMMIT_HASH
 BRANCH

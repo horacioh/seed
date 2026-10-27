@@ -141,11 +141,11 @@ export function DocumentHeader({
             {showTitle && (
               <div className="flex items-center gap-3">
                 <SizableText
+                  asChild
                   className="min-w-0 text-2xl max-md:leading-tight md:text-4xl lg:text-5xl"
                   weight="bold"
-                  {...highlighter(docId)}
                 >
-                  {isHomeDoc ? 'Home' : docMetadata?.name}
+                  <h1 {...highlighter(docId)}>{isHomeDoc ? 'Home' : docMetadata?.name}</h1>
                 </SizableText>
                 {titleAccessory}
               </div>
@@ -349,8 +349,12 @@ function HomeBreadcrumb({crumb, isCurrent}: {crumb: DocumentBreadcrumbEntry; isC
     )
   }
   return (
-    <a {...linkProps} className="text-muted-foreground flex items-center gap-1 no-underline hover:underline">
-      <Home className="size-3" />
+    <a
+      {...linkProps}
+      aria-label="Home"
+      className="text-muted-foreground flex items-center gap-1 no-underline hover:underline"
+    >
+      <Home aria-hidden="true" className="size-3" />
     </a>
   )
 }

@@ -528,7 +528,8 @@ NESTED BLOCKS
 
 .blockContent[data-content-type='image'] .inlineContent {
   font-size: 0.9em;
-  opacity: 0.6;
+  color: var(--muted-foreground);
+  opacity: 1;
   min-width: 30%;
   display: block;
   text-align: center;

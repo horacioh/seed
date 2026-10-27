@@ -32,6 +32,12 @@ await expectNoAxeViolations(document)
 
 Run the report-only jsx-a11y scan with `pnpm lint:a11y`. It scans the UI, editor, web, desktop, emails and vault frontend sources and is not a CI gate.
 
+Run the published web reader gate against a running web gateway with:
+
+```sh
+A11Y_PATHS=/,/guide A11Y_BASE_URL=http://localhost:3000 pnpm --filter @shm/web test:a11y
+```
+
 ## Manual screen-reader matrix
 
 Check representative flows with NVDA on Firefox and Chrome, JAWS on Chrome, VoiceOver on macOS Safari and iOS Safari, TalkBack, and Orca.
@@ -50,7 +56,7 @@ The test-file column is intentionally blank until each surface suite is added.
 | Desktop onboarding | Welcome, profile, vault, recovery, existing account, import and ready (`frontend/apps/desktop/src/pages/onboarding.tsx`) | |
 | Desktop dialogs | Create account/space, publish site, document destination, profile, network, imports, deletions and assistant; dialog open, focused control and validation/error states (`frontend/apps/desktop/src/components/`) | |
 | Shared UI and editor dialogs | Account/key/email/password dialogs, document destination, assistant and publish-required flows; dialogs open and keyboard-dismissed (`frontend/packages/ui/src/`, `frontend/packages/editor/src/`) | |
-| Web reader and gateway | Root and document routes (`frontend/apps/web/app/routes/_index.tsx`, `$.tsx`); loaded, empty, missing and error documents; menus open | |
+| Web reader and gateway | Root and document routes (`frontend/apps/web/app/routes/_index.tsx`, `$.tsx`); loaded, empty, missing and error documents; menus open | `frontend/apps/web/e2e/a11y-reader.e2e.ts` |
 | Web editing and comments | Document route and commenting UI (`frontend/apps/web/app/routes/$.tsx`, `frontend/apps/web/app/commenting.tsx`); editor focused, comment composer open, submit errors | |
 | Web account and onboarding | Sign in, register, create site, connect, auth callback and email notification settings (`frontend/apps/web/app/routes/hm.sign-in.tsx`, `hm.register.tsx`, `hm.create-site.tsx`, `hm.connect.tsx`, `hm.auth.callback.tsx`, `hm.email-notifications.tsx`, `frontend/apps/web/app/web-create-space-dialog.tsx`); invalid and pending states | |
 | Vault | `/`, `/login`, `/login/password`, `/login/recover`, `/login/no-recovery`, `/auth/choose`, `/password/set`, `/verify/pending`, `/connect` and `/connect/success` (`vault/src/frontend/router.tsx`); locked, empty and auth-error states | |
