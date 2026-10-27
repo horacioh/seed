@@ -51,7 +51,7 @@ export default defineConfig({
         },
         {
           name: 'vault',
-          command: 'bun --cwd ../../../vault run dev',
+          command: 'bun run --cwd ../../../vault dev',
           stdout: 'pipe',
           stderr: 'pipe',
           url: 'http://localhost:3030/vault',
