@@ -123,6 +123,31 @@ jobs:
       - name: Install Chromium
         working-directory: frontend/packages/a11y-testing
         run: pnpm exec playwright install chromium
+      - name: Diagnose direct Windows web server start
+        working-directory: frontend/apps/web
+        shell: cmd
+        continue-on-error: true
+        env:
+          PORT: '3000'
+          DAEMON_HTTP_PORT: '58001'
+          DAEMON_HTTP_URL: http://localhost:58001
+          DAEMON_FILE_URL: http://localhost:58001/ipfs
+          DATA_DIR: ${{ runner.temp }}\a11y-screen-reader-web-diagnostic
+          SEED_BASE_URL: http://localhost:3000
+          NODE_ENV: production
+        run: |
+          pnpm build
+          if errorlevel 1 exit /b %ERRORLEVEL%
+          bun -e "import {writeFixtureWebConfig} from '../cli/src/test/fixture-seed.ts'; writeFixtureWebConfig(process.env.DATA_DIR ?? '.')"
+          if errorlevel 1 exit /b %ERRORLEVEL%
+          pnpm start:prod 1>"%RUNNER_TEMP%\a11y-start-prod.stdout.txt" 2>"%RUNNER_TEMP%\a11y-start-prod.stderr.txt"
+          set "START_EXIT_CODE=%ERRORLEVEL%"
+          echo pnpm start:prod exit code: %START_EXIT_CODE%
+          echo --- stdout ---
+          type "%RUNNER_TEMP%\a11y-start-prod.stdout.txt"
+          echo --- stderr ---
+          type "%RUNNER_TEMP%\a11y-start-prod.stderr.txt"
+          exit /b %START_EXIT_CODE%
       - name: Run NVDA web suite
         working-directory: frontend/packages/a11y-testing
         run: pnpm test:screen-reader -- --project=nvda screen-reader/reader.nvda.spec.ts
