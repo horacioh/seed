@@ -41,7 +41,12 @@ jobs:
           model=backend/llm/backends/llamacpp/models/granite-embedding-107m-multilingual-Q8_0.gguf
           mkdir -p "$(dirname "$model")"
           curl -fSL -o "$model" "https://huggingface.co/keisuke-miyako/granite-embedding-107m-multilingual-gguf-q8_0/resolve/240a3d36d952677199045d0139efa056b830819c/granite-embedding-107m-multilingual-Q8_0.gguf?download=true"
-          printf '%s  %s\n' '931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d' "$model" | sha256sum -c -
+          checksum='931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d'
+          if command -v sha256sum >/dev/null 2>&1; then
+            printf '%s  %s\n' "$checksum" "$model" | sha256sum -c -
+          else
+            printf '%s  %s\n' "$checksum" "$model" | shasum -a 256 -c -
+          fi
       - name: Build daemon
         shell: bash
         run: |
@@ -105,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p plz-out/bin/backend
-          go build -o plz-out/bin/backend/seed-daemon-x86_64-pc-windows-gnu ./backend/cmd/seed-daemon
+          go build -o plz-out/bin/backend/seed-daemon-x86_64-pc-windows-gnu.exe ./backend/cmd/seed-daemon
         env:
           CGO_ENABLED: 1
           LIBRARY_PATH: ${{ github.workspace }}/backend/util/llama-go
@@ -152,7 +157,12 @@ jobs:
           model=backend/llm/backends/llamacpp/models/granite-embedding-107m-multilingual-Q8_0.gguf
           mkdir -p "$(dirname "$model")"
           curl -fSL -o "$model" "https://huggingface.co/keisuke-miyako/granite-embedding-107m-multilingual-gguf-q8_0/resolve/240a3d36d952677199045d0139efa056b830819c/granite-embedding-107m-multilingual-Q8_0.gguf?download=true"
-          printf '%s  %s\n' '931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d' "$model" | sha256sum -c -
+          checksum='931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d'
+          if command -v sha256sum >/dev/null 2>&1; then
+            printf '%s  %s\n' "$checksum" "$model" | sha256sum -c -
+          else
+            printf '%s  %s\n' "$checksum" "$model" | shasum -a 256 -c -
+          fi
       - name: Build desktop test bundle
         shell: bash
         run: |
@@ -256,6 +266,7 @@ jobs:
           export XDG_RUNTIME_DIR="$(mktemp -d "${RUNNER_TEMP}/xdg-runtime.XXXXXX")"
           export XDG_CONFIG_HOME="$(mktemp -d "${RUNNER_TEMP}/xdg-config.XXXXXX")"
           export XDG_DATA_HOME="$(mktemp -d "${RUNNER_TEMP}/xdg-data.XXXXXX")"
+          echo "A11Y_XDG_CONFIG_HOME=$XDG_CONFIG_HOME" >> "$GITHUB_ENV"
           chmod 700 "$XDG_RUNTIME_DIR" "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
           xvfb-run -a dbus-run-session -- bash -euo pipefail -c '
             password="$(openssl rand -hex 32)"
@@ -272,4 +283,11 @@ jobs:
           path: |
             ${{ runner.temp }}/a11y-shell
             frontend/apps/desktop/test-results
+          if-no-files-found: warn
+      - name: Upload Electron app logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: electron-axe-app-logs
+          path: ${{ env.A11Y_XDG_CONFIG_HOME }}/Seed.test/logs
           if-no-files-found: warn
