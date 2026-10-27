@@ -157,10 +157,6 @@ export function PanelLayout({
 
         {panelKey !== null && (
           <>
-            <PanelResizeHandle
-              aria-label="Resize panel"
-              className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
-            />
             <Panel
               id="accessory"
               ref={accessoryPanelRef}
@@ -170,7 +166,11 @@ export function PanelLayout({
               onResize={onPanelWidthChange}
               className="border-l"
             >
-              <aside aria-label={title || 'Panel'} data-a11y-region="panel" tabIndex={-1}>
+              <aside aria-label={title || 'Panel'} data-a11y-region="panel" tabIndex={-1} className="relative h-full">
+                <PanelResizeHandle
+                  aria-label="Resize panel"
+                  className="panel-resize-handle focus-visible:ring-ring absolute top-0 left-0 z-10 h-full focus-visible:ring-2"
+                />
                 <div className="h-full rounded-lg">
                   <div className={cn('dark:bg-background flex h-full flex-col bg-white')}>
                     <div className="border-border border-b px-5 py-3">

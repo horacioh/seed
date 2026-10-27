@@ -19,6 +19,7 @@ export async function expectNoA11yViolations(
     exclude?: string[]
     disableRules?: string[]
     modes?: A11yMode[]
+    legacyMode?: boolean
   },
 ): Promise<void> {
   const modes = opts?.modes ?? ['light', 'dark']
@@ -48,7 +49,6 @@ export async function expectNoA11yViolations(
         await page.setViewportSize({width: Math.floor(viewport.width / 2), height: Math.floor(viewport.height / 2)})
       }
 
-      await page.waitForLoadState('networkidle')
       await settleLayout(page)
 
       const builder = new AxeBuilder({page}).withTags(axeTags)
@@ -61,6 +61,9 @@ export async function expectNoA11yViolations(
       if (opts?.disableRules?.length) {
         builder.disableRules(opts.disableRules)
       }
+      if (opts?.legacyMode) {
+        builder.setLegacyMode()
+      }
 
       const {violations} = await builder.analyze()
       const modeFindings: A11yViolationList = [...violations]
@@ -68,9 +71,30 @@ export async function expectNoA11yViolations(
       if (mode === 'reflow-320' || mode === 'zoom-200') {
         const overflow = await page.evaluate(() => {
           const scrollingElement = document.scrollingElement
-          return scrollingElement
-            ? {scrollWidth: scrollingElement.scrollWidth, clientWidth: scrollingElement.clientWidth}
-            : null
+          if (!scrollingElement) return null
+          const clientWidth = scrollingElement.clientWidth
+          const overflowElements = Array.from(document.querySelectorAll<HTMLElement>('*'))
+            .map((element) => {
+              const rect = element.getBoundingClientRect()
+              return {
+                tag: element.tagName.toLowerCase(),
+                id: element.id,
+                className: typeof element.className === 'string' ? element.className : '',
+                left: Math.round(rect.left),
+                right: Math.round(rect.right),
+                width: Math.round(rect.width),
+                scrollWidth: element.scrollWidth,
+                clientWidth: element.clientWidth,
+              }
+            })
+            .filter(
+              (element) =>
+                element.width > 0 &&
+                (element.left < -1 || element.right > clientWidth + 1 || element.scrollWidth > element.clientWidth + 1),
+            )
+            .sort((a, b) => b.right - a.right)
+            .slice(0, 12)
+          return {scrollWidth: scrollingElement.scrollWidth, clientWidth, overflowElements}
         })
         if (overflow && overflow.scrollWidth > overflow.clientWidth + 1) {
           modeFindings.push({
@@ -81,7 +105,9 @@ export async function expectNoA11yViolations(
             nodes: [
               {
                 target: ['html'],
-                failureSummary: `Document scroll width ${overflow.scrollWidth}px exceeds client width ${overflow.clientWidth}px.`,
+                failureSummary: `Document scroll width ${overflow.scrollWidth}px exceeds client width ${
+                  overflow.clientWidth
+                }px. Overflowing elements: ${JSON.stringify(overflow.overflowElements)}`,
               },
             ],
           })
@@ -93,7 +119,6 @@ export async function expectNoA11yViolations(
   } finally {
     await page.setViewportSize(viewport)
     await page.emulateMedia(originalMedia)
-    await page.waitForLoadState('networkidle')
     await settleLayout(page)
   }
 

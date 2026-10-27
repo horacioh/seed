@@ -218,9 +218,9 @@ function SubscriptionsSection() {
 
   return (
     <SidebarSection title="Joined Spaces">
-      <span className="sr-only" aria-live="polite">
+      <li className="sr-only" aria-live="polite">
         {reorderAnnouncement}
-      </span>
+      </li>
       {orderedContacts.length ? (
         orderedContacts.map((contact, index) => {
           const id = hmId(contact.subject)
@@ -355,7 +355,7 @@ function JoinedSiteListItem({
         )}
         onClick={linkProps.onClick}
       >
-        <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} className="shrink-0" />
+        <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} alt="" className="shrink-0" />
         <span className={cn('min-w-0 flex-1 truncate text-left text-sm select-none', isUnread && 'font-bold')}>
           {metadata?.name || 'Untitled'}
         </span>
@@ -507,7 +507,7 @@ function FollowingListItem({
   return (
     <>
       <SidebarMenuButton isActive={active} className="min-h-10 items-center pr-8" onClick={linkProps.onClick}>
-        <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} className="shrink-0" />
+        <HMIcon id={id} name={metadata?.name} icon={metadata?.icon} size={20} alt="" className="shrink-0" />
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <span className="truncate text-left text-sm font-bold select-none">{metadata?.name || 'Untitled'}</span>
         </div>

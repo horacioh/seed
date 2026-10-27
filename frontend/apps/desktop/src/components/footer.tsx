@@ -35,11 +35,7 @@ export default function Footer({children}: {children?: ReactNode}) {
     <FooterWrapper>
       <FooterNetworkingButton />
       <div className="flex items-center gap-4 px-1">
-        <SizableText
-          size="xs"
-          className="text-muted-foreground cursor-default opacity-50 select-none"
-          style={{fontSize: 10}}
-        >
+        <SizableText size="xs" className="text-muted-foreground cursor-default select-none" style={{fontSize: 10}}>
           {`Seed ${VERSION} (${COMMIT_HASH.slice(0, 8)})`}
         </SizableText>
         {updateStatus && updateStatus?.type != 'idle' && (
@@ -180,7 +176,12 @@ function SubscriptionsPanel() {
     <Popover>
       <Tooltip content={`Subscribed to ${count} ${count === 1 ? 'entity' : 'entities'}`}>
         <PopoverTrigger asChild>
-          <Button size="xs" variant="ghost" className="px-2">
+          <Button
+            size="xs"
+            variant="ghost"
+            className="px-2"
+            aria-label={`Subscribed to ${count} ${count === 1 ? 'resource' : 'resources'}`}
+          >
             {isAnySyncing ? (
               <Spinner size="small" className="size-3" />
             ) : (

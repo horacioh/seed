@@ -54,12 +54,12 @@ export function AccountAvatar({
             linkProps.onClick?.(event)
           }}
         >
-          <HMIcon id={accountId} name={name} icon={icon} size={size} className={className} />
+          <HMIcon id={accountId} name={name} icon={icon} size={size} alt="" className={className} />
         </a>
       </HoverCardTrigger>
       <HoverCardContent align="start" collisionPadding={12} className="w-64 max-w-[calc(100vw-1.5rem)]">
         <div className="flex items-center gap-3">
-          <HMIcon id={accountId} name={name} icon={icon} size={40} />
+          <HMIcon id={accountId} name={name} icon={icon} size={40} alt="" />
           <div className="min-w-0 flex-1">
             <div className="truncate font-semibold">
               <AccountIdentityName name={displayName} />

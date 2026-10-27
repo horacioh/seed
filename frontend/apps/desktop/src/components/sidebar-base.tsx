@@ -1,6 +1,7 @@
 import {useSidebarContext} from '@/sidebar-context'
 import {useStream} from '@shm/shared/use-stream'
 import useMedia from '@shm/ui/use-media'
+import {cn} from '@shm/ui/utils'
 import {ReactNode, useEffect, useLayoutEffect, useRef} from 'react'
 import {ImperativePanelHandle, Panel, PanelResizeHandle} from 'react-resizable-panels'
 
@@ -86,6 +87,9 @@ export function GenericSidebarContainer({
       if (isLocked) {
         wasLockedBeforeCollapse.current = true
         ctx.onCloseSidebar()
+        if (panelContentRef.current?.contains(document.activeElement)) {
+          document.getElementById('main-content')?.focus()
+        }
       }
     } else if (!prevMediaGtSm.current && media.gtSm) {
       if (wasLockedBeforeCollapse.current) {
@@ -133,7 +137,7 @@ export function GenericSidebarContainer({
         collapsible
         id="sidebar"
         order={1}
-        className="h-full"
+        className="h-full overflow-hidden"
         onResize={(size) => {
           ctx.onSidebarResize(size)
         }}
@@ -142,19 +146,23 @@ export function GenericSidebarContainer({
           ref={panelContentRef}
           aria-label="Sidebar"
           data-a11y-region="sidebar"
+          hidden={!isLocked}
           tabIndex={-1}
-          className="relative flex h-full w-full flex-col transition-all duration-200 ease-in-out"
+          className={cn(
+            'relative h-full w-full flex-col transition-all duration-200 ease-in-out',
+            isLocked ? 'flex' : 'hidden',
+          )}
         >
+          {isLocked ? (
+            <PanelResizeHandle
+              aria-label="Resize sidebar"
+              className="panel-resize-handle focus-visible:ring-ring absolute top-0 right-0 z-10 h-full focus-visible:ring-2"
+            />
+          ) : null}
           <div className="flex-1 overflow-y-auto pb-8">{children}</div>
           {footer ? <div className="w-full items-end">{footer({isVisible: isLocked})}</div> : null}
         </nav>
       </Panel>
-      {isLocked ? (
-        <PanelResizeHandle
-          aria-label="Resize sidebar"
-          className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
-        />
-      ) : null}
     </>
   )
 }

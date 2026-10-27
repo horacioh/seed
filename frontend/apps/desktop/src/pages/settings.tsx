@@ -156,8 +156,8 @@ function AdvancedSettings() {
   })
   return (
     <>
-      <SizableText size="2xl" weight="bold">
-        Advanced
+      <SizableText asChild size="2xl" weight="bold">
+        <h1>Advanced</h1>
       </SizableText>
       <SettingsCard label="EXPERIMENTAL WEB BROWSER">
         <SettingsRow
@@ -206,8 +206,8 @@ function AdvancedSettings() {
 function AgentServersSettingsPage() {
   return (
     <>
-      <SizableText size="2xl" weight="bold">
-        Agent Servers
+      <SizableText asChild size="2xl" weight="bold">
+        <h1>Agent Servers</h1>
       </SizableText>
       <AgentServersSettings />
     </>
@@ -317,8 +317,8 @@ function GeneralSettings() {
   const [theme, setTheme, isInitialLoading] = useSystemThemeWriter()
   return (
     <>
-      <SizableText size="2xl" weight="bold">
-        General settings
+      <SizableText asChild size="2xl" weight="bold">
+        <h1>General settings</h1>
       </SizableText>
       <SettingsCard label="APPEARANCE">
         <SettingsRow
@@ -1207,8 +1207,8 @@ function GatewaySettings() {
 
   return (
     <>
-      <SizableText size="2xl" weight="bold">
-        Sync options
+      <SizableText asChild size="2xl" weight="bold">
+        <h1>Sync options</h1>
       </SizableText>
       <SettingsCard label="CONNECTION">
         <SettingsRow
@@ -1400,8 +1400,8 @@ function AppSettings() {
 
   return (
     <>
-      <SizableText size="2xl" weight="bold">
-        App info
+      <SizableText asChild size="2xl" weight="bold">
+        <h1>App info</h1>
       </SizableText>
       <SettingsCard label="IDENTITY">
         <SettingsRow

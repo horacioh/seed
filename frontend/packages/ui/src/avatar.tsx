@@ -41,6 +41,7 @@ const Identicon = memo((props: {value: string; size: number}) => {
 export type UIAvatarProps = {
   size?: number
   label?: string
+  alt?: string
   onPress?: () => void
   className?: string
 } & (
@@ -49,7 +50,7 @@ export type UIAvatarProps = {
   | {url: string; id?: string}
 )
 
-export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvatarProps) {
+export function UIAvatar({url, id, label, alt, size = 20, onPress, className}: UIAvatarProps) {
   let text = label ? label[0] : id ? id[0] : '?'
 
   return (
@@ -72,7 +73,7 @@ export function UIAvatar({url, id, label, size = 20, onPress, className}: UIAvat
         <img
           src={url}
           className="min-h-full min-w-full bg-[var(--color1)] object-cover"
-          alt={label || id || 'Account Avatar'}
+          alt={alt ?? (label || id || 'Account Avatar')}
         />
       ) : (
         <SizableText

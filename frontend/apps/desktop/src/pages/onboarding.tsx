@@ -55,13 +55,13 @@ export default function OnboardingPage() {
                     <Search className="size-6" />
                   </div>
                   <div className="flex flex-col items-start gap-1">
-                    <h3 className="font-bold">Find and Join a Space</h3>
+                    <h2 className="font-bold">Find and Join a Space</h2>
                     <p className="text-muted-foreground">Paste a space link in the bar above</p>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
-                  className="text-muted-foreground justify-start gap-2 rounded-full border-0 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className="text-foreground justify-start gap-2 rounded-full border-0 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                   onClick={() => triggerWindowEvent({type: 'focus_omnibar', mode: 'search'})}
                 >
                   <Search className="size-4" />
@@ -75,7 +75,7 @@ export default function OnboardingPage() {
                       <Plus className="size-6" />
                     </div>
                     <div className="flex flex-col items-start gap-1">
-                      <h3 className="font-bold">Create a Space</h3>
+                      <h2 className="font-bold">Create a Space</h2>
                       <p className="text-muted-foreground">Start your own space to share knowledge</p>
                     </div>
                   </div>
@@ -94,7 +94,7 @@ export default function OnboardingPage() {
               <>
                 <div className="flex w-full items-center gap-2">
                   <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-                  <span className="text-sm text-neutral-400 dark:text-neutral-500">already have an identity?</span>
+                  <span className="text-muted-foreground text-sm">already have an identity?</span>
                   <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
                 </div>
                 <button

@@ -23,6 +23,7 @@ function RemoveBookmarkButton({
   return (
     <Tooltip content="Remove from Bookmarks">
       <Button
+        aria-label="Remove from Bookmarks"
         size="icon"
         variant={active ? 'default' : 'ghost'}
         {...hoverProps}
@@ -68,6 +69,7 @@ export function BookmarkButton({
   return (
     <Tooltip content="Add To Bookmarks">
       <Button
+        aria-label="Add to Bookmarks"
         size="icon"
         variant={active ? 'default' : 'ghost'}
         className={cn(

@@ -258,7 +258,10 @@ export function AccountProfileButton() {
       <>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0">
+            <Button
+              aria-label="Open account menu"
+              className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0"
+            >
               <div className="bg-muted flex size-8 items-center justify-center rounded-full">
                 <User className="text-muted-foreground size-4" />
               </div>
@@ -321,13 +324,17 @@ export function AccountProfileButton() {
         }}
       >
         <DropdownMenuTrigger asChild>
-          <Button className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0">
+          <Button
+            aria-label="Open account menu"
+            className="window-no-drag relative size-8 overflow-hidden rounded-full border-1 border-transparent p-0"
+          >
             {accountUid ? (
               <HMIcon
                 id={hmId(accountUid)}
                 name={selectedAccount?.metadata?.name}
                 icon={selectedAccount?.metadata?.icon}
                 size={32}
+                alt=""
               />
             ) : (
               <div className="bg-muted flex size-8 items-center justify-center rounded-full">
@@ -349,6 +356,7 @@ export function AccountProfileButton() {
                   name={selectedAccount?.metadata?.name}
                   icon={selectedAccount?.metadata?.icon}
                   size={32}
+                  alt=""
                 />
               ) : (
                 <div className="bg-muted flex size-8 shrink-0 items-center justify-center rounded-full">
@@ -596,6 +604,7 @@ export function NavigationButtons() {
     <div className="no-window-drag flex shrink-0">
       <Button
         size="icon"
+        aria-label="Back"
         onClick={() => dispatch({type: 'pop'})}
         variant="ghost"
         disabled={state.routeIndex <= 0}
@@ -606,6 +615,7 @@ export function NavigationButtons() {
 
       <Button
         size="icon"
+        aria-label="Forward"
         onClick={() => dispatch({type: 'forward'})}
         disabled={state.routeIndex >= state.routes.length - 1}
         className="rounded-tr-0 rounded-br-0 shrink-0"
@@ -1381,6 +1391,7 @@ export function Omnibar() {
       <PopoverContent
         side="bottom"
         align="start"
+        aria-label="Search results"
         className="no-window-drag w-[var(--radix-popover-trigger-width)] min-w-[400px] border-0 bg-transparent p-0 shadow-none"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >

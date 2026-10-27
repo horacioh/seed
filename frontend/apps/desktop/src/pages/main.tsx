@@ -209,8 +209,8 @@ export default function Main({className}: {className?: string}) {
       event.preventDefault()
       focusNextShellRegion(event.shiftKey)
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [])
   useListen<NavRoute>(
     'open_route',
@@ -333,17 +333,15 @@ export default function Main({className}: {className?: string}) {
           </div>
         </Panel>
         {shouldRenderAssistantPanel && (
-          <>
-            <PanelResizeHandle
-              aria-label="Resize panel"
-              className="panel-resize-handle focus-visible:ring-ring focus-visible:ring-2"
-            />
-            <Panel id="assistant" order={2} minSize={15} maxSize={40} defaultSize={25} className="border-l">
-              <aside aria-label="Assistant" data-a11y-region="panel" tabIndex={-1} className="h-full">
-                <AssistantPanel initialSessionId={assistantSessionId} onSessionChange={handleSessionChange} />
-              </aside>
-            </Panel>
-          </>
+          <Panel id="assistant" order={2} minSize={15} maxSize={40} defaultSize={25} className="border-l">
+            <aside aria-label="Assistant" data-a11y-region="panel" tabIndex={-1} className="relative h-full">
+              <PanelResizeHandle
+                aria-label="Resize panel"
+                className="panel-resize-handle focus-visible:ring-ring absolute top-0 left-0 z-10 h-full focus-visible:ring-2"
+              />
+              <AssistantPanel initialSessionId={assistantSessionId} onSessionChange={handleSessionChange} />
+            </aside>
+          </Panel>
         )}
       </PanelGroup>
     </div>

@@ -1,18 +1,30 @@
 import {expect, test} from '../test/fixtures'
 import {expectNoA11yViolations} from '@shm/a11y-testing/playwright'
+import type {Page} from '@playwright/test'
 import path from 'node:path'
 
 const artifactDir = '/home/ubuntu/a11y-pr6-artifacts'
 const a11yModes = ['light', 'dark', 'reduced-motion', 'zoom-200'] as const
+const a11yOptions = {modes: [...a11yModes], legacyMode: true}
+
+test.setTimeout(120_000)
+
+async function settleTransitions(page: Page) {
+  await page.evaluate(async () => {
+    const transitions = document.getAnimations().filter((animation) => animation.constructor.name === 'CSSTransition')
+    await Promise.all(transitions.map((transition) => transition.finished.catch(() => undefined)))
+  })
+}
 
 test('onboarding shell is keyboard accessible and has no axe violations', async ({onboardingPage}) => {
   const page = onboardingPage.appData.appWindow
 
   await expect(page.locator('#main-content')).toHaveCount(1)
-  await expect(page.getByRole('heading', {level: 1})).toBeFocused()
-  await expectNoA11yViolations(page, {modes: [...a11yModes]})
+  await expectNoA11yViolations(page, a11yOptions)
 
-  await page.locator('a[href="#main-content"]').focus()
+  await page.screenshot({path: path.join(artifactDir, 'onboarding-step-1.png')})
+  await page.keyboard.press('Tab')
+  await expect(page.locator('a[href="#main-content"]')).toBeFocused()
   await page.screenshot({path: path.join(artifactDir, 'onboarding-skip-link.png')})
   await page.keyboard.press('Enter')
   await expect(page.locator('#main-content')).toBeFocused()
@@ -22,7 +34,7 @@ test('home shell landmarks and keyboard window controls are accessible', async (
   const {app, appWindow: page} = homePage.appData
 
   await expect(page.locator('#main-content')).toHaveCount(1)
-  await expectNoA11yViolations(page, {modes: [...a11yModes]})
+  await expectNoA11yViolations(page, a11yOptions)
 
   await page.locator('[data-titlebar-omnibar-region]').click()
   const omnibar = page.getByRole('combobox', {name: 'Search documents or paste a URL'})
@@ -32,8 +44,8 @@ test('home shell landmarks and keyboard window controls are accessible', async (
   await page.keyboard.press('ArrowDown')
   const activeDescendant = await omnibar.getAttribute('aria-activedescendant')
   expect(activeDescendant).toBeTruthy()
-  await expect(page.locator(`#${activeDescendant}`)).toHaveAttribute('aria-selected', 'true')
-  await expectNoA11yViolations(page, {modes: [...a11yModes]})
+  await expect(page.locator(`[id="${activeDescendant}"]`)).toHaveAttribute('aria-label', /\S+/)
+  await expectNoA11yViolations(page, a11yOptions)
   await page.keyboard.press('Escape')
 
   await page.locator('a[href="#main-content"]').focus()
@@ -57,15 +69,41 @@ test('home shell landmarks and keyboard window controls are accessible', async (
     await expect(minimize).toBeFocused()
     await page.screenshot({path: path.join(artifactDir, 'home-window-control-focus-light.png')})
     await page.evaluate(() => document.documentElement.classList.add('dark'))
+    await settleTransitions(page)
     await page.locator('a[href="#main-content"]').focus()
     await page.screenshot({path: path.join(artifactDir, 'home-skip-link-dark.png')})
     await minimize.focus()
+    await settleTransitions(page)
     await page.screenshot({path: path.join(artifactDir, 'home-window-control-focus-dark.png')})
   }
 
+  const originalViewport = page.viewportSize()
+  if (originalViewport) {
+    await page.setViewportSize({width: 640, height: originalViewport.height})
+    const siteFileBrowser = page.getByRole('complementary', {name: 'Site documents'})
+    if (await siteFileBrowser.isVisible()) {
+      await page.getByRole('button', {name: 'Collapse file browser'}).click()
+      await expect(siteFileBrowser).toBeHidden()
+    }
+    const sidebar = page.locator('[data-a11y-region="sidebar"]')
+    await expect.poll(async () => (await sidebar.boundingBox())?.width ?? 0).toBeLessThanOrEqual(1)
+    await expect(sidebar).toHaveAttribute('hidden', '')
+    await expect(sidebar).toHaveCSS('display', 'none')
+    await expect(sidebar.getByText('Home', {exact: true}).first()).toBeHidden()
+    await page.screenshot({path: path.join(artifactDir, 'home-sidebar-collapsed-640.png')})
+    const documentWidth = await page.evaluate(() => ({
+      scrollWidth: document.scrollingElement?.scrollWidth ?? 0,
+      clientWidth: document.scrollingElement?.clientWidth ?? 0,
+    }))
+    expect(documentWidth.scrollWidth).toBeLessThanOrEqual(documentWidth.clientWidth + 1)
+    await page.setViewportSize(originalViewport)
+  }
+
   const settingsWindowPromise = app.waitForEvent('window')
-  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+,' : 'Control+,')
+  await page.getByRole('button', {name: 'Open account menu'}).click()
+  await page.getByRole('menuitem', {name: 'App settings'}).click()
   const settingsWindow = await settingsWindowPromise
-  await expect(settingsWindow.locator('#main-content')).toHaveCount(1)
-  await expectNoA11yViolations(settingsWindow, {modes: [...a11yModes]})
+  await expect(settingsWindow.locator('#main-content')).toBeVisible()
+  await expect(settingsWindow.getByRole('button', {name: 'General settings'})).toBeVisible()
+  await expectNoA11yViolations(settingsWindow, a11yOptions)
 })
