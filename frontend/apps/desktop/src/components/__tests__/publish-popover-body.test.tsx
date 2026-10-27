@@ -185,7 +185,21 @@ describe('PublishPopoverBody', () => {
   it('lists accessibility issues, focuses their block, and keeps Publish advisory', async () => {
     setSnapshot({
       draftId: 'draft-1',
-      blocks: [{block: {id: 'image-1', type: 'Image', text: '', attributes: {}, link: ''}}],
+      blocks: [
+        {block: {id: 'image-1', type: 'Image', text: '', attributes: {name: 'flower.jpg'}, link: ''}},
+        {block: {id: 'image-2', type: 'Image', text: 'cat.png', attributes: {name: 'cat.png'}, link: ''}},
+        {block: {id: 'heading-1', type: 'Heading', text: 'Title', attributes: {}}},
+        {block: {id: 'heading-2', type: 'Heading', text: 'Details', attributes: {}}},
+        {block: {id: 'heading-3', type: 'Heading', text: '', attributes: {}}},
+        {
+          block: {
+            id: 'link-1',
+            type: 'Paragraph',
+            text: 'click here',
+            annotations: [{type: 'Link', starts: [0], ends: [10], link: 'https://example.com'}],
+          },
+        },
+      ],
     })
     const onFocusBlock = vi.fn()
     const docId = hmId('acct-1', {path: ['draft']})
@@ -193,12 +207,32 @@ describe('PublishPopoverBody', () => {
     try {
       const section = container.querySelector('section[aria-labelledby="publish-accessibility-heading"]')
       expect(section?.textContent).toContain('Accessibility')
-      const issueButton = section?.querySelector('button')
-      expect(issueButton?.textContent).toBe('Add alt text to this image.')
+      const issueButtons = Array.from(section?.querySelectorAll('button') ?? [])
+      expect(issueButtons.map((button) => button.textContent)).toEqual([
+        'Image 1: add alt text (flower.jpg)',
+        'Image 2: replace filename "cat.png" with descriptive alt text',
+        'Heading 3 is empty',
+        'Link "click here" needs descriptive text',
+      ])
+      expect(issueButtons[0]?.getAttribute('aria-label')).toBe('Go to Image 1: add alt text (flower.jpg)')
+      expect(issueButtons[0]?.className).toContain('underline')
+      expect(issueButtons[0]?.className).toContain('focus-visible:ring-2')
+      expect(section?.querySelector('[aria-live="polite"]')).toBeTruthy()
       expect(container.querySelector('button:disabled')).toBeNull()
       await expectNoAxeViolations(container)
-      act(() => issueButton?.click())
+      act(() => issueButtons[0]?.click())
       expect(onFocusBlock).toHaveBeenCalledWith('image-1')
+    } finally {
+      cleanup(root, container)
+    }
+  })
+
+  it('hides the accessibility section when the document has no issues', () => {
+    setSnapshot({draftId: 'draft-1', blocks: [{block: {id: 'paragraph-1', type: 'Paragraph', text: 'All good'}}]})
+    const docId = hmId('acct-1', {path: ['draft']})
+    const {container, root} = renderPopover(docId, vi.fn())
+    try {
+      expect(container.querySelector('section[aria-labelledby="publish-accessibility-heading"]')).toBeNull()
     } finally {
       cleanup(root, container)
     }

@@ -32,6 +32,7 @@ import {toast} from './toast'
 import {Tooltip} from './tooltip'
 import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
+import {PublishAccessibilityIssues} from './publish-accessibility-issues'
 
 /** Platform callbacks injected by the host (desktop or web). */
 export type EditingToolbarCallbacks = {
@@ -332,25 +333,7 @@ export function PublishPopoverBody({
         </div>
       ) : null}
 
-      {accessibilityIssues.length > 0 ? (
-        <section aria-labelledby="publish-accessibility-heading">
-          <h3 id="publish-accessibility-heading" className="text-base font-medium">
-            Accessibility
-          </h3>
-          <div aria-live="polite" className="mt-2 flex flex-col gap-1">
-            {accessibilityIssues.map((issue) => (
-              <button
-                key={`${issue.blockId}:${issue.kind}`}
-                type="button"
-                className="hover:bg-muted rounded px-2 py-1.5 text-left text-sm"
-                onClick={() => onFocusBlock?.(issue.blockId)}
-              >
-                {issue.message}
-              </button>
-            ))}
-          </div>
-        </section>
-      ) : null}
+      <PublishAccessibilityIssues issues={accessibilityIssues} onFocusBlock={onFocusBlock} />
 
       <Separator className="bg-black/10 dark:bg-white/10" />
 

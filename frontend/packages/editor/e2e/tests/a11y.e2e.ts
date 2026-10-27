@@ -255,4 +255,33 @@ test.describe('editor accessibility', () => {
     await expect(dialog).toBeHidden()
     await expect(page.locator('[contenteditable="true"]').first()).toBeFocused()
   })
+
+  for (const key of ['Backspace', 'Delete'] as const) {
+    test(`selected media block deletion with ${key} is announced`, async ({page, editorHelpers}) => {
+      await page.goto('/?fixture=allBlocks&real=1&edit=1')
+      await editorHelpers.waitForEditorReady()
+      const images = page.locator('[data-content-type="image"]')
+      const imageCount = await images.count()
+      const blockId = await page.evaluate(
+        () => window.TEST_EDITOR?.getBlocks().find((block) => block.type === 'image')?.id,
+      )
+      if (!blockId) throw new Error('No image block in the all-blocks fixture')
+
+      await images.first().click({position: {x: 16, y: 12}})
+      await expect.poll(() => page.evaluate(() => window.TEST_EDITOR?.pmSelection().kind)).toBe('NodeSelection')
+      await expect.poll(() => page.evaluate(() => window.TEST_EDITOR?.pmSelection().blockId)).toBe(blockId)
+      await page.keyboard.press(key)
+
+      await expect.poll(() => images.count()).toBe(imageCount - 1)
+      await expect(page.locator('[data-editor-live-region]')).toHaveText('Block deleted')
+    })
+  }
+
+  test('ordinary character deletion does not announce a block deletion', async ({page, editorHelpers}) => {
+    await page.goto('/?fixture=empty&edit=1')
+    await editorHelpers.waitForEditorReady()
+    await editorHelpers.typeText('Ordinary text')
+    await page.keyboard.press('Backspace')
+    await expect(page.locator('[data-editor-live-region]')).toHaveText('')
+  })
 })

@@ -6,23 +6,32 @@ const node = (id: string, block: Record<string, any>, children?: HMBlockNode[]):
   ({block: {id, ...block}, children}) as HMBlockNode
 
 describe('checkDocumentAccessibility', () => {
-  it('reports missing image alt text, filename alt text, and empty headings recursively', () => {
+  it('identifies image, heading, and link findings with document-wide ordinals', () => {
     const issues = checkDocumentAccessibility([
-      node('missing-image', {type: 'Image', text: '', attributes: {name: 'flower.jpg'}}),
-      node('filename-image', {type: 'Image', text: 'flower.jpg', attributes: {name: 'flower.jpg'}}),
+      node('heading-one', {type: 'Heading', text: 'Introduction', attributes: {}}),
+      node('image-one', {type: 'Image', text: 'A flower', attributes: {name: 'flower.jpg'}}),
       node('parent', {type: 'Paragraph', text: 'Parent'}, [
-        node('empty-heading', {type: 'Heading', text: '  ', attributes: {}}),
+        node('image-two', {type: 'Image', text: '', attributes: {name: 'portrait.png'}}),
+        node('heading-two', {type: 'Heading', text: 'Details', attributes: {}}),
       ]),
+      node('empty-heading', {type: 'Heading', text: '  ', attributes: {}}),
+      node('filename-image', {type: 'Image', text: 'camera.png', attributes: {name: 'camera.png'}}),
+      node('vague-link', {
+        type: 'Paragraph',
+        text: 'click here',
+        annotations: [{type: 'Link', starts: [0], ends: ['click here'.length], link: 'https://example.com'}],
+      }),
     ])
 
     expect(issues).toEqual([
-      {blockId: 'missing-image', kind: 'image-missing-alt', message: 'Add alt text to this image.'},
+      {blockId: 'image-two', kind: 'image-missing-alt', message: 'Image 2: add alt text (portrait.png)'},
+      {blockId: 'empty-heading', kind: 'empty-heading', message: 'Heading 3 is empty'},
       {
         blockId: 'filename-image',
         kind: 'image-alt-is-filename',
-        message: 'Replace the image filename with a description.',
+        message: 'Image 3: replace filename "camera.png" with descriptive alt text',
       },
-      {blockId: 'empty-heading', kind: 'empty-heading', message: 'Add text to this heading.'},
+      {blockId: 'vague-link', kind: 'vague-link-text', message: 'Link "click here" needs descriptive text'},
     ])
   })
 
@@ -43,8 +52,12 @@ describe('checkDocumentAccessibility', () => {
       }),
     ])
 
-    expect(issues.map(({blockId, kind}) => ({blockId, kind}))).toEqual(
-      vagueTexts.map((_, index) => ({blockId: `vague-${index}`, kind: 'vague-link-text'})),
+    expect(issues).toEqual(
+      vagueTexts.map((text, index) => ({
+        blockId: `vague-${index}`,
+        kind: 'vague-link-text',
+        message: `Link "${text.trim()}" needs descriptive text`,
+      })),
     )
   })
 })

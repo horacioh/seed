@@ -9,15 +9,18 @@ export type DocumentA11yIssue = {
 
 const vagueLinkText = new Set(['click here', 'here', 'link', 'this link', 'read more', 'more', 'learn more'])
 
-function getVagueLinkText(text: string, annotations: HMAnnotation[] = []): boolean {
-  return annotations.some((annotation) => {
-    if (annotation.type !== 'Link') return false
-    return annotation.starts.some((start, index) => {
+function getVagueLinkTexts(text: string, annotations: HMAnnotation[] = []): string[] {
+  const matches: string[] = []
+  for (const annotation of annotations) {
+    if (annotation.type !== 'Link') continue
+    annotation.starts.forEach((start, index) => {
       const end = annotation.ends[index]
-      if (end === undefined) return false
-      return vagueLinkText.has(text.slice(start, end).trim().toLowerCase())
+      if (end === undefined) return
+      const linkText = text.slice(start, end).trim()
+      if (vagueLinkText.has(linkText.toLowerCase())) matches.push(linkText)
     })
-  })
+  }
+  return matches
 }
 
 /**
@@ -26,36 +29,50 @@ function getVagueLinkText(text: string, annotations: HMAnnotation[] = []): boole
  */
 export function checkDocumentAccessibility(blocks: HMBlockNode[]): DocumentA11yIssue[] {
   const issues: DocumentA11yIssue[] = []
+  let imageOrdinal = 0
+  let headingOrdinal = 0
 
   const visit = (nodes: HMBlockNode[]) => {
     for (const node of nodes) {
       const block = node.block
       if (block.type === 'Image') {
+        imageOrdinal += 1
         const alt = block.text.trim()
+        const fileName = (block.attributes.name ?? '').trim()
         if (!alt) {
           issues.push({
             blockId: block.id,
             kind: 'image-missing-alt',
-            message: 'Add alt text to this image.',
+            message: `Image ${imageOrdinal}: add alt text${fileName ? ` (${fileName})` : ''}`,
           })
-        } else if (alt.toLowerCase() === (block.attributes.name ?? '').trim().toLowerCase()) {
+        } else if (alt.toLowerCase() === fileName.toLowerCase()) {
           issues.push({
             blockId: block.id,
             kind: 'image-alt-is-filename',
-            message: 'Replace the image filename with a description.',
+            message: fileName
+              ? `Image ${imageOrdinal}: replace filename "${fileName}" with descriptive alt text`
+              : `Image ${imageOrdinal}: replace filename alt text with a description`,
           })
         }
-      } else if (block.type === 'Heading' && !block.text.trim()) {
-        issues.push({blockId: block.id, kind: 'empty-heading', message: 'Add text to this heading.'})
+      } else if (block.type === 'Heading') {
+        headingOrdinal += 1
+        if (!block.text.trim()) {
+          issues.push({
+            blockId: block.id,
+            kind: 'empty-heading',
+            message: `Heading ${headingOrdinal} is empty`,
+          })
+        }
       }
 
-      if (
-        'text' in block &&
-        typeof block.text === 'string' &&
-        'annotations' in block &&
-        getVagueLinkText(block.text, block.annotations ?? [])
-      ) {
-        issues.push({blockId: block.id, kind: 'vague-link-text', message: 'Use descriptive link text.'})
+      if ('text' in block && typeof block.text === 'string' && 'annotations' in block) {
+        for (const linkText of getVagueLinkTexts(block.text, block.annotations ?? [])) {
+          issues.push({
+            blockId: block.id,
+            kind: 'vague-link-text',
+            message: `Link "${linkText}" needs descriptive text`,
+          })
+        }
       }
 
       if (node.children?.length) visit(node.children)

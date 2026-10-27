@@ -27,6 +27,14 @@ export const KeyboardShortcutsExtension = Extension.create<{
     // handleBackspace is partially adapted from https://github.com/ueberdosis/tiptap/blob/ed56337470efb4fd277128ab7ef792b37cfae992/packages/core/src/extensions/keymap.ts
     const handleBackspace = () =>
       this.editor.commands.first(({chain, commands}) => [
+        () =>
+          commands.command(({state, dispatch}) => {
+            if (!(state.selection instanceof NodeSelection)) return false
+            if (!dispatch) return true
+            dispatch(state.tr.deleteSelection())
+            this.options.editor.announceAccessibilityMessage('Block deleted')
+            return true
+          }),
         // Deletes the selection if it's not empty.
         () => commands.deleteSelection(),
         // Undoes an input rule if one was triggered in the last editor state change.
@@ -324,6 +332,14 @@ export const KeyboardShortcutsExtension = Extension.create<{
 
     const handleDelete = () =>
       this.editor.commands.first(({commands}) => [
+        () =>
+          commands.command(({state, dispatch}) => {
+            if (!(state.selection instanceof NodeSelection)) return false
+            if (!dispatch) return true
+            dispatch(state.tr.deleteSelection())
+            this.options.editor.announceAccessibilityMessage('Block deleted')
+            return true
+          }),
         // Deletes the selection if it's not empty.
         () => commands.deleteSelection(),
         // Merges block with the next one (at the same nesting level or lower),
