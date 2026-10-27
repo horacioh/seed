@@ -85,14 +85,18 @@ export async function runEditorScenario(page: Page, reader: ScreenReader) {
   await expectSpoken(reader, optionName)
 }
 
-/** Checks the vault email label and its invalid-email submit announcement. */
+/** Checks that invalid-email feedback is linked to and announced from the email field. */
 export async function runVaultScenario(page: Page, reader: ScreenReader) {
   await page.goto(process.env.A11Y_VAULT_URL ?? 'http://localhost:3030/vault')
   const email = page.getByLabel('Enter your email to continue')
   await email.focus()
   await expectSpoken(reader, 'Enter your email to continue')
   await email.fill('invalid-email')
-  await page.locator('form').getByRole('button').click()
-  await expect(page.getByRole('alert')).toContainText('valid email')
-  await expectSpoken(reader, 'valid email')
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Shift+Tab')
+  await expect(email).toHaveAttribute('aria-invalid', 'true')
+  await expect(email).toHaveAttribute('aria-describedby', 'email-error')
+  await expect(page.getByRole('alert')).toContainText("That doesn't look like a valid email")
+  await expectSpoken(reader, 'invalid')
+  await expectSpoken(reader, "That doesn't look like a valid email")
 }
