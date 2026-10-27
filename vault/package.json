@@ -72,6 +72,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@types/bun": "latest",
+    "@types/culori": "4.0.1",
     "@types/mjml": "^4.7.4",
     "@types/nodemailer": "^7.0.9",
     "@types/react": "18.2.64",
