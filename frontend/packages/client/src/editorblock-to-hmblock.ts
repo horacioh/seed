@@ -271,6 +271,12 @@ export function editorBlockToHMBlock(editorBlock: EditorBlock): HMBlock {
     if (editorBlock.props.muted === 'true') {
       blockVideo.attributes.muted = true
     }
+    if (editorBlock.props.captions) {
+      blockVideo.attributes.captions = editorBlock.props.captions
+    }
+    if (editorBlock.props.captionsLang) {
+      blockVideo.attributes.captionsLang = editorBlock.props.captionsLang
+    }
   }
 
   const blockFile = block.type === 'File' ? block : undefined

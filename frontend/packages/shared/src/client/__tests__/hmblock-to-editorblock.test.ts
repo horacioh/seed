@@ -719,6 +719,54 @@ describe('HMBlock to EditorBlock', () => {
       expect(val).toEqual(result)
     })
 
+    test('video preserves captions attributes', () => {
+      const hmBlock: HMBlock = {
+        id: 'foo',
+        type: 'Video',
+        text: '',
+        link: 'ipfs://foobarcid_VIDEO',
+        annotations: [],
+        attributes: {
+          captions: 'ipfs://foobarcid_CAPTIONS',
+          captionsLang: 'fr-CA',
+        },
+      }
+
+      expect(hmBlockToEditorBlock(hmBlock)).toMatchObject({
+        id: 'foo',
+        type: 'video',
+        props: {
+          url: 'ipfs://foobarcid_VIDEO',
+          captions: 'ipfs://foobarcid_CAPTIONS',
+          captionsLang: 'fr-CA',
+        },
+      })
+    })
+
+    test('video omits empty captions attributes', () => {
+      const hmBlock: HMBlock = {
+        id: 'foo',
+        type: 'Video',
+        text: '',
+        link: 'ipfs://foobarcid_VIDEO',
+        annotations: [],
+        attributes: {
+          captions: '',
+          captionsLang: '',
+        },
+      }
+
+      const converted = hmBlockToEditorBlock(hmBlock)
+      expect(converted).toMatchObject({
+        type: 'video',
+        props: {
+          url: 'ipfs://foobarcid_VIDEO',
+        },
+      })
+      expect(converted.props).not.toHaveProperty('captions')
+      expect(converted.props).not.toHaveProperty('captionsLang')
+    })
+
     test('video without video options has no extra props', () => {
       const hmBlock: HMBlock = {
         id: 'foo',

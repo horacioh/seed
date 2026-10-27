@@ -89,6 +89,8 @@ export interface VideoBlockProps extends MediaBlockProps {
   autoplay?: string
   loop?: string
   muted?: string
+  captions?: string
+  captionsLang?: string
 }
 
 export interface EditorVideoBlock extends EditorBaseBlock {

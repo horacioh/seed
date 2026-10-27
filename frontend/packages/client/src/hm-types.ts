@@ -327,6 +327,10 @@ export const HMBlockVideoSchema = z
         autoplay: z.boolean().optional(),
         loop: z.boolean().optional(),
         muted: z.boolean().optional(),
+        /** WebVTT captions file for the video — an ipfs:// link. */
+        captions: z.string().optional(),
+        /** Language of the captions as a BCP 47 tag. */
+        captionsLang: z.string().optional(),
       })
       .optional()
       .default({}),

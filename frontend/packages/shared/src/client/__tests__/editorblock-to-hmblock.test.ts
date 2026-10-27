@@ -673,6 +673,55 @@ describe('EditorBlock to HMBlock', () => {
       expect(val).toEqual(result)
     })
 
+    test('video preserves captions attributes', () => {
+      const editorBlock: EditorVideoBlock = {
+        id: 'foo',
+        type: 'video',
+        children: [],
+        props: {
+          url: 'ipfs://foobarcid_VIDEO',
+          captions: 'ipfs://foobarcid_CAPTIONS',
+          captionsLang: 'fr-CA',
+        },
+        content: [{type: 'text', text: '', styles: {}}],
+      }
+
+      expect(editorBlockToHMBlock(editorBlock)).toEqual({
+        id: 'foo',
+        type: 'Video',
+        text: '',
+        link: 'ipfs://foobarcid_VIDEO',
+        annotations: [],
+        attributes: {
+          captions: 'ipfs://foobarcid_CAPTIONS',
+          captionsLang: 'fr-CA',
+        },
+      })
+    })
+
+    test('video omits empty captions attributes', () => {
+      const editorBlock: EditorVideoBlock = {
+        id: 'foo',
+        type: 'video',
+        children: [],
+        props: {
+          url: 'ipfs://foobarcid_VIDEO',
+          captions: '',
+          captionsLang: '',
+        },
+        content: [{type: 'text', text: '', styles: {}}],
+      }
+
+      expect(editorBlockToHMBlock(editorBlock)).toEqual({
+        id: 'foo',
+        type: 'Video',
+        text: '',
+        link: 'ipfs://foobarcid_VIDEO',
+        annotations: [],
+        attributes: {},
+      })
+    })
+
     test('video with default values does not write optional attributes', () => {
       const editorBlock: EditorVideoBlock = {
         id: 'foo',

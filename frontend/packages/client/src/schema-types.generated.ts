@@ -477,14 +477,14 @@ export type HMBlockTextAlignment = 'left' | 'center' | 'right' | 'justify'
 /**
  * Video Block
  * A video referenced by an ipfs:// file or a supported web video URL, with playback attributes.
- * A video from an `ipfs://` file or a supported web video URL, with playback settings.
+ * A video from an `ipfs://` file or a supported web video URL, with playback and captions settings.
  * Schema: hm://hyper.media/block/video
  */
 export type HMBlockVideo = HMBlockBase & {
   type?: 'Video'
   /** The video — an `ipfs://<cid>` file or a web video URL such as a YouTube link. */
   link: HMUrl
-  /** Playback settings and parent-layout attributes. */
+  /** Playback, captions and parent-layout attributes. */
   attributes?: {
     /** How this block lays out its children — a children type such as `Unordered` or `Grid`. */
     childrenType?: HMBlockChildrenType
@@ -502,6 +502,10 @@ export type HMBlockVideo = HMBlockBase & {
     loop?: boolean
     /** Play without sound. */
     muted?: boolean
+    /** WebVTT captions file for the video — an ipfs:// link. */
+    captions?: HMUrl
+    /** Language of the captions as a BCP 47 tag. */
+    captionsLang?: string
   } & {[key: string]: unknown}
 }
 
