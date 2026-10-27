@@ -1,6 +1,7 @@
 import {expect} from '@playwright/test'
 import {voiceOverTest as test} from './fixtures'
 import {launchUnpackagedApp} from './launch-electron'
+import {expectSpoken} from './scenarios'
 
 test.afterEach(async ({voiceOver}, testInfo) => {
   await testInfo.attach('spoken-phrase-log.txt', {
@@ -14,22 +15,23 @@ test('desktop shell announcements', async ({voiceOver}) => {
 
   try {
     const page = await app.firstWindow()
-    await expect(page.getByRole('button', {name: /close window/i})).toBeVisible()
-    await expect
-      .poll(async () => (await voiceOver.spokenPhraseLog()).join('\n').toLowerCase())
-      .toContain('close window')
+    const backButton = page
+      .locator('header[data-a11y-region="titlebar"]')
+      .getByRole('button', {name: 'Back', exact: true})
+    await expect(backButton).toBeVisible()
+    await backButton.focus()
+    await expectSpoken(voiceOver, 'Back')
+    await expectSpoken(voiceOver, 'button')
 
     for (let index = 0; index < 4; index += 1) {
       await page.keyboard.press('F6')
     }
     for (const regionName of ['banner', 'sidebar', 'main']) {
-      await expect.poll(async () => (await voiceOver.spokenPhraseLog()).join('\n').toLowerCase()).toContain(regionName)
+      await expectSpoken(voiceOver, regionName)
     }
 
     await page.getByRole('link', {name: /skip to content/i}).focus()
-    await expect
-      .poll(async () => (await voiceOver.spokenPhraseLog()).join('\n').toLowerCase())
-      .toContain('skip to content')
+    await expectSpoken(voiceOver, 'skip to content')
   } finally {
     await app.close()
   }
