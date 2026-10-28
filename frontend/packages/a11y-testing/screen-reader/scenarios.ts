@@ -54,6 +54,11 @@ export function startNavigationTrace(reader: ScreenReader) {
   tracedReaders.add(reader)
 }
 
+/** Adds a diagnostic entry to the current test's navigation trace. */
+export function appendNavigationTrace(reader: ScreenReader, entry: string) {
+  navigationTrace.get(reader)?.push(entry)
+}
+
 /** Waits until a captured screen reader phrase contains a case-insensitive fragment. */
 export async function expectSpoken(reader: ScreenReader, phrase: string) {
   await expect

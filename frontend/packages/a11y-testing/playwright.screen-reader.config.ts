@@ -6,14 +6,24 @@ const voiceoverProject = {
   testMatch: ['**/*.voiceover.spec.ts'],
   use: {browserName: 'webkit' as const, headless: false},
 }
+const voiceoverChromiumProject = {
+  name: 'voiceover-chromium',
+  testMatch: ['**/reader.voiceover.spec.ts'],
+  grep: /editor announcements|vault email and submit error/,
+  use: {browserName: 'chromium' as const, headless: false},
+}
 const nvdaProject = {
   name: 'nvda',
   testMatch: ['**/*.nvda.spec.ts'],
   use: {browserName: 'chromium' as const, headless: false},
 }
-const allProjects = [voiceoverProject, nvdaProject]
+const allProjects = [voiceoverProject, voiceoverChromiumProject, nvdaProject]
 const platformProjects =
-  process.platform === 'darwin' ? [voiceoverProject] : process.platform === 'win32' ? [nvdaProject] : []
+  process.platform === 'darwin'
+    ? [voiceoverProject, voiceoverChromiumProject]
+    : process.platform === 'win32'
+      ? [nvdaProject]
+      : []
 const projects = process.env.SR_PROJECTS === 'all' ? allProjects : platformProjects
 
 export default defineConfig({

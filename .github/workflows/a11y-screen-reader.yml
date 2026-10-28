@@ -37,19 +37,8 @@ jobs:
       - name: Install Vault dependencies
         working-directory: vault
         run: bun install --frozen-lockfile
-      - name: Download embedded model
-        shell: bash
-        run: |
-          set -euo pipefail
-          model=backend/llm/backends/llamacpp/models/granite-embedding-107m-multilingual-Q8_0.gguf
-          mkdir -p "$(dirname "$model")"
-          curl -fSL -o "$model" "https://huggingface.co/keisuke-miyako/granite-embedding-107m-multilingual-gguf-q8_0/resolve/240a3d36d952677199045d0139efa056b830819c/granite-embedding-107m-multilingual-Q8_0.gguf?download=true"
-          checksum='931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d'
-          if command -v sha256sum >/dev/null 2>&1; then
-            printf '%s  %s\n' "$checksum" "$model" | sha256sum -c -
-          else
-            printf '%s  %s\n' "$checksum" "$model" | shasum -a 256 -c -
-          fi
+      - name: Create GGUF stub for go:embed
+        uses: ./.github/actions/prepare-embedded-model
       - name: Build daemon
         shell: bash
         run: |
@@ -70,39 +59,18 @@ jobs:
         run: |
           pnpm exec guidepup setup --ci
           pnpm exec guidepup install
-      - name: Dismiss Guidepup portable preferences
-        shell: bash
-        run: |
-          osascript -e 'tell application "System Events" to get name of every process whose background only is false' || true
-          osascript -e 'tell application "System Events" to get name of every window of (every process whose name contains "VoiceOver")' || true
-          osascript <<'APPLESCRIPT' || true
-          tell application "System Events"
-            repeat 30 times
-              set clickedAlwaysUse to false
-              set voiceOverProcesses to every process whose name contains "VoiceOver"
-              repeat with voiceOverProcess in voiceOverProcesses
-                set voiceOverWindows to {}
-                try
-                  set voiceOverWindows to windows of voiceOverProcess
-                end try
-                repeat with voiceOverWindow in voiceOverWindows
-                  try
-                    click button "Always Use" of voiceOverWindow
-                    set clickedAlwaysUse to true
-                  end try
-                end repeat
-              end repeat
-              if clickedAlwaysUse then exit repeat
-              delay 1
-            end repeat
-          end tell
-          APPLESCRIPT
       - name: Install WebKit
         working-directory: frontend/packages/a11y-testing
         run: pnpm exec playwright install webkit
+      - name: Install Chromium
+        working-directory: frontend/packages/a11y-testing
+        run: pnpm exec playwright install chromium
       - name: Run VoiceOver web suite
         working-directory: frontend/packages/a11y-testing
         run: pnpm test:screen-reader -- --project=voiceover screen-reader/reader.voiceover.spec.ts
+      - name: Run VoiceOver Chromium diagnostic suite
+        working-directory: frontend/packages/a11y-testing
+        run: pnpm test:screen-reader -- --project=voiceover-chromium screen-reader/reader.voiceover.spec.ts
       - name: Upload spoken phrases and traces
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -130,14 +98,8 @@ jobs:
       - name: Install Vault dependencies
         working-directory: vault
         run: bun install --frozen-lockfile
-      - name: Download embedded model
-        shell: bash
-        run: |
-          set -euo pipefail
-          model=backend/llm/backends/llamacpp/models/granite-embedding-107m-multilingual-Q8_0.gguf
-          mkdir -p "$(dirname "$model")"
-          curl -fSL -o "$model" "https://huggingface.co/keisuke-miyako/granite-embedding-107m-multilingual-gguf-q8_0/resolve/240a3d36d952677199045d0139efa056b830819c/granite-embedding-107m-multilingual-Q8_0.gguf?download=true"
-          printf '%s  %s\n' '931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d' "$model" | sha256sum -c -
+      - name: Create GGUF stub for go:embed
+        uses: ./.github/actions/prepare-embedded-model
       - name: Build daemon
         shell: bash
         run: |
@@ -183,19 +145,8 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.3.10
-      - name: Download embedded model
-        shell: bash
-        run: |
-          set -euo pipefail
-          model=backend/llm/backends/llamacpp/models/granite-embedding-107m-multilingual-Q8_0.gguf
-          mkdir -p "$(dirname "$model")"
-          curl -fSL -o "$model" "https://huggingface.co/keisuke-miyako/granite-embedding-107m-multilingual-gguf-q8_0/resolve/240a3d36d952677199045d0139efa056b830819c/granite-embedding-107m-multilingual-Q8_0.gguf?download=true"
-          checksum='931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d'
-          if command -v sha256sum >/dev/null 2>&1; then
-            printf '%s  %s\n' "$checksum" "$model" | sha256sum -c -
-          else
-            printf '%s  %s\n' "$checksum" "$model" | shasum -a 256 -c -
-          fi
+      - name: Create GGUF stub for go:embed
+        uses: ./.github/actions/prepare-embedded-model
       - name: Build desktop test bundle
         shell: bash
         run: |
@@ -232,33 +183,6 @@ jobs:
         run: |
           pnpm exec guidepup setup --ci
           pnpm exec guidepup install
-      - name: Dismiss Guidepup portable preferences
-        shell: bash
-        run: |
-          osascript -e 'tell application "System Events" to get name of every process whose background only is false' || true
-          osascript -e 'tell application "System Events" to get name of every window of (every process whose name contains "VoiceOver")' || true
-          osascript <<'APPLESCRIPT' || true
-          tell application "System Events"
-            repeat 30 times
-              set clickedAlwaysUse to false
-              set voiceOverProcesses to every process whose name contains "VoiceOver"
-              repeat with voiceOverProcess in voiceOverProcesses
-                set voiceOverWindows to {}
-                try
-                  set voiceOverWindows to windows of voiceOverProcess
-                end try
-                repeat with voiceOverWindow in voiceOverWindows
-                  try
-                    click button "Always Use" of voiceOverWindow
-                    set clickedAlwaysUse to true
-                  end try
-                end repeat
-              end repeat
-              if clickedAlwaysUse then exit repeat
-              delay 1
-            end repeat
-          end tell
-          APPLESCRIPT
       - name: Run packaged-app VoiceOver suite
         working-directory: frontend/packages/a11y-testing
         env:
@@ -288,14 +212,8 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.3.10
-      - name: Download embedded model
-        shell: bash
-        run: |
-          set -euo pipefail
-          model=backend/llm/backends/llamacpp/models/granite-embedding-107m-multilingual-Q8_0.gguf
-          mkdir -p "$(dirname "$model")"
-          curl -fSL -o "$model" "https://huggingface.co/keisuke-miyako/granite-embedding-107m-multilingual-gguf-q8_0/resolve/240a3d36d952677199045d0139efa056b830819c/granite-embedding-107m-multilingual-Q8_0.gguf?download=true"
-          printf '%s  %s\n' '931036c9173fe126d794191206c5a0f064d4b9c0f7ad82dfba6cc95b458f6d6d' "$model" | sha256sum -c -
+      - name: Create GGUF stub for go:embed
+        uses: ./.github/actions/prepare-embedded-model
       - name: Build packaged app
         shell: bash
         run: |

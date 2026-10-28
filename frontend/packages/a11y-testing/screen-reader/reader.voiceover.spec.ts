@@ -6,12 +6,7 @@ import {
   runLandmarkScenario,
   runSkipLinkScenario,
   runVaultScenario,
-  startNavigationTrace,
 } from './scenarios'
-
-voiceOverTest.beforeEach(async ({voiceOver}) => {
-  startNavigationTrace(voiceOver)
-})
 
 voiceOverTest.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)

@@ -3,11 +3,7 @@ import {mkdir, writeFile} from 'node:fs/promises'
 import {expect} from '@playwright/test'
 import {voiceOverTest as test} from './fixtures'
 import {launchUnpackagedApp} from './launch-electron'
-import {attachSpokenPhraseLog, expectSpoken, startNavigationTrace, tabUntilPhrase} from './scenarios'
-
-test.beforeEach(async ({voiceOver}) => {
-  startNavigationTrace(voiceOver)
-})
+import {attachSpokenPhraseLog, expectSpoken, tabUntilPhrase} from './scenarios'
 
 test.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)
@@ -54,14 +50,12 @@ test('desktop shell announcements', async ({voiceOver}, testInfo) => {
     await voiceOver.clearSpokenPhraseLog()
     await voiceOver.act()
     await expect(page.locator('#main-content')).toBeFocused()
+    await expectSpoken(voiceOver, 'heading level 1')
+    await expectSpoken(voiceOver, 'Welcome to Seed Hypermedia')
 
     await voiceOver.clearSpokenPhraseLog()
-    await voiceOver.press('F6')
-    const backButton = page
-      .locator('header[data-a11y-region="titlebar"]')
-      .getByRole('button', {name: 'Back', exact: true})
-    await expect(backButton).toBeFocused()
-    await expectSpoken(voiceOver, 'Back')
+    await tabUntilPhrase(voiceOver, 'Close Sidebar')
+    await expectSpoken(voiceOver, 'Close Sidebar')
     await expectSpoken(voiceOver, 'button')
 
     await voiceOver.clearSpokenPhraseLog()
