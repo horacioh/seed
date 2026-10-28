@@ -212,13 +212,13 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
     () => reader.previous(),
     30,
   )
+  await expectSpokenTogether(reader, ['Document content', 'edit'])
   await reader.clearSpokenPhraseLog()
   if (isVoiceOver) {
     await reader.interact()
   } else {
     await reader.act()
   }
-  await expectSpokenTogether(reader, ['Document content', 'edit'])
   if (reader.name.toLocaleLowerCase().includes('nvda')) {
     await expect.poll(async () => /multi ?line/i.test((await reader.spokenPhraseLog()).join('\n'))).toBe(true)
   }

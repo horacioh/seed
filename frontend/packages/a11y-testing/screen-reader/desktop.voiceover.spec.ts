@@ -14,6 +14,29 @@ test.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)
 })
 
+async function navigateToElectronWebContent(reader: VoiceOver) {
+  await reader.clearSpokenPhraseLog()
+  await reader.perform(reader.keyboardCommands.openItemChooser)
+  await expect.poll(async () => (await reader.lastSpokenPhrase()).toLocaleLowerCase()).toContain('item chooser')
+  await reader.clearSpokenPhraseLog()
+
+  let foundWebContent = false
+  for (const character of 'web content') {
+    await reader.type(character, {capture: 'initial'})
+    const phrase = (await reader.lastSpokenPhrase()).toLocaleLowerCase()
+    await reader.clearSpokenPhraseLog()
+    if (phrase.includes('web content')) {
+      foundWebContent = true
+      break
+    }
+  }
+  expect(foundWebContent).toBe(true)
+  await reader.press('Enter')
+  await reader.clearSpokenPhraseLog()
+  await reader.interact()
+  await reader.clearSpokenPhraseLog()
+}
+
 test('desktop shell announcements', async ({voiceOver}, testInfo) => {
   const app = await launchUnpackagedApp()
 
@@ -52,6 +75,7 @@ test('desktop shell announcements', async ({voiceOver}, testInfo) => {
 
     const guidepupVoiceOver = voiceOver as VoiceOver
     await guidepupVoiceOver.perform(guidepupVoiceOver.keyboardCommands.moveToFirst)
+    await navigateToElectronWebContent(guidepupVoiceOver)
     await navigateUntilPhrase(
       voiceOver,
       ['skip to content'],
