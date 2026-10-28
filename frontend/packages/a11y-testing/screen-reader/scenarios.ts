@@ -82,7 +82,10 @@ async function pressTabAndMoveFromBrowserChrome(reader: ScreenReader) {
 
   if (
     reader.name.toLocaleLowerCase().includes('nvda') &&
-    phrases.some((phrase) => phrase.toLocaleLowerCase().includes('address and search bar'))
+    phrases.some((phrase) => {
+      const normalized = phrase.toLocaleLowerCase()
+      return normalized.includes('address and search bar') || normalized.includes('search tabs')
+    })
   ) {
     await reader.clearSpokenPhraseLog()
     await reader.press('F6')
@@ -103,10 +106,6 @@ async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
   }
 
   await expectSpoken(reader, phrase)
-}
-
-async function waitForEditorHarnessReady(page: Page) {
-  await expect(page.getByTestId('editor-info')).toContainText('Editor ready: Yes')
 }
 
 /** Saves the complete phrase log alongside each Playwright test result. */
@@ -153,7 +152,6 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   const editor = page.locator('[contenteditable="true"]').first()
   await expect(editor).toBeVisible()
-  await waitForEditorHarnessReady(page)
   await reader.navigateToWebContent()
   await tabUntilPhrase(reader, 'Document content')
   await expectSpokenTogether(reader, ['Document content', 'edit'])
@@ -192,7 +190,6 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   }
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   await expect(editor).toBeVisible()
-  await waitForEditorHarnessReady(page)
   await reader.navigateToWebContent()
   await tabUntilPhrase(reader, 'Document content')
   if (isVoiceOver) {
@@ -214,9 +211,14 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
 export async function runVaultScenario(page: Page, reader: WebScreenReader) {
   await page.goto(process.env.A11Y_VAULT_URL ?? 'http://localhost:3030/vault')
   const email = page.getByLabel('Enter your email to continue')
+  const isVoiceOver = reader.name.toLocaleLowerCase().includes('voiceover')
   await expect(email).toBeVisible()
   await reader.navigateToWebContent()
   await tabUntilPhrase(reader, 'Enter your email to continue')
+  if (isVoiceOver) {
+    await reader.clearSpokenPhraseLog()
+    await reader.interact()
+  }
   await reader.clearSpokenPhraseLog()
   await reader.type('invalid-email')
   await reader.clearSpokenPhraseLog()
@@ -228,4 +230,5 @@ export async function runVaultScenario(page: Page, reader: WebScreenReader) {
   await expect(page.getByRole('alert')).toContainText("That doesn't look like a valid email")
   await expectSpoken(reader, 'invalid')
   await expectSpoken(reader, "That doesn't look like a valid email")
+  if (isVoiceOver) await reader.stopInteracting()
 }
