@@ -17,10 +17,11 @@ export async function launchUnpackagedApp() {
     env: {
       ...process.env,
       NODE_ENV: 'test',
-      VITE_DESKTOP_P2P_PORT: process.env.VITE_DESKTOP_P2P_PORT ?? '5800',
+      VITE_VERSION: process.env.VITE_VERSION ?? '100.10.1',
+      VITE_DESKTOP_P2P_PORT: process.env.VITE_DESKTOP_P2P_PORT ?? '58000',
       VITE_DESKTOP_HTTP_PORT: process.env.VITE_DESKTOP_HTTP_PORT ?? '58001',
       VITE_DESKTOP_GRPC_PORT: process.env.VITE_DESKTOP_GRPC_PORT ?? '58002',
-      VITE_DESKTOP_APPDATA: process.env.VITE_DESKTOP_APPDATA ?? 'appData.test.local',
+      VITE_DESKTOP_APPDATA: process.env.VITE_DESKTOP_APPDATA ?? 'Seed.test',
     },
   })
 }

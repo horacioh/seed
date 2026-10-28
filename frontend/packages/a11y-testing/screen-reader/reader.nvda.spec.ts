@@ -6,7 +6,12 @@ import {
   runLandmarkScenario,
   runSkipLinkScenario,
   runVaultScenario,
+  startNavigationTrace,
 } from './scenarios'
+
+nvdaTest.beforeEach(async ({nvda}) => {
+  startNavigationTrace(nvda)
+})
 
 nvdaTest.afterEach(async ({nvda}, testInfo) => {
   await attachSpokenPhraseLog(nvda, testInfo)

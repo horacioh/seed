@@ -36,6 +36,24 @@ export interface WebScreenReader extends ScreenReader {
   previousLandmark(): Promise<void>
 }
 
+const navigationTrace = new WeakMap<ScreenReader, string[]>()
+const tracedReaders = new WeakSet<ScreenReader>()
+
+/** Starts recording phrase-log clears for the current test. */
+export function startNavigationTrace(reader: ScreenReader) {
+  navigationTrace.set(reader, [])
+  if (tracedReaders.has(reader)) return
+
+  const clearSpokenPhraseLog = reader.clearSpokenPhraseLog.bind(reader)
+  reader.clearSpokenPhraseLog = async () => {
+    const phrases = await reader.spokenPhraseLog()
+    const trace = navigationTrace.get(reader)
+    trace?.push(...phrases.map((phrase) => `phrase: ${phrase}`), 'clear: spoken phrase log')
+    await clearSpokenPhraseLog()
+  }
+  tracedReaders.add(reader)
+}
+
 /** Waits until a captured screen reader phrase contains a case-insensitive fragment. */
 export async function expectSpoken(reader: ScreenReader, phrase: string) {
   await expect
@@ -46,11 +64,7 @@ export async function expectSpoken(reader: ScreenReader, phrase: string) {
 /** Waits until one captured phrase contains every case-insensitive fragment. */
 export async function expectSpokenTogether(reader: ScreenReader, fragments: string[]) {
   await expect
-    .poll(async () =>
-      (await reader.spokenPhraseLog()).some((phrase) =>
-        fragments.every((fragment) => phrase.toLocaleLowerCase().includes(fragment.toLocaleLowerCase())),
-      ),
-    )
+    .poll(async () => (await reader.spokenPhraseLog()).some((phrase) => phraseContains(phrase, fragments)))
     .toBe(true)
 }
 
@@ -59,8 +73,9 @@ async function waitForSpeech(reader: ScreenReader) {
 }
 
 function phraseContains(phrase: string, fragments: string[]) {
-  const normalizedPhrase = phrase.toLocaleLowerCase()
-  return fragments.every((fragment) => normalizedPhrase.includes(fragment.toLocaleLowerCase()))
+  const normalize = (value: string) => value.toLocaleLowerCase().replace(/[\s,]/g, '')
+  const normalizedPhrase = normalize(phrase)
+  return fragments.every((fragment) => normalizedPhrase.includes(normalize(fragment)))
 }
 
 /** Moves the screen-reader cursor until one phrase contains all fragments. */
@@ -86,9 +101,9 @@ export async function navigateUntilPhrase(
   await expectSpokenTogether(reader, fragments)
 }
 
-async function pressTabAndMoveFromBrowserChrome(reader: ScreenReader) {
+async function pressAndMoveFromBrowserChrome(reader: ScreenReader, key: 'Tab' | 'Shift+Tab') {
   await reader.clearSpokenPhraseLog()
-  await reader.press('Tab')
+  await reader.press(key)
   await waitForSpeech(reader)
   let phrases = await reader.spokenPhraseLog()
 
@@ -109,11 +124,13 @@ async function pressTabAndMoveFromBrowserChrome(reader: ScreenReader) {
 }
 
 async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
-  for (let index = 0; index < 10; index += 1) {
-    const phrases = await pressTabAndMoveFromBrowserChrome(reader)
-    if (phrases.some((spoken) => phraseContains(spoken, [phrase]))) {
-      await expectSpoken(reader, phrase)
-      return
+  for (const key of ['Tab', 'Shift+Tab'] as const) {
+    for (let index = 0; index < 10; index += 1) {
+      const phrases = await pressAndMoveFromBrowserChrome(reader, key)
+      if (phrases.some((spoken) => phraseContains(spoken, [phrase]))) {
+        await expectSpoken(reader, phrase)
+        return
+      }
     }
   }
 
@@ -122,11 +139,18 @@ async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
 
 /** Saves the complete phrase log alongside each Playwright test result. */
 export async function attachSpokenPhraseLog(reader: ScreenReader, testInfo: TestInfo) {
-  const body = (await reader.spokenPhraseLog()).join('\n')
+  const phrases = await reader.spokenPhraseLog()
+  const body = phrases.join('\n')
   const filePath = testInfo.outputPath('spoken-phrase-log.txt')
   await mkdir(path.dirname(filePath), {recursive: true})
   await writeFile(filePath, body, 'utf8')
   await testInfo.attach('spoken-phrase-log.txt', {path: filePath, contentType: 'text/plain'})
+
+  const trace = navigationTrace.get(reader) ?? []
+  trace.push(...phrases.map((phrase) => `phrase: ${phrase}`), 'end of test')
+  const tracePath = testInfo.outputPath('navigation-trace.txt')
+  await writeFile(tracePath, trace.join('\n'), 'utf8')
+  await testInfo.attach('navigation-trace.txt', {path: tracePath, contentType: 'text/plain'})
 }
 
 /** Checks that the reader reaches and activates the skip link. */
@@ -250,7 +274,7 @@ export async function runVaultScenario(page: Page, reader: WebScreenReader) {
   await page.keyboard.type('invalid-email')
   await reader.clearSpokenPhraseLog()
   await reader.press('Tab')
-  await reader.clearSpokenPhraseLog()
+  await waitForSpeech(reader)
   await reader.press('Shift+Tab')
   await expect(email).toHaveAttribute('aria-invalid', 'true')
   await expect(email).toHaveAttribute('aria-describedby', 'email-error')

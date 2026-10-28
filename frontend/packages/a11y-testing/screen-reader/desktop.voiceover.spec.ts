@@ -4,7 +4,11 @@ import {expect} from '@playwright/test'
 import type {VoiceOver} from '@guidepup/guidepup'
 import {voiceOverTest as test} from './fixtures'
 import {launchUnpackagedApp} from './launch-electron'
-import {attachSpokenPhraseLog, expectSpoken, navigateUntilPhrase} from './scenarios'
+import {attachSpokenPhraseLog, expectSpoken, navigateUntilPhrase, startNavigationTrace} from './scenarios'
+
+test.beforeEach(async ({voiceOver}) => {
+  startNavigationTrace(voiceOver)
+})
 
 test.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)
@@ -15,7 +19,19 @@ test('desktop shell announcements', async ({voiceOver}, testInfo) => {
 
   try {
     const page = await app.firstWindow()
-    const skipLink = page.getByRole('link', {name: /skip to content/i})
+    const main = page.locator('#main-content')
+    await expect(main).toBeVisible()
+    const onboarding = page.getByRole('heading', {name: 'Welcome to Seed Hypermedia'})
+    if (await onboarding.isVisible()) {
+      const homeLink = page
+        .locator('[data-a11y-region="sidebar"] button')
+        .filter({hasText: /Seed|Hypermedia|Untitled/i})
+        .first()
+      await homeLink.click()
+      await onboarding.waitFor({state: 'detached'})
+    }
+    await expect(main).toBeVisible()
+    const skipLink = page.getByRole('link', {name: 'Skip to content'})
     await expect(skipLink).toBeVisible()
     await app.evaluate(({app, BrowserWindow}) => {
       app.focus({steal: true})
