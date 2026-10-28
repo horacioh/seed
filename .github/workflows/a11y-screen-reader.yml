@@ -70,17 +70,24 @@ jobs:
         run:
           pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover
           screen-reader/reader.voiceover.spec.ts
+      - name: Upload VoiceOver WebKit artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: voiceover-webkit-artifacts
+          path: frontend/packages/a11y-testing/screen-reader/test-results
+          if-no-files-found: warn
       - name: Run VoiceOver Chromium diagnostic suite
         if: ${{ !cancelled() }}
         working-directory: frontend/packages/a11y-testing
         run:
           pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover-chromium
           screen-reader/reader.voiceover.spec.ts
-      - name: Upload spoken phrases and traces
+      - name: Upload VoiceOver Chromium artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: voiceover-web-artifacts
+          name: voiceover-chromium-artifacts
           path: frontend/packages/a11y-testing/screen-reader/test-results
           if-no-files-found: warn
 
