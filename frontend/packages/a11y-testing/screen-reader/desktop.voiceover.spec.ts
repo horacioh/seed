@@ -3,7 +3,7 @@ import {mkdir, writeFile} from 'node:fs/promises'
 import {expect} from '@playwright/test'
 import {voiceOverTest as test} from './fixtures'
 import {launchUnpackagedApp} from './launch-electron'
-import {attachSpokenPhraseLog, expectSpoken, navigateUntilPhrase, startNavigationTrace} from './scenarios'
+import {attachSpokenPhraseLog, expectSpoken, startNavigationTrace, tabUntilPhrase} from './scenarios'
 
 test.beforeEach(async ({voiceOver}) => {
   startNavigationTrace(voiceOver)
@@ -49,13 +49,7 @@ test('desktop shell announcements', async ({voiceOver}, testInfo) => {
     await writeFile(frontmostProcessPath, `${frontmostProcess}\n`, 'utf8')
     await testInfo.attach('frontmost-process.txt', {path: frontmostProcessPath, contentType: 'text/plain'})
 
-    await navigateUntilPhrase(
-      voiceOver,
-      ['skip to content'],
-      () => voiceOver.next(),
-      () => voiceOver.previous(),
-      30,
-    )
+    await tabUntilPhrase(voiceOver, 'Skip to content')
     await expectSpoken(voiceOver, 'link')
     await voiceOver.clearSpokenPhraseLog()
     await voiceOver.act()

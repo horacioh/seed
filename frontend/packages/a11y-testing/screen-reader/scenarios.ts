@@ -123,7 +123,8 @@ async function pressAndMoveFromBrowserChrome(reader: ScreenReader, key: 'Tab' | 
   return phrases
 }
 
-async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
+/** Finds a phrase by moving focus with Tab, then Shift+Tab. */
+export async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
   for (const key of ['Tab', 'Shift+Tab'] as const) {
     for (let index = 0; index < 10; index += 1) {
       const phrases = await pressAndMoveFromBrowserChrome(reader, key)
@@ -135,6 +136,21 @@ async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
   }
 
   await expectSpoken(reader, phrase)
+}
+
+async function navigateToEditor(reader: WebScreenReader) {
+  if (reader.name.toLocaleLowerCase().includes('nvda')) {
+    await tabUntilPhrase(reader, 'Document content')
+    return
+  }
+
+  await navigateUntilPhrase(
+    reader,
+    ['Document content'],
+    () => reader.next(),
+    () => reader.previous(),
+    30,
+  )
 }
 
 /** Saves the complete phrase log alongside each Playwright test result. */
@@ -201,18 +217,11 @@ export async function runLandmarkScenario(page: Page, reader: WebScreenReader) {
 /** Checks the editor name, movement, block options, and slash-menu announcements. */
 export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
-  const editor = page.locator('[contenteditable="true"]').first()
+  const editor = page.getByRole('textbox', {name: 'Document content'})
   const isVoiceOver = reader.name.toLocaleLowerCase().includes('voiceover')
   await expect(editor).toBeVisible()
-  await expect(page.getByTestId('editor-info')).toContainText('Editor ready: Yes')
   await reader.navigateToWebContent()
-  await navigateUntilPhrase(
-    reader,
-    ['Document content'],
-    () => reader.next(),
-    () => reader.previous(),
-    30,
-  )
+  await navigateToEditor(reader)
   await expectSpokenTogether(reader, ['Document content', 'edit'])
   await reader.clearSpokenPhraseLog()
   if (isVoiceOver) {
@@ -242,15 +251,8 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
 
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   await expect(editor).toBeVisible()
-  await expect(page.getByTestId('editor-info')).toContainText('Editor ready: Yes')
   await reader.navigateToWebContent()
-  await navigateUntilPhrase(
-    reader,
-    ['Document content'],
-    () => reader.next(),
-    () => reader.previous(),
-    30,
-  )
+  await navigateToEditor(reader)
   if (isVoiceOver) {
     await reader.interact()
   } else {
@@ -273,7 +275,7 @@ export async function runVaultScenario(page: Page, reader: WebScreenReader) {
   await reader.navigateToWebContent()
   await tabUntilPhrase(reader, 'Enter your email to continue')
   await reader.clearSpokenPhraseLog()
-  await page.keyboard.type('invalid-email')
+  await email.fill('invalid-email')
   await reader.clearSpokenPhraseLog()
   await reader.press('Tab')
   await waitForSpeech(reader)

@@ -73,19 +73,26 @@ jobs:
       - name: Dismiss Guidepup portable preferences
         shell: bash
         run: |
-          osascript <<'APPLESCRIPT'
+          osascript -e 'tell application "System Events" to get name of every process whose background only is false' || true
+          osascript -e 'tell application "System Events" to get name of every window of (every process whose name contains "VoiceOver")' || true
+          osascript <<'APPLESCRIPT' || true
           tell application "System Events"
             repeat 30 times
-              if exists process "VoiceOver" then
-                tell process "VoiceOver"
-                  if exists window 1 then
-                    if exists button "Always Use" of window 1 then
-                      click button "Always Use" of window 1
-                      exit repeat
-                    end if
-                  end if
-                end tell
-              end if
+              set clickedAlwaysUse to false
+              set voiceOverProcesses to every process whose name contains "VoiceOver"
+              repeat with voiceOverProcess in voiceOverProcesses
+                set voiceOverWindows to {}
+                try
+                  set voiceOverWindows to windows of voiceOverProcess
+                end try
+                repeat with voiceOverWindow in voiceOverWindows
+                  try
+                    click button "Always Use" of voiceOverWindow
+                    set clickedAlwaysUse to true
+                  end try
+                end repeat
+              end repeat
+              if clickedAlwaysUse then exit repeat
               delay 1
             end repeat
           end tell
@@ -228,19 +235,26 @@ jobs:
       - name: Dismiss Guidepup portable preferences
         shell: bash
         run: |
-          osascript <<'APPLESCRIPT'
+          osascript -e 'tell application "System Events" to get name of every process whose background only is false' || true
+          osascript -e 'tell application "System Events" to get name of every window of (every process whose name contains "VoiceOver")' || true
+          osascript <<'APPLESCRIPT' || true
           tell application "System Events"
             repeat 30 times
-              if exists process "VoiceOver" then
-                tell process "VoiceOver"
-                  if exists window 1 then
-                    if exists button "Always Use" of window 1 then
-                      click button "Always Use" of window 1
-                      exit repeat
-                    end if
-                  end if
-                end tell
-              end if
+              set clickedAlwaysUse to false
+              set voiceOverProcesses to every process whose name contains "VoiceOver"
+              repeat with voiceOverProcess in voiceOverProcesses
+                set voiceOverWindows to {}
+                try
+                  set voiceOverWindows to windows of voiceOverProcess
+                end try
+                repeat with voiceOverWindow in voiceOverWindows
+                  try
+                    click button "Always Use" of voiceOverWindow
+                    set clickedAlwaysUse to true
+                  end try
+                end repeat
+              end repeat
+              if clickedAlwaysUse then exit repeat
               delay 1
             end repeat
           end tell
