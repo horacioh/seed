@@ -128,9 +128,14 @@ async function pressAndMoveFromBrowserChrome(reader: ScreenReader, key: 'Tab' | 
   return phrases
 }
 
-/** Finds a phrase by moving focus with Tab, then Shift+Tab. */
-export async function tabUntilPhrase(reader: ScreenReader, phrase: string, maxSteps = 10) {
-  for (const key of ['Tab', 'Shift+Tab'] as const) {
+/** Finds a phrase by moving focus with Tab and optionally Shift+Tab. */
+export async function tabUntilPhrase(
+  reader: ScreenReader,
+  phrase: string,
+  maxSteps = 10,
+  keys: Array<'Tab' | 'Shift+Tab'> = ['Tab', 'Shift+Tab'],
+) {
+  for (const key of keys) {
     for (let index = 0; index < maxSteps; index += 1) {
       const phrases = await pressAndMoveFromBrowserChrome(reader, key)
       if (phrases.some((spoken) => phraseContains(spoken, [phrase]))) {
@@ -152,7 +157,7 @@ async function navigateToEditor(page: Page, reader: WebScreenReader) {
   await reader.navigateToWebContent()
 
   if (isNvda) {
-    await tabUntilPhrase(reader, 'Document content', 30)
+    await tabUntilPhrase(reader, 'Document content', 30, ['Tab'])
     return
   }
 
