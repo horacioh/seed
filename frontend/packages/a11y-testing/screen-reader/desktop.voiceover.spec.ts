@@ -1,7 +1,6 @@
 import {execFileSync} from 'node:child_process'
 import {mkdir, writeFile} from 'node:fs/promises'
 import {expect} from '@playwright/test'
-import type {VoiceOver} from '@guidepup/guidepup'
 import {voiceOverTest as test} from './fixtures'
 import {launchUnpackagedApp} from './launch-electron'
 import {attachSpokenPhraseLog, expectSpoken, navigateUntilPhrase, startNavigationTrace} from './scenarios'
@@ -13,39 +12,6 @@ test.beforeEach(async ({voiceOver}) => {
 test.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)
 })
-
-async function navigateToElectronWebContent(reader: VoiceOver) {
-  let foundItemChooser = false
-  for (let attempt = 0; attempt < 3; attempt++) {
-    await reader.press('Control')
-    await reader.press('Escape')
-    await reader.clearSpokenPhraseLog()
-    await reader.perform(reader.keyboardCommands.openItemChooser)
-    if ((await reader.lastSpokenPhrase()).toLocaleLowerCase().includes('item chooser')) {
-      foundItemChooser = true
-      break
-    }
-  }
-  expect(foundItemChooser).toBe(true)
-  await reader.clearSpokenPhraseLog()
-
-  let foundWebContent = false
-  for (const character of 'web content') {
-    await reader.press('Control')
-    await reader.type(character, {capture: 'initial'})
-    const phrase = (await reader.lastSpokenPhrase()).toLocaleLowerCase()
-    await reader.clearSpokenPhraseLog()
-    if (phrase.includes('web content')) {
-      foundWebContent = true
-      break
-    }
-  }
-  expect(foundWebContent).toBe(true)
-  await reader.press('Enter')
-  await reader.clearSpokenPhraseLog()
-  await reader.interact()
-  await reader.clearSpokenPhraseLog()
-}
 
 test('desktop shell announcements', async ({voiceOver}, testInfo) => {
   const app = await launchUnpackagedApp()
@@ -83,14 +49,12 @@ test('desktop shell announcements', async ({voiceOver}, testInfo) => {
     await writeFile(frontmostProcessPath, `${frontmostProcess}\n`, 'utf8')
     await testInfo.attach('frontmost-process.txt', {path: frontmostProcessPath, contentType: 'text/plain'})
 
-    const guidepupVoiceOver = voiceOver as VoiceOver
-    await guidepupVoiceOver.perform(guidepupVoiceOver.keyboardCommands.moveToFirst)
-    await navigateToElectronWebContent(guidepupVoiceOver)
     await navigateUntilPhrase(
       voiceOver,
       ['skip to content'],
       () => voiceOver.next(),
       () => voiceOver.previous(),
+      30,
     )
     await expectSpoken(voiceOver, 'link')
     await voiceOver.clearSpokenPhraseLog()

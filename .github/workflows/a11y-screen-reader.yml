@@ -70,6 +70,26 @@ jobs:
         run: |
           pnpm exec guidepup setup --ci
           pnpm exec guidepup install
+      - name: Dismiss Guidepup portable preferences
+        shell: bash
+        run: |
+          osascript <<'APPLESCRIPT'
+          tell application "System Events"
+            repeat 30 times
+              if exists process "VoiceOver" then
+                tell process "VoiceOver"
+                  if exists window 1 then
+                    if exists button "Always Use" of window 1 then
+                      click button "Always Use" of window 1
+                      exit repeat
+                    end if
+                  end if
+                end tell
+              end if
+              delay 1
+            end repeat
+          end tell
+          APPLESCRIPT
       - name: Install WebKit
         working-directory: frontend/packages/a11y-testing
         run: pnpm exec playwright install webkit
@@ -205,6 +225,26 @@ jobs:
         run: |
           pnpm exec guidepup setup --ci
           pnpm exec guidepup install
+      - name: Dismiss Guidepup portable preferences
+        shell: bash
+        run: |
+          osascript <<'APPLESCRIPT'
+          tell application "System Events"
+            repeat 30 times
+              if exists process "VoiceOver" then
+                tell process "VoiceOver"
+                  if exists window 1 then
+                    if exists button "Always Use" of window 1 then
+                      click button "Always Use" of window 1
+                      exit repeat
+                    end if
+                  end if
+                end tell
+              end if
+              delay 1
+            end repeat
+          end tell
+          APPLESCRIPT
       - name: Run packaged-app VoiceOver suite
         working-directory: frontend/packages/a11y-testing
         env:

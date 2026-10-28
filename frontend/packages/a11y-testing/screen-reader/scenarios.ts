@@ -204,6 +204,7 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   const editor = page.locator('[contenteditable="true"]').first()
   const isVoiceOver = reader.name.toLocaleLowerCase().includes('voiceover')
   await expect(editor).toBeVisible()
+  await expect(page.getByTestId('editor-info')).toContainText('Editor ready: Yes')
   await reader.navigateToWebContent()
   await navigateUntilPhrase(
     reader,
@@ -241,6 +242,7 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
 
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   await expect(editor).toBeVisible()
+  await expect(page.getByTestId('editor-info')).toContainText('Editor ready: Yes')
   await reader.navigateToWebContent()
   await navigateUntilPhrase(
     reader,
