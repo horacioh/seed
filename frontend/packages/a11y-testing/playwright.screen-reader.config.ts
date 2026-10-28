@@ -4,12 +4,12 @@ const isDesktop = process.env.A11Y_SCREEN_READER_SURFACE === 'desktop'
 const voiceoverProject = {
   name: 'voiceover',
   testMatch: ['**/*.voiceover.spec.ts'],
-  use: {browserName: 'webkit' as const},
+  use: {browserName: 'webkit' as const, headless: false},
 }
 const nvdaProject = {
   name: 'nvda',
   testMatch: ['**/*.nvda.spec.ts'],
-  use: {browserName: 'chromium' as const},
+  use: {browserName: 'chromium' as const, headless: false},
 }
 const allProjects = [voiceoverProject, nvdaProject]
 const platformProjects =
