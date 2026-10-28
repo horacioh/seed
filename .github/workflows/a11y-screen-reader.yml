@@ -67,10 +67,15 @@ jobs:
         run: pnpm exec playwright install chromium
       - name: Run VoiceOver web suite
         working-directory: frontend/packages/a11y-testing
-        run: pnpm test:screen-reader -- --project=voiceover screen-reader/reader.voiceover.spec.ts
+        run:
+          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover
+          screen-reader/reader.voiceover.spec.ts
       - name: Run VoiceOver Chromium diagnostic suite
+        if: ${{ !cancelled() }}
         working-directory: frontend/packages/a11y-testing
-        run: pnpm test:screen-reader -- --project=voiceover-chromium screen-reader/reader.voiceover.spec.ts
+        run:
+          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover-chromium
+          screen-reader/reader.voiceover.spec.ts
       - name: Upload spoken phrases and traces
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
