@@ -1,7 +1,7 @@
 import {expect} from '@playwright/test'
 import {voiceOverTest as test} from './fixtures'
 import {launchUnpackagedApp} from './launch-electron'
-import {attachSpokenPhraseLog, expectSpoken} from './scenarios'
+import {attachSpokenPhraseLog, expectSpoken, navigateUntilPhrase} from './scenarios'
 
 test.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)
@@ -13,15 +13,16 @@ test('desktop shell announcements', async ({voiceOver}) => {
   try {
     const page = await app.firstWindow()
     const skipLink = page.getByRole('link', {name: /skip to content/i})
+    await expect(skipLink).toBeVisible()
     await app.evaluate(({app, BrowserWindow}) => {
       app.focus({steal: true})
       BrowserWindow.getAllWindows()[0]?.focus()
     })
-    await voiceOver.clearSpokenPhraseLog()
-    await voiceOver.press('Tab')
-    await expect(skipLink).toBeFocused()
-    await expectSpoken(voiceOver, 'skip to content')
+    await navigateUntilPhrase(voiceOver, ['skip to content'], () => voiceOver.next())
     await expectSpoken(voiceOver, 'link')
+    await voiceOver.clearSpokenPhraseLog()
+    await voiceOver.act()
+    await expect(page.locator('#main-content')).toBeFocused()
 
     await voiceOver.clearSpokenPhraseLog()
     await voiceOver.press('F6')

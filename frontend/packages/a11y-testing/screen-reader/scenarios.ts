@@ -59,7 +59,8 @@ function phraseContains(phrase: string, fragments: string[]) {
   return fragments.every((fragment) => normalizedPhrase.includes(fragment.toLocaleLowerCase()))
 }
 
-async function navigateUntilPhrase(reader: ScreenReader, fragments: string[], navigate: () => Promise<void>) {
+/** Moves the screen-reader cursor until one phrase contains all fragments. */
+export async function navigateUntilPhrase(reader: ScreenReader, fragments: string[], navigate: () => Promise<void>) {
   for (let index = 0; index < 10; index += 1) {
     await reader.clearSpokenPhraseLog()
     await navigate()
@@ -73,18 +74,39 @@ async function navigateUntilPhrase(reader: ScreenReader, fragments: string[], na
   await expectSpokenTogether(reader, fragments)
 }
 
+async function pressTabAndMoveFromBrowserChrome(reader: ScreenReader) {
+  await reader.clearSpokenPhraseLog()
+  await reader.press('Tab')
+  await waitForSpeech(reader)
+  let phrases = await reader.spokenPhraseLog()
+
+  if (
+    reader.name.toLocaleLowerCase().includes('nvda') &&
+    phrases.some((phrase) => phrase.toLocaleLowerCase().includes('address and search bar'))
+  ) {
+    await reader.clearSpokenPhraseLog()
+    await reader.press('F6')
+    await waitForSpeech(reader)
+    phrases = await reader.spokenPhraseLog()
+  }
+
+  return phrases
+}
+
 async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
   for (let index = 0; index < 10; index += 1) {
-    await reader.clearSpokenPhraseLog()
-    await reader.press('Tab')
-    await waitForSpeech(reader)
-    if ((await reader.spokenPhraseLog()).some((spoken) => phraseContains(spoken, [phrase]))) {
+    const phrases = await pressTabAndMoveFromBrowserChrome(reader)
+    if (phrases.some((spoken) => phraseContains(spoken, [phrase]))) {
       await expectSpoken(reader, phrase)
       return
     }
   }
 
   await expectSpoken(reader, phrase)
+}
+
+async function waitForEditorHarnessReady(page: Page) {
+  await expect(page.getByTestId('editor-info')).toContainText('Editor ready: Yes')
 }
 
 /** Saves the complete phrase log alongside each Playwright test result. */
@@ -131,6 +153,7 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   const editor = page.locator('[contenteditable="true"]').first()
   await expect(editor).toBeVisible()
+  await waitForEditorHarnessReady(page)
   await reader.navigateToWebContent()
   await tabUntilPhrase(reader, 'Document content')
   await expectSpokenTogether(reader, ['Document content', 'edit'])
@@ -169,6 +192,7 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   }
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   await expect(editor).toBeVisible()
+  await waitForEditorHarnessReady(page)
   await reader.navigateToWebContent()
   await tabUntilPhrase(reader, 'Document content')
   if (isVoiceOver) {
