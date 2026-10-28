@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module'
 import {test as base} from '@playwright/test'
 import type {nvdaTest as guidepupNvdaTest, voiceOverTest as guidepupVoiceOverTest} from '@guidepup/playwright'
-import type {WebScreenReader} from './scenarios'
+import type {ScreenReader} from './scenarios'
 
 const guidepupWebTests =
   (process.platform === 'darwin' || process.platform === 'win32') &&
@@ -10,12 +10,12 @@ const guidepupWebTests =
     : undefined
 
 /** Creates browser tests with a lazily initialized VoiceOver screen reader. */
-export const voiceOverTest = base.extend<{voiceOver: WebScreenReader}>({
+export const voiceOverTest = base.extend<{voiceOver: ScreenReader}>({
   voiceOver: async ({}, use) => {
     const {voiceOver} = await import('@guidepup/guidepup')
     await voiceOver.start()
     try {
-      await use(voiceOver as unknown as WebScreenReader)
+      await use(voiceOver)
     } finally {
       await voiceOver.stop()
     }
@@ -23,12 +23,12 @@ export const voiceOverTest = base.extend<{voiceOver: WebScreenReader}>({
 })
 
 /** Creates browser tests with a lazily initialized NVDA screen reader. */
-export const nvdaTest = base.extend<{nvda: WebScreenReader}>({
+export const nvdaTest = base.extend<{nvda: ScreenReader}>({
   nvda: async ({}, use) => {
     const {nvda} = await import('@guidepup/guidepup')
     await nvda.start()
     try {
-      await use(nvda as unknown as WebScreenReader)
+      await use(nvda)
     } finally {
       await nvda.stop()
     }

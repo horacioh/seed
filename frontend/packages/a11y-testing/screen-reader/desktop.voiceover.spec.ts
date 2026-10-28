@@ -13,15 +13,18 @@ test('desktop shell announcements', async ({voiceOver}) => {
   try {
     const page = await app.firstWindow()
     const skipLink = page.getByRole('link', {name: /skip to content/i})
-    const {macOSActivate} = await import('@guidepup/guidepup')
-    await macOSActivate('Electron')
-    await page.bringToFront()
+    await app.evaluate(({app, BrowserWindow}) => {
+      app.focus({steal: true})
+      BrowserWindow.getAllWindows()[0]?.focus()
+    })
+    await voiceOver.clearSpokenPhraseLog()
     await voiceOver.press('Tab')
     await expect(skipLink).toBeFocused()
     await expectSpoken(voiceOver, 'skip to content')
     await expectSpoken(voiceOver, 'link')
 
-    await page.keyboard.press('F6')
+    await voiceOver.clearSpokenPhraseLog()
+    await voiceOver.press('F6')
     const backButton = page
       .locator('header[data-a11y-region="titlebar"]')
       .getByRole('button', {name: 'Back', exact: true})
@@ -29,11 +32,14 @@ test('desktop shell announcements', async ({voiceOver}) => {
     await expectSpoken(voiceOver, 'Back')
     await expectSpoken(voiceOver, 'button')
 
-    await page.keyboard.press('F6')
+    await voiceOver.clearSpokenPhraseLog()
+    await voiceOver.press('F6')
     await expectSpoken(voiceOver, 'sidebar')
-    await page.keyboard.press('F6')
+    await voiceOver.clearSpokenPhraseLog()
+    await voiceOver.press('F6')
     await expectSpoken(voiceOver, 'main')
-    await page.keyboard.press('F6')
+    await voiceOver.clearSpokenPhraseLog()
+    await voiceOver.press('F6')
     await expectSpoken(voiceOver, 'banner')
   } finally {
     await app.close()
