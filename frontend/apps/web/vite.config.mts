@@ -98,7 +98,7 @@ export default defineConfig(({isSsrBuild}) => {
         },
       }),
       envOnlyMacros(),
-      tsconfigPaths({root: path.resolve(__dirname, '../..')}),
+      tsconfigPaths({root: path.resolve(__dirname, '../..'), ignoreConfigErrors: true}),
       // analyzer({
       //   analyzerMode: "static",
       //   fileName: "report",

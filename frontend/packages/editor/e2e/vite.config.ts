@@ -5,7 +5,11 @@ import {defineConfig} from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), tsconfigPaths({root: path.resolve(__dirname, '../../..')})],
+  plugins: [
+    react(),
+    tailwindcss(),
+    tsconfigPaths({root: path.resolve(__dirname, '../../..'), ignoreConfigErrors: true}),
+  ],
   root: path.resolve(__dirname, 'test-app'),
   define: {
     // TODO: Define process.env for dependencies

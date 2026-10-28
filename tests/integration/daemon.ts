@@ -54,7 +54,11 @@ function getDaemonBinaryPath(): string {
 
   // tests/integration/daemon.ts -> repo root is ../..
   const repoRoot = path.resolve(__dirname, "../..");
-  return path.join(repoRoot, `plz-out/bin/backend/seed-daemon-${triple}`);
+  const executableSuffix = platform === "win32" ? ".exe" : "";
+  return path.join(
+    repoRoot,
+    `plz-out/bin/backend/seed-daemon-${triple}${executableSuffix}`,
+  );
 }
 
 export async function spawnDaemon(

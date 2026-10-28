@@ -360,8 +360,11 @@ jobs:
         with:
           name: artifacts-${{ matrix.config.daemon_name }}
           path: frontend/apps/desktop/out/make/**/*
+  a11y-screen-reader:
+    uses: ./.github/workflows/a11y-screen-reader.yml
+
   publish-to-github:
-    needs: [build-info, build-binaries]
+    needs: [build-info, build-binaries, a11y-screen-reader]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

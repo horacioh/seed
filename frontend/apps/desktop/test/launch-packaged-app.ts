@@ -21,6 +21,11 @@ export async function launchPackagedApp(options: Parameters<typeof electron.laun
       version: FuseVersion.V1,
       [FuseV1Options.EnableNodeCliInspectArguments]: true,
     })
+    if (process.platform === 'linux' && process.env.A11Y_ELECTRON_SETUID_SANDBOX === '1') {
+      const sandboxHelper = path.join(copy, 'chrome-sandbox')
+      execFileSync('sudo', ['-n', 'chown', 'root:root', sandboxHelper])
+      execFileSync('sudo', ['-n', 'chmod', '4755', sandboxHelper])
+    }
     if (process.platform === 'darwin') execFileSync('codesign', ['--force', '--deep', '--sign', '-', copy])
     const app = await electron.launch({...options, executablePath, args: []})
     app.once('close', () => void rm(temporary, {recursive: true, force: true}))

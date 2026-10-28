@@ -1,9 +1,11 @@
 import {expect, test} from '../test/fixtures'
 import {expectNoA11yViolations} from '@shm/a11y-testing/playwright'
 import type {Page} from '@playwright/test'
+import {mkdirSync} from 'node:fs'
 import path from 'node:path'
 
-const artifactDir = '/home/ubuntu/a11y-pr6-artifacts'
+const artifactDir = process.env.A11Y_ARTIFACT_DIR ?? path.resolve(process.cwd(), 'a11y-artifacts')
+mkdirSync(artifactDir, {recursive: true})
 const a11yModes = ['light', 'dark', 'reduced-motion', 'zoom-200'] as const
 const a11yOptions = {modes: [...a11yModes], legacyMode: true}
 

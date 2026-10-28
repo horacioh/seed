@@ -9,7 +9,9 @@ test.describe('editor accessibility', () => {
     await expect(editorHelpers.getContentArea()).toHaveAttribute('role', 'textbox')
     await expect(editorHelpers.getContentArea()).toHaveAttribute('aria-multiline', 'true')
     await expect(editorHelpers.getContentArea()).toHaveAttribute('aria-label', 'Document content')
-    await expect(page.locator('[data-editor-live-region]')).toHaveCount(1)
+    const liveRegion = page.locator('[data-editor-live-region]')
+    await expect(liveRegion).toHaveCount(1)
+    await expect(editorHelpers.getContentArea().locator('xpath=..').locator('[data-editor-live-region]')).toHaveCount(0)
     await expectNoA11yViolations(page, {modes: [...modes]})
   })
 
@@ -57,6 +59,48 @@ test.describe('editor accessibility', () => {
       .poll(async () => (await editorHelpers.getBlocks()).map((block) => block.content?.[0]?.text))
       .toEqual(['First block', 'Second block'])
     await expect(page.locator('[aria-live="polite"]')).toHaveText('Moved block down')
+  })
+
+  test('keyboard block movement reannounces repeated identical messages', async ({page, editorHelpers}) => {
+    await page.goto('/?fixture=empty&edit=1')
+    await editorHelpers.waitForEditorReady()
+    await editorHelpers.typeText('First block')
+    await editorHelpers.pressKey('Enter')
+    await editorHelpers.typeText('Second block')
+    await editorHelpers.pressKey('Enter')
+    await editorHelpers.typeText('Third block')
+    await editorHelpers.pressKey('Control+Shift+ArrowUp')
+    await editorHelpers.pressKey('Control+Shift+ArrowUp')
+    await expect
+      .poll(async () => (await editorHelpers.getBlocks()).map((block) => block.content?.[0]?.text))
+      .toEqual(['Third block', 'First block', 'Second block'])
+
+    const liveRegion = page.locator('[data-editor-live-region]')
+    await editorHelpers.pressKey('Control+Shift+ArrowDown')
+    await expect
+      .poll(async () => (await editorHelpers.getBlocks()).map((block) => block.content?.[0]?.text))
+      .toEqual(['First block', 'Third block', 'Second block'])
+    await expect(liveRegion).toHaveText('Moved block down')
+
+    await liveRegion.evaluate((element) => {
+      const states: string[] = []
+      const observer = new MutationObserver(() => {
+        states.push(element.textContent ?? '')
+        element.setAttribute('data-announcement-states', JSON.stringify(states))
+      })
+      observer.observe(element, {characterData: true, childList: true, subtree: true})
+    })
+    await editorHelpers.pressKey('Control+Shift+ArrowDown')
+    await expect
+      .poll(async () => (await editorHelpers.getBlocks()).map((block) => block.content?.[0]?.text))
+      .toEqual(['First block', 'Second block', 'Third block'])
+    await expect(liveRegion).toHaveText('Moved block down')
+    await expect
+      .poll(async () => {
+        const states = await liveRegion.getAttribute('data-announcement-states')
+        return JSON.parse(states ?? '[]') as string[]
+      })
+      .toEqual(expect.arrayContaining(['', 'Moved block down']))
   })
 
   test('keyboard block movement announces when the block is already at the top', async ({page, editorHelpers}) => {

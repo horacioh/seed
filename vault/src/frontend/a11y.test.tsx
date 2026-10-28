@@ -4,6 +4,7 @@ import axe from 'axe-core'
 import {useState, type ComponentType} from 'react'
 import {Link, MemoryRouter, Route, Routes} from 'react-router-dom'
 import {AccountProfileDialog} from '@/frontend/components/AccountProfileDialog'
+import {PasswordInput} from '@/frontend/components/PasswordInput'
 import {CreateAccountDialog} from '@/frontend/components/CreateAccountDialog'
 import {Header} from '@/frontend/components/Header'
 import {NotificationEmailSettings} from '@shm/ui/components/notification-email-settings'
@@ -128,6 +129,7 @@ describe('vault accessibility', () => {
   test('inputs use autocomplete and field errors are linked and announced', async () => {
     const store = createA11yStore()
     store.state.error = 'Please check your email address'
+    store.state.email = ''
     store.actions.handleConditionalLogin = async () => {}
 
     const {container} = render(
@@ -140,12 +142,48 @@ describe('vault accessibility', () => {
       </MemoryRouter>,
     )
 
-    const email = container.querySelector('input[type="email"]')
+    const email = screen.getByLabelText('Enter your email to continue')
     expect(email?.getAttribute('autocomplete')).toBe('email')
     expect(email?.getAttribute('aria-invalid')).toBe('true')
+    const emailError = container.querySelector('#email-error')
+    expect(emailError).not.toBeNull()
+    expect(emailError?.textContent).toBe('')
     const errorId = email?.getAttribute('aria-describedby')
     expect(errorId).toContain('pre-login-error')
+    expect(errorId).not.toContain('email-error')
     expect(container.querySelector(`#${errorId}`)?.getAttribute('role')).toBe('alert')
+
+    fireEvent.change(email, {target: {value: 'invalid-email'}})
+    fireEvent.blur(email)
+    await waitFor(() => {
+      expect(email.getAttribute('aria-describedby')).toContain('email-error')
+      expect(emailError?.textContent).toBe("That doesn't look like a valid email")
+    })
+    expect(container.querySelector('#email-error')).toBe(emailError)
+  })
+
+  test('password errors use a persistent live region linked only while present', () => {
+    const props = {
+      id: 'password',
+      label: 'Password',
+      value: '',
+      onChange: () => {},
+      autoComplete: 'current-password',
+      describedBy: 'password-hint',
+    }
+    const {container, rerender} = render(<PasswordInput {...props} />)
+    const password = screen.getByLabelText('Password')
+    const error = container.querySelector('#password-error')
+    expect(error).not.toBeNull()
+    expect(error?.textContent).toBe('')
+    expect(password.getAttribute('aria-describedby')).toBe('password-hint')
+
+    rerender(<PasswordInput {...props} error="Incorrect password" />)
+
+    expect(container.querySelector('#password-error')).toBe(error)
+    expect(error?.textContent).toBe('Incorrect password')
+    expect(password.getAttribute('aria-describedby')).toBe('password-hint password-error')
+    expect(password.getAttribute('aria-invalid')).toBe('true')
   })
 
   test('route changes focus the single h1 and update the document title', async () => {

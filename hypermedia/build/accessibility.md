@@ -50,15 +50,37 @@ Every editor adapter must pass `runEditorA11yContract` before merging. The contr
 
 ## Manual screen-reader matrix
 
-Check representative flows with NVDA on Firefox and Chrome, JAWS on Chrome, VoiceOver on macOS Safari and iOS Safari, TalkBack, and Orca.
+The Guidepup suite runs nightly and before desktop releases. Blocking coverage includes skip-link, heading and landmark navigation with VoiceOver on WebKit and NVDA on Chromium, plus NVDA vault email validation.
+
+The following scenarios are report-only and tagged `@sr-report`: VoiceOver editor announcements on WebKit and Chromium, VoiceOver vault email validation on WebKit and Chromium, NVDA editor announcements, and the packaged desktop VoiceOver shell. They are tracked in [issue #65](https://github.com/horacioh/seed/issues/65). Require five consecutive green nightly runs before removing `@sr-report` from any scenario.
+
+On a Mac, install the Guidepup environment and run the web/editor/vault scenarios from the package:
+
+```sh
+cd frontend/packages/a11y-testing
+pnpm exec guidepup setup --ci
+pnpm exec guidepup install
+pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover screen-reader/reader.voiceover.spec.ts
+```
+
+To run the packaged desktop scenario, first build the desktop app from the repository root, then point the suite at the resulting app directory:
+
+```sh
+pnpm desktop:package --arch=arm64
+export A11Y_DESKTOP_BUILD_DIR="$(find frontend/apps/desktop/out -maxdepth 1 -type d -name '*darwin*' -print -quit)"
+cd frontend/packages/a11y-testing
+A11Y_SCREEN_READER_SURFACE=desktop pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover screen-reader/desktop.voiceover.spec.ts
+```
+
+This automation does not replace the manual matrix. JAWS, TalkBack, iOS VoiceOver and Orca remain manual checks; NVDA on Firefox and VoiceOver in Safari also remain useful browser-specific manual coverage.
 
 ## Inventory
 
-The test-file column is intentionally blank until each surface suite is added.
+Blank test-file cells mark surface coverage that still needs an automated suite.
 
 | Surface | Screen or state | Test file |
 | --- | --- | --- |
-| Desktop (`NavRoute` in `frontend/packages/shared/src/routes.ts`) | Onboarding, library, contacts, profile, site profile, contact, settings, account settings, site settings and site email settings | |
+| Desktop (`NavRoute` in `frontend/packages/shared/src/routes.ts`) | Onboarding, library, contacts, profile, site profile, contact, settings, account settings, site settings and site email settings | `frontend/packages/a11y-testing/screen-reader/desktop.voiceover.spec.ts` (VoiceOver shell checks) |
 | Desktop | Document, draft, draft rebase, bookmarks and drafts; editor focused, menus open, empty documents and errors | |
 | Desktop | Directory, all documents, feed, activity, comments, collaborators, document/IPFS inspection, schema and metadata; empty/error states and comments open | |
 | Desktop | Agents, agent server, agent, agent session, agent run, API inspector, query documents and external web view | |
@@ -66,9 +88,9 @@ The test-file column is intentionally blank until each surface suite is added.
 | Desktop onboarding | Welcome, profile, vault, recovery, existing account, import and ready (`frontend/apps/desktop/src/pages/onboarding.tsx`) | |
 | Desktop dialogs | Create account/space, publish site, document destination, profile, network, imports, deletions and assistant; dialog open, focused control and validation/error states (`frontend/apps/desktop/src/components/`) | |
 | Shared UI and editor dialogs | Account/key/email/password dialogs, document destination, assistant and publish-required flows; dialogs open and keyboard-dismissed (`frontend/packages/ui/src/`, `frontend/packages/editor/src/`) | |
-| Web reader and gateway | Root and document routes (`frontend/apps/web/app/routes/_index.tsx`, `$.tsx`); loaded, empty, missing and error documents; menus open | `frontend/apps/web/e2e/a11y-reader.e2e.ts` |
-| Web editing and comments | Document route and commenting UI (`frontend/apps/web/app/routes/$.tsx`, `frontend/apps/web/app/commenting.tsx`); editor focused, comment composer open, submit errors | |
+| Web reader and gateway | Root and document routes (`frontend/apps/web/app/routes/_index.tsx`, `$.tsx`); loaded, empty, missing and error documents; menus open | `frontend/apps/web/e2e/a11y-reader.e2e.ts`; `frontend/packages/a11y-testing/screen-reader/reader.voiceover.spec.ts`; `reader.nvda.spec.ts` |
+| Web editing and comments | Document route and commenting UI (`frontend/apps/web/app/routes/$.tsx`, `frontend/apps/web/app/commenting.tsx`); editor focused, comment composer open, submit errors | `frontend/packages/a11y-testing/screen-reader/reader.voiceover.spec.ts`; `reader.nvda.spec.ts` (editor harness) |
 | Web account and onboarding | Sign in, register, create site, connect, auth callback and email notification settings (`frontend/apps/web/app/routes/hm.sign-in.tsx`, `hm.register.tsx`, `hm.create-site.tsx`, `hm.connect.tsx`, `hm.auth.callback.tsx`, `hm.email-notifications.tsx`, `frontend/apps/web/app/web-create-space-dialog.tsx`); invalid and pending states | |
-| Vault | `/`, `/login`, `/login/password`, `/login/recover`, `/login/no-recovery`, `/auth/choose`, `/password/set`, `/verify/pending`, `/connect` and `/connect/success` (`vault/src/frontend/router.tsx`); locked, empty and auth-error states | |
+| Vault | `/`, `/login`, `/login/password`, `/login/recover`, `/login/no-recovery`, `/auth/choose`, `/password/set`, `/verify/pending`, `/connect` and `/connect/success` (`vault/src/frontend/router.tsx`); locked, empty and auth-error states | `frontend/packages/a11y-testing/screen-reader/reader.voiceover.spec.ts`; `reader.nvda.spec.ts` |
 | Vault | `/recovery`, `/settings/recovery-words`, `/identity-secured`, `/login/recovered`, `/profile/create`, `/delegate` and `/settings`; recovery confirmation, focused forms and validation errors | |
 | Emails | Confirmation and notification templates (`frontend/apps/emails/email-confirmation.tsx`, `notifier.tsx`) plus shared header, content, footer and notification settings components | |
