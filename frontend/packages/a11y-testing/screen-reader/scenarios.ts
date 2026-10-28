@@ -129,9 +129,9 @@ async function pressAndMoveFromBrowserChrome(reader: ScreenReader, key: 'Tab' | 
 }
 
 /** Finds a phrase by moving focus with Tab, then Shift+Tab. */
-export async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
+export async function tabUntilPhrase(reader: ScreenReader, phrase: string, maxSteps = 10) {
   for (const key of ['Tab', 'Shift+Tab'] as const) {
-    for (let index = 0; index < 10; index += 1) {
+    for (let index = 0; index < maxSteps; index += 1) {
       const phrases = await pressAndMoveFromBrowserChrome(reader, key)
       if (phrases.some((spoken) => phraseContains(spoken, [phrase]))) {
         await expectSpoken(reader, phrase)
@@ -143,9 +143,16 @@ export async function tabUntilPhrase(reader: ScreenReader, phrase: string) {
   await expectSpoken(reader, phrase)
 }
 
-async function navigateToEditor(reader: WebScreenReader) {
-  if (reader.name.toLocaleLowerCase().includes('nvda')) {
-    await tabUntilPhrase(reader, 'Document content')
+async function navigateToEditor(page: Page, reader: WebScreenReader) {
+  const isNvda = reader.name.toLocaleLowerCase().includes('nvda')
+  if (isNvda) {
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+  }
+
+  await reader.navigateToWebContent()
+
+  if (isNvda) {
+    await tabUntilPhrase(reader, 'Document content', 30)
     return
   }
 
@@ -225,8 +232,7 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   const editor = page.getByRole('textbox', {name: 'Document content'})
   const isVoiceOver = reader.name.toLocaleLowerCase().includes('voiceover')
   await expect(editor).toBeVisible()
-  await reader.navigateToWebContent()
-  await navigateToEditor(reader)
+  await navigateToEditor(page, reader)
   await expectSpokenTogether(reader, ['Document content', 'edit'])
   await reader.clearSpokenPhraseLog()
   if (isVoiceOver) {
@@ -256,8 +262,7 @@ export async function runEditorScenario(page: Page, reader: WebScreenReader) {
 
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   await expect(editor).toBeVisible()
-  await reader.navigateToWebContent()
-  await navigateToEditor(reader)
+  await navigateToEditor(page, reader)
   if (isVoiceOver) {
     await reader.interact()
   } else {

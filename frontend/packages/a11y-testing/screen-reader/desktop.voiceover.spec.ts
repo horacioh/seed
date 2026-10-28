@@ -45,6 +45,7 @@ test('desktop shell announcements', async ({voiceOver}, testInfo) => {
     await writeFile(frontmostProcessPath, `${frontmostProcess}\n`, 'utf8')
     await testInfo.attach('frontmost-process.txt', {path: frontmostProcessPath, contentType: 'text/plain'})
 
+    await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
     await tabUntilPhrase(voiceOver, 'Skip to content')
     await expectSpoken(voiceOver, 'link')
     await voiceOver.clearSpokenPhraseLog()
