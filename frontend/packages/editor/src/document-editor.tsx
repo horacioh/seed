@@ -48,6 +48,8 @@ import {HypermediaLinkPreview} from './hm-link-preview'
 import {createHypermediaDocLinkPlugin} from './hypermedia-link-plugin'
 import {InlineAddBlockButton} from './inline-add-block-button'
 import {MentionMenuPositioner} from './mention-menu-positioner'
+import {AttributeMenu, attributeMenuPluginKey, createAttributeMenuPlugin, getAttributeMenuRange} from './attribute-menu'
+import {createFormulaTriggerPlugin} from './mentions-plugin'
 import {PublishRequiredDialog} from './publish-required-dialog'
 import {hmBlockSchema, HMBlockSchema} from './schema'
 import {getSlashMenuItems} from './slash-menu-items'
@@ -206,6 +208,9 @@ export function DocumentEditor({
   // created before the editor instance exists (e.g. the paste handler's
   // block-fragment landing callback).
   const docEditorRef = useRef<BlockNoteEditor<HMBlockSchema> | null>(null)
+  const resourceIdRef = useRef(resourceId)
+  resourceIdRef.current = resourceId
+  const [attributeMenu] = useState(createAttributeMenuPlugin)
 
   const sessionActive = useDocumentSelector((snapshot) => snapshot.matches('editing') || snapshot.matches('publishing'))
   const initialContent = useDocumentEditorInitialContent(blocks, sessionActive)
@@ -265,6 +270,12 @@ export function DocumentEditor({
       },
       _tiptapOptions: {
         extensions: [
+          Extension.create({
+            name: 'formula-trigger',
+            addProseMirrorPlugins() {
+              return [createFormulaTriggerPlugin(() => resourceIdRef.current.id), attributeMenu.plugin]
+            },
+          }),
           Extension.create({
             name: 'hypermedia-link',
             addProseMirrorPlugins() {
@@ -334,7 +345,12 @@ export function DocumentEditor({
             priority: 0,
             addKeyboardShortcuts() {
               return {
-                Escape: () => {
+                Escape: ({editor}) => {
+                  const attributeMenu = getAttributeMenuRange(editor.state)
+                  if (attributeMenu) {
+                    editor.view.dispatch(editor.state.tr.setMeta(attributeMenuPluginKey, attributeMenu.from))
+                    return true
+                  }
                   actorRef.send({type: 'edit.cancel'})
                   return true
                 },
@@ -723,6 +739,7 @@ export function DocumentEditor({
                 siteUid={resourceId.uid}
                 documentId={resourceId}
               />
+              <AttributeMenu editor={editor} controller={attributeMenu.controller} docId={resourceId.id} />
               <HyperlinkToolbarPositioner
                 // @ts-expect-error
                 hyperlinkToolbar={HypermediaLinkPreview}
