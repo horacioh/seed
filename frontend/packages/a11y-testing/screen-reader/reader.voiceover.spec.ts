@@ -1,4 +1,4 @@
-import {voiceOverTest} from './fixtures'
+import {voiceOverWebTest as voiceOverTest} from './fixtures'
 import {
   attachSpokenPhraseLog,
   runEditorScenario,

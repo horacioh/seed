@@ -13,6 +13,8 @@ export interface ScreenReader {
 
 /** Adds the web navigation commands used by both browser screen readers. */
 export interface WebScreenReader extends ScreenReader {
+  /** Moves the screen reader to the beginning of the current web document. */
+  navigateToWebContent(): Promise<void>
   nextHeading(): Promise<void>
   nextLandmark(): Promise<void>
 }
@@ -34,8 +36,10 @@ export async function attachSpokenPhraseLog(reader: ScreenReader, testInfo: Test
 }
 
 /** Checks that the first Tab reaches and activates the reader skip link. */
-export async function runSkipLinkScenario(page: Page, reader: ScreenReader) {
+export async function runSkipLinkScenario(page: Page, reader: WebScreenReader) {
   await page.goto(process.env.A11Y_READER_URL ?? 'http://localhost:3000/')
+  await page.locator('main').waitFor()
+  await reader.navigateToWebContent()
   await page.keyboard.press('Tab')
   await expectSpoken(reader, 'Skip to content')
   await page.keyboard.press('Enter')
@@ -48,6 +52,7 @@ export async function runHeadingScenario(page: Page, reader: WebScreenReader) {
   const heading = page.locator('main h1').first()
   await expect(heading).toBeVisible()
   const title = (await heading.innerText()).trim()
+  await reader.navigateToWebContent()
   for (let index = 0; index < 10; index += 1) {
     await reader.nextHeading()
     const phrase = (await reader.lastSpokenPhrase()).toLocaleLowerCase()
@@ -67,6 +72,8 @@ export async function runHeadingScenario(page: Page, reader: WebScreenReader) {
 /** Checks that landmark navigation reaches the site navigation and main. */
 export async function runLandmarkScenario(page: Page, reader: WebScreenReader) {
   await page.goto(process.env.A11Y_READER_URL ?? 'http://localhost:3000/')
+  await page.locator('main').waitFor()
+  await reader.navigateToWebContent()
   for (const phrase of ['site navigation', 'main']) {
     for (let index = 0; index < 10; index += 1) {
       await reader.nextLandmark()
@@ -77,10 +84,11 @@ export async function runLandmarkScenario(page: Page, reader: WebScreenReader) {
 }
 
 /** Checks the editor name, movement, block options, and slash-menu announcements. */
-export async function runEditorScenario(page: Page, reader: ScreenReader) {
+export async function runEditorScenario(page: Page, reader: WebScreenReader) {
   await page.goto('http://localhost:5180/?fixture=empty&edit=1')
   const editor = page.locator('[contenteditable="true"]').first()
   await expect(editor).toBeVisible()
+  await reader.navigateToWebContent()
   await editor.click()
   await expectSpoken(reader, 'Document content')
   await expectSpoken(reader, 'editable')
@@ -98,6 +106,8 @@ export async function runEditorScenario(page: Page, reader: ScreenReader) {
   await expectSpoken(reader, 'Block options')
 
   await page.reload()
+  await expect(editor).toBeVisible()
+  await reader.navigateToWebContent()
   await editor.click()
   await page.keyboard.type('/')
   const option = page.getByRole('option').first()
@@ -108,9 +118,11 @@ export async function runEditorScenario(page: Page, reader: ScreenReader) {
 }
 
 /** Checks that invalid-email feedback is linked to and announced from the email field. */
-export async function runVaultScenario(page: Page, reader: ScreenReader) {
+export async function runVaultScenario(page: Page, reader: WebScreenReader) {
   await page.goto(process.env.A11Y_VAULT_URL ?? 'http://localhost:3030/vault')
   const email = page.getByLabel('Enter your email to continue')
+  await expect(email).toBeVisible()
+  await reader.navigateToWebContent()
   await email.focus()
   await expectSpoken(reader, 'Enter your email to continue')
   await email.fill('invalid-email')

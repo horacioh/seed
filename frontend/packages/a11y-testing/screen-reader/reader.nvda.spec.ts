@@ -1,4 +1,4 @@
-import {nvdaTest} from './fixtures'
+import {nvdaWebTest as nvdaTest} from './fixtures'
 import {
   attachSpokenPhraseLog,
   runEditorScenario,

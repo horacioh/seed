@@ -13,6 +13,8 @@ test('desktop shell announcements', async ({voiceOver}) => {
   try {
     const page = await app.firstWindow()
     const skipLink = page.getByRole('link', {name: /skip to content/i})
+    const {macOSActivate} = await import('@guidepup/guidepup')
+    await macOSActivate('Electron')
     await page.bringToFront()
     await voiceOver.press('Tab')
     await expect(skipLink).toBeFocused()
