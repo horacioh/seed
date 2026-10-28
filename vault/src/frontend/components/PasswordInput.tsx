@@ -39,8 +39,8 @@ export function PasswordInput({
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false)
   const strength = showStrength ? sharedPassword.checkPasswordStrength(value) : 0
-  const errorId = error ? `${id}-error` : undefined
-  const descriptionIds = [describedBy, errorId].filter(Boolean).join(' ') || undefined
+  const errorId = `${id}-error`
+  const descriptionIds = [describedBy, error ? errorId : undefined].filter(Boolean).join(' ') || undefined
 
   return (
     <div className="mb-4 space-y-2">
@@ -76,11 +76,9 @@ export function PasswordInput({
           )}
         </Button>
       </div>
-      {error ? (
-        <p id={errorId} className="text-destructive text-sm" role="alert">
-          {error}
-        </p>
-      ) : null}
+      <p id={errorId} className="text-destructive text-sm" role="alert">
+        {error}
+      </p>
       {showStrength && value ? (
         <div className="mt-2 h-1 overflow-hidden rounded-sm bg-black/10 dark:bg-white/10">
           <div className={`h-full transition-all duration-300 ${strengthConfig[strength]}`} />

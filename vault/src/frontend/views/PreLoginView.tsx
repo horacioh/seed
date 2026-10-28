@@ -151,11 +151,9 @@ export function PreLoginView() {
               className={showEmailError ? 'border-destructive focus-visible:border-destructive' : undefined}
               autoComplete="email"
             />
-            {showEmailError ? (
-              <p id="email-error" className="text-destructive text-sm" role="alert">
-                That doesn&apos;t look like a valid email
-              </p>
-            ) : null}
+            <p id="email-error" className="text-destructive text-sm" role="alert">
+              {showEmailError ? "That doesn't look like a valid email" : null}
+            </p>
           </div>
 
           {inviteOnly && (
