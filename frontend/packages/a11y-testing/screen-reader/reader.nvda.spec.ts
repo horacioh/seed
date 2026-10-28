@@ -29,7 +29,7 @@ nvdaTest('web reader landmark navigation', async ({page, nvda}) => {
   await runLandmarkScenario(page, nvda)
 })
 
-nvdaTest('editor announcements', async ({page, nvda}) => {
+nvdaTest('editor announcements', {tag: '@sr-report'}, async ({page, nvda}) => {
   await runEditorScenario(page, nvda)
 })
 

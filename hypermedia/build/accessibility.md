@@ -50,7 +50,9 @@ Every editor adapter must pass `runEditorA11yContract` before merging. The contr
 
 ## Manual screen-reader matrix
 
-The Guidepup suite runs nightly and before desktop releases. It covers the web reader, editor and vault with VoiceOver on macOS/WebKit and NVDA on Windows/Chromium, plus the packaged desktop shell with VoiceOver. It checks skip-link and heading/landmark navigation, editor labels and keyboard announcements, vault email validation, desktop window controls, F6 regions and the skip link.
+The Guidepup suite runs nightly and before desktop releases. Blocking coverage includes skip-link, heading and landmark navigation with VoiceOver on WebKit and NVDA on Chromium, plus NVDA vault email validation.
+
+The following scenarios are report-only and tagged `@sr-report`: VoiceOver editor announcements on WebKit and Chromium, VoiceOver vault email validation on WebKit and Chromium, NVDA editor announcements, and the packaged desktop VoiceOver shell. They are tracked in [issue #65](https://github.com/horacioh/seed/issues/65). Require five consecutive green nightly runs before removing `@sr-report` from any scenario.
 
 On a Mac, install the Guidepup environment and run the web/editor/vault scenarios from the package:
 

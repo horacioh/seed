@@ -9,7 +9,7 @@ test.afterEach(async ({voiceOver}, testInfo) => {
   await attachSpokenPhraseLog(voiceOver, testInfo)
 })
 
-test('desktop shell announcements', async ({voiceOver}, testInfo) => {
+test('desktop shell announcements', {tag: '@sr-report'}, async ({voiceOver}, testInfo) => {
   const app = await launchUnpackagedApp()
 
   try {

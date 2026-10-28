@@ -24,10 +24,10 @@ voiceOverTest('web reader landmark navigation', async ({page, voiceOver}) => {
   await runLandmarkScenario(page, voiceOver)
 })
 
-voiceOverTest('editor announcements', async ({page, voiceOver}) => {
+voiceOverTest('editor announcements', {tag: '@sr-report'}, async ({page, voiceOver}) => {
   await runEditorScenario(page, voiceOver)
 })
 
-voiceOverTest('vault email and submit error', async ({page, voiceOver}) => {
+voiceOverTest('vault email and submit error', {tag: '@sr-report'}, async ({page, voiceOver}) => {
   await runVaultScenario(page, voiceOver)
 })

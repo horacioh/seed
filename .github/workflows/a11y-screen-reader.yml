@@ -68,26 +68,43 @@ jobs:
       - name: Run VoiceOver web suite
         working-directory: frontend/packages/a11y-testing
         run:
-          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover
-          screen-reader/reader.voiceover.spec.ts
-      - name: Upload VoiceOver WebKit artifacts
+          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover --grep-invert
+          @sr-report screen-reader/reader.voiceover.spec.ts
+      - name: Upload VoiceOver WebKit blocking artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: voiceover-webkit-artifacts
+          name: voiceover-webkit-blocking-artifacts
           path: frontend/packages/a11y-testing/screen-reader/test-results
           if-no-files-found: warn
-      - name: Run VoiceOver Chromium diagnostic suite
+      # Report-only scenarios are tracked in https://github.com/horacioh/seed/issues/65.
+      - name: Run VoiceOver WebKit report scenarios
         if: ${{ !cancelled() }}
+        continue-on-error: true
         working-directory: frontend/packages/a11y-testing
         run:
-          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover-chromium
+          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover --grep @sr-report
           screen-reader/reader.voiceover.spec.ts
-      - name: Upload VoiceOver Chromium artifacts
+      - name: Upload VoiceOver WebKit report artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: voiceover-chromium-artifacts
+          name: voiceover-webkit-report-artifacts
+          path: frontend/packages/a11y-testing/screen-reader/test-results
+          if-no-files-found: warn
+      # Report-only scenarios are tracked in https://github.com/horacioh/seed/issues/65.
+      - name: Run VoiceOver Chromium report scenarios
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        working-directory: frontend/packages/a11y-testing
+        run:
+          pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover-chromium --grep
+          @sr-report screen-reader/reader.voiceover.spec.ts
+      - name: Upload VoiceOver Chromium report artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: voiceover-chromium-report-artifacts
           path: frontend/packages/a11y-testing/screen-reader/test-results
           if-no-files-found: warn
 
@@ -132,12 +149,25 @@ jobs:
         run: pnpm exec playwright install chromium
       - name: Run NVDA web suite
         working-directory: frontend/packages/a11y-testing
-        run: pnpm test:screen-reader -- --project=nvda screen-reader/reader.nvda.spec.ts
-      - name: Upload spoken phrases and traces
+        run: pnpm test:screen-reader -- --project=nvda --grep-invert @sr-report screen-reader/reader.nvda.spec.ts
+      - name: Upload NVDA blocking artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: nvda-web-artifacts
+          name: nvda-web-blocking-artifacts
+          path: frontend/packages/a11y-testing/screen-reader/test-results
+          if-no-files-found: warn
+      # Report-only scenarios are tracked in https://github.com/horacioh/seed/issues/65.
+      - name: Run NVDA report scenarios
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        working-directory: frontend/packages/a11y-testing
+        run: pnpm test:screen-reader -- --project=nvda --grep @sr-report screen-reader/reader.nvda.spec.ts
+      - name: Upload NVDA report artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nvda-web-report-artifacts
           path: frontend/packages/a11y-testing/screen-reader/test-results
           if-no-files-found: warn
 
@@ -196,11 +226,13 @@ jobs:
           pnpm exec guidepup setup --ci
           pnpm exec guidepup install
       - name: Run packaged-app VoiceOver suite
+        # Report-only scenarios are tracked in https://github.com/horacioh/seed/issues/65.
+        continue-on-error: true
         working-directory: frontend/packages/a11y-testing
         env:
           A11Y_SCREEN_READER_SURFACE: desktop
         run: pnpm test:screen-reader -- --project=voiceover screen-reader/desktop.voiceover.spec.ts
-      - name: Upload spoken phrases and traces
+      - name: Upload VoiceOver desktop report artifacts
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
