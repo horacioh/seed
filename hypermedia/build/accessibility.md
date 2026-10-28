@@ -60,7 +60,7 @@ On a Mac, install the Guidepup environment and run the web/editor/vault scenario
 cd frontend/packages/a11y-testing
 pnpm exec guidepup setup --ci
 pnpm exec guidepup install
-pnpm test:screen-reader -- --project=voiceover screen-reader/reader.voiceover.spec.ts
+pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover screen-reader/reader.voiceover.spec.ts
 ```
 
 To run the packaged desktop scenario, first build the desktop app from the repository root, then point the suite at the resulting app directory:
@@ -69,7 +69,7 @@ To run the packaged desktop scenario, first build the desktop app from the repos
 pnpm desktop:package --arch=arm64
 export A11Y_DESKTOP_BUILD_DIR="$(find frontend/apps/desktop/out -maxdepth 1 -type d -name '*darwin*' -print -quit)"
 cd frontend/packages/a11y-testing
-A11Y_SCREEN_READER_SURFACE=desktop pnpm test:screen-reader -- --project=voiceover screen-reader/desktop.voiceover.spec.ts
+A11Y_SCREEN_READER_SURFACE=desktop pnpm exec playwright test --config=playwright.screen-reader.config.ts --project=voiceover screen-reader/desktop.voiceover.spec.ts
 ```
 
 This automation does not replace the manual matrix. JAWS, TalkBack, iOS VoiceOver and Orca remain manual checks; NVDA on Firefox and VoiceOver in Safari also remain useful browser-specific manual coverage.
