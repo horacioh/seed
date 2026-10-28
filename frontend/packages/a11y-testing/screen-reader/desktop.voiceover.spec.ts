@@ -15,13 +15,23 @@ test.afterEach(async ({voiceOver}, testInfo) => {
 })
 
 async function navigateToElectronWebContent(reader: VoiceOver) {
-  await reader.clearSpokenPhraseLog()
-  await reader.perform(reader.keyboardCommands.openItemChooser)
-  await expect.poll(async () => (await reader.lastSpokenPhrase()).toLocaleLowerCase()).toContain('item chooser')
+  let foundItemChooser = false
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await reader.press('Control')
+    await reader.press('Escape')
+    await reader.clearSpokenPhraseLog()
+    await reader.perform(reader.keyboardCommands.openItemChooser)
+    if ((await reader.lastSpokenPhrase()).toLocaleLowerCase().includes('item chooser')) {
+      foundItemChooser = true
+      break
+    }
+  }
+  expect(foundItemChooser).toBe(true)
   await reader.clearSpokenPhraseLog()
 
   let foundWebContent = false
   for (const character of 'web content') {
+    await reader.press('Control')
     await reader.type(character, {capture: 'initial'})
     const phrase = (await reader.lastSpokenPhrase()).toLocaleLowerCase()
     await reader.clearSpokenPhraseLog()
