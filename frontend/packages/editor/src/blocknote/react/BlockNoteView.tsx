@@ -26,9 +26,18 @@ function BaseBlockNoteView<BSchema extends BlockSchema>(
   const {editor, children, className, ...rest} = props
 
   useEffect(() => {
-    const unsubscribe = editor.onAccessibilityAnnouncement(setAnnouncement)
+    let pendingFrame: number | undefined
+    const unsubscribe = editor.onAccessibilityAnnouncement((message) => {
+      if (pendingFrame !== undefined) cancelAnimationFrame(pendingFrame)
+      setAnnouncement('')
+      pendingFrame = requestAnimationFrame(() => {
+        pendingFrame = undefined
+        setAnnouncement(message)
+      })
+    })
     return () => {
       unsubscribe?.()
+      if (pendingFrame !== undefined) cancelAnimationFrame(pendingFrame)
     }
   }, [editor])
 
@@ -60,10 +69,10 @@ function BaseBlockNoteView<BSchema extends BlockSchema>(
             <LinkMenuPositioner editor={props.editor} />
           </>
         )}
-        <div className="sr-only" aria-live="polite" aria-atomic="true" data-editor-live-region>
-          {announcement}
-        </div>
       </EditorContent>
+      <div className="sr-only" aria-live="polite" aria-atomic="true" data-editor-live-region>
+        {announcement}
+      </div>
     </ImageAltTextDialogProvider>
   )
 }
