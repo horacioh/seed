@@ -39,6 +39,7 @@ export interface WebScreenReader extends ScreenReader {
 
 type NvdaWebScreenReader = WebScreenReader & {
   keyboardCommands: {
+    exitFocusMode: KeyCodeCommand
     moveToNextEditField: KeyCodeCommand
     moveToPreviousEditField: KeyCodeCommand
   }
@@ -157,12 +158,17 @@ export async function tabUntilPhrase(
   await expectSpoken(reader, phrase)
 }
 
-async function navigateToNvdaEditor(reader: WebScreenReader) {
+async function navigateToNvdaEditor(page: Page, reader: WebScreenReader) {
   const nvda = reader as NvdaWebScreenReader
   const commands = [
     ['moveToNextEditField', nvda.keyboardCommands.moveToNextEditField],
     ['moveToPreviousEditField', nvda.keyboardCommands.moveToPreviousEditField],
   ] as const
+
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+  appendNavigationTrace(reader, 'navigation: NVDA exitFocusMode before edit-field search')
+  await nvda.perform(nvda.keyboardCommands.exitFocusMode)
+  await reader.clearSpokenPhraseLog()
 
   for (const [commandName, command] of commands) {
     for (let attempt = 1; attempt <= 5; attempt += 1) {
@@ -187,7 +193,7 @@ async function navigateToEditor(page: Page, reader: WebScreenReader) {
   await reader.navigateToWebContent()
 
   if (isNvda) {
-    await navigateToNvdaEditor(reader)
+    await navigateToNvdaEditor(page, reader)
     return
   }
 
