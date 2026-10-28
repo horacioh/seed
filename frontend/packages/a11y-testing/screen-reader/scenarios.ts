@@ -1,5 +1,6 @@
 import {mkdir, writeFile} from 'node:fs/promises'
 import path from 'node:path'
+import type {KeyCodeCommand} from '@guidepup/guidepup'
 import {expect, type Page, type TestInfo} from '@playwright/test'
 
 export interface ScreenReader {
@@ -34,6 +35,14 @@ export interface WebScreenReader extends ScreenReader {
   previousHeading(): Promise<void>
   nextLandmark(): Promise<void>
   previousLandmark(): Promise<void>
+}
+
+type NvdaWebScreenReader = WebScreenReader & {
+  keyboardCommands: {
+    moveToNextEditField: KeyCodeCommand
+    moveToPreviousEditField: KeyCodeCommand
+  }
+  perform(command: KeyCodeCommand): Promise<void>
 }
 
 const navigationTrace = new WeakMap<ScreenReader, string[]>()
@@ -148,6 +157,27 @@ export async function tabUntilPhrase(
   await expectSpoken(reader, phrase)
 }
 
+async function navigateToNvdaEditor(reader: WebScreenReader) {
+  const nvda = reader as NvdaWebScreenReader
+  const commands = [
+    ['moveToNextEditField', nvda.keyboardCommands.moveToNextEditField],
+    ['moveToPreviousEditField', nvda.keyboardCommands.moveToPreviousEditField],
+  ] as const
+
+  for (const [commandName, command] of commands) {
+    for (let attempt = 1; attempt <= 5; attempt += 1) {
+      await reader.clearSpokenPhraseLog()
+      appendNavigationTrace(reader, `navigation: NVDA ${commandName} attempt ${attempt}`)
+      await nvda.perform(command)
+      await waitForSpeech(reader)
+
+      if ((await reader.spokenPhraseLog()).some((phrase) => phraseContains(phrase, ['Document content']))) {
+        return
+      }
+    }
+  }
+}
+
 async function navigateToEditor(page: Page, reader: WebScreenReader) {
   const isNvda = reader.name.toLocaleLowerCase().includes('nvda')
   if (isNvda) {
@@ -157,7 +187,7 @@ async function navigateToEditor(page: Page, reader: WebScreenReader) {
   await reader.navigateToWebContent()
 
   if (isNvda) {
-    await tabUntilPhrase(reader, 'Document content', 30, ['Tab'])
+    await navigateToNvdaEditor(reader)
     return
   }
 
