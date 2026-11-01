@@ -123,6 +123,9 @@ jobs:
           - suite: shared
             filter: '@shm/shared'
             command: 'test'
+          - suite: journey-lab
+            filter: '@shm/journey-lab'
+            command: 'test'
           # The published SDK. Never ran in CI before 2026-09-15; its home-genesis goldens
           # are the client half of a wire-format contract with the daemon.
           - suite: client
@@ -170,6 +173,10 @@ jobs:
             exit 1
           fi
           echo "✅ Desktop tests passed (vitest hung after completion — known jsdom issue)"
+
+      - name: Build Journey Lab
+        if: matrix.suite == 'journey-lab'
+        run: pnpm --filter @shm/journey-lab build
 
   # Job 2: Integration tests (real daemon + built web server). Run on every frontend
   # pull request and whenever a calling workflow asks for them. They were PR-gated
