@@ -46,7 +46,7 @@ function IndicatorLine({instruction}: {instruction: DropInstruction}) {
         zIndex: 9999,
         backgroundColor: INDICATOR_COLOR,
         borderRadius: 1,
-        transition: 'transform 60ms ease',
+        transition: 'transform 60ms var(--ease-out-smooth)',
         top: 0,
         left: 0,
         transform: `translate(${left}px, ${top}px)`,
