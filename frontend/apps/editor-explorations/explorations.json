@@ -1,0 +1,96 @@
+{
+  "editors": [
+    {
+      "slug": "prosekit",
+      "name": "ProseKit",
+      "library": "prosekit",
+      "pr": 63,
+      "branch": "devin/1793032977-editor-adapter-kit",
+      "appDir": "frontend/packages/editor-prosekit",
+      "viteConfig": "harness/vite.config.ts",
+      "verdict": "top",
+      "summary": "Least Seed code. Ships headless menus, popovers and a block handle. Runs on the shared adapter kit."
+    },
+    {
+      "slug": "tiptap",
+      "name": "Tiptap",
+      "library": "@tiptap/core",
+      "pr": 59,
+      "branch": "devin/1792788330-tiptap-editor-adapter",
+      "appDir": "frontend/packages/editor-tiptap",
+      "viteConfig": "harness/vite.config.ts",
+      "verdict": "top",
+      "summary": "Stable releases and a big ecosystem. Closest to BlockNote, so today's block code ports most directly."
+    },
+    {
+      "slug": "prosemirror",
+      "name": "ProseMirror",
+      "library": "prosemirror-view",
+      "pr": 58,
+      "branch": "devin/1792788350-prosemirror-editor-adapter",
+      "appDir": "frontend/packages/editor-prosemirror",
+      "viteConfig": "harness/vite.config.ts",
+      "verdict": "viable",
+      "summary": "The most stable dependency of all, but every menu and popover is written by hand."
+    },
+    {
+      "slug": "lexical",
+      "name": "Lexical",
+      "library": "lexical",
+      "pr": 57,
+      "branch": "devin/1792780847-lexical-editor-adapter",
+      "appDir": "frontend/packages/editor-lexical",
+      "viteConfig": "harness/vite.config.ts",
+      "verdict": "viable",
+      "summary": "Big community and a good React story. No schema, so Seed code has to keep the block tree valid."
+    },
+    {
+      "slug": "codemirror",
+      "name": "CodeMirror",
+      "library": "@codemirror/view",
+      "pr": 60,
+      "branch": "devin/1792788360-codemirror-editor-adapter",
+      "appDir": "frontend/packages/editor-codemirror",
+      "viteConfig": "harness/vite.config.ts",
+      "verdict": "source",
+      "summary": "Seed documents as live-preview text. A good fit for an optional source view, not the main editor."
+    },
+    {
+      "slug": "svedit",
+      "name": "Svedit",
+      "library": "svedit",
+      "pr": 56,
+      "branch": "devin/1792780853-svedit-editor-adapter",
+      "appDir": "frontend/packages/editor-svedit",
+      "viteConfig": "harness/vite.config.ts",
+      "verdict": "no",
+      "summary": "A Svelte editor inside a React app. Every Seed UI piece would need rewriting in Svelte."
+    }
+  ],
+  "extras": [
+    {
+      "slug": "layout",
+      "name": "Layout Playground",
+      "pr": 61,
+      "branch": "devin/1792842753-layout-playground",
+      "appDir": "frontend/apps/playground",
+      "viteConfig": "vite.config.ts",
+      "summary": "Design page layouts with real Seed components, then share them as a link."
+    }
+  ],
+  "documents": [
+    {
+      "title": "Horacio’s home",
+      "id": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk"
+    },
+    {
+      "title": "Seed Hypermedia",
+      "id": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia"
+    },
+    {
+      "title": "Weekly review",
+      "id": "hm://z6Mkvz9TgGtv9zsGsdrksfNk1ajbFancgHREJEz3Y2HsAVdk/projects/seed-hypermedia/weekly-review-june-17-23-2026"
+    }
+  ],
+  "site": "https://seed.horacioh.com"
+}

@@ -1,0 +1,51 @@
+name: Editor explorations
+
+# Builds every editor exploration from its PR branch and deploys the public site to Cloudflare.
+# Needs repository secrets CLOUDFLARE_API_TOKEN (Workers Scripts: Edit) and CLOUDFLARE_ACCOUNT_ID.
+on:
+  push:
+    branches: ['custom-images', 'devin/1793624354-editor-explorations']
+    paths:
+      - 'frontend/apps/editor-explorations/**'
+      - '.github/workflows/editor-explorations.yml'
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: editor-explorations
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Build explorations
+        run: node frontend/apps/editor-explorations/build.mjs
+
+      - name: Deploy to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: frontend/apps/editor-explorations
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN is not set, so the site was built but not deployed."
+            exit 0
+          fi
+          npx --yes wrangler@4.156.1 deploy
