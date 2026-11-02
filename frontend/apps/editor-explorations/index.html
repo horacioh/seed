@@ -550,7 +550,7 @@
       document.getElementById('extras').append(...config.extras.map((e) => renderCard(e, 0)))
 
       const update = () => {
-        const valid = /^hm:\/\/[a-z0-9]+(\/[^\s]*)?$/i.test(docId)
+        const valid = /^hm:\/\/[a-z0-9]+([/?#]\S*)?$/i.test(docId)
         customId.setAttribute('aria-invalid', String(!valid && custom.hasAttribute('data-open')))
         if (valid) {
           localStorage.setItem('seed-explorations-doc', docId)
