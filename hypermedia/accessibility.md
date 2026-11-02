@@ -45,10 +45,9 @@ We fix these in order of how much they get in people's way. This page changes wh
 
 If something in Seed is hard or impossible for you to use, we want to know.
 
-- [Open an accessibility issue on GitHub](https://github.com/seed-hypermedia/seed/issues/new?template=accessibility.yml). The form asks what you were trying to do and what assistive technology you use.
-- If you can't or don't want to use GitHub, email [FEEDBACK_EMAIL](mailto:FEEDBACK_EMAIL).
+[Open an accessibility issue on GitHub](https://github.com/seed-hypermedia/seed/issues/new?template=accessibility.yml). The form asks what you were trying to do and what assistive technology you use.
 
-We aim to reply within RESPONSE_TIME. Tell us if you need the information on a page in another format, and we will send it to you.
+We aim to reply within 5 business days. Tell us if you need the information on a page in another format, and we will send it to you.
 
 If you are in the European Union and our answer does not solve the problem, you can contact the authority that enforces the European Accessibility Act in your country.
 

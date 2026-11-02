@@ -6,8 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for telling us. You don't need to know accessibility terms or standards. Describe what happened in your own words.
-        If you'd rather not use GitHub, email FEEDBACK_EMAIL instead.
+        Thank you for telling us. You don't need to know accessibility terms or standards. Describe what happened in your own words. We aim to reply within 5 business days.
   - type: dropdown
     id: surface
     attributes:
