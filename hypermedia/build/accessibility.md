@@ -8,6 +8,8 @@ summary: How Seed tests its desktop, web, vault and email surfaces against WCAG 
 
 Seed targets WCAG 2.2 AA and EN 301 549. The current program covers the desktop app, web reader and gateway, web editing and comments, vault sign-up and onboarding, and transactional emails. The marketing landing page, Explore and mobile are out of scope for now.
 
+The public [accessibility statement](../accessibility.md) reports the current status and known problems; update it when a known problem is fixed or a new one is found.
+
 ## Gate policy
 
 The `pnpm lint:a11y` scan is a blocking CI gate and must report zero findings. Do not add baseline or allowlist files. A justified rule suppression must be line-scoped and include `-- reason`; reviewers reject suppressions without a clear, specific justification.

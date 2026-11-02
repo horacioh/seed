@@ -1,0 +1,53 @@
+name: Accessibility problem
+description: Something in Seed is hard or impossible to use with a disability or assistive technology.
+title: 'Accessibility: '
+labels: ['accessibility']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for telling us. You don't need to know accessibility terms or standards. Describe what happened in your own words.
+        If you'd rather not use GitHub, email FEEDBACK_EMAIL instead.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where did it happen?
+      options:
+        - Seed desktop app
+        - A Seed web site or hyper.media (reading)
+        - Editing a document or writing a comment
+        - Signing up, signing in or account recovery (vault)
+        - An email from Seed
+        - Somewhere else
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: What were you trying to do?
+      placeholder: For example, reply to a comment on a document.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What went wrong?
+      description: What you heard, saw or couldn't reach. A link to the page helps if you have one.
+    validations:
+      required: true
+  - type: input
+    id: assistive-technology
+    attributes:
+      label: Assistive technology and settings
+      placeholder: For example, NVDA 2025.1, keyboard only, 200% zoom, Windows high contrast.
+  - type: input
+    id: environment
+    attributes:
+      label: Device, operating system and browser
+      placeholder: For example, Windows 11 with Firefox 140, or Seed desktop 2026.10 on macOS 15.
+  - type: input
+    id: wcag
+    attributes:
+      label: WCAG success criterion (optional)
+      description: Only if you know it.
+      placeholder: For example, 2.1.1 Keyboard.
