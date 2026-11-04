@@ -1,0 +1,26 @@
+export default {
+  title: 'Install a Seed site on Umbrel',
+  frame: 'card',
+  noZoom: true,
+  posterAt: 'site',
+  theme: {
+    accent: '#54CD85',
+    background: '#F5F5F3',
+  },
+  beats: [
+    {name: 'home', noZoom: true, zoom: false, hold: 700},
+    {name: 'app-store', zoom: true},
+    {name: 'more-menu', zoom: true},
+    {name: 'community-stores', zoom: true},
+    {name: 'store-url', zoom: true, hold: 500},
+    {name: 'add-store', zoom: true},
+    {name: 'open-store', zoom: true},
+    {name: 'seed-site', zoom: true},
+    {name: 'install', zoom: true},
+    {name: 'wait', zoom: true, speed: true},
+    {name: 'installed', zoom: true},
+    {name: 'open-app', zoom: true, capPos: 'top'},
+    {name: 'open-site', zoom: true},
+    {name: 'site', zoom: true, hold: 900},
+  ],
+}

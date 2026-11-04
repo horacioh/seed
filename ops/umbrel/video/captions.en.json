@@ -1,0 +1,26 @@
+{
+  "intro": {
+    "title": "Install a Seed site on Umbrel",
+    "subtitle": "Self-host a Seed Hypermedia site from a community app store"
+  },
+  "beats": {
+    "home": "Start on your Umbrel home screen",
+    "app-store": "Open the App Store",
+    "more-menu": "Open the ⋯ menu",
+    "community-stores": "Choose Community App Stores",
+    "store-url": "Paste the Seed app store URL",
+    "add-store": "Add the store",
+    "open-store": "Open the Seed Hypermedia store",
+    "seed-site": "Open Seed Site",
+    "install": "Install Seed Site",
+    "wait": "Umbrel pulls the images and starts the daemon and web app",
+    "installed": "Seed Site is installed",
+    "open-app": "Umbrel shows the password — it's your registration secret",
+    "open-site": "Open Seed Site",
+    "site": "Live on your LAN — set SEED_BASE_URL to the public URL before registering"
+  },
+  "outro": {
+    "takeaway": "Register at <SEED_BASE_URL>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/umbrel"
+  }
+}
