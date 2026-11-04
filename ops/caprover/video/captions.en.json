@@ -1,0 +1,31 @@
+{
+  "intro": {
+    "title": "Deploy a Seed site on CapRover",
+    "subtitle": "Self-host a Seed Hypermedia site from one one-click app template"
+  },
+  "beats": {
+    "apps": "Start on the CapRover Apps page",
+    "one-click": "Choose One-Click Apps/Databases",
+    "search": "Search for the template",
+    "template": "Open >> TEMPLATE << for a custom one-click app",
+    "paste": "Paste ops/caprover/seed.yml",
+    "next": "Continue to the app settings",
+    "app-name": "Name the app — its services are prefixed with it",
+    "domain": "Set site.example.com as the site domain",
+    "secret": "CapRover generates the registration secret — keep it private",
+    "deploy": "Deploy proxy, daemon, web and updater",
+    "wait": "Wait until every Seed service is running",
+    "instructions": "The final steps include your private registration link",
+    "finish": "Finish the one-click setup",
+    "apps-list": "Four apps — Shepherd updates the daemon and web images",
+    "open-app": "Open the site app",
+    "enable-https": "Enable HTTPS for site.example.com",
+    "force-https": "Redirect all HTTP traffic to HTTPS",
+    "save": "Save and restart the proxy",
+    "site": "Your site is live — register it from Seed desktop"
+  },
+  "outro": {
+    "takeaway": "Register at https://<domain>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/caprover"
+  }
+}
