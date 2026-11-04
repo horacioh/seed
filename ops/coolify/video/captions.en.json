@@ -1,0 +1,40 @@
+{
+  "intro": {
+    "title": "Deploy a Seed site on Coolify",
+    "subtitle": "Self-host a Seed Hypermedia site from one Compose file"
+  },
+  "beats": {
+    "project": "Start in your Coolify project",
+    "new-resource": "Add a new resource",
+    "docker-compose": "Choose Docker Compose — no Git repo needed",
+    "paste": "Paste ops/coolify/seed-site.yaml",
+    "create": "Create proxy, init, daemon and web",
+    "services": "Review all four Seed resources",
+    "domain": "Set your domain on Seed Proxy",
+    "domain-edit": "Open the Seed Proxy domain settings",
+    "protocol-menu": "Switch the protocol…",
+    "protocol-https": "…to https",
+    "domain-name": "Set site.example.com as the hostname",
+    "save": "Save the domain settings",
+    "confirm-port": "Confirm — Coolify still routes to port 80",
+    "deploy": "Deploy the Seed site stack",
+    "wait": "Wait for proxy and web to turn healthy",
+    "close-logs": "Close the logs once the stack is up",
+    "running": "Seed Init exits after first setup — that's expected",
+    "secret": "Find SERVICE_PASSWORD_SEEDLINK for registration",
+    "copy-secret": "Copy SERVICE_PASSWORD_SEEDLINK for registration",
+    "updater-resource": "Add the updater once per server for auto-updates",
+    "updater-compose": "Choose Docker Compose again",
+    "updater-paste": "Paste ops/coolify/seed-updater.yaml",
+    "updater-create": "Create the updater service",
+    "updater-deploy": "Deploy Watchtower for automatic updates",
+    "updater-running": "Watch the updater start",
+    "updater-close-logs": "Close the updater logs",
+    "updater-status": "The updater is running — it checks for new images every 10 minutes",
+    "site": "Your site is live — register it from Seed desktop"
+  },
+  "outro": {
+    "takeaway": "Register at https://<domain>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/coolify"
+  }
+}
