@@ -26,6 +26,10 @@ generate or print another secret. The root page returns 404 until registration.
 Before registering, change both `SEED_BASE_URL` and `SEED_ASSET_HOST` in the app's settings to the same public HTTPS
 URL. The default is `http://casaos.local:3567`; the settings edit was verified through CasaOS's `PUT /compose/{id}` API.
 
+CasaOS 0.4.15's Settings dialog saves `seed-init`'s `restart: "no"` as `unless-stopped`. `seed-init` then restarts in a
+loop and Seed Web never starts. Before clicking **Save**, open the **seed-init** tab and set **Restart Policy** to
+**on-failure**, so it runs once and exits. `TUTORIAL.md` walks through the whole flow.
+
 The site is reachable on port **3567** on the CasaOS host. For access outside your LAN, expose it with a Cloudflare
 Tunnel or similar reverse proxy. The proxy must allow the desktop app to reach `/hm/api/register` without CasaOS login
 authentication.

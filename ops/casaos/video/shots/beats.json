@@ -1,0 +1,629 @@
+{
+  "takes": {
+    "en": {
+      "capturedAt": "2026-10-09T00:15:38.161Z",
+      "platform": {
+        "os": "linux",
+        "release": "6.8.0-1061-aws",
+        "node": "v22.22.0",
+        "browser": "153.0.8010.12"
+      },
+      "persona": "desktop",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 2,
+      "frame": "card",
+      "format": "16x9",
+      "lang": "en",
+      "baseUrl": "http://127.0.0.1",
+      "beats": [
+        {
+          "kind": "shot",
+          "name": "dashboard",
+          "t": 2095,
+          "image": "shots/en/01-dashboard.png",
+          "cursor": {
+            "x": 1056,
+            "y": 648
+          }
+        },
+        {
+          "kind": "click",
+          "name": "app-store",
+          "t": 4252,
+          "tClick": 5583,
+          "tAfter": 8648,
+          "target": {
+            "x": 690,
+            "y": 463,
+            "w": 64,
+            "h": 64
+          },
+          "from": {
+            "x": 1056,
+            "y": 648
+          },
+          "to": {
+            "x": 722,
+            "y": 495
+          },
+          "before": "shots/en/02-app-store-before.png",
+          "hover": "shots/en/03-app-store-hover.png",
+          "after": "shots/en/04-app-store-after.png",
+          "image": "shots/en/04-app-store-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "sources",
+          "t": 9748,
+          "tClick": 10812,
+          "tAfter": 11775,
+          "target": {
+            "x": 1475,
+            "y": 489,
+            "w": 109,
+            "h": 32
+          },
+          "from": {
+            "x": 722,
+            "y": 495
+          },
+          "to": {
+            "x": 1530,
+            "y": 505
+          },
+          "before": "shots/en/05-sources-before.png",
+          "hover": "shots/en/06-sources-hover.png",
+          "after": "shots/en/07-sources-after.png",
+          "image": "shots/en/07-sources-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "more-apps",
+          "t": 12782,
+          "tClick": 14206,
+          "tAfter": 15642,
+          "target": {
+            "x": 1412,
+            "y": 610,
+            "w": 168,
+            "h": 33
+          },
+          "from": {
+            "x": 1530,
+            "y": 505
+          },
+          "to": {
+            "x": 1496,
+            "y": 627
+          },
+          "before": "shots/en/08-more-apps-before.png",
+          "hover": "shots/en/09-more-apps-hover.png",
+          "after": "shots/en/10-more-apps-after.png",
+          "image": "shots/en/10-more-apps-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "source-url",
+          "t": 16632,
+          "tClick": 16987,
+          "tAfter": 18757,
+          "target": {
+            "x": 1269,
+            "y": 489,
+            "w": 239,
+            "h": 32
+          },
+          "from": {
+            "x": 1496,
+            "y": 627
+          },
+          "to": {
+            "x": 1389,
+            "y": 505
+          },
+          "text": "http://127.0.0.1:8088/seed-apps-main.zip",
+          "before": "shots/en/11-source-url-before.png",
+          "after": "shots/en/12-source-url-after.png",
+          "image": "shots/en/12-source-url-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "add-source",
+          "t": 19725,
+          "tClick": 20789,
+          "tAfter": 22467,
+          "target": {
+            "x": 1527,
+            "y": 489,
+            "w": 57,
+            "h": 32
+          },
+          "from": {
+            "x": 1389,
+            "y": 505
+          },
+          "to": {
+            "x": 1556,
+            "y": 505
+          },
+          "before": "shots/en/13-add-source-before.png",
+          "hover": "shots/en/14-add-source-hover.png",
+          "after": "shots/en/15-add-source-after.png",
+          "image": "shots/en/15-add-source-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "search",
+          "t": 27270,
+          "tClick": 27623,
+          "tAfter": 28531,
+          "target": {
+            "x": 512,
+            "y": 489,
+            "w": 200,
+            "h": 32
+          },
+          "from": {
+            "x": 1556,
+            "y": 505
+          },
+          "to": {
+            "x": 612,
+            "y": 505
+          },
+          "text": "Seed",
+          "before": "shots/en/16-search-before.png",
+          "after": "shots/en/17-search-after.png",
+          "image": "shots/en/17-search-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "app-detail",
+          "t": 29419,
+          "tClick": 30364,
+          "tAfter": 32784,
+          "target": {
+            "x": 416,
+            "y": 545,
+            "w": 198,
+            "h": 18
+          },
+          "from": {
+            "x": 612,
+            "y": 505
+          },
+          "to": {
+            "x": 515,
+            "y": 554
+          },
+          "before": "shots/en/18-app-detail-before.png",
+          "hover": "shots/en/19-app-detail-hover.png",
+          "after": "shots/en/20-app-detail-after.png",
+          "image": "shots/en/20-app-detail-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "install",
+          "t": 33493,
+          "tClick": 34216,
+          "tAfter": 66582,
+          "target": {
+            "x": 488,
+            "y": 157,
+            "w": 115,
+            "h": 34
+          },
+          "from": {
+            "x": 515,
+            "y": 554
+          },
+          "to": {
+            "x": 546,
+            "y": 174
+          },
+          "before": "shots/en/21-install-before.png",
+          "hover": "shots/en/22-install-hover.png",
+          "after": "shots/en/23-install-after.png",
+          "image": "shots/en/23-install-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "installing",
+          "t": 66583,
+          "tAfter": 76860,
+          "frames": [
+            {
+              "t": 66668,
+              "image": "shots/en/24-installing-0.png"
+            },
+            {
+              "t": 69764,
+              "image": "shots/en/25-installing-1.png"
+            },
+            {
+              "t": 72846,
+              "image": "shots/en/26-installing-2.png"
+            },
+            {
+              "t": 75884,
+              "image": "shots/en/27-installing-3.png"
+            }
+          ],
+          "image": "shots/en/27-installing-3.png",
+          "cursor": {
+            "x": 546,
+            "y": 174
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "installed",
+          "t": 77828,
+          "image": "shots/en/28-installed.png",
+          "cursor": {
+            "x": 546,
+            "y": 174
+          },
+          "target": {
+            "x": 1036,
+            "y": 407,
+            "w": 188,
+            "h": 188
+          }
+        },
+        {
+          "kind": "click",
+          "name": "tile-menu",
+          "t": 80038,
+          "tClick": 81279,
+          "tAfter": 82616,
+          "target": {
+            "x": 1192,
+            "y": 423,
+            "w": 24,
+            "h": 29
+          },
+          "from": {
+            "x": 546,
+            "y": 174
+          },
+          "to": {
+            "x": 1204,
+            "y": 438
+          },
+          "before": "shots/en/29-tile-menu-before.png",
+          "hover": "shots/en/30-tile-menu-hover.png",
+          "after": "shots/en/31-tile-menu-after.png",
+          "image": "shots/en/31-tile-menu-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "settings",
+          "t": 83854,
+          "tClick": 85081,
+          "tAfter": 86111,
+          "target": {
+            "x": 1196,
+            "y": 527,
+            "w": 159,
+            "h": 32
+          },
+          "from": {
+            "x": 1204,
+            "y": 438
+          },
+          "to": {
+            "x": 1276,
+            "y": 543
+          },
+          "before": "shots/en/32-settings-before.png",
+          "hover": "shots/en/33-settings-hover.png",
+          "after": "shots/en/34-settings-after.png",
+          "image": "shots/en/34-settings-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "web-tab",
+          "t": 86900,
+          "tClick": 87741,
+          "tAfter": 88615,
+          "target": {
+            "x": 835,
+            "y": 107,
+            "w": 62,
+            "h": 20
+          },
+          "from": {
+            "x": 1276,
+            "y": 543
+          },
+          "to": {
+            "x": 866,
+            "y": 117
+          },
+          "before": "shots/en/35-web-tab-before.png",
+          "hover": "shots/en/36-web-tab-hover.png",
+          "after": "shots/en/37-web-tab-after.png",
+          "image": "shots/en/37-web-tab-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "open-logs",
+          "t": 89394,
+          "tClick": 90253,
+          "tAfter": 91098,
+          "target": {
+            "x": 1152,
+            "y": 62,
+            "w": 24,
+            "h": 24
+          },
+          "from": {
+            "x": 866,
+            "y": 117
+          },
+          "to": {
+            "x": 1164,
+            "y": 74
+          },
+          "before": "shots/en/38-open-logs-before.png",
+          "hover": "shots/en/39-open-logs-hover.png",
+          "after": "shots/en/40-open-logs-after.png",
+          "image": "shots/en/40-open-logs-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "logs-tab",
+          "t": 91755,
+          "tClick": 92435,
+          "tAfter": 94388,
+          "target": {
+            "x": 657,
+            "y": 257,
+            "w": 33,
+            "h": 24
+          },
+          "from": {
+            "x": 1164,
+            "y": 74
+          },
+          "to": {
+            "x": 674,
+            "y": 269
+          },
+          "before": "shots/en/41-logs-tab-before.png",
+          "hover": "shots/en/42-logs-tab-hover.png",
+          "after": "shots/en/43-logs-tab-after.png",
+          "image": "shots/en/43-logs-tab-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "registration-link",
+          "t": 94812,
+          "image": "shots/en/44-registration-link.png",
+          "cursor": {
+            "x": 674,
+            "y": 269
+          },
+          "target": {
+            "x": 592,
+            "y": 310,
+            "w": 744,
+            "h": 560
+          }
+        },
+        {
+          "kind": "click",
+          "name": "close-logs",
+          "t": 95871,
+          "tClick": 96574,
+          "tAfter": 97620,
+          "target": {
+            "x": 1308,
+            "y": 218,
+            "w": 20,
+            "h": 20
+          },
+          "from": {
+            "x": 674,
+            "y": 269
+          },
+          "to": {
+            "x": 1318,
+            "y": 228
+          },
+          "before": "shots/en/45-close-logs-before.png",
+          "hover": "shots/en/46-close-logs-hover.png",
+          "after": "shots/en/47-close-logs-after.png",
+          "image": "shots/en/47-close-logs-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "base-url",
+          "t": 98437,
+          "tClick": 98786,
+          "tAfter": 100344,
+          "target": {
+            "x": 958,
+            "y": 889,
+            "w": 282,
+            "h": 40
+          },
+          "from": {
+            "x": 1318,
+            "y": 228
+          },
+          "to": {
+            "x": 1099,
+            "y": 909
+          },
+          "text": "http://site.example.com:3567",
+          "before": "shots/en/48-base-url-before.png",
+          "after": "shots/en/49-base-url-after.png",
+          "image": "shots/en/49-base-url-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "asset-host",
+          "t": 101158,
+          "tClick": 101494,
+          "tAfter": 103076,
+          "target": {
+            "x": 958,
+            "y": 841,
+            "w": 282,
+            "h": 40
+          },
+          "from": {
+            "x": 1099,
+            "y": 909
+          },
+          "to": {
+            "x": 1099,
+            "y": 861
+          },
+          "text": "http://site.example.com:3567",
+          "before": "shots/en/50-asset-host-before.png",
+          "after": "shots/en/51-asset-host-after.png",
+          "image": "shots/en/51-asset-host-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "init-tab",
+          "t": 103904,
+          "tClick": 104712,
+          "tAfter": 105533,
+          "target": {
+            "x": 766,
+            "y": 107,
+            "w": 54,
+            "h": 20
+          },
+          "from": {
+            "x": 1099,
+            "y": 861
+          },
+          "to": {
+            "x": 793,
+            "y": 117
+          },
+          "before": "shots/en/52-init-tab-before.png",
+          "hover": "shots/en/53-init-tab-hover.png",
+          "after": "shots/en/54-init-tab-after.png",
+          "image": "shots/en/54-init-tab-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "restart-policy",
+          "t": 106150,
+          "image": "shots/en/55-restart-policy.png",
+          "cursor": {
+            "x": 793,
+            "y": 117
+          },
+          "target": {
+            "x": 664,
+            "y": 764,
+            "w": 592,
+            "h": 40
+          },
+          "mark": {
+            "x": 664,
+            "y": 764,
+            "w": 592,
+            "h": 40
+          }
+        },
+        {
+          "kind": "click",
+          "name": "save",
+          "t": 107405,
+          "tClick": 108216,
+          "tAfter": 109883,
+          "target": {
+            "x": 1186,
+            "y": 983,
+            "w": 70,
+            "h": 32
+          },
+          "from": {
+            "x": 793,
+            "y": 117
+          },
+          "to": {
+            "x": 1221,
+            "y": 999
+          },
+          "before": "shots/en/56-save-before.png",
+          "hover": "shots/en/57-save-hover.png",
+          "after": "shots/en/58-save-after.png",
+          "image": "shots/en/58-save-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "restarting",
+          "t": 109883,
+          "tAfter": 132318,
+          "frames": [
+            {
+              "t": 109970,
+              "image": "shots/en/59-restarting-0.png"
+            },
+            {
+              "t": 113035,
+              "image": "shots/en/60-restarting-1.png"
+            },
+            {
+              "t": 116054,
+              "image": "shots/en/61-restarting-2.png"
+            },
+            {
+              "t": 119076,
+              "image": "shots/en/62-restarting-3.png"
+            },
+            {
+              "t": 122111,
+              "image": "shots/en/63-restarting-4.png"
+            },
+            {
+              "t": 125169,
+              "image": "shots/en/64-restarting-5.png"
+            },
+            {
+              "t": 128278,
+              "image": "shots/en/65-restarting-6.png"
+            },
+            {
+              "t": 131325,
+              "image": "shots/en/66-restarting-7.png"
+            }
+          ],
+          "image": "shots/en/66-restarting-7.png",
+          "cursor": {
+            "x": 1221,
+            "y": 999
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "site",
+          "t": 134189,
+          "image": "shots/en/67-site.png",
+          "cursor": {
+            "x": 1221,
+            "y": 999
+          },
+          "target": {
+            "x": 672,
+            "y": 24,
+            "w": 576,
+            "h": 174
+          }
+        }
+      ]
+    }
+  }
+}

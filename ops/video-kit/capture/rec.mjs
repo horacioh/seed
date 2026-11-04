@@ -44,7 +44,7 @@ const DEFAULT_GUARD_SELECTORS = {
   empty: ['[data-empty-state]', '[data-empty]', '.empty-state'],
 }
 
-function guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selectors}) {
+function guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selectors, bigTextExempt}) {
   return `(() => {
     const problems = []
     const vis = (el) => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && s.opacity !== '0' && r.bottom > 0 && r.top < innerHeight }
@@ -59,7 +59,7 @@ function guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selecto
     while ((n = walker.nextNode())) {
       const t = n.textContent.trim(); if (t.length < 3) continue
       const el = n.parentElement; if (!el || !vis(el)) continue
-      if (el.closest(${JSON.stringify(BIG_TEXT_EXEMPT)})) continue
+      if (el.closest(${JSON.stringify(bigTextExempt)})) continue
       const fs = parseFloat(getComputedStyle(el).fontSize)
       if (fs > 24) problems.push('text>24px (' + fs + 'px): ' + t.slice(0, 40))
     }
@@ -155,7 +155,10 @@ export async function createRecorder(opts) {
         return [key, Array.isArray(configured) ? configured : [configured]]
       }),
     )
-    const problems = await page.evaluate(guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selectors}))
+    const bigTextExempt = [BIG_TEXT_EXEMPT, ...[frameGuard.bigTextExempt ?? []].flat()].join(', ')
+    const problems = await page.evaluate(
+      guardScript({allowLoading, allowToast, allowBanner, allowEmpty, selectors, bigTextExempt}),
+    )
     if (problems.length) throw new Error(`frame guard failed:\n  ${problems.join('\n  ')}`)
   }
 
