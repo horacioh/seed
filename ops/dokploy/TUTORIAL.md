@@ -17,13 +17,14 @@ From the Seed repository root, run this command to generate the base64 template 
 python3 -c 'import base64,json,pathlib; p=pathlib.Path("ops/dokploy/seed"); print(base64.b64encode(json.dumps({"compose":(p/"docker-compose.yml").read_text(),"config":(p/"template.toml").read_text()},indent=2,ensure_ascii=False).encode()).decode())'
 ```
 
-In Dokploy, create a **Compose** service, open **Advanced → Import**, and paste the command's output.
+In your Dokploy project, open **Create Service → Import**, name the service, paste the command's output into
+**Configuration (Base64)**, then click **Load** and **Import**.
 
 ## Step 2: Set the domain, port, and images
 
-Replace the generated `*.traefik.me` hostname with your domain everywhere it appears: both domain entries,
-`SEED_DOMAIN`, and `SEED_BASE_URL`. For example, use `site.example.com` for `SEED_DOMAIN` and `https://site.example.com`
-for `SEED_BASE_URL`.
+Replace the generated `*.sslip.io` hostname with your domain everywhere it appears: both domain entries, `SEED_DOMAIN`,
+and `SEED_BASE_URL`. For example, use `site.example.com` for `SEED_DOMAIN` and `https://site.example.com` for
+`SEED_BASE_URL`.
 
 The default P2P host port is `56000`; make sure it is open for TCP and UDP. For the fork's images, set:
 
@@ -73,6 +74,6 @@ Back up both named volumes: `seed-daemon-data` stores the database, blobs, and n
 
 ## Troubleshooting
 
-- Before deploying, replace every generated `*.traefik.me` hostname, including both domain entries, `SEED_DOMAIN`, and
+- Before deploying, replace every generated `*.sslip.io` hostname, including both domain entries, `SEED_DOMAIN`, and
   `SEED_BASE_URL`.
 - The P2P host port must be open for both TCP and UDP and unique to this site on the server.

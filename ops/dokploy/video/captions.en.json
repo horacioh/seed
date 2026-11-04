@@ -1,0 +1,42 @@
+{
+  "intro": {
+    "title": "Deploy a Seed site on Dokploy",
+    "subtitle": "Self-host a Seed Hypermedia site from one Compose import"
+  },
+  "beats": {
+    "project": "Start in your Dokploy project",
+    "create-service": "Create a service",
+    "import-option": "Choose Import",
+    "name": "Name the service",
+    "paste": "Paste the base64 export of ops/dokploy/seed",
+    "load": "Load the template",
+    "import": "Review it and import",
+    "open-service": "Open the new Compose service",
+    "domains": "Point both domains at your hostname",
+    "web-domain": "Edit the seed-web domain",
+    "web-host": "Set site.example.com as the host",
+    "web-cert-menu": "Pick a certificate provider…",
+    "web-cert": "…Let's Encrypt",
+    "web-update": "Save the seed-web domain",
+    "daemon-domain": "Now the seed-daemon /ipfs/ domain",
+    "daemon-host": "Use the same host",
+    "daemon-cert-menu": "Pick a certificate provider…",
+    "daemon-cert": "…Let's Encrypt",
+    "daemon-update": "Save the seed-daemon domain",
+    "environment": "Open the environment variables",
+    "reveal": "SEED_LINK_SECRET is your registration secret",
+    "env-domain": "Set SEED_DOMAIN to your hostname",
+    "env-base-url": "Set SEED_BASE_URL to https://your hostname",
+    "env-save": "Save the environment",
+    "general": "Back to General",
+    "deploy": "Deploy the stack",
+    "deploy-confirm": "Confirm the deployment",
+    "wait": "Wait for the deployment to finish",
+    "running": "Web, daemon and updater run; init exits after setup",
+    "site": "Your site is live — register it from Seed desktop"
+  },
+  "outro": {
+    "takeaway": "Register at https://<domain>/hm/register?secret=…",
+    "link": "github.com/seed-hypermedia/seed/tree/main/ops/dokploy"
+  }
+}
