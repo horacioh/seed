@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "@shm/shared": ["../shared/src/index.ts"],
+      "@shm/shared/*": ["../shared/src/*"],
+      "@shm/ui/*": ["../ui/src/*"],
+      "@seed-hypermedia/client": ["../client/src/index.ts"],
+      "@seed-hypermedia/client/*": ["../client/src/*"]
+    }
+  },
+  "include": ["src", "__tests__", "harness"]
+}
