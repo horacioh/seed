@@ -378,6 +378,29 @@ describe('retargetQueryBlockIncludesForPublish', () => {
     expect(includes).toEqual([{space: mockDocumentId.uid, path: 'parent/published-title', mode: 'Children'}])
   })
 
+  it('rewrites inline variable links that target the current draft placeholder', () => {
+    const otherDoc = 'hm://other/doc?attr=price'
+    const blocks: EditorBlock[] = [
+      {
+        id: 'p1',
+        type: 'paragraph',
+        props: {},
+        content: [
+          {type: 'text', text: 'Total: ', styles: {}},
+          {type: 'inline-embed', styles: {}, link: `hm://z6Mktest/parent/-draft-123?formula=sum(price%2C%20tax)`},
+          {type: 'inline-embed', styles: {}, link: otherDoc},
+          {type: 'inline-embed', styles: {}, link: 'hm://z6Mktest/parent/-draft-123'},
+        ],
+        children: [],
+      } as EditorBlock,
+    ]
+
+    const content = (retargetQueryBlockIncludesForPublish(blocks, draftId, publishedId)[0] as any).content
+    expect(content[1].link).toBe(`hm://z6Mktest/parent/published-title?formula=sum(price%2C%20tax)`)
+    expect(content[2].link).toBe(otherDoc)
+    expect(content[3].link).toBe('hm://z6Mktest/parent/-draft-123')
+  })
+
   it('leaves query includes that do not target the current draft placeholder unchanged', () => {
     const blocks: EditorBlock[] = [
       {

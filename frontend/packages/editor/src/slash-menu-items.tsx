@@ -1,5 +1,6 @@
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {hmIdPathToEntityQueryPath} from '@shm/shared'
+import {buildVariableLink} from '@shm/shared/formulas'
 import {
   BetweenHorizontalEnd,
   Circle,
@@ -10,6 +11,7 @@ import {
   Image as ImageIcon,
   LogIn,
   Radical,
+  Sigma,
   Table as TableIcon,
   Video,
 } from 'lucide-react'
@@ -192,6 +194,26 @@ export function getSlashMenuItems({
       selectInsertedBlock(editor)
     },
   })
+
+  if (docId) {
+    slashMenuItems.push({
+      name: 'Formula',
+      aliases: ['formula', 'variable', 'attribute', 'sum', 'calc', '='],
+      group: 'Text blocks',
+      icon: <Sigma size={18} />,
+      hint: 'Insert an inline value computed from document attributes',
+      execute: (editor: BlockNoteEditor<Record<string, BlockSpec<string, PropSchema>>>) => {
+        editor._tiptapEditor
+          .chain()
+          .focus()
+          .insertContent([
+            {type: 'inline-embed', attrs: {link: buildVariableLink({docId: docId.id, kind: 'formula', expr: ''})}},
+            {type: 'text', text: ' '},
+          ])
+          .run()
+      },
+    })
+  }
 
   // Media blocks
   slashMenuItems.push({
