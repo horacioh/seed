@@ -66,7 +66,7 @@ export function ReasoningSlider({
         onChange={(event) => onChange(steps[Number(event.currentTarget.value)])}
         className="accent-primary h-4 w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
       />
-      <div className="text-muted-foreground flex justify-between text-[10px]">
+      <div className="text-muted-foreground flex justify-between text-xs">
         {steps.map((step) => (
           <span key={step ?? OFF_VALUE}>{step ? REASONING_LEVEL_LABELS[step] : offLabel}</span>
         ))}

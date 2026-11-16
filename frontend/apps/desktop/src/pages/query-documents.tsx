@@ -619,7 +619,7 @@ export default function QueryDocumentsPage() {
                             {resultAttributeKeys.map((key) => (
                               <span
                                 key={key}
-                                className="border-border bg-muted/40 text-muted-foreground inline-flex max-w-full items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[11px]"
+                                className="border-border bg-muted/40 text-muted-foreground inline-flex max-w-full items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-xs"
                               >
                                 <span>{key}</span>
                                 <span className="text-foreground truncate">
@@ -804,7 +804,7 @@ function AutocompleteInput({
                 ) : null}
               </span>
               {suggestion.meta ? (
-                <span className="text-muted-foreground max-w-40 shrink-0 truncate text-[11px]">{suggestion.meta}</span>
+                <span className="text-muted-foreground max-w-40 shrink-0 truncate text-xs">{suggestion.meta}</span>
               ) : null}
             </button>
           ))}

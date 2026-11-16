@@ -176,7 +176,7 @@ export function useUserToolCommands({
           }}
         >
           {notice ? (
-            <div className="border-primary/30 bg-primary/10 text-primary mb-2 rounded-md border px-2 py-1.5 text-[11px]">
+            <div className="border-primary/30 bg-primary/10 text-primary mb-2 rounded-md border px-2 py-1.5 text-xs">
               {notice}
             </div>
           ) : null}
@@ -400,7 +400,7 @@ function CallableForm({
     >
       {Object.entries(properties).map(([key, prop], index) => (
         <label key={key} className="flex flex-col gap-1">
-          <span className="text-muted-foreground font-mono text-[10px]">
+          <span className="text-muted-foreground font-mono text-xs">
             {key}
             {required.has(key) ? ' *' : ''}
             {numericErrors.includes(key) ? <span className="text-destructive"> — must be a number</span> : null}

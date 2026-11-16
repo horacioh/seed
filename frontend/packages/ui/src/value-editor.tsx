@@ -2588,7 +2588,7 @@ function SuggestionPopover<T>({
               <span className="text-muted-foreground block truncate text-xs">{getDescription(item)}</span>
             ) : null}
           </span>
-          {getMeta && <span className="text-muted-foreground shrink-0 text-[11px]">{getMeta(item)}</span>}
+          {getMeta && <span className="text-muted-foreground shrink-0 text-xs">{getMeta(item)}</span>}
         </button>
       ))}
       {loading && (

@@ -26,7 +26,7 @@ export function Timestamp({time, route}: {time: AnyTimestamp; route?: NavRoute |
 
   return (
     <Tooltip side="top" delay={400} content={formatUTC(date)}>
-      <a {...linkProps} className="ml-1 flex-none font-sans text-[11px] hover:underline">
+      <a {...linkProps} className="ml-1 flex-none font-sans text-xs hover:underline">
         {formattedDateShort(time)}
       </a>
     </Tooltip>

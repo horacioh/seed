@@ -349,7 +349,7 @@ function RunCardBody({
             transcript has no run page: this card already sits in the session that records it. */}
         <span className="flex flex-none items-center gap-1.5">
           {isCompletedTranscript && issueCount ? (
-            <span className="text-[10px] text-amber-700 dark:text-amber-300">
+            <span className="text-xs text-amber-700 dark:text-amber-300">
               {issueCount} recovered issue{issueCount === 1 ? '' : 's'}
             </span>
           ) : null}
@@ -409,7 +409,7 @@ function RunCardBody({
 
       {progress && !isTerminal ? (
         <div className="flex flex-col gap-1">
-          {progress.label ? <span className="text-muted-foreground text-[11px]">{progress.label}</span> : null}
+          {progress.label ? <span className="text-muted-foreground text-xs">{progress.label}</span> : null}
           {progress.fraction !== undefined ? (
             <div className="bg-muted h-1 w-full overflow-hidden rounded-full">
               <div
@@ -438,7 +438,7 @@ function RunCardBody({
       {/* Status and elapsed time anchor the card's bottom-left; cost keeps the opposite corner. */}
       <div className="border-border flex items-center gap-2 border-t pt-1">
         <span
-          className={`flex-none rounded-full border px-1.5 py-0.5 text-[10px] ${runStatusClass(
+          className={`flex-none rounded-full border px-1.5 py-0.5 text-xs ${runStatusClass(
             isCompletedTranscript && !isTerminal ? 'succeeded' : run.status,
           )}`}
         >
@@ -451,9 +451,7 @@ function RunCardBody({
         </span>
         <RunElapsed run={run} serverUrl={serverUrl} />
         {!compact && usageTotal > 0 ? (
-          <span className="text-muted-foreground ml-auto text-[10px]">
-            {formatTokenCount(usageTotal)} tokens processed
-          </span>
+          <span className="text-muted-foreground ml-auto text-xs">{formatTokenCount(usageTotal)} tokens processed</span>
         ) : null}
       </div>
     </>
@@ -550,7 +548,7 @@ export function RunActivityDrawer({journal}: {journal: RunJournalEntryInfo[]}) {
       <button
         type="button"
         aria-expanded={open}
-        className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
+        className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-xs"
         onClick={() => setOpen((current) => !current)}
       >
         {open ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}
@@ -561,7 +559,7 @@ export function RunActivityDrawer({journal}: {journal: RunJournalEntryInfo[]}) {
         <div
           ref={scrollRef}
           aria-label="Run activity"
-          className="bg-muted/40 mt-1 max-h-40 overflow-y-auto rounded p-1.5 font-mono text-[10px] leading-4"
+          className="bg-muted/40 mt-1 max-h-40 overflow-y-auto rounded p-1.5 font-mono text-xs leading-4"
         >
           {lines.map((line) => (
             <ActivityLineRow key={line.key} line={line} />
@@ -615,7 +613,7 @@ export function RunSourceDrawer({runs}: {runs: RunInfo[]}) {
       <button
         type="button"
         aria-expanded={open}
-        className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-[11px]"
+        className="text-muted-foreground hover:text-foreground flex items-center gap-1 self-start text-xs"
         onClick={() => setOpen((current) => !current)}
       >
         {open ? <ChevronDown className="size-3 flex-none" /> : <ChevronRight className="size-3 flex-none" />}
@@ -624,10 +622,10 @@ export function RunSourceDrawer({runs}: {runs: RunInfo[]}) {
       {open
         ? sources.map((run) => (
             <div key={run.id} className="mt-1 flex flex-col gap-0.5">
-              {sources.length > 1 ? <span className="text-muted-foreground text-[10px]">{runTitle(run)}</span> : null}
+              {sources.length > 1 ? <span className="text-muted-foreground text-xs">{runTitle(run)}</span> : null}
               <pre
                 aria-label={`Workflow source: ${runTitle(run)}`}
-                className="bg-muted/40 max-h-64 overflow-auto rounded p-1.5 font-mono text-[10px] leading-4 whitespace-pre"
+                className="bg-muted/40 max-h-64 overflow-auto rounded p-1.5 font-mono text-xs leading-4 whitespace-pre"
               >
                 {run.sourceText}
               </pre>
@@ -727,12 +725,12 @@ function RunElapsed({run, serverUrl}: {run: RunInfo; serverUrl?: string}) {
   const queueLabel = run.startedAt ? 'queued' : 'in queue'
   return (
     <>
-      <span className="text-muted-foreground flex-none text-[10px] tabular-nums" aria-label="Elapsed time">
+      <span className="text-muted-foreground flex-none text-xs tabular-nums" aria-label="Elapsed time">
         {formatElapsed(Math.max(0, endedAt - startedAt))}
       </span>
       {queuedMs >= NOTABLE_QUEUE_WAIT_MS ? (
         <span
-          className="text-muted-foreground flex-none rounded-full border border-dashed px-1.5 py-0.5 text-[10px] tabular-nums"
+          className="text-muted-foreground flex-none rounded-full border border-dashed px-1.5 py-0.5 text-xs tabular-nums"
           title={
             run.startedAt
               ? 'Time this run waited for a free worker before it started (the server caps concurrent model runs)'

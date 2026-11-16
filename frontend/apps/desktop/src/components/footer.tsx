@@ -154,7 +154,7 @@ function SubscriptionItem({subscriptionKey}: {subscriptionKey: string}) {
         {name || fallbackName}
         {suffix && <span className="text-muted-foreground/70">{suffix}</span>}
       </a>
-      <span className="text-muted-foreground/70 shrink-0 text-[10px]">{syncLabel}</span>
+      <span className="text-muted-foreground/70 shrink-0 text-xs">{syncLabel}</span>
     </div>
   )
 }
@@ -276,7 +276,7 @@ function PushStatusIndicator() {
                     />
                   )}
                   <span className="text-foreground min-w-0 flex-1 truncate">{hostnameStripProtocol(host)}</span>
-                  <span className="text-muted-foreground/70 shrink-0 text-[10px]">
+                  <span className="text-muted-foreground/70 shrink-0 text-xs">
                     {message || (status === 'pending' ? 'Syncing…' : status)}
                   </span>
                 </div>

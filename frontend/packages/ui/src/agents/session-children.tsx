@@ -60,7 +60,7 @@ export function SubSessionsDisclosure({
 }) {
   const [expanded, setExpanded] = useState(false)
   const children = useChildSessions(serverUrl, accountUid, parentSessionId, {enabled: expanded})
-  const textClass = compact ? 'text-[11px]' : 'text-xs'
+  const textClass = compact ? 'text-xs' : 'text-xs'
 
   return (
     <div className="flex w-full flex-col">

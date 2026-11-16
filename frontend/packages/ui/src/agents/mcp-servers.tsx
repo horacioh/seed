@@ -22,7 +22,7 @@ import React, {useState} from 'react'
 import type {McpServerInfo, McpServerTransport, McpToolInfo} from './client'
 import {useDeleteMcpServer, useMcpServers, useRefreshMcpServer, useSaveMcpServer} from './models'
 
-const CHIP_CLASS = 'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase'
+const CHIP_CLASS = 'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase'
 const HOVER_ACTIONS_CLASS =
   'flex shrink-0 items-center gap-0.5 opacity-0 group-hover/server:opacity-100 max-sm:opacity-100'
 

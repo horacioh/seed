@@ -67,7 +67,7 @@ function ScrollAreaImpl(
         ref={handleViewportRef}
         data-slot="scroll-area-viewport"
         className={cn(
-          'focus-visible:ring-ring/50 relative size-full h-full flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1',
+          'focus-visible:ring-ring relative size-full h-full flex-1 rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1',
           viewportClassName,
         )}
         style={{

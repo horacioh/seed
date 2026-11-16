@@ -58,7 +58,7 @@ export function Notice({
       disabled={retryPending}
       className={cn(
         'bg-background/80 hover:bg-background text-foreground border-border inline-flex shrink-0 items-center gap-1 rounded-full border font-medium transition-colors disabled:opacity-60',
-        size === 'sm' ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-xs',
+        size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-xs',
       )}
     >
       {retryPending ? (

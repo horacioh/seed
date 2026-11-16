@@ -498,7 +498,7 @@ export function AssistantPanel({
             <div className="flex min-w-0 flex-1 flex-col">
               <span className="truncate text-xs font-medium">{sessionTitle || 'Untitled session'}</span>
               {!filterAgent && selection.sessionAgent ? (
-                <span className="text-muted-foreground truncate text-[10px]">
+                <span className="text-muted-foreground truncate text-xs">
                   {selection.sessionAgent.agent.definition.name}
                 </span>
               ) : null}
@@ -746,7 +746,7 @@ function AssistantAgentPicker({
             groups.map((group) => (
               <div key={group.spaceUid ?? group.kind} className="flex flex-col">
                 <div className="flex items-center gap-2 px-2 pt-2 pb-1">
-                  <span className="text-muted-foreground truncate text-[10px] font-medium tracking-wide uppercase">
+                  <span className="text-muted-foreground truncate text-xs font-medium tracking-wide uppercase">
                     {group.spaceUid
                       ? spaceNames.get(group.spaceUid)
                       : group.kind === 'shared'
@@ -754,7 +754,7 @@ function AssistantAgentPicker({
                         : 'Orphan agents'}
                   </span>
                   {currentSpaceUid && group.spaceUid === currentSpaceUid ? (
-                    <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-[10px] font-medium">
+                    <span className="bg-muted text-muted-foreground rounded-full px-1.5 text-xs font-medium">
                       This space
                     </span>
                   ) : null}
@@ -780,7 +780,7 @@ function AssistantAgentPicker({
                           {option.agent.definition.name}
                         </span>
                       </span>
-                      <span className="text-muted-foreground w-full truncate text-[10px]">
+                      <span className="text-muted-foreground w-full truncate text-xs">
                         {row?.short ??
                           (group.spaceUid
                             ? option.agent.definition.model

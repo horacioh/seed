@@ -36,7 +36,7 @@ export function AgentListRow({
           <span className="text-destructive text-xs">{status}</span>
         ) : null}
         {accessRole && accessRole !== 'owner' ? (
-          <span className="bg-muted text-muted-foreground flex-none rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+          <span className="bg-muted text-muted-foreground flex-none rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
             {accessRole}
           </span>
         ) : null}

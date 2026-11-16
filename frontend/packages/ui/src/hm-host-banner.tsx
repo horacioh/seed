@@ -31,7 +31,7 @@ export function HypermediaHostBanner({origin}: {origin?: string}) {
 
   return (
     <div ref={bannerRef} data-hm-host-banner="true" className="bg-primary w-full p-1">
-      <p className="flex flex-wrap items-center justify-center gap-1 text-sm text-white">
+      <p className="text-primary-foreground flex flex-wrap items-center justify-center gap-1 text-sm">
         <span>Hosted on</span>
         <a href="/" className="underline">
           {hostnameStripProtocol(origin)}

@@ -93,14 +93,14 @@ export function ParkedRunActions({
         {ask.kind === 'answer' ? (
           <button
             type="button"
-            className="text-muted-foreground hover:text-foreground text-[11px] underline-offset-2 hover:underline"
+            className="text-muted-foreground hover:text-foreground text-xs underline-offset-2 hover:underline"
             onClick={() => setPayloadOpen((open) => !open)}
           >
             {payloadOpen ? 'Just answer' : 'Answer with data'}
           </button>
         ) : null}
         {ask.kind === 'answer' && run.wait?.label ? (
-          <span className="text-muted-foreground min-w-0 truncate text-[11px]">{run.wait.label}</span>
+          <span className="text-muted-foreground min-w-0 truncate text-xs">{run.wait.label}</span>
         ) : null}
       </div>
       {payloadOpen && ask.kind === 'answer' ? (
@@ -110,7 +110,7 @@ export function ParkedRunActions({
           placeholder='JSON the run will receive, e.g. {"approved": true}'
           rows={3}
           spellCheck={false}
-          className="bg-background/60 min-w-0 rounded-md border p-2 font-mono text-[11px]"
+          className="bg-background/60 min-w-0 rounded-md border p-2 font-mono text-xs"
         />
       ) : null}
     </div>

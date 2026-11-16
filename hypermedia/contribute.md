@@ -16,6 +16,7 @@ Start with [Contributing](./contribute/contributing.md). It gets the repository 
 
 - [Contributing](./contribute/contributing.md) shows the layout of the repository, the setup, the development stack and the checks for each area. It also has the rules for storage migrations, protobuf and protocol changes.
 - [Local CI with agent-ci](./contribute/local-ci.md) runs the GitHub Actions workflows on your own machine before you push. Read it when a check fails only in CI, or when you want a faster loop.
+- [Accessibility testing](./contribute/accessibility.md) explains how Seed tests its desktop, web, vault and email surfaces against WCAG 2.2 AA and EN 301 549: the automated gates, the surface inventory and the manual screen-reader checks.
 - [Editing these docs](./contribute/editing-these-docs.md) explains the `hypermedia/` folder, the checks it must pass, how to edit it locally, and when a change reaches the published site.
 
 # Shipping
@@ -42,6 +43,8 @@ Start with [Contributing](./contribute/contributing.md). It gets the repository 
 <./contribute/contributing.md> <!-- id:Or90kn31 type:Embed attrs:{"view":"Card"} -->
 
 <./contribute/editing-these-docs.md> <!-- id:jDpz0LUd type:Embed attrs:{"view":"Card"} -->
+
+<./contribute/accessibility.md> <!-- id:Z2zrdLTP type:Embed attrs:{"view":"Card"} -->
 
 <./contribute/local-ci.md> <!-- id:hQT6otZC type:Embed attrs:{"view":"Card"} -->
 

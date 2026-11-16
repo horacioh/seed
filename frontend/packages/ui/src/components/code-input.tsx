@@ -112,7 +112,7 @@ export function CodeInput({value, onChange, onComplete, length = 4, className, .
           onFocus={() => handleFocus(i)}
           onBlur={() => setFocusedIndex(null)}
           className={`bg-background h-14 w-12 min-w-0 rounded-md border text-center text-2xl font-semibold transition-colors ${
-            focusedIndex === i ? 'border-primary ring-primary/20 ring-2' : 'border-border hover:border-primary/50'
+            focusedIndex === i ? 'border-primary ring-primary/20 ring-2' : 'border-input-border hover:border-primary/50'
           } ${cells[i] ? 'border-primary/50' : ''} ${className || ''}`}
           aria-label={`Digit ${i + 1} of ${length}`}
           {...props}

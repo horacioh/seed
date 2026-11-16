@@ -1584,7 +1584,7 @@ function AgentCollaboratorRow({
           {metadata?.name || abbreviateUid(member.accountId)}
         </SizableText>
         {member.status === 'pending' ? (
-          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+          <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
             Pending
           </span>
         ) : null}
@@ -1922,7 +1922,7 @@ function AgentPermissionsPage({
                     {group.title}
                   </SizableText>
                   {!groupAvailable ? (
-                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                    <span className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                       {setupAction ? 'Setup required' : 'Unavailable'}
                     </span>
                   ) : null}
@@ -2085,7 +2085,7 @@ function AgentIdentitiesPage({
                 />
               </div>
               {identity.name === primaryKey ? (
-                <span className="bg-primary/10 text-primary shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                <span className="bg-primary/10 text-primary shrink-0 rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                   Primary
                 </span>
               ) : canManageIdentities ? (
@@ -2808,7 +2808,7 @@ function AgentTriggersTab({
             <SizableText weight="bold">
               {item.name}
               {mounted && !item.documentId ? (
-                <span className="bg-muted text-muted-foreground ml-2 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase">
+                <span className="bg-muted text-muted-foreground ml-2 rounded-full px-2 py-0.5 text-xs font-medium tracking-wide uppercase">
                   On the server
                 </span>
               ) : null}

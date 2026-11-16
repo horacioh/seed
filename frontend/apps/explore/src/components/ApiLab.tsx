@@ -11,8 +11,8 @@ import {
   TerminalSquare,
   Unplug,
 } from 'lucide-react'
-import { useDeferredValue, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import {useDeferredValue, useEffect, useState} from 'react'
+import {useSearchParams} from 'react-router-dom'
 import {
   buildApiRequestPreview,
   createStarterPayload,
@@ -24,7 +24,7 @@ import {
   type ApiSchemaRouteSummary,
   type JSONSchemaNode,
 } from '../api-lab'
-import { useApiHost } from '../apiHostStore'
+import {useApiHost} from '../apiHostStore'
 import DataViewer from './DataViewer'
 
 /** Developer playground for the desktop TypeScript HTTP API. */
@@ -268,8 +268,7 @@ export default function ApiLab() {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-2 pb-10">
         <div className="grid gap-6 xl:grid-cols-[22rem_minmax(0,1fr)]">
           <aside className="space-y-4">
-            <Panel
-            >
+            <Panel>
               <label className="relative block">
                 <Search className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -636,7 +635,7 @@ function SchemaNodeView({
           <code className="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">{name}</code>
         ) : null}
         {required ? (
-          <span className="rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-semibold tracking-[0.16em] text-rose-700 uppercase">
+          <span className="rounded-full bg-rose-100 px-2.5 py-1 text-xs font-semibold tracking-[0.16em] text-rose-700 uppercase">
             required
           </span>
         ) : null}
@@ -671,10 +670,7 @@ function SchemaNodeView({
       {variants?.length ? (
         <div className="mt-4 space-y-3">
           {variants.map((variant, index) => (
-            <div
-              key={`variant-${index}`}
-              className="rounded-md border border-dashed border-slate-300 bg-white p-3"
-            >
+            <div key={`variant-${index}`} className="rounded-md border border-dashed border-slate-300 bg-white p-3">
               <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-slate-500 uppercase">Option {index + 1}</p>
               <SchemaNodeView rootSchema={rootSchema} schema={variant} name={undefined} />
             </div>
@@ -756,13 +752,15 @@ function Panel({
   return (
     <section className="overflow-hidden rounded-lg border border-slate-200 bg-white/95 p-2 backdrop-blur sm:p-6">
       {eyebrow || title || subtitle ? (
-      <div className="flex mb-5 flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          {eyebrow ? <p className="text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase">{eyebrow}</p> : null}
-          {title ? <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{title}</h2> : null}
-          {subtitle ? <p className="mt-2 text-sm leading-6 text-slate-600">{subtitle}</p> : null}
-        </div>
-            {actions ? <div className="shrink-0">{actions}</div> : null}
+        <div className="mb-5 flex flex-col gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            {eyebrow ? (
+              <p className="text-xs font-semibold tracking-[0.28em] text-slate-500 uppercase">{eyebrow}</p>
+            ) : null}
+            {title ? <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{title}</h2> : null}
+            {subtitle ? <p className="mt-2 text-sm leading-6 text-slate-600">{subtitle}</p> : null}
+          </div>
+          {actions ? <div className="shrink-0">{actions}</div> : null}
         </div>
       ) : null}
       <div className="space-y-4">{children}</div>
@@ -818,7 +816,7 @@ function StatusPill({
     <span
       className={`inline-flex items-center rounded-full font-semibold tracking-[0.16em] uppercase ${getPillClasses(
         tone,
-      )} ${compact ? 'px-2.5 py-1 text-[10px]' : 'px-3 py-1.5 text-[11px]'}`}
+      )} ${compact ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-xs'}`}
     >
       {label}
     </span>
@@ -828,9 +826,7 @@ function StatusPill({
 function SchemaBadge({label, tone}: {label: string; tone: 'amber' | 'sky' | 'slate' | 'emerald'}) {
   return (
     <span
-      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase ${getPillClasses(
-        tone,
-      )}`}
+      className={`rounded-full px-2.5 py-1 text-xs font-semibold tracking-[0.14em] uppercase ${getPillClasses(tone)}`}
     >
       {label}
     </span>
@@ -865,7 +861,7 @@ function KeyValueList({
         <div className="mt-4 space-y-2">
           {rows.map((row) => (
             <div key={`${row.key}-${row.value}`} className="rounded-md border border-white bg-white px-3 py-2">
-              <p className="text-[11px] font-semibold tracking-[0.18em] text-slate-500 uppercase">{row.key}</p>
+              <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">{row.key}</p>
               <p className="mt-1 font-mono text-sm break-all text-slate-800">{row.value}</p>
             </div>
           ))}

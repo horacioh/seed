@@ -57,7 +57,7 @@ export function DeletionDocumentList({
           type="button"
           aria-controls={showChildDocuments ? childDocumentListId : undefined}
           aria-expanded={showChildDocuments}
-          className="text-primary hover:text-primary/80 focus-visible:ring-ring/50 rounded-sm text-sm font-medium transition-colors outline-none focus-visible:ring-[3px]"
+          className="text-primary hover:text-primary/80 focus-visible:ring-ring rounded-sm text-sm font-medium transition-colors outline-none focus-visible:ring-[3px]"
           onClick={() => setShowChildDocuments((visible) => !visible)}
         >
           {showChildDocuments ? 'Hide' : 'Show'}
