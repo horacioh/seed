@@ -96,6 +96,8 @@ blockExoticSubdeps: false
 allowBuilds:
   '@sentry-internal/node-cpu-profiler': false
   'core-js': false
+  # Guidepup pulls this in for screen recordings, which the a11y suite doesn't use.
+  'ffmpeg-static': false
   'msw': false
   '@ipshipyard/node-datachannel': true
   '@sentry/cli': true
