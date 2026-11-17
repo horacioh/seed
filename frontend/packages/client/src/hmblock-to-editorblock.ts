@@ -190,6 +190,7 @@ export function hmBlockToEditorBlock(block: HMBlock): EditorBlock {
     if ((block as any).attributes) {
       Object.entries((block as any).attributes).forEach(([key, value]) => {
         if (value !== undefined && key !== 'textAlignment') {
+          if ((key === 'captions' || key === 'captionsLang') && value === '') return
           if (key == 'width' || key == 'size') {
             if (typeof value == 'number') {
               ;(out.props as any)[key] =

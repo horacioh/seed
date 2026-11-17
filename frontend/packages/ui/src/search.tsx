@@ -10,7 +10,7 @@ import {
 } from '@shm/shared'
 import {ContentTypeFilter, SearchType} from '@shm/shared/client/.generated/entities/v1alpha/entities_pb'
 import {useResource} from '@shm/shared/models/entity'
-import {Fragment, PropsWithChildren, useEffect, useMemo, useRef, useState} from 'react'
+import {Fragment, type InputHTMLAttributes, PropsWithChildren, useEffect, useMemo, useRef, useState} from 'react'
 import {Button} from './button'
 import {ScrollArea} from './components/scroll-area'
 import {Search} from './icons'
@@ -450,7 +450,7 @@ export function SearchResultItem({
         </SizableText>
 
         {unpackedId?.blockRef && (
-          <SizableText size="xs" weight="light" className="line-clamp-1 flex-none text-left font-sans text-gray-400">
+          <SizableText size="xs" weight="light" className="text-foreground line-clamp-1 flex-none text-left font-sans">
             ...{highlightSearchMatch(item.title, item.searchQuery)}...
           </SizableText>
         )}
@@ -462,7 +462,7 @@ export function SearchResultItem({
             <div className="flex min-w-0 items-center gap-2 overflow-hidden">
               <div className="flex min-w-0 flex-1 items-center">
                 {!!item.path && (
-                  <SizableText size="xs" weight="light" className="line-clamp-1 truncate font-sans text-gray-400">
+                  <SizableText size="xs" weight="light" className="text-foreground line-clamp-1 truncate font-sans">
                     {collapsedPath.join(' / ')}
                   </SizableText>
                 )}
@@ -470,16 +470,7 @@ export function SearchResultItem({
 
               {/* Type column */}
               <Tooltip content={item.versionTime || 'No timestamp available'}>
-                <SizableText
-                  className={cn(
-                    'flex-none whitespace-nowrap',
-                    // Same blue as the "Open Space" link on the profile page, so an account never reads as a document.
-                    isProfile ? 'text-blue-500' : 'text-gray-400',
-                  )}
-                  size="xs"
-                  weight="light"
-                  color={!isProfile && unpackedId?.latest ? 'success' : 'default'}
-                >
+                <SizableText className={cn('flex-none whitespace-nowrap', 'text-foreground')} size="xs" weight="light">
                   {isProfile
                     ? 'Profile'
                     : unpackedId?.latest
@@ -581,7 +572,10 @@ export function SearchInput({
     value: string
     onChangeText: (text: string) => void
     disabled: boolean
-  }
+  } & Pick<
+    InputHTMLAttributes<HTMLInputElement>,
+    'role' | 'aria-expanded' | 'aria-controls' | 'aria-activedescendant' | 'list'
+  >
   onEscape: () => void
   onArrowUp: () => void
   onArrowDown: () => void
@@ -597,7 +591,7 @@ export function SearchInput({
           <Spinner className="absolute top-1/2 right-7 z-3 size-4 -translate-y-1/2 text-black/50 dark:text-white/50" />
         ) : null}
         <Input
-          autoFocus={true}
+          focusOnMount
           placeholder="Search Hypermedia documents"
           className="w-full px-1 pr-8 pl-8"
           {...inputProps}

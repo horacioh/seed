@@ -28,7 +28,7 @@ export function TextField({
   let content = (
     <div className="border-border flex items-center gap-2 rounded-sm border px-2">
       {Icon && <Icon className="size-3" size={14} />}
-      <Input autoFocus {...props} />
+      <Input focusOnMount {...props} />
     </div>
   )
 

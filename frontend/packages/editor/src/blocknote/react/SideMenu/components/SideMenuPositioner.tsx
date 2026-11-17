@@ -1,6 +1,8 @@
 import {Block, BlockNoteEditor, BlockSchema, DefaultBlockSchema, SideMenuProsemirrorPlugin} from '../../../core'
 import {getGroupInfoFromPos} from '../../../core/extensions/Blocks/helpers/getGroupInfoFromPos'
+import {getBlockInfoFromSelection} from '../../../core/extensions/Blocks/helpers/getBlockInfoFromPos'
 import {fullBlockSelectionPluginKey} from '../../../core/extensions/FullBlockSelection/FullBlockSelectionPlugin'
+import {sideMenuPluginKey} from '../../../core/extensions/SideMenu/SideMenuPlugin'
 import Tippy from '@tippyjs/react'
 import type {Node as PMNode} from 'prosemirror-model'
 import {FC, useEffect, useMemo, useRef, useState} from 'react'
@@ -49,13 +51,12 @@ export const SideMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSch
     // Derive the block tools straight from the FullBlockSelection plugin — the
     // same single selection source that drives the outline, so the two always
     // show for the same block on the same transaction.
-    const sync = (blockIds: string[]) => {
+    const showBlock = (firstId?: string) => {
       const view = editor._tiptapEditor?.view
-      if (!view || !view.editable || blockIds.length === 0) {
+      if (!view || !view.editable || !firstId) {
         setShow(false)
         return
       }
-      const firstId = findFirstBlockIdInDocOrder(view.state.doc, blockIds)
       const blockEl = firstId ? (view.dom.querySelector(`[data-id="${firstId}"]`) as HTMLElement | null) : null
       const blockContent = blockEl?.firstChild as HTMLElement | null
       const selectedBlock = firstId ? editor.getBlock(firstId) : undefined
@@ -69,9 +70,31 @@ export const SideMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSch
       setBlock(selectedBlock as Block<BSchema>)
       setShow(true)
     }
+    const sync = (blockIds: string[]) => {
+      const view = editor._tiptapEditor?.view
+      if (!view) {
+        setShow(false)
+        return
+      }
+      const activeBlockId = sideMenuPluginKey.getState(view.state)?.activeBlockId
+      if (activeBlockId) {
+        showBlock(activeBlockId)
+        return
+      }
+      if (blockIds.length > 0) {
+        showBlock(findFirstBlockIdInDocOrder(view.state.doc, blockIds))
+      } else if (view?.hasFocus() && view.editable) {
+        showBlock(getBlockInfoFromSelection(view.state).block.node.attrs.id as string)
+      } else {
+        setShow(false)
+      }
+    }
     sync(fullBlockSelectionPluginKey.getState(editor._tiptapEditor.state)?.blockIds ?? [])
-    const unsubscribe = editor.fullBlockSelection?.onUpdate(({blockIds}) => sync(blockIds))
-    return unsubscribe
+    editor.fullBlockSelection?.onUpdate(({blockIds}) => sync(blockIds))
+    editor.onEditorSelectionChange(() => {
+      sync(fullBlockSelectionPluginKey.getState(editor._tiptapEditor.state)?.blockIds ?? [])
+    })
+    return
   }, [props.editor])
 
   const getReferenceClientRect = useMemo(
@@ -155,6 +178,7 @@ export const SideMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSch
         content={sideMenuElement}
         getReferenceClientRect={getReferenceClientRect}
         interactive={true}
+        role="presentation"
         zIndex={10}
         visible={show}
         animation={'fade'}

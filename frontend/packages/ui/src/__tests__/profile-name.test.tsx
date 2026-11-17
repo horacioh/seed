@@ -42,10 +42,10 @@ describe('ProfileName', () => {
     expect(container.textContent).toContain('Public Alice')
     expect(container.querySelector('button')).toBeNull()
   })
-  it('edits on double click, discloses publication, trims and saves on Enter', async () => {
+  it('edits from the identity heading, discloses publication, trims and saves on Enter', async () => {
     const onSave = vi.fn().mockResolvedValue(undefined)
     render({publicName: 'Alice', onSave})
-    act(() => container.querySelector('h1')!.dispatchEvent(new MouseEvent('dblclick', {bubbles: true})))
+    act(() => container.querySelector<HTMLButtonElement>('h1 button')!.click())
     expect(container.textContent).toContain('published')
     change('  Ally  ')
     await key('Enter')
@@ -56,6 +56,7 @@ describe('ProfileName', () => {
     const onSave = vi.fn()
     render({publicName: 'Alice', petname: 'Ally', onSave})
     click('Edit contact name')
+    expect(document.activeElement).toBe(container.querySelector('input'))
     change('Discard')
     act(() => container.querySelector('input')!.dispatchEvent(new FocusEvent('focusout', {bubbles: true})))
     expect(onSave).not.toHaveBeenCalled()

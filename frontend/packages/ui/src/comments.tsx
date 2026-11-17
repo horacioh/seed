@@ -603,25 +603,28 @@ export const CommentGroup = memo(function CommentGroup({
   const lastComment = commentGroup.comments.at(-1)
 
   return (
-    <div className="relative flex flex-col gap-2 p-2">
+    <ol aria-label="Replies" className="relative flex flex-col gap-2 p-2">
       {commentGroup.comments.map((comment) => {
         const isLastCommentInGroup = !!lastComment && comment === lastComment
         return (
-          <Comment
-            key={comment.id}
-            comment={comment}
-            onCommentDeleted={onCommentDeleted}
-            authorMetadata={comment.author ? authors?.[comment.author]?.metadata : null}
-            authorId={comment.author}
-            enableReplies={enableReplies}
-            highlight={
-              highlightedCommentId ? comment.id === highlightedCommentId : highlightLastComment && isLastCommentInGroup
-            }
-            targetDomain={targetDomain}
-          />
+          <li key={comment.id}>
+            <Comment
+              comment={comment}
+              onCommentDeleted={onCommentDeleted}
+              authorMetadata={comment.author ? authors?.[comment.author]?.metadata : null}
+              authorId={comment.author}
+              enableReplies={enableReplies}
+              highlight={
+                highlightedCommentId
+                  ? comment.id === highlightedCommentId
+                  : highlightLastComment && isLastCommentInGroup
+              }
+              targetDomain={targetDomain}
+            />
+          </li>
         )
       })}
-    </div>
+    </ol>
   )
 })
 
@@ -761,7 +764,10 @@ export const Comment = memo(function Comment({
   return (
     <>
       {deleteCommentDialog.content}
-      <div
+      <article
+        id={`comment-${comment.id}`}
+        tabIndex={-1}
+        aria-label={`Comment by ${authorMetadata?.name || 'Someone'} on ${formattedDateShort(comment.createTime)}`}
         data-resourceid={commentHmId.id}
         className={cn(
           'highlight-transition group relative flex flex-col gap-1 rounded-lg px-3 py-3',
@@ -830,6 +836,7 @@ export const Comment = memo(function Comment({
                     // size="icon"
                     size="xs"
                     variant="ghost"
+                    aria-label={tx('Copy Comment Link')}
                     className="text-muted-foreground hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
                     onClick={() => {
                       if (!docId) return
@@ -862,6 +869,7 @@ export const Comment = memo(function Comment({
                   side="bottom"
                   size="xs"
                   align="end"
+                  ariaLabel="More comment options"
                   className="hover-hover:opacity-0 hover-hover:group-hover:opacity-100 transition-opacity duration-200 ease-in-out"
                   menuItems={options}
                 />
@@ -917,7 +925,7 @@ export const Comment = memo(function Comment({
             ) : null}
           </div>
         )}
-      </div>
+      </article>
     </>
   )
 })

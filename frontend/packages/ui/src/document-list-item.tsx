@@ -264,7 +264,7 @@ export function DocumentListItem({
         className,
       )}
     >
-      <a data-resourceid={id.id} {...linkProps} onClick={handleClick}>
+      <a data-resourceid={id.id} {...linkProps} href={linkProps.href} onClick={handleClick}>
         {indent && <div className="size-8 shrink-0" />}
         {expandable && (
           <button

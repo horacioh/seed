@@ -1,5 +1,6 @@
 import {DEFAULT_AGENT_SERVER_URL} from '@/agents-defaults'
 import {useAppContext} from '@/app-context'
+import {getRouteLabel} from '@/utils/route-label'
 import {domainResolver} from '@/grpc-client'
 import {useForceVaultSync, useLogout, useMyAccountIds, useVaultStatus, useVaultEmail} from '@/models/daemon'
 import {useExistingDraft} from '@/models/drafts'
@@ -69,7 +70,7 @@ import {
   DropdownMenuTrigger,
 } from '@shm/ui/components/dropdown-menu'
 import {LogoutVaultDialog} from '@shm/ui/components/logout-vault-dialog'
-import {Popover, PopoverContent, PopoverTrigger} from '@shm/ui/components/popover'
+import {Popover, PopoverAnchor, PopoverContent} from '@shm/ui/components/popover'
 import {focusExploreSearch} from '@shm/ui/explore-search-focus'
 import {HMIcon} from '@shm/ui/hm-icon'
 import {Back, Forward} from '@shm/ui/icons'
@@ -349,6 +350,7 @@ export function AccountProfileButton() {
                 name={selectedAccount?.metadata?.name}
                 icon={selectedAccount?.metadata?.icon}
                 size={32}
+                alt=""
               />
             ) : (
               <div className="bg-muted flex size-8 items-center justify-center rounded-full">
@@ -368,6 +370,7 @@ export function AccountProfileButton() {
                       name={selectedAccount?.metadata?.name}
                       icon={selectedAccount?.metadata?.icon}
                       size={40}
+                      alt=""
                     />
                   ) : (
                     <User className="size-10" />
@@ -635,6 +638,7 @@ export function NavigationButtons() {
     <div className="no-window-drag flex shrink-0 items-center">
       <Button
         size="iconSm"
+        aria-label="Back"
         onClick={() => dispatch({type: 'pop'})}
         variant="ghost"
         disabled={state.routeIndex <= 0}
@@ -645,6 +649,7 @@ export function NavigationButtons() {
 
       <Button
         size="iconSm"
+        aria-label="Forward"
         onClick={() => dispatch({type: 'forward'})}
         disabled={state.routeIndex >= state.routes.length - 1}
         className="rounded-tr-0 rounded-br-0 shrink-0 has-[>svg]:px-0.5"
@@ -724,34 +729,6 @@ export function TitlebarTitle() {
 // =============================================================================
 
 type OmnibarMode = 'idle' | 'focused' | 'search'
-
-/** Label for non-document routes */
-function getRouteLabel(route: NavRoute): string | null {
-  switch (route.key) {
-    case 'onboarding':
-      return 'Welcome to Seed Hypermedia'
-    case 'library':
-      return 'Library'
-    case 'drafts':
-      return 'Drafts'
-    case 'contacts':
-      return 'Contacts'
-    case 'bookmarks':
-      return 'Bookmarks'
-    case 'settings':
-      return 'Settings'
-    case 'api-inspector':
-      return 'API Inspector'
-    case 'query-documents':
-      return 'Query Documents'
-    case 'explore':
-      return 'Explore'
-    case 'draft':
-      return 'Draft'
-    default:
-      return null
-  }
-}
 
 const ACCOUNT_SETTINGS_TAB_LABELS: Record<string, string> = {
   devices: 'Devices',
@@ -1048,15 +1025,20 @@ function useOmnibarState(currentUrl: string | null) {
   const [mode, setMode] = useState<OmnibarMode>('idle')
   const [inputValue, setInputValue] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
 
   const focus = useCallback(
     (selectAll: boolean = true) => {
+      if (document.activeElement instanceof HTMLElement && document.activeElement !== inputRef.current) {
+        previousFocusRef.current = document.activeElement
+      }
       if (currentUrl) {
         setInputValue(currentUrl)
         setMode('focused')
         // Select all text after a tick
         setTimeout(() => {
           if (inputRef.current && selectAll) {
+            inputRef.current.focus()
             inputRef.current.select()
           }
         }, 0)
@@ -1069,6 +1051,9 @@ function useOmnibarState(currentUrl: string | null) {
   )
 
   const focusSearch = useCallback(() => {
+    if (document.activeElement instanceof HTMLElement && document.activeElement !== inputRef.current) {
+      previousFocusRef.current = document.activeElement
+    }
     setInputValue('')
     setMode('search')
     setTimeout(() => {
@@ -1079,6 +1064,10 @@ function useOmnibarState(currentUrl: string | null) {
   const blur = useCallback(() => {
     setMode('idle')
     setInputValue('')
+  }, [])
+  const restorePreviousFocus = useCallback(() => {
+    if (previousFocusRef.current?.isConnected) previousFocusRef.current.focus()
+    previousFocusRef.current = null
   }, [])
 
   const handleInputChange = useCallback(
@@ -1110,6 +1099,7 @@ function useOmnibarState(currentUrl: string | null) {
     inputRef,
     focus,
     focusSearch,
+    restorePreviousFocus,
     blur,
     handleInputChange,
   }
@@ -1129,6 +1119,7 @@ export function Omnibar() {
   const isLocalAgentsRoute = isLocalAgentServer(agentRouteServerUrl(route) || '', localAgentServerUrl.data)
   const publishSite = usePublishSite()
   const searchInputRef = useRef<SearchInputHandle>(null)
+  const [activeSearchOption, setActiveSearchOption] = useState<string>()
   const [isSearchLoading, setIsSearchLoading] = useState(false)
 
   const routeId = getRouteId(route)
@@ -1139,9 +1130,9 @@ export function Omnibar() {
 
   // Pass null to the omnibar state when the URL isn't shareable so the focused
   // input doesn't prefill with it.
-  const {mode, inputValue, inputRef, focus, focusSearch, blur, handleInputChange} = useOmnibarState(
-    isUnsharable ? null : copyableUrl,
-  )
+  const currentOmnibarValue = isUnsharable ? null : copyableUrl
+  const {mode, inputValue, inputRef, focus, focusSearch, blur, restorePreviousFocus, handleInputChange} =
+    useOmnibarState(currentOmnibarValue)
 
   // Listen for keyboard shortcuts
   useListenAppEvent('focus_omnibar', (event) => {
@@ -1156,6 +1147,9 @@ export function Omnibar() {
   useListenAppEvent('open_launcher', () => {
     focusSearch()
   })
+  useEffect(() => {
+    if (mode !== 'idle') inputRef.current?.focus()
+  }, [mode, inputRef])
 
   // Handle URL navigation - returns true if navigation was synchronous
   const handleUrlNavigation = useCallback(
@@ -1173,7 +1167,14 @@ export function Omnibar() {
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
-        blur()
+        e.preventDefault()
+        e.stopPropagation()
+        if (mode === 'search' && currentOmnibarValue) {
+          focus(true)
+        } else {
+          blur()
+          restorePreviousFocus()
+        }
       } else if (e.key === 'Enter') {
         const webAddress = experiments?.webBrowser ? parseBrowserAddress(inputValue) : null
         if (webAddress) {
@@ -1214,7 +1215,16 @@ export function Omnibar() {
         searchInputRef.current?.handleArrowDown()
       }
     },
-    [blur, mode, inputValue, handleUrlNavigation, experiments?.webBrowser],
+    [
+      blur,
+      mode,
+      inputValue,
+      handleUrlNavigation,
+      experiments?.webBrowser,
+      currentOmnibarValue,
+      focus,
+      restorePreviousFocus,
+    ],
   )
 
   // Handle click on idle state to focus
@@ -1255,15 +1265,18 @@ export function Omnibar() {
     return (
       <div
         className={cn(
-          'no-window-drag border-border flex min-w-0 flex-1 cursor-text items-center gap-2 overflow-hidden rounded-full border-2 pl-2',
+          'no-window-drag border-border flex min-w-0 flex-1 items-center gap-2 overflow-hidden rounded-full border-2 pl-2',
           'hover:border-border hover:bg-muted/50 bg-white dark:bg-black',
           'transition-colors',
           'max-w-2xl',
           routeId ? 'py-0' : 'py-1',
         )}
-        onClick={handleContainerClick}
       >
-        <div className="flex min-w-0 flex-1 items-center overflow-hidden">
+        <button
+          type="button"
+          className="focus-visible:ring-ring flex min-w-0 flex-1 items-center overflow-hidden border-0 bg-transparent p-0 text-left focus-visible:ring-2"
+          onClick={handleContainerClick}
+        >
           {isLocalAgentsRoute ? (
             <LocalAgentsOmnibarToken />
           ) : route.key === 'schema' && !route.id ? (
@@ -1294,10 +1307,10 @@ export function Omnibar() {
               {displayText}
             </span>
           )}
-          {indicators}
-        </div>
+        </button>
+        {indicators}
         {routeId ? (
-          <div className="mr-1 flex shrink-0 items-center justify-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <div className="mr-1 flex shrink-0 items-center justify-center gap-1">
             <BookmarkButton id={routeId} className="size-6 min-w-6" />
             {/* Hide copy-reference when
                 the doc's URL isn't shareable */}
@@ -1326,6 +1339,10 @@ export function Omnibar() {
         <input
           ref={inputRef}
           type="text"
+          role="combobox"
+          aria-label="Search documents or paste a URL"
+          aria-expanded="false"
+          aria-controls="omnibar-results"
           value={inputValue}
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -1334,7 +1351,6 @@ export function Omnibar() {
             'min-w-0 flex-1 truncate border-none! bg-transparent text-xs outline-none',
             'placeholder:text-muted-foreground',
           )}
-          autoFocus
         />
         {indicators}
       </div>
@@ -1344,7 +1360,7 @@ export function Omnibar() {
   // Search state - input in titlebar, results in dropdown
   return (
     <Popover open={true} onOpenChange={(open) => !open && blur()}>
-      <PopoverTrigger asChild>
+      <PopoverAnchor asChild>
         <div
           className={cn(
             'no-window-drag flex min-w-0 flex-1 items-center gap-2 overflow-hidden rounded-full border px-2 py-1',
@@ -1357,6 +1373,11 @@ export function Omnibar() {
           <input
             ref={inputRef}
             type="text"
+            role="combobox"
+            aria-label="Search documents or paste a URL"
+            aria-expanded="true"
+            aria-controls="omnibar-results"
+            aria-activedescendant={activeSearchOption}
             value={inputValue}
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -1365,21 +1386,22 @@ export function Omnibar() {
               'placeholder:text-muted-foreground',
             )}
             placeholder="Search documents or paste a URL…"
-            autoFocus
           />
           {isSearchLoading ? <Spinner className="text-muted-foreground size-3.5 shrink-0" /> : null}
           {indicators}
         </div>
-      </PopoverTrigger>
+      </PopoverAnchor>
       <PopoverContent
         side="bottom"
         align="start"
+        aria-label="Search results"
         className="no-window-drag w-[var(--radix-popover-trigger-width)] min-w-[400px] border-0 bg-transparent p-0 shadow-none"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <div className="dark:bg-background border-border max-h-[280px] overflow-hidden rounded-md border bg-white p-2 shadow-2xl">
           <SearchInput
             ref={searchInputRef}
+            onActiveDescendantChange={setActiveSearchOption}
             onClose={blur}
             externalSearch={inputValue}
             onExternalSearchChange={handleInputChange}

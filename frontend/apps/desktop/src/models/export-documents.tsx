@@ -48,13 +48,14 @@ export function useExportDocuments() {
                 Successfully exported documents to: <b>{`${res}`}</b>.
               </SizableText>
               <SizableText color="brand" asChild className="cursor-pointer underline">
-                <a
+                <button
+                  type="button"
                   onClick={() => {
                     openDirectory(res)
                   }}
                 >
                   Show directory
-                </a>
+                </button>
               </SizableText>
             </div>
           </>

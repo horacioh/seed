@@ -35,6 +35,7 @@ export function MobileMentionsDialog({
   onRestoreFocus: () => void
 }) {
   const wasOpen = useRef(isOpen)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     if (wasOpen.current && !isOpen) onRestoreFocus()
     wasOpen.current = isOpen
@@ -63,6 +64,10 @@ export function MobileMentionsDialog({
         }
         aria-describedby={undefined}
         showCloseButton={false}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          searchInputRef.current?.focus()
+        }}
         onCloseAutoFocus={(event) => {
           event.preventDefault()
           onRestoreFocus()
@@ -79,24 +84,21 @@ export function MobileMentionsDialog({
           </DialogHeader>
           <div className="border-b p-4">
             <Input
+              ref={searchInputRef}
               aria-label={mode === 'account' ? 'Search accounts' : 'Search documents'}
               placeholder={mode === 'account' ? 'Search accounts…' : 'Search documents…'}
               value={query}
               onChange={(event) => onQuery(event.target.value)}
-              autoFocus
             />
           </div>
           <div
             className="min-h-0 flex-1 overflow-y-auto"
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Mobile mentions preserve active-descendant focus in the search input
             role="listbox"
             aria-label={mode === 'account' ? 'Accounts' : 'Documents'}
             aria-busy={loading}
           >
-            {loading && (
-              <p role="status" className="text-muted-foreground p-4">
-                Searching…
-              </p>
-            )}
+            {loading && <output className="text-muted-foreground block p-4">Searching…</output>}
             {error && (
               <div role="alert" className="p-4">
                 Unable to load mentions or resolve the published version.{' '}
@@ -106,13 +108,14 @@ export function MobileMentionsDialog({
               </div>
             )}
             {!loading && !error && !results.length && (
-              <p role="status" className="text-muted-foreground p-4">
+              <output className="text-muted-foreground block p-4">
                 No {mode === 'account' ? 'accounts' : 'documents'} found
-              </p>
+              </output>
             )}
             {results.map((item) => (
               <Button
                 key={item.id.id}
+                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich mention options cannot use native select while preserving search focus
                 role="option"
                 aria-selected={false}
                 disabled={loading || error}

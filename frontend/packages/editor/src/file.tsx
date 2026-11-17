@@ -89,29 +89,22 @@ const FileDisplay = ({editor, block, assign}: DisplayComponentProps) => {
             variant="accent"
             size="xs"
             className={cn(
-              'sel-btn absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100',
+              'sel-btn absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity',
             )}
             asChild
           >
             {saveCidAsFile ? (
-              <a
-                download
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation()
                   saveCidAsFile(fileCid, fileName)
                 }}
               >
                 download
-              </a>
+              </button>
             ) : (
-              <a
-                href={getDaemonFileUrl(url, fileName)}
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
-                download={fileName}
-              >
+              <a href={getDaemonFileUrl(url, fileName)} download={fileName}>
                 download
               </a>
             )}

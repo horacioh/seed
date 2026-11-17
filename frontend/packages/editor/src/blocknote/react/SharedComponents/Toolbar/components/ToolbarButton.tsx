@@ -10,8 +10,10 @@ export type ToolbarButtonProps = {
   mainTooltip: string
   secondaryTooltip?: string
   isSelected?: boolean
+  isToggle?: boolean
   children?: any
   isDisabled?: boolean
+  shortcut?: string
 }
 
 /**
@@ -28,6 +30,10 @@ export const ToolbarButton = forwardRef((props: ToolbarButtonProps, ref: Forward
       {/*Creates an ActionIcon instead of a Button if only an icon is provided as content.*/}
       {props.children ? (
         <Button
+          aria-label={props.mainTooltip}
+          aria-keyshortcuts={props.shortcut || props.secondaryTooltip}
+          aria-pressed={props.isToggle ? props.isSelected : undefined}
+          sx={{'&:focus-visible': {outline: '2px solid var(--ring)', outlineOffset: 2}}}
           onClick={props.onClick}
           data-selected={props.isSelected ? 'true' : undefined}
           data-test={props.mainTooltip.slice(0, 1).toLowerCase() + props.mainTooltip.replace(/\s+/g, '').slice(1)}
@@ -40,6 +46,10 @@ export const ToolbarButton = forwardRef((props: ToolbarButtonProps, ref: Forward
         </Button>
       ) : (
         <ActionIcon
+          aria-label={props.mainTooltip}
+          aria-keyshortcuts={props.shortcut || props.secondaryTooltip}
+          aria-pressed={props.isToggle ? props.isSelected : undefined}
+          sx={{'&:focus-visible': {outline: '2px solid var(--ring)', outlineOffset: 2}}}
           onClick={props.onClick}
           data-selected={props.isSelected ? 'true' : undefined}
           data-test={props.mainTooltip.slice(0, 1).toLowerCase() + props.mainTooltip.replace(/\s+/g, '').slice(1)}

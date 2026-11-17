@@ -125,13 +125,13 @@ describe('ReadOnlyViewer', () => {
       )
       vi.runAllTimers()
     })
-    expect(document.querySelector('[role="dialog"] img')?.getAttribute('src')).toBe('https://files.example/ipfs/first')
+    expect(document.querySelector('dialog img')?.getAttribute('src')).toBe('https://files.example/ipfs/first')
 
     act(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight'}))
       vi.runAllTimers()
     })
-    expect(document.querySelector('[role="dialog"] img')?.getAttribute('src')).toBe('https://files.example/ipfs/second')
+    expect(document.querySelector('dialog img')?.getAttribute('src')).toBe('https://files.example/ipfs/second')
 
     act(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}))

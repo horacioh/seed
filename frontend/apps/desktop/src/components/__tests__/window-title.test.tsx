@@ -51,6 +51,8 @@ describe('WindowTitle', () => {
 
     act(() => root.render(<WindowTitle />))
     expect(document.title).toBe('Document A')
+    expect(container.querySelectorAll('[aria-live="polite"]')).toHaveLength(1)
+    expect(container.querySelector('[aria-live="polite"]')?.textContent).toBe('Document A')
 
     state.route = {key: 'activity', id, filterEventType: activitySlugToFilter('citations')}
     act(() => root.render(<WindowTitle />))

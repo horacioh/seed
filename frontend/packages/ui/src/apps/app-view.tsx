@@ -262,12 +262,17 @@ function AppChildRow({
   const Icon = item.kind === 'tool' ? Wrench : item.kind === 'trigger' ? Zap : Blocks
   return (
     <div
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The row can contain action buttons, which a button cannot contain
       role="button"
       tabIndex={0}
       className="hover:bg-muted/60 flex cursor-pointer items-start gap-3 rounded-lg px-3 py-2 text-left transition-colors"
       onClick={onOpen}
       onKeyDown={(event) => {
-        if (event.key === 'Enter') onOpen()
+        if (event.target !== event.currentTarget) return
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onOpen()
+        }
       }}
     >
       <Icon className="text-muted-foreground mt-1 size-4 shrink-0" />

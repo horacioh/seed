@@ -3,8 +3,10 @@ import {WebAuthnAbortService} from '@simplewebauthn/browser'
 import type React from 'react'
 import {useEffect, useRef, useState} from 'react'
 import {ErrorMessage} from '@/frontend/components/ErrorMessage'
+import {Spinner} from '@/frontend/components/Spinner'
 import * as navigation from '@/frontend/navigation'
 import {StepIndicator} from '@/frontend/components/StepIndicator'
+import {Alert, AlertDescription} from '@/frontend/components/ui/alert'
 import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/frontend/components/ui/card'
 import {Input} from '@/frontend/components/ui/input'
@@ -28,6 +30,9 @@ function PublicPreLoginView() {
     inviteCode,
     loading,
     error,
+    sessionExpired,
+    sessionCheckError,
+    sessionCheckPending,
     passkeySupported,
     session,
     sessionChecked,
@@ -64,7 +69,7 @@ function PublicPreLoginView() {
   }, [sessionChecked, session, delegationRequest, email, loading, actions])
 
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
 
   if (session?.authenticated) {
@@ -86,25 +91,51 @@ function PublicPreLoginView() {
         <StepIndicator currentStep={1} />
         {vaultConnectionRequest?.siteName ? (
           <>
-            <CardTitle className="text-left text-xl">Sign in to join {vaultConnectionRequest.siteName}</CardTitle>
+            <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+              Sign in to join {vaultConnectionRequest.siteName}
+            </CardTitle>
             <CardDescription className="text-left">Enter the email linked to your Hypermedia identity.</CardDescription>
           </>
         ) : vaultConnectionRequest ? (
           <>
-            <CardTitle className="text-left text-xl">Connect your desktop app</CardTitle>
+            <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+              Connect your desktop app
+            </CardTitle>
             <CardDescription className="text-left">
               Sign in to continue connecting this vault to Seed desktop.
             </CardDescription>
           </>
         ) : (
           <>
-            <CardTitle className="text-left text-xl">What's your email?</CardTitle>
+            <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+              What&apos;s your email?
+            </CardTitle>
             <CardDescription className="text-left">We'll send a verification code.</CardDescription>
           </>
         )}
       </CardHeader>
       <CardContent>
-        <ErrorMessage message={error} />
+        {sessionCheckError ? (
+          <Alert id="session-check-error" variant="destructive" className="mb-4">
+            <AlertDescription className="flex flex-col gap-2">
+              <span>{sessionCheckError}</span>
+              {sessionCheckPending ? <output aria-live="polite">Checking your session…</output> : null}
+              <Button
+                type="button"
+                variant="outline"
+                className="w-fit"
+                loading={sessionCheckPending}
+                onClick={() => void actions.checkSession()}
+              >
+                Try again
+              </Button>
+            </AlertDescription>
+          </Alert>
+        ) : null}
+        {sessionExpired ? (
+          <ErrorMessage id="session-expired-error" message="Your session expired. Sign in again to continue." />
+        ) : null}
+        <ErrorMessage id="pre-login-error" message={error} />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -117,12 +148,20 @@ function PublicPreLoginView() {
               value={email}
               onChange={(e) => actions.setEmail(e.target.value)}
               onBlur={() => setEmailTouched(true)}
-              aria-invalid={showEmailError}
+              aria-invalid={showEmailError || (!!error && !inviteOnly)}
+              aria-describedby={
+                [showEmailError && 'email-error', error && !inviteOnly && 'pre-login-error']
+                  .filter(Boolean)
+                  .join(' ') || undefined
+              }
               className={showEmailError ? 'border-destructive focus-visible:border-destructive' : undefined}
-              autoFocus
-              autoComplete="username webauthn"
+              autoComplete="email"
             />
-            {showEmailError ? <p className="text-destructive text-sm">That doesn't look like a valid email</p> : null}
+            {showEmailError ? (
+              <p id="email-error" className="text-destructive text-sm" role="alert">
+                That doesn&apos;t look like a valid email
+              </p>
+            ) : null}
           </div>
 
           {inviteOnly && (
@@ -135,8 +174,11 @@ function PublicPreLoginView() {
                 placeholder="Paste your invitation code"
                 value={inviteCode}
                 onChange={(e) => actions.setInviteCode(e.target.value)}
+                aria-invalid={!!error && inviteOnly}
+                aria-describedby={error && inviteOnly ? 'pre-login-error' : undefined}
                 autoComplete="off"
                 spellCheck={false}
+                required={inviteOnly}
               />
               <p className="text-muted-foreground text-sm">
                 This vault is invite-only. A code is required to create a new account; existing accounts sign in as

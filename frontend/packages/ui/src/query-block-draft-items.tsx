@@ -37,7 +37,7 @@ export function buildSlotItems(
       <InlineDraftCard
         key={`draft-${draft.id}`}
         draft={draft}
-        autoFocus={autoFocus}
+        focusOnMount={autoFocus}
         onOpenDraft={onOpenDraft!}
         onDeleteDraft={onDeleteDraft!}
         onMoveDraft={onMoveDraft}
@@ -50,7 +50,7 @@ export function buildSlotItems(
         <InlineDraftCard
           key={`draft-banner-${bannerDraft.draft.id}`}
           draft={bannerDraft.draft}
-          autoFocus={bannerDraft.autoFocus}
+          focusOnMount={bannerDraft.autoFocus}
           banner
           onOpenDraft={onOpenDraft!}
           onDeleteDraft={onDeleteDraft!}
@@ -71,7 +71,7 @@ export function buildSlotItems(
     <InlineDraftListItem
       key={`draft-${draft.id}`}
       draft={draft}
-      autoFocus={autoFocus}
+      focusOnMount={autoFocus}
       onOpenDraft={onOpenDraft!}
       onDeleteDraft={onDeleteDraft!}
       onMoveDraft={onMoveDraft}

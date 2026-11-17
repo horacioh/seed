@@ -9,6 +9,7 @@ import {
 import {Tooltip} from '@shm/ui/tooltip'
 import {Layers} from 'lucide-react'
 import {cn} from '@shm/ui/utils'
+import {useId} from 'react'
 
 /**
  * Segmented picker for a delegation preset: Quick / Normal / Deep, Normal being the default. It
@@ -28,6 +29,7 @@ export function ThoroughnessPicker({
 }) {
   const effective = value ?? DEFAULT_THOROUGHNESS
   const limits = THOROUGHNESS_PRESETS[effective]
+  const groupName = useId()
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between gap-2">
@@ -39,11 +41,8 @@ export function ThoroughnessPicker({
           depth {limits.maxDepth} · {limits.maxChildren}/turn
         </span>
       </div>
-      <div
-        role="radiogroup"
-        aria-label="Thoroughness"
-        className={cn('bg-muted/60 flex rounded-md p-0.5', compact ? 'text-xs' : 'text-xs')}
-      >
+      <fieldset className="bg-muted/60 m-0 flex rounded-md border-0 p-0.5 text-xs">
+        <legend className="sr-only">Thoroughness</legend>
         {THOROUGHNESS_LEVELS.map((level) => {
           const isActive = level === effective
           const preset = THOROUGHNESS_PRESETS[level]
@@ -52,23 +51,28 @@ export function ThoroughnessPicker({
               key={level}
               content={`${THOROUGHNESS_DESCRIPTIONS[level]} Depth ${preset.maxDepth}, ${preset.maxChildren} helpers per turn.`}
             >
-              <button
-                type="button"
-                role="radio"
-                aria-checked={isActive}
-                disabled={disabled}
-                onClick={() => onChange(level)}
+              <label
                 className={cn(
-                  'flex-1 rounded-sm px-2 py-1 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+                  'focus-within:ring-ring relative flex-1 cursor-pointer rounded-sm px-2 py-1 text-center font-medium transition-colors focus-within:ring-2',
+                  disabled && 'cursor-not-allowed opacity-50',
                   isActive ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
+                <input
+                  type="radio"
+                  name={groupName}
+                  value={level}
+                  checked={isActive}
+                  disabled={disabled}
+                  onChange={() => onChange(level)}
+                  className="peer sr-only"
+                />
                 {THOROUGHNESS_LABELS[level]}
-              </button>
+              </label>
             </Tooltip>
           )
         })}
-      </div>
+      </fieldset>
       {!compact ? <span className="text-muted-foreground text-xs">{THOROUGHNESS_DESCRIPTIONS[effective]}</span> : null}
     </div>
   )

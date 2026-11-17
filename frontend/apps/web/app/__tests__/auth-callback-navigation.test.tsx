@@ -136,8 +136,8 @@ describe('sign-in destination navigation', () => {
     mocks.enterprise = true
     mocks.ensureDaemonAuth.mockImplementation(() => new Promise(() => {}))
     await act(async () => root.render(<AuthCallbackRoute />))
-    expect(container.querySelectorAll('[role="status"]')).toHaveLength(1)
-    expect(container.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Signing in')
+    expect(container.querySelectorAll('output, [role="status"]')).toHaveLength(1)
+    expect(container.querySelector('output, [role="status"]')?.getAttribute('aria-label')).toBe('Signing in')
     expect(container.textContent).toBe('')
     expect(mocks.replace).not.toHaveBeenCalled()
   })

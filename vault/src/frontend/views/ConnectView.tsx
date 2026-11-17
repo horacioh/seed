@@ -14,7 +14,7 @@ export function ConnectView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-left text-xl">
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
           {siteName ? `Join ${siteName}` : 'Connect your desktop app'}
         </CardTitle>
         <CardDescription className="text-left">

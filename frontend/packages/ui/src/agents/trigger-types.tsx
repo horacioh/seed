@@ -538,17 +538,19 @@ function ScheduleTriggerFields({
   source: Extract<AgentTriggerSource, {type: 'schedule'}>
   onChange: (source: AgentTriggerSource) => void
 }) {
+  const fieldId = useId()
   const schedule = source.schedule
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
   const setSchedule = (next: Extract<AgentTriggerSource, {type: 'schedule'}>['schedule']) =>
     onChange({type: 'schedule', schedule: next})
   return (
     <div className="grid gap-3">
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-mode`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Schedule mode
         </SizableText>
         <SelectDropdown
+          triggerId={`${fieldId}-mode`}
           options={SCHEDULE_MODE_OPTIONS}
           value={schedule.kind}
           onValue={(kind) => {
@@ -560,22 +562,24 @@ function ScheduleTriggerFields({
       </label>
       {schedule.kind === 'interval' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <label className="flex flex-col gap-1">
+          <label htmlFor={`${fieldId}-every`} className="flex flex-col gap-1">
             <SizableText size="sm" weight="bold">
               Every
             </SizableText>
             <Input
+              id={`${fieldId}-every`}
               type="number"
               min={1}
               value={schedule.every}
               onChange={(event) => setSchedule({...schedule, every: Number(event.target.value) || 1})}
             />
           </label>
-          <label className="flex flex-col gap-1">
+          <label htmlFor={`${fieldId}-unit`} className="flex flex-col gap-1">
             <SizableText size="sm" weight="bold">
               Unit
             </SizableText>
             <SelectDropdown
+              triggerId={`${fieldId}-unit`}
               options={SCHEDULE_UNIT_OPTIONS}
               value={schedule.unit}
               onValue={(value) => setSchedule({...schedule, unit: value as 'minutes' | 'hours'})}
@@ -662,11 +666,12 @@ function ScheduleTriggerFields({
                 + Add a time
               </Button>
             </div>
-            <label className="flex flex-col gap-1">
+            <label htmlFor={`${fieldId}-weekly-timezone`} className="flex flex-col gap-1">
               <SizableText size="sm" weight="bold">
                 Timezone
               </SizableText>
               <Input
+                id={`${fieldId}-weekly-timezone`}
                 value={schedule.timezone}
                 onChange={(event) => setSchedule({...schedule, timezone: event.target.value})}
               />
@@ -676,21 +681,23 @@ function ScheduleTriggerFields({
       ) : null}
       {schedule.kind === 'once' ? (
         <div className="grid gap-3 md:grid-cols-2">
-          <label className="flex flex-col gap-1">
+          <label htmlFor={`${fieldId}-date-time`} className="flex flex-col gap-1">
             <SizableText size="sm" weight="bold">
               Date and time
             </SizableText>
             <Input
+              id={`${fieldId}-date-time`}
               type="datetime-local"
               value={dateTimeLocalValue(schedule.runAt)}
               onChange={(event) => setSchedule({...schedule, runAt: new Date(event.target.value).getTime(), timezone})}
             />
           </label>
-          <label className="flex flex-col gap-1">
+          <label htmlFor={`${fieldId}-once-timezone`} className="flex flex-col gap-1">
             <SizableText size="sm" weight="bold">
               Timezone
             </SizableText>
             <Input
+              id={`${fieldId}-once-timezone`}
               value={schedule.timezone || timezone}
               onChange={(event) => setSchedule({...schedule, timezone: event.target.value})}
             />
@@ -947,6 +954,7 @@ function TriggerEntityPicker({
         <Input
           id={inputId}
           className="h-10 rounded-lg shadow-none"
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Custom async combobox keeps active-descendant focus in its input
           role="combobox"
           aria-autocomplete="list"
           aria-expanded={open}
@@ -986,6 +994,7 @@ function TriggerEntityPicker({
           <div
             className="border-border bg-popover z-20 mt-1 max-h-48 overflow-auto rounded-md border p-1 shadow-sm"
             id={listId}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Async suggestion listbox preserves the trigger input's focus
             role="listbox"
             aria-label={label}
             aria-busy={search.isFetching}
@@ -995,6 +1004,7 @@ function TriggerEntityPicker({
                 key={item.value}
                 id={`${listId}-${index}`}
                 type="button"
+                // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich trigger options require active-descendant keyboard selection
                 role="option"
                 aria-selected={index === active}
                 tabIndex={-1}
@@ -1009,7 +1019,7 @@ function TriggerEntityPicker({
               </button>
             ))}
             {!results.length ? (
-              <p role="status" className="text-muted-foreground p-3 text-sm">
+              <output className="text-muted-foreground block p-3 text-sm">
                 {search.isFetching
                   ? 'Searching…'
                   : search.isError
@@ -1017,7 +1027,7 @@ function TriggerEntityPicker({
                     : query
                       ? 'No results found.'
                       : 'Type a name to search.'}
-              </p>
+              </output>
             ) : null}
           </div>
         ) : null}
@@ -1471,6 +1481,7 @@ export function TriggerContinuationFields({
   tools: AgentToolInfo[] | undefined
   disabled?: boolean
 }) {
+  const fieldId = useId()
   const current: TriggerContinuation = continuation ?? {kind: 'newThread'}
   const toolOptions = useMemo(() => {
     const names = new Set<string>(['read', 'write'])
@@ -1486,11 +1497,12 @@ export function TriggerContinuationFields({
   }, [tools, current])
   return (
     <div className="grid gap-3">
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-kind`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Then
         </SizableText>
         <SelectDropdown
+          triggerId={`${fieldId}-kind`}
           options={CONTINUATION_KIND_OPTIONS}
           value={current.kind}
           onValue={(value) => onChange(defaultContinuationForKind(value as ContinuationKind, current))}
@@ -1499,11 +1511,12 @@ export function TriggerContinuationFields({
       </label>
       {current.kind === 'tool' ? (
         <>
-          <label className="flex flex-col gap-1">
+          <label htmlFor={`${fieldId}-tool`} className="flex flex-col gap-1">
             <SizableText size="sm" weight="bold">
               Tool
             </SizableText>
             <SelectDropdown
+              triggerId={`${fieldId}-tool`}
               options={toolOptions}
               value={current.tool}
               placeholder="Choose a tool"
@@ -1556,11 +1569,12 @@ export function TriggerContinuationFields({
         </>
       ) : null}
       {current.kind === 'wake' ? (
-        <label className="flex flex-col gap-1">
+        <label htmlFor={`${fieldId}-signal`} className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             Signal
           </SizableText>
           <Input
+            id={`${fieldId}-signal`}
             value={current.signal}
             onChange={(event) => onChange({...current, signal: event.target.value})}
             disabled={disabled}

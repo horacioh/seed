@@ -134,11 +134,11 @@ describe('recovery words step', () => {
     const store = await renderRecoveryStep(async () => ({success: true, credentialId: 'recovery'}))
 
     await rtl.act(async () => {
-      rtl.fireEvent.click(rtl.screen.getByRole('button', {name: 'Copy words'}))
+      rtl.fireEvent.click(rtl.screen.getByRole('button', {name: 'Copy recovery words'}))
     })
 
     expect(writeText).toHaveBeenCalledWith(store.state.recoveryWords.join(' '))
-    rtl.screen.getByRole('button', {name: 'Copied'})
+    rtl.screen.getByRole('button', {name: 'Recovery words copied'})
   })
 
   test('keeps the words and shows an error when saving fails', async () => {

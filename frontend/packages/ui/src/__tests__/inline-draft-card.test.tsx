@@ -127,7 +127,7 @@ describe('draft card title input open action', () => {
     const onUpdateDraftName = vi.fn()
     const onParentKeyDown = vi.fn()
     const {container, root} = renderNode(
-      <div onKeyDown={onParentKeyDown}>
+      <div data-testid="parent">
         <InlineDraftCard
           draft={draft}
           onOpenDraft={onOpenDraft}
@@ -136,6 +136,7 @@ describe('draft card title input open action', () => {
         />
       </div>,
     )
+    container.querySelector('[data-testid="parent"]')?.addEventListener('keydown', onParentKeyDown)
 
     try {
       await act(async () => pressEnter(container.querySelector('input')!))
@@ -153,7 +154,7 @@ describe('draft card title input open action', () => {
     const onUpdateDraftName = vi.fn()
     const onParentKeyDown = vi.fn()
     const {container, root} = renderNode(
-      <div onKeyDown={onParentKeyDown}>
+      <div data-testid="parent">
         <InlineDraftListItem
           draft={draft}
           onOpenDraft={onOpenDraft}
@@ -162,6 +163,7 @@ describe('draft card title input open action', () => {
         />
       </div>,
     )
+    container.querySelector('[data-testid="parent"]')?.addEventListener('keydown', onParentKeyDown)
 
     try {
       await act(async () => pressEnter(container.querySelector('input')!))

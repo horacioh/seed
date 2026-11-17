@@ -14,6 +14,7 @@ import {Block} from './blocknote/core/extensions/Blocks/api/blockTypes'
 import {getBlockInfoWithManualOffset} from './blocknote/core/extensions/Blocks/helpers/getBlockInfoFromPos'
 import {MultipleNodeSelection} from './blocknote/core/extensions/SideMenu/MultipleNodeSelection'
 import {InlineContent} from './blocknote/react/ReactBlockSpec'
+import {isBlockSelected} from './block-selection-wrapper'
 import {markBlockUploaded, MediaType} from './media-render'
 import {MediaSelectionMenu} from './media-selection-menu'
 import {HMBlockSchema} from './schema'
@@ -29,7 +30,7 @@ interface ContainerProps {
   onHoverOut?: (e: any) => void
   width?: number | string
   className?: string
-  onPress?: (e: Event) => void
+  onPress?: (e: Event) => boolean | void
   onMediaMouseDown?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   validateFile?: (file: File) => boolean
   onSubmitUrl?: (url: string) => void
@@ -37,6 +38,7 @@ interface ContainerProps {
   urlInputPlaceholder?: string
   deleteLabel?: string
   extraMenuContent?: React.ReactNode
+  actionContent?: React.ReactNode
 }
 
 type BlockRange = {
@@ -119,6 +121,7 @@ export const MediaContainer = ({
   urlInputPlaceholder,
   deleteLabel,
   extraMenuContent,
+  actionContent,
 }: ContainerProps) => {
   const [drag, setDrag] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -245,9 +248,10 @@ export const MediaContainer = ({
   // The editor accepts authoring when the user has edit permission
   // or when the editor instance itself is editable
   const canAuthor = editor.renderType !== 'viewer' && (canEdit || editor.isEditable)
-  const selectBlock = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const selectBlock = (e: React.MouseEvent<HTMLElement, MouseEvent>, allowInteractiveTarget = false) => {
     const target = e.target as Element | null
     if (
+      !allowInteractiveTarget &&
       target?.closest?.(
         'a[href], .link, button, input, textarea, select, [role="button"], [data-media-container-ignore-select]',
       )
@@ -324,9 +328,6 @@ export const MediaContainer = ({
   const mediaProps = {
     ...styleProps,
     ...(isEmbed || !canAuthor ? {} : dragProps),
-    onMouseDown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      if (onMediaMouseDown) onMediaMouseDown(e)
-    },
     onMouseEnter: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (onHoverIn) onHoverIn()
     },
@@ -337,16 +338,23 @@ export const MediaContainer = ({
 
   return (
     <div
-      className="relative flex w-full flex-col items-center gap-2 self-center"
-      // className={cn(
-      //   'relative flex w-full flex-col gap-2 self-center',
-      //   mediaType === 'file' ? 'items-stretch' : 'items-center',
-      // )}
+      className="relative flex w-full min-w-0 flex-col items-center gap-2 self-center border-0 p-0"
       draggable={canAuthor ? 'true' : 'false'}
       onMouseDownCapture={(e) => {
         // Disable dragging for gestures that begin in the caption.
         const inCaption = !!(e.target as Element | null)?.closest?.('[data-media-container-ignore-select]')
         e.currentTarget.setAttribute('draggable', canAuthor && !inCaption ? 'true' : 'false')
+        if (e.button !== 0 || (e.target as Element | null)?.closest?.('[data-media-container-action]')) return
+        if (onMediaMouseDown) onMediaMouseDown(e as unknown as React.MouseEvent<HTMLDivElement, MouseEvent>)
+        if (onPress) {
+          const handled = canAuthor && e.shiftKey ? (selectBlock(e), true) : onPress(e.nativeEvent)
+          if (handled) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        } else if (canAuthor && (editor.isEditable || isEmbed) && !isBlockSelected(editor, block.id)) {
+          selectBlock(e)
+        }
       }}
       onDragStart={(e: any) => {
         // Uncomment to allow drag only if block is selected
@@ -362,23 +370,22 @@ export const MediaContainer = ({
         e.stopPropagation()
         editor.sideMenu!.blockDragEnd()
       }}
-      onClick={
-        onPress
-          ? (e) => {
-              if (canAuthor && e.shiftKey) {
-                selectBlock(e)
-                return
-              }
-              e.preventDefault()
-              e.stopPropagation()
-              // @ts-expect-error
-              onPress(e)
-            }
-          : canAuthor
-            ? selectBlock
-            : undefined
-      }
     >
+      <button
+        type="button"
+        data-media-container-action
+        data-media-block-id={block.id}
+        aria-label={`${onPress ? 'Open' : 'Select'} ${mediaType} block`}
+        className="sr-only focus:not-sr-only focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+        onClick={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          if (onPress) onPress(event.nativeEvent)
+          else if (canAuthor) selectBlock(event as React.MouseEvent<HTMLElement, MouseEvent>, true)
+        }}
+      >
+        {onPress ? 'Open' : 'Select'} {mediaType} block
+      </button>
       {drag && !isEmbed && (
         <div className="pointer-events-none absolute inset-0 z-5 flex items-center justify-center">
           <div className="bg-background border-muted relative flex rounded-md border-2 px-4 py-2">
@@ -421,7 +428,8 @@ export const MediaContainer = ({
               }}
             />
             {onSubmitUrl ? (
-              <div className="absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+              <div className="absolute top-2 right-2 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity">
+                {actionContent}
                 <MediaSelectionMenu
                   onReplaceFile={() => fileInputRef.current?.click()}
                   onSubmitUrl={onSubmitUrl}
@@ -438,7 +446,8 @@ export const MediaContainer = ({
               <Button
                 variant="accent"
                 size="xs"
-                className="replace-btn absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100"
+                className="replace-btn absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 focus-within:opacity-100 motion-safe:transition-opacity"
+                aria-label={`Replace ${mediaType}`}
                 onClick={() => fileInputRef.current?.click()}
               >
                 replace

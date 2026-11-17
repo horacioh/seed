@@ -126,12 +126,14 @@ export function InlineNewDocumentCard({draft, autoFocus}: {draft: HMListedDraft;
     <div className="@container flex min-h-[200px] flex-1 overflow-hidden rounded-lg border-2 border-dashed border-yellow-400/50 bg-white shadow-sm transition-colors duration-300 dark:bg-black">
       <div className="flex max-w-full flex-1 flex-col @md:flex-row">
         {/* Image placeholder */}
-        <div
+        <button
+          type="button"
+          aria-label="Open draft editor"
           className="relative flex h-40 w-full shrink-0 cursor-pointer items-center justify-center bg-gray-50 @md:h-auto @md:w-1/2 dark:bg-gray-900"
           onClick={openDraft}
         >
           <ImageIcon className="text-muted-foreground size-12 opacity-30" />
-        </div>
+        </button>
         {/* Content */}
         <div className="flex min-h-0 flex-1 flex-col justify-between">
           <div className="p-4">

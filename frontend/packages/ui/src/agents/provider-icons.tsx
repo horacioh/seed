@@ -35,7 +35,7 @@ export function ProviderIcon({type, className = 'size-4'}: {type: ModelProviderT
   const path = BRAND_PATHS[type]
   if (path) {
     return (
-      <svg viewBox="0 0 24 24" className={className} fill="currentColor" role="img" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
         <path d={path} />
       </svg>
     )

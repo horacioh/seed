@@ -670,6 +670,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
       onClick={() => comboboxRef.current?.focus()}
       render={<div className="flex flex-1 rounded-md p-1" />}
     >
+      {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Ariakit row participates in the interactive grid */}
       <Ariakit.CompositeRow role="row" render={<div className="flex w-full flex-wrap gap-1" />}>
         {/* @ts-expect-error */}
         {selectedValues.map((value: SearchResult) => {
@@ -677,6 +678,7 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
           return (
             <Ariakit.CompositeItem
               key={value.id.id}
+              // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Selected chips use Ariakit gridcell keyboard behavior
               role="gridcell"
               onClick={onItemClick(value)}
               onKeyDown={onItemKeyDown}
@@ -697,7 +699,8 @@ const TagInput = forwardRef<HTMLInputElement, TagInputProps>(function TagInput(p
             </Ariakit.CompositeItem>
           )
         })}
-        <div role="cell" className="flex flex-1 flex-col">
+        {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Combobox input occupies an interactive Ariakit gridcell */}
+        <div role="gridcell" className="flex flex-1 flex-col">
           <Ariakit.CompositeItem
             id={comboboxId}
             render={

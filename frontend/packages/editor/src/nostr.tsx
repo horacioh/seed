@@ -346,10 +346,7 @@ function NostrForm({
   }
 
   return (
-    <div
-      className="border-border relative flex flex-col rounded border-[2.5px] font-sans outline-none"
-      contentEditable={false}
-    >
+    <div className="border-border relative flex flex-col rounded border-[2.5px] font-sans" contentEditable={false}>
       <Tabs
         value={tabState}
         onValueChange={(value: string) => {
@@ -389,7 +386,6 @@ function NostrForm({
                   className="w-full"
                   placeholder="Input nevent or note1"
                   onChange={(e) => setNevent(e.target.value)}
-                  autoFocus={true}
                 />
 
                 <Button type="submit">SEARCH</Button>
@@ -406,12 +402,7 @@ function NostrForm({
           <div className="bg-background flex items-center rounded p-4">
             <form className="w-full" onSubmit={() => submitNote()}>
               <div className="flex flex-1 gap-3">
-                <Input
-                  className="w-full"
-                  placeholder="Input JSON note"
-                  onChange={(e) => setRawNote(e.target.value)}
-                  autoFocus={true}
-                />
+                <Input className="w-full" placeholder="Input JSON note" onChange={(e) => setRawNote(e.target.value)} />
 
                 <Button type="submit">EMBED</Button>
               </div>

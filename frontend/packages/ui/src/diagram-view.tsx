@@ -55,6 +55,7 @@ export function DiagramView({svg, className, expandButtonContainer, onClick, onA
         contentEditable={false}
       >
         {!open && (
+          // oxlint-disable-next-line jsx-a11y/click-events-have-key-events jsx-a11y/no-static-element-interactions -- Delegates clicks from SVG links, which remain keyboard reachable
           <div
             className="flex w-full justify-center overflow-auto [&_svg]:max-w-full"
             onClick={onClick}
@@ -101,9 +102,11 @@ function ExpandedDiagram({svg, onClick, onAuxClick}: DiagramViewProps) {
   }, [svg])
 
   return (
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events jsx-a11y/no-static-element-interactions -- Delegates clicks from SVG links, which remain keyboard reachable
     <div
       ref={container}
       className="hm-mermaid relative m-4 flex min-h-0 flex-1 items-center justify-center overflow-hidden"
+      // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- The diagram takes focus so plus, minus, arrow and zero keys can zoom and pan it
       tabIndex={0}
       aria-label="Diagram. Use plus and minus to zoom, arrow keys to pan, and zero to reset."
       onClick={onClick}

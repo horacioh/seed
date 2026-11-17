@@ -5,7 +5,13 @@
   "main": "render.ts",
   "scripts": {
     "render": "tsx render.tsx",
-    "render:login": "tsx render-login.tsx"
+    "render:login": "tsx render-login.tsx",
+    "render:previews": "tsx --conditions=import render-email-previews.ts",
+    "test": "vitest --run",
+    "test:e2e": "pnpm run render:previews && playwright test",
+    "typecheck": "tsc --noEmit",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write ."
   },
   "dependencies": {
     "@faire/mjml-react": "^3.5.0",
@@ -16,9 +22,15 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.57.0",
+    "@shm/a11y-testing": "workspace:*",
+    "@types/jsdom": "^21.1.7",
     "@types/react": "18.2.64",
     "@types/react-dom": "18.2.21",
+    "culori": "^4.0.2",
+    "jsdom": "^24.1.3",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "4.1.8"
   }
 }

@@ -500,11 +500,21 @@ function FiringsSection({
                 navigate({key: 'document', id: sessionAgent, agentView: 'session', agentSessionId: firing.sessionId})
             : null
         return (
+          // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Firings with a session are buttons; others are static rows
           <div
             key={firing.id}
             role={open ? 'button' : undefined}
             tabIndex={open ? 0 : undefined}
             onClick={open ?? undefined}
+            onKeyDown={
+              open
+                ? (event) => {
+                    if (event.key !== 'Enter' && event.key !== ' ') return
+                    event.preventDefault()
+                    open()
+                  }
+                : undefined
+            }
             className={`flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md px-3 py-2 ${
               open ? 'hover:bg-muted/60 cursor-pointer' : ''
             }`}

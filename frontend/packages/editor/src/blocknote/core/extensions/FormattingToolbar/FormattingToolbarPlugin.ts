@@ -171,6 +171,16 @@ export class FormattingToolbarView<BSchema extends BlockSchema> {
     }
   }
 
+  show() {
+    const {state} = this.pmView
+    if (state.selection.empty || !isTextSelection(state.selection)) return
+    this.formattingToolbarState = {
+      show: true,
+      referencePos: this.getSelectionBoundingBox(),
+    }
+    this.updateFormattingToolbar()
+  }
+
   destroy() {
     this.pmView.dom.removeEventListener('mousedown', this.viewMousedownHandler)
     this.pmView.dom.removeEventListener('mouseup', this.viewMouseupHandler)
@@ -227,5 +237,10 @@ export class FormattingToolbarProsemirrorPlugin<BSchema extends BlockSchema> ext
   /** Hide the toolbar and notify subscribers via the `update` event. */
   public hide() {
     this.view?.hide()
+  }
+
+  /** Show the formatting toolbar for the editor's current text selection. */
+  public show() {
+    this.view?.show()
   }
 }

@@ -106,7 +106,7 @@ export function HypermediaLinkForm(props: HypermediaLinkFormProps) {
         isHmLink={props.isHmLink}
       />
       {props.hasName && (
-        <label className={linkFormFieldClass}>
+        <label htmlFor="link-text" className={linkFormFieldClass}>
           <TextCursorInput size={16} />
           <Input
             data-testid="link-text-input"
@@ -123,7 +123,7 @@ export function HypermediaLinkForm(props: HypermediaLinkFormProps) {
           />
         </label>
       )}
-      <label className={linkFormFieldClass}>
+      <label htmlFor="link-search" className={linkFormFieldClass}>
         <Search size={16} />
         <SearchInput
           updateLink={props.updateLink}
@@ -389,6 +389,8 @@ const SearchInput = ({
     <>
       <Input
         data-testid="link-search-input"
+        id="link-search"
+        aria-label="Link destination"
         ref={inputRef}
         variant="unstyled"
         className={linkFormInputClass}
@@ -474,8 +476,6 @@ export function LinkTypeDropdown({
   const dropdown = (
     <div
       className="bg-background absolute z-[99999] flex flex-col rounded-md py-2 shadow-md"
-      onMouseDown={(event) => event.stopPropagation()}
-      onClick={(event) => event.stopPropagation()}
       style={{
         top: inputPosition ? inputPosition.bottom + 5 : 0,
         left: inputPosition?.left ?? 0,
@@ -487,13 +487,13 @@ export function LinkTypeDropdown({
           type="button"
           key={item.value}
           className="hover:bg-muted text-foreground flex w-full cursor-pointer gap-2 border-0 bg-transparent px-3 py-2 text-left"
-          onMouseDown={(event) => {
+          onMouseDownCapture={(event) => {
             event.preventDefault()
             event.stopPropagation()
             onSelect(item.value)
             setFocused(false)
           }}
-          onClick={(event) => event.stopPropagation()}
+          onClickCapture={(event) => event.stopPropagation()}
         >
           <item.icon size={16} color={item.value === selected ? '$brand4' : '$color12'} />
           <SizableText size="md" color={item.value === selected ? 'brand' : 'default'}>
@@ -511,11 +511,11 @@ export function LinkTypeDropdown({
         ref={ref}
         aria-haspopup="listbox"
         aria-expanded={focused}
-        onMouseDown={(event) => {
+        onMouseDownCapture={(event) => {
           event.preventDefault()
           event.stopPropagation()
         }}
-        onClick={(event) => {
+        onClickCapture={(event) => {
           event.preventDefault()
           event.stopPropagation()
           setFocused(!focused)

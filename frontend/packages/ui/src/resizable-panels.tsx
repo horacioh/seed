@@ -270,16 +270,20 @@ export function AnimatedPanel({
 /** Keeps the separator's space stable while excluding a closed panel's handle from input. */
 export function PanelSeparator({
   open = true,
-  className = 'panel-resize-handle',
+  className = 'panel-resize-handle focus-visible:ring-ring focus-visible:ring-2',
+  label,
   onCollapse,
 }: {
   open?: boolean
   className?: string
+  /** Accessible name announced for the resize handle. */
+  label?: string
   onCollapse?: () => void
 }) {
   return (
     <Separator
       className={className}
+      aria-label={label}
       disabled={!open}
       aria-hidden={!open || undefined}
       style={{visibility: open ? undefined : 'hidden'}}

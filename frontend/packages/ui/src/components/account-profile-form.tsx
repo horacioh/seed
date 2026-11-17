@@ -120,9 +120,13 @@ export function AccountProfileForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} aria-busy={!!loading}>
       <div className="flex flex-col gap-4">
-        {error ? <p className="text-destructive text-sm">{error}</p> : null}
+        {error ? (
+          <p id="account-profile-form-error" className="text-destructive text-sm" role="alert">
+            {error}
+          </p>
+        ) : null}
 
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-4">
@@ -144,6 +148,8 @@ export function AccountProfileForm({
                 accept={IMAGE_FILE_ACCEPT}
                 onChange={handleImageChange}
                 disabled={loading || cropper.isOpen}
+                aria-invalid={!!avatarError}
+                aria-describedby={avatarError ? 'account-profile-avatar-error' : undefined}
                 className="absolute inset-0 cursor-pointer opacity-0"
               />
             </label>
@@ -155,7 +161,11 @@ export function AccountProfileForm({
               {previewUrl ? 'Change your photo' : 'Add your photo'}
             </label>
           </div>
-          {avatarError ? <p className="text-destructive text-sm">{avatarError}</p> : null}
+          {avatarError ? (
+            <p id="account-profile-avatar-error" className="text-destructive text-sm" role="alert">
+              {avatarError}
+            </p>
+          ) : null}
         </div>
 
         {/* Live preview of how the profile appears to others. */}
@@ -175,17 +185,24 @@ export function AccountProfileForm({
           <Label htmlFor="account-profile-name">Name</Label>
           <Input
             id="account-profile-name"
+            name="name"
             value={name}
             onChange={(event) => {
               setName(event.target.value)
               if (nameError) setNameError('')
             }}
             placeholder="Type here"
-            autoFocus
+            autoComplete="name"
+            aria-invalid={!!nameError}
+            aria-describedby={nameError ? 'account-profile-name-error' : undefined}
             disabled={loading}
             className="border-black/10 dark:border-white/10"
           />
-          {nameError ? <p className="text-destructive text-sm">{nameError}</p> : null}
+          {nameError ? (
+            <p id="account-profile-name-error" className="text-destructive text-sm" role="alert">
+              {nameError}
+            </p>
+          ) : null}
         </div>
 
         {showDescription ? (
@@ -193,6 +210,7 @@ export function AccountProfileForm({
             <Label htmlFor="account-profile-description">Description (optional)</Label>
             <Textarea
               id="account-profile-description"
+              name="description"
               value={description}
               onChange={(event) => setDescription(event.target.value.slice(0, 512))}
               placeholder="A short bio or description"

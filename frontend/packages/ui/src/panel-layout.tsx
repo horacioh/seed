@@ -135,7 +135,7 @@ export function PanelLayout({
           <div className="relative h-full rounded-lg">{children}</div>
         </Panel>
 
-        <PanelSeparator open={panelKey !== null} onCollapse={onPanelClose} />
+        <PanelSeparator open={panelKey !== null} label="Resize panel" onCollapse={onPanelClose} />
         <AnimatedPanel
           id="accessory"
           open={panelKey !== null}
@@ -149,7 +149,7 @@ export function PanelLayout({
           )}%`}
           className="border-l"
         >
-          <div className="h-full rounded-lg">
+          <aside aria-label={title || 'Panel'} data-a11y-region="panel" tabIndex={-1} className="h-full rounded-lg">
             <div className={cn('dark:bg-background flex h-full flex-col bg-white')}>
               {header ?? (
                 <PanelHeader
@@ -169,7 +169,7 @@ export function PanelLayout({
                 {panelContent}
               </div>
             </div>
-          </div>
+          </aside>
         </AnimatedPanel>
       </Group>
     </div>

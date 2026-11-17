@@ -37,7 +37,7 @@ export function SiteLogo({id, metadata}: {id: UnpackedHypermediaId; metadata?: H
       className={cn('flex min-w-0 items-center justify-center gap-2')}
       {...highlighter(id)}
     >
-      <HMIcon size={24} id={id} name={metadata?.name} icon={metadata?.icon} />
+      <HMIcon size={24} id={id} name={metadata?.name} icon={metadata?.icon} alt="" aria-hidden="true" />
       <p
         className={cn(
           'text-foreground min-w-0 truncate overflow-hidden text-center font-bold select-none md:text-left',

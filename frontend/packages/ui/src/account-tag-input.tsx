@@ -114,12 +114,14 @@ export const AccountTagInput = forwardRef<HTMLInputElement, AccountTagInputProps
       }}
       render={<div className="flex flex-1 rounded-md p-1" />}
     >
+      {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Ariakit row participates in the interactive grid */}
       <Ariakit.CompositeRow role="row" render={<div className="flex w-full flex-wrap gap-1" />}>
         {/* @ts-expect-error Ariakit selected value state is the AccountSearchResult array configured above. */}
         {selectedValues.map((selectedValue: AccountSearchResult) => {
           return (
             <Ariakit.CompositeItem
               key={selectedValue.id.id}
+              // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Selected chips use Ariakit gridcell keyboard behavior
               role="gridcell"
               onClick={onItemClick(selectedValue)}
               onKeyDown={onItemKeyDown}
@@ -133,7 +135,8 @@ export const AccountTagInput = forwardRef<HTMLInputElement, AccountTagInputProps
             </Ariakit.CompositeItem>
           )
         })}
-        <div role="cell" className="flex min-w-0 flex-1 flex-col">
+        {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Combobox input occupies an interactive Ariakit gridcell */}
+        <div role="gridcell" className="flex min-w-0 flex-1 flex-col">
           <Ariakit.CompositeItem
             id={comboboxId}
             render={

@@ -37,18 +37,18 @@ afterEach(async () => {
 it('keeps the enterprise loading surface until the saved identity has loaded', async () => {
   await act(async () => root.render(<App />))
   expect(container.querySelector('main')).toBeNull()
-  expect(container.querySelectorAll('[role="status"]')).toHaveLength(1)
-  expect(container.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Signing in')
+  expect(container.querySelectorAll('output, [role="status"]')).toHaveLength(1)
+  expect(container.querySelector('output, [role="status"]')?.getAttribute('aria-label')).toBe('Signing in')
   state.loaded = true
   await act(async () => root.render(<App />))
   expect(container.textContent).toBe('Site content')
-  expect(container.querySelector('[role="status"]')).toBeNull()
+  expect(container.querySelector('output, [role="status"]')).toBeNull()
 })
 it('leaves public rendering unchanged while identity is loading', async () => {
   state.enterprise = false
   await act(async () => root.render(<App />))
   expect(container.textContent).toBe('Site content')
-  expect(container.querySelector('[role="status"]')).toBeNull()
+  expect(container.querySelector('output, [role="status"]')).toBeNull()
 })
 it.each(['/hm/sign-in', '/hm/auth/callback', '/hm/email-notifications'])(
   'keeps the open route %s accessible before identity load',

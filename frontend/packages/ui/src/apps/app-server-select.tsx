@@ -121,7 +121,8 @@ export function AppServerSelect({
           </button>
         </PopoverTrigger>
         <PopoverContent align="start" className="w-(--radix-popover-trigger-width) min-w-64 p-1">
-          <div ref={listRef} role="listbox" aria-label="Servers" onKeyDown={moveFocus}>
+          {/* oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Custom listbox with arrow-key focus between rich server rows */}
+          <div ref={listRef} role="listbox" tabIndex={-1} aria-label="Servers" onKeyDown={moveFocus}>
             {listed.map((option) => (
               <ServerRow
                 key={option.url}
@@ -182,6 +183,7 @@ function ServerRow({
     <div className="group flex items-center">
       <button
         type="button"
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Server rows hold status details a native option cannot render
         role="option"
         aria-selected={selected}
         data-server-row
@@ -239,7 +241,7 @@ function AddServer({onAdded, onCancel}: {onAdded: (serverUrl: string) => void; o
     <div className="grid gap-1.5 p-1">
       <div className="flex items-center gap-1.5">
         <Input
-          autoFocus
+          focusOnMount
           aria-label="Server name"
           placeholder="hyper.media"
           autoCapitalize="none"

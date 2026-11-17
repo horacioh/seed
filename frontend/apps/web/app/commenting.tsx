@@ -283,6 +283,7 @@ export default function WebCommenting({
       actor.on('published', (event) => {
         const {navNavigate, route, navigation, onCommentSubmitted, draftId} = latestRef.current
         onCommentSubmitted?.(event.comment)
+        requestAnimationFrame(() => document.getElementById(`comment-${event.comment.id}`)?.focus())
         if (isPerfEnabled()) markCommentSubmitEnd()
         navigateToComment(
           navNavigate,
@@ -523,7 +524,7 @@ export default function WebCommenting({
               )}
             >
               <button
-                aria-label="Send comment"
+                aria-label={userKeyPair ? 'Send comment' : 'Create account to send comment'}
                 disabled={busy || disabled}
                 className={cn(
                   buttonVariants({size: 'icon', variant: 'default'}),
@@ -840,13 +841,14 @@ export function WebInlineEditBox({comment, onSave, onCancel, isSaving}: InlineEd
         hideAvatar
         submitButton={({getContent, reset, disabled}) => (
           <>
-            <Button variant="ghost" size="icon" onClick={onCancel} disabled={isSaving}>
+            <Button variant="ghost" size="icon" aria-label="Cancel edit" onClick={onCancel} disabled={isSaving}>
               <X className="size-4" />
             </Button>
             <Tooltip content="Save edit">
               <Button
                 variant="default"
                 size="icon"
+                aria-label="Save edit"
                 onClick={(e) => {
                   e.stopPropagation()
                   handleSubmit(getContent, reset)

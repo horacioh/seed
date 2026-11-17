@@ -9,6 +9,7 @@ import {HyperlinkToolbarPositioner} from './HyperlinkToolbar/components/Hyperlin
 import {LinkMenuPositioner} from './LinkMenu/components/LinkMenuPositioner'
 import {SideMenuPositioner} from './SideMenu/components/SideMenuPositioner'
 import {SlashMenuPositioner} from './SlashMenu/components/SlashMenuPositioner'
+import {ImageAltTextDialogProvider} from '../../image-alt-text-dialog'
 
 // Renders the editor as well as all menus & toolbars using default styles.
 function BaseBlockNoteView<BSchema extends BlockSchema>(
@@ -20,37 +21,50 @@ function BaseBlockNoteView<BSchema extends BlockSchema>(
   const {classes} = createStyles({root: {}})(undefined, {
     name: 'Editor',
   })
+  const [announcement, setAnnouncement] = useState('')
 
   const {editor, children, className, ...rest} = props
 
+  useEffect(() => {
+    const unsubscribe = editor.onAccessibilityAnnouncement(setAnnouncement)
+    return () => {
+      unsubscribe?.()
+    }
+  }, [editor])
+
   return (
-    <EditorContent
-      editor={props.editor?._tiptapEditor || null}
-      className={mergeCSSClasses(classes.root, props.className || '')}
-      {...rest}
-    >
-      {props.children || (
-        <>
-          <FormattingToolbarPositioner editor={props.editor} />
-          // @ts-expect-error
-          <HyperlinkToolbarPositioner
-            editor={props.editor}
-            openUrl={(url?: string, newWindow?: boolean) => {
-              if (url) {
-                if (newWindow) {
-                  window.open(url, '_blank')
-                } else {
-                  window.location.href = url
+    <ImageAltTextDialogProvider>
+      <EditorContent
+        editor={props.editor?._tiptapEditor || null}
+        className={mergeCSSClasses(classes.root, props.className || '')}
+        {...rest}
+      >
+        {props.children || (
+          <>
+            <FormattingToolbarPositioner editor={props.editor} />
+            // @ts-expect-error
+            <HyperlinkToolbarPositioner
+              editor={props.editor}
+              openUrl={(url?: string, newWindow?: boolean) => {
+                if (url) {
+                  if (newWindow) {
+                    window.open(url, '_blank')
+                  } else {
+                    window.location.href = url
+                  }
                 }
-              }
-            }}
-          />
-          <SlashMenuPositioner editor={props.editor} />
-          <SideMenuPositioner editor={props.editor} />
-          <LinkMenuPositioner editor={props.editor} />
-        </>
-      )}
-    </EditorContent>
+              }}
+            />
+            <SlashMenuPositioner editor={props.editor} />
+            <SideMenuPositioner editor={props.editor} />
+            <LinkMenuPositioner editor={props.editor} />
+          </>
+        )}
+        <div className="sr-only" aria-live="polite" aria-atomic="true" data-editor-live-region>
+          {announcement}
+        </div>
+      </EditorContent>
+    </ImageAltTextDialogProvider>
   )
 }
 

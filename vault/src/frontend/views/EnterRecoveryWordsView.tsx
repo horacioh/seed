@@ -2,6 +2,7 @@ import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/frontend/components/ui/card'
 import * as crypto from '@/frontend/crypto'
 import * as navigation from '@/frontend/navigation'
+import {Spinner} from '@/frontend/components/Spinner'
 import {useActions, useAppState} from '@/frontend/store'
 import {cn} from '@/frontend/utils'
 import {Upload, X} from 'lucide-react'
@@ -20,7 +21,7 @@ export function EnterRecoveryWordsView() {
   const wordInputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
   if (!email) {
     return <navigation.HashNavigate to="/" replace />
@@ -98,7 +99,9 @@ export function EnterRecoveryWordsView() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-left text-xl">Forgot your password?</CardTitle>
+          <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+            Forgot your password?
+          </CardTitle>
           <button
             type="button"
             aria-label="Close"
@@ -126,12 +129,14 @@ export function EnterRecoveryWordsView() {
                     word ? 'border-brand' : 'border-black/10 dark:border-white/10',
                   )}
                 >
-                  <span className="text-muted-foreground">{i + 1}.</span>
+                  <span className="text-foreground">{i + 1}.</span>
                   <input
                     ref={(input) => {
                       wordInputRefs.current[i] = input
                     }}
                     aria-label={`Recovery word ${i + 1}`}
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'recovery-words-error' : undefined}
                     className="w-full min-w-0 bg-transparent font-medium outline-none"
                     value={word}
                     onChange={(e) => handleWordChange(i, e.target.value)}
@@ -144,7 +149,11 @@ export function EnterRecoveryWordsView() {
                 </label>
               ))}
             </div>
-            {error ? <p className="text-destructive text-sm">{error}</p> : null}
+            {error ? (
+              <p id="recovery-words-error" className="text-destructive text-sm" role="alert">
+                {error}
+              </p>
+            ) : null}
           </div>
 
           <Button

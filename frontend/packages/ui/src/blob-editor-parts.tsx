@@ -137,7 +137,7 @@ export function AttachSchemaBar({
           value={text}
           placeholder="Schema CID or ipfs:// URL"
           className="min-w-64 flex-1 font-mono text-xs"
-          autoFocus
+          focusOnMount
           onChange={(e) => {
             setText(e.target.value)
             setError(null)
@@ -186,7 +186,7 @@ export function BlobJsonMode({
         value={text}
         rows={Math.max(12, Math.min(36, text.split('\n').length + 1))}
         spellCheck={false}
-        autoFocus
+        focusOnMount
         className={cn('font-mono text-sm', 'error' in validation && 'border-destructive')}
         onChange={(e) => setText(e.target.value)}
       />

@@ -82,8 +82,8 @@ it('enterprise sign-in starts once and preserves the requested site destination'
     }),
   )
   expect(container.querySelector('button')).toBeNull()
-  expect(container.querySelectorAll('[role="status"]')).toHaveLength(1)
-  expect(container.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe('Signing in')
+  expect(container.querySelectorAll('output, [role="status"]')).toHaveLength(1)
+  expect(container.querySelector('output, [role="status"]')?.getAttribute('aria-label')).toBe('Signing in')
 })
 it('a saved identity renews its site session without starting a second vault login', async () => {
   mocks.enterprise = true

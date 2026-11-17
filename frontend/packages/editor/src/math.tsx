@@ -5,8 +5,8 @@ import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import {NodeSelection} from 'prosemirror-state'
 import {useCallback, useEffect, useRef, useState} from 'react'
-import {BlockSelectionWrapper} from './block-selection-wrapper'
-import {findNextBlock, findPreviousBlock} from './block-utils'
+import {BlockSelectionWrapper, isBlockSelected} from './block-selection-wrapper'
+import {findNextBlock, findPreviousBlock, selectBlockNodeById} from './block-utils'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
 import {selectableNodeTypes} from './blocknote/core/extensions/BlockManipulation/BlockManipulationExtension'
 import {Block} from './blocknote/core/extensions/Blocks/api/blockTypes'
@@ -35,16 +35,13 @@ export const MathBlock = (type: 'math') =>
 
 const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSchema>) => {
   const [opened, setOpened] = useState(false)
-  const mathRef = useRef<HTMLDivElement>(null)
+  const mathRef = useRef<HTMLSpanElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const tiptapEditor = editor._tiptapEditor
   const selection = tiptapEditor.state.selection
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLButtonElement>(null)
   const [isContentSmallerThanContainer, setIsContentSmallerThanContainer] = useState(true)
-  // Snapshot at mousedown whether the block was already node-selected. PM's
-  // handleClickOn selects the block on mouseup (before this React click), so
-  // the first click is select-only and only a click on an already-selected
-  // math block opens the LaTeX editor.
+  // Preserve select-then-open behavior for pointer activation.
   const wasSelectedAtMouseDown = useRef(false)
 
   const commentStyle = editor.renderType === 'comment'
@@ -181,17 +178,7 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
   }, [measureContentAndContainer])
 
   return (
-    <BlockSelectionWrapper
-      editor={editor}
-      block={block}
-      selectOnMouseDown
-      // The wrapper's capture-phase handler selects the block BEFORE this
-      // component's own mousedown fires, so the was-selected snapshot must
-      // come from the wrapper (pre-dispatch), not from a local handler.
-      onSelectMouseDown={(wasSelected) => {
-        wasSelectedAtMouseDown.current = wasSelected
-      }}
-    >
+    <BlockSelectionWrapper editor={editor} block={block}>
       <div
         contentEditable={false}
         className={cn(
@@ -201,22 +188,32 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
           'hover:bg-black/3 dark:hover:bg-white/3',
         )}
       >
-        <div
+        <button
+          type="button"
+          aria-label="Edit math block"
           ref={containerRef}
-          onClick={() => {
-            // First click selects (PM handleClickOn makes the NodeSelection);
-            // a click on an already-selected block opens the LaTeX editor.
-            if (editor.isEditable && !opened && wasSelectedAtMouseDown.current) {
+          onMouseDownCapture={(event) => {
+            if (!editor.isEditable || event.button !== 0 || event.shiftKey) return
+            const wasSelected = isBlockSelected(editor, block.id)
+            wasSelectedAtMouseDown.current = wasSelected
+            if (!wasSelected) {
+              event.preventDefault()
+              selectBlockNodeById(editor, block.id)
+            }
+          }}
+          onClick={(event) => {
+            // A selected block opens on the next pointer click; keyboard activation opens directly.
+            if (editor.isEditable && !opened && (wasSelectedAtMouseDown.current || event.detail === 0)) {
               setOpened(true)
             }
           }}
           className={cn(
-            'relative flex min-h-7 w-full flex-col px-3 py-[10px] select-none',
+            'relative flex min-h-7 w-full flex-col border-0 bg-transparent px-3 py-[10px] text-left select-none',
             isContentSmallerThanContainer ? 'items-center overflow-hidden' : 'items-start overflow-scroll',
           )}
         >
-          <p ref={mathRef} className="text-base select-none" />
-        </div>
+          <span ref={mathRef} className="block text-base select-none" />
+        </button>
         {opened && editor.isEditable && (
           <div className="flex flex-col">
             <Separator />

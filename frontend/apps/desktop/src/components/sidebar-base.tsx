@@ -1,6 +1,7 @@
 import {useSidebarContext} from '@/sidebar-context'
 import {useStream} from '@shm/shared/use-stream'
 import useMedia from '@shm/ui/use-media'
+import {cn} from '@shm/ui/utils'
 import {ReactNode, useLayoutEffect, useRef} from 'react'
 import {AnimatedPanel, PanelSeparator} from '@shm/ui/resizable-panels'
 
@@ -15,7 +16,7 @@ export function GenericSidebarContainer({
   const isLocked = useStream(ctx.isLocked)
 
   const sidebarWidth = useStream(ctx.sidebarWidth)
-  const panelContentRef = useRef<HTMLDivElement>(null)
+  const panelContentRef = useRef<HTMLElement>(null)
   const media = useMedia()
 
   // When window shrinks past the breakpoint, close the sidebar (and restore it when growing back)
@@ -29,6 +30,9 @@ export function GenericSidebarContainer({
         wasLockedBeforeCollapse.current = true
         responsiveTarget.current = false
         ctx.onCloseSidebar()
+        if (panelContentRef.current?.contains(document.activeElement)) {
+          document.getElementById('main-content')?.focus()
+        }
       }
     } else if (!prevMediaGtSm.current && media.gtSm) {
       if (wasLockedBeforeCollapse.current) {
@@ -82,14 +86,21 @@ export function GenericSidebarContainer({
         minSize="10%"
         maxSize="30%"
         id="sidebar"
-        className="h-full"
+        className="h-full overflow-hidden"
       >
-        <div ref={panelContentRef} className="relative flex h-full w-full flex-col">
+        <nav
+          ref={panelContentRef}
+          aria-label="Sidebar"
+          data-a11y-region="sidebar"
+          hidden={!isLocked}
+          tabIndex={-1}
+          className={cn('relative h-full w-full flex-col', isLocked ? 'flex' : 'hidden')}
+        >
           <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
           {footer ? <div className="w-full items-end">{footer({isVisible: isLocked})}</div> : null}
-        </div>
+        </nav>
       </AnimatedPanel>
-      <PanelSeparator open={!!isLocked} />
+      <PanelSeparator open={!!isLocked} label="Resize sidebar" />
     </>
   )
 }

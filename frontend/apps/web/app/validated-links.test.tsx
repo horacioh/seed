@@ -44,7 +44,7 @@ import {useOpenUrlWeb} from './commenting'
 
 function ValidatedLinkHarness({route}: {route: string}) {
   const {linkProps, isSeedLink} = useValidatedWebRouteLink(route)
-  return <a href={linkProps.href} data-seed-link={String(isSeedLink)} />
+  return <a href={linkProps.href} aria-label="Validated route" data-seed-link={String(isSeedLink)} />
 }
 
 function OpenUrlHarness() {

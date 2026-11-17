@@ -147,6 +147,7 @@ export function AgentWriteScopePicker({
           <button
             key={option.scope}
             type="button"
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich option cards act as a radio group; native radios cannot hold this content
             role="radio"
             aria-checked={selected}
             disabled={disabled || below}

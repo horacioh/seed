@@ -78,7 +78,7 @@ export function IconForm({
         />
         {emptyLabel && !url ? (
           <div
-            className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-100 group-hover:opacity-0"
+            className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-100 group-focus-within:opacity-0 group-hover:opacity-0 motion-reduce:transition-none"
             style={{zIndex: 5}}
           >
             <SizableText size="xs" className="text-center text-white">
@@ -87,7 +87,7 @@ export function IconForm({
           </div>
         ) : null}
         <div
-          className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-0 group-hover:opacity-100"
+          className="pointer-events-none absolute flex h-full w-full items-center justify-center gap-2 bg-black/30 opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none"
           style={{zIndex: 5}}
         >
           <SizableText size="xs" className="text-center text-white">
@@ -99,7 +99,7 @@ export function IconForm({
       {onRemoveIcon && url ? (
         <Tooltip content="Remove Icon">
           <Button
-            className="opacity-0 group-hover:pointer-events-auto group-hover:opacity-100"
+            className="opacity-0 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100 motion-reduce:transition-none"
             variant="destructive"
             size="sm"
             style={{zIndex: 5}}

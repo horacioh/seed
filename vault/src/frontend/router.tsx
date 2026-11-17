@@ -5,6 +5,7 @@ import {Divider} from './components/Divider'
 import {ErrorMessage} from './components/ErrorMessage'
 import {Header} from './components/Header'
 import {PasswordInput} from './components/PasswordInput'
+import {Spinner} from './components/Spinner'
 import {Button} from './components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from './components/ui/card'
 import * as navigation from './navigation'
@@ -99,13 +100,15 @@ function LockedView() {
   return (
     <Card className="mx-auto max-w-lg">
       <CardHeader>
-        <CardTitle className="text-left text-xl">Unlock your vault</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          Unlock your vault
+        </CardTitle>
         <CardDescription className="text-left">
           {session?.email ? `Signed in as ${session.email}. ` : ''}Verify it&apos;s you to continue.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ErrorMessage message={error} />
+        <ErrorMessage id="unlock-error" message={error} />
 
         {showPasskey && (
           <Button
@@ -128,6 +131,7 @@ function LockedView() {
               <input
                 type="text"
                 name="username"
+                aria-label="Email address"
                 value={session?.email ?? ''}
                 autoComplete="username"
                 className="pointer-events-none absolute m-0 h-0 w-0 opacity-0"
@@ -141,7 +145,7 @@ function LockedView() {
                 value={password}
                 onChange={actions.setPassword}
                 autoComplete="current-password"
-                autoFocus={!showPasskey}
+                describedBy={error ? 'unlock-error' : undefined}
               />
 
               <div className="text-center">
@@ -206,7 +210,7 @@ function EnsureUnlocked() {
   }, [unlocked, returnToPath, actions])
 
   if (!sessionChecked) {
-    return null // Or a loading spinner
+    return <Spinner label="Checking your session" />
   }
 
   if (!session?.authenticated) {
@@ -254,8 +258,19 @@ const VAULT_REFRESH_POLL_MS = 15_000
 /** Application shell shared across all vault routes. */
 export function RootLayout() {
   const actions = useActions()
-  const {decryptedDEK, inviteOnly, sessionChecked} = useAppState()
+  const location = useLocation()
+  const appState = useAppState()
+  const {decryptedDEK, inviteOnly, sessionChecked} = appState
   const isUnlocked = !!decryptedDEK
+  const pageStep = [
+    location.pathname,
+    location.hash,
+    appState.sessionChecked,
+    appState.session?.authenticated,
+    isUnlocked,
+    appState.inviteStatus,
+    appState.vaultConnectionRequest?.siteName,
+  ].join(':')
 
   useEffect(() => {
     void actions.checkSession().catch((error) => {
@@ -278,6 +293,14 @@ export function RootLayout() {
     }, VAULT_REFRESH_POLL_MS)
     return () => window.clearInterval(intervalId)
   }, [isUnlocked, actions])
+
+  useEffect(() => {
+    const heading = document.querySelector<HTMLElement>('main h1')
+    const title = heading?.textContent?.trim()
+    if (!heading || !title) return
+    document.title = `${title} – Hypermedia Identity`
+    heading.focus()
+  }, [pageStep])
 
   if (inviteOnly && !sessionChecked) return <SignInLoading />
 
@@ -337,7 +360,7 @@ function RootView({returnedFromSiteSignIn}: {returnedFromSiteSignIn: boolean}) {
   } = useAppState()
 
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
 
   // A vault session (locked or unlocked) is shown as it is on any vault. Only a
@@ -411,7 +434,7 @@ function ConnectRouteView() {
   }
 
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
 
   if (!vaultConnectionRequest && !hasVaultConnectionFragment()) {

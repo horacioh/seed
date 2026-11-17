@@ -41,10 +41,7 @@ export function AutoUpdater() {
     return null
 
   return (
-    <div
-      className="absolute right-5 bottom-5 z-40 flex min-h-[100px] min-w-[360px] flex-col gap-4 rounded bg-white p-4 shadow-md dark:bg-black"
-      role="status"
-    >
+    <output className="fixed right-5 bottom-5 z-40 flex min-h-[100px] min-w-[360px] flex-col gap-4 rounded bg-white p-4 shadow-md dark:bg-black">
       <SizableText>{getUpdateStatusLabel(updateStatus)}</SizableText>
       {updateStatus.type === 'update-available' ? (
         <div className="flex gap-2">
@@ -86,7 +83,7 @@ export function AutoUpdater() {
           <Progress key="download-progress" value={updateStatus.progress} />
         </div>
       ) : null}
-    </div>
+    </output>
   )
 }
 

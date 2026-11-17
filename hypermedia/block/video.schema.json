@@ -63,14 +63,26 @@
               "type": "hm://hyper.media/boolean"
             },
             "description": "Play without sound."
+          },
+          "captions": {
+            "value": {
+              "type": "hm://hyper.media/url"
+            },
+            "description": "WebVTT captions file for the video — an ipfs:// link."
+          },
+          "captionsLang": {
+            "value": {
+              "type": "hm://hyper.media/string"
+            },
+            "description": "Language of the captions as a BCP 47 tag."
           }
         },
         "values": {
           "type": "hm://hyper.media/any"
         }
       },
-      "description": "Playback settings and parent-layout attributes."
+      "description": "Playback, captions and parent-layout attributes."
     }
   },
-  "description": "A video from an `ipfs://` file or a supported web video URL, with playback settings."
+  "description": "A video from an `ipfs://` file or a supported web video URL, with playback and captions settings."
 }

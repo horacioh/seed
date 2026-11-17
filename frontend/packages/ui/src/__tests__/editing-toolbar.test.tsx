@@ -30,6 +30,7 @@ vi.mock('@shm/shared/models/use-document-machine', () => ({
         draftId: selectMock.draftId,
         draftHidden: selectMock.draftHidden,
         metadata: selectMock.metadata,
+        blocks: [],
       },
     }
     return selector(snapshot)
@@ -39,6 +40,7 @@ vi.mock('@shm/shared/models/use-document-machine', () => ({
   selectDraftId: (s: any) => s.context.draftId,
   selectDraftHidden: (s: any) => s.context.draftHidden,
   selectMetadata: (s: any) => s.context.metadata,
+  selectBlocks: (s: any) => s.context.blocks,
   selectSaveIndicatorStatus: () => 'hidden',
   selectRenameState: () => selectMock.renameState,
   selectRenameError: () => selectMock.renameError,

@@ -1,8 +1,5 @@
 import nodemailer from 'nodemailer'
-import {
-  createLoginConfirmationEmail,
-  LoginConfirmationEmailProps,
-} from './email-confirmation'
+import {createLoginConfirmationEmail, LoginConfirmationEmailProps} from './email-confirmation'
 import {createNotificationsEmail, FullNotification} from './notifier'
 
 const transporter = nodemailer.createTransport({
@@ -26,9 +23,7 @@ export async function sendEmail(
   }
   // console.log(`Sending email to ${to} with subject ${subject}`)
 
-  const from = senderLabel
-    ? `${senderLabel} <${process.env.NOTIFY_SMTP_USER}>`
-    : process.env.NOTIFY_SENDER
+  const from = senderLabel ? `${senderLabel} <${process.env.NOTIFY_SMTP_USER}>` : process.env.NOTIFY_SENDER
 
   const info = await transporter.sendMail({
     from,
@@ -50,18 +45,10 @@ export const sendNotificationsEmail = async (
   if (!result) return
 
   const {subject, text, html, subscriberNames} = result
-  await sendEmail(
-    email,
-    subject,
-    {text, html},
-    `Hypermedia Updates for ${Array.from(subscriberNames).join(', ')}`,
-  )
+  await sendEmail(email, subject, {text, html}, `Hypermedia Updates for ${Array.from(subscriberNames).join(', ')}`)
 }
 
-export const sendLoginConfirmationEmail = async (
-  email: string,
-  props: LoginConfirmationEmailProps,
-) => {
+export const sendLoginConfirmationEmail = async (email: string, props: LoginConfirmationEmailProps) => {
   const {subject, text, html} = await createLoginConfirmationEmail(props)
   await sendEmail(email, subject, {text, html}, 'Seed Hypermedia')
 }

@@ -57,6 +57,7 @@ vi.mock('./blocknote/core', () => ({
 }))
 
 vi.mock('./blocknote/react', () => ({
+  Toolbar: ({children, ...props}: {children?: ReactNode; [key: string]: unknown}) => <div {...props}>{children}</div>,
   useEditorContentChange: vi.fn(),
   useEditorSelectionChange: vi.fn(),
 }))
@@ -80,11 +81,11 @@ vi.mock('./draft-actions-context', () => ({
 }))
 
 vi.mock('./hm-toolbar-link-button', () => ({
-  HMLinkToolbarButton: () => <button data-testid="link-button" />,
+  HMLinkToolbarButton: () => <button aria-label="Link" data-testid="link-button" />,
 }))
 
 vi.mock('./mobile-link-toolbar-button', () => ({
-  MobileLinkToolbarButton: () => <button data-testid="mobile-link-button" />,
+  MobileLinkToolbarButton: () => <button aria-label="Link" data-testid="mobile-link-button" />,
 }))
 
 vi.mock('./mobile-text-marker-dialog', () => ({

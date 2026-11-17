@@ -1,6 +1,21 @@
 import {ScrollArea} from '@shm/ui/components/scroll-area'
 import {HTMLAttributes} from 'react'
 
+/** Provides the single semantic main landmark and focus target for desktop routes. */
+export function MainContent({children, className, ...props}: HTMLAttributes<HTMLElement>) {
+  return (
+    <main
+      id="main-content"
+      tabIndex={-1}
+      data-a11y-region="main"
+      className={`flex h-full min-h-0 w-full flex-1 ${className || ''}`}
+      {...props}
+    >
+      {children}
+    </main>
+  )
+}
+
 export function MainWrapper({
   children,
   scrollable = false,

@@ -166,11 +166,14 @@ export function ContentEmbed({
         className={collapsed ? 'leading-5' : undefined}
       />
       {isStaleVersion ? (
-        <Tooltip content="This comment has been edited since it was embedded." asChild>
-          <span tabIndex={0} aria-label="Older comment version">
-            <AlertCircle className="size-3" />
-          </span>
-        </Tooltip>
+        <>
+          <Tooltip content="This comment has been edited since it was embedded." asChild>
+            <span aria-hidden="true">
+              <AlertCircle className="size-3" />
+            </span>
+          </Tooltip>
+          <span className="sr-only">This comment has been edited since it was embedded.</span>
+        </>
       ) : null}
     </span>
   ) : undefined
@@ -199,9 +202,9 @@ export function ContentEmbed({
         {!collapsed && author ? <div className="mb-1 flex items-center">{author}</div> : null}
         {!id.blockRef && title ? <div className="mb-1 font-sans text-sm font-semibold">{title}</div> : null}
         {id.blockRef && !selectedBlock ? (
-          <p className="text-muted-foreground text-sm" role="status">
+          <output className="text-muted-foreground block text-sm">
             The referenced block was not found in this version.
-          </p>
+          </output>
         ) : media?.type === 'Image' && collapsed ? (
           <img
             src={mediaUrl}

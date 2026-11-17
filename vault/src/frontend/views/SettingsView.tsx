@@ -1,7 +1,6 @@
 import {Alert, AlertDescription} from '@/frontend/components/ui/alert'
 import {useActions, useAppState} from '@/frontend/store'
 import {VaultSecuritySettings} from '@shm/ui/components/vault-security-settings'
-import {SizableText} from '@shm/ui/text'
 
 /**
  * Vault-level settings view for managing authentication credentials and account settings.
@@ -16,9 +15,9 @@ export function SettingsView() {
 
   return (
     <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-6 p-6">
-      <SizableText size="2xl" weight="bold">
+      <h1 tabIndex={-1} className="text-2xl font-bold outline-none focus:outline-none focus-visible:outline-none">
         Identity Settings
-      </SizableText>
+      </h1>
 
       <VaultSecuritySettings
         email={{

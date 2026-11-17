@@ -9,7 +9,7 @@ import {cn} from './utils'
 
 export interface InlineDraftCardProps {
   draft: HMListedDraft
-  autoFocus?: boolean
+  focusOnMount?: boolean
   banner?: boolean
   onOpenDraft: (draftId: string) => void
   onDeleteDraft: (draftId: string) => void
@@ -19,7 +19,7 @@ export interface InlineDraftCardProps {
 
 export function InlineDraftCard({
   draft,
-  autoFocus,
+  focusOnMount,
   banner,
   onOpenDraft,
   onDeleteDraft,
@@ -32,13 +32,13 @@ export function InlineDraftCard({
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
-    if (!autoFocus || !containerRef.current) return
+    if (!focusOnMount || !containerRef.current) return
     containerRef.current.scrollIntoView({behavior: 'smooth', block: 'nearest'})
     const timer = setTimeout(() => {
       inputRef.current?.focus()
     }, 300)
     return () => clearTimeout(timer)
-  }, [autoFocus])
+  }, [focusOnMount])
 
   // Sync external changes
   useEffect(() => {
@@ -101,16 +101,18 @@ export function InlineDraftCard({
   return (
     <div
       ref={containerRef}
-      onClick={(e) => {
-        e.stopPropagation()
-        openDraft()
-      }}
       className={cn(
-        '@container flex min-h-[200px] flex-1 cursor-pointer overflow-hidden rounded-lg border-2 border-dashed border-yellow-400/50 bg-white shadow-sm transition-colors duration-300 dark:bg-black',
+        '@container relative flex min-h-[200px] flex-1 cursor-pointer overflow-hidden rounded-lg border-2 border-dashed border-yellow-400/50 bg-white shadow-sm transition-colors duration-300 dark:bg-black',
         banner && 'rounded-xl md:min-h-[240px] lg:min-h-[280px]',
       )}
     >
-      <div className="flex max-w-full flex-1 flex-col @md:flex-row">
+      <button
+        type="button"
+        aria-label={`Open draft ${title || 'Untitled document'}`}
+        className="absolute inset-0 z-0 appearance-none border-0 bg-transparent p-0 text-left"
+        onClick={openDraft}
+      />
+      <div className="pointer-events-none relative z-10 flex max-w-full flex-1 flex-col @md:flex-row">
         {/* Image placeholder */}
         <div
           className={cn(
@@ -129,11 +131,10 @@ export function InlineDraftCard({
                 type="text"
                 value={title}
                 onChange={handleTitleChange}
-                onKeyDown={handleKeyDown}
-                onClick={(e) => e.stopPropagation()}
+                onKeyDownCapture={handleKeyDown}
                 placeholder="Untitled document"
                 className={cn(
-                  'text-foreground block w-full border-none bg-transparent font-sans leading-tight font-bold outline-none placeholder:text-gray-400',
+                  'text-foreground pointer-events-auto block w-full border-none bg-transparent font-sans leading-tight font-bold outline-none placeholder:text-gray-400',
                   banner ? 'text-2xl' : 'text-lg',
                 )}
               />
@@ -142,7 +143,7 @@ export function InlineDraftCard({
               <DraftBadge />
             </div>
           </div>
-          <div className="flex items-center justify-end py-3 pr-2 pl-4" onClick={(e) => e.stopPropagation()}>
+          <div className="pointer-events-auto relative z-10 flex items-center justify-end py-3 pr-2 pl-4">
             <OptionsDropdown
               align="end"
               button={

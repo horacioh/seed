@@ -38,7 +38,7 @@ export const DefaultHyperlinkToolbar = (
   }
 
   return (
-    <Toolbar>
+    <Toolbar aria-label="Link actions">
       <ToolbarButton mainTooltip="Edit" isSelected={false} onClick={() => setIsEditing(true)}>
         Edit Link
       </ToolbarButton>

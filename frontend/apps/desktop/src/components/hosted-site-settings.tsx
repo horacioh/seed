@@ -223,9 +223,10 @@ export function HostedSiteSettings({siteId, siteUrl}: {siteId: UnpackedHypermedi
               </DialogHeader>
               {action.type === 'rename' ? (
                 <>
-                  <label className="flex flex-col gap-2 text-sm font-medium">
+                  <label htmlFor="hosted-site-subdomain" className="flex flex-col gap-2 text-sm font-medium">
                     New subdomain
                     <Input
+                      id="hosted-site-subdomain"
                       value={name}
                       disabled={busy || !!movedUrl || pendingMoves.some((move) => move.id === action.site.id)}
                       required
@@ -248,9 +249,10 @@ export function HostedSiteSettings({siteId, siteUrl}: {siteId: UnpackedHypermedi
                 </>
               ) : (
                 <>
-                  <label className="flex flex-col gap-2 text-sm font-medium">
+                  <label htmlFor="hosted-site-recipient-email" className="flex flex-col gap-2 text-sm font-medium">
                     Recipient email
                     <Input
+                      id="hosted-site-recipient-email"
                       type="email"
                       value={email}
                       required

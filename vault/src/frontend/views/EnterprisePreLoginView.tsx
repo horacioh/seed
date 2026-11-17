@@ -10,6 +10,9 @@ import {Input} from '@/frontend/components/ui/input'
 import {Label} from '@/frontend/components/ui/label'
 import {useActions, useAppState} from '@/frontend/store'
 
+/** Moves focus to a field when it mounts, as the user just opened the form it belongs to. */
+const focusOnMount = (element: HTMLElement | null) => element?.focus()
+
 /**
  * Login-first email entry for invitation-only enterprise vaults.
  * Attempts conditional mediation (passkey autofill) on mount so that users
@@ -138,7 +141,7 @@ export function EnterprisePreLoginView() {
               onBlur={() => setEmailTouched(true)}
               aria-invalid={showEmailError}
               className={showEmailError ? 'border-destructive focus-visible:border-destructive' : undefined}
-              autoFocus
+              ref={focusOnMount}
               autoComplete="username webauthn"
             />
             {showEmailError ? <p className="text-destructive text-sm">That doesn't look like a valid email</p> : null}

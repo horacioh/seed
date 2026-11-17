@@ -217,7 +217,12 @@ export function AccountSettingsView() {
                   window.open(`${host}/hm/${selected.principal}`, '_blank', 'noopener,noreferrer')
                 }}
               />
-              <h2 className="text-2xl font-semibold">{ACCOUNT_SETTINGS_TAB_LABELS[tab]}</h2>
+              <h1
+                tabIndex={-1}
+                className="text-2xl font-semibold outline-none focus:outline-none focus-visible:outline-none"
+              >
+                {ACCOUNT_SETTINGS_TAB_LABELS[tab]}
+              </h1>
               {tab === 'notifications' ? (
                 <AccountNotificationsSection
                   seed={selected.account.seed}
@@ -230,7 +235,9 @@ export function AccountSettingsView() {
             </div>
           ) : (
             <div className="text-muted-foreground flex h-full items-center justify-center p-8">
-              No account selected.
+              <h1 tabIndex={-1} className="outline-none focus:outline-none focus-visible:outline-none">
+                No account selected.
+              </h1>
             </div>
           )}
         </AccountSettingsLayout>

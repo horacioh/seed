@@ -17,6 +17,7 @@ export const HMIcon = memo(HMIconImpl, (prevProps, nextProps) => {
 
   if (prevProps.size !== nextProps.size) return false
   if (prevProps.className !== nextProps.className) return false
+  if (prevProps.alt !== nextProps.alt) return false
 
   // Direct comparison for name and icon props
   if (prevProps.name !== nextProps.name) return false

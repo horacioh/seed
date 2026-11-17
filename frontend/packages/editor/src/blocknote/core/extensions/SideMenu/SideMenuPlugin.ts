@@ -5,6 +5,10 @@ import {BaseUiElementState} from '../../shared/BaseUiElementTypes'
 import type {Block, BlockSchema} from '../Blocks/api/blockTypes'
 import {createBlockDragGuardPlugin, setupDragMonitor} from './pragmatic-dnd-bridge'
 
+type SideMenuPluginState = {
+  activeBlockId?: string
+}
+
 export type SideMenuState<BSchema extends BlockSchema> = BaseUiElementState & {
   block: Block<BSchema>
   lineHeight: string
@@ -13,10 +17,8 @@ export type SideMenuState<BSchema extends BlockSchema> = BaseUiElementState & {
 /**
  * PluginView that wires up the pragmatic drag-and-drop monitor for the editor.
  *
- * Selection state is NOT mirrored here: the side menu (block tools) derives its
- * visibility directly from the FullBlockSelection plugin in SideMenuPositioner,
- * the same single source that drives the selection outline — so the two can
- * never disagree.
+ * The side menu normally derives from FullBlockSelection; `activeBlockId` carries
+ * the explicit target when Alt-F10 opens it from the editor selection.
  */
 class SideMenuDragView<BSchema extends BlockSchema> implements PluginView {
   private monitorCleanup?: () => void
@@ -37,15 +39,25 @@ class SideMenuDragView<BSchema extends BlockSchema> implements PluginView {
   }
 }
 
-export const sideMenuPluginKey = new PluginKey('SideMenuPlugin')
+/** ProseMirror key for the side menu's active block state. */
+export const sideMenuPluginKey = new PluginKey<SideMenuPluginState>('SideMenuPlugin')
 
 export class SideMenuProsemirrorPlugin<BSchema extends BlockSchema> {
   public readonly plugin: Plugin
   public readonly blockDragGuardPlugin: Plugin
 
   constructor(editor: BlockNoteEditor<BSchema>) {
-    this.plugin = new Plugin({
+    this.plugin = new Plugin<SideMenuPluginState>({
       key: sideMenuPluginKey,
+      state: {
+        init: () => ({}),
+        apply: (transaction, previousState) => {
+          const activeBlockId = transaction.getMeta(sideMenuPluginKey) as string | undefined
+          if (activeBlockId) return {activeBlockId}
+          if (transaction.selectionSet || transaction.docChanged) return {}
+          return previousState
+        },
+      },
       view: (editorView) => new SideMenuDragView(editor, editorView),
     })
     this.blockDragGuardPlugin = createBlockDragGuardPlugin()

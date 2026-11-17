@@ -1,4 +1,5 @@
 import {getWindowTitle} from '@/hooks/route-breadcrumbs'
+import {getRouteLabel} from '@/utils/route-label'
 import {useDraft} from '@/models/accounts'
 import type {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {getDocumentTitle} from '@shm/shared/content'
@@ -43,11 +44,16 @@ export function WindowTitle() {
     : resource.data?.type === 'document'
       ? getDocumentTitle(resource.data.document) || undefined
       : undefined
-  const title = getWindowTitle(route, activeName)
+  const routeTitle = getWindowTitle(route, activeName)
+  const title = routeTitle === 'Seed' ? getRouteLabel(route) || routeTitle : routeTitle
 
   useEffect(() => {
     document.title = title
   }, [title])
 
-  return null
+  return (
+    <span className="sr-only" aria-live="polite" aria-atomic="true">
+      {title}
+    </span>
+  )
 }

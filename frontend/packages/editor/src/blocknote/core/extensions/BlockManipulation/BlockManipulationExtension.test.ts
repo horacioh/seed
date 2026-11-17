@@ -209,3 +209,62 @@ describe('BlockManipulationExtension embed clicks', () => {
     expect(openUrl).not.toHaveBeenCalled()
   })
 })
+
+describe('BlockManipulationExtension keyboard focus', () => {
+  it('focuses the toolbar and drag handle inside the current editor container', () => {
+    const firstEditorContainer = document.createElement('div')
+    const secondEditorContainer = document.createElement('div')
+    const firstEditorDom = document.createElement('div')
+    const secondEditorDom = document.createElement('div')
+    const firstToolbar = document.createElement('div')
+    const secondToolbar = document.createElement('div')
+    const firstToolbarButton = document.createElement('button')
+    const secondToolbarButton = document.createElement('button')
+    const firstDragHandle = document.createElement('div')
+    const secondDragHandle = document.createElement('div')
+    const firstDragButton = document.createElement('button')
+    const secondDragButton = document.createElement('button')
+    const showFormattingToolbar = vi.fn()
+
+    firstToolbar.setAttribute('role', 'toolbar')
+    secondToolbar.setAttribute('role', 'toolbar')
+    firstToolbar.append(firstToolbarButton)
+    secondToolbar.append(secondToolbarButton)
+    firstDragHandle.setAttribute('data-drag-handle', '')
+    secondDragHandle.setAttribute('data-drag-handle', '')
+    firstDragHandle.append(firstDragButton)
+    secondDragHandle.append(secondDragButton)
+    firstEditorContainer.append(firstEditorDom, firstToolbar, firstDragHandle)
+    secondEditorContainer.append(secondEditorDom, secondToolbar, secondDragHandle)
+    document.body.append(firstEditorContainer, secondEditorContainer)
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 0
+    })
+
+    try {
+      const textSelectionShortcuts = (BlockManipulationExtension as any).config.addKeyboardShortcuts.call({
+        editor: {state: {selection: {empty: false}}, view: {dom: secondEditorDom}},
+        options: {showFormattingToolbar},
+      })
+
+      textSelectionShortcuts['Alt-F10']()
+      expect(showFormattingToolbar).toHaveBeenCalledOnce()
+      expect(document.activeElement).toBe(secondToolbarButton)
+
+      const {view} = createView({selectedEmbed: true})
+      ;(view as any).dom = secondEditorDom
+      const blockSelectionShortcuts = (BlockManipulationExtension as any).config.addKeyboardShortcuts.call({
+        editor: {state: view.state, view},
+        options: {},
+      })
+
+      blockSelectionShortcuts['Alt-F10']()
+      expect(document.activeElement).toBe(secondDragButton)
+    } finally {
+      firstEditorContainer.remove()
+      secondEditorContainer.remove()
+      vi.unstubAllGlobals()
+    }
+  })
+})

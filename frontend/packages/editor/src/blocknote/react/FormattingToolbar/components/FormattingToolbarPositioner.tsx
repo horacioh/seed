@@ -52,10 +52,11 @@ export const FormattingToolbarPositioner = <BSchema extends BlockSchema = Defaul
 
   return (
     <Tippy
-      appendTo={document.body}
+      appendTo={props.editor.domElement.parentElement ?? document.body}
       content={formattingToolbarElement}
       getReferenceClientRect={getReferenceClientRect}
       interactive={true}
+      role="presentation"
       visible={show}
       animation={'fade'}
       placement={'top'}

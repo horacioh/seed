@@ -33,7 +33,7 @@ import {queryKeys} from '@shm/shared/models/query-keys'
 import {queryAccount} from '@shm/shared/models/queries'
 import {queryClient, useQueryClient} from '@shm/shared/models/query-client'
 import {useUniversalAppContext, useUniversalClient} from '@shm/shared/routing'
-import {Button} from '@shm/ui/button'
+import {Button, buttonVariants} from '@shm/ui/button'
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -54,7 +54,7 @@ import {SizableText} from '@shm/ui/text'
 import {toast} from '@shm/ui/toast'
 import {useAppDialog} from '@shm/ui/universal-dialog'
 import {Camera, ChevronDown, ChevronRight, Copy, ExternalLink, FileKey, Plus, RefreshCw, Trash2} from 'lucide-react'
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useId, useRef, useState} from 'react'
 import {generateAgentName} from './agent-name'
 import {DEFAULT_AGENT_TOOLS} from './agent-tools'
 import {ProviderModelSelect} from './provider-model-select'
@@ -316,6 +316,7 @@ function AddModelProviderForm({
   onCancel?: () => void
   submitLabel?: string
 }) {
+  const fieldId = useId()
   const activeQueryClient = useQueryClient()
   const saveProvider = useSaveModelProvider(serverUrl, selectedAccountId)
   const health = useAgentServerHealth(serverUrl)
@@ -377,12 +378,12 @@ function AddModelProviderForm({
         void handleSave()
       }}
     >
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-provider`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Provider
         </SizableText>
         <Select value={type} onValueChange={(value) => setType(value as ModelProviderType)}>
-          <SelectTrigger>
+          <SelectTrigger id={`${fieldId}-provider`}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -397,47 +398,72 @@ function AddModelProviderForm({
           </SelectContent>
         </Select>
       </label>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-provider-label`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Provider Label
         </SizableText>
-        <Input value={name} onChange={(event) => setName(event.target.value)} placeholder={metadata.label} />
+        <Input
+          id={`${fieldId}-provider-label`}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder={metadata.label}
+        />
       </label>
       {metadata.subscription && subscriptionAvailable ? (
         <div className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             Authentication
           </SizableText>
-          <div className="border-border flex gap-1 self-start rounded-lg border p-1" role="radiogroup">
-            <Button
-              type="button"
-              size="sm"
-              variant={authMode === 'api-key' ? 'secondary' : 'ghost'}
-              aria-checked={authMode === 'api-key'}
-              role="radio"
-              onClick={() => setAuthMode('api-key')}
-            >
-              API key
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={authMode === 'subscription' ? 'secondary' : 'ghost'}
-              aria-checked={authMode === 'subscription'}
-              role="radio"
-              onClick={() => setAuthMode('subscription')}
-            >
-              {metadata.subscription.label}
-            </Button>
-          </div>
+          <fieldset className="border-border m-0 flex gap-1 self-start rounded-lg border p-1">
+            <legend className="sr-only">Authentication</legend>
+            <label>
+              <input
+                type="radio"
+                name={`${fieldId}-auth-mode`}
+                value="api-key"
+                checked={authMode === 'api-key'}
+                onChange={() => setAuthMode('api-key')}
+                className="peer sr-only"
+              />
+              <span
+                className={buttonVariants({
+                  size: 'sm',
+                  variant: authMode === 'api-key' ? 'secondary' : 'ghost',
+                  className: 'peer-focus-visible:ring-ring cursor-pointer peer-focus-visible:ring-2',
+                })}
+              >
+                API key
+              </span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name={`${fieldId}-auth-mode`}
+                value="subscription"
+                checked={authMode === 'subscription'}
+                onChange={() => setAuthMode('subscription')}
+                className="peer sr-only"
+              />
+              <span
+                className={buttonVariants({
+                  size: 'sm',
+                  variant: authMode === 'subscription' ? 'secondary' : 'ghost',
+                  className: 'peer-focus-visible:ring-ring cursor-pointer peer-focus-visible:ring-2',
+                })}
+              >
+                {metadata.subscription.label}
+              </span>
+            </label>
+          </fieldset>
         </div>
       ) : null}
       {!subscriptionMode && metadata.showBaseUrlField ? (
-        <label className="flex flex-col gap-1">
+        <label htmlFor={`${fieldId}-base-url`} className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             Base URL
           </SizableText>
           <Input
+            id={`${fieldId}-base-url`}
             value={baseUrl}
             onChange={(event) => setBaseUrl(event.target.value)}
             placeholder={metadata.defaultBaseUrl || 'https://my-llm.example.com/v1'}
@@ -453,11 +479,16 @@ function AddModelProviderForm({
           onConnected={setOauthSecretName}
         />
       ) : (
-        <label className="flex flex-col gap-1">
+        <label htmlFor={`${fieldId}-api-key`} className="flex flex-col gap-1">
           <SizableText size="sm" weight="bold">
             {metadata.requiresApiKey ? 'API key' : 'API key (optional)'}
           </SizableText>
-          <Input type="password" value={apiKey} onChange={(event) => setApiKey(event.target.value)} />
+          <Input
+            id={`${fieldId}-api-key`}
+            type="password"
+            value={apiKey}
+            onChange={(event) => setApiKey(event.target.value)}
+          />
         </label>
       )}
       <div className="flex justify-end gap-2">
@@ -716,7 +747,6 @@ function NewAgentAccountDialog({
         Create a new server-side HM account key. You can rename it and set up its profile afterward.
       </DialogDescription>
       <Input
-        autoFocus
         value={name}
         onChange={(event) => setName(event.target.value)}
         placeholder="Account name"
@@ -822,7 +852,6 @@ export function EditAgentAccountDialog({
           )}
         </label>
         <Input
-          autoFocus
           value={label}
           onChange={(event) => setLabel(event.target.value)}
           placeholder="Account name"
@@ -1031,6 +1060,7 @@ export function CreateAgentDialog({
   }
   onClose: () => void
 }) {
+  const fieldId = useId()
   const preparedMount = useRef<{to: UnpackedHypermediaId; mount: PreparedAgentMount} | null>(null)
   // A published mount document names its server; a late-resolving default must not move it.
   const {serverUrl: selectedServerUrl, setServerUrl: setSelectedServerUrl} = useCreateServerChoice(
@@ -1286,11 +1316,12 @@ export function CreateAgentDialog({
         </DialogDescription>
       </div>
       {serverSelector}
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-name`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
         <Input
+          id={`${fieldId}-name`}
           ref={nameInput}
           value={name}
           disabled={!!preparedMount.current}
@@ -1299,11 +1330,12 @@ export function CreateAgentDialog({
           onChange={(event) => setName(event.target.value)}
         />
       </label>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={`${fieldId}-model`} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Model
         </SizableText>
         <ProviderModelSelect
+          id={`${fieldId}-model`}
           serverUrl={selectedServerUrl}
           accountUid={input.selectedAccountId}
           value={{provider: providerName, model}}
@@ -1379,6 +1411,7 @@ export function EditAgentNameDialog({
   input: {currentName: string; accountStatus: AgentAccountRenameStatus; onRename: (name: string) => Promise<void>}
   onClose: () => void
 }) {
+  const nameId = useId()
   const [name, setName] = useState(input.currentName)
   const [saving, setSaving] = useState(false)
 
@@ -1419,11 +1452,17 @@ export function EditAgentNameDialog({
               : 'This agent has no linked account to rename.'}
         </DialogDescription>
       </div>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={nameId} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
-        <Input autoFocus value={name} onChange={(event) => setName(event.target.value)} placeholder="Agent" />
+        <Input
+          id={nameId}
+          focusOnMount
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Agent"
+        />
       </label>
       <div className="flex justify-end gap-2">
         <Button type="button" variant="ghost" onClick={onClose}>

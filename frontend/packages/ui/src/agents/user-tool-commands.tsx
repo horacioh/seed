@@ -14,6 +14,9 @@ import {
 import type {AgentsSlashMenuItem} from './platform'
 import {getToolIcon} from './tool-icons'
 
+/** Moves focus to a field when it mounts, as the user just opened the form it belongs to. */
+const focusOnMount = (element: HTMLElement | null) => element?.focus()
+
 const TOOL_GROUP = 'Run a tool'
 
 /**
@@ -166,6 +169,7 @@ export function useUserToolCommands({
   const form =
     selected === null || !canRun ? null : (
       <ToolFormBlockedContext.Provider value={blockedReason ?? null}>
+        {/* oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Escape closes the form from any field inside it */}
         <div
           className="border-border bg-background mx-3 mt-2 rounded-md border p-2"
           onKeyDown={(event) => {
@@ -264,7 +268,7 @@ function ReadForm({busy, onClose, onRun}: {busy: boolean; onClose: () => void; o
       onRun={() => onRun({address: address.trim()})}
     >
       <input
-        autoFocus
+        ref={focusOnMount}
         className={fieldClass}
         placeholder="~/memory/notes.md · hm://… · https://…"
         value={address}
@@ -293,7 +297,7 @@ function WriteForm({busy, onClose, onRun}: {busy: boolean; onClose: () => void; 
   return (
     <FormShell title="Write" busy={busy} canRun={!!address.trim()} onClose={onClose} onRun={submit}>
       <input
-        autoFocus
+        ref={focusOnMount}
         className={fieldClass}
         placeholder="~/memory/notes.md · hm://account/path"
         value={address}
@@ -354,7 +358,7 @@ function CallableForm({
         }}
       >
         <textarea
-          autoFocus
+          ref={focusOnMount}
           className={`${fieldClass} min-h-24`}
           value={rawJson}
           onChange={(event) => setRawJson(event.target.value)}
@@ -427,7 +431,7 @@ function CallableForm({
             </select>
           ) : (
             <input
-              autoFocus={index === 0}
+              ref={index === 0 ? focusOnMount : undefined}
               className={fieldClass}
               placeholder={prop.description?.slice(0, 60)}
               value={String(values[key] ?? '')}

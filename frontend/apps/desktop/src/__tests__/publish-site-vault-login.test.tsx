@@ -52,7 +52,7 @@ vi.mock('@/models/host', () => ({
 vi.mock('@shm/ui/components/dialog', () => ({
   DialogHeader: (props: any) => <div {...props} />,
   DialogFooter: (props: any) => <div {...props} />,
-  DialogTitle: (props: any) => <h2 {...props} />,
+  DialogTitle: ({children, ...props}: any) => <h2 {...props}>{children ?? 'Dialog title'}</h2>,
   DialogDescription: (props: any) => <p {...props} />,
 }))
 

@@ -1,5 +1,5 @@
 import Tippy from '@tippyjs/react'
-import {FC, useEffect, useMemo, useRef, useState} from 'react'
+import {FC, useEffect, useId, useMemo, useRef, useState} from 'react'
 import {
   BlockNoteEditor,
   BlockSchema,
@@ -15,15 +15,18 @@ export type SlashMenuProps<BSchema extends BlockSchema = DefaultBlockSchema> = P
   SlashMenuProsemirrorPlugin<BSchema, any>,
   'itemCallback'
 > &
-  Pick<SuggestionsMenuState<ReactSlashMenuItem<BSchema>>, 'filteredItems' | 'keyboardHoveredItemIndex'>
+  Pick<SuggestionsMenuState<ReactSlashMenuItem<BSchema>>, 'filteredItems' | 'keyboardHoveredItemIndex'> & {
+    listboxId: string
+  }
 
 export const SlashMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSchema>(props: {
   editor: BlockNoteEditor<BSchema>
   slashMenu?: FC<SlashMenuProps<BSchema>>
 }) => {
   const [show, setShow] = useState<boolean>(false)
-  const [filteredItems, setFilteredItems] = useState<ReactSlashMenuItem<BSchema>[]>()
+  const [filteredItems, setFilteredItems] = useState<ReactSlashMenuItem<BSchema>[]>([])
   const [keyboardHoveredItemIndex, setKeyboardHoveredItemIndex] = useState<number>()
+  const listboxId = `slash-menu-${useId().replace(/:/g, '')}`
   const scroller = useRef<HTMLElement | null>(null)
 
   const referencePos = useRef<DOMRect>()
@@ -42,6 +45,33 @@ export const SlashMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSc
       referencePos.current = slashMenuState.referencePos
     })
   }, [props.editor])
+
+  useEffect(() => {
+    const element = props.editor.domElement
+    const activeItem = keyboardHoveredItemIndex === undefined ? undefined : filteredItems[keyboardHoveredItemIndex]
+    const activeId = show && activeItem ? `${listboxId}-option-${encodeURIComponent(activeItem.name)}` : ''
+    if (show) {
+      element.setAttribute('role', 'combobox')
+      element.removeAttribute('aria-multiline')
+      element.setAttribute('aria-controls', listboxId)
+      element.setAttribute('aria-expanded', 'true')
+      if (activeId) element.setAttribute('aria-activedescendant', activeId)
+      else element.removeAttribute('aria-activedescendant')
+    } else {
+      element.setAttribute('role', 'textbox')
+      element.setAttribute('aria-multiline', 'true')
+      element.removeAttribute('aria-controls')
+      element.removeAttribute('aria-expanded')
+      element.removeAttribute('aria-activedescendant')
+    }
+    return () => {
+      element.setAttribute('role', 'textbox')
+      element.setAttribute('aria-multiline', 'true')
+      element.removeAttribute('aria-controls')
+      element.removeAttribute('aria-expanded')
+      element.removeAttribute('aria-activedescendant')
+    }
+  }, [filteredItems, keyboardHoveredItemIndex, listboxId, props.editor, show])
 
   const getReferenceClientRect = useMemo(
     () => {
@@ -107,8 +137,12 @@ export const SlashMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSc
 
     return (
       <SlashMenu
+        listboxId={listboxId}
         filteredItems={filteredItems}
-        itemCallback={(item) => props.editor.slashMenu!.itemCallback(item)}
+        itemCallback={(item) => {
+          props.editor.slashMenu!.itemCallback(item)
+          props.editor.announceAccessibilityMessage(`Inserted ${item.name}`)
+        }}
         keyboardHoveredItemIndex={keyboardHoveredItemIndex}
       />
     )
@@ -116,16 +150,11 @@ export const SlashMenuPositioner = <BSchema extends BlockSchema = DefaultBlockSc
 
   return (
     <Tippy
-      // Always append to document.body so the popup escapes any container
-      // stacking context.
-      appendTo={document.body}
-      content={
-        <div className="max-h-[50vh] w-[90vw] overflow-y-auto sm:max-h-none sm:w-auto sm:overflow-visible">
-          {slashMenuElement}
-        </div>
-      }
+      appendTo={props.editor.domElement.parentElement ?? document.body}
+      content={<div className="w-[90vw] sm:w-auto">{slashMenuElement}</div>}
       getReferenceClientRect={getReferenceClientRect}
       interactive={true}
+      role="presentation"
       visible={show}
       animation={'fade'}
       placement="auto"

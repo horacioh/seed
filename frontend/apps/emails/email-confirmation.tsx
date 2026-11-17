@@ -2,7 +2,7 @@ import {Mjml, MjmlColumn, MjmlPreview, MjmlSection, MjmlText, MjmlTitle} from '@
 import {EmailFooter} from './components/EmailFooter'
 import {EmailHeader} from './components/EmailHeader'
 import {EmailBody, EmailButton, emailTheme} from './components/EmailLayout'
-import {EmailHeadDefaults, renderReactToMjml} from './notifier'
+import {EMAIL_HEADING_STYLE, EMAIL_ROOT_ATTRIBUTES, EmailHeadDefaults, renderReactToMjml} from './notifier'
 
 export type LoginConfirmationEmailProps = {
   loginUrl: string
@@ -25,7 +25,7 @@ If you don't recognise this activity, please change your password immediately.
 This link will expire in 15 minutes.`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>A new sign-in was detected on your Seed Hypermedia account</MjmlPreview>
@@ -36,7 +36,7 @@ This link will expire in 15 minutes.`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0 0 16px">
-              New sign-in to your account
+              <h1 style={EMAIL_HEADING_STYLE}>New sign-in to your account</h1>
             </MjmlText>
             <MjmlText fontSize="16px" lineHeight="1.5" color={emailTheme.body} padding="0 0 4px">
               {greeting}

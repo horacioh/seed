@@ -561,12 +561,6 @@ function QueryBlockToolbar({
     <div
       data-query-block-toolbar
       className="border-border bg-muted/30 flex min-w-0 flex-col gap-3 border-b px-2 py-3 @sm/collection:px-4 @3xl/collection:flex-row @3xl/collection:items-center"
-      onMouseDown={(event) => {
-        // Let the popover open before its trigger moves as search loses focus.
-        if (searchExpanded && (event.target as HTMLElement).closest('button[aria-haspopup="dialog"]')) {
-          event.preventDefault()
-        }
-      }}
     >
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <div
@@ -581,7 +575,7 @@ function QueryBlockToolbar({
               <Popover open={mentionOpen}>
                 <PopoverAnchor>
                   <Input
-                    autoFocus
+                    focusOnMount
                     value={searchSnapshot.context.draft}
                     onChangeText={(value) => searchActor.send({type: 'input.changed', value})}
                     onKeyDown={(event) => {
@@ -609,6 +603,7 @@ function QueryBlockToolbar({
                       if (next?.closest('[data-hm-search-results]')) return
                       searchActor.send({type: 'input.blurred'})
                     }}
+                    // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Mention search keeps active-descendant focus in the text input
                     role="combobox"
                     aria-autocomplete="list"
                     aria-expanded={mentionOpen}
@@ -678,6 +673,7 @@ function QueryBlockToolbar({
           )}
         </div>
         <FilterPopover
+          preserveSearchFocus={searchExpanded}
           descriptors={descriptors}
           items={items}
           context={context}
@@ -687,12 +683,14 @@ function QueryBlockToolbar({
           filterOptionsComplete={filterOptionsComplete}
         />
         <SortPopover
+          preserveSearchFocus={searchExpanded}
           descriptors={getQuerySortColumns(descriptors, columnVisibility)}
           sorting={sorting}
           setSorting={setSorting}
           allowActivitySort={allowActivitySort}
         />
         <AttributesPopover
+          preserveSearchFocus={searchExpanded}
           descriptors={descriptors}
           columnOrder={columnOrder}
           columnVisibility={columnVisibility}
@@ -725,6 +723,7 @@ function QueryBlockToolbar({
 }
 
 function FilterPopover({
+  preserveSearchFocus,
   descriptors,
   items,
   context,
@@ -733,6 +732,7 @@ function FilterPopover({
   filterOptions,
   filterOptionsComplete,
 }: {
+  preserveSearchFocus: boolean
   descriptors: QueryTableColumn[]
   items: HMDocumentInfo[]
   context: QueryTableValueContext
@@ -755,6 +755,9 @@ function FilterPopover({
             size="icon"
             aria-label={filterLabel}
             className={cn('relative', appliedCount > 0 && 'border-primary bg-accent text-primary')}
+            onMouseDown={(event) => {
+              if (preserveSearchFocus) event.preventDefault()
+            }}
           >
             <Filter className="size-4" />
             {appliedCount ? (
@@ -988,9 +991,9 @@ function FilterValuePicker({
           ))}
         </Ariakit.ComboboxList>
         {!matchingOptions.length ? (
-          <p role="status" className="text-muted-foreground p-2 text-sm">
+          <output className="text-muted-foreground p-2 text-sm">
             {options.length ? 'No matching values.' : 'No values available.'}
-          </p>
+          </output>
         ) : null}
       </PopoverContent>
     </Popover>
@@ -1018,11 +1021,13 @@ function getFilterOperatorOptions(
 }
 
 function SortPopover({
+  preserveSearchFocus,
   descriptors,
   sorting,
   setSorting,
   allowActivitySort,
 }: {
+  preserveSearchFocus: boolean
   descriptors: QueryTableColumn[]
   sorting: SortingState
   setSorting: (sorting: SortingState) => void
@@ -1036,7 +1041,14 @@ function SortPopover({
     <Popover>
       <Tooltip content="Sort">
         <PopoverTrigger asChild>
-          <Button variant="outline" size="icon" aria-label="Sort">
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Sort"
+            onMouseDown={(event) => {
+              if (preserveSearchFocus) event.preventDefault()
+            }}
+          >
             <ArrowUpDown className="size-4" />
           </Button>
         </PopoverTrigger>
@@ -1089,12 +1101,14 @@ function SortPopover({
 }
 
 function AttributesPopover({
+  preserveSearchFocus,
   descriptors,
   columnOrder,
   columnVisibility,
   toggleColumnVisibility,
   moveColumn,
 }: {
+  preserveSearchFocus: boolean
   descriptors: QueryTableColumn[]
   columnOrder: string[]
   columnVisibility: Record<string, boolean>
@@ -1110,7 +1124,14 @@ function AttributesPopover({
     <Popover>
       <Tooltip content="Attributes">
         <PopoverTrigger asChild>
-          <Button variant="outline" size="icon" aria-label="Attributes">
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Attributes"
+            onMouseDown={(event) => {
+              if (preserveSearchFocus) event.preventDefault()
+            }}
+          >
             <SlidersHorizontal className="size-4" />
           </Button>
         </PopoverTrigger>
@@ -1425,7 +1446,7 @@ function SelectedAttributes({
                 className="no-window-drag h-auto gap-1 p-1 text-xs"
                 title={descriptor.label}
                 aria-label={`View discussions (${queryTableValueToString(value) || '0'})`}
-                onClick={(event) => {
+                onClickCapture={(event) => {
                   event.preventDefault()
                   event.stopPropagation()
                   navigate({key: 'comments', id: item.id})
@@ -1457,7 +1478,6 @@ function SelectedAttributes({
                 badgeVariants({variant: 'outline'}),
                 'text-muted-foreground flex max-w-full min-w-0 items-center gap-1 text-sm',
               )}
-              tabIndex={0}
             >
               <span className="truncate">{displayValue}</span>
             </span>

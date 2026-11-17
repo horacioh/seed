@@ -186,9 +186,7 @@ export function AgentSubpageHeader({
           ) : saveState === 'saved' ? (
             <Check className="text-muted-foreground size-3.5 flex-none" aria-label="Title saved" />
           ) : saveState === 'error' ? (
-            <span className="text-destructive text-xs" role="status">
-              Title save failed
-            </span>
+            <output className="text-destructive text-xs">Title save failed</output>
           ) : null}
         </div>
         {actions}
@@ -360,6 +358,7 @@ export function AgentHeader({
               ref={measureRef}
               className="pointer-events-none absolute flex items-center gap-2 opacity-0 md:gap-4"
               aria-hidden="true"
+              {...({inert: ''} as Record<string, string>)}
             >
               {tabs.map((tab) => (
                 <PageTab

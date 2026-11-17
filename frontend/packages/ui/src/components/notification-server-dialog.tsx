@@ -85,7 +85,6 @@ export function NotificationServerDialog({
               value={value}
               onChange={(e) => setValue(e.target.value)}
               disabled={isSaving}
-              autoFocus
             />
             <p className="text-muted-foreground text-xs">
               Server default: <span className="text-foreground font-mono break-all">{defaultUrl}</span>

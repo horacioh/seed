@@ -2,6 +2,7 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import {getProfileAvatarImageSrc} from '@/frontend/profile'
 import {useAppState} from '@/frontend/store'
 import {AccountProfileForm} from '@shm/ui/components/account-profile-form'
+import {useRef} from 'react'
 
 /** Dialog for creating or editing a vault account profile. */
 export function AccountProfileDialog({
@@ -43,10 +44,21 @@ export function AccountProfileDialog({
   }) => Promise<void> | Promise<boolean> | void | boolean
 }) {
   const {backendHttpBaseUrl} = useAppState()
+  const returnFocusRef = useRef<HTMLElement | null>(null)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent
+        className="sm:max-w-lg"
+        onOpenAutoFocus={() => {
+          returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+        }}
+        onCloseAutoFocus={(event) => {
+          if (!returnFocusRef.current?.isConnected) return
+          event.preventDefault()
+          returnFocusRef.current.focus()
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{descriptionText}</DialogDescription>

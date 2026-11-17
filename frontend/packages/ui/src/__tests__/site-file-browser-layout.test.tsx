@@ -94,6 +94,13 @@ describe('unified site sidebar layout', () => {
     expect(localStorage.getItem('seed.site-sidebar.open')).toBe('false')
   })
 
+  it('labels the open sidebar landmark and its resize handle', () => {
+    act(() => root.render(<Page />))
+    clickToggle()
+    expect(container.querySelector('aside[aria-label="Site documents"]')).not.toBeNull()
+    expect(container.querySelector('[aria-label="Resize file browser"]')).not.toBeNull()
+  })
+
   it('closes the mobile drawer when browser history changes the route', () => {
     media.xs = true
     act(() => root.render(<Page />))

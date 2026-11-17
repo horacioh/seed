@@ -55,7 +55,9 @@ export function CreateProfileView() {
     <Card>
       <CardHeader>
         <FlowHeader step={4} />
-        <CardTitle className="text-left text-xl">Create your profile</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          Create your profile
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-6 text-sm">We are almost there. Add a name and a photo.</p>

@@ -154,6 +154,7 @@ export function EmbedWrapper({
 
   if (!id) return null
   return (
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events jsx-a11y/no-static-element-interactions -- Pointer shortcut for the "Open embedded content" link, which keyboard users reach directly
     <div
       contentEditable={false}
       onMouseDownCapture={(event) => {
@@ -194,7 +195,7 @@ export function EmbedWrapper({
       {...props}
     >
       {canNavigate ? (
-        <a ref={sourceLink} {...linkAttributes} onClick={routeOnClick} className="sr-only">
+        <a ref={sourceLink} {...linkAttributes} href={linkAttributes.href} onClick={routeOnClick} className="sr-only">
           Open embedded content
         </a>
       ) : null}

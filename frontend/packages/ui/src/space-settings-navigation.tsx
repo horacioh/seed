@@ -688,7 +688,7 @@ function NavItemDialog({
                   <>
                     <Input
                       aria-label="URL"
-                      autoFocus
+                      focusOnMount
                       value={url}
                       aria-invalid={showUrlError}
                       onChange={(e) => setUrl(e.target.value)}

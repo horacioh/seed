@@ -49,7 +49,10 @@ export function ContactListPage({contactId}: {contactId?: UnpackedHypermediaId |
         <Panel id="contacts" defaultSize="30%" minSize="20%" maxSize="40%">
           <ContactPageSidebar contactId={contactId} />
         </Panel>
-        <Separator className="panel-resize-handle visible" />
+        <Separator
+          aria-label="Resize contact sidebar"
+          className="panel-resize-handle focus-visible:ring-ring visible focus-visible:ring-2"
+        />
         <Panel id="contact">{contactId ? <ContactPageMain contactId={contactId} /> : null}</Panel>
       </Group>
     </PanelContainer>
@@ -335,7 +338,8 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
           const subjectName = subjectAccount?.type === 'document' ? subjectAccount.document?.metadata?.name : undefined
 
           return (
-            <div
+            <button
+              type="button"
               className="flex flex-row items-center gap-2 p-2 text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
               onClick={() => {
                 navigate({
@@ -358,7 +362,7 @@ function AccountContacts({contact, ownerLabel}: {contact: HMContact; ownerLabel:
               {subjectName !== contactName ? (
                 <span className="text-gray-500 dark:text-gray-300">| {contactName}</span>
               ) : null}
-            </div>
+            </button>
           )
         })}
       </div>

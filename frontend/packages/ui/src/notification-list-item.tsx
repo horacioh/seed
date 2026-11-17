@@ -43,9 +43,15 @@ export function NotificationListItem({item, isRead, onOpen, onToggleRead}: Notif
           : 'border-blue-100 bg-blue-50 hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-900/30 dark:hover:bg-blue-900/40',
       )}
     >
-      <div className="shrink-0" onClick={(event) => event.stopPropagation()}>
+      <div className="shrink-0">
         {authorId ? (
-          <AccountAvatar size={28} id={authorId} name={authorName} icon={authorIcon} />
+          <AccountAvatar
+            size={28}
+            id={authorId}
+            name={authorName}
+            icon={authorIcon}
+            onClick={(event) => event.stopPropagation()}
+          />
         ) : (
           <div className="bg-muted size-7 rounded-full" />
         )}

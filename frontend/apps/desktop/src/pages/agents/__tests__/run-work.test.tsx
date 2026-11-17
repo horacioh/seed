@@ -396,25 +396,21 @@ describe('integrated step rows', () => {
     expect(stepButton).toBeUndefined()
 
     // Both children are there, each its own click target into its own transcript.
-    const notionRow = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Notion researcher',
-    )
-    const codaRow = Array.from(container.querySelectorAll('button')).find(
-      (button) => button.textContent === 'Coda researcher',
-    )
+    const notionRow = container.querySelector<HTMLButtonElement>('button[aria-label="Open run Notion researcher"]')
+    const codaRow = container.querySelector<HTMLButtonElement>('button[aria-label="Open run Coda researcher"]')
     expect(notionRow).toBeTruthy()
     expect(codaRow).toBeTruthy()
     // Peers are peers: the same row treatment, so nothing distinguishes one from the other.
     expect(notionRow!.className).toBe(codaRow!.className)
     expect(notionRow!.parentElement!.className).toBe(codaRow!.parentElement!.className)
 
-    click(notionRow)
+    click(notionRow ?? undefined)
     expect(mockState.pushNavigate).toHaveBeenCalledWith({
       key: 'agent-session',
       sessionId: 'session-notion',
       serverUrl: 'http://localhost:3050',
     })
-    click(codaRow)
+    click(codaRow ?? undefined)
     expect(mockState.pushNavigate).toHaveBeenCalledWith({
       key: 'agent-session',
       sessionId: 'session-coda',

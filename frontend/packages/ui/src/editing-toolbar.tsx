@@ -1,9 +1,11 @@
 import {UnpackedHypermediaId} from '@seed-hypermedia/client/hm-types'
 import {useIsHomeDraftOverride} from '@shm/shared/home-draft-context'
+import {checkDocumentAccessibility} from '@shm/shared'
 import {type DocumentMachineEvent} from '@shm/shared/models/document-machine'
 import {useAccount} from '@shm/shared/models/entity'
 import {
   selectDocument,
+  selectBlocks,
   selectDraftHidden,
   selectDraftId,
   selectEffectivePublishPath,
@@ -19,7 +21,7 @@ import {useUnpublishedChangeCount} from '@shm/shared/models/use-unpublished-chan
 import {type AnyTimestamp, formattedDateMedium, formattedDateShort, normalizeDate} from '@shm/shared/utils/date'
 import {pathNameify} from '@shm/shared/utils/path'
 import {Check, ChevronRight, Clock, Copy, EyeOff, FileDiff, Info, Pencil, Trash, X} from 'lucide-react'
-import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react'
+import React, {forwardRef, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {Button} from './button'
 import {PathInput} from './path-input'
 import {Popover, PopoverAnchor, PopoverContent} from './components/popover'
@@ -32,6 +34,7 @@ import {toast} from './toast'
 import {Tooltip} from './tooltip'
 import {usePopoverState} from './use-popover-state'
 import {cn} from './utils'
+import {PublishAccessibilityIssues} from './publish-accessibility-issues'
 
 /** Show a compact publication error with a dialog for viewing and copying its details. */
 export function usePublishError() {
@@ -58,6 +61,7 @@ export function usePublishError() {
             <DialogTitle>Error details</DialogTitle>
           </DialogHeader>
           <pre
+            // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Scrollable error details must be reachable by keyboard
             tabIndex={0}
             className="bg-muted max-h-96 overflow-auto rounded-md p-3 text-xs break-words whitespace-pre-wrap select-text"
           >
@@ -89,6 +93,8 @@ export type EditingToolbarCallbacks = {
   onDiscardConfirm?: (draftId: string, send: (e: DocumentMachineEvent) => void) => void
   /** Navigate to document versions panel. Row hidden when undefined. */
   onGoToVersions?: (docId: UnpackedHypermediaId) => void
+  /** Focus and scroll to a document block from an accessibility issue. */
+  onFocusBlock?: (blockId: string) => void
   /**
    * Walks the editor's content for embed blocks pointing at
    * unpublished child drafts.
@@ -144,6 +150,7 @@ export function PublishPopoverBody({
   publishButtonRef,
   getDocumentUrl,
   onGoToVersions,
+  onFocusBlock,
 }: {
   docId: UnpackedHypermediaId
   changeCount: number
@@ -156,6 +163,8 @@ export function PublishPopoverBody({
   publishButtonRef?: React.Ref<HTMLButtonElement>
 } & EditingToolbarCallbacks) {
   const publishedDoc = useDocumentSelector(selectDocument)
+  const blocks = useDocumentSelector(selectBlocks)
+  const accessibilityIssues = useMemo(() => checkDocumentAccessibility(blocks ?? []), [blocks])
   const metadata = useDocumentSelector(selectMetadata)
   const renameState = useDocumentSelector(selectRenameState)
   const renameError = useDocumentSelector(selectRenameError)
@@ -227,7 +236,7 @@ export function PublishPopoverBody({
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <PathInput
-                autoFocus
+                focusOnMount
                 value={renameSegment ?? ''}
                 onValueChange={setRenameSegment}
                 onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.target.select()}
@@ -300,6 +309,7 @@ export function PublishPopoverBody({
                 size="icon"
                 variant="ghost"
                 className="shrink-0"
+                aria-label="Copy URL"
                 onClick={() => {
                   copyTextToClipboard(documentUrl).then(() => toast.success('Copied document URL'))
                 }}
@@ -389,6 +399,8 @@ export function PublishPopoverBody({
           </p>
         </div>
       ) : null}
+
+      <PublishAccessibilityIssues issues={accessibilityIssues} onFocusBlock={onFocusBlock} />
 
       <Separator className="bg-black/10 dark:bg-white/10" />
 
@@ -496,6 +508,7 @@ export function PublishButtonWithPopover({
   getUnpublishedChildCount,
   onPublishIntercept,
   hidePublishWhenClean = false,
+  onFocusBlock,
 }: {
   docId: UnpackedHypermediaId
   existingMenuItems: MenuItemType[]
@@ -640,6 +653,7 @@ export function PublishButtonWithPopover({
               publishButtonRef={publishButtonRef}
               getDocumentUrl={getDocumentUrl}
               onGoToVersions={onGoToVersions}
+              onFocusBlock={onFocusBlock}
             />
           </PopoverContent>
         </Popover>

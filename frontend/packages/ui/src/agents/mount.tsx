@@ -36,8 +36,7 @@ export function AgentMountBanner({agent, serverUrl}: {agent: AgentInfo; serverUr
   if (!canAdopt) return null
   return (
     <>
-      <div
-        role="region"
+      <section
         aria-label="Adopt agent"
         className="bg-muted border-border flex shrink-0 items-center justify-between gap-4 border-b px-5 py-3"
       >
@@ -53,7 +52,7 @@ export function AgentMountBanner({agent, serverUrl}: {agent: AgentInfo; serverUr
         <Button variant="default" onClick={() => dialog.open({agent, serverUrl, accountUid: accountUid!})}>
           Adopt agent
         </Button>
-      </div>
+      </section>
       {dialog.content}
     </>
   )

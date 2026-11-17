@@ -5,6 +5,7 @@ import {DAEMON_FILE_URL} from '@shm/shared/constants'
 import {formattedDateShort} from '@shm/shared/utils/date'
 import React from 'react'
 import {Notification} from '../notifier'
+import {EMAIL_PALETTE} from '../email-palette'
 import {emailTheme} from './EmailLayout'
 
 export function getDaemonFileUrl(ipfsUrl?: string) {
@@ -178,7 +179,9 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
   if (type === 'Heading') {
     return (
       <MjmlText align="left" paddingBottom="8px" fontSize="24px" fontWeight="bold">
-        <span dangerouslySetInnerHTML={{__html: innerHtml}} />
+        <h2 style={{margin: 0, fontSize: '24px'}}>
+          <span dangerouslySetInnerHTML={{__html: innerHtml}} />
+        </h2>
       </MjmlText>
     )
   }
@@ -195,9 +198,9 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
 
     return (
       <>
-        <MjmlImage src={src} alt={text || 'Image'} width={width as number} paddingBottom="8px" />
+        <MjmlImage src={src} alt={text || ''} width={width as number} paddingBottom="8px" />
         {text && (
-          <MjmlText fontSize="12px" color="#666" paddingBottom="12px" align="center">
+          <MjmlText fontSize="14px" color={EMAIL_PALETTE.subtleText} paddingBottom="12px" align="center">
             {text}
           </MjmlText>
         )}
@@ -239,7 +242,13 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
 
   if (type === 'Math') {
     return (
-      <MjmlText align="left" paddingBottom="8px" fontSize="14px" fontFamily="monospace" color="#888">
+      <MjmlText
+        align="left"
+        paddingBottom="8px"
+        fontSize="14px"
+        fontFamily="monospace"
+        color={EMAIL_PALETTE.subtleText}
+      >
         {text}
       </MjmlText>
     )
@@ -252,8 +261,8 @@ export function renderBlock(blockNode: HMBlockNode, notifUrl: string, resolvedNa
         paddingBottom="8px"
         fontSize="14px"
         fontFamily="monospace"
-        color="#666"
-        backgroundColor="#f2f2f2"
+        color={EMAIL_PALETTE.subtleText}
+        backgroundColor={EMAIL_PALETTE.codeBackground}
         padding="12px"
         // borderRadius="4px"
       >

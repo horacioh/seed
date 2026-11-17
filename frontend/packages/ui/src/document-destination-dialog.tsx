@@ -470,10 +470,10 @@ export function DocumentDestinationDialog({
 
       {isMoveChildren && validationMessage ? (
         moveChildrenDirectory.isLoading || childMoveResourcesLoading ? (
-          <div role="status" className="text-muted-foreground flex items-center gap-2 text-sm">
+          <output className="text-muted-foreground flex items-center gap-2 text-sm">
             <Spinner />
             {validationMessage}
-          </div>
+          </output>
         ) : (
           <div
             role="alert"

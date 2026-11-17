@@ -2,7 +2,7 @@
 name: Video Block
 summary: A video referenced by an ipfs:// file or a supported web video URL, with playback attributes.
 ---
-A **video block** plays a video. `link` is required: either an `ipfs://<cid>` [file](../protocol/files.md) or a web video URL the app knows how to embed (YouTube links are recognized). Attributes: `width`, `name`, the playback flags `autoplay`, `loop` and `muted`, and the parent-layout pair. <!-- id:PpGZPngz -->
+A **video block** plays a video. `link` is required: either an `ipfs://<cid>` [file](../protocol/files.md) or a web video URL the app knows how to embed (YouTube links are recognized). Attributes: `width`, `name`, the playback flags `autoplay`, `loop` and `muted`, optional `captions` and `captionsLang` for a WebVTT captions file, and the parent-layout pair. Captions are an `ipfs://` link; `captionsLang` is a BCP 47 language tag. <!-- id:PpGZPngz -->
 
 # See also <!-- id:Ivf73fmA -->
 

@@ -5,6 +5,7 @@ import {
   MjmlColumn,
   MjmlHead,
   MjmlPreview,
+  MjmlRaw,
   MjmlSection,
   MjmlText,
   MjmlTitle,
@@ -26,6 +27,12 @@ type GroupedNotifications = Record<Notification['reason'], Record<string, FullNo
 /** System font stack used across all email templates. */
 const SYSTEM_FONT_FAMILY = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
 
+/** Root `<mjml>` attributes that give every email a language and reading direction. */
+export const EMAIL_ROOT_ATTRIBUTES = {lang: 'en', dir: 'ltr'}
+
+/** Inline style for the single `<h1>` each email renders inside its title text. */
+export const EMAIL_HEADING_STYLE: React.CSSProperties = {margin: 0, fontSize: 'inherit', lineHeight: 'inherit'}
+
 /** Standard MJML <head> attributes applied to all new-style emails. */
 export function EmailHeadDefaults({children}: {children?: React.ReactNode}) {
   return (
@@ -33,6 +40,10 @@ export function EmailHeadDefaults({children}: {children?: React.ReactNode}) {
       <MjmlAttributes>
         <MjmlAll fontFamily={SYSTEM_FONT_FAMILY} />
       </MjmlAttributes>
+      <MjmlRaw>
+        <meta name="color-scheme" content="light only" />
+        <meta name="supported-color-schemes" content="light only" />
+      </MjmlRaw>
       {children}
     </MjmlHead>
   )
@@ -72,7 +83,7 @@ View ${inDocument ? 'document' : 'comment'}: ${input.actionUrl}
 Manage notifications: ${input.unsubscribeUrl}`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>{subject}</MjmlPreview>
@@ -83,7 +94,9 @@ Manage notifications: ${input.unsubscribeUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
-              {input.authorName} mentioned {input.subjectName} {where} <em>{input.documentName}</em>
+              <h1 style={EMAIL_HEADING_STYLE}>
+                {input.authorName} mentioned {input.subjectName} {where} <em>{input.documentName}</em>
+              </h1>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
@@ -138,7 +151,7 @@ Continue the discussion: ${input.actionUrl}
 Manage notifications: ${input.unsubscribeUrl}`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>{subject}</MjmlPreview>
@@ -149,7 +162,9 @@ Manage notifications: ${input.unsubscribeUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
-              {input.authorName} replied to your comment in <em>{input.documentName}</em>
+              <h1 style={EMAIL_HEADING_STYLE}>
+                {input.authorName} replied to your comment in <em>{input.documentName}</em>
+              </h1>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
@@ -205,7 +220,7 @@ Review changes: ${input.actionUrl}
 Manage notifications: ${input.unsubscribeUrl}`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>{subject}</MjmlPreview>
@@ -216,7 +231,9 @@ Manage notifications: ${input.unsubscribeUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
-              <em>{input.documentName}</em> was updated by {input.authorName}
+              <h1 style={EMAIL_HEADING_STYLE}>
+                <em>{input.documentName}</em> was updated by {input.authorName}
+              </h1>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
@@ -283,7 +300,7 @@ View comment: ${input.actionUrl}
 Manage notifications: ${input.unsubscribeUrl}`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>{subject}</MjmlPreview>
@@ -294,10 +311,12 @@ Manage notifications: ${input.unsubscribeUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
-              {input.authorName} left a comment on your document{' '}
-              <strong>
-                <em>{input.documentName}</em>
-              </strong>
+              <h1 style={EMAIL_HEADING_STYLE}>
+                {input.authorName} left a comment on your document{' '}
+                <strong>
+                  <em>{input.documentName}</em>
+                </strong>
+              </h1>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
@@ -351,7 +370,7 @@ See discussion: ${input.actionUrl}
 Manage notifications: ${input.unsubscribeUrl}`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>{subject}</MjmlPreview>
@@ -362,7 +381,9 @@ Manage notifications: ${input.unsubscribeUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
-              A new discussion in <em>{input.documentName}</em> was created by {input.authorName}
+              <h1 style={EMAIL_HEADING_STYLE}>
+                A new discussion in <em>{input.documentName}</em> was created by {input.authorName}
+              </h1>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
@@ -404,7 +425,7 @@ We're thrilled to have you as part of Seed Hypermedia. You can now participate, 
 Go to ${input.siteName}: ${input.siteUrl}`
 
   const {html} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>Welcome to Seed Hypermedia — you're all set!</MjmlPreview>
@@ -415,7 +436,7 @@ Go to ${input.siteName}: ${input.siteUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0 0 16px">
-              You're in. Welcome to the community.
+              <h1 style={EMAIL_HEADING_STYLE}>You're in. Welcome to the community.</h1>
             </MjmlText>
             <MjmlText fontSize="16px" lineHeight="1.5" color={emailTheme.body} padding="0 0 4px">
               {greeting}
@@ -462,7 +483,7 @@ ${input.verificationUrl}
 This link expires in 2 hours. If you didn't create an account, you can safely ignore this.`
 
   const {html: emailHtml} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>Confirm your email to complete your registration</MjmlPreview>
@@ -472,7 +493,7 @@ This link expires in 2 hours. If you didn't create an account, you can safely ig
         <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0 0 16px">
-              Confirm your email address
+              <h1 style={EMAIL_HEADING_STYLE}>Confirm your email address</h1>
             </MjmlText>
             <MjmlText fontSize="16px" lineHeight="1.5" color={emailTheme.body} padding="0 0 4px">
               {greeting}
@@ -611,7 +632,7 @@ Subscribed by mistake? Click here to unsubscribe or manage notifications: ${noti
   // console.log(JSON.stringify(notifications[0], null, 2))
 
   const {html: emailHtml} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>
@@ -620,6 +641,14 @@ Subscribed by mistake? Click here to unsubscribe or manage notifications: ${noti
       </EmailHeadDefaults>
       <EmailBody>
         <EmailHeader />
+
+        <MjmlSection padding={`24px ${emailTheme.gutter} 0`}>
+          <MjmlColumn>
+            <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
+              <h1 style={EMAIL_HEADING_STYLE}>Notifications</h1>
+            </MjmlText>
+          </MjmlColumn>
+        </MjmlSection>
 
         {(['site-doc-update', 'site-new-discussion', 'discussion', 'mention', 'reply'] as const).map((reason) => {
           const docs = grouped[reason]
@@ -638,13 +667,15 @@ Subscribed by mistake? Click here to unsubscribe or manage notifications: ${noti
                     <MjmlSection padding={`24px ${emailTheme.gutter} 8px`}>
                       <MjmlColumn>
                         <MjmlText
-                          fontSize="24px"
+                          fontSize="20px"
                           fontWeight="bold"
                           lineHeight="1.25"
                           color={emailTheme.heading}
                           padding="0"
                         >
-                          {getDigestTitle(reason, docNotifs)} <em>{targetName}</em>
+                          <h2 style={EMAIL_HEADING_STYLE}>
+                            {getDigestTitle(reason, docNotifs)} <em>{targetName}</em>
+                          </h2>
                         </MjmlText>
                       </MjmlColumn>
                     </MjmlSection>
@@ -732,7 +763,7 @@ ${textLines}
 Manage notification emails: ${notifSettingsUrl}`
 
   const {html: emailHtml} = await renderReactToMjml(
-    <Mjml>
+    <Mjml {...EMAIL_ROOT_ATTRIBUTES}>
       <EmailHeadDefaults>
         <MjmlTitle>{subject}</MjmlTitle>
         <MjmlPreview>{preview}</MjmlPreview>
@@ -743,7 +774,7 @@ Manage notification emails: ${notifSettingsUrl}`
         <MjmlSection padding={`24px ${emailTheme.gutter} 16px`}>
           <MjmlColumn>
             <MjmlText fontSize="24px" fontWeight="bold" lineHeight="1.25" color={emailTheme.heading} padding="0">
-              Notifications
+              <h1 style={EMAIL_HEADING_STYLE}>Notifications</h1>
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
@@ -997,5 +1028,7 @@ function extractOrigin(url: string): string | undefined {
 }
 
 export async function renderReactToMjml(email: React.ReactElement): Promise<MJMLParseResults> {
-  return mjml2html(renderToMjml(email))
+  const result = await mjml2html(renderToMjml(email))
+  // MJML wraps the body in role="article"; a main landmark lets axe and screen readers locate the email content.
+  return {...result, html: result.html.replace('role="article"', 'role="main"')}
 }

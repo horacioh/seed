@@ -28,7 +28,9 @@ export function InvitedView() {
     <Card>
       <CardHeader>
         <StepIndicator currentStep={1} />
-        <CardTitle className="text-left text-xl">You&apos;ve been invited</CardTitle>
+        <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+          You&apos;ve been invited
+        </CardTitle>
         {siteName ? <CardDescription className="text-left">to {siteName}</CardDescription> : null}
       </CardHeader>
       <CardContent>
@@ -51,6 +53,7 @@ export function InvitedView() {
                   id="invited-email"
                   name="email"
                   type="email"
+                  autoComplete="email"
                   value={inviteEmail}
                   readOnly
                   aria-readonly="true"

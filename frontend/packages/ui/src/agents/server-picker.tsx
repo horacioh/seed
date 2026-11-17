@@ -81,7 +81,7 @@ export function AgentServerPicker({
       {typing ? (
         <div className="flex items-center gap-2">
           <Input
-            autoFocus
+            focusOnMount
             aria-label="Server URL"
             value={draft}
             disabled={disabled}

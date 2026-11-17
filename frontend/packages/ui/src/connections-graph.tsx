@@ -126,9 +126,7 @@ export function ConnectionsGraph({
   const status = (
     <>
       {(directory.isInitialLoading || drafts.isLoading) && (
-        <p className="text-muted-foreground px-3 pb-2 text-xs" role="status">
-          Loading child documents…
-        </p>
+        <output className="text-muted-foreground block px-3 pb-2 text-xs">Loading child documents…</output>
       )}
       {directory.isError && (
         <div className="px-3 pb-2 text-xs" role="alert">
@@ -322,6 +320,7 @@ function GraphCanvas({
       ref={container}
       style={{viewTransitionName: transitionName}}
       className="bg-background pele focus-visible:ring-ring relative flex size-full min-h-0 touch-none items-center justify-center overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
+      // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- The graph canvas takes focus so plus, minus, arrow and zero keys can zoom and pan it
       tabIndex={0}
       aria-label="Document connections graph. Use plus and minus to zoom, arrow keys to pan, and zero to reset."
     >
@@ -330,6 +329,7 @@ function GraphCanvas({
         height={viewport.height}
         viewBox={`0 0 ${viewport.width} ${viewport.height}`}
         className="size-full"
+        // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG content cannot use an HTML fieldset
         role="group"
         aria-label="Document connections graph"
       >
@@ -404,6 +404,7 @@ function GraphNode({node, x, y, selected, showLabel, onSelect, name: resolvedNam
   return (
     <g
       transform={`translate(${x} ${y})`}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG graph nodes cannot be HTML buttons
       role="button"
       tabIndex={0}
       aria-label={`${node.citation ? 'Show connections from' : 'Select'} ${name}`}

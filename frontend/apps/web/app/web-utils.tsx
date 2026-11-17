@@ -528,6 +528,7 @@ export function WebDocumentCreateButton({
 function PlaceholderAvatar({onClick}: {onClick: () => void}) {
   return (
     <button
+      aria-label="Open account menu"
       onClick={onClick}
       className="flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-gray-400"
     >
@@ -776,15 +777,15 @@ export function WebHeaderActions({siteUid}: {siteUid: string}) {
           <NotifsButton signedIn />
           <button
             ref={accountMenuTriggerRef}
-            aria-label="Account menu"
             aria-expanded={mobileMenuOpen}
             className="flex cursor-pointer rounded-full shadow-lg"
+            aria-label="Open account menu"
             onClick={() => setMobileMenuOpen(true)}
           >
             {avatarIcon}
           </button>
           {joinButton}
-          <MobilePanelSheet isOpen={mobileMenuOpen} title="" onClose={() => setMobileMenuOpen(false)}>
+          <MobilePanelSheet isOpen={mobileMenuOpen} title="Account menu" onClose={() => setMobileMenuOpen(false)}>
             <div className="font-normal [&_svg]:stroke-[1.5]">
               {accountHeader}
               {menuItems}

@@ -233,7 +233,9 @@ function MemberRow({member, account, action}: {member: HMSiteMember; account?: H
         {name}
       </SizableText>
       {action && member.role === 'member' ? (
-        <div className="opacity-0 transition-opacity group-hover:opacity-100">{action}</div>
+        <div className="opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none">
+          {action}
+        </div>
       ) : null}
       <SizableText size="xs" color="muted" className="shrink-0">
         {roleLabel(member.role)}

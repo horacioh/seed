@@ -44,6 +44,11 @@ export function CreateAccountDialogContent({
 }: CreateAccountDialogContentProps) {
   const [step, setStep] = React.useState<'main' | 'custom-identity'>(initialStep)
   const [customIdentityUrl, setCustomIdentityUrl] = React.useState(defaultCustomIdentityUrl)
+  const customIdentityInputRef = React.useRef<HTMLInputElement>(null)
+
+  React.useEffect(() => {
+    if (step === 'custom-identity' && !localAccountUnlocked) customIdentityInputRef.current?.focus()
+  }, [localAccountUnlocked, step])
 
   if (!localAccountUnlocked && step === 'custom-identity') {
     return (
@@ -51,11 +56,11 @@ export function CreateAccountDialogContent({
         <DialogTitle className="flex items-center gap-2 max-sm:text-base">{customIdentityTitle}</DialogTitle>
         <DialogDescription className="max-sm:text-sm">Enter the URL of your identity server.</DialogDescription>
         <input
+          ref={customIdentityInputRef}
           className="rounded border px-3 py-2 text-sm dark:bg-neutral-900"
           value={customIdentityUrl}
           onChange={(e) => setCustomIdentityUrl(e.target.value)}
           placeholder={customIdentityPlaceholder}
-          autoFocus
           onKeyDown={(e) => {
             if (e.key === 'Enter' && customIdentityUrl.trim()) {
               onSubmit({type: 'custom-id-server', url: customIdentityUrl.trim()})

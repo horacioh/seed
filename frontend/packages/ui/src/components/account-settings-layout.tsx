@@ -148,7 +148,7 @@ function SidebarItem({
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-sm font-medium">{label}</span>
           {sublabel ? (
-            <span className={cn('truncate text-xs', active ? 'opacity-80' : 'text-muted-foreground')}>{sublabel}</span>
+            <span className={cn('truncate text-xs', active ? 'opacity-80' : 'text-foreground')}>{sublabel}</span>
           ) : null}
         </div>
       </button>

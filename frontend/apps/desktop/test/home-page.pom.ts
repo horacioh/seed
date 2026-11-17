@@ -10,28 +10,20 @@ export class HomePage {
   }
 
   async goto() {
-    // await this.appData.appWindow.waitForSelector('#btn-new-account')
-    // await this.appData.appWindow
-    //   .getByRole('button', {
-    //     name: 'Create a new Account',
-    //   })
-    //   .click({force: true})
-    // await this.appData.appWindow.locator('#btn-tab-ownwords').click()
-    // await this.appData.appWindow
-    //   .locator('#ownwords-input')
-    //   .fill(
-    //     'rib canal floor bubble hundred wild bring olive minimum veteran tip snack',
-    //   )
-    // await this.appData.appWindow.locator('#check3').check()
-    // await this.appData.appWindow.locator('#btn-next').click()
-    // await this.appData.appWindow.waitForTimeout(10)
-    // await this.appData.appWindow.locator('#alias').fill(this.alias)
-    // await this.appData.appWindow.locator('#btn-next').click()
-    // await this.appData.appWindow.locator('#btn-next').click()
-    // await this.appData.appWindow.waitForTimeout(10)
-    // await this.appData.appWindow.locator('#btn-next').click()
-    // await this.appData.appWindow.waitForTimeout(10)
-    // await this.appData.appWindow.locator('#btn-skip').click()
-    // TODO: horacio Implement me
+    const page = this.appData.appWindow
+    const main = page.locator('#main-content')
+    await main.waitFor({state: 'visible'})
+
+    const onboarding = page.getByRole('heading', {name: 'Welcome to Seed Hypermedia'})
+    if (await onboarding.isVisible()) {
+      const homeLink = page
+        .locator('[data-a11y-region="sidebar"] button')
+        .filter({hasText: /Seed|Hypermedia|Untitled/i})
+        .first()
+      await homeLink.click()
+      await onboarding.waitFor({state: 'detached'})
+    }
+
+    await main.waitFor({state: 'visible'})
   }
 }

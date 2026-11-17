@@ -35,9 +35,7 @@ export function ConnectionsPanel({docId, targetBlockId}: {docId: UnpackedHyperme
       <p className="text-sm">Connections show where other documents or comments link to this document.</p>
       <h2 className="text-sm font-semibold">Related documents</h2>
       {citations.isInitialLoading ? (
-        <p className="text-muted-foreground text-sm" role="status">
-          Loading connections…
-        </p>
+        <output className="text-muted-foreground block text-sm">Loading connections…</output>
       ) : citations.isError ? (
         <div role="alert">
           <p>Could not load connections.</p>
@@ -173,9 +171,7 @@ function ConnectionSource({source, documentId}: {source: DocumentConnectionSourc
         </a>
       </div>
       {resource.isInitialLoading ? (
-        <p className="text-muted-foreground text-sm" role="status">
-          Loading mention…
-        </p>
+        <output className="text-muted-foreground block text-sm">Loading mention…</output>
       ) : blocks?.length && Viewer ? (
         <Viewer
           className="is-comment"

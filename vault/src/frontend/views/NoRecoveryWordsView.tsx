@@ -1,5 +1,6 @@
 import {ErrorMessage} from '@/frontend/components/ErrorMessage'
 import {OptionCard} from '@/frontend/components/OptionCard'
+import {Spinner} from '@/frontend/components/Spinner'
 import {Button} from '@/frontend/components/ui/button'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/frontend/components/ui/card'
 import * as navigation from '@/frontend/navigation'
@@ -15,7 +16,7 @@ export function NoRecoveryWordsView() {
   const navigate = navigation.useHashNavigate()
 
   if (!sessionChecked) {
-    return null
+    return <Spinner label="Checking your session" />
   }
   if (!email) {
     return <navigation.HashNavigate to="/" replace />
@@ -25,7 +26,9 @@ export function NoRecoveryWordsView() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-left text-xl">Don't have your recovery words?</CardTitle>
+          <CardTitle as="h1" tabIndex={-1} className="text-left text-xl">
+            Don&apos;t have your recovery words?
+          </CardTitle>
           <button
             type="button"
             aria-label="Close"

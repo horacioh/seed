@@ -92,7 +92,7 @@ function NameAndSummaryForm({
         <Label htmlFor="app-create-name">Name</Label>
         <Input
           id="app-create-name"
-          autoFocus
+          focusOnMount
           value={name}
           placeholder={namePlaceholder}
           onChange={(event) => setName(event.target.value)}

@@ -237,6 +237,7 @@ export function WebSidePanelHost({children}: {children: React.ReactNode}) {
         </AssistantPanelToggleContext.Provider>
         <>
           <div
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Focusable splitter widget; an hr cannot take focus or a value
             role="separator"
             aria-orientation="vertical"
             aria-label="Resize side panel"
@@ -319,6 +320,7 @@ function FullScreenPanel({onBack}: {onBack: () => void}) {
 
   return (
     <div
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Full-screen overlay managed in React; native dialog top-layer breaks its stacking
       role="dialog"
       aria-modal="true"
       aria-label="Agents"

@@ -62,6 +62,8 @@ export function DefaultLinkMenu<BSchema extends BlockSchema>(props: LinkMenuProp
         // TODO: This should go back in the plugin.
         onMouseDown={(event) => event.preventDefault()}
         className={classes.root}
+        role="menu"
+        aria-label="Link suggestions"
       >
         {renderedItems.length > 0 ? renderedItems : <Menu.Item>No match found</Menu.Item>}
       </Menu.Dropdown>

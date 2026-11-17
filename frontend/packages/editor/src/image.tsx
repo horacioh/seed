@@ -1,13 +1,17 @@
 import {useEditorGate} from '@shm/shared/models/use-editor-gate'
+import {Button} from '@shm/ui/button'
 import {useImageUrl} from '@shm/ui/get-file-url'
 import {ResizeHandle} from '@shm/ui/resize-handle'
 import {toast} from '@shm/ui/toast'
+import {cn} from '@shm/ui/utils'
+import {AlertTriangle} from 'lucide-react'
 import {useCallback, useEffect, useRef, useState} from 'react'
 import {RiImage2Line} from 'react-icons/ri'
 import {BlockNoteEditor} from './blocknote/core/BlockNoteEditor'
 import {Block} from './blocknote/core/extensions/Blocks/api/blockTypes'
 import {defaultProps} from './blocknote/core/extensions/Blocks/api/defaultBlocks'
 import {createReactBlockSpec} from './blocknote/react'
+import {useImageAltTextDialog} from './image-alt-text-dialog'
 import {MediaContainer} from './media-container'
 import {DisplayComponentProps, FALLBACK_EDITOR_WIDTH, MediaRender, MediaType} from './media-render'
 import {HMBlockSchema} from './schema'
@@ -161,6 +165,8 @@ const Render = (block: Block<HMBlockSchema>, editor: BlockNoteEditor<HMBlockSche
 export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => {
   const getImageUrl = useImageUrl()
   const {canEdit} = useEditorGate()
+  const openAltTextDialog = useImageAltTextDialog()
+  const altText = block.props.alt?.trim() ?? ''
 
   /** Re-embed handler for the selection menu's "Insert from URL" item. */
   const handleMenuUrl = useCallback(
@@ -283,6 +289,32 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     console.warn('No valid image source found for block:', block.id)
     return ''
   })()
+  const altTextAction = (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      data-media-container-action
+      aria-haspopup="dialog"
+      className="h-8 gap-1.5 px-2 text-xs"
+      onClick={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        openAltTextDialog({
+          currentAlt: block.props.alt ?? '',
+          opener: event.currentTarget,
+          fallbackFocus: () => editor.focus(),
+          onSave: (alt) => {
+            editor.updateBlock(block, {props: {alt}})
+            editor.announceAccessibilityMessage('Alt text saved')
+          },
+        })
+      }}
+    >
+      {!altText && <AlertTriangle aria-hidden="true" className="size-4" />}
+      {altText ? 'Edit alt text' : 'Add alt text'}
+    </Button>
+  )
   // Min image width in px.
   const minWidth = 64
   // Max image height in px.
@@ -387,7 +419,7 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
 
   // Sets the resize params, allowing the user to begin resizing the image by
   // moving the cursor left or right.
-  const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+  const leftResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
 
     setShowHandle(true)
@@ -401,7 +433,7 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
     editor.setTextCursorPosition(block.id, 'start')
   }
 
-  const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+  const rightResizeHandleMouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     setShowHandle(true)
 
@@ -412,6 +444,22 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       initialClientX: event.clientX,
     }
     editor.setTextCursorPosition(block.id, 'start')
+  }
+
+  const resizeByKeyboard = (handleUsed: 'left' | 'right') => (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const step = event.shiftKey ? 50 : 10
+    const direction = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0
+    if (!direction) return
+
+    event.preventDefault()
+    event.stopPropagation()
+    const nextWidth = Math.max(
+      256,
+      Math.min(getEditorWidth(), currentWidth + (handleUsed === 'left' ? -direction : direction) * step),
+    )
+    width = nextWidth
+    setCurrentWidth(nextWidth)
+    assign({props: {width: nextWidth.toString()}})
   }
 
   return (
@@ -429,16 +477,31 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
       onHoverOut={imageMouseLeaveHandler}
       width={`${Math.round((currentWidth / getEditorWidth()) * 10000) / 100}%`}
       onSubmitUrl={handleMenuUrl}
+      actionContent={altTextAction}
       urlMenuLabel="Insert from URL"
       urlInputPlaceholder="Paste an image URL"
       deleteLabel="Delete image"
     >
-      {showHandle && (
-        <>
-          <ResizeHandle style={{left: 4}} onMouseDown={leftResizeHandleMouseDownHandler} />
-          <ResizeHandle style={{right: 4}} onMouseDown={rightResizeHandleMouseDownHandler} />
-        </>
-      )}
+      <ResizeHandle
+        aria-label="Resize image from left edge"
+        className={cn(
+          !showHandle && 'pointer-events-none opacity-0',
+          'focus-visible:pointer-events-auto focus-visible:opacity-100',
+        )}
+        style={{left: 4}}
+        onMouseDown={leftResizeHandleMouseDownHandler}
+        onKeyDown={resizeByKeyboard('left')}
+      />
+      <ResizeHandle
+        aria-label="Resize image from right edge"
+        className={cn(
+          !showHandle && 'pointer-events-none opacity-0',
+          'focus-visible:pointer-events-auto focus-visible:opacity-100',
+        )}
+        style={{right: 4}}
+        onMouseDown={rightResizeHandleMouseDownHandler}
+        onKeyDown={resizeByKeyboard('right')}
+      />
       {imageSrc && (
         <img
           style={{
@@ -448,7 +511,8 @@ export const ImageDisplay = ({editor, block, assign}: DisplayComponentProps) => 
             objectFit: 'contain',
           }}
           src={imageSrc}
-          alt={block.props.name || block.props.alt}
+          alt={block.props.alt || ''}
+          data-missing-alt={!block.props.alt || undefined}
           contentEditable={false}
           draggable={false}
         />

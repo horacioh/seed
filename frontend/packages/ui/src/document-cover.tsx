@@ -83,15 +83,14 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
         'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm',
         modalState === 'opening' ? 'animate-in fade-in duration-300' : '',
       )}
-      onClick={handleClose}
     >
-      <div
-        className="relative flex size-full items-center justify-center"
-        onClick={(e) => {
-          e.stopPropagation()
-          handleClose()
-        }}
-      >
+      <button
+        type="button"
+        aria-label="Close enlarged document cover"
+        className="absolute inset-0 bg-transparent"
+        onClick={handleClose}
+      />
+      <div className="pointer-events-none relative flex size-full items-center justify-center">
         <img
           alt="Document cover"
           src={imageUrl(cover, 'L')}
@@ -105,8 +104,9 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
           onAnimationEnd={handleAnimationEnd}
         />
         <button
+          type="button"
           onClick={handleClose}
-          className="absolute top-4 right-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+          className="pointer-events-auto absolute top-4 right-4 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
           aria-label="Close"
         >
           <X size={20} />
@@ -123,30 +123,32 @@ export function DocumentCover({cover, className, onRemove, onChangeCover}: Docum
           cover ? 'bg-transparent' : 'bg-accent',
           className,
         )}
-        onClick={handleDoubleClick}
-        title="Click to maximize"
       >
-        <img
-          alt="Document cover"
-          src={coverUrl}
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            objectFit: 'cover',
-            transition: 'transform 0.2s ease-out',
-          }}
-          className="transition-transform duration-200"
-        />
+        <button
+          type="button"
+          aria-label="Maximize document cover"
+          className="absolute inset-0 appearance-none border-0 bg-transparent p-0 text-left"
+          onClick={handleDoubleClick}
+        >
+          <img
+            alt="Document cover"
+            src={coverUrl}
+            style={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              objectFit: 'cover',
+              transition: 'transform 0.2s ease-out',
+            }}
+            className="transition-transform duration-200"
+          />
+        </button>
         {hasCoverActions ? (
           <div
             data-document-cover-controls
             className="absolute top-4 right-4 z-20 flex items-center gap-1 rounded-lg bg-black/45 p-1 text-white opacity-100 shadow-sm backdrop-blur-sm transition-opacity duration-200 motion-reduce:transition-none md:pointer-events-none md:opacity-0 md:group-hover/cover:pointer-events-auto md:group-hover/cover:opacity-100 md:focus-within:pointer-events-auto md:focus-within:opacity-100"
-            onClick={(event) => {
-              event.stopPropagation()
-            }}
           >
             {onChangeCover ? (
               <>

@@ -259,13 +259,13 @@ export function WebBrowser() {
             <Globe aria-hidden="true" className="text-muted-foreground size-4 shrink-0" />
           )}
           {/* The address itself is in the omnibar; the header names the page, never the URL. */}
-          <span className="text-muted-foreground min-w-0 flex-1 truncate text-xs" role="status">
+          <output className="text-muted-foreground min-w-0 flex-1 truncate text-xs" aria-live="polite">
             {dialogOrigin
               ? `${dialogOrigin} is showing dialogs`
               : loading
                 ? 'Loading…'
                 : route.title || displayedOrigin(route.url)?.host || ''}
-          </span>
+          </output>
           {privatePage && <span className="bg-muted rounded px-2 py-1 text-xs">Private</span>}
           <Button
             size="icon"

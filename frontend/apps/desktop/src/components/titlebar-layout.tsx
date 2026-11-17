@@ -35,7 +35,7 @@ export function TitlebarMainRow({
           className={cn('window-drag flex shrink-0 items-center', sidebarLocked ? 'pl-0.5' : 'pl-2')}
           data-titlebar-navigation-region
         >
-          {navigation}
+          <nav aria-label="Navigation">{navigation}</nav>
         </div>
         <div className="flex min-w-0 flex-1 items-center overflow-hidden px-2" data-titlebar-omnibar-region>
           {omnibar}

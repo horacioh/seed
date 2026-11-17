@@ -1,5 +1,6 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import * as React from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {cn} from './utils'
 
 export function Tooltip({
@@ -18,11 +19,22 @@ export function Tooltip({
   // Extra classes for the tooltip content.
   contentClassName?: string
 }) {
+  const triggerRef = useRef<HTMLSpanElement>(null)
+  const [portalContainer, setPortalContainer] = useState<HTMLElement>()
+
+  useEffect(() => {
+    setPortalContainer(
+      triggerRef.current?.closest<HTMLElement>('main, [role="main"]') ??
+        document.querySelector<HTMLElement>('main, [role="main"]') ??
+        undefined,
+    )
+  }, [])
+
   return (
     <TooltipPrimitive.Root data-slot="tooltip" {...props} delayDuration={delay}>
-      <TooltipTrigger asChild>{asChild ? children : <span>{children}</span>}</TooltipTrigger>
+      <TooltipTrigger asChild>{asChild ? children : <span ref={triggerRef}>{children}</span>}</TooltipTrigger>
       {content && (
-        <TooltipContent side={side} className={contentClassName}>
+        <TooltipContent side={side} className={contentClassName} container={portalContainer}>
           {content}
         </TooltipContent>
       )}
@@ -44,10 +56,11 @@ function TooltipContent({
   className,
   sideOffset = 0,
   children,
+  container,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content>) {
+}: React.ComponentProps<typeof TooltipPrimitive.Content> & {container?: HTMLElement}) {
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={container}>
       <TooltipPrimitive.Content
         data-slot="tooltip-content"
         sideOffset={sideOffset}

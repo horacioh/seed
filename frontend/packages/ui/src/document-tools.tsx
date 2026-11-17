@@ -403,7 +403,11 @@ export function DocumentTools({
   const tabButtons = (
     <>
       {/* Hidden measurement container with labels always visible */}
-      <div className="pointer-events-none invisible absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+      <div
+        className="pointer-events-none invisible absolute h-0 w-0 overflow-hidden"
+        aria-hidden="true"
+        {...({inert: ''} as Record<string, string>)}
+      >
         <div ref={measureRef} className={cn('flex w-max items-center gap-2', mode === 'inspect' && 'md:gap-4')}>
           {buttons.map((button) => (
             <PageTab

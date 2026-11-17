@@ -156,7 +156,7 @@ export function HighlightPalette<BSchema extends BlockSchema>({
                 type="button"
                 data-testid={`highlight-${name}`}
                 className={cn(
-                  'focus:ring-foreground flex items-center gap-2 rounded-md border border-black/10 px-3 py-1.5 text-left text-sm transition-colors focus:ring-2 focus:outline-none dark:border-white/10',
+                  'focus:ring-ring flex items-center gap-2 rounded-md border border-black/10 px-3 py-1.5 text-left text-sm transition-colors focus:ring-2 focus:outline-none dark:border-white/10',
                   isDefault ? 'bg-background text-foreground' : HIGHLIGHT_SWATCH_CLASS[name],
                   !isDefault && 'dark:text-foreground text-neutral-800',
                   current === name && 'ring-foreground ring-2',

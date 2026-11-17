@@ -1,3 +1,4 @@
+import {useId} from 'react'
 import {cn} from '../utils'
 
 /**
@@ -18,27 +19,33 @@ export function SegmentedControl<T extends string>({
   disabled?: boolean
   className?: string
 }) {
+  const groupName = useId()
   return (
     <div className={cn('inline-flex items-center rounded-full bg-black/10 p-1 dark:bg-white/10', className)}>
       {options.map((option) => {
         const active = option.value === value
         return (
-          <button
+          <label
             key={option.value}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            disabled={disabled}
-            onClick={() => onChange(option.value)}
             className={cn(
-              'rounded-full px-4 py-1 text-sm font-medium transition-colors disabled:opacity-50',
+              'focus-within:ring-ring relative cursor-pointer rounded-full px-4 py-1 text-sm font-medium transition-colors focus-within:ring-2',
+              disabled && 'cursor-not-allowed opacity-50',
               active
                 ? 'bg-background text-foreground shadow-sm'
                 : 'text-muted-foreground hover:text-foreground bg-transparent',
             )}
           >
+            <input
+              type="radio"
+              name={groupName}
+              value={option.value}
+              checked={active}
+              disabled={disabled}
+              onChange={() => onChange(option.value)}
+              className="peer sr-only"
+            />
             {option.label}
-          </button>
+          </label>
         )
       })}
     </div>

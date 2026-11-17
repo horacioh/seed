@@ -254,7 +254,8 @@ export function DocumentMaintenance({
               {loadError || error}
             </p>
           )}
-          <div className="flex gap-2" role="group" aria-label="Maintenance view">
+          <fieldset className="m-0 flex gap-2 border-0 p-0">
+            <legend className="sr-only">Maintenance view</legend>
             <Button
               size="sm"
               variant={view === 'active' ? 'secondary' : 'ghost'}
@@ -271,7 +272,7 @@ export function DocumentMaintenance({
             >
               Dismissed ({dismissedItems.length})
             </Button>
-          </div>
+          </fieldset>
           {view === 'dismissed' && (
             <div className="flex flex-col gap-3">
               <p className="text-muted-foreground text-sm">

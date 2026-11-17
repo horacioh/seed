@@ -73,12 +73,12 @@ test.describe('Block Manipulation', () => {
       await editorHelpers.typeText('/head')
       // await page.waitForTimeout(300)
 
-      // Heading should be visible in the Mantine Menu
-      const headingItem = page.locator('.mantine-Menu-dropdown >> text="Heading"')
+      const slashMenu = page.getByRole('listbox', {name: 'Block suggestions'})
+      const headingItem = slashMenu.getByRole('option').filter({hasText: 'Heading'})
       await expect(headingItem).toBeVisible()
 
       // Paragraph should not be visible (filtered out)
-      const paragraphItem = page.locator('.mantine-Menu-dropdown >> text="Paragraph"')
+      const paragraphItem = slashMenu.getByRole('option').filter({hasText: 'Paragraph'})
       await expect(paragraphItem).not.toBeVisible()
     })
   })

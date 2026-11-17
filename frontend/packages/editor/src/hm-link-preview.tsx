@@ -118,9 +118,10 @@ export function HypermediaLinkPreview(
         </div>
       ) : (
         <div className="flex w-full items-center justify-between gap-2 px-1">
-          <div
+          <button
+            type="button"
             data-testid="hm-link-preview-open-button"
-            className="flex flex-1 cursor-pointer overflow-hidden rounded-lg px-2 py-1.5 hover:bg-black/5 hover:opacity-80 active:bg-black/5 active:opacity-80 dark:hover:bg-white/10 dark:active:bg-white/10"
+            className="flex flex-1 cursor-pointer items-center overflow-hidden rounded-lg border-0 bg-transparent px-2 py-1.5 text-left hover:bg-black/5 hover:opacity-80 active:bg-black/5 active:opacity-80 dark:hover:bg-white/10 dark:active:bg-white/10"
             onClick={() => props.openUrl(props.url)}
             {...highlight(profileAccountUid ? hmId(profileAccountUid) : unpackedRef)}
           >
@@ -131,7 +132,7 @@ export function HypermediaLinkPreview(
             >
               {!!unpackedRef ? account.data?.metadata?.name ?? document?.metadata.name ?? props.url : props.url}
             </SizableText>
-          </div>
+          </button>
           <Button
             data-testid="hm-link-preview-edit-button"
             className="hover:bg-black/5 hover:opacity-80 dark:hover:bg-white/10"

@@ -378,22 +378,27 @@ export default function QueryDocumentsPage() {
   return (
     <PanelContainer>
       <MainWrapper scrollable>
-        <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8">
+        <section
+          aria-labelledby="query-documents-heading"
+          className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8"
+        >
           <header className="border-border flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1">
               <div className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-[0.18em] uppercase">
                 <Filter className="size-3.5" /> Document index
               </div>
-              <h1 className="text-2xl font-semibold tracking-tight">Query Documents</h1>
+              <h1 id="query-documents-heading" className="text-2xl font-semibold tracking-tight">
+                Query Documents
+              </h1>
               <p className="text-muted-foreground max-w-xl text-sm">
                 Explore visible document attributes without saving a search.
               </p>
             </div>
             <div className="flex items-center gap-2">
               {isLoading ? (
-                <span className="text-muted-foreground flex items-center gap-1.5 text-xs" role="status">
+                <output className="text-muted-foreground flex items-center gap-1.5 text-xs" aria-live="polite">
                   <Loader2 className="size-3.5 animate-spin" /> Updating
-                </span>
+                </output>
               ) : null}
               <Button variant="ghost" size="sm" onClick={reset} aria-label="Reset query">
                 <RotateCcw /> Reset
@@ -421,26 +426,25 @@ export default function QueryDocumentsPage() {
 
             <div className="space-y-3 p-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Match</span>
-                <div
-                  className="bg-background inline-flex rounded-md border p-0.5"
-                  role="group"
-                  aria-label="Condition mode"
-                >
-                  {(['and', 'or'] as const).map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setMode(value)}
-                      className={cn(
-                        'rounded px-2.5 py-1 text-xs font-medium transition-colors',
-                        mode === value && 'bg-primary text-primary-foreground shadow-sm',
-                      )}
-                    >
-                      {value === 'and' ? 'All' : 'Any'}
-                    </button>
-                  ))}
-                </div>
+                <fieldset className="m-0 min-w-0 border-0 p-0">
+                  <legend className="text-muted-foreground text-xs font-medium tracking-wide uppercase">Match</legend>
+                  <div className="bg-background inline-flex rounded-md border p-0.5">
+                    {(['and', 'or'] as const).map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        aria-pressed={mode === value}
+                        onClick={() => setMode(value)}
+                        className={cn(
+                          'rounded px-2.5 py-1 text-xs font-medium transition-colors',
+                          mode === value && 'bg-primary text-primary-foreground shadow-sm',
+                        )}
+                      >
+                        {value === 'and' ? 'All' : 'Any'}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
                 <span className="text-muted-foreground text-xs">conditions</span>
               </div>
 
@@ -648,7 +652,7 @@ export default function QueryDocumentsPage() {
               </div>
             ) : null}
           </section>
-        </main>
+        </section>
       </MainWrapper>
     </PanelContainer>
   )
@@ -765,8 +769,8 @@ function AutocompleteInput({
             setActiveIndex(null)
           }
         }}
-        role="combobox"
         aria-autocomplete="list"
+        list={listId}
         aria-expanded={open && visibleSuggestions.length > 0}
         aria-controls={listId}
         aria-activedescendant={activeIndex === null ? undefined : `${listId}-option-${activeIndex}`}
@@ -774,22 +778,30 @@ function AutocompleteInput({
         placeholder={placeholder}
         aria-label={ariaLabel}
       />
+      <datalist id={listId}>
+        {visibleSuggestions.map((suggestion, index) => (
+          <option
+            key={suggestion.value}
+            id={`${listId}-option-${index}`}
+            value={suggestion.value}
+            aria-label={suggestion.label ?? suggestion.value}
+            aria-selected={activeIndex === index}
+          />
+        ))}
+      </datalist>
       <ChevronDown className="text-muted-foreground pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2" />
       {open && visibleSuggestions.length ? (
         <div
           ref={listRef}
           id={listId}
-          role="listbox"
           className="border-border bg-popover absolute z-50 mt-1 max-h-52 w-full overflow-y-auto overscroll-contain rounded-md border p-1 shadow-lg"
-          onMouseDown={(event) => event.preventDefault()}
         >
           {visibleSuggestions.map((suggestion, index) => (
             <button
               key={suggestion.value}
               id={`${listId}-option-${index}`}
               type="button"
-              role="option"
-              aria-selected={activeIndex === index}
+              aria-pressed={activeIndex === index}
               className={cn(
                 'hover:bg-accent flex w-full items-start justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm outline-none',
                 activeIndex === index && 'bg-accent',

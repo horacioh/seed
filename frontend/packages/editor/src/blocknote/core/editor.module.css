@@ -2,7 +2,6 @@
 
 @layer reset {
   .bnEditor {
-    outline: none;
     /* padding-inline: 54px; */
 
     /* Define a set of colors to be used throughout the app for consistency

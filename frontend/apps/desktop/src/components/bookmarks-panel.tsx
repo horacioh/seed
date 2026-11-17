@@ -115,6 +115,7 @@ export function BookmarksPanel() {
   const removeBookmark = useRemoveBookmark()
 
   return (
+    // oxlint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Arrow keys move focus between bookmark rows
     <section
       aria-label="Bookmarks"
       className="bg-card flex h-full min-h-0 flex-col"
@@ -237,6 +238,7 @@ function BookmarkRow({
 
   return (
     <div
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- The row contains a remove button, which an anchor cannot contain
       role="link"
       tabIndex={0}
       className="group hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-ring flex min-h-12 cursor-pointer items-center gap-3 border-b px-4 outline-none last:border-b-0 focus-visible:ring-2 focus-visible:ring-inset"

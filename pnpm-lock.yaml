@@ -745,6 +745,9 @@ importers:
       '@reforged/maker-appimage':
         specifier: ^5.1.0
         version: 5.1.1(bluebird@3.7.2)(supports-color@7.2.0)
+      '@shm/a11y-testing':
+        specifier: workspace:*
+        version: link:../../packages/a11y-testing
       '@types/katex':
         specifier: 0.16.7
         version: 0.16.7
@@ -827,18 +830,36 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@playwright/test':
+        specifier: 1.57.0
+        version: 1.57.0
+      '@shm/a11y-testing':
+        specifier: workspace:*
+        version: link:../../packages/a11y-testing
+      '@types/jsdom':
+        specifier: ^21.1.7
+        version: 21.1.7
       '@types/react':
         specifier: 18.2.64
         version: 18.2.64
       '@types/react-dom':
         specifier: 18.2.21
         version: 18.2.21
+      culori:
+        specifier: ^4.0.2
+        version: 4.0.2
+      jsdom:
+        specifier: ^24.1.3
+        version: 24.1.3(supports-color@7.2.0)
       tsx:
         specifier: ^4.19.4
         version: 4.21.0
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+      vitest:
+        specifier: 4.1.12
+        version: 4.1.12(@opentelemetry/api@1.9.1)(@types/node@24.19.1)(happy-dom@21.0.4)(jiti@2.6.1)(jsdom@24.1.3(supports-color@7.2.0))(lightningcss@1.30.2)(msw@2.12.7(@types/node@24.19.1)(typescript@5.8.3))(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.3)
 
   frontend/apps/explore:
     dependencies:
@@ -1382,12 +1403,18 @@ importers:
         specifier: 4.6.6
         version: 4.6.6(patch_hash=6f3e769c01c6e839bad013af447cce269dee38a9f4f7adc5b5d46eb01859fe1e)
     devDependencies:
+      '@playwright/test':
+        specifier: 1.57.0
+        version: 1.57.0
       '@remix-run/dev':
         specifier: 2.17.5
         version: 2.17.5(@remix-run/react@2.17.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.8.3))(@remix-run/serve@2.17.5(supports-color@7.2.0)(typescript@5.8.3))(@types/node@24.19.1)(babel-plugin-macros@3.1.0)(bluebird@3.7.2)(jiti@2.6.1)(lightningcss@1.30.2)(supports-color@7.2.0)(terser@5.46.0)(ts-node@10.9.1(@types/node@24.19.1)(typescript@5.8.3))(tsx@4.21.0)(typescript@5.8.3)(vite@6.4.5(@types/node@24.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.3))(yaml@2.8.3)
       '@remix-run/testing':
         specifier: 2.17.5
         version: 2.17.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.8.3)
+      '@shm/a11y-testing':
+        specifier: workspace:*
+        version: link:../../packages/a11y-testing
       '@types/better-sqlite3':
         specifier: ^7.6.13
         version: 7.6.13
@@ -1748,6 +1775,9 @@ importers:
       '@playwright/test':
         specifier: 1.57.0
         version: 1.57.0
+      '@shm/a11y-testing':
+        specifier: workspace:*
+        version: link:../a11y-testing
       '@types/react':
         specifier: 18.2.64
         version: 18.2.64
@@ -6638,6 +6668,9 @@ packages:
   '@types/jscodeshift@17.3.0':
     resolution: {integrity: sha512-ogvGG8VQQqAQQ096uRh+d6tBHrYuZjsumHirKtvBa5qEyTMN3IQJ7apo+sw9lxaB/iKWIhbbLlF3zmAWk9XQIg==}
 
+  '@types/jsdom@21.1.7':
+    resolution: {integrity: sha512-yOriVnggzrnQ3a9OKOCxaVuSug3w3/SbOj5i7VwXWZEyUNl3bLF9V3MfxGbZKuwqJOQyRfqXyROBB1CoZLFWzA==}
+
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -6776,6 +6809,9 @@ packages:
 
   '@types/tedious@4.0.14':
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
+
+  '@types/tough-cookie@4.0.5':
+    resolution: {integrity: sha512-/Ad8+nIOV7Rl++6f1BdKxFSMgmoqEoYbHRpPcx3JEfv8VRsQe9Z4mCXeJBzxs7mbHY/XOZZuXlRNfhpVPbs6ZA==}
 
   '@types/triple-beam@1.3.5':
     resolution: {integrity: sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==}
@@ -20406,6 +20442,12 @@ snapshots:
       ast-types: 0.16.1
       recast: 0.23.11
 
+  '@types/jsdom@21.1.7':
+    dependencies:
+      '@types/node': 20.19.30
+      '@types/tough-cookie': 4.0.5
+      parse5: 7.3.0
+
   '@types/json-schema@7.0.15': {}
 
   '@types/jsonfile@6.1.4':
@@ -20558,6 +20600,8 @@ snapshots:
   '@types/tedious@4.0.14':
     dependencies:
       '@types/node': 20.19.30
+
+  '@types/tough-cookie@4.0.5': {}
 
   '@types/triple-beam@1.3.5': {}
 

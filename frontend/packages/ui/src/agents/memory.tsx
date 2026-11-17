@@ -698,7 +698,7 @@ export function AgentMemoryTab({
           }}
         >
           <Input
-            autoFocus
+            focusOnMount
             value={newFilePath}
             onChange={(event) => setNewFilePath(event.target.value)}
             placeholder="notes/topic.md"
@@ -722,7 +722,7 @@ export function AgentMemoryTab({
           }}
         >
           <Input
-            autoFocus
+            focusOnMount
             value={webUrl}
             onChange={(event) => setWebUrl(event.target.value)}
             placeholder="https://example.com/file.png"
@@ -759,7 +759,10 @@ export function AgentMemoryTab({
           <Panel id="agent-memory-tree" defaultSize="25%" minSize="12%" maxSize="60%">
             {treePane}
           </Panel>
-          <Separator className="panel-resize-handle visible" />
+          <Separator
+            aria-label="Resize agent memory panel"
+            className="panel-resize-handle focus-visible:ring-ring visible focus-visible:ring-2"
+          />
           <Panel id="agent-memory-file" minSize="40%">
             {filePane}
           </Panel>
@@ -860,6 +863,7 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
   if (objectUrl && kind === 'video') {
     return (
       <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
+        {/* oxlint-disable-next-line jsx-a11y/media-has-caption -- preview of the user's own uploaded file; no caption source exists */}
         <video src={objectUrl} controls className="max-h-full max-w-full rounded-md" />
       </div>
     )
@@ -867,6 +871,7 @@ function BinaryFilePreview({file, onDownload}: {file: AgentMemoryFile; onDownloa
   if (objectUrl && kind === 'audio') {
     return (
       <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto p-4">
+        {/* oxlint-disable-next-line jsx-a11y/media-has-caption -- preview of the user's own uploaded file; no caption source exists */}
         <audio src={objectUrl} controls className="w-full max-w-md" />
       </div>
     )

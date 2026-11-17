@@ -218,20 +218,15 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
         zIndex: 10,
       }
 
+  const stopPointerDown = (event: React.MouseEvent | React.PointerEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
   return (
     <div
       data-bn-block-hover-actions="true"
       style={style}
-      onMouseDown={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-      }}
-      onPointerDown={(e) => {
-        // Stop the pointer event from reaching the editor surface so a touch
-        // tap on the card does not get interpreted as a tap on the document.
-        e.preventDefault()
-        e.stopPropagation()
-      }}
       onMouseEnter={() => editor.blockHoverActions?.freeze()}
       onMouseLeave={() => {
         editor.blockHoverActions?.unfreeze()
@@ -247,6 +242,8 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
             aria-label="Copy block link"
             title="Copy block link"
             className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+            onMouseDown={stopPointerDown}
+            onPointerDown={stopPointerDown}
             onClick={(e) => {
               e.stopPropagation()
               onCopyBlockLink(blockId)
@@ -262,6 +259,8 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
               aria-label="Start comment"
               title="Start comment"
               className="text-muted-foreground hover:bg-accent hover:text-foreground rounded p-1"
+              onMouseDown={stopPointerDown}
+              onPointerDown={stopPointerDown}
               onClick={(e) => {
                 e.stopPropagation()
                 onStartComment(blockId)
@@ -282,6 +281,8 @@ export function BlockHoverActionsPositioner<BSchema extends BlockSchema = BlockS
             aria-label={`Open ${citationCount} citations`}
             title="Open citations"
             className="text-muted-foreground hover:bg-accent hover:text-foreground flex flex-col items-center gap-0.5 rounded p-1"
+            onMouseDown={stopPointerDown}
+            onPointerDown={stopPointerDown}
             onClick={(e) => {
               e.stopPropagation()
               onOpenCitations(blockId)

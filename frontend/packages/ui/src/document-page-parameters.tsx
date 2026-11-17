@@ -73,11 +73,7 @@ export function DocumentPageParameters({input, onClose}: {input: PageInput; onCl
           <DialogTitle>Page parameters</DialogTitle>
           <DialogDescription>Adjust this view. Your choices are included in the page link.</DialogDescription>
         </DialogHeader>
-        {!contract && !error && (
-          <p role="status" className="text-muted-foreground text-sm">
-            Loading parameters…
-          </p>
-        )}
+        {!contract && !error && <output className="text-muted-foreground block text-sm">Loading parameters…</output>}
         {error && (
           <div role="alert" className="text-destructive text-sm">
             {error}

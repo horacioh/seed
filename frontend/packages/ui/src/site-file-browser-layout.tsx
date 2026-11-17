@@ -174,9 +174,11 @@ function WebSiteSidebarLayout({
             minSize={240}
             maxSize="40%"
           >
-            {sidebar}
+            <aside aria-label="Site documents" className="h-full">
+              {sidebar}
+            </aside>
           </AnimatedPanel>
-          <PanelSeparator open={open} />
+          <PanelSeparator open={open} label="Resize file browser" />
           <Panel id="site-main-content" minSize="60%">
             {children}
           </Panel>

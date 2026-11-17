@@ -343,6 +343,9 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
   const [customVaultUrl, setCustomVaultUrl] = useState('https://hyper.media')
   const [showCustomVaultInput, setShowCustomVaultInput] = useState(false)
   const customVaultInputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (showCustomVaultInput) customVaultInputRef.current?.focus()
+  }, [showCustomVaultInput])
 
   const handleVaultSignIn = async (urlOverride?: string, email?: string) => {
     const vaultUrl = urlOverride || defaultVaultUrl
@@ -410,13 +413,19 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
                 </a>
                 .
               </SizableText> */}
-      <Button variant="default" type="submit" size="lg" className="w-full" onClick={() => handleVaultSignIn()}>
+      <Button
+        variant="default"
+        type="submit"
+        size="lg"
+        className="w-full text-white transition-none dark:!text-neutral-950"
+        onClick={() => handleVaultSignIn()}
+      >
         {tx('Create identity in Hypermedia')}
       </Button>
 
       <div className="flex items-center gap-2">
         <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-        <span className="text-xs text-neutral-400 dark:text-neutral-500">Or</span>
+        <span className="text-xs text-neutral-600 dark:text-neutral-300">Or</span>
         <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
       </div>
 
@@ -424,10 +433,10 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
         {tx('Already have a Hypermedia identity')}
       </Button>
 
-      <div className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+      <div className="text-center text-sm text-neutral-700 dark:text-neutral-200">
         <button
           type="button"
-          className="cursor-pointer hover:text-neutral-700 dark:hover:text-neutral-300"
+          className="cursor-pointer hover:text-neutral-800 dark:hover:text-white"
           onClick={() => setShowCustomVaultInput(true)}
         >
           {tx('I have a different identity domain')}
@@ -445,7 +454,6 @@ function CreateAccountDialog({input}: {input: CreateAccountDialogInput; onClose:
             value={customVaultUrl}
             onChange={(e) => setCustomVaultUrl(e.target.value)}
             placeholder={defaultVaultUrl}
-            autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter' && customVaultUrl.trim()) {
                 handleVaultSignIn(customVaultUrl.trim())

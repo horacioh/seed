@@ -53,23 +53,29 @@ export function OmnibarUrl({
         'hover:bg-muted/50 max-w-2xl transition-colors',
         className,
       )}
-      onClick={() => {
-        setRevealed(true)
-        inputRef.current?.focus()
-      }}
     >
       <input
         ref={inputRef}
         readOnly
         value={value}
+        aria-label="URL"
         spellCheck={false}
+        onClick={(event) => event.stopPropagation()}
         onFocus={() => setRevealed(true)}
         onBlur={() => setRevealed(false)}
         className="text-muted-foreground min-w-0 flex-1 truncate border-none bg-transparent py-1.5 font-mono text-xs outline-none"
       />
-      <div className="mr-1 flex shrink-0 items-center" onClick={(e) => e.stopPropagation()}>
+      <div className="mr-1 flex shrink-0 items-center">
         <Tooltip content={copyLabel}>
-          <Button variant="ghost" size="iconSm" aria-label={copyLabel} onClick={copy}>
+          <Button
+            variant="ghost"
+            size="iconSm"
+            aria-label={copyLabel}
+            onClick={(event) => {
+              event.stopPropagation()
+              copy()
+            }}
+          >
             <Copy className="size-3.5" />
           </Button>
         </Tooltip>

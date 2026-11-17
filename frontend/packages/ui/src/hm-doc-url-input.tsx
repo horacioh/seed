@@ -263,6 +263,7 @@ function SearchUI({
           const isSelected = normalizedFocusedIndex === itemIndex
 
           return (
+            // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- Mousedown only keeps focus in the input; the result button handles selection
             <div key={item.key} data-nav-link-result="true" tabIndex={-1} onMouseDown={(e) => e.preventDefault()}>
               <SearchResultItem
                 item={{

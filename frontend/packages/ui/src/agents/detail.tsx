@@ -117,7 +117,7 @@ import {
 } from 'lucide-react'
 import {AccountAvatar} from '@shm/ui/account-avatar'
 import {SigningIdentityIcon} from './signing-identity-icon'
-import React, {useEffect, useMemo, useRef, useState, type ReactNode} from 'react'
+import React, {useEffect, useId, useMemo, useRef, useState, type ReactNode} from 'react'
 import {activityConditions, getSeedTool} from '@seed-hypermedia/apps-protocol'
 import {
   AGENT_PUBLISH_GRANT,
@@ -197,6 +197,7 @@ export function AgentDetailPage({
 }) {
   // The Tools tab became the Permissions page under Settings; older routes still land there.
   const tab: AgentPageTab = routeTab === 'tools' ? 'permissions' : routeTab
+  const modelSelectId = useId()
   const selectedAccountId = useSelectedAccountId()
   const navigate = useNavigate()
   const replaceRoute = useNavigate('replace')
@@ -664,9 +665,11 @@ export function AgentDetailPage({
             onBack={() => navigate({key: 'agent', agentId, serverUrl, tab: 'settings'})}
             actions={
               promptStatus ? (
-                <SizableText size="sm" color={promptSaveState === 'error' ? 'destructive' : 'muted'} role="status">
-                  {promptStatus}
-                </SizableText>
+                <output>
+                  <SizableText size="sm" color={promptSaveState === 'error' ? 'destructive' : 'muted'}>
+                    {promptStatus}
+                  </SizableText>
+                </output>
               ) : undefined
             }
           />
@@ -1024,11 +1027,12 @@ export function AgentDetailPage({
                     onOpen={() => navigate({key: 'agent', agentId, serverUrl, tab: 'mcp'})}
                   />
                   <div className="grid gap-3 md:grid-cols-2">
-                    <label className="flex flex-col gap-1">
+                    <label htmlFor={modelSelectId} className="flex flex-col gap-1">
                       <SizableText size="sm" weight="bold">
                         Model
                       </SizableText>
                       <ProviderModelSelect
+                        id={modelSelectId}
                         serverUrl={serverUrl}
                         accountUid={selectedAccountId}
                         agentId={agentId}
@@ -2854,6 +2858,7 @@ function CombineAgentTriggersDialog({
   }
   onClose: () => void
 }) {
+  const fieldId = useId()
   const combine = useCombineAgentTriggers(input.serverUrl, input.selectedAccountId)
   const [otherId, setOtherId] = useState(input.others[0]?.id ?? '')
   const [useOtherAction, setUseOtherAction] = useState(false)
@@ -2867,11 +2872,12 @@ function CombineAgentTriggersDialog({
         Conditions will share one action in “{input.target.name}”. The other trigger will be retired, with its history
         retained. Existing runs continue.
       </DialogDescription>
-      <label className="grid gap-1">
+      <label htmlFor={`${fieldId}-other-trigger`} className="grid gap-1">
         <SizableText size="sm" weight="bold">
           Combine with
         </SizableText>
         <SelectDropdown
+          triggerId={`${fieldId}-other-trigger`}
           value={otherId}
           options={input.others.map(({id, name}) => ({value: id, label: name}))}
           onValue={setOtherId}
@@ -2885,11 +2891,12 @@ function CombineAgentTriggersDialog({
         </SizableText>
         {other ? <SizableText size="sm">{<TriggerSourceSummary source={other.source} />}</SizableText> : null}
       </div>
-      <label className="grid gap-1">
+      <label htmlFor={`${fieldId}-action-source`} className="grid gap-1">
         <SizableText size="sm" weight="bold">
           Use the action and instructions from
         </SizableText>
         <SelectDropdown
+          triggerId={`${fieldId}-action-source`}
           value={useOtherAction ? 'other' : 'target'}
           options={[
             {value: 'target', label: input.target.name},
@@ -2945,6 +2952,7 @@ function CreateAgentTriggerDialog({
   input: {serverUrl: string; selectedAccountId: string | null | undefined; agentId: string}
   onClose: () => void
 }) {
+  const nameInputId = useId()
   const navigate = useNavigate()
   const createTrigger = useCreateAgentTrigger(input.serverUrl, input.selectedAccountId)
   const [sourceDraftOpen, setSourceDraftOpen] = useState(false)
@@ -3008,11 +3016,12 @@ function CreateAgentTriggerDialog({
           involved.
         </DialogDescription>
       </div>
-      <label className="flex flex-col gap-1">
+      <label htmlFor={nameInputId} className="flex flex-col gap-1">
         <SizableText size="sm" weight="bold">
           Name
         </SizableText>
         <Input
+          id={nameInputId}
           value={name}
           onChange={(event) => {
             nameEdited.current = true
@@ -3232,13 +3241,14 @@ function WebhookEndpointSection({
 }
 
 function WebhookCredential({label, value, onCopy}: {label: string; value: string; onCopy: () => void}) {
+  const inputId = useId()
   return (
-    <label className="flex flex-col gap-1">
+    <label htmlFor={inputId} className="flex flex-col gap-1">
       <SizableText size="sm" weight="bold">
         {label}
       </SizableText>
       <div className="flex min-w-0 gap-2">
-        <Input className="min-w-0 flex-1 font-mono" value={value} readOnly />
+        <Input id={inputId} className="min-w-0 flex-1 font-mono" value={value} readOnly />
         <Button type="button" variant="outline" onClick={onCopy} aria-label={`Copy ${label.toLowerCase()}`}>
           <Copy className="size-4" /> Copy
         </Button>

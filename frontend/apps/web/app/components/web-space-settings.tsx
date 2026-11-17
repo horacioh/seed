@@ -100,9 +100,9 @@ export function WebSpaceSettingsPage({
             onClick={() => leave(() => navigate({key: 'document', id: siteId}))}
           />
           {!identityLoaded ? (
-            <div role="status" aria-label="Loading account" className="flex justify-center py-10">
+            <output aria-label="Loading account" className="flex justify-center py-10">
               <Spinner />
-            </div>
+            </output>
           ) : !canManage ? (
             <p className="text-muted-foreground">Sign in as the space owner to change these settings.</p>
           ) : resource.isInitialLoading ? (

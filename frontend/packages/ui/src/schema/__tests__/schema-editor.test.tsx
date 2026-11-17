@@ -91,13 +91,13 @@ describe('SchemaEditor (struct form)', () => {
     // a new field starts required
     const fieldName = Object.keys(latest.properties ?? {})[0]!
     expect(requiredFieldNames(latest)).toContain(fieldName)
-    const checkbox = container.querySelector('[role="checkbox"]') as HTMLElement
-    expect(checkbox.getAttribute('aria-checked')).toBe('true')
+    const checkbox = container.querySelector('input[type="checkbox"]') as HTMLInputElement
+    expect(checkbox.checked).toBe(true)
     // untoggle → removed from required
     click(checkbox)
     expect(requiredFieldNames(latest)).not.toContain(fieldName)
     // toggle back → required again
-    click(container.querySelector('[role="checkbox"]') as HTMLElement)
+    click(container.querySelector('input[type="checkbox"]') as HTMLElement)
     expect(requiredFieldNames(latest)).toContain(fieldName)
   })
 
@@ -322,7 +322,7 @@ describe('SchemaEditor (generics and JSON mode)', () => {
     act(() => {
       root.render(<Harness initial={{anyOf: [{type: BLOCK}]}} />)
     })
-    click([...container.querySelectorAll('button[role="tab"]')].find((b) => b.textContent === 'JSON')!)
+    click([...container.querySelectorAll('button')].find((b) => b.textContent === 'JSON')!)
     const json = container.querySelector('[data-testid="schema-json-editor"] textarea') as HTMLTextAreaElement
     const setValue = (v: string) =>
       act(() => {

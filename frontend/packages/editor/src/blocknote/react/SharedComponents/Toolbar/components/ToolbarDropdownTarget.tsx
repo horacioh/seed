@@ -15,6 +15,8 @@ export const ToolbarDropdownTarget = forwardRef<HTMLButtonElement, ToolbarDropdo
     const TargetIcon = props.icon
     return (
       <Button
+        aria-label={props.text}
+        sx={{'&:focus-visible': {outline: '2px solid var(--ring)', outlineOffset: 2}}}
         leftIcon={TargetIcon && <TargetIcon size={16} />}
         rightIcon={<ChevronDown />}
         size={'xs'}

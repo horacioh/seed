@@ -354,15 +354,19 @@ export function ExplorePage(props: ExplorePageProps) {
     updateQuery(withPresentation(props.parsed.ast, presentation))
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8">
+    <section
+      aria-labelledby="explore-heading"
+      className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-6 lg:px-8"
+    >
       <header className="border-border flex flex-col gap-4 border-b pb-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Explore</h1>
+          <h1 id="explore-heading" className="text-3xl font-bold tracking-tight">
+            Explore
+          </h1>
           <div className="relative w-full sm:max-w-xl">
             <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" aria-hidden />
             <Input
               ref={inputRef}
-              autoFocus
               value={searchBox.text}
               onChangeText={(text) =>
                 setSearchBox((box) => {
@@ -506,13 +510,12 @@ export function ExplorePage(props: ExplorePageProps) {
       </header>
 
       {willSearch ? (
-        <nav className="border-border flex flex-wrap gap-1 border-b" role="tablist" aria-label="Explore result types">
+        <nav className="border-border flex flex-wrap gap-1 border-b" aria-label="Explore result types">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
+              aria-pressed={activeTab === tab.id}
               onClick={() => {
                 setTabPicked(true)
                 setActiveTab(tab.id)
@@ -681,7 +684,7 @@ export function ExplorePage(props: ExplorePageProps) {
           <p className="text-muted-foreground mt-5 text-center text-xs">End of results</p>
         ) : null}
       </section>
-    </main>
+    </section>
   )
 }
 

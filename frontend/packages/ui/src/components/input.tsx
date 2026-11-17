@@ -4,6 +4,7 @@ import {cn} from '../utils'
 
 export type InputProps = React.ComponentProps<'input'> & {
   onChangeText?: (value: string) => void
+  focusOnMount?: boolean
 } & VariantProps<typeof inputVariants>
 
 const inputVariants = cva(
@@ -22,10 +23,16 @@ const inputVariants = cva(
 )
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({className, type, onChangeText, onChange, variant = 'default', ...props}, ref) => {
+  ({className, type, onChangeText, onChange, variant = 'default', focusOnMount, ...props}, ref) => {
+    const inputRef = React.useRef<HTMLInputElement>(null)
+    React.useImperativeHandle(ref, () => inputRef.current!, [])
+    React.useEffect(() => {
+      if (focusOnMount) inputRef.current?.focus()
+    }, [focusOnMount])
+
     return (
       <input
-        ref={ref}
+        ref={inputRef}
         type={type}
         data-slot="input"
         className={cn(inputVariants({variant}), className)}

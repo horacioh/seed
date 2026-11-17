@@ -301,7 +301,6 @@ export function MobilePanelSheet({
             event.preventDefault()
             if (returnFocus.current?.isConnected) returnFocus.current.focus({preventScroll: true})
           }}
-          role="dialog"
           aria-modal="true"
           aria-labelledby={header ? undefined : titleId}
           aria-label={header ? title : undefined}

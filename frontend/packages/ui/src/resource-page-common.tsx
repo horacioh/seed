@@ -1815,6 +1815,16 @@ export function PageShell({
   const navigate = useNavigate()
   const [isFileBrowserOpen, setIsFileBrowserOpen] = useState(false)
   const itemsForHeader = liveNavigationItems ?? headerData.items
+  const documentLanguage =
+    typeof document?.metadata?.language === 'string'
+      ? document.metadata.language
+      : typeof headerData.siteHomeDocument?.metadata?.language === 'string'
+        ? headerData.siteHomeDocument.metadata.language
+        : 'en'
+
+  useEffect(() => {
+    window.document.documentElement.lang = documentLanguage
+  }, [documentLanguage])
 
   return (
     <SiteFileBrowserLayout
@@ -1844,12 +1854,20 @@ export function PageShell({
         // web paint ever reads them.
         data-header-layout={headerData.isCenterLayout ? 'center' : 'bar'}
         className={cn(
-          'dark:bg-background flex max-h-full flex-col bg-white',
+          'dark:bg-background flex max-h-full flex-col overflow-x-clip bg-white',
           // On desktop: fill viewport height for element scrolling (use dvh for mobile browsers)
           // On mobile: natural height for document scrolling
           isMobile ? 'min-h-dvh has-[[data-document-page-main]]:h-dvh' : 'h-dvh',
         )}
       >
+        {!IS_DESKTOP ? (
+          <a
+            href="#main-content"
+            className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:px-4 focus:py-2 focus:ring-2 focus:outline-none"
+          >
+            Skip to content
+          </a>
+        ) : null}
         <SiteHeader
           siteHomeId={siteHomeId}
           docId={docId}
@@ -1866,7 +1884,13 @@ export function PageShell({
           editNavMenuPortalRef={editNavMenuPortalRef}
         />
         <TransientResourceBanner error={transientResourceError ?? null} />
-        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        {IS_DESKTOP ? (
+          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        ) : (
+          <main id="main-content" tabIndex={-1} className="flex min-h-0 flex-1 flex-col">
+            {children}
+          </main>
+        )}
       </div>
     </SiteFileBrowserLayout>
   )
@@ -1961,9 +1985,9 @@ function TransientResourceBanner({error}: {error: TransientResourceError}) {
       break
   }
   return (
-    <div role="status" className={cn('px-4 py-2 text-xs', tone)} data-testid="transient-resource-banner">
+    <output className={cn('block px-4 py-2 text-xs', tone)} data-testid="transient-resource-banner">
       {message}
-    </div>
+    </output>
   )
 }
 
@@ -3844,7 +3868,7 @@ function PanelContentRenderer({
           contentMaxWidth={contentMaxWidth}
           targetDomain={siteUrl}
           CommentEditor={CommentEditor}
-          autoFocus={autoFocusComments}
+          focusOnMount={autoFocusComments}
         />
       )
     case 'directory':
@@ -3872,7 +3896,7 @@ function CommentsPanelContent({
   contentMaxWidth,
   targetDomain,
   CommentEditor,
-  autoFocus = true,
+  focusOnMount = true,
 }: {
   docId: UnpackedHypermediaId
   openComment?: string
@@ -3880,7 +3904,7 @@ function CommentsPanelContent({
   contentMaxWidth: number
   targetDomain?: string
   CommentEditor?: React.ComponentType<CommentEditorProps>
-  autoFocus?: boolean
+  focusOnMount?: boolean
 }) {
   const commentsContext = useCommentsServiceContext()
   const route = useNavRoute()
@@ -3946,7 +3970,7 @@ function CommentsPanelContent({
               isReplying={panelRoute.isReplying ?? !!openComment}
               replyCommentVersion={panelRoute.replyCommentVersion}
               rootReplyCommentVersion={panelRoute.rootReplyCommentVersion}
-              focusOnMount={autoFocus && !!panelRoute.isReplying}
+              focusOnMount={focusOnMount && !!panelRoute.isReplying}
             />
           ) : undefined
         }
@@ -4233,7 +4257,7 @@ function BindingSchemaSection({
         {defining ? (
           <div className="flex flex-wrap items-center gap-2">
             <div className="min-w-64 flex-1">
-              <HMEntityField mode="schema" value="" onValue={setReference} onOpen={openUrl} autoFocus />
+              <HMEntityField mode="schema" value="" onValue={setReference} onOpen={openUrl} focusOnMount />
             </div>
             <SizableText size="xs" className="text-muted-foreground">
               or
@@ -4718,7 +4742,8 @@ function CollectionViewControls({
   const id = useId()
 
   return (
-    <div role="group" aria-label="Collection views" className="bg-muted flex items-center rounded-lg p-[3px]">
+    <fieldset className="bg-muted flex items-center rounded-lg p-[3px]">
+      <legend className="sr-only">Collection views</legend>
       {(
         [
           {value: 'Table', label: 'Table', Icon: TableIcon},
@@ -4767,7 +4792,7 @@ function CollectionViewControls({
           </Popover>
         )
       })}
-    </div>
+    </fieldset>
   )
 }
 

@@ -7,7 +7,7 @@ import {Notice} from '@shm/ui/notice'
 import {SizableText} from '@shm/ui/text'
 import {cn} from '@shm/ui/utils'
 import {Check, ChevronsUpDown, Plus} from 'lucide-react'
-import {useMemo, useState} from 'react'
+import {useMemo, useRef, useState} from 'react'
 import {curateProviderModels, modelLabel} from './model-utils'
 import {ProviderIcon} from './provider-icons'
 
@@ -20,6 +20,7 @@ import {ProviderIcon} from './provider-icons'
  * dropdown + model dropdown in agent settings and agent creation.
  */
 export function ProviderModelSelect({
+  id,
   serverUrl,
   accountUid,
   agentId,
@@ -30,6 +31,7 @@ export function ProviderModelSelect({
   onAddProvider,
   disabled,
 }: {
+  id?: string
   serverUrl: string | undefined
   accountUid: string | null | undefined
   /** Set when editing an existing agent so shared agents list the owner's providers. */
@@ -46,6 +48,7 @@ export function ProviderModelSelect({
 }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const providers = useModelProviders(serverUrl, accountUid, agentId)
 
   const trimmedQuery = query.trim()
@@ -61,6 +64,7 @@ export function ProviderModelSelect({
       }}
     >
       <PopoverTrigger
+        id={id}
         type="button"
         disabled={disabled}
         className={cn(
@@ -82,11 +86,14 @@ export function ProviderModelSelect({
       <PopoverContent
         align="start"
         className="w-[var(--radix-popover-trigger-width)] min-w-[320px] p-0"
-        onOpenAutoFocus={(event) => event.preventDefault()}
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          searchInputRef.current?.focus()
+        }}
       >
         <div className="border-border border-b p-2">
           <Input
-            autoFocus
+            ref={searchInputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search models…"
@@ -223,11 +230,7 @@ function ProviderModelSection({
               className={cn('hover:bg-muted flex w-full items-center gap-1 rounded-sm', isActive && 'bg-muted')}
             >
               {onToggleModel ? (
-                <button
-                  type="button"
-                  role="checkbox"
-                  aria-checked={isEnabled}
-                  aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${modelLabel(model)} for quick switching`}
+                <label
                   title={
                     isActive
                       ? 'The current model is always available'
@@ -235,16 +238,24 @@ function ProviderModelSection({
                         ? 'Remove from the model switcher'
                         : 'Add to the model switcher'
                   }
-                  disabled={isActive}
                   className={cn(
-                    'ml-2 flex size-4 shrink-0 items-center justify-center rounded-xs border',
+                    'focus-within:ring-ring ml-2 flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-xs border focus-within:ring-2',
                     isEnabled ? 'bg-primary border-primary text-primary-foreground' : 'border-border bg-transparent',
                     isActive && 'opacity-50',
                   )}
-                  onClick={() => onToggleModel({provider: provider.name, model: model.id}, !isEnabled)}
                 >
-                  {isEnabled ? <Check className="size-3" /> : null}
-                </button>
+                  <input
+                    type="checkbox"
+                    checked={isEnabled}
+                    disabled={isActive}
+                    aria-label={`${isEnabled ? 'Disable' : 'Enable'} ${modelLabel(model)} for quick switching`}
+                    onChange={(event) =>
+                      onToggleModel({provider: provider.name, model: model.id}, event.target.checked)
+                    }
+                    className="sr-only"
+                  />
+                  {isEnabled ? <Check className="size-3" aria-hidden="true" /> : null}
+                </label>
               ) : null}
               <button
                 type="button"

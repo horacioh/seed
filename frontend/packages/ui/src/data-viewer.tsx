@@ -61,8 +61,11 @@ export const DataViewer = memo(function DataViewer({data, level = 0, onNavigate,
       <div className={`overflow-auto rounded bg-white ${isTopLevel ? 'rounded-xl px-4 py-2' : ''}`}>
         <div className="flex overflow-auto">
           {!isTopLevel && (
-            <div
-              className="flex w-4 cursor-pointer items-center justify-center overflow-auto hover:bg-black"
+            <button
+              type="button"
+              aria-label={isExpanded ? 'Collapse item' : 'Expand item'}
+              aria-expanded={isExpanded}
+              className="focus-visible:ring-ring flex w-4 cursor-pointer appearance-none items-center justify-center overflow-auto border-0 bg-transparent p-0 text-inherit hover:bg-black focus-visible:ring-2 focus-visible:outline-none"
               onClick={() => setIsExpanded((expanded) => !expanded)}
             />
           )}
@@ -96,8 +99,11 @@ export const DataViewer = memo(function DataViewer({data, level = 0, onNavigate,
       <div className={`overflow-auto rounded bg-white ${isTopLevel ? 'rounded-xl px-4 py-2' : ''}`}>
         <div className="flex overflow-auto">
           {!isTopLevel && (
-            <div
-              className="flex w-4 cursor-pointer items-center justify-center overflow-auto hover:bg-black"
+            <button
+              type="button"
+              aria-label={isExpanded ? 'Collapse item' : 'Expand item'}
+              aria-expanded={isExpanded}
+              className="focus-visible:ring-ring flex w-4 cursor-pointer appearance-none items-center justify-center overflow-auto border-0 bg-transparent p-0 text-inherit hover:bg-black focus-visible:ring-2 focus-visible:outline-none"
               onClick={() => setIsExpanded((expanded) => !expanded)}
             />
           )}
@@ -177,9 +183,16 @@ function DataViewerLink({
   }
 
   return (
-    <span className="cursor-pointer font-mono text-blue-600 underline hover:underline" onClick={() => onNavigate(url)}>
+    <a
+      href={url}
+      className="cursor-pointer font-mono text-blue-600 underline hover:underline"
+      onClick={(event) => {
+        event.preventDefault()
+        onNavigate(url)
+      }}
+    >
       {url}
-    </span>
+    </a>
   )
 }
 

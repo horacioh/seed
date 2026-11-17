@@ -71,8 +71,8 @@ export function AgentPromptMigration({
   }
 
   return (
-    <div
-      role="status"
+    <section
+      aria-label="Move agent instructions"
       className="border-border bg-muted/40 mx-auto my-4 flex w-full max-w-2xl items-start gap-3 rounded-lg border p-4"
     >
       <FileText className="text-muted-foreground mt-0.5 size-5 shrink-0" />
@@ -88,7 +88,7 @@ export function AgentPromptMigration({
       <Button size="sm" variant="default" className="shrink-0" disabled={moving} onClick={() => void move()}>
         {moving ? 'Moving…' : 'Move instructions'}
       </Button>
-    </div>
+    </section>
   )
 }
 

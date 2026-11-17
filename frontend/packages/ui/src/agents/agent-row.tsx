@@ -1,6 +1,6 @@
 import type {AgentActivity} from '@seed-hypermedia/apps-protocol'
+import {useRouteLink} from '@shm/shared'
 import {agentRowActivity, useAgentActivityReadState} from './activity'
-import {useNavigate} from './navigation'
 import {SizableText} from '@shm/ui/text'
 
 export function AgentListRow({
@@ -19,13 +19,14 @@ export function AgentListRow({
   /** The agent's latest-activity rollup, for its activity label beside the name. */
   activity?: AgentActivity
 }) {
-  const navigate = useNavigate()
+  const linkProps = useRouteLink({key: 'agent', agentId, serverUrl})
   const readState = useAgentActivityReadState()
   const row = agentRowActivity(activity, serverUrl, name, readState.data)
   return (
-    <div
-      className="border-border hover:bg-muted/60 flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-3 transition-colors"
-      onClick={() => navigate({key: 'agent', agentId, serverUrl})}
+    <a
+      {...linkProps}
+      href={linkProps.href}
+      className="border-border hover:bg-muted/60 flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-3 text-inherit no-underline transition-colors"
     >
       <div className="flex min-w-0 items-center gap-2">
         <SizableText weight="bold" className="min-w-0 truncate">
@@ -41,6 +42,6 @@ export function AgentListRow({
           </span>
         ) : null}
       </div>
-    </div>
+    </a>
   )
 }

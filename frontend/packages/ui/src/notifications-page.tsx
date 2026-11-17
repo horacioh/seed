@@ -1,6 +1,6 @@
 import type {NotificationPayload} from '@shm/shared/models/notification-payload'
 import {Bell, Settings, X} from 'lucide-react'
-import {FormEvent, ReactNode, useMemo, useState} from 'react'
+import {FormEvent, ReactNode, useMemo, useRef, useState} from 'react'
 import {z} from 'zod'
 import {Button} from './button'
 import {Input} from './components/input'
@@ -164,6 +164,7 @@ export function NotificationEmailSettings({
   onRemove: () => Promise<unknown>
   onResendVerification: () => Promise<unknown>
 }) {
+  const emailInputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [emailInput, setEmailInput] = useState('')
   const [isSaving, setIsSaving] = useState(false)
@@ -232,7 +233,14 @@ export function NotificationEmailSettings({
           </Button>
         </PopoverTrigger>
       </Tooltip>
-      <PopoverContent align="end" className="flex w-80 flex-col gap-4">
+      <PopoverContent
+        align="end"
+        className="flex w-80 flex-col gap-4"
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          emailInputRef.current?.focus()
+        }}
+      >
         <div className="flex items-center justify-between gap-2">
           <Text weight="semibold" size="lg">
             Email notifications
@@ -270,13 +278,13 @@ export function NotificationEmailSettings({
             <div className="flex flex-col gap-2">
               <Label htmlFor="notification-email">Your email</Label>
               <Input
+                ref={emailInputRef}
                 id="notification-email"
                 type="email"
                 placeholder="you@example.com"
                 value={emailInput}
                 onChangeText={setEmailInput}
                 aria-invalid={!isValid}
-                autoFocus
               />
               {!isValid ? <p className="text-destructive text-sm">Enter a valid email address.</p> : null}
             </div>

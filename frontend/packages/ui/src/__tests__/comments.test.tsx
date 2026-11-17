@@ -3,6 +3,7 @@ import React from 'react'
 import {hmId} from '@shm/shared'
 import {createRoot, type Root} from 'react-dom/client'
 import {act} from 'react-dom/test-utils'
+import {expectNoAxeViolations} from '@shm/a11y-testing/dom'
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {commentBookmarkTitle, CommentDiscussions, Discussions} from '../comments'
 import {TooltipProvider} from '../tooltip'
@@ -130,10 +131,10 @@ vi.mock('@shm/shared/utils/navigation', () => ({
 }))
 
 let root: Root | null = null
-let container: HTMLDivElement | null = null
+let container: HTMLElement | null = null
 
 function renderCommentDiscussions(selection?: {blockId: string; blockRange: {start: number; end: number}}) {
-  container = document.createElement('div')
+  container = document.createElement('main')
   document.body.appendChild(container)
   root = createRoot(container)
 
@@ -206,6 +207,24 @@ afterEach(() => {
 })
 
 describe('CommentDiscussions', () => {
+  it('renders comments as labelled articles without axe violations', async () => {
+    document.documentElement.lang = 'en'
+    document.title = 'Comments'
+    useDocumentCommentsMock.mockReturnValue({
+      data: {
+        comments: [focusedComment],
+        authors: {alice: {metadata: {name: 'Alice'}}},
+      },
+      error: null,
+      isLoading: false,
+    })
+
+    renderCommentDiscussions()
+
+    await expectNoAxeViolations(document)
+    expect(document.querySelector('article[aria-label^="Comment by Alice on"]')).not.toBeNull()
+  })
+
   it('scrolls the selected root into view when the thread loads', () => {
     const scrollIntoView = vi.fn()
     HTMLElement.prototype.scrollIntoView = scrollIntoView

@@ -1,5 +1,5 @@
 {
-  "include": ["*.ts", "*.tsx", "components/*.tsx"],
+  "include": ["*.ts", "*.tsx", "components/*.tsx", "tests/*.ts"],
   "exclude": ["node_modules", "../../packages/**/*"],
   "compilerOptions": {
     "target": "ESNext",
@@ -24,6 +24,7 @@
     "paths": {
       "@shm/shared": ["../../packages/shared/src/index.ts"],
       "@shm/shared/*": ["../../packages/shared/src/*"],
+      "@shm/a11y-testing/*": ["../../packages/a11y-testing/src/*"],
       "@seed-hypermedia/client": ["../../packages/client/src/index.ts"],
       "@seed-hypermedia/client/*": ["../../packages/client/src/*"]
     }

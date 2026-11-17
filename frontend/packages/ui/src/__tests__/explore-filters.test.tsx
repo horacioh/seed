@@ -23,7 +23,7 @@ afterEach(() => {
 
 function click(element: Element | null | undefined) {
   if (!element) throw new Error('element not found')
-  act(() => element.dispatchEvent(new MouseEvent('click', {bubbles: true})))
+  act(() => (element as HTMLElement).click())
 }
 
 function buttonWithText(text: string) {
@@ -90,8 +90,8 @@ describe('ExploreDateMenu', () => {
   it('applies a preset on the chosen field', () => {
     const onApply = vi.fn()
     act(() => root.render(<ExploreDateMenu initial={{field: 'created', preset: 'any'}} onApply={onApply} />))
-    click(buttonWithText('Updated'))
-    click(buttonWithText('Past month'))
+    click(container.querySelector('input[type="radio"][value="updated"]'))
+    click(container.querySelector('input[type="radio"][value="month"]'))
     click(buttonWithText('Apply filters'))
     expect(onApply).toHaveBeenCalledWith({field: 'updated', preset: 'month'})
   })

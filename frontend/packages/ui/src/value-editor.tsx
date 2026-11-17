@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 import {unpackHmId} from '@shm/shared/utils/entity-id-url'
 import {useDebounce} from '@shm/shared/utils/use-debounce'
-import {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react'
+import {createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState} from 'react'
 import {Button} from './button'
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from './components/dialog'
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from './components/dropdown-menu'
@@ -441,6 +441,8 @@ export function ValueEditorProvider({
   // The single tab-stop; defaults to the first row so Tab can enter the tree.
   const [tabbableId, setTabbableId] = useState<string | null>(null)
   const [menu, setMenu] = useState<{x: number; y: number; actions: ContextMenuAction[]} | null>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const suppressOutsideClickRef = useRef(false)
   const registry = useRef(new Map<string, RowInfo>())
   const elements = useRef(new Map<string, HTMLElement>())
 
@@ -593,13 +595,41 @@ export function ValueEditorProvider({
       }
     }
 
+    const onMenuPointerDown = (event: PointerEvent) => {
+      if (!menuRef.current || menuRef.current.contains(event.target as Node)) return
+      suppressOutsideClickRef.current = true
+      event.preventDefault()
+      event.stopPropagation()
+      setMenu(null)
+    }
+
+    const onMenuClick = (event: MouseEvent) => {
+      if (!suppressOutsideClickRef.current) return
+      suppressOutsideClickRef.current = false
+      event.preventDefault()
+      event.stopPropagation()
+    }
+
+    const onMenuContextMenu = (event: MouseEvent) => {
+      if (!menuRef.current && !suppressOutsideClickRef.current) return
+      event.preventDefault()
+      event.stopPropagation()
+      setMenu(null)
+    }
+
     document.addEventListener('copy', onCopy)
     document.addEventListener('paste', onPaste)
     document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onMenuPointerDown, true)
+    document.addEventListener('click', onMenuClick, true)
+    document.addEventListener('contextmenu', onMenuContextMenu, true)
     return () => {
       document.removeEventListener('copy', onCopy)
       document.removeEventListener('paste', onPaste)
       document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onMenuPointerDown, true)
+      document.removeEventListener('click', onMenuClick, true)
+      document.removeEventListener('contextmenu', onMenuContextMenu, true)
     }
   }, [])
 
@@ -609,41 +639,33 @@ export function ValueEditorProvider({
         {children}
         {menu && (
           <div
-            className="fixed inset-0 z-[100]"
-            onClick={() => setMenu(null)}
-            onContextMenu={(e) => {
-              e.preventDefault()
-              setMenu(null)
+            ref={menuRef}
+            className="bg-popover text-popover-foreground fixed z-[100] flex min-w-44 flex-col rounded-md border p-1 shadow-md"
+            style={{
+              left: Math.min(menu.x, typeof window !== 'undefined' ? window.innerWidth - 200 : menu.x),
+              top: Math.min(
+                menu.y,
+                typeof window !== 'undefined' ? window.innerHeight - menu.actions.length * 34 - 12 : menu.y,
+              ),
             }}
           >
-            <div
-              className="bg-popover text-popover-foreground absolute flex min-w-44 flex-col rounded-md border p-1 shadow-md"
-              style={{
-                left: Math.min(menu.x, typeof window !== 'undefined' ? window.innerWidth - 200 : menu.x),
-                top: Math.min(
-                  menu.y,
-                  typeof window !== 'undefined' ? window.innerHeight - menu.actions.length * 34 - 12 : menu.y,
-                ),
-              }}
-            >
-              {menu.actions.map((action) => (
-                <button
-                  key={action.key}
-                  type="button"
-                  className={cn(
-                    'hover:bg-accent flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors',
-                    action.destructive && 'text-destructive',
-                  )}
-                  onClick={() => {
-                    setMenu(null)
-                    action.onClick()
-                  }}
-                >
-                  {action.icon}
-                  {action.label}
-                </button>
-              ))}
-            </div>
+            {menu.actions.map((action) => (
+              <button
+                key={action.key}
+                type="button"
+                className={cn(
+                  'hover:bg-accent flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors',
+                  action.destructive && 'text-destructive',
+                )}
+                onClick={() => {
+                  setMenu(null)
+                  action.onClick()
+                }}
+              >
+                {action.icon}
+                {action.label}
+              </button>
+            ))}
           </div>
         )}
       </SelectionStateContext.Provider>
@@ -1161,13 +1183,13 @@ export function ValueEditor({
         value={value}
         literalOptions={literalOptions}
         onValue={onValue}
-        renderFallback={(onFocusChange, autoFocus) => (
+        renderFallback={(onFocusChange, focusOnMount) => (
           <NumberInput
             value={value}
             onValue={onValue}
             rules={rules}
             path={path}
-            autoFocus={autoFocus}
+            focusOnMount={focusOnMount}
             onFocusChange={onFocusChange}
           />
         )}
@@ -1234,7 +1256,7 @@ function ScalarLeafEditor({
   value: unknown
   literalOptions: LiteralOption[] | undefined
   onValue: (value: unknown) => void
-  renderFallback: (onFocusChange: (focused: boolean) => void, autoFocus: boolean) => React.ReactNode
+  renderFallback: (onFocusChange: (focused: boolean) => void, focusOnMount: boolean) => React.ReactNode
 }) {
   const [editingCustom, setEditingCustom] = useState(false)
   const [focused, setFocused] = useState(false)
@@ -1434,7 +1456,7 @@ function StringLeafEditor({
         <div className="flex items-center gap-1">
           <CommitOnBlurInput
             initialValue={value}
-            autoFocus={editingText}
+            focusOnMount={editingText}
             placeholder={ipfsMode ? 'ipfs:// URL or CID' : 'Empty Text'}
             // Save while typing (debounced) so edits persist without blurring.
             autosave
@@ -2031,14 +2053,14 @@ function NumberInput({
   value,
   onValue,
   rules,
-  autoFocus,
+  focusOnMount,
   onFocusChange,
   path,
 }: {
   value: number
   onValue: (value: unknown) => void
   rules: ValueEditorRules
-  autoFocus?: boolean
+  focusOnMount?: boolean
   onFocusChange?: (focused: boolean) => void
   path?: ValuePath
 }) {
@@ -2087,7 +2109,7 @@ function NumberInput({
               ? `number-suggestions-${pathId(path ?? [])}-option-${activeIndex}`
               : undefined
           }
-          autoFocus={autoFocus}
+          focusOnMount={focusOnMount}
           onFocus={() => {
             setSuggestionsOpen(true)
             setActiveIndex(null)
@@ -2172,7 +2194,7 @@ function CommitOnBlurInput({
   initialValue,
   placeholder,
   className,
-  autoFocus,
+  focusOnMount,
   onCommit,
   onFocusChange,
   normalize,
@@ -2183,7 +2205,7 @@ function CommitOnBlurInput({
   initialValue: string
   placeholder?: string
   className?: string
-  autoFocus?: boolean
+  focusOnMount?: boolean
   onCommit: (text: string) => void
   onFocusChange?: (focused: boolean) => void
   /** Rewrite the text before it commits (e.g. gateway URL → `ipfs://`). Returns null to leave it unchanged. */
@@ -2256,7 +2278,7 @@ function CommitOnBlurInput({
             ? `text-suggestions-${pathId(suggestionPath ?? [])}-option-${activeIndex}`
             : undefined
         }
-        autoFocus={autoFocus}
+        focusOnMount={focusOnMount}
         onFocus={() => {
           focusedRef.current = true
           setSuggestionsOpen(true)
@@ -2564,7 +2586,9 @@ function SuggestionPopover<T>({
   return (
     <div
       id={id}
+      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Async suggestions keep active-descendant focus in the input
       role="listbox"
+      tabIndex={-1}
       className="border-border bg-popover absolute z-50 mt-1 max-h-48 w-full overflow-y-auto rounded-md border p-1 shadow-lg"
       onMouseDown={(event) => event.preventDefault()}
       onScroll={(event) => {
@@ -2577,6 +2601,7 @@ function SuggestionPopover<T>({
           key={getKey(item)}
           id={`${id}-option-${index}`}
           type="button"
+          // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- Rich value options cannot use native select without moving focus
           role="option"
           aria-selected={activeIndex === index}
           className="hover:bg-accent focus-visible:bg-accent flex w-full items-start justify-between gap-3 rounded-sm px-2 py-1.5 text-left text-sm outline-none"
@@ -2661,6 +2686,7 @@ function FieldDialog({
   onKeyTextChange?: (keyText: string) => void
   onSubmit: (name: string, type: NewFieldType) => void
 }) {
+  const typeId = useId()
   const [name, setName] = useState(initialName)
   const [type, setType] = useState<NewFieldType>(initialType)
   const [error, setError] = useState<string | null>(null)
@@ -2800,7 +2826,7 @@ function FieldDialog({
                   }
                   value={name}
                   placeholder="Field name"
-                  autoFocus
+                  focusOnMount
                   onFocus={() => {
                     setSuggestionsOpen(true)
                     setActiveIndex(null)
@@ -2859,9 +2885,11 @@ function FieldDialog({
             </div>
           )}
           <div className="flex flex-col gap-1">
-            <label className="text-muted-foreground text-xs">Type</label>
+            <label htmlFor={typeId} className="text-muted-foreground text-xs">
+              Type
+            </label>
             <Select value={type} onValueChange={(v) => setType(v as NewFieldType)}>
-              <SelectTrigger>
+              <SelectTrigger id={typeId}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
