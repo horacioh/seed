@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths({root: path.resolve(__dirname, '../..')})],
+  plugins: [react(), tsconfigPaths({root: path.resolve(__dirname, '../..'), ignoreConfigErrors: true})],
   resolve: {
     dedupe: [
       '@shm/shared',

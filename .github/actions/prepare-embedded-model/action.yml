@@ -1,0 +1,12 @@
+name: Prepare embedded model
+description: Create a small GGUF stub for builds with embeddings disabled.
+runs:
+  using: composite
+  steps:
+    - name: Create GGUF stub for go:embed
+      shell: bash
+      run: |
+        set -euo pipefail
+        model_dir=backend/llm/backends/llamacpp/models
+        mkdir -p "$model_dir"
+        printf 'a11y-stub\n' > "$model_dir/a11y-stub.gguf"
