@@ -75,6 +75,8 @@ These pages are markdown files in the folder `hypermedia/` of the public Seed re
 
 <./software.md> <!-- id:Wyws1he9 type:Embed attrs:{"view":"Card"} -->
 
+<./accessibility.md> <!-- id:HWgNPSbq type:Embed attrs:{"view":"Card"} -->
+
 <./glossary.md> <!-- id:rI01TQ8d type:Embed attrs:{"view":"Card"} -->
 
 # What you make <!-- id:VczIu7MR attrs:{"childrenType":"Grid","columnCount":3} -->
