@@ -747,7 +747,9 @@ describe('DraftHiddenActions', () => {
     const button = container.querySelector('button[data-testid="draft-hidden-actions"]')
     expect(button).not.toBeNull()
     expect(button!.textContent).toContain('Show changes')
-    expect(container.querySelector('[aria-label="About the published preview"]')).not.toBeNull()
+    const info = container.querySelector('button[aria-label="About the published preview"]')
+    expect(info).not.toBeNull()
+    expect(button!.contains(info)).toBe(false)
 
     act(() => {
       ;(button as HTMLButtonElement).click()

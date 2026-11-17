@@ -674,29 +674,29 @@ export function DraftHiddenActions() {
   const send = useDocumentSend()
   if (!draftHidden || !draftId) return null
   return (
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={() => send({type: 'draftHidden.set', hidden: false})}
-      data-testid="draft-hidden-actions"
-    >
-      Show changes
+    <div className="flex items-center gap-1">
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={() => send({type: 'draftHidden.set', hidden: false})}
+        data-testid="draft-hidden-actions"
+      >
+        Show changes
+      </Button>
       <Tooltip
-        asChild
         side="bottom"
         content="You're viewing the latest published version. Click “Show changes” to go back to your unpublished changes."
       >
-        <span
-          role="button"
-          tabIndex={0}
+        <Button
+          size="icon"
+          variant="ghost"
           aria-label="About the published preview"
-          className="text-muted-foreground -mr-1 inline-flex items-center"
-          onClick={(e) => e.stopPropagation()}
+          className="text-muted-foreground size-7 shrink-0"
         >
           <Info className="size-3.5" />
-        </span>
+        </Button>
       </Tooltip>
-    </Button>
+    </div>
   )
 }
 
