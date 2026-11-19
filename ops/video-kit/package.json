@@ -1,0 +1,15 @@
+{
+  "name": "seed-video-kit",
+  "private": true,
+  "type": "module",
+  "description": "Seed tutorial-video capture and rendering kit",
+  "scripts": {
+    "capture": "node capture/run.mjs",
+    "render": "node render/render.mjs",
+    "audio": "node audio/mix.mjs"
+  },
+  "dependencies": {
+    "canvas": "3.2.3",
+    "playwright": "1.63.0"
+  }
+}
