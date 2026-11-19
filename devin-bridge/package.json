@@ -1,0 +1,16 @@
+{
+  "name": "devin-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OpenAI-compatible HTTP bridge that drives `devin acp` (Devin CLI ACP stdio server).",
+  "scripts": {
+    "start": "bun src/main.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.10",
+    "typescript": "5.9.3"
+  }
+}
