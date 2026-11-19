@@ -36,7 +36,7 @@ Run the blocking jsx-a11y scan with `pnpm lint:a11y`. It scans the UI, editor, w
 
 ## Video captions
 
-Uploaded video blocks can store an optional WebVTT captions file as an `ipfs://` link in `captions`, with an optional BCP 47 language tag in `captionsLang`. The editor provides Add, Replace and Remove captions actions, and the reader renders captions through a native `<track kind="captions">`. Before publishing, uploaded videos without captions are reported as accessibility issues; external video embeds are not checked. Raw agent-memory file previews remain justified exceptions because they have no caption source.
+Uploaded video [blocks](../protocol/blocks.md) can store an optional WebVTT captions file as an `ipfs://` link in `captions`, with an optional BCP 47 language tag in `captionsLang`. The editor provides Add, Replace and Remove captions actions, and the reader renders captions through a native `<track kind="captions">`. Before publishing, uploaded videos without captions are reported as accessibility issues; external video embeds are not checked. Raw agent-memory file previews remain justified exceptions because they have no caption source.
 
 Run the published web reader gate against a running web gateway with:
 
