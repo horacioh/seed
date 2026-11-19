@@ -1,0 +1,56 @@
+# documentation: https://seed.hyper.media
+# slogan: Self-hosted Seed agents server (apps) with a Devin-backed model bridge.
+# category: ai
+# tags: seed, agents, devin, openai, llm, self-hosted
+# logo: https://seed.hyper.media/favicon.ico
+# port: 3050
+
+# One stack per agents server. Set the domain on the seed-apps service in Coolify, deploy,
+# then connect from the Seed desktop app using the app server URL `<domain>/hm/api/apps`.
+# The devin-bridge service has no domain: it is reached internally as
+# `http://devin-bridge:8787/v1` by the agents server's Custom (OpenAI-compatible) model
+# provider.
+#
+# Images default to the fork's rolling `main` tags (built on every push to custom-images).
+# Pin an exact version tag to disable auto-update for a service.
+#
+# Auto-update: the existing seed-updater.yaml stack recreates containers labelled
+# `com.centurylinklabs.watchtower.enable=true` + `com.centurylinklabs.watchtower.scope=seed`
+# when their image tag points at a new digest. Both services below opt in.
+#
+# Before the bridge can serve model calls, sign Devin in once via Coolify's Terminal on the
+# devin-bridge container: `devin auth login --force-manual-token-flow`. The login persists in
+# the devin-bridge-home volume across container recreation. See AGENTS-TUTORIAL.md.
+
+services:
+  seed-apps:
+    image: ${SEED_APPS_IMAGE:-ghcr.io/horacioh/seed-apps:main}
+    restart: unless-stopped
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.scope=seed
+    environment:
+      - SERVICE_URL_APPS_3050
+      - SEED_APPS_PUBLIC_URL=${SERVICE_URL_APPS}/hm/api/apps
+      - SEED_APPS_HM_SERVER_URL=${SEED_APPS_HM_SERVER_URL:-https://hyper.media}
+      - SEED_APPS_EXEC_BACKEND=off
+      - SEED_APPS_LOG_LEVEL=${SEED_APPS_LOG_LEVEL:-info}
+      - SEED_APPS_SUBSCRIPTION_AUTH=${SEED_APPS_SUBSCRIPTION_AUTH:-false}
+    volumes:
+      - seed-apps-data:/data
+
+  devin-bridge:
+    image: ${DEVIN_BRIDGE_IMAGE:-ghcr.io/horacioh/seed-devin-bridge:main}
+    restart: unless-stopped
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+      - com.centurylinklabs.watchtower.scope=seed
+    environment:
+      - DEVIN_BRIDGE_API_KEY=${SERVICE_PASSWORD_64_DEVINBRIDGE}
+      - DEVIN_BRIDGE_MAX_CONCURRENT=${DEVIN_BRIDGE_MAX_CONCURRENT:-2}
+    volumes:
+      - devin-bridge-home:/home/devin/.local/share/devin
+
+volumes:
+  seed-apps-data:
+  devin-bridge-home:

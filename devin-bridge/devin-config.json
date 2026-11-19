@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "deny": ["read", "edit", "grep", "glob", "exec", "mcp__*"]
+  },
+  "permission_mode": "normal",
+  "auto_update": false
+}
