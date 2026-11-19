@@ -1,6 +1,7 @@
 # Seed site on Coolify
 
-New to Coolify? Follow the step-by-step [tutorial](TUTORIAL.md).
+New to Coolify? Follow the step-by-step [site tutorial](TUTORIAL.md). To self-host the Seed agents server with a
+Devin-backed model, follow the [agents tutorial](AGENTS-TUTORIAL.md).
 
 `seed-site.yaml` is a Coolify v4 docker-compose service template for one Seed site: `seed-daemon`, `seed-web`, an
 internal Caddy (`seed-proxy`) that keeps the `/ipfs/*` → daemon routing of the standard deployment. Coolify's own proxy
