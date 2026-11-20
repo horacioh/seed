@@ -10,6 +10,8 @@ import * as http from 'node:http'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import {execFile} from 'node:child_process'
+import {createReadStream} from 'node:fs'
+import {Readable} from 'node:stream'
 
 const SERVER_VERSION = '0.1.0'
 const SUPPORTED_PROTOCOL_VERSIONS = new Set(['2025-06-18', '2025-03-26', '2024-11-05'])
@@ -20,6 +22,21 @@ const MAX_STDERR_BYTES = 2048
 const MAX_REQUEST_BODY_BYTES = 1024 * 1024
 const MAX_WEBHOOK_BODY_BYTES = 60 * 1024
 const MAX_INFLIGHT_CLI = 4
+const ARTIFACT_ID_BYTES = 16
+const ARTIFACT_MAX_FILES = 20
+const ARTIFACT_MAX_FILE_BYTES = 50 * 1024 * 1024
+const ARTIFACT_ID_RE = /^[A-Za-z0-9_-]{22}$/
+const ARTIFACT_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/
+const ARTIFACT_EXT = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'webm', 'mp4'])
+const ARTIFACT_CONTENT_TYPES = {
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  webm: 'video/webm',
+  mp4: 'video/mp4',
+}
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -47,6 +64,12 @@ function parseConfig(env = process.env) {
     .filter(Boolean)
     .map(normalizePrefix)
   const stateDir = env.T3_MCP_STATE_DIR ?? path.join(os.homedir(), '.t3-mcp')
+  const artifactsDir = env.T3_MCP_ARTIFACTS_DIR ?? path.join(stateDir, 'artifacts')
+  const artifactsBaseUrl = env.T3_MCP_ARTIFACTS_BASE_URL?.trim().replace(/\/$/, '') || ''
+  // Test hook: lower the per-file byte cap without writing 50 MB. Not for production use.
+  const artifactMaxFileBytes = env.T3_MCP_TEST_ARTIFACT_MAX_BYTES
+    ? parseInt(env.T3_MCP_TEST_ARTIFACT_MAX_BYTES, 10)
+    : ARTIFACT_MAX_FILE_BYTES
   // Used when start_thread names no model: `t3 thread start` refuses to start without one when the
   // project has no default model.
   const defaultProvider = env.T3_MCP_DEFAULT_PROVIDER?.trim() || ''
@@ -65,6 +88,9 @@ function parseConfig(env = process.env) {
     defaultProject: projects[0],
     webhookPrefixes,
     stateDir,
+    artifactsDir,
+    artifactsBaseUrl,
+    artifactMaxFileBytes,
     pollSecs: parseInt(env.T3_MCP_POLL_SECS ?? '15', 10),
   }
 }
@@ -226,7 +252,7 @@ const TOOLS = [
   {
     name: 'start_thread',
     description:
-      'Start a new T3 Code thread with an initial message. The thread runs with the project runtime mode (full access for the seed project). Pass notifyWebhookUrl to be notified when the run finishes.',
+      'Start a new T3 Code thread with an initial message. The thread runs with the project runtime mode (full access for the seed project). An artifact directory is created for before/after evidence (screenshots/videos); the message tells the agent where to save them, and the returned artifactsUrl is a base URL the agents server can download files from by plain URL (no auth). Pass notifyWebhookUrl to be notified when the run finishes.',
     inputSchema: {
       type: 'object',
       required: ['message'],
@@ -275,7 +301,8 @@ const TOOLS = [
   },
   {
     name: 'get_thread',
-    description: 'Read a T3 Code thread: its status, branch, run info, and recent messages.',
+    description:
+      'Read a T3 Code thread: its status, branch, run info, recent messages, and any saved evidence artifacts (screenshots/videos with downloadable URLs).',
     inputSchema: {
       type: 'object',
       required: ['threadId'],
@@ -328,7 +355,7 @@ async function toolListThreads(cfg, args) {
   return {project, threads: list}
 }
 
-async function toolStartThread(cfg, args) {
+async function toolStartThread(cfg, args, req) {
   const project = args.project ?? cfg.defaultProject
   assertProjectAllowed(cfg, project)
   if ((args.provider && !args.model) || (args.model && !args.provider)) {
@@ -336,6 +363,15 @@ async function toolStartThread(cfg, args) {
   }
   // Checked before starting, so a rejected URL never leaves a thread behind.
   if (args.notifyWebhookUrl) assertWebhookAllowed(cfg, args.notifyWebhookUrl)
+  // Create an artifact directory for this thread's before/after evidence.
+  const {artifactId, dir, baseUrl} = await createArtifactDir(cfg, req)
+  const artifactsUrl = `${baseUrl}/artifacts/${artifactId}/`
+  const evidenceBlock =
+    `\n\n---\nEvidence directory: ${dir}\n` +
+    'Save before/after screenshots or recordings for this task there as flat files named like ' +
+    'before-*.png / after-*.webm (allowed: png, jpg, jpeg, gif, webp, webm, mp4; max 50 MB each). ' +
+    'Do not put secrets or private data in them; they will be published.'
+  const message = args.message + evidenceBlock
   const cliArgs = ['thread', 'start']
   if (args.title) cliArgs.push('--title', args.title)
   const provider = args.provider ?? cfg.defaultProvider
@@ -344,22 +380,41 @@ async function toolStartThread(cfg, args) {
   if (args.worktree) cliArgs.push('--worktree', args.worktree)
   if (args.branch) cliArgs.push('--branch', args.branch)
   cliArgs.push('--json', project, '-')
-  const {stdout} = await runCli(cfg, cliArgs, {stdin: args.message})
+  let stdout
   let threadId
+  try {
+    const r = await runCli(cfg, cliArgs, {stdin: message})
+    stdout = r.stdout
+    try {
+      const obj = JSON.parse(stdout)
+      threadId = obj.threadId ?? obj.id ?? obj.thread?.threadId
+    } catch {
+      threadId = stdout.trim().split(/\s+/)[0]
+    }
+  } catch (err) {
+    // Thread start failed — remove the empty artifact dir.
+    await fs.rm(dir, {recursive: true, force: true}).catch(() => {})
+    throw err
+  }
+  if (!threadId) {
+    await fs.rm(dir, {recursive: true, force: true}).catch(() => {})
+    throw new ToolError('thread start did not return a thread id')
+  }
+  // Persist the mapping threadId → {artifactId, dir, baseUrl}.
+  state.artifacts.set(threadId, {threadId, artifactId, dir, baseUrl})
+  persistArtifacts(cfg)
   let title = args.title ?? ''
   let link = ''
   let status = 'running'
   // Prefer JSON output; fall back to parsing a bare id from text.
   try {
     const obj = JSON.parse(stdout)
-    threadId = obj.threadId ?? obj.id ?? obj.thread?.threadId
     title = title || (obj.title ?? obj.thread?.title ?? '')
     link = obj.link ?? obj.thread?.link ?? ''
     status = obj.status ?? obj.thread?.status ?? 'running'
   } catch {
-    threadId = stdout.trim().split(/\s+/)[0]
+    // text reply — title/link/status unknown
   }
-  if (!threadId) throw new ToolError('thread start did not return a thread id')
   // `thread start --json` does not include the link, so read it back.
   const data = await showThread(cfg, threadId, 1)
   title = title || (data.thread?.title ?? '')
@@ -371,7 +426,7 @@ async function toolStartThread(cfg, args) {
     armWatch(cfg, threadId, args.notifyWebhookUrl, null)
     watching = true
   }
-  return {threadId, title, link, status, watching}
+  return {threadId, title, link, status, watching, artifactsDir: dir, artifactsUrl}
 }
 
 async function toolSendMessage(cfg, args) {
@@ -399,12 +454,16 @@ async function toolSendMessage(cfg, args) {
 async function toolGetThread(cfg, args) {
   const data = await assertThreadAllowed(cfg, args.threadId)
   const messages = clampInt(args.messages, 5, 1, 50)
+  let result
   if (messages !== 3) {
     // re-fetch with the requested message count
     const full = await showThread(cfg, args.threadId, messages)
-    return {thread: full.thread, messages: full.messages ?? []}
+    result = {thread: full.thread, messages: full.messages ?? []}
+  } else {
+    result = {thread: data.thread, messages: data.messages ?? []}
   }
-  return {thread: data.thread, messages: data.messages ?? []}
+  result.artifacts = await listArtifacts(cfg, args.threadId)
+  return result
 }
 
 async function toolWatchThread(cfg, args) {
@@ -512,6 +571,7 @@ async function fireNotification(cfg, watch, event, thread, messages) {
   const runId = thread.latestRunId ?? ''
   const idempotencyKey = sanitizeKey(`t3-${watch.threadId}-${runId}-${event}`)
   const lastAssistant = lastAssistantText(messages, runId)
+  const artifacts = await listArtifacts(cfg, thread.threadId)
   const payload = {
     event,
     threadId: thread.threadId,
@@ -523,10 +583,16 @@ async function fireNotification(cfg, watch, event, thread, messages) {
     worktreePath: thread.worktreePath ?? null,
     pullRequests: thread.pullRequests ?? [],
     project: thread.projectId ?? '',
-    lastAssistantMessage: truncate(lastAssistant, 4000),
+    artifacts,
+    lastAssistantMessage: truncateTail(lastAssistant, 4000),
     messages: truncateMessages(messages, 8),
   }
-  const body = Buffer.from(JSON.stringify(payload))
+  let body = Buffer.from(JSON.stringify(payload))
+  // If over budget, drop messages first (artifacts list is small and more useful to the agent).
+  if (body.length > MAX_WEBHOOK_BODY_BYTES) {
+    const trimmed = {...payload, messages: [], lastAssistantMessage: truncateTail(lastAssistant, 2000)}
+    body = Buffer.from(JSON.stringify(trimmed))
+  }
   if (body.length > MAX_WEBHOOK_BODY_BYTES) {
     log('warn', `webhook body ${body.length}B exceeds ${MAX_WEBHOOK_BODY_BYTES}B; dropping`)
     return false
@@ -572,6 +638,13 @@ function truncate(s, max) {
   return s.slice(0, max) + '…'
 }
 
+// Keeps the end of a reply: a thread's structured result block comes last.
+function truncateTail(s, max) {
+  if (typeof s !== 'string') return ''
+  if (s.length <= max) return s
+  return '…' + s.slice(s.length - max)
+}
+
 function truncateMessages(messages, maxCount) {
   const list = Array.isArray(messages) ? messages.slice(-maxCount) : []
   return list.map((m) => ({
@@ -592,6 +665,7 @@ function sanitizeKey(s) {
 
 const state = {
   watches: new Map(),
+  artifacts: new Map(),
   pollRunning: false,
   pollTimer: null,
 }
@@ -624,6 +698,89 @@ function persistWatches(cfg) {
     .catch((err) => log('warn', `could not persist watches: ${err.message}`))
 }
 
+// ─── Artifact mapping persistence ────────────────────────────────────────────
+
+async function loadArtifacts(cfg) {
+  const file = path.join(cfg.stateDir, 'artifacts.json')
+  try {
+    const raw = await fs.readFile(file, 'utf8')
+    const arr = JSON.parse(raw)
+    if (Array.isArray(arr)) {
+      for (const a of arr) {
+        if (a && typeof a.threadId === 'string' && typeof a.artifactId === 'string') {
+          state.artifacts.set(a.threadId, a)
+        }
+      }
+    }
+    log('info', `loaded ${state.artifacts.size} artifact mappings from ${file}`)
+  } catch (err) {
+    if (err.code !== 'ENOENT') log('warn', `could not load artifacts: ${err.message}`)
+  }
+}
+
+function persistArtifacts(cfg) {
+  const file = path.join(cfg.stateDir, 'artifacts.json')
+  const arr = [...state.artifacts.values()]
+  fs.mkdir(cfg.stateDir, {recursive: true})
+    .then(() => fs.writeFile(file + '.tmp', JSON.stringify(arr, null, 2)))
+    .then(() => fs.rename(file + '.tmp', file))
+    .catch((err) => log('warn', `could not persist artifacts: ${err.message}`))
+}
+
+function newArtifactId() {
+  return crypto.randomBytes(ARTIFACT_ID_BYTES).toString('base64url')
+}
+
+function artifactBaseUrl(cfg, req) {
+  if (cfg.artifactsBaseUrl) return cfg.artifactsBaseUrl
+  // Derive from the incoming request Host header so the URL is reachable from the agent.
+  const host = req?.headers?.get('host') ?? `127.0.0.1:${cfg.port}`
+  return `http://${host}`
+}
+
+async function createArtifactDir(cfg, req) {
+  const artifactId = newArtifactId()
+  const dir = path.join(cfg.artifactsDir, artifactId)
+  await fs.mkdir(dir, {recursive: true, mode: 0o755})
+  const baseUrl = artifactBaseUrl(cfg, req)
+  return {artifactId, dir, baseUrl}
+}
+
+async function listArtifacts(cfg, threadId) {
+  const mapping = state.artifacts.get(threadId)
+  if (!mapping) return []
+  try {
+    const entries = await fs.readdir(mapping.dir)
+    const files = []
+    for (const name of entries) {
+      if (files.length >= ARTIFACT_MAX_FILES) break
+      if (name.startsWith('.')) continue
+      if (!ARTIFACT_NAME_RE.test(name)) continue
+      const ext = name.split('.').pop()?.toLowerCase() ?? ''
+      if (!ARTIFACT_EXT.has(ext)) continue
+      const full = path.join(mapping.dir, name)
+      let st
+      try {
+        st = await fs.lstat(full)
+      } catch {
+        continue
+      }
+      if (!st.isFile()) continue // skips symlinks (lstat) and dirs
+      if (st.size > cfg.artifactMaxFileBytes) continue
+      files.push({name, bytes: st.size, contentType: ARTIFACT_CONTENT_TYPES[ext] ?? 'application/octet-stream'})
+    }
+    files.sort((a, b) => a.name.localeCompare(b.name))
+    return files.map((f) => ({
+      name: f.name,
+      url: `${mapping.baseUrl}/artifacts/${mapping.artifactId}/${encodeURIComponent(f.name)}`,
+      bytes: f.bytes,
+      contentType: f.contentType,
+    }))
+  } catch {
+    return []
+  }
+}
+
 // ─── MCP JSON-RPC dispatch ────────────────────────────────────────────────────
 
 function jsonRpcError(id, code, message, data) {
@@ -640,7 +797,7 @@ function isNotification(msg) {
   return msg && (msg.id === null || msg.id === undefined) && typeof msg.method === 'string'
 }
 
-async function handleRpc(cfg, msg) {
+async function handleRpc(cfg, msg, req) {
   if (!msg || typeof msg !== 'object' || typeof msg.method !== 'string') {
     return jsonRpcError(msg?.id ?? null, -32600, 'Invalid Request')
   }
@@ -658,7 +815,7 @@ async function handleRpc(cfg, msg) {
       case 'tools/list':
         return jsonRpcResult(id, {tools: TOOLS})
       case 'tools/call':
-        return await handleToolCall(cfg, id, params)
+        return await handleToolCall(cfg, id, params, req)
       default:
         return jsonRpcError(id, -32601, 'Method not found')
     }
@@ -679,7 +836,7 @@ function handleInitialize(id, params) {
   })
 }
 
-async function handleToolCall(cfg, id, params) {
+async function handleToolCall(cfg, id, params, req) {
   const name = params?.name
   const args = params?.arguments ?? {}
   if (typeof name !== 'string') {
@@ -688,7 +845,7 @@ async function handleToolCall(cfg, id, params) {
   const tool = TOOLS.find((t) => t.name === name)
   if (!tool) return jsonRpcError(id, -32602, `Unknown tool: ${name}`)
   try {
-    const result = await dispatchTool(cfg, name, args)
+    const result = await dispatchTool(cfg, name, args, req)
     return jsonRpcResult(id, {
       content: [{type: 'text', text: JSON.stringify(result, null, 2)}],
       structuredContent: result,
@@ -701,12 +858,12 @@ async function handleToolCall(cfg, id, params) {
   }
 }
 
-async function dispatchTool(cfg, name, args) {
+async function dispatchTool(cfg, name, args, req) {
   switch (name) {
     case 'list_threads':
       return toolListThreads(cfg, args)
     case 'start_thread':
-      return toolStartThread(cfg, args)
+      return toolStartThread(cfg, args, req)
     case 'send_message':
       return toolSendMessage(cfg, args)
     case 'get_thread':
@@ -741,6 +898,10 @@ async function handleRequest(cfg, req) {
   if (url.pathname === '/health' && req.method === 'GET') {
     return jsonResp(200, {status: 'ok'})
   }
+  // Artifact capability URL: GET/HEAD /artifacts/<id>/<name> — no bearer auth.
+  if (url.pathname.startsWith('/artifacts/')) {
+    return handleArtifactRequest(cfg, url, req)
+  }
   if (url.pathname === '/mcp') {
     if (req.method === 'GET' || req.method === 'DELETE') {
       return new Response(null, {status: 405})
@@ -761,17 +922,76 @@ async function handleRequest(cfg, req) {
     if (Array.isArray(body)) {
       const results = []
       for (const msg of body) {
-        const r = await handleRpc(cfg, msg)
+        const r = await handleRpc(cfg, msg, req)
         if (r) results.push(r)
       }
       if (results.length === 0) return new Response(null, {status: 202})
       return jsonResp(200, results)
     }
-    const r = await handleRpc(cfg, body)
+    const r = await handleRpc(cfg, body, req)
     if (r === null) return new Response(null, {status: 202})
     return jsonResp(200, r)
   }
   return new Response(null, {status: 404})
+}
+
+// ─── Artifact capability URL handler ─────────────────────────────────────────
+// GET/HEAD /artifacts/<id>/<name> — no bearer auth (capability URL). The port is
+// only reachable on the internal Docker network. Validates id/name and streams
+// the file without buffering it in memory.
+
+async function handleArtifactRequest(cfg, url, req) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return new Response(null, {status: 405})
+  }
+  // pathname = /artifacts/<id>/<name>
+  const rest = url.pathname.slice('/artifacts/'.length)
+  const slash = rest.indexOf('/')
+  if (slash < 0) return artifactNotFound()
+  const id = rest.slice(0, slash)
+  const name = rest.slice(slash + 1)
+  if (!ARTIFACT_ID_RE.test(id)) return artifactNotFound()
+  if (!name || !ARTIFACT_NAME_RE.test(name)) return artifactNotFound()
+  const ext = name.split('.').pop()?.toLowerCase() ?? ''
+  if (!ARTIFACT_EXT.has(ext)) return artifactNotFound()
+  // Look up the mapping by artifactId (state.artifacts is keyed by threadId).
+  let entry = null
+  for (const m of state.artifacts.values()) {
+    if (m.artifactId === id) {
+      entry = m
+      break
+    }
+  }
+  if (!entry) return artifactNotFound()
+  const full = path.join(entry.dir, name)
+  // Resolve and ensure the real path is inside the mapped dir (no traversal).
+  const dirResolved = path.resolve(entry.dir)
+  const fullResolved = path.resolve(full)
+  if (!fullResolved.startsWith(dirResolved + path.sep)) return artifactNotFound()
+  let st
+  try {
+    st = await fs.lstat(fullResolved)
+  } catch {
+    return artifactNotFound()
+  }
+  // lstat rejects symlinks at this path (lstat does not follow); require a regular file.
+  if (!st.isFile()) return artifactNotFound()
+  if (st.size > cfg.artifactMaxFileBytes) return artifactNotFound()
+  const contentType = ARTIFACT_CONTENT_TYPES[ext] ?? 'application/octet-stream'
+  const headers = {
+    'content-type': contentType,
+    'content-length': String(st.size),
+    'cache-control': 'no-store',
+    'x-content-type-options': 'nosniff',
+  }
+  if (req.method === 'HEAD') {
+    return new Response(null, {status: 200, headers})
+  }
+  return new Response(Readable.toWeb(createReadStream(fullResolved)), {status: 200, headers})
+}
+
+function artifactNotFound() {
+  return jsonResp(404, {error: {message: 'not found'}})
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -779,6 +999,7 @@ async function handleRequest(cfg, req) {
 async function main() {
   const cfg = parseConfig()
   await loadWatches(cfg)
+  await loadArtifacts(cfg)
   const server = http.createServer(async (req, res) => {
     // Adapt Node IncomingMessage to a fetch-style Request for the handler.
     const headers = new Headers()
@@ -815,8 +1036,13 @@ async function main() {
     res.statusCode = fetchRes.status
     for (const [k, v] of fetchRes.headers.entries()) res.setHeader(k, v)
     if (fetchRes.body) {
-      const ab = await fetchRes.arrayBuffer()
-      res.end(Buffer.from(ab))
+      // Stream the body instead of buffering (artifact files can be up to 50 MiB).
+      const nodeStream = Readable.fromWeb(fetchRes.body)
+      nodeStream.on('error', (err) => {
+        log('error', `response stream: ${err.message}`)
+        res.destroy()
+      })
+      nodeStream.pipe(res)
     } else {
       res.end()
     }
@@ -848,4 +1074,18 @@ main().catch((err) => {
   process.exit(1)
 })
 
-export {parseConfig, handleRequest, TOOLS, dispatchTool, armWatch, unwatch, pollOne, fireNotification}
+export {
+  parseConfig,
+  handleRequest,
+  TOOLS,
+  dispatchTool,
+  armWatch,
+  unwatch,
+  pollOne,
+  fireNotification,
+  createArtifactDir,
+  listArtifacts,
+  persistArtifacts,
+  loadArtifacts,
+  state,
+}
