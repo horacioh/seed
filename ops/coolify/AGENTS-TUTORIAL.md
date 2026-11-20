@@ -92,22 +92,25 @@ The response should be JSON with a healthy status.
 
 ## Step 6: Auto-deploy on push (optional)
 
-To redeploy the stack automatically when new images are pushed to `custom-images`, use Coolify's deploy API. A pasted
-Docker Compose stack has no Git webhook, so the workflow calls the deploy endpoint directly.
+The `custom-apps-images.yml` workflow restarts the stack with freshly pulled images after every successful image build
+on `custom-images` (it also runs on `workflow_dispatch` for a manual redeploy). In the GitHub fork's **Settings →
+Secrets and variables → Actions**, add:
 
-1. Find the stack's UUID: open the stack in Coolify and copy the UUID from the browser URL (`…/service/<uuid>`), or copy
-   the **Deploy Webhook URL** if your Coolify version shows one on the stack.
-2. Set `COOLIFY_WEBHOOK_URL` to the deploy endpoint:
-   `https://<your-coolify-host>/api/v1/deploy?uuid=<stack-uuid>&force=false`.
-3. Create a Coolify API token: **Keys & Tokens → API Tokens**, with the `deploy` permission. API access must be enabled
-   in Coolify **Settings → Advanced → API Access** (if not already on).
-4. In your GitHub fork, add two repository secrets:
-   - `COOLIFY_WEBHOOK_URL` — the deploy endpoint from step 2.
-   - `COOLIFY_API_TOKEN` — the API token from step 3.
+- secret `COOLIFY_API_TOKEN`: create it in Coolify under **Keys & Tokens → API Tokens**, with the `deploy` permission.
+  API access must be enabled in Coolify **Settings → Advanced → API Access**.
+- variable `COOLIFY_URL`: your Coolify address, for example `https://coolify.example.com`.
+- variable `COOLIFY_AGENTS_SERVICES`: the stack's UUID, from the browser URL when you open the stack in Coolify
+  (`…/service/<uuid>`).
 
-The `custom-apps-images.yml` workflow POSTs to the deploy endpoint after a successful image build on `custom-images`. It
-also runs on `workflow_dispatch` for a manual redeploy. The Watchtower updater remains a fallback that pulls new image
-digests on its own interval.
+Without them the workflow still builds the images and skips the redeploy with a notice. The Watchtower updater remains a
+fallback that pulls new image digests on its own interval. See the README's [Auto-update](README.md#auto-update)
+section.
+
+## Step 7: Point your Seed site at this server (optional)
+
+On your `seed-site.yaml` stack set `SEED_APPS_ENVIRONMENT_URL=https://<domain>/hm/api/apps` and restart it with the
+latest images. Clients opening the site then use this server; check with
+`curl -s https://<site>/hm/api/config | grep appEnvironmentUrl`.
 
 ## GHCR package visibility
 
