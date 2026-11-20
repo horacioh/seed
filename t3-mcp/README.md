@@ -11,27 +11,32 @@ Plain Node ESM, **zero runtime dependencies**. The single entry file `server.mjs
 
 - Exposes six MCP tools over Streamable HTTP (`POST /mcp`, JSON-RPC 2.0): `list_threads`, `start_thread`,
   `send_message`, `get_thread`, `watch_thread`, `unwatch_thread`.
+- `start_thread` creates an artifact directory for before/after evidence (screenshots, videos). The agent saves files
+  there; the Seed agents server downloads them by plain URL via `GET /artifacts/<id>/<name>` (no auth header needed —
+  Seed's `write ~/memory/x {fromUrl}` can't send headers).
 - Polls watched threads and POSTs a webhook (`thread.finished` / `thread.needs_input`) when a run completes or needs
-  input.
-- Persists watches to disk so a restart resumes them.
+  input. The webhook payload includes the artifacts list.
+- Persists watches and artifact mappings to disk so a restart resumes them.
 - Enforces a Bearer token, a project allowlist, and a webhook-prefix allowlist.
 
 ## Configuration
 
 All settings come from environment variables (parsed once at startup):
 
-| Variable                  | Default         | Description                                                                                                                    |
-| ------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `T3_MCP_TOKEN`            | _required_      | Bearer token clients must present for `/mcp`.                                                                                  |
-| `T3_MCP_HOST`             | `0.0.0.0`       | Bind hostname.                                                                                                                 |
-| `T3_MCP_PORT`             | `3774`          | Bind port.                                                                                                                     |
-| `T3_MCP_T3_BIN`           | `t3`            | T3 CLI binary, or a JSON argv array (e.g. `["node","/path/fake-t3.mjs"]`).                                                     |
-| `T3_MCP_PROJECTS`         | _required_      | Comma-separated T3 project ids the agent may use. First is the default.                                                        |
-| `T3_MCP_WEBHOOK_PREFIXES` | _(empty)_       | Comma-separated URL prefixes a notify webhook URL must start with.                                                             |
-| `T3_MCP_STATE_DIR`        | `$HOME/.t3-mcp` | Directory for `watches.json` (persists across restarts).                                                                       |
-| `T3_MCP_POLL_SECS`        | `15`            | Watcher poll interval.                                                                                                         |
-| `T3_MCP_DEFAULT_PROVIDER` | _(none)_        | Provider instance id for `start_thread` when it names none (set with the model). Needed when the project has no default model. |
-| `T3_MCP_DEFAULT_MODEL`    | _(none)_        | Model slug for `start_thread` when it names none.                                                                              |
+| Variable                    | Default                       | Description                                                                                                                    |
+| --------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `T3_MCP_TOKEN`              | _required_                    | Bearer token clients must present for `/mcp`.                                                                                  |
+| `T3_MCP_HOST`               | `0.0.0.0`                     | Bind hostname.                                                                                                                 |
+| `T3_MCP_PORT`               | `3774`                        | Bind port.                                                                                                                     |
+| `T3_MCP_T3_BIN`             | `t3`                          | T3 CLI binary, or a JSON argv array (e.g. `["node","/path/fake-t3.mjs"]`).                                                     |
+| `T3_MCP_PROJECTS`           | _required_                    | Comma-separated T3 project ids the agent may use. First is the default.                                                        |
+| `T3_MCP_WEBHOOK_PREFIXES`   | _(empty)_                     | Comma-separated URL prefixes a notify webhook URL must start with.                                                             |
+| `T3_MCP_STATE_DIR`          | `$HOME/.t3-mcp`               | Directory for `watches.json` and `artifacts.json` (persists across restarts).                                                  |
+| `T3_MCP_ARTIFACTS_DIR`      | `<state dir>/artifacts`       | Root directory for per-thread evidence files.                                                                                  |
+| `T3_MCP_ARTIFACTS_BASE_URL` | _(derived from request Host)_ | Override the base URL for artifact download links. If unset, uses `http://<Host header of the /mcp request>`.                  |
+| `T3_MCP_POLL_SECS`          | `15`                          | Watcher poll interval.                                                                                                         |
+| `T3_MCP_DEFAULT_PROVIDER`   | _(none)_                      | Provider instance id for `start_thread` when it names none (set with the model). Needed when the project has no default model. |
+| `T3_MCP_DEFAULT_MODEL`      | _(none)_                      | Model slug for `start_thread` when it names none.                                                                              |
 
 The server refuses to start without `T3_MCP_TOKEN` or `T3_MCP_PROJECTS`.
 
@@ -39,9 +44,12 @@ The server refuses to start without `T3_MCP_TOKEN` or `T3_MCP_PROJECTS`.
 
 1. `list_threads {project?, limit?}` → `{project, threads:[summary fields]}`.
 2. `start_thread {message, title?, project?, worktree?, branch?, provider?, model?, notifyWebhookUrl?}` →
-   `{threadId, title, link, status, watching}`. `provider`/`model` must be given together.
+   `{threadId, title, link, status, watching, artifactsDir, artifactsUrl}`. `provider`/`model` must be given together.
+   Creates an artifact directory and appends an evidence-block instructions to the message; `artifactsUrl` is the base
+   URL the agents server can download evidence files from (no auth header needed).
 3. `send_message {threadId, message, notifyWebhookUrl?}` → `{threadId, status, watching}`.
-4. `get_thread {threadId, messages?}` → `{thread, messages}`.
+4. `get_thread {threadId, messages?}` → `{thread, messages, artifacts}`. `artifacts` is an array of
+   `{name, url, bytes, contentType}` for the thread's saved evidence files (empty if none).
 5. `watch_thread {threadId, notifyWebhookUrl}` → arms a notification for the thread's next finished run.
 6. `unwatch_thread {threadId}` → `{threadId, removed}`.
 
@@ -65,6 +73,9 @@ When a watched thread finishes a run (or needs input), the server POSTs JSON to 
   "worktreePath": null,
   "pullRequests": [],
   "project": "…",
+  "artifacts": [
+    {"name": "after-1.png", "url": "http://…/artifacts/…/after-1.png", "bytes": 12345, "contentType": "image/png"}
+  ],
   "lastAssistantMessage": "…",
   "messages": [{"role": "assistant", "runId": "…", "text": "…"}]
 }
@@ -80,6 +91,10 @@ pending request). A 2xx response removes the watch; a 4xx drops it; a 5xx/networ
 - **Project allowlist**: only threads in `T3_MCP_PROJECTS` may be listed, read, started, sent, or watched.
 - **Webhook prefix allowlist**: `notifyWebhookUrl` must start with one of `T3_MCP_WEBHOOK_PREFIXES` (https or http,
   normalized via `new URL()`). Empty disables notifications.
+- **Artifact capability URLs**: `GET/HEAD /artifacts/<id>/<name>` requires no Bearer token — the 22-character base64url
+  id is an unguessable capability URL. The port (3774) is only reachable on the internal Docker network, so only the
+  agents server can download evidence files. Files are meant to be published (the agent is told not to put secrets in
+  them). Allowed extensions: png, jpg, jpeg, gif, webp, webm, mp4; max 50 MB each, max 20 files per thread.
 - **Threads run with the project's runtime mode** — full access for the seed project (the user chose that). The MCP
   server does not change it.
 - The server never logs message contents, tokens, or the secret path segment of webhook URLs.
@@ -111,6 +126,6 @@ agent, and create a webhook trigger whose delivery URL the agent passes as `noti
 ```sh
 cd t3-mcp
 mise x bun@1.3.10 -- bun install   # devDependency: @modelcontextprotocol/sdk for tests
-mise x bun@1.3.10 -- bun test       # 24 tests
+mise x bun@1.3.10 -- bun test       # 44 tests
 node --check server.mjs            # syntax check
 ```
