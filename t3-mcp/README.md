@@ -20,16 +20,18 @@ Plain Node ESM, **zero runtime dependencies**. The single entry file `server.mjs
 
 All settings come from environment variables (parsed once at startup):
 
-| Variable                  | Default         | Description                                                                |
-| ------------------------- | --------------- | -------------------------------------------------------------------------- |
-| `T3_MCP_TOKEN`            | _required_      | Bearer token clients must present for `/mcp`.                              |
-| `T3_MCP_HOST`             | `0.0.0.0`       | Bind hostname.                                                             |
-| `T3_MCP_PORT`             | `3774`          | Bind port.                                                                 |
-| `T3_MCP_T3_BIN`           | `t3`            | T3 CLI binary, or a JSON argv array (e.g. `["node","/path/fake-t3.mjs"]`). |
-| `T3_MCP_PROJECTS`         | _required_      | Comma-separated T3 project ids the agent may use. First is the default.    |
-| `T3_MCP_WEBHOOK_PREFIXES` | _(empty)_       | Comma-separated URL prefixes a notify webhook URL must start with.         |
-| `T3_MCP_STATE_DIR`        | `$HOME/.t3-mcp` | Directory for `watches.json` (persists across restarts).                   |
-| `T3_MCP_POLL_SECS`        | `15`            | Watcher poll interval.                                                     |
+| Variable                  | Default         | Description                                                                                                                    |
+| ------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `T3_MCP_TOKEN`            | _required_      | Bearer token clients must present for `/mcp`.                                                                                  |
+| `T3_MCP_HOST`             | `0.0.0.0`       | Bind hostname.                                                                                                                 |
+| `T3_MCP_PORT`             | `3774`          | Bind port.                                                                                                                     |
+| `T3_MCP_T3_BIN`           | `t3`            | T3 CLI binary, or a JSON argv array (e.g. `["node","/path/fake-t3.mjs"]`).                                                     |
+| `T3_MCP_PROJECTS`         | _required_      | Comma-separated T3 project ids the agent may use. First is the default.                                                        |
+| `T3_MCP_WEBHOOK_PREFIXES` | _(empty)_       | Comma-separated URL prefixes a notify webhook URL must start with.                                                             |
+| `T3_MCP_STATE_DIR`        | `$HOME/.t3-mcp` | Directory for `watches.json` (persists across restarts).                                                                       |
+| `T3_MCP_POLL_SECS`        | `15`            | Watcher poll interval.                                                                                                         |
+| `T3_MCP_DEFAULT_PROVIDER` | _(none)_        | Provider instance id for `start_thread` when it names none (set with the model). Needed when the project has no default model. |
+| `T3_MCP_DEFAULT_MODEL`    | _(none)_        | Model slug for `start_thread` when it names none.                                                                              |
 
 The server refuses to start without `T3_MCP_TOKEN` or `T3_MCP_PROJECTS`.
 
@@ -95,6 +97,8 @@ The existing file keeps working if the download fails. Add these environment var
 - `T3_MCP_TOKEN=${SERVICE_PASSWORD_64_T3MCP}`
 - `T3_MCP_PROJECTS=6d182a90-66f1-4da3-bb82-b7228b95dab2`
 - `T3_MCP_WEBHOOK_PREFIXES=https://seed-agents.hhg.app/hm/api/apps/webhooks/,https://seed-agents.hhg.app/hm/api/agents/webhooks/`
+- `T3_MCP_DEFAULT_PROVIDER=acpRegistry_devin` and `T3_MCP_DEFAULT_MODEL=fusion-claude-opus-5-5-medium-sidekick-glm-5-2`
+  (the seed project has no default model)
 
 Both stacks (seed-agents and t3-code) get Coolify's **Connect To Predefined Network** so the agents server reaches the
 MCP server at `http://t3code-<t3 stack uuid>:3774/mcp`.

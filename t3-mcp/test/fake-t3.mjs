@@ -155,6 +155,8 @@ async function main() {
       pullRequests: [],
       branch: flags.branch ?? null,
       worktreePath: null,
+      providerInstanceId: flags.provider ?? null,
+      model: flags.model ?? null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }

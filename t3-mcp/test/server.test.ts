@@ -39,6 +39,7 @@ async function startServer(cfg) {
     T3_MCP_STATE_DIR: cfg.stateDir,
     T3_MCP_POLL_SECS: String(cfg.pollSecs),
     T3_FAKE_STATE: cfg.statePath,
+    ...(cfg.extraEnv ?? {}),
   }
   const proc = Bun.spawn(['node', SERVER], {env, stdout: 'pipe', stderr: 'pipe'})
   // Wait for the server to listen by reading stderr line by line.
@@ -784,5 +785,39 @@ describe('watcher arming from start_thread, send_message and watch_thread', () =
     await waitForDeliveries(1)
     expect(deliveries.length).toBe(1)
     expect(deliveries[0].body.runId).toBe('run:t-done:1')
+  })
+})
+
+describe('start_thread model selection', () => {
+  let stop, base, cfg
+  beforeEach(async () => {
+    cfg = makeConfig({extraEnv: {T3_MCP_DEFAULT_PROVIDER: 'prov-default', T3_MCP_DEFAULT_MODEL: 'model-default'}})
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+  })
+  afterEach(async () => await stop())
+
+  async function start(args) {
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: args},
+    })
+    expect(body.result.isError).toBeFalsy()
+    return readState(cfg.statePath).threads[body.result.structuredContent.threadId]
+  }
+
+  test('uses the server default model when none is given', async () => {
+    const t = await start({message: 'hi'})
+    expect(t.providerInstanceId).toBe('prov-default')
+    expect(t.model).toBe('model-default')
+  })
+
+  test('an explicit provider and model win over the default', async () => {
+    const t = await start({message: 'hi', provider: 'prov-x', model: 'model-x'})
+    expect(t.providerInstanceId).toBe('prov-x')
+    expect(t.model).toBe('model-x')
   })
 })
