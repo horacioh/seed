@@ -20,12 +20,18 @@ ARG DATE=unknown
 # fetching its versioned setup script (e.g. "3000.12.57"). The installer places
 # the binary under ~/.local/share/devin/cli/_versions/<v>/bin/devin and symlinks
 # ~/.local/bin/devin to it; credentials live at ~/.local/share/devin/credentials.toml.
+# The installer ends by running the interactive `devin setup` (first-run login), which
+# cannot work in a build, so that line is removed; signing in happens later in the
+# running container. The grep fails the build if the installer stops ending that way.
 ARG DEVIN_VERSION=""
-RUN if [ -n "$DEVIN_VERSION" ]; then \
-      curl -fsSL "https://cli.devin.ai/cli/${DEVIN_VERSION}/setup.sh" | bash; \
-    else \
-      curl -fsSL https://cli.devin.ai/install.sh | bash; \
-    fi
+RUN set -e; \
+    if [ -n "$DEVIN_VERSION" ]; then url="https://cli.devin.ai/cli/${DEVIN_VERSION}/setup.sh"; \
+    else url="https://cli.devin.ai/install.sh"; fi; \
+    curl -fsSL "$url" -o /tmp/devin-install.sh; \
+    grep -q '" setup$' /tmp/devin-install.sh; \
+    sed -i '/" setup$/d' /tmp/devin-install.sh; \
+    bash /tmp/devin-install.sh </dev/null; \
+    rm /tmp/devin-install.sh
 
 # Relocate the resolved binary to /usr/local/bin so a volume mounted on
 # ~/.local/share/devin (to persist credentials) does not shadow the binary.
