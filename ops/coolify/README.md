@@ -19,6 +19,9 @@ site on that server up to date.
    - `SEED_IS_GATEWAY` [`false`], `SEED_ENABLE_STATISTICS` [`false`], `SEED_LOG_LEVEL` [`info`], `SEED_P2P_TESTNET_NAME`
      [empty = mainnet; `dev` = testnet, also set `SEED_LIGHTNING_URL` to `https://ln.testnet.seed.hyper.media`],
      `SEED_NO_PULL` [`false`].
+   - `SEED_APPS_ENVIRONMENT_URL` [`https://hyper.media/hm/api/apps`]: the app environment (agents server) the site
+     advertises in `/hm/api/config`. For your own, use `https://<agents domain>/hm/api/apps` (see the
+     [agents tutorial](AGENTS-TUTORIAL.md)).
 4. Deploy. `seed-proxy` turns healthy once the site answers on `/hm/api/config` (checked inside the container).
 5. Link the site from the Seed desktop app with `https://<domain>/hm/register?secret=<SERVICE_PASSWORD_SEEDLINK>` (copy
    the generated value from the stack's **Environment Variables**). The secret is written to the web data volume only on
@@ -30,6 +33,24 @@ port-less `SERVICE_URL_SEED` / `SERVICE_FQDN_SEED` (the `_80` variants carry a l
 and the P2P announce address).
 
 ## Auto-update
+
+### From the fork's CI (follows `custom-images` immediately)
+
+After every push to `custom-images`, `custom-ghcr-images.yml` (web and site images) and `custom-apps-images.yml` (agents
+images) restart the listed Coolify stacks with freshly pulled images, through `.github/scripts/coolify-redeploy.sh`. A
+plain Coolify deploy of a running stack keeps its current image, so the script uses
+`POST /api/v1/services/<uuid>/restart?latest=true`. It needs, in the GitHub repository settings:
+
+- secret `COOLIFY_API_TOKEN`: a Coolify API token (**Keys & Tokens → API Tokens**) with the `deploy` permission (API
+  access must be on in **Settings → Advanced**);
+- variable `COOLIFY_URL`, e.g. `https://coolify.example.com`;
+- variable `COOLIFY_SITE_SERVICES`: UUIDs of the Seed site stacks to restart (space- or comma-separated; the UUID is in
+  the stack's URL in Coolify, `…/service/<uuid>`);
+- variable `COOLIFY_AGENTS_SERVICES`: the same for agents stacks.
+
+When any of them is missing, the deploy job only prints a notice. Tag builds (`<version>-custom`) are not redeployed.
+
+### From the server (Watchtower)
 
 `seed-updater.yaml` runs [nickfedor/watchtower](https://github.com/nicholas-fedor/watchtower) (the maintained fork;
 `containrrr/watchtower` is archived and fails against Docker 29). Every `SEED_UPDATE_INTERVAL` seconds (default `600`)
