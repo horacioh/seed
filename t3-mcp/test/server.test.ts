@@ -247,10 +247,12 @@ describe('start_thread', () => {
     expect(body.result.structuredContent.threadId).toMatch(/^thread-/)
     expect(body.result.structuredContent.title).toBe('My Thread')
     expect(body.result.structuredContent.status).toBe('running')
-    // Verify the message was passed via stdin (recorded in fake state).
+    // Verify the message was passed via stdin (recorded in fake state), with the evidence block appended.
     const state = readState(cfg.statePath)
     const t = Object.values(state.threads)[0]
-    expect(t.messages[0].text).toBe('hello world\nsecond line')
+    expect(t.messages[0].text).toContain('hello world\nsecond line')
+    expect(t.messages[0].text).toContain('Evidence directory:')
+    expect(t.messages[0].text).toContain('before-*.png')
   })
 
   test('refuses a disallowed project', async () => {
@@ -423,7 +425,10 @@ describe('watcher fires once after thread finishes', () => {
     state.threads['t-run'].activeRunId = null
     state.threads['t-run'].latestRunId = 'run:t-run:2'
     state.threads['t-run'].status = 'completed'
-    state.threads['t-run'].messages = [{role: 'assistant', runId: 'run:t-run:2', text: 'finished result'}]
+    // A long reply keeps its end, where the structured result block is.
+    state.threads['t-run'].messages = [
+      {role: 'assistant', runId: 'run:t-run:2', text: 'x'.repeat(5000) + 'finished result'},
+    ]
     fs.writeFileSync(cfg.statePath, JSON.stringify(state))
     // Wait for the poll (1s) + fetch.
     for (let i = 0; i < 30 && deliveries.length === 0; i++) {
@@ -433,7 +438,8 @@ describe('watcher fires once after thread finishes', () => {
     expect(deliveries[0].body.event).toBe('thread.finished')
     expect(deliveries[0].body.threadId).toBe('t-run')
     expect(deliveries[0].body.runId).toBe('run:t-run:2')
-    expect(deliveries[0].body.lastAssistantMessage).toBe('finished result')
+    expect(deliveries[0].body.lastAssistantMessage.endsWith('finished result')).toBe(true)
+    expect(deliveries[0].body.lastAssistantMessage.length).toBe(4001)
     expect(deliveries[0].idem).toMatch(/^t3-t-run-run:t-run:2-thread\.finished$/)
     // Wait another poll cycle to confirm no duplicate fire.
     await new Promise((r) => setTimeout(r, 1500))
@@ -819,5 +825,325 @@ describe('start_thread model selection', () => {
     const t = await start({message: 'hi', provider: 'prov-x', model: 'model-x'})
     expect(t.providerInstanceId).toBe('prov-x')
     expect(t.model).toBe('model-x')
+  })
+})
+
+// ─── Artifacts ────────────────────────────────────────────────────────────────
+
+describe('artifacts: start_thread creates dir and appends evidence block', () => {
+  let stop, base, cfg
+  beforeEach(async () => {
+    cfg = makeConfig()
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+  })
+  afterEach(async () => await stop())
+
+  test('returns artifactsUrl built from the request Host', async () => {
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it'}},
+    })
+    const sc = body.result.structuredContent
+    expect(sc.artifactsUrl).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/artifacts\/[A-Za-z0-9_-]{22}\/$/)
+    expect(sc.artifactsDir).toContain('artifacts')
+    // The dir should exist on disk.
+    expect(fs.existsSync(sc.artifactsDir)).toBe(true)
+    // The evidence block should be in the message.
+    const state = readState(cfg.statePath)
+    const t = Object.values(state.threads)[0]
+    expect(t.messages[0].text).toContain(sc.artifactsDir)
+    expect(t.messages[0].text).toContain('Evidence directory:')
+  })
+})
+
+describe('artifacts: base URL override', () => {
+  let stop, base, cfg
+  beforeEach(async () => {
+    cfg = makeConfig({extraEnv: {T3_MCP_ARTIFACTS_BASE_URL: 'https://artifacts.example.com'}})
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+  })
+  afterEach(async () => await stop())
+
+  test('uses the override instead of the request Host', async () => {
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it'}},
+    })
+    expect(body.result.structuredContent.artifactsUrl).toMatch(
+      /^https:\/\/artifacts\.example\.com\/artifacts\/[A-Za-z0-9_-]{22}\/$/,
+    )
+  })
+})
+
+describe('artifacts: mapping persists across restart', () => {
+  let cfg
+  beforeEach(() => {
+    cfg = makeConfig()
+  })
+
+  test('artifact mapping is reloaded from artifacts.json after restart', async () => {
+    const s1 = await startServer(cfg)
+    const {body} = await rpc(s1.base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it'}},
+    })
+    const threadId = body.result.structuredContent.threadId
+    const artifactsDir = body.result.structuredContent.artifactsDir
+    // Write a file into the artifact dir.
+    fs.writeFileSync(path.join(artifactsDir, 'after-1.png'), 'png-bytes')
+    // Wait for artifacts.json to land.
+    for (let i = 0; i < 30; i++) {
+      try {
+        const arr = JSON.parse(fs.readFileSync(path.join(cfg.stateDir, 'artifacts.json'), 'utf8'))
+        if (arr.find((a) => a.threadId === threadId)) break
+      } catch {}
+      await new Promise((r) => setTimeout(r, 100))
+    }
+    await s1.stop()
+    // Restart with the same state dir.
+    const s2 = await startServer(cfg)
+    // get_thread should still list the artifact.
+    const {body: gt} = await rpc(s2.base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'get_thread', arguments: {threadId, messages: 1}},
+    })
+    expect(gt.result.structuredContent.artifacts.length).toBe(1)
+    expect(gt.result.structuredContent.artifacts[0].name).toBe('after-1.png')
+    await s2.stop()
+  })
+})
+
+describe('artifacts: GET /artifacts/<id>/<name>', () => {
+  let stop, base, cfg, artifactId, artifactDir, threadId
+  beforeEach(async () => {
+    cfg = makeConfig()
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+    // Start a thread to get an artifact dir.
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it'}},
+    })
+    threadId = body.result.structuredContent.threadId
+    artifactDir = body.result.structuredContent.artifactsDir
+    const artifactsUrl = body.result.structuredContent.artifactsUrl
+    // Extract the artifact id from the URL.
+    artifactId = artifactsUrl.match(/\/artifacts\/([A-Za-z0-9_-]{22})\//)[1]
+  })
+  afterEach(async () => await stop())
+
+  test('serves an allowed file with correct type/length/headers', async () => {
+    fs.writeFileSync(path.join(artifactDir, 'before-1.png'), 'png-data-bytes')
+    const res = await fetch(`${base}/artifacts/${artifactId}/before-1.png`)
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('image/png')
+    expect(res.headers.get('content-length')).toBe(String(Buffer.byteLength('png-data-bytes')))
+    expect(res.headers.get('cache-control')).toBe('no-store')
+    expect(res.headers.get('x-content-type-options')).toBe('nosniff')
+    expect(await res.text()).toBe('png-data-bytes')
+  })
+
+  test('HEAD works without a body', async () => {
+    fs.writeFileSync(path.join(artifactDir, 'after-1.webm'), 'webm-data')
+    const res = await fetch(`${base}/artifacts/${artifactId}/after-1.webm`, {method: 'HEAD'})
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('video/webm')
+    expect(res.headers.get('content-length')).toBe(String(Buffer.byteLength('webm-data')))
+    expect(await res.text()).toBe('')
+  })
+
+  test('404 for unknown id', async () => {
+    const res = await fetch(`${base}/artifacts/AAAAAAAAAAAAAAAAAAAAAAAA/before-1.png`)
+    expect(res.status).toBe(404)
+  })
+
+  test('404 for malformed id', async () => {
+    const res = await fetch(`${base}/artifacts/short/before-1.png`)
+    expect(res.status).toBe(404)
+  })
+
+  test('404 for path traversal in name', async () => {
+    fs.writeFileSync(path.join(artifactDir, 'real.png'), 'data')
+    const res = await fetch(`${base}/artifacts/${artifactId}/..%2Fx.png`)
+    expect(res.status).toBe(404)
+  })
+
+  test('404 for dotfile name', async () => {
+    fs.writeFileSync(path.join(artifactDir, '.hidden.png'), 'data')
+    const res = await fetch(`${base}/artifacts/${artifactId}/.hidden.png`)
+    expect(res.status).toBe(404)
+  })
+
+  test('404 for disallowed extension', async () => {
+    fs.writeFileSync(path.join(artifactDir, 'a.txt'), 'data')
+    const res = await fetch(`${base}/artifacts/${artifactId}/a.txt`)
+    expect(res.status).toBe(404)
+  })
+
+  test('404 for symlink', async () => {
+    fs.writeFileSync(path.join(artifactDir, 'real.png'), 'real-data')
+    fs.symlinkSync('real.png', path.join(artifactDir, 'link.png'))
+    const res = await fetch(`${base}/artifacts/${artifactId}/link.png`)
+    expect(res.status).toBe(404)
+  })
+
+  test('404 for oversize file (test hook lowers cap)', async () => {
+    // Restart the server with a tiny cap.
+    await stop()
+    cfg.extraEnv = {T3_MCP_TEST_ARTIFACT_MAX_BYTES: '10'}
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+    fs.writeFileSync(path.join(artifactDir, 'big.png'), 'this is more than 10 bytes')
+    const res = await fetch(`${base}/artifacts/${artifactId}/big.png`)
+    expect(res.status).toBe(404)
+  })
+})
+
+describe('artifacts: get_thread includes artifacts list', () => {
+  let stop, base, cfg
+  beforeEach(async () => {
+    cfg = makeConfig()
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+  })
+  afterEach(async () => await stop())
+
+  test('get_thread returns artifacts array (empty when none)', async () => {
+    const {body: startBody} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it'}},
+    })
+    const threadId = startBody.result.structuredContent.threadId
+    const artifactDir = startBody.result.structuredContent.artifactsDir
+    // No files yet → empty array.
+    const {body: gt1} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'get_thread', arguments: {threadId, messages: 1}},
+    })
+    expect(gt1.result.structuredContent.artifacts).toEqual([])
+    // Add files → listed.
+    fs.writeFileSync(path.join(artifactDir, 'before-1.png'), 'a')
+    fs.writeFileSync(path.join(artifactDir, 'after-1.webm'), 'bb')
+    const {body: gt2} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'get_thread', arguments: {threadId, messages: 1}},
+    })
+    const arts = gt2.result.structuredContent.artifacts
+    expect(arts.length).toBe(2)
+    expect(arts[0].name).toBe('after-1.webm')
+    expect(arts[0].contentType).toBe('video/webm')
+    expect(arts[0].bytes).toBe(2)
+    expect(arts[0].url).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/artifacts\//)
+    expect(arts[1].name).toBe('before-1.png')
+    expect(arts[1].contentType).toBe('image/png')
+  })
+})
+
+describe('artifacts: webhook payload includes artifacts list', () => {
+  let stop, base, cfg, webhookPort, deliveries
+  beforeEach(async () => {
+    cfg = makeConfig({pollSecs: 1})
+    deliveries = []
+    const wh = Bun.serve({
+      port: 0,
+      fetch: async (req) => {
+        deliveries.push({idem: req.headers.get('Idempotency-Key') ?? '', body: await req.json()})
+        return new Response('ok', {status: 200})
+      },
+    })
+    webhookPort = wh.port
+    cfg.webhookPrefixes = [`http://127.0.0.1:${webhookPort}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      wh.stop()
+    }
+  })
+  afterEach(async () => await stop())
+
+  test('thread.finished payload includes artifacts', async () => {
+    const webhookUrl = `http://127.0.0.1:${webhookPort}/hook/secret`
+    const {body: startBody} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it', notifyWebhookUrl: webhookUrl}},
+    })
+    const threadId = startBody.result.structuredContent.threadId
+    const artifactDir = startBody.result.structuredContent.artifactsDir
+    // Save an evidence file.
+    fs.writeFileSync(path.join(artifactDir, 'after-1.png'), 'evidence')
+    // Finish the run.
+    const state = readState(cfg.statePath)
+    state.threads[threadId].activeRunId = null
+    state.threads[threadId].status = 'completed'
+    state.threads[threadId].messages = [
+      ...(state.threads[threadId].messages ?? []),
+      {role: 'assistant', runId: state.threads[threadId].latestRunId, text: 'done'},
+    ]
+    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    // Wait for delivery.
+    for (let i = 0; i < 40 && deliveries.length === 0; i++) {
+      await new Promise((r) => setTimeout(r, 200))
+    }
+    expect(deliveries.length).toBe(1)
+    expect(deliveries[0].body.event).toBe('thread.finished')
+    expect(deliveries[0].body.artifacts.length).toBe(1)
+    expect(deliveries[0].body.artifacts[0].name).toBe('after-1.png')
+    expect(deliveries[0].body.artifacts[0].url).toMatch(/\/artifacts\//)
+  })
+})
+
+describe('artifacts: failed thread start removes the dir', () => {
+  let stop, base, cfg
+  beforeEach(async () => {
+    cfg = makeConfig()
+    // Point the fake CLI at a state path that doesn't exist so thread start fails.
+    // Actually, we need the fake CLI to fail. We'll use a non-existent fake binary.
+    cfg.t3Bin = JSON.stringify(['node', '-e', 'process.exit(1)'])
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+  })
+  afterEach(async () => await stop())
+
+  test('removes the artifact dir when thread start fails', async () => {
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {name: 'start_thread', arguments: {message: 'do it'}},
+    })
+    expect(body.result.isError).toBe(true)
+    // No artifact dirs should exist.
+    const artifactsRoot = path.join(cfg.stateDir, 'artifacts')
+    if (fs.existsSync(artifactsRoot)) {
+      const dirs = fs.readdirSync(artifactsRoot)
+      expect(dirs.length).toBe(0)
+    }
   })
 })
