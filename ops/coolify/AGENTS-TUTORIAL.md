@@ -119,6 +119,13 @@ the first build. To let Coolify pull them without a credential, make each packag
 select the package → **Package settings** → **Change visibility** → **Public**. Alternatively, add a GHCR registry
 credential in Coolify (**Servers** → your server → **Registries**) and reference it when deploying the stack.
 
+## T3 Code threads
+
+The agents server can also drive T3 Code threads (start, read, and be notified on finish) through a small MCP server
+that runs inside the T3 Code container. See `t3-mcp/README.md` for the full recipe: the T3 Code Coolify stack command
+fetches `t3-mcp/server.mjs` and runs it alongside `t3 serve`, the agents server connects to it as an MCP server named
+`t3`, and a webhook trigger delivers the finish event back to the agents server.
+
 ## Limitations
 
 - Each model call opens a fresh Devin session and is billed to the Devin account that signed in.
