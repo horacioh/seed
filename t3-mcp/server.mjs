@@ -47,7 +47,16 @@ function parseConfig(env = process.env) {
     .filter(Boolean)
     .map(normalizePrefix)
   const stateDir = env.T3_MCP_STATE_DIR ?? path.join(os.homedir(), '.t3-mcp')
+  // Used when start_thread names no model: `t3 thread start` refuses to start without one when the
+  // project has no default model.
+  const defaultProvider = env.T3_MCP_DEFAULT_PROVIDER?.trim() || ''
+  const defaultModel = env.T3_MCP_DEFAULT_MODEL?.trim() || ''
+  if (Boolean(defaultProvider) !== Boolean(defaultModel)) {
+    throw new Error('T3_MCP_DEFAULT_PROVIDER and T3_MCP_DEFAULT_MODEL must be set together')
+  }
   return {
+    defaultProvider,
+    defaultModel,
     token,
     hostname: env.T3_MCP_HOST ?? '0.0.0.0',
     port: parseInt(env.T3_MCP_PORT ?? '3774', 10),
@@ -230,8 +239,14 @@ const TOOLS = [
           description: 'Base ref (branch/tag/commit) for a new git worktree the thread runs in.',
         },
         branch: {type: 'string', description: 'Branch name for the new worktree.'},
-        provider: {type: 'string', description: 'Provider instance id. Must be given with --model.'},
-        model: {type: 'string', description: 'Model slug. Must be given with --provider.'},
+        provider: {
+          type: 'string',
+          description: 'Provider instance id, given together with model. Omit both to use the server default.',
+        },
+        model: {
+          type: 'string',
+          description: 'Model slug, given together with provider. Omit both to use the server default.',
+        },
         notifyWebhookUrl: {
           type: 'string',
           description:
@@ -319,9 +334,13 @@ async function toolStartThread(cfg, args) {
   if ((args.provider && !args.model) || (args.model && !args.provider)) {
     throw new ToolError('provider and model must be given together')
   }
+  // Checked before starting, so a rejected URL never leaves a thread behind.
+  if (args.notifyWebhookUrl) assertWebhookAllowed(cfg, args.notifyWebhookUrl)
   const cliArgs = ['thread', 'start']
   if (args.title) cliArgs.push('--title', args.title)
-  if (args.provider && args.model) cliArgs.push('--provider', args.provider, '--model', args.model)
+  const provider = args.provider ?? cfg.defaultProvider
+  const model = args.model ?? cfg.defaultModel
+  if (provider && model) cliArgs.push('--provider', provider, '--model', model)
   if (args.worktree) cliArgs.push('--worktree', args.worktree)
   if (args.branch) cliArgs.push('--branch', args.branch)
   cliArgs.push('--json', project, '-')
@@ -341,13 +360,13 @@ async function toolStartThread(cfg, args) {
     threadId = stdout.trim().split(/\s+/)[0]
   }
   if (!threadId) throw new ToolError('thread start did not return a thread id')
+  // `thread start --json` does not include the link, so read it back.
+  const data = await showThread(cfg, threadId, 1)
+  title = title || (data.thread?.title ?? '')
+  link = link || (data.thread?.link ?? '')
+  status = data.thread?.status ?? status
   let watching = false
   if (args.notifyWebhookUrl) {
-    assertWebhookAllowed(cfg, args.notifyWebhookUrl)
-    const data = await showThread(cfg, threadId, 3)
-    title = title || (data.thread?.title ?? '')
-    link = link || (data.thread?.link ?? '')
-    status = data.thread?.status ?? status
     // Every run of a brand-new thread is one this call started, so any finished run counts.
     armWatch(cfg, threadId, args.notifyWebhookUrl, null)
     watching = true
