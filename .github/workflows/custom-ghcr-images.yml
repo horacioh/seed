@@ -267,3 +267,20 @@ jobs:
             DATE=${{ env.COMMIT_DATE }}
           cache-from: type=gha,scope=docker-site-custom-ghcr
           cache-to: type=gha,mode=max,scope=docker-site-custom-ghcr
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [docker-web, docker-site]
+    # Only the rolling `main` tag is redeployed; `<version>-custom` tag builds are not followed.
+    if: github.ref == 'refs/heads/custom-images'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+
+      - name: Redeploy Seed site stacks on Coolify
+        env:
+          COOLIFY_URL: ${{ vars.COOLIFY_URL }}
+          COOLIFY_SERVICES: ${{ vars.COOLIFY_SITE_SERVICES }}
+          COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+        run: bash .github/scripts/coolify-redeploy.sh

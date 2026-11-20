@@ -13,7 +13,13 @@
 #   SEED_WEB_IMAGE=ghcr.io/horacioh/seed-web:main
 #   SEED_SITE_IMAGE=ghcr.io/horacioh/seed-site:main
 #
-# Auto-update: deploy seed-updater.yaml once per server. It recreates seed-web and seed-daemon of
+# App environment (agents server) the site advertises to Seed clients in /hm/api/config: set
+#   SEED_APPS_ENVIRONMENT_URL=https://<agents domain>/hm/api/apps   (see seed-agents.yaml)
+# Default is the public one at hyper.media.
+#
+# Auto-update: the fork's custom-ghcr-images workflow restarts the stacks listed in the
+# COOLIFY_SITE_SERVICES repository variable with freshly pulled images after every push to
+# custom-images (see README.md). Alternatively, deploy seed-updater.yaml once per server. It recreates seed-web and seed-daemon of
 # every Seed site on the server when their image tag points at a new digest (the static
 # watchtower labels below opt them in).
 #
@@ -119,6 +125,7 @@ services:
       - SEED_ENABLE_STATISTICS=${SEED_ENABLE_STATISTICS:-false}
       - PORT=3000
       - DATA_DIR=/data
+      - SEED_APPS_ENVIRONMENT_URL=${SEED_APPS_ENVIRONMENT_URL:-https://hyper.media/hm/api/apps}
     volumes:
       - seed-web-data:/data
     healthcheck:
