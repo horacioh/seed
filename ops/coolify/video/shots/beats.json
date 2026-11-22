@@ -1,0 +1,650 @@
+{
+  "takes": {
+    "en": {
+      "capturedAt": "2026-10-08T21:08:50.725Z",
+      "platform": {
+        "os": "linux",
+        "release": "6.8.0-1061-aws",
+        "node": "v22.22.0",
+        "browser": "153.0.8010.12"
+      },
+      "persona": "desktop",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 2,
+      "frame": "card",
+      "format": "16x9",
+      "lang": "en",
+      "baseUrl": "http://localhost:8000",
+      "beats": [
+        {
+          "kind": "shot",
+          "name": "project",
+          "t": 1944,
+          "image": "shots/en/01-project.png",
+          "cursor": {
+            "x": 1056,
+            "y": 648
+          },
+          "target": {
+            "x": 989,
+            "y": 287,
+            "w": 166,
+            "h": 28
+          }
+        },
+        {
+          "kind": "click",
+          "name": "new-resource",
+          "t": 2662,
+          "tClick": 3232,
+          "tAfter": 4460,
+          "target": {
+            "x": 1748,
+            "y": 76,
+            "w": 132,
+            "h": 32
+          },
+          "from": {
+            "x": 1056,
+            "y": 648
+          },
+          "to": {
+            "x": 1814,
+            "y": 92
+          },
+          "before": "shots/en/02-new-resource-before.png",
+          "hover": "shots/en/03-new-resource-hover.png",
+          "after": "shots/en/04-new-resource-after.png",
+          "image": "shots/en/04-new-resource-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "docker-compose",
+          "t": 5072,
+          "tClick": 5629,
+          "tAfter": 6421,
+          "target": {
+            "x": 1344,
+            "y": 481,
+            "w": 520,
+            "h": 192
+          },
+          "from": {
+            "x": 1814,
+            "y": 92
+          },
+          "to": {
+            "x": 1604,
+            "y": 577
+          },
+          "before": "shots/en/05-docker-compose-before.png",
+          "hover": "shots/en/06-docker-compose-hover.png",
+          "after": "shots/en/07-docker-compose-after.png",
+          "image": "shots/en/07-docker-compose-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "paste",
+          "t": 7178,
+          "image": "shots/en/08-paste.png",
+          "cursor": {
+            "x": 1604,
+            "y": 577
+          },
+          "target": {
+            "x": 281,
+            "y": 181,
+            "w": 1582,
+            "h": 498
+          }
+        },
+        {
+          "kind": "click",
+          "name": "create",
+          "t": 7978,
+          "tClick": 8540,
+          "tAfter": 11193,
+          "target": {
+            "x": 1760,
+            "y": 99,
+            "w": 112,
+            "h": 32
+          },
+          "from": {
+            "x": 1604,
+            "y": 577
+          },
+          "to": {
+            "x": 1816,
+            "y": 115
+          },
+          "before": "shots/en/09-create-before.png",
+          "hover": "shots/en/10-create-hover.png",
+          "after": "shots/en/11-create-after.png",
+          "image": "shots/en/11-create-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "services",
+          "t": 13127,
+          "image": "shots/en/12-services.png",
+          "cursor": {
+            "x": 1816,
+            "y": 115
+          },
+          "target": {
+            "x": 346,
+            "y": 400,
+            "w": 1534,
+            "h": 327
+          }
+        },
+        {
+          "kind": "click",
+          "name": "domain",
+          "t": 13899,
+          "tClick": 14454,
+          "tAfter": 15300,
+          "target": {
+            "x": 72,
+            "y": 114,
+            "w": 233,
+            "h": 32
+          },
+          "from": {
+            "x": 1816,
+            "y": 115
+          },
+          "to": {
+            "x": 189,
+            "y": 130
+          },
+          "before": "shots/en/13-domain-before.png",
+          "hover": "shots/en/14-domain-hover.png",
+          "after": "shots/en/15-domain-after.png",
+          "image": "shots/en/15-domain-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "domain-edit",
+          "t": 15856,
+          "tClick": 16420,
+          "tAfter": 17451,
+          "target": {
+            "x": 1804,
+            "y": 234,
+            "w": 28,
+            "h": 28
+          },
+          "from": {
+            "x": 189,
+            "y": 130
+          },
+          "to": {
+            "x": 1818,
+            "y": 248
+          },
+          "before": "shots/en/16-domain-edit-before.png",
+          "hover": "shots/en/17-domain-edit-hover.png",
+          "after": "shots/en/18-domain-edit-after.png",
+          "image": "shots/en/18-domain-edit-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "protocol-menu",
+          "t": 18415,
+          "tClick": 19514,
+          "tAfter": 20512,
+          "target": {
+            "x": 640,
+            "y": 483,
+            "w": 128,
+            "h": 32
+          },
+          "from": {
+            "x": 1818,
+            "y": 248
+          },
+          "to": {
+            "x": 704,
+            "y": 499
+          },
+          "before": "shots/en/19-protocol-menu-before.png",
+          "hover": "shots/en/20-protocol-menu-hover.png",
+          "after": "shots/en/21-protocol-menu-after.png",
+          "image": "shots/en/21-protocol-menu-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "protocol-https",
+          "t": 21606,
+          "tClick": 22923,
+          "tAfter": 23938,
+          "target": {
+            "x": 653,
+            "y": 530,
+            "w": 33,
+            "h": 20
+          },
+          "from": {
+            "x": 704,
+            "y": 499
+          },
+          "to": {
+            "x": 670,
+            "y": 540
+          },
+          "before": "shots/en/22-protocol-https-before.png",
+          "hover": "shots/en/23-protocol-https-hover.png",
+          "after": "shots/en/24-protocol-https-after.png",
+          "image": "shots/en/24-protocol-https-after.png"
+        },
+        {
+          "kind": "type",
+          "name": "domain-name",
+          "t": 24954,
+          "tClick": 25388,
+          "tAfter": 27155,
+          "target": {
+            "x": 784,
+            "y": 483,
+            "w": 352,
+            "h": 32
+          },
+          "from": {
+            "x": 670,
+            "y": 540
+          },
+          "to": {
+            "x": 960,
+            "y": 499
+          },
+          "text": "site.example.com",
+          "before": "shots/en/25-domain-name-before.png",
+          "after": "shots/en/26-domain-name-after.png",
+          "image": "shots/en/26-domain-name-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "save",
+          "t": 28113,
+          "tClick": 29167,
+          "tAfter": 31008,
+          "target": {
+            "x": 1228,
+            "y": 726,
+            "w": 52,
+            "h": 32
+          },
+          "from": {
+            "x": 960,
+            "y": 499
+          },
+          "to": {
+            "x": 1254,
+            "y": 742
+          },
+          "before": "shots/en/27-save-before.png",
+          "hover": "shots/en/28-save-hover.png",
+          "after": "shots/en/29-save-after.png",
+          "image": "shots/en/29-save-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "confirm-port",
+          "t": 32699,
+          "tClick": 34301,
+          "tAfter": 37532,
+          "target": {
+            "x": 1127,
+            "y": 605,
+            "w": 153,
+            "h": 32
+          },
+          "from": {
+            "x": 1254,
+            "y": 742
+          },
+          "to": {
+            "x": 1204,
+            "y": 621
+          },
+          "before": "shots/en/30-confirm-port-before.png",
+          "hover": "shots/en/31-confirm-port-hover.png",
+          "after": "shots/en/32-confirm-port-after.png",
+          "image": "shots/en/32-confirm-port-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "deploy",
+          "t": 38322,
+          "tClick": 38882,
+          "tAfter": 41161,
+          "target": {
+            "x": 1791,
+            "y": 10,
+            "w": 85,
+            "h": 28
+          },
+          "from": {
+            "x": 1204,
+            "y": 621
+          },
+          "to": {
+            "x": 1834,
+            "y": 24
+          },
+          "before": "shots/en/33-deploy-before.png",
+          "hover": "shots/en/34-deploy-hover.png",
+          "after": "shots/en/35-deploy-after.png",
+          "image": "shots/en/35-deploy-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "wait",
+          "t": 41162,
+          "tAfter": 43907,
+          "frames": [
+            {
+              "t": 41250,
+              "image": "shots/en/36-wait-0.png"
+            },
+            {
+              "t": 43008,
+              "image": "shots/en/37-wait-1.png"
+            }
+          ],
+          "image": "shots/en/37-wait-1.png",
+          "cursor": {
+            "x": 1834,
+            "y": 24
+          }
+        },
+        {
+          "kind": "click",
+          "name": "close-logs",
+          "t": 44998,
+          "tClick": 46525,
+          "tAfter": 47423,
+          "target": {
+            "x": 1372,
+            "y": 134,
+            "w": 28,
+            "h": 28
+          },
+          "from": {
+            "x": 1834,
+            "y": 24
+          },
+          "to": {
+            "x": 1386,
+            "y": 148
+          },
+          "before": "shots/en/38-close-logs-before.png",
+          "hover": "shots/en/39-close-logs-hover.png",
+          "after": "shots/en/40-close-logs-after.png",
+          "image": "shots/en/40-close-logs-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "running",
+          "t": 49393,
+          "image": "shots/en/41-running.png",
+          "cursor": {
+            "x": 1386,
+            "y": 148
+          },
+          "target": {
+            "x": 346,
+            "y": 400,
+            "w": 1534,
+            "h": 327
+          }
+        },
+        {
+          "kind": "click",
+          "name": "secret",
+          "t": 50159,
+          "tClick": 50707,
+          "tAfter": 51755,
+          "target": {
+            "x": 72,
+            "y": 146,
+            "w": 233,
+            "h": 32
+          },
+          "from": {
+            "x": 1386,
+            "y": 148
+          },
+          "to": {
+            "x": 189,
+            "y": 162
+          },
+          "before": "shots/en/42-secret-before.png",
+          "hover": "shots/en/43-secret-hover.png",
+          "after": "shots/en/44-secret-after.png",
+          "image": "shots/en/44-secret-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "copy-secret",
+          "t": 52333,
+          "tClick": 52921,
+          "tAfter": 53532,
+          "target": {
+            "x": 1806,
+            "y": 494,
+            "w": 28,
+            "h": 28
+          },
+          "from": {
+            "x": 189,
+            "y": 162
+          },
+          "to": {
+            "x": 1820,
+            "y": 508
+          },
+          "before": "shots/en/45-copy-secret-before.png",
+          "hover": "shots/en/46-copy-secret-hover.png",
+          "after": "shots/en/47-copy-secret-after.png",
+          "image": "shots/en/47-copy-secret-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "updater-resource",
+          "t": 55386,
+          "tClick": 55941,
+          "tAfter": 57064,
+          "target": {
+            "x": 1748,
+            "y": 76,
+            "w": 132,
+            "h": 32
+          },
+          "from": {
+            "x": 1820,
+            "y": 508
+          },
+          "to": {
+            "x": 1814,
+            "y": 92
+          },
+          "before": "shots/en/48-updater-resource-before.png",
+          "hover": "shots/en/49-updater-resource-hover.png",
+          "after": "shots/en/50-updater-resource-after.png",
+          "image": "shots/en/50-updater-resource-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "updater-compose",
+          "t": 57760,
+          "tClick": 58338,
+          "tAfter": 59027,
+          "target": {
+            "x": 1344,
+            "y": 481,
+            "w": 520,
+            "h": 192
+          },
+          "from": {
+            "x": 1814,
+            "y": 92
+          },
+          "to": {
+            "x": 1604,
+            "y": 577
+          },
+          "before": "shots/en/51-updater-compose-before.png",
+          "hover": "shots/en/52-updater-compose-hover.png",
+          "after": "shots/en/53-updater-compose-after.png",
+          "image": "shots/en/53-updater-compose-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "updater-paste",
+          "t": 59742,
+          "image": "shots/en/54-updater-paste.png",
+          "cursor": {
+            "x": 1604,
+            "y": 577
+          },
+          "target": {
+            "x": 281,
+            "y": 181,
+            "w": 1582,
+            "h": 498
+          }
+        },
+        {
+          "kind": "click",
+          "name": "updater-create",
+          "t": 60514,
+          "tClick": 61079,
+          "tAfter": 63437,
+          "target": {
+            "x": 1760,
+            "y": 99,
+            "w": 112,
+            "h": 32
+          },
+          "from": {
+            "x": 1604,
+            "y": 577
+          },
+          "to": {
+            "x": 1816,
+            "y": 115
+          },
+          "before": "shots/en/55-updater-create-before.png",
+          "hover": "shots/en/56-updater-create-hover.png",
+          "after": "shots/en/57-updater-create-after.png",
+          "image": "shots/en/57-updater-create-after.png"
+        },
+        {
+          "kind": "click",
+          "name": "updater-deploy",
+          "t": 64045,
+          "tClick": 64597,
+          "tAfter": 67065,
+          "target": {
+            "x": 1791,
+            "y": 10,
+            "w": 85,
+            "h": 28
+          },
+          "from": {
+            "x": 1816,
+            "y": 115
+          },
+          "to": {
+            "x": 1834,
+            "y": 24
+          },
+          "before": "shots/en/58-updater-deploy-before.png",
+          "hover": "shots/en/59-updater-deploy-hover.png",
+          "after": "shots/en/60-updater-deploy-after.png",
+          "image": "shots/en/60-updater-deploy-after.png"
+        },
+        {
+          "kind": "poll",
+          "name": "updater-running",
+          "t": 67065,
+          "tAfter": 67756,
+          "frames": [
+            {
+              "t": 67152,
+              "image": "shots/en/61-updater-running-0.png"
+            }
+          ],
+          "image": "shots/en/61-updater-running-0.png",
+          "cursor": {
+            "x": 1834,
+            "y": 24
+          }
+        },
+        {
+          "kind": "click",
+          "name": "updater-close-logs",
+          "t": 68980,
+          "tClick": 70338,
+          "tAfter": 71224,
+          "target": {
+            "x": 1372,
+            "y": 134,
+            "w": 28,
+            "h": 28
+          },
+          "from": {
+            "x": 1834,
+            "y": 24
+          },
+          "to": {
+            "x": 1386,
+            "y": 148
+          },
+          "before": "shots/en/62-updater-close-logs-before.png",
+          "hover": "shots/en/63-updater-close-logs-hover.png",
+          "after": "shots/en/64-updater-close-logs-after.png",
+          "image": "shots/en/64-updater-close-logs-after.png"
+        },
+        {
+          "kind": "shot",
+          "name": "updater-status",
+          "t": 73099,
+          "image": "shots/en/65-updater-status.png",
+          "cursor": {
+            "x": 1386,
+            "y": 148
+          },
+          "target": {
+            "x": 347,
+            "y": 502,
+            "w": 1532,
+            "h": 56
+          }
+        },
+        {
+          "kind": "shot",
+          "name": "site",
+          "t": 75222,
+          "image": "shots/en/66-site.png",
+          "cursor": {
+            "x": 1386,
+            "y": 148
+          },
+          "target": {
+            "x": 672,
+            "y": 24,
+            "w": 576,
+            "h": 174
+          }
+        }
+      ]
+    }
+  }
+}
