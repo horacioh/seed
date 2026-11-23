@@ -40,9 +40,9 @@ seed-cli --json comment list "$ISSUE_HM_ID" --server http://localhost:3000
 
 ## 2. Agree on the behavior and reproduce
 
-Restate the actual behavior, expected behavior, precise reproduction steps, and observable acceptance criteria.
-Distinguish what the issue says from assumptions. Identify the affected app, OS/device, viewport, version, account
-state, and data.
+Use [repro-before-after](https://github.com/horacioh/skills/tree/main/skills/repro-before-after) to define acceptance
+criteria, reproduce the failure, and capture before evidence. Install it with
+`npx skills add horacioh/skills --skill repro-before-after` if needed. Apply its workflow to the reported Seed target:
 
 Choose the reported target, not whichever is easiest:
 
@@ -52,14 +52,8 @@ Choose the reported target, not whichever is easiest:
   applicable; its collection/query fixture setup is useful for isolated reproductions.
 - **Mobile web:** Chrome device emulation with the reported viewport and touch settings. State the emulated device and
   browser; this is not native mobile verification.
-- **Native iOS/Android or device-specific behavior:** flag it as not reproducible on a Linux desktop/browser alone. Ask
-  for an appropriate simulator/emulator/device environment and evidence; do not claim device emulation proves a native
-  fix.
-
-Capture the failing state before editing. If the symptom cannot be reproduced, or requirements remain ambiguous, stop
-and ask the user specific questions: which exact steps, expected outcome, app/build, device, sample document, account
-state, or recording would distinguish the remaining explanations? Report what was tried. Do not guess a fix or silently
-broaden the scope. Resume implementation only after the ambiguity is resolved and the reproduction is established.
+- **Native iOS/Android or device-specific behavior:** use an appropriate simulator/emulator/device environment; Linux
+  desktop or browser testing alone does not cover this target.
 
 ### Local runtime setup and recovery
 
@@ -150,14 +144,9 @@ typechecks, lint, tests, and formatting. Run relevant local CI via
 [the runbook](../../../hypermedia/contribute/local-ci.md) before pushing. Report exact commands, scope, outputs, and any
 blocked checks; do not represent targeted checks as full CI.
 
-Reproduce the original steps against the final code on the same target and data conditions. Verify each acceptance
-criterion and relevant adjacent behavior in the actual UI. For UI changes, capture before/after screenshots or a short
-recording showing the original failure and corrected interaction. Store evidence outside the checkout, exclude
-credentials and private data, and provide accessible paths or links. A successful build or a page that merely loads is
-not UI proof.
-
-If verification fails, fix and rerun affected checks. If the right target or required check is unavailable, state that
-verification is incomplete and ask how to proceed rather than claiming the issue fixed.
+Follow the [repro-before-after](https://github.com/horacioh/skills/tree/main/skills/repro-before-after) verification
+step on the final code, including relevant adjacent Seed behavior. Retain the before/after images or recording for
+handoff and for the issue document if the user asks for an update.
 
 ## 5. Update the issue document
 
