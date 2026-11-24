@@ -22,6 +22,7 @@ function makeConfig(overrides = {}) {
     webhookPrefixes: ['https://example.com/hook/'],
     stateDir,
     pollSecs: 1,
+    prPollSecs: 1,
     statePath,
     ...overrides,
   }
@@ -38,6 +39,7 @@ async function startServer(cfg) {
     T3_MCP_WEBHOOK_PREFIXES: cfg.webhookPrefixes.join(','),
     T3_MCP_STATE_DIR: cfg.stateDir,
     T3_MCP_POLL_SECS: String(cfg.pollSecs),
+    T3_MCP_PR_POLL_SECS: String(cfg.prPollSecs),
     T3_FAKE_STATE: cfg.statePath,
     ...(cfg.extraEnv ?? {}),
   }
@@ -93,11 +95,101 @@ async function mcpClient(base, token = 'test-token') {
 function seedThread(statePath, thread) {
   const state = JSON.parse(fs.readFileSync(statePath, 'utf8'))
   state.threads[thread.threadId] = thread
-  fs.writeFileSync(statePath, JSON.stringify(state))
+  atomicWriteJson(statePath, JSON.stringify(state))
 }
 
 function readState(statePath) {
   return JSON.parse(fs.readFileSync(statePath, 'utf8'))
+}
+
+// Atomic JSON write: tmp file + rename. The fake CLI treats a half-written state file as
+// {threads:{}}, which would read as "no longer available" and drop subs mid-poll.
+function atomicWriteJson(filePath, json) {
+  const tmp = filePath + '.tmp'
+  fs.writeFileSync(tmp, json)
+  fs.renameSync(tmp, filePath)
+}
+
+function updateState(statePath, fn) {
+  const state = readState(statePath)
+  fn(state)
+  atomicWriteJson(statePath, JSON.stringify(state))
+  return state
+}
+
+// A fake webhook receiver that mimics the Seed agents server's idempotency rule:
+// same Idempotency-Key + same raw body → 202 {duplicate:true}; same key with a different body → 409.
+// Records every attempt itself as {key, raw, status}. The override returns one of:
+//   null            → normal dedupe handling (recorded in firings + attempts)
+//   <status number> → answer that status, recorded in attempts but NOT in firings (e.g. fail-before 503)
+//   'fail-after'    → store the firing in the real dedupe map if the key is absent, record the attempt
+//                     with status 500, and answer 500 (models a lost response after durable recording)
+function makeReceiver() {
+  const firings = new Map() // activityKey → raw body bytes (as Buffer)
+  const attempts = [] // {key, raw, status}
+  let duplicates = 0
+  let conflicts = 0
+  let attemptOverride = null // (req, key, raw) => null | number | 'fail-after'
+  const server = Bun.serve({
+    port: 0,
+    fetch: async (req) => {
+      const key = req.headers.get('Idempotency-Key') ?? ''
+      const raw = Buffer.from(await req.arrayBuffer())
+      if (attemptOverride) {
+        const ov = attemptOverride(req, key, raw)
+        if (ov !== null && ov !== undefined) {
+          if (ov === 'fail-after') {
+            if (!firings.has(key)) firings.set(key, raw)
+            attempts.push({key, raw, status: 500})
+            return new Response('fail', {status: 500})
+          }
+          const status = typeof ov === 'number' ? ov : 503
+          attempts.push({key, raw, status})
+          return new Response('fail', {status})
+        }
+      }
+      const existing = firings.get(key)
+      let status = 202
+      let respBody: any = {ok: true}
+      if (existing) {
+        if (existing.equals(raw)) {
+          status = 202
+          respBody = {duplicate: true}
+          duplicates += 1
+        } else {
+          status = 409
+          conflicts += 1
+          respBody = {error: 'Idempotency key was already used with a different body'}
+        }
+      } else {
+        firings.set(key, raw)
+        status = 202
+        respBody = {ok: true}
+      }
+      attempts.push({key, raw, status})
+      return new Response(JSON.stringify(respBody), {status, headers: {'content-type': 'application/json'}})
+    },
+  })
+  return {
+    port: server.port,
+    attempts,
+    get duplicates() {
+      return duplicates
+    },
+    get conflicts() {
+      return conflicts
+    },
+    get firingCount() {
+      return firings.size
+    },
+    stop: () => server.stop(),
+    setOverride(fn) {
+      attemptOverride = fn
+    },
+    clearOverride() {
+      attemptOverride = null
+    },
+  }
 }
 
 describe('auth and health', () => {
@@ -172,6 +264,12 @@ describe('MCP protocol via real SDK client', () => {
     expect(names.sort()).toEqual(
       ['get_thread', 'list_threads', 'send_message', 'start_thread', 'unwatch_thread', 'watch_thread'].sort(),
     )
+  })
+
+  test('watch_thread inputSchema has notifyEvents', async () => {
+    const {tools} = await conn.client.listTools()
+    const watch = tools.find((t) => t.name === 'watch_thread')
+    expect(watch.inputSchema.properties.notifyEvents).toBeDefined()
   })
 
   test('ping succeeds', async () => {
@@ -429,7 +527,7 @@ describe('watcher fires once after thread finishes', () => {
     state.threads['t-run'].messages = [
       {role: 'assistant', runId: 'run:t-run:2', text: 'x'.repeat(5000) + 'finished result'},
     ]
-    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    atomicWriteJson(cfg.statePath, JSON.stringify(state))
     // Wait for the poll (1s) + fetch.
     for (let i = 0; i < 30 && deliveries.length === 0; i++) {
       await new Promise((r) => setTimeout(r, 200))
@@ -491,7 +589,7 @@ describe('watcher needs_input event', () => {
     })
     const state = readState(cfg.statePath)
     state.threads['t-input'].pendingRequestCount = 1
-    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    atomicWriteJson(cfg.statePath, JSON.stringify(state))
     for (let i = 0; i < 30 && deliveries.length === 0; i++) {
       await new Promise((r) => setTimeout(r, 200))
     }
@@ -550,7 +648,7 @@ describe('watcher 5xx retry then success', () => {
     state.threads['t-5xx'].activeRunId = null
     state.threads['t-5xx'].latestRunId = 'run:t-5xx:2'
     state.threads['t-5xx'].status = 'completed'
-    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    atomicWriteJson(cfg.statePath, JSON.stringify(state))
     for (let i = 0; i < 40 && deliveries.length === 0; i++) {
       await new Promise((r) => setTimeout(r, 200))
     }
@@ -605,7 +703,7 @@ describe('watcher 4xx drop', () => {
     state.threads['t-4xx'].activeRunId = null
     state.threads['t-4xx'].latestRunId = 'run:t-4xx:2'
     state.threads['t-4xx'].status = 'completed'
-    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    atomicWriteJson(cfg.statePath, JSON.stringify(state))
     for (let i = 0; i < 30 && attempts === 0; i++) {
       await new Promise((r) => setTimeout(r, 200))
     }
@@ -729,7 +827,7 @@ describe('watcher arming from start_thread, send_message and watch_thread', () =
     t.activeRunId = null
     t.status = 'completed'
     t.messages = [...(t.messages ?? []), {role: 'assistant', runId: t.latestRunId, text}]
-    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    atomicWriteJson(cfg.statePath, JSON.stringify(state))
   }
 
   async function waitForDeliveries(n) {
@@ -1105,7 +1203,7 @@ describe('artifacts: webhook payload includes artifacts list', () => {
       ...(state.threads[threadId].messages ?? []),
       {role: 'assistant', runId: state.threads[threadId].latestRunId, text: 'done'},
     ]
-    fs.writeFileSync(cfg.statePath, JSON.stringify(state))
+    atomicWriteJson(cfg.statePath, JSON.stringify(state))
     // Wait for delivery.
     for (let i = 0; i < 40 && deliveries.length === 0; i++) {
       await new Promise((r) => setTimeout(r, 200))
@@ -1146,4 +1244,781 @@ describe('artifacts: failed thread start removes the dir', () => {
       expect(dirs.length).toBe(0)
     }
   })
+})
+
+// ─── PR merge subscription tests ──────────────────────────────────────────────
+
+function pr(threadId, number, state, overrides = {}) {
+  return {
+    host: 'github.com',
+    repository: 'owner/repo',
+    number,
+    url: `https://github.com/owner/repo/pull/${number}`,
+    source: 'created',
+    state,
+    ...overrides,
+  }
+}
+
+function idleThread(threadId, prs = [], overrides = {}) {
+  return {
+    threadId,
+    projectId: 'proj-allowed',
+    title: 'T-' + threadId,
+    status: 'completed',
+    latestRunId: 'run:' + threadId + ':1',
+    activeRunId: null,
+    runCount: 1,
+    pendingRequestCount: 0,
+    messages: [],
+    pullRequests: prs,
+    ...overrides,
+  }
+}
+
+function readPrWatches(cfg) {
+  const file = path.join(cfg.stateDir, 'pr-watches.json')
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'))
+  } catch {
+    return []
+  }
+}
+
+async function waitForAttempts(receiver, n, ms = 4000) {
+  for (let i = 0; i < ms / 100 && receiver.attempts.length < n; i++) await new Promise((r) => setTimeout(r, 100))
+}
+
+async function waitForPrWatchesFile(cfg, pred, ms = 4000) {
+  for (let i = 0; i < ms / 100; i++) {
+    try {
+      if (pred(readPrWatches(cfg))) return
+    } catch {}
+    await new Promise((r) => setTimeout(r, 100))
+  }
+}
+
+describe('pull_request.merged: case A — only merged fires, settled/closed do not', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-a', [pr('t-a', 1, 'open'), pr('t-a', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('idle thread with open PRs → no delivery; settled/closed → no delivery; merge → one delivery', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-a`
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-a', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    // Idle thread with open PRs: no delivery at all (proves no thread.finished).
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(0)
+    // Set settled/settledAt and make #2 closed: still nothing.
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-a'].settled = true
+      s.threads['t-a'].settledAt = '2026-01-01T00:00:00.000Z'
+      s.threads['t-a'].pullRequests = [pr('t-a', 1, 'open'), pr('t-a', 2, 'closed')]
+    })
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(0)
+    // Make #1 merged: exactly one delivery.
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-a'].pullRequests = [pr('t-a', 1, 'merged'), pr('t-a', 2, 'closed')]
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    const a = receiver.attempts[0]
+    const body = JSON.parse(a.raw.toString())
+    expect(body.event).toBe('pull_request.merged')
+    expect(body.threadId).toBe('t-a')
+    expect(body.pullRequest.url).toBe('https://github.com/owner/repo/pull/1')
+    expect(body.pullRequest.repository).toBe('owner/repo')
+    expect(body.eventId).toBe(a.key)
+    expect(a.key).toMatch(/^t3-pr-merged-1-[0-9a-f]{32}$/)
+    // Wait 2 more cycles: still one.
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(1)
+    // The sub is gone from pr-watches.json (all associated PRs merged/closed with ≥1 merged).
+    await waitForPrWatchesFile(cfg, (arr) => arr.length === 0)
+    expect(readPrWatches(cfg).length).toBe(0)
+  }, 20000)
+})
+
+describe('pull_request.merged: case B — closed PR keeps sub; a later merge fires', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-b', [pr('t-b', 1, 'closed')]))
+  })
+  afterEach(async () => await stop())
+
+  test('lone closed PR keeps the sub; adding #2 merged gives exactly one event for #2', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-b`
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-b', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(0)
+    expect(readPrWatches(cfg).length).toBe(1)
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-b'].pullRequests = [pr('t-b', 1, 'closed'), pr('t-b', 2, 'merged')]
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    const body = JSON.parse(receiver.attempts[0].raw.toString())
+    expect(body.pullRequest.number).toBe(2)
+  }, 20000)
+})
+
+describe('pull_request.merged: case C — start_thread with both events', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+  })
+  afterEach(async () => await stop())
+
+  test('both events armed; finished fires first; merge fires after a PR merges', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-c`
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'start_thread',
+        arguments: {message: 'do it', notifyWebhookUrl: url, notifyEvents: ['thread.finished', 'pull_request.merged']},
+      },
+    })
+    const sc = body.result.structuredContent
+    expect(sc.notifyEvents.sort()).toEqual(['pull_request.merged', 'thread.finished'])
+    const threadId = sc.threadId
+    // Finish the run → thread.finished arrives.
+    updateState(cfg.statePath, (s) => {
+      s.threads[threadId].activeRunId = null
+      s.threads[threadId].status = 'completed'
+      s.threads[threadId].messages = [{role: 'assistant', runId: s.threads[threadId].latestRunId, text: 'done'}]
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    expect(JSON.parse(receiver.attempts[0].raw.toString()).event).toBe('thread.finished')
+    // watches.json no longer has the run watch, but pr-watches.json still has the sub.
+    await waitForPrWatchesFile(cfg, (arr) => arr.find((w) => w.threadId === threadId))
+    const watches = JSON.parse(fs.readFileSync(path.join(cfg.stateDir, 'watches.json'), 'utf8'))
+    expect(watches.find((w) => w.threadId === threadId)).toBeUndefined()
+    expect(readPrWatches(cfg).find((w) => w.threadId === threadId)).toBeDefined()
+    // Add a merged PR → pull_request.merged arrives.
+    updateState(cfg.statePath, (s) => {
+      s.threads[threadId].pullRequests = [pr(threadId, 1, 'merged')]
+    })
+    await waitForAttempts(receiver, 2)
+    expect(receiver.attempts.length).toBe(2)
+    expect(JSON.parse(receiver.attempts[1].raw.toString()).event).toBe('pull_request.merged')
+  }, 20000)
+})
+
+describe('pull_request.merged: case D — fail-before then success', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-d', [pr('t-d', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('first attempt fail-before (503), then success — identical key and bytes, no third', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-d`
+    let attemptCount = 0
+    receiver.setOverride(() => {
+      attemptCount += 1
+      // First attempt: fail-before (503, not recorded in the dedupe map).
+      return attemptCount === 1 ? 503 : null
+    })
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-d', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-d'].pullRequests = [pr('t-d', 2, 'merged')]
+    })
+    await waitForAttempts(receiver, 2)
+    expect(receiver.attempts.length).toBe(2)
+    // Both attempts have identical key and identical raw bytes.
+    expect(receiver.attempts[0].key).toBe(receiver.attempts[1].key)
+    expect(receiver.attempts[0].raw.equals(receiver.attempts[1].raw)).toBe(true)
+    // No third attempt.
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(2)
+  }, 20000)
+})
+
+describe('pull_request.merged: case E — fail-after duplicate', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-e', [pr('t-e', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('fail-after: 1 firing recorded then 500; retry dedupes; nothing after', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-e`
+    let attemptCount = 0
+    receiver.setOverride(() => {
+      attemptCount += 1
+      // First attempt: fail-after (store the firing, record the attempt, then 500).
+      return attemptCount === 1 ? 'fail-after' : null
+    })
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-e', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-e'].pullRequests = [pr('t-e', 2, 'merged')]
+    })
+    await waitForAttempts(receiver, 2)
+    expect(receiver.attempts.length).toBe(2)
+    // The first attempt durably recorded the firing; the retry is a duplicate.
+    expect(receiver.firingCount).toBe(1)
+    expect(receiver.duplicates).toBe(1)
+    expect(receiver.conflicts).toBe(0)
+    // Identical key and bytes across both attempts.
+    expect(receiver.attempts[0].key).toBe(receiver.attempts[1].key)
+    expect(receiver.attempts[0].raw.equals(receiver.attempts[1].raw)).toBe(true)
+    // No third attempt.
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(2)
+  }, 20000)
+})
+
+describe('pull_request.merged: case F — restart with pending', () => {
+  let cfg
+  beforeEach(() => {
+    cfg = makeConfig({prPollSecs: 1})
+    seedThread(cfg.statePath, idleThread('t-f', [pr('t-f', 1, 'open'), pr('t-f', 2, 'open')]))
+  })
+
+  test('pending survives restart and delivers identical bytes; second restart → no new attempts', async () => {
+    const receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    // Receiver always 503 so a pending entry stays.
+    receiver.setOverride(() => 503)
+    let s1
+    let s2
+    let s3
+    try {
+      s1 = await startServer(cfg)
+      const url = `http://127.0.0.1:${receiver.port}/hook/t-f`
+      await rpc(s1.base, {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'tools/call',
+        params: {
+          name: 'watch_thread',
+          arguments: {threadId: 't-f', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+        },
+      })
+      // Merge only #1; #2 stays open so the sub persists after delivery.
+      updateState(cfg.statePath, (s) => {
+        s.threads['t-f'].pullRequests = [pr('t-f', 1, 'merged'), pr('t-f', 2, 'open')]
+      })
+      // Wait for ≥1 attempt with the pending entry on disk.
+      await waitForAttempts(receiver, 1)
+      await waitForPrWatchesFile(cfg, (arr) => arr.find((w) => w.threadId === 't-f' && w.pending.length > 0))
+      const pendingBefore = readPrWatches(cfg).find((w) => w.threadId === 't-f').pending[0]
+      await s1.stop()
+      // Switch the receiver to accept (clear override → normal dedupe).
+      receiver.clearOverride()
+      // Restart with the same state dir.
+      s2 = await startServer(cfg)
+      // It delivers the SAME key with byte-identical raw.
+      await waitForAttempts(receiver, 2)
+      const secondAttempt = receiver.attempts[receiver.attempts.length - 1]
+      expect(secondAttempt.key).toBe(pendingBefore.eventId)
+      expect(Buffer.from(secondAttempt.raw).equals(Buffer.from(pendingBefore.body))).toBe(true)
+      // Wait until pr-watches.json shows the sub with the eventId in delivered and pending empty.
+      await waitForPrWatchesFile(cfg, (arr) => {
+        const w = arr.find((x) => x.threadId === 't-f')
+        return w && w.delivered.includes(pendingBefore.eventId) && w.pending.length === 0
+      })
+      const w = readPrWatches(cfg).find((x) => x.threadId === 't-f')
+      expect(w.delivered.includes(pendingBefore.eventId)).toBe(true)
+      expect(w.pending.length).toBe(0)
+      // Take the attempt count BEFORE starting s3, then wait ~2.5 s and assert unchanged.
+      await s2.stop()
+      const beforeCount = receiver.attempts.length
+      s3 = await startServer(cfg)
+      await new Promise((r) => setTimeout(r, 2500))
+      expect(receiver.attempts.length).toBe(beforeCount)
+    } finally {
+      if (s1) await s1.stop()
+      if (s2) await s2.stop()
+      if (s3) await s3.stop()
+      receiver.stop()
+    }
+  }, 20000)
+})
+
+describe('pull_request.merged: case G — 409 keeps sub, eventId in delivered', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-g', [pr('t-g', 1, 'open'), pr('t-g', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('receiver answers 409; one attempt; sub kept with eventId in delivered', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-g`
+    receiver.setOverride(() => 409)
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-g', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    // Make #1 merged; #2 stays open so the sub persists.
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-g'].pullRequests = [pr('t-g', 1, 'merged'), pr('t-g', 2, 'open')]
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    await waitForPrWatchesFile(cfg, (arr) => {
+      const w = arr.find((x) => x.threadId === 't-g')
+      return w && w.delivered.length === 1 && w.pending.length === 0
+    })
+    const w = readPrWatches(cfg).find((x) => x.threadId === 't-g')
+    expect(w).toBeDefined()
+    expect(w.delivered.length).toBe(1)
+    expect(w.pending.length).toBe(0)
+    // No further attempts.
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(1)
+  }, 20000)
+})
+
+describe('pull_request.merged: case H — 404 drops the sub', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-h', [pr('t-h', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('receiver answers 404; sub dropped from pr-watches.json', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-h`
+    receiver.setOverride(() => 404)
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-h', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-h'].pullRequests = [pr('t-h', 2, 'merged')]
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    await waitForPrWatchesFile(cfg, (arr) => arr.length === 0)
+    expect(readPrWatches(cfg).length).toBe(0)
+  }, 20000)
+})
+
+describe('pull_request.merged: case I — stack-dismissed PR is not notified', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(
+      cfg.statePath,
+      idleThread('t-i', [
+        pr('t-i', 1, 'merged'),
+        pr('t-i', 2, 'merged'),
+        pr('t-i', 3, 'merged', {source: 'stack-dismissed'}),
+      ]),
+    )
+  })
+  afterEach(async () => await stop())
+
+  test('exactly 2 events with distinct eventIds, none for #3; sub removed; re-subscribe → 2 duplicates', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-i`
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-i', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    await waitForAttempts(receiver, 2)
+    expect(receiver.attempts.length).toBe(2)
+    const ids = receiver.attempts.map((a) => a.key)
+    expect(new Set(ids).size).toBe(2)
+    expect(ids.find((k) => k.startsWith('t3-pr-merged-3-'))).toBeUndefined()
+    expect(receiver.conflicts).toBe(0)
+    // Sub removed (all associated PRs merged).
+    await waitForPrWatchesFile(cfg, (arr) => arr.length === 0)
+    // Subscribe again with the same URL: 2 more attempts with the same eventIds and identical bytes,
+    // counted as duplicates === 2.
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-i', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    await waitForAttempts(receiver, 4)
+    expect(receiver.attempts.length).toBe(4)
+    expect(receiver.duplicates).toBe(2)
+    expect(receiver.conflicts).toBe(0)
+    // Bytes identical across the two rounds.
+    const first = receiver.attempts[0]
+    const second = receiver.attempts[2]
+    expect(first.key).toBe(second.key)
+    expect(first.raw.equals(second.raw)).toBe(true)
+  }, 20000)
+})
+
+describe('pull_request.merged: case J — unwatch removes the sub', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-j', [pr('t-j', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('unwatch_thread → removed:true, pr-watches empty, later merge delivers nothing', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-j`
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-j', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    expect(body.result.structuredContent.notifyEvents).toEqual(['pull_request.merged'])
+    await waitForPrWatchesFile(cfg, (arr) => arr.length === 1)
+    const {body: unwatchBody} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'tools/call',
+      params: {name: 'unwatch_thread', arguments: {threadId: 't-j'}},
+    })
+    expect(unwatchBody.result.structuredContent.removed).toBe(true)
+    await waitForPrWatchesFile(cfg, (arr) => arr.length === 0)
+    expect(readPrWatches(cfg).length).toBe(0)
+    // A later merge delivers nothing.
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-j'].pullRequests = [pr('t-j', 2, 'merged')]
+    })
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(0)
+  }, 20000)
+})
+
+describe('pull_request.merged: case K — validation errors', () => {
+  let stop, base, cfg
+  beforeEach(async () => {
+    cfg = makeConfig()
+    const s = await startServer(cfg)
+    base = s.base
+    stop = s.stop
+  })
+  afterEach(async () => await stop())
+
+  test('notifyEvents without notifyWebhookUrl fails and creates no thread', async () => {
+    const before = Object.keys(readState(cfg.statePath).threads).length
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'start_thread',
+        arguments: {message: 'hi', notifyEvents: ['pull_request.merged']},
+      },
+    })
+    expect(body.result.isError).toBe(true)
+    expect(body.result.content[0].text).toContain('notifyWebhookUrl')
+    const after = Object.keys(readState(cfg.statePath).threads).length
+    expect(after).toBe(before)
+  })
+
+  test('unknown event fails', async () => {
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'start_thread',
+        arguments: {message: 'hi', notifyWebhookUrl: 'https://example.com/hook/x', notifyEvents: ['bogus']},
+      },
+    })
+    expect(body.result.isError).toBe(true)
+    expect(body.result.content[0].text).toContain('unknown event')
+  })
+
+  test('empty array fails', async () => {
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'start_thread',
+        arguments: {message: 'hi', notifyWebhookUrl: 'https://example.com/hook/x', notifyEvents: []},
+      },
+    })
+    expect(body.result.isError).toBe(true)
+    expect(body.result.content[0].text).toContain('empty')
+  })
+})
+
+describe('pull_request.merged: case L — archived fallback and deletion', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-arch', [pr('t-arch', 1, 'merged')], {archived: true}))
+    seedThread(cfg.statePath, idleThread('t-del', [pr('t-del', 1, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('archived thread hidden from list still gets the event via show fallback', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-arch`
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-arch', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    expect(JSON.parse(receiver.attempts[0].raw.toString()).threadId).toBe('t-arch')
+  }, 20000)
+
+  test('subscribed thread deleted from fake state gets its sub dropped', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-del`
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-del', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    await waitForPrWatchesFile(cfg, (arr) => arr.find((w) => w.threadId === 't-del'))
+    // Delete the thread from the fake state.
+    updateState(cfg.statePath, (s) => {
+      delete s.threads['t-del']
+    })
+    await waitForPrWatchesFile(cfg, (arr) => !arr.find((w) => w.threadId === 't-del'))
+    expect(readPrWatches(cfg).find((w) => w.threadId === 't-del')).toBeUndefined()
+  }, 20000)
+})
+
+describe('pull_request.merged: case M — re-arming keeps history', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-m', [pr('t-m', 1, 'open'), pr('t-m', 2, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('re-arming with the same URL keeps the existing sub and its delivery history', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-m`
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-m', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    // Merge #1; #2 stays open so the sub persists after delivery.
+    updateState(cfg.statePath, (s) => {
+      s.threads['t-m'].pullRequests = [pr('t-m', 1, 'merged'), pr('t-m', 2, 'open')]
+    })
+    await waitForAttempts(receiver, 1)
+    expect(receiver.attempts.length).toBe(1)
+    await waitForPrWatchesFile(cfg, (arr) => {
+      const w = arr.find((x) => x.threadId === 't-m')
+      return w && w.delivered.length === 1
+    })
+    const deliveredId = readPrWatches(cfg).find((w) => w.threadId === 't-m').delivered[0]
+    const beforeCount = receiver.attempts.length
+    // Re-arm with the same URL and merge-only events.
+    await rpc(base, {
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'tools/call',
+      params: {
+        name: 'watch_thread',
+        arguments: {threadId: 't-m', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    // After ~2.5 s there are no new attempts (the merged #1 is already in delivered).
+    await new Promise((r) => setTimeout(r, 2500))
+    expect(receiver.attempts.length).toBe(beforeCount)
+    // pr-watches.json still has exactly one sub for the thread, with the same delivered history.
+    const subs = readPrWatches(cfg).filter((w) => w.threadId === 't-m')
+    expect(subs.length).toBe(1)
+    expect(subs[0].delivered).toContain(deliveredId)
+  }, 20000)
+})
+
+describe('pull_request.merged: case N — send_message with merge-only events', () => {
+  let stop, base, cfg, receiver
+  beforeEach(async () => {
+    cfg = makeConfig({prPollSecs: 1})
+    receiver = makeReceiver()
+    cfg.webhookPrefixes = [`http://127.0.0.1:${receiver.port}/hook/`]
+    const s = await startServer(cfg)
+    base = s.base
+    stop = async () => {
+      await s.stop()
+      receiver.stop()
+    }
+    seedThread(cfg.statePath, idleThread('t-n', [pr('t-n', 1, 'open')]))
+  })
+  afterEach(async () => await stop())
+
+  test('send_message with notifyEvents:["pull_request.merged"] arms the sub but no run watch', async () => {
+    const url = `http://127.0.0.1:${receiver.port}/hook/t-n`
+    const {body} = await rpc(base, {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'tools/call',
+      params: {
+        name: 'send_message',
+        arguments: {threadId: 't-n', message: 'go', notifyWebhookUrl: url, notifyEvents: ['pull_request.merged']},
+      },
+    })
+    expect(body.result.structuredContent.notifyEvents).toEqual(['pull_request.merged'])
+    // watches.json has no run watch for the thread (the file may not exist when no run watch is armed).
+    const watchesPath = path.join(cfg.stateDir, 'watches.json')
+    const watches = fs.existsSync(watchesPath) ? JSON.parse(fs.readFileSync(watchesPath, 'utf8')) : []
+    expect(watches.find((w) => w.threadId === 't-n')).toBeUndefined()
+    // pr-watches.json has the sub.
+    await waitForPrWatchesFile(cfg, (arr) => arr.find((w) => w.threadId === 't-n'))
+    expect(readPrWatches(cfg).find((w) => w.threadId === 't-n')).toBeDefined()
+  }, 20000)
 })
