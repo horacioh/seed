@@ -45,6 +45,7 @@ function threadSummary(t) {
     model: t.model ?? 'fake-model',
     runtimeMode: t.runtimeMode ?? 'full-access',
     settled: t.settled ?? false,
+    settledAt: t.settledAt ?? null,
     pullRequests: t.pullRequests ?? [],
     createdAt: t.createdAt ?? '2026-01-01T00:00:00.000Z',
     updatedAt: t.updatedAt ?? '2026-01-01T00:00:00.000Z',
@@ -88,6 +89,9 @@ async function main() {
   if (sub === 'list') {
     const project = flags.project
     const threads = Object.values(state.threads)
+      // Test hook for the show fallback: archived threads are hidden from list.
+      // It is unverified whether the real `thread list` hides archived threads.
+      .filter((t) => !t.archived)
       .filter((t) => !project || t.projectId === project)
       .map(threadSummary)
     if (flags.json) {
@@ -101,7 +105,7 @@ async function main() {
     const threadId = positional[2]
     const t = state.threads[threadId]
     if (!t) {
-      process.stderr.write(`thread not found: ${threadId}\n`)
+      process.stderr.write(`Thread ${threadId} is no longer available.\n`)
       process.exit(1)
     }
     const messages = t.messages ?? []
@@ -124,6 +128,8 @@ async function main() {
         pendingRequestCount: t.pendingRequestCount ?? 0,
         pullRequests: t.pullRequests ?? [],
         settled: t.settled ?? false,
+        settledAt: t.settledAt ?? null,
+        archived: t.archived ?? false,
         createdAt: t.createdAt ?? '2026-01-01T00:00:00.000Z',
         updatedAt: t.updatedAt ?? '2026-01-01T00:00:00.000Z',
       },
@@ -175,7 +181,7 @@ async function main() {
     const message = messageArg === '-' ? await readStdin() : messageArg ?? ''
     const t = state.threads[threadId]
     if (!t) {
-      process.stderr.write(`thread not found: ${threadId}\n`)
+      process.stderr.write(`Thread ${threadId} is no longer available.\n`)
       process.exit(1)
     }
     t.messages.push({role: 'user', runId: t.latestRunId, text: message})
