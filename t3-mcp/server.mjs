@@ -13,7 +13,7 @@ import {execFile} from 'node:child_process'
 import {createReadStream} from 'node:fs'
 import {Readable} from 'node:stream'
 
-const SERVER_VERSION = '0.1.0'
+const SERVER_VERSION = '0.2.0'
 const SUPPORTED_PROTOCOL_VERSIONS = new Set(['2025-06-18', '2025-03-26', '2024-11-05'])
 const DEFAULT_PROTOCOL_VERSION = '2025-06-18'
 const CLI_TIMEOUT_MS = 60_000
@@ -36,6 +36,17 @@ const ARTIFACT_CONTENT_TYPES = {
   webp: 'image/webp',
   webm: 'video/webm',
   mp4: 'video/mp4',
+}
+
+// Notification events a tool may subscribe to. The default (omitted) keeps the historical
+// thread.finished-only behavior. `thread.finished` arms the one-shot run watch (which also fires
+// thread.needs_input). `pull_request.merged` arms a merge subscription.
+const NOTIFY_EVENTS = ['thread.finished', 'pull_request.merged']
+const NOTIFY_EVENTS_SCHEMA = {
+  type: 'array',
+  items: {type: 'string', enum: NOTIFY_EVENTS},
+  minItems: 1,
+  uniqueItems: true,
 }
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -92,7 +103,17 @@ function parseConfig(env = process.env) {
     artifactsBaseUrl,
     artifactMaxFileBytes,
     pollSecs: parseInt(env.T3_MCP_POLL_SECS ?? '15', 10),
+    prPollSecs: parsePositiveInt(env.T3_MCP_PR_POLL_SECS, '60', 'T3_MCP_PR_POLL_SECS'),
   }
+}
+
+function parsePositiveInt(raw, fallback, name) {
+  const s = raw ?? fallback
+  const n = parseInt(s, 10)
+  if (!Number.isInteger(n) || n <= 0) {
+    throw new Error(`${name} must be a positive integer (got ${JSON.stringify(raw ?? s)})`)
+  }
+  return n
 }
 
 function normalizePrefix(prefix) {
@@ -220,6 +241,32 @@ function assertWebhookAllowed(cfg, url) {
   if (!cfg.webhookPrefixes.some((p) => s.startsWith(p))) {
     throw new ToolError('notifyWebhookUrl does not match an allowed prefix')
   }
+  return s
+}
+
+// Parse and validate the notifyEvents argument. Runs at the tool boundary before any side effect.
+// Returns the armed list (duplicates collapsed). Defaults to ['thread.finished'] when omitted.
+function parseNotifyEvents(args) {
+  if (args.notifyEvents === undefined) return ['thread.finished']
+  if (!args.notifyWebhookUrl) {
+    throw new ToolError('notifyEvents requires notifyWebhookUrl')
+  }
+  const v = args.notifyEvents
+  if (!Array.isArray(v)) {
+    throw new ToolError('notifyEvents must be an array')
+  }
+  if (v.length === 0) {
+    throw new ToolError('notifyEvents must not be empty')
+  }
+  const allowed = NOTIFY_EVENTS.join(', ')
+  const seen = new Set()
+  for (const item of v) {
+    if (typeof item !== 'string' || !NOTIFY_EVENTS.includes(item)) {
+      throw new ToolError(`notifyEvents: unknown event "${item}"; allowed: ${allowed}`)
+    }
+    seen.add(item)
+  }
+  return [...seen]
 }
 
 // ─── Tool error ──────────────────────────────────────────────────────────────
@@ -252,7 +299,7 @@ const TOOLS = [
   {
     name: 'start_thread',
     description:
-      'Start a new T3 Code thread with an initial message. The thread runs with the project runtime mode (full access for the seed project). An artifact directory is created for before/after evidence (screenshots/videos); the message tells the agent where to save them, and the returned artifactsUrl is a base URL the agents server can download files from by plain URL (no auth). Pass notifyWebhookUrl to be notified when the run finishes.',
+      'Start a new T3 Code thread with an initial message. The thread runs with the project runtime mode (full access for the seed project). An artifact directory is created for before/after evidence (screenshots/videos); the message tells the agent where to save them, and the returned artifactsUrl is a base URL the agents server can download files from by plain URL (no auth). Pass notifyWebhookUrl to be notified when the run finishes and/or when an associated PR merges.',
     inputSchema: {
       type: 'object',
       required: ['message'],
@@ -276,7 +323,12 @@ const TOOLS = [
         notifyWebhookUrl: {
           type: 'string',
           description:
-            'https URL (matching an allowed prefix) to POST a thread.finished event to when the run completes.',
+            'https URL (matching an allowed prefix) to POST subscribed events to. Required when notifyEvents is given.',
+        },
+        notifyEvents: {
+          ...NOTIFY_EVENTS_SCHEMA,
+          description:
+            'Events to subscribe to. Defaults to ["thread.finished"]. "thread.finished" fires once when a run that began after arming finishes (also fires thread.needs_input). "pull_request.merged" sends one event per associated PR that is merged, including PRs merged before subscribing; stays armed after runs finish.',
         },
       },
     },
@@ -284,7 +336,7 @@ const TOOLS = [
   {
     name: 'send_message',
     description:
-      'Send a message to an existing T3 Code thread. A busy thread queues it as its next turn. Pass notifyWebhookUrl to be notified when the run finishes.',
+      'Send a message to an existing T3 Code thread. A busy thread queues it as its next turn. Pass notifyWebhookUrl to be notified when the run finishes and/or when an associated PR merges.',
     inputSchema: {
       type: 'object',
       required: ['threadId', 'message'],
@@ -294,7 +346,11 @@ const TOOLS = [
         notifyWebhookUrl: {
           type: 'string',
           description:
-            'https URL (matching an allowed prefix) to POST a thread.finished event to when the run completes.',
+            'https URL (matching an allowed prefix) to POST subscribed events to. Required when notifyEvents is given.',
+        },
+        notifyEvents: {
+          ...NOTIFY_EVENTS_SCHEMA,
+          description: 'Events to subscribe to. Defaults to ["thread.finished"]. See start_thread for semantics.',
         },
       },
     },
@@ -320,7 +376,7 @@ const TOOLS = [
   {
     name: 'watch_thread',
     description:
-      'Arm a notification for a thread next finished run (or immediately if already idle with a run never notified to that URL).',
+      'Subscribe to events for a thread. With notifyEvents ["thread.finished"] (default) arms a one-shot notification for the next finished run (or immediately if already idle with a run never notified to that URL). With ["pull_request.merged"] arms a merge subscription that sends one event per associated PR that is merged, including PRs merged before subscribing; stays armed after runs finish.',
     inputSchema: {
       type: 'object',
       required: ['threadId', 'notifyWebhookUrl'],
@@ -330,12 +386,16 @@ const TOOLS = [
           type: 'string',
           description: 'https URL (matching an allowed prefix) to POST events to.',
         },
+        notifyEvents: {
+          ...NOTIFY_EVENTS_SCHEMA,
+          description: 'Events to subscribe to. Defaults to ["thread.finished"]. See start_thread for semantics.',
+        },
       },
     },
   },
   {
     name: 'unwatch_thread',
-    description: 'Remove any armed notification for a thread.',
+    description: 'Remove every armed notification for a thread: the one-shot run watch and any merge subscription.',
     inputSchema: {
       type: 'object',
       required: ['threadId'],
@@ -361,8 +421,13 @@ async function toolStartThread(cfg, args, req) {
   if ((args.provider && !args.model) || (args.model && !args.provider)) {
     throw new ToolError('provider and model must be given together')
   }
+  // Validate notifyEvents at the boundary, before any side effect (like the URL check below).
+  const events = parseNotifyEvents(args)
   // Checked before starting, so a rejected URL never leaves a thread behind.
-  if (args.notifyWebhookUrl) assertWebhookAllowed(cfg, args.notifyWebhookUrl)
+  let normalizedUrl = null
+  if (args.notifyWebhookUrl) {
+    normalizedUrl = assertWebhookAllowed(cfg, args.notifyWebhookUrl)
+  }
   // Create an artifact directory for this thread's before/after evidence.
   const {artifactId, dir, baseUrl} = await createArtifactDir(cfg, req)
   const artifactsUrl = `${baseUrl}/artifacts/${artifactId}/`
@@ -420,21 +485,35 @@ async function toolStartThread(cfg, args, req) {
   title = title || (data.thread?.title ?? '')
   link = link || (data.thread?.link ?? '')
   status = data.thread?.status ?? status
-  let watching = false
-  if (args.notifyWebhookUrl) {
+  const armed = []
+  if (events.includes('thread.finished') && normalizedUrl) {
     // Every run of a brand-new thread is one this call started, so any finished run counts.
-    armWatch(cfg, threadId, args.notifyWebhookUrl, null)
-    watching = true
+    armWatch(cfg, threadId, normalizedUrl, null)
+    armed.push('thread.finished')
   }
-  return {threadId, title, link, status, watching, artifactsDir: dir, artifactsUrl}
+  if (events.includes('pull_request.merged') && normalizedUrl) {
+    await armPrWatch(cfg, threadId, normalizedUrl, project)
+    armed.push('pull_request.merged')
+  }
+  return {
+    threadId,
+    title,
+    link,
+    status,
+    watching: armed.length > 0,
+    notifyEvents: armed,
+    artifactsDir: dir,
+    artifactsUrl,
+  }
 }
 
 async function toolSendMessage(cfg, args) {
   // The run that exists before sending is not the one this message starts, so it is the watch's baseline.
   const before = await assertThreadAllowed(cfg, args.threadId)
-  let watching = false
+  const events = parseNotifyEvents(args)
+  let normalizedUrl = null
   if (args.notifyWebhookUrl) {
-    assertWebhookAllowed(cfg, args.notifyWebhookUrl)
+    normalizedUrl = assertWebhookAllowed(cfg, args.notifyWebhookUrl)
   }
   const {stdout} = await runCli(cfg, ['thread', 'send', '--json', args.threadId, '-'], {stdin: args.message})
   let status = 'running'
@@ -444,11 +523,16 @@ async function toolSendMessage(cfg, args) {
   } catch {
     // text reply — status unknown, assume running
   }
-  if (args.notifyWebhookUrl) {
-    armWatch(cfg, args.threadId, args.notifyWebhookUrl, before.thread?.latestRunId ?? null)
-    watching = true
+  const armed = []
+  if (events.includes('thread.finished') && normalizedUrl) {
+    armWatch(cfg, args.threadId, normalizedUrl, before.thread?.latestRunId ?? null)
+    armed.push('thread.finished')
   }
-  return {threadId: args.threadId, status, watching}
+  if (events.includes('pull_request.merged') && normalizedUrl) {
+    await armPrWatch(cfg, args.threadId, normalizedUrl, before.thread?.projectId ?? '')
+    armed.push('pull_request.merged')
+  }
+  return {threadId: args.threadId, status, watching: armed.length > 0, notifyEvents: armed}
 }
 
 async function toolGetThread(cfg, args) {
@@ -467,11 +551,20 @@ async function toolGetThread(cfg, args) {
 }
 
 async function toolWatchThread(cfg, args) {
-  await assertThreadAllowed(cfg, args.threadId)
-  assertWebhookAllowed(cfg, args.notifyWebhookUrl)
-  // No baseline: notify for the run in progress, or right away for the latest run of an idle thread.
-  armWatch(cfg, args.threadId, args.notifyWebhookUrl, null)
-  return {threadId: args.threadId, watching: true}
+  const data = await assertThreadAllowed(cfg, args.threadId)
+  const events = parseNotifyEvents(args)
+  const normalizedUrl = assertWebhookAllowed(cfg, args.notifyWebhookUrl)
+  const armed = []
+  if (events.includes('thread.finished')) {
+    // No baseline: notify for the run in progress, or right away for the latest run of an idle thread.
+    armWatch(cfg, args.threadId, normalizedUrl, null)
+    armed.push('thread.finished')
+  }
+  if (events.includes('pull_request.merged')) {
+    await armPrWatch(cfg, args.threadId, normalizedUrl, data.thread?.projectId ?? '')
+    armed.push('pull_request.merged')
+  }
+  return {threadId: args.threadId, watching: true, notifyEvents: armed}
 }
 
 async function toolUnwatchThread(cfg, args) {
@@ -509,9 +602,41 @@ function armWatch(cfg, threadId, url, latestRunId) {
 }
 
 function unwatch(cfg, threadId) {
-  const had = state.watches.delete(threadId)
-  if (had) persistWatches(cfg)
-  return had
+  const hadWatch = state.watches.delete(threadId)
+  // Remove every merge subscription for this thread.
+  let hadPr = false
+  for (const key of [...state.prWatches.keys()]) {
+    if (key.startsWith(threadId + '\n')) {
+      state.prWatches.delete(key)
+      hadPr = true
+    }
+  }
+  if (hadWatch) persistWatches(cfg)
+  if (hadPr) persistPrWatches(cfg)
+  return hadWatch || hadPr
+}
+
+// Shared webhook POST. Returns 'delivered' (2xx), 'conflict' (409 — receiver already holds the key),
+// 'retry' (408/425/429/5xx/network/timeout), or 'rejected' (any other non-2xx).
+async function postWebhook(url, idempotencyKey, bodyString) {
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+      },
+      body: Buffer.from(bodyString),
+      signal: AbortSignal.timeout(15_000),
+    })
+    if (res.status >= 200 && res.status < 300) return 'delivered'
+    if (res.status === 409) return 'conflict'
+    if (res.status === 408 || res.status === 425 || res.status === 429 || res.status >= 500) return 'retry'
+    return 'rejected'
+  } catch {
+    // Network error or timeout → retry on the next cycle.
+    return 'retry'
+  }
 }
 
 async function pollLoop(cfg) {
@@ -598,31 +723,207 @@ async function fireNotification(cfg, watch, event, thread, messages) {
     return false
   }
   log('info', `notify event=${event} thread=${watch.threadId} key=${idempotencyKey}`)
+  const result = await postWebhook(watch.url, idempotencyKey, body.toString())
+  if (result === 'delivered' || result === 'conflict') {
+    log('info', `notify ${result} thread=${watch.threadId} event=${event}`)
+    return true
+  }
+  if (result === 'rejected') {
+    log('warn', `notify rejected (4xx) dropping watch thread=${watch.threadId}`)
+    state.watches.delete(watch.threadId)
+    persistWatches(cfg)
+    return true // treated as resolved so the caller does not retry
+  }
+  // retry: keep the watch and retry on a later poll.
+  log('warn', `notify retry thread=${watch.threadId} event=${event}`)
+  return false
+}
+
+// ─── PR merge detection ──────────────────────────────────────────────────────
+
+async function listThreads(cfg, project) {
+  return cliJson(cfg, ['thread', 'list', '--project', project, '--json'])
+}
+
+// Associated PRs = pullRequests items with source !== 'stack-dismissed', a string url and an integer number.
+function associatedPrs(thread) {
+  const prs = thread?.pullRequests
+  if (!Array.isArray(prs)) return []
+  return prs.filter(
+    (p) => p && p.source !== 'stack-dismissed' && typeof p.url === 'string' && Number.isInteger(p.number),
+  )
+}
+
+function prShape(p) {
+  return {
+    url: p.url,
+    repository: p.repository ?? '',
+    number: p.number,
+    host: p.host ?? '',
+    source: p.source ?? '',
+    state: p.state ?? null,
+  }
+}
+
+// eventId for a merged PR. GitHub names are case-insensitive, so host/repository are lowercased
+// before hashing so the same merge always produces the same id regardless of casing.
+function prMergedEventId(threadId, pr) {
+  const host = (pr.host ?? '').toLowerCase()
+  const repository = (pr.repository ?? '').toLowerCase()
+  const hash = crypto
+    .createHash('sha256')
+    .update(JSON.stringify([threadId, host, repository, pr.number]))
+    .digest('hex')
+    .slice(0, 32)
+  return `t3-pr-merged-${pr.number}-${hash}`
+}
+
+function buildPrMergedPayload(thread, pr, allPrs, project) {
+  return {
+    event: 'pull_request.merged',
+    eventId: prMergedEventId(thread.threadId, pr),
+    threadId: thread.threadId,
+    title: thread.title ?? '',
+    link: thread.link ?? '',
+    project,
+    pullRequest: prShape(pr),
+    pullRequests: allPrs.map(prShape),
+  }
+}
+
+async function prPollLoop(cfg) {
+  if (state.prPollRunning) return
+  state.prPollRunning = true
   try {
-    const res = await fetch(watch.url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Idempotency-Key': idempotencyKey,
-      },
-      body,
-      signal: AbortSignal.timeout(15_000),
-    })
-    if (res.status >= 200 && res.status < 300) {
-      log('info', `notify ${res.status} thread=${watch.threadId} event=${event}`)
-      return true
+    // Group subs by project. Skip projects not in cfg.projects.
+    const byProject = new Map()
+    for (const sub of state.prWatches.values()) {
+      if (!cfg.projects.includes(sub.project)) continue
+      if (!byProject.has(sub.project)) byProject.set(sub.project, [])
+      byProject.get(sub.project).push(sub)
     }
-    if (res.status >= 400 && res.status < 500) {
-      log('warn', `notify ${res.status} (4xx) dropping watch thread=${watch.threadId}`)
-      state.watches.delete(watch.threadId)
-      persistWatches(cfg)
-      return true // treated as resolved so the caller does not retry
+    // Per-cycle cache of show fallbacks, keyed by threadId. A `gone` result drops every sub of that
+    // thread, so the show runs at most once per thread per cycle even with multiple subs.
+    const shown = new Map()
+    for (const [project, subs] of byProject) {
+      let threads
+      try {
+        const arr = await listThreads(cfg, project)
+        threads = Array.isArray(arr) ? arr : []
+      } catch (err) {
+        log('warn', `pr-poll project=${project} list failed: ${err.message}`)
+        // Skip this project's subs this cycle.
+        continue
+      }
+      const byThread = new Map()
+      for (const t of threads) {
+        if (t && typeof t.threadId === 'string') byThread.set(t.threadId, t)
+      }
+      for (const sub of subs) {
+        try {
+          await prPollOne(cfg, sub, byThread, shown)
+        } catch (err) {
+          log('warn', `pr-poll thread=${sub.threadId} error: ${err.message}`)
+        }
+      }
     }
-    log('warn', `notify ${res.status} (5xx) will retry thread=${watch.threadId}`)
-    return false
-  } catch (err) {
-    log('warn', `notify network error will retry thread=${watch.threadId}: ${err.message}`)
-    return false
+  } finally {
+    state.prPollRunning = false
+  }
+}
+
+async function prPollOne(cfg, sub, byThread, shown) {
+  const key = prWatchKey(sub.threadId, sub.url)
+  // Identity-safe: bail if the sub was replaced or removed before we start.
+  if (state.prWatches.get(key) !== sub) return
+  let thread = byThread.get(sub.threadId)
+  if (!thread) {
+    // Fall back to one show per thread per cycle, cached in `shown`.
+    let cached = shown.get(sub.threadId)
+    if (!cached) {
+      let data
+      try {
+        data = await showThread(cfg, sub.threadId, 1)
+      } catch (err) {
+        const msg = err.message ?? ''
+        if (/is no longer available/.test(msg)) {
+          cached = {gone: true}
+        } else {
+          log('warn', `pr-poll thread=${sub.threadId} show failed: ${err.message}`)
+          cached = {error: true}
+        }
+      }
+      if (!cached) {
+        const t = data?.thread
+        cached = t ? {thread: t} : {error: true}
+      }
+      shown.set(sub.threadId, cached)
+    }
+    if (cached.gone) {
+      log('info', `pr-poll thread=${sub.threadId} no longer available; dropping sub`)
+      if (state.prWatches.get(key) === sub) {
+        state.prWatches.delete(key)
+        await persistPrWatches(cfg)
+      }
+      return
+    }
+    if (cached.error) return
+    const t = cached.thread
+    const projectId = t.projectId
+    if (!projectId || !cfg.projects.includes(projectId)) return
+    thread = t
+  }
+  const prs = associatedPrs(thread)
+  // Detect newly-merged PRs and enqueue pending deliveries with frozen bodies.
+  let added = false
+  for (const pr of prs) {
+    if (pr.state !== 'merged') continue
+    const eventId = prMergedEventId(sub.threadId, pr)
+    if (sub.delivered.includes(eventId) || sub.pending.some((p) => p.eventId === eventId)) continue
+    const payload = buildPrMergedPayload(thread, pr, prs, sub.project)
+    sub.pending.push({eventId, body: JSON.stringify(payload), attempts: 0})
+    added = true
+    log('info', `pr-poll enqueued event=${eventId} thread=${sub.threadId}`)
+  }
+  if (added) {
+    // Persist before the first POST so retries and restarts send identical bytes.
+    await persistPrWatches(cfg)
+  }
+  // Deliver pending oldest first.
+  for (const pending of [...sub.pending]) {
+    // Identity-safe: bail if the sub was replaced or removed during an await.
+    if (state.prWatches.get(key) !== sub) return
+    const result = await postWebhook(sub.url, pending.eventId, pending.body)
+    if (state.prWatches.get(key) !== sub) return
+    if (result === 'delivered' || result === 'conflict') {
+      sub.pending = sub.pending.filter((p) => p.eventId !== pending.eventId)
+      if (!sub.delivered.includes(pending.eventId)) sub.delivered.push(pending.eventId)
+      await persistPrWatches(cfg)
+      log('info', `pr-poll ${result} event=${pending.eventId} thread=${sub.threadId}`)
+    } else if (result === 'retry') {
+      pending.attempts += 1
+      await persistPrWatches(cfg)
+      log('warn', `pr-poll retry event=${pending.eventId} thread=${sub.threadId} attempts=${pending.attempts}`)
+      return // stop this sub's deliveries for this cycle
+    } else {
+      // rejected: drop the whole sub.
+      log('warn', `pr-poll rejected event=${pending.eventId} thread=${sub.threadId}; dropping sub`)
+      state.prWatches.delete(key)
+      await persistPrWatches(cfg)
+      return
+    }
+  }
+  // After delivering: if pending is empty, ≥1 associated PR, every one merged or closed, and ≥1 merged,
+  // remove the sub. A sub with only closed PRs, or no PRs, stays armed so a replacement PR is caught.
+  if (state.prWatches.get(key) !== sub) return
+  if (sub.pending.length === 0 && prs.length >= 1) {
+    const anyMerged = prs.some((p) => p.state === 'merged')
+    const allDone = prs.every((p) => p.state === 'merged' || p.state === 'closed')
+    if (anyMerged && allDone) {
+      log('info', `pr-poll all associated PRs merged/closed thread=${sub.threadId}; removing sub`)
+      state.prWatches.delete(key)
+      await persistPrWatches(cfg)
+    }
   }
 }
 
@@ -665,9 +966,12 @@ function sanitizeKey(s) {
 
 const state = {
   watches: new Map(),
+  prWatches: new Map(),
   artifacts: new Map(),
   pollRunning: false,
   pollTimer: null,
+  prPollRunning: false,
+  prPollTimer: null,
 }
 
 async function loadWatches(cfg) {
@@ -696,6 +1000,93 @@ function persistWatches(cfg) {
     .then(() => fs.writeFile(file + '.tmp', JSON.stringify(arr, null, 2)))
     .then(() => fs.rename(file + '.tmp', file))
     .catch((err) => log('warn', `could not persist watches: ${err.message}`))
+}
+
+// ─── PR merge subscription persistence ───────────────────────────────────────
+//
+// A subscription = {threadId, url, project, createdAt, delivered: [eventId…], pending: [{eventId, body, attempts}]}
+// Keyed by `${threadId}\n${url}` in state.prWatches. `body` is the exact JSON string sent on the wire so
+// retries and restarts produce byte-identical requests.
+
+function prWatchKey(threadId, url) {
+  return `${threadId}\n${url}`
+}
+
+async function armPrWatch(cfg, threadId, url, project) {
+  const key = prWatchKey(threadId, url)
+  if (state.prWatches.has(key)) {
+    // Keep the existing sub so its delivery history survives a re-arm.
+    return
+  }
+  const sub = {
+    threadId,
+    url,
+    project,
+    createdAt: new Date().toISOString(),
+    delivered: [],
+    pending: [],
+  }
+  state.prWatches.set(key, sub)
+  await persistPrWatches(cfg)
+  log('info', `pr-watch armed thread=${threadId} url=${redactUrl(url)} project=${project}`)
+}
+
+async function loadPrWatches(cfg) {
+  const file = path.join(cfg.stateDir, 'pr-watches.json')
+  try {
+    const raw = await fs.readFile(file, 'utf8')
+    const arr = JSON.parse(raw)
+    if (Array.isArray(arr)) {
+      for (const s of arr) {
+        if (!validPrSub(s)) continue
+        state.prWatches.set(prWatchKey(s.threadId, s.url), {
+          threadId: s.threadId,
+          url: s.url,
+          project: s.project,
+          createdAt: s.createdAt ?? new Date().toISOString(),
+          delivered: s.delivered,
+          pending: s.pending,
+        })
+      }
+    }
+    log('info', `loaded ${state.prWatches.size} pr-watches from ${file}`)
+  } catch (err) {
+    if (err.code !== 'ENOENT') log('warn', `could not load pr-watches: ${err.message}`)
+  }
+}
+
+function validPrSub(s) {
+  if (!s || typeof s.threadId !== 'string' || typeof s.url !== 'string' || typeof s.project !== 'string') return false
+  if (!Array.isArray(s.delivered) || !s.delivered.every((e) => typeof e === 'string')) return false
+  if (!Array.isArray(s.pending)) return false
+  for (const p of s.pending) {
+    if (
+      !p ||
+      typeof p.eventId !== 'string' ||
+      typeof p.body !== 'string' ||
+      typeof p.attempts !== 'number' ||
+      !Number.isFinite(p.attempts)
+    ) {
+      return false
+    }
+  }
+  return true
+}
+
+// Serialized atomic writer: a promise chain where each write snapshots the map at write time,
+// writes `.tmp`, then renames. Failures are logged and never reject the chain. Awaitable.
+let prWatchesWriteChain = Promise.resolve()
+
+function persistPrWatches(cfg) {
+  const file = path.join(cfg.stateDir, 'pr-watches.json')
+  const snapshot = [...state.prWatches.values()]
+  prWatchesWriteChain = prWatchesWriteChain
+    .catch(() => {})
+    .then(() => fs.mkdir(cfg.stateDir, {recursive: true}))
+    .then(() => fs.writeFile(file + '.tmp', JSON.stringify(snapshot, null, 2)))
+    .then(() => fs.rename(file + '.tmp', file))
+    .catch((err) => log('warn', `could not persist pr-watches: ${err.message}`))
+  return prWatchesWriteChain
 }
 
 // ─── Artifact mapping persistence ────────────────────────────────────────────
@@ -999,6 +1390,7 @@ function artifactNotFound() {
 async function main() {
   const cfg = parseConfig()
   await loadWatches(cfg)
+  await loadPrWatches(cfg)
   await loadArtifacts(cfg)
   const server = http.createServer(async (req, res) => {
     // Adapt Node IncomingMessage to a fetch-style Request for the handler.
@@ -1052,16 +1444,24 @@ async function main() {
     const actualPort = typeof addr === 'object' && addr ? addr.port : cfg.port
     log('info', `t3-mcp listening on http://${cfg.hostname}:${actualPort}`)
   })
-  // Start the poll loop.
+  // Start the run-watch poll loop.
   state.pollTimer = setInterval(
     () => {
       pollLoop(cfg).catch((err) => log('error', `pollLoop: ${err.message}`))
     },
     Math.max(1, cfg.pollSecs) * 1000,
   )
+  // Start the PR merge poll loop on its own timer.
+  state.prPollTimer = setInterval(
+    () => {
+      prPollLoop(cfg).catch((err) => log('error', `prPollLoop: ${err.message}`))
+    },
+    Math.max(1, cfg.prPollSecs) * 1000,
+  )
   // Graceful shutdown.
   const shutdown = () => {
     clearInterval(state.pollTimer)
+    clearInterval(state.prPollTimer)
     server.close()
     process.exit(0)
   }
@@ -1083,6 +1483,14 @@ export {
   unwatch,
   pollOne,
   fireNotification,
+  postWebhook,
+  armPrWatch,
+  prPollOne,
+  prPollLoop,
+  loadPrWatches,
+  persistPrWatches,
+  prWatchKey,
+  prMergedEventId,
   createArtifactDir,
   listArtifacts,
   persistArtifacts,
