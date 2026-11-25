@@ -840,9 +840,9 @@ export function selectDraftCursorPosition(snapshot: DocumentMachineSnapshot): nu
 
 /** Save status derived from editing sub-states. */
 export function selectSaveStatus(snapshot: DocumentMachineSnapshot): 'idle' | 'changed' | 'saving' | 'saved' {
-  if (snapshot.matches({editing: {draft: 'creating'}}) || snapshot.matches({editing: {draft: 'saving'}}))
-    return 'saving'
-  if (snapshot.matches({editing: {draft: 'changed'}})) return 'changed'
+  if (snapshot.matches({editing: {draft: 'saving'}})) return 'saving'
+  if (snapshot.matches({editing: {draft: 'changed'}}) || snapshot.matches({editing: {draft: 'failed'}}))
+    return 'changed'
   if (snapshot.context.draftCreated && snapshot.matches({editing: {draft: 'idle'}})) return 'saved'
   return 'idle'
 }

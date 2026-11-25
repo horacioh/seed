@@ -8,6 +8,7 @@ import {
   DocumentMachineInput,
   PushDocumentInput,
   retargetQueryBlockIncludesForPublish,
+  WriteDraftInput,
   WriteDraftOutput,
 } from '../document-machine'
 import {
@@ -17,6 +18,8 @@ import {
   selectRenderableBlocks,
   selectShouldFocusDraftTitle,
   selectShouldUseDraftOverlay,
+  selectSaveStatus,
+  selectSaveIndicatorStatus,
 } from '../use-document-machine'
 import {HMBlockNode, HMDocument} from '@seed-hypermedia/client/hm-types'
 import type {EditorBlock} from '@seed-hypermedia/client/editor-types'
@@ -388,6 +391,181 @@ function loadDocument(actor: ReturnType<typeof createTestActor>, doc = mockDocum
   actor.send({type: 'document.loaded', document: doc})
   actor.send({type: 'draft.resolved', draftId: null, content: null, cursorPosition: null})
 }
+
+describe('serialized draft writes', () => {
+  function deferred<T>() {
+    let resolve!: (value: T) => void
+    let reject!: (reason: Error) => void
+    const promise = new Promise<T>((res, rej) => {
+      resolve = res
+      reject = rej
+    })
+    return {promise, resolve, reject}
+  }
+
+  it.each([undefined, 'existing-draft'])(
+    'does not publish a failed save (%s), and retries before publishing',
+    async (existingDraftId) => {
+      const firstWrite = deferred<WriteDraftOutput>()
+      const write = vi
+        .fn()
+        .mockImplementationOnce(() => firstWrite.promise)
+        .mockResolvedValue({id: existingDraftId ?? 'new-draft'})
+      const publish = vi.fn().mockResolvedValue({...mockDocument, version: 'published'})
+      const actor = createActor(
+        documentMachine.provide({
+          actors: {
+            writeDraft: fromPromise<WriteDraftOutput, WriteDraftInput>(({input}) => write(input)),
+            publishDocument: fromPromise(publish),
+          },
+        }),
+        {input: {documentId: mockDocumentId, canEdit: true, existingDraftId}},
+      ).start()
+      try {
+        loadDocument(actor)
+        actor.send({type: 'edit.start'})
+        actor.send({type: 'change', metadata: {name: 'Unsaved title'}})
+        actor.send({type: 'publish.start', pathOverride: ['first-attempt']})
+        firstWrite.reject(new Error('Disk unavailable'))
+        await waitFor(actor, (snapshot) => snapshot.matches({editing: {draft: 'failed'}}))
+
+        expect(publish).not.toHaveBeenCalled()
+        expect(selectSaveStatus(actor.getSnapshot())).toBe('changed')
+        expect(selectSaveIndicatorStatus(actor.getSnapshot())).toBe('hidden')
+        expect(actor.getSnapshot().context.pendingPublish).toBe(false)
+        expect(actor.getSnapshot().context.pendingPathOverride).toBeNull()
+
+        actor.send({type: 'publish.start', pathOverride: ['retry']})
+        await waitFor(actor, (snapshot) => snapshot.matches('loaded'))
+        expect(write).toHaveBeenCalledTimes(2)
+        expect(write.mock.calls[1]![0].metadata.name).toBe('Unsaved title')
+        expect(publish).toHaveBeenCalledTimes(1)
+        expect(publish.mock.calls[0]![0].input.pathOverride).toEqual(['retry'])
+      } finally {
+        actor.stop()
+      }
+    },
+  )
+
+  it('serializes navigation edits behind the first write and publishes the final snapshot', async () => {
+    const firstWrite = deferred<WriteDraftOutput>()
+    const secondWrite = deferred<WriteDraftOutput>()
+    const write = vi
+      .fn()
+      .mockImplementationOnce(() => firstWrite.promise)
+      .mockImplementationOnce(() => secondWrite.promise)
+    const publish = vi.fn().mockResolvedValue({...mockDocument, version: 'published'})
+    const actor = createActor(
+      documentMachine.provide({
+        actors: {
+          writeDraft: fromPromise<WriteDraftOutput, WriteDraftInput>(({input}) => write(input)),
+          publishDocument: fromPromise(publish),
+        },
+      }),
+      {input: {documentId: mockDocumentId, canEdit: true}},
+    ).start()
+    try {
+      loadDocument(actor)
+      actor.send({type: 'edit.start'})
+      actor.send({type: 'change', metadata: {name: 'First title'}})
+      actor.send({type: 'publish.start'})
+      actor.send({type: 'change.navigation', navigation: []})
+      actor.send({type: 'change', metadata: {name: 'Final title'}})
+      expect(write).toHaveBeenCalledTimes(1)
+
+      firstWrite.resolve({id: 'only-draft'})
+      await vi.waitFor(() => expect(write).toHaveBeenCalledTimes(2))
+      expect(write.mock.calls[1]![0]).toMatchObject({
+        draftId: 'only-draft',
+        navigation: [],
+        metadata: {name: 'Final title'},
+      })
+      expect(publish).not.toHaveBeenCalled()
+      secondWrite.resolve({id: 'only-draft'})
+      await waitFor(actor, (snapshot) => snapshot.matches('loaded'))
+      expect(publish).toHaveBeenCalledTimes(1)
+      expect(publish.mock.calls[0]![0].input.draftId).toBe('only-draft')
+    } finally {
+      actor.stop()
+    }
+  })
+
+  it.each([undefined, 'existing-draft'])(
+    'drains an in-flight write before hiding the draft (%s)',
+    async (existingDraftId) => {
+      const firstWrite = deferred<WriteDraftOutput>()
+      const secondWrite = deferred<WriteDraftOutput>()
+      const write = vi
+        .fn()
+        .mockImplementationOnce(() => firstWrite.promise)
+        .mockImplementationOnce(() => secondWrite.promise)
+      const publish = vi.fn().mockResolvedValue(mockDocument)
+      const pushExitContentToEditor = vi.fn()
+      const actor = createActor(
+        documentMachine.provide({
+          actions: {pushExitContentToEditor},
+          actors: {
+            writeDraft: fromPromise<WriteDraftOutput, WriteDraftInput>(({input}) => write(input)),
+            publishDocument: fromPromise(publish),
+          },
+        }),
+        {input: {documentId: mockDocumentId, canEdit: true, existingDraftId}},
+      ).start()
+      try {
+        loadDocument(actor)
+        actor.send({type: 'edit.start'})
+        actor.send({type: 'change', metadata: {name: 'First title'}})
+        actor.send({type: 'publish.start'})
+        actor.send({type: 'change', metadata: {name: 'Final title'}})
+        actor.send({type: 'draftHidden.set', hidden: true})
+        expect(write).toHaveBeenCalledTimes(1)
+        expect(actor.getSnapshot().matches({editing: {draft: 'saving'}})).toBe(true)
+
+        const draftId = existingDraftId ?? 'new-draft'
+        firstWrite.resolve({id: draftId})
+        await vi.waitFor(() => expect(write).toHaveBeenCalledTimes(2))
+        expect(write.mock.calls[1]![0]).toMatchObject({draftId, metadata: {name: 'Final title'}})
+        expect(pushExitContentToEditor).not.toHaveBeenCalled()
+        secondWrite.resolve({id: draftId})
+        await waitFor(actor, (snapshot) => snapshot.matches('loaded'))
+        expect(actor.getSnapshot().context.draftHidden).toBe(true)
+        expect(pushExitContentToEditor).toHaveBeenCalledTimes(1)
+        expect(publish).not.toHaveBeenCalled()
+      } finally {
+        actor.stop()
+      }
+    },
+  )
+
+  it('does not flush a queued publish when a rebase conflict arrives during the save', async () => {
+    const saved = deferred<WriteDraftOutput>()
+    const publish = vi.fn().mockResolvedValue(mockDocument)
+    const actor = createActor(
+      documentMachine.provide({
+        actors: {
+          writeDraft: fromPromise<WriteDraftOutput, WriteDraftInput>(() => saved.promise),
+          publishDocument: fromPromise(publish),
+        },
+      }),
+      {input: {documentId: mockDocumentId, canEdit: true}},
+    ).start()
+    try {
+      loadDocument(actor)
+      actor.send({type: 'edit.start'})
+      actor.send({type: 'change', metadata: {name: 'Local edit'}})
+      actor.send({type: 'publish.start', pathOverride: ['blocked']})
+      actor.send({type: 'rebase.detectConflict', conflictedBlockIds: ['block'], author: null})
+      saved.resolve({id: 'conflicted-draft'})
+      await waitFor(actor, (snapshot) => snapshot.matches({editing: {draft: 'idle'}}))
+      expect(publish).not.toHaveBeenCalled()
+      expect(actor.getSnapshot().matches({editing: {rebase: 'conflict'}})).toBe(true)
+      expect(actor.getSnapshot().context.pendingPublish).toBe(false)
+      expect(actor.getSnapshot().context.pendingPathOverride).toBeNull()
+    } finally {
+      actor.stop()
+    }
+  })
+})
 
 describe('retargetQueryBlockIncludesForPublish', () => {
   const draftId = {...mockDocumentId, path: ['parent', '-draft-123']}
@@ -1002,7 +1180,7 @@ describe('DocumentLifecycle machine', () => {
     actor.stop()
   })
 
-  it('editing.changed → autosave timeout → editing.creating (no draftId)', async () => {
+  it('editing.changed → autosave timeout → editing.saving (no draftId)', async () => {
     const actor = createTestActor()
     actor.start()
     loadDocument(actor)
@@ -1014,7 +1192,7 @@ describe('DocumentLifecycle machine', () => {
     expect(actor.getSnapshot().value).toEqual({
       editing: {draft: 'idle', saveIndicator: 'hidden', rebase: 'idle', rename: 'idle'},
     })
-    // After creating completes, it goes to idle with draftId set
+    // After the first save completes, it goes to idle with draftId set
     expect(actor.getSnapshot().context.draftId).toBe('draft-123')
     expect(actor.getSnapshot().context.draftCreated).toBe(true)
     actor.stop()
@@ -1230,12 +1408,12 @@ describe('DocumentLifecycle machine', () => {
     // Click publish during the 500ms autosave debounce window.
     actor.send({type: 'publish.start', pathOverride: ['my', 'slug']})
     expect(actor.getSnapshot().context.pendingPublish).toBe(true)
-    // No draftId yet → flushed via creating.
+    // No draftId yet → flushed via saving.
     expect(actor.getSnapshot().value).toEqual({
-      editing: {draft: 'creating', saveIndicator: 'saving', rebase: 'idle', rename: 'idle'},
+      editing: {draft: 'saving', saveIndicator: 'saving', rebase: 'idle', rename: 'idle'},
     })
 
-    // Wait for create + raised _save.completed → publishing → cleaningUp → loaded.
+    // Wait for the successful write → publishing → cleaningUp → loaded.
     await new Promise((r) => setTimeout(r, 100))
     expect(actor.getSnapshot().value).toEqual({loaded: {rename: 'idle'}})
     expect(publishCalls).toHaveLength(1)
@@ -1246,7 +1424,7 @@ describe('DocumentLifecycle machine', () => {
     actor.stop()
   })
 
-  it('publish.start while editing.creating queues + publishes once the create resolves', async () => {
+  it('publish.start while editing.saving queues + publishes once the create resolves', async () => {
     const publishCalls: any[] = []
     const machine = documentMachine.provide({
       actors: {
@@ -1272,16 +1450,16 @@ describe('DocumentLifecycle machine', () => {
     actor.send({type: 'draft.resolved', draftId: null, content: null, cursorPosition: null})
     actor.send({type: 'edit.start'})
     actor.send({type: 'change'})
-    // Wait for autosave to enter `creating`.
+    // Wait for autosave to enter `saving`.
     await new Promise((r) => setTimeout(r, 25))
     expect(actor.getSnapshot().value).toEqual({
-      editing: {draft: 'creating', saveIndicator: 'saving', rebase: 'idle', rename: 'idle'},
+      editing: {draft: 'saving', saveIndicator: 'saving', rebase: 'idle', rename: 'idle'},
     })
 
     actor.send({type: 'publish.start'})
-    // Stays in creating, just flips the flag.
+    // Stays in saving, just flips the flag.
     expect(actor.getSnapshot().value).toEqual({
-      editing: {draft: 'creating', saveIndicator: 'saving', rebase: 'idle', rename: 'idle'},
+      editing: {draft: 'saving', saveIndicator: 'saving', rebase: 'idle', rename: 'idle'},
     })
     expect(actor.getSnapshot().context.pendingPublish).toBe(true)
 
@@ -1741,7 +1919,7 @@ describe('DocumentLifecycle machine', () => {
     // Initially: changed, indicator hidden
     expect(actor.getSnapshot().matches({editing: {saveIndicator: 'hidden'}})).toBe(true)
 
-    // After autosave triggers (50ms) → creating entry raises _save.started → indicator: saving
+    // After autosave triggers (50ms) → saving entry raises _save.started → indicator: saving
     // Actor is still running (takes 100ms), so indicator stays in saving
     await new Promise((r) => setTimeout(r, 70))
     expect(actor.getSnapshot().matches({editing: {saveIndicator: 'saving'}})).toBe(true)
@@ -2692,7 +2870,7 @@ describe('draft hidden preview (draftHidden)', () => {
       actors: {
         writeDraft: fromPromise<WriteDraftOutput, any>(async ({input}) => {
           writeInputs.push(input)
-          return {id: 'draft-safe'}
+          return {id: input.draftId ?? 'draft-safe'}
         }),
         publishDocument: fromPromise<HMDocument, any>(async () => mockDocument),
         discardDraft: fromPromise<void, any>(async () => {}),
@@ -2712,7 +2890,7 @@ describe('draft hidden preview (draftHidden)', () => {
     expect(writeInputs[0].metadata).toMatchObject({name: 'Unsaved title'})
     expect(snapshot.value).toEqual({loaded: {rename: 'idle'}})
     expect(snapshot.context.draftHidden).toBe(true)
-    // An existing draft keeps its id; `saving` does not reassign it.
+    // Updating an existing draft returns the same id.
     expect(snapshot.context.draftId).toBe('draft-1')
     actor.stop()
   })
