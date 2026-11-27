@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seed editor explorations</title>
+    <meta
+      name="description"
+      content="Try six rich text editors on real Seed Hypermedia documents, each connected through the same adapter."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <style>
+      :root {
+        --paper: #f4f1ea;
+        --paper-raised: #fbfaf6;
+        --ink: #16150f;
+        --ink-soft: #5a574c;
+        --rule: #d9d3c4;
+        --accent: #0b4f8a;
+        --top: #0072b2;
+        --viable: #009e73;
+        --source: #e69f00;
+        --no: #d55e00;
+        --radius: 14px;
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-6: 24px;
+        --space-8: 32px;
+        --space-12: 48px;
+        --space-16: 64px;
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+        --shadow-rest: 0 0 0 1px rgb(22 21 15 / 0.07), 0 1px 2px rgb(22 21 15 / 0.04);
+        --shadow-lift: 0 0 0 1px rgb(22 21 15 / 0.09), 0 4px 8px -2px rgb(22 21 15 / 0.06),
+          0 16px 32px -12px rgb(22 21 15 / 0.12);
+        --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+        --sans: 'Hanken Grotesk', 'Helvetica Neue', sans-serif;
+        --mono: 'JetBrains Mono', ui-monospace, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #12120f;
+          --paper-raised: #1b1a16;
+          --ink: #f1ede2;
+          --ink-soft: #a7a293;
+          --rule: #34322a;
+          --accent: #7cc0f5;
+          --top: #56b4e9;
+          --shadow-rest: 0 0 0 1px rgb(241 237 226 / 0.08);
+          --shadow-lift: 0 0 0 1px rgb(241 237 226 / 0.14), 0 16px 32px -12px rgb(0 0 0 / 0.6);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 500px at 85% -10%, rgb(11 79 138 / 0.08), transparent 60%),
+          repeating-linear-gradient(0deg, transparent 0 31px, rgb(22 21 15 / 0.035) 31px 32px), var(--paper);
+        color: var(--ink);
+        font: 400 17px/1.55 var(--sans);
+      }
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 6px;
+      }
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: var(--space-12) var(--space-6) var(--space-16);
+      }
+      .kicker,
+      .meta,
+      .num,
+      footer {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+      h1 {
+        margin: var(--space-4) 0 var(--space-6);
+        font: 400 clamp(48px, 9vw, 104px) / 0.95 var(--serif);
+        letter-spacing: -0.02em;
+      }
+      h1 em {
+        color: var(--accent);
+      }
+      .lede {
+        max-width: 620px;
+        margin: 0;
+        font-size: 19px;
+        color: var(--ink-soft);
+      }
+      .lede strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      h2 {
+        margin: 0 0 var(--space-4);
+        font: 400 32px/1.1 var(--serif);
+      }
+      .picker {
+        margin-top: var(--space-12);
+        padding: var(--space-6);
+        border-radius: var(--radius);
+        background: var(--paper-raised);
+        box-shadow: var(--shadow-rest);
+      }
+      .picker legend {
+        float: left;
+        width: 100%;
+        margin-bottom: var(--space-3);
+        padding: 0;
+        font-weight: 600;
+      }
+      .picker fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      .chips {
+        clear: both;
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+      .chip {
+        position: relative;
+      }
+      .chip input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .chip span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        padding: 0 var(--space-4);
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+          background 160ms var(--ease-out),
+          border-color 160ms var(--ease-out),
+          transform 120ms var(--ease-out);
+      }
+      .chip span:hover {
+        border-color: var(--ink-soft);
+      }
+      .chip span:active {
+        transform: scale(0.97);
+      }
+      .chip input:checked + span {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--paper);
+      }
+      .chip input:focus-visible + span {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .custom {
+        display: none;
+        gap: var(--space-2);
+        margin-top: var(--space-3);
+      }
+      .custom[data-open] {
+        display: flex;
+      }
+      .custom input {
+        flex: 1;
+        min-width: 0;
+        min-height: 44px;
+        padding: 0 var(--space-3);
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        background: var(--paper);
+        color: var(--ink);
+        font: 400 14px var(--mono);
+      }
+      .custom input[aria-invalid='true'] {
+        border-color: var(--no);
+      }
+      .hint {
+        margin: var(--space-2) 0 0;
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+      .hint[data-error] {
+        color: var(--no);
+      }
+      .editors {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+        gap: var(--space-4);
+        margin: var(--space-8) 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        height: 100%;
+        padding: var(--space-6);
+        border-radius: var(--radius);
+        background: var(--paper-raised);
+        box-shadow: var(--shadow-rest);
+        transition:
+          box-shadow 220ms var(--ease-out),
+          transform 220ms var(--ease-out);
+        animation: enter 640ms var(--ease-out) both;
+        animation-delay: calc(var(--i) * 60ms + 120ms);
+      }
+      .card:has(.open:hover) {
+        box-shadow: var(--shadow-lift);
+        transform: translateY(-2px);
+      }
+      .card-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-3);
+      }
+      .card h3 {
+        margin: 0;
+        font: 400 40px/1 var(--serif);
+        letter-spacing: -0.01em;
+      }
+      .card p {
+        margin: 0;
+        flex: 1;
+        color: var(--ink-soft);
+      }
+      .verdict {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        font: 500 13px var(--sans);
+        white-space: nowrap;
+      }
+      .verdict::before {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: var(--c);
+      }
+      .verdict[data-v='top'] {
+        --c: var(--top);
+      }
+      .verdict[data-v='top']::before {
+        border-radius: 50%;
+      }
+      .verdict[data-v='viable'] {
+        --c: var(--viable);
+      }
+      .verdict[data-v='viable']::before {
+        transform: rotate(45deg) scale(0.85);
+      }
+      .verdict[data-v='source'] {
+        --c: var(--source);
+      }
+      .verdict[data-v='source']::before {
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      }
+      .verdict[data-v='no'] {
+        --c: var(--no);
+      }
+      .verdict[data-v='no']::before {
+        width: 10px;
+        height: 3px;
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-top: var(--space-2);
+      }
+      .open {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        min-height: 44px;
+        padding: 0 var(--space-4);
+        border-radius: 10px;
+        background: var(--ink);
+        color: var(--paper);
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 120ms var(--ease-out);
+      }
+      .open::after {
+        content: '→';
+        transition: transform 260ms var(--ease-spring);
+      }
+      .open:hover::after {
+        transform: translateX(3px);
+      }
+      .open:active {
+        transform: scale(0.97);
+      }
+      .open::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius);
+      }
+      .pr {
+        position: relative;
+        z-index: 1;
+        font-size: 15px;
+        color: var(--ink-soft);
+        text-underline-offset: 3px;
+      }
+      .pr:hover {
+        color: var(--ink);
+      }
+      .lower {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: var(--space-4);
+        margin-top: var(--space-16);
+      }
+      .try ol {
+        display: grid;
+        gap: var(--space-3);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: t;
+      }
+      .try li {
+        display: grid;
+        grid-template-columns: 32px 1fr;
+        counter-increment: t;
+      }
+      .try li::before {
+        content: counter(t, decimal-leading-zero);
+        padding-top: 3px;
+        font: 500 12px var(--mono);
+        color: var(--ink-soft);
+      }
+      kbd {
+        padding: 1px 6px;
+        border: 1px solid var(--rule);
+        border-bottom-width: 2px;
+        border-radius: 5px;
+        background: var(--paper-raised);
+        font: 500 13px var(--mono);
+      }
+      .extra .card {
+        animation-delay: 0ms;
+        animation: none;
+      }
+      footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2) var(--space-6);
+        margin-top: var(--space-16);
+        padding-top: var(--space-6);
+        border-top: 1px solid var(--rule);
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      header > * {
+        animation: enter 720ms var(--ease-out) both;
+      }
+      header > :nth-child(2) {
+        animation-delay: 60ms;
+      }
+      header > :nth-child(3) {
+        animation-delay: 120ms;
+      }
+      @keyframes enter {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+          filter: blur(4px);
+        }
+      }
+      @media (max-width: 760px) {
+        body {
+          font-size: 16px;
+        }
+        .page {
+          padding: var(--space-8) var(--space-4) var(--space-12);
+        }
+        .lede {
+          font-size: 17px;
+        }
+        .picker,
+        .card {
+          padding: var(--space-4);
+        }
+        .lower {
+          grid-template-columns: 1fr;
+          margin-top: var(--space-12);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="kicker">Seed Hypermedia · editor explorations</div>
+        <h1>One document, <em>six&nbsp;editors.</em></h1>
+        <p class="lede">
+          Each editor loads the same real Seed document through a thin adapter. Edit freely:
+          <strong>nothing is published.</strong> The panel next to the editor shows the changes a save would send. An
+          untouched document shows none.
+        </p>
+      </header>
+
+      <form class="picker" id="picker">
+        <fieldset>
+          <legend>Document to open</legend>
+          <div class="chips" id="chips"></div>
+        </fieldset>
+        <div class="custom" id="custom">
+          <input
+            id="custom-id"
+            type="text"
+            inputmode="url"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="hm://…"
+            aria-label="Seed document link"
+            aria-describedby="hint"
+          />
+        </div>
+        <p class="hint" id="hint">Every editor opens this document.</p>
+      </form>
+
+      <ol class="editors" id="editors"></ol>
+
+      <div class="lower">
+        <section class="try">
+          <h2>Things to try</h2>
+          <ol>
+            <li>
+              <span>Type <kbd>@</kbd> to mention an account, or <kbd>[[</kbd> to link a document.</span>
+            </li>
+            <li>
+              <span>Press <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> to nest and un-nest blocks.</span>
+            </li>
+            <li><span>Paste a YouTube link, or text copied from another site.</span></li>
+            <li><span>Bold a word after an emoji, then check that the change covers only that word.</span></li>
+            <li><span>Open the same document in two editors and compare the changes they report.</span></li>
+          </ol>
+        </section>
+        <section class="extra">
+          <h2>Also</h2>
+          <ul class="editors" id="extras" style="margin: 0"></ul>
+        </section>
+      </div>
+
+      <footer>
+        <span id="built"></span>
+        <a href="https://github.com/horacioh/seed">Source on GitHub</a>
+      </footer>
+    </div>
+
+    <script type="module">
+      const VERDICTS = {top: 'Top pick', viable: 'Viable', source: 'Source mode', no: 'Not recommended'}
+      const PR = (n) => `https://github.com/horacioh/seed/pull/${n}`
+      const config = await fetch('explorations.json').then((r) => r.json())
+      const chips = document.getElementById('chips')
+      const custom = document.getElementById('custom')
+      const customId = document.getElementById('custom-id')
+      const hint = document.getElementById('hint')
+      const saved = localStorage.getItem('seed-explorations-doc')
+      let docId = saved || config.documents[0].id
+
+      const el = (tag, props = {}, children = []) => {
+        const node = Object.assign(document.createElement(tag), props)
+        node.append(...children)
+        return node
+      }
+
+      const options = [...config.documents, {title: 'Another document…', id: ''}]
+      const known = config.documents.some((d) => d.id === docId)
+      for (const [i, doc] of options.entries()) {
+        const input = el('input', {type: 'radio', name: 'doc', value: doc.id, id: `doc-${i}`})
+        input.checked = doc.id ? doc.id === docId : !known
+        chips.append(el('label', {className: 'chip', htmlFor: input.id}, [input, el('span', {textContent: doc.title})]))
+      }
+      if (!known) {
+        custom.dataset.open = ''
+        customId.value = docId
+      }
+
+      const editorLinks = []
+      const renderCard = (entry, i, verdict) =>
+        el('li', {}, [
+          el('article', {className: 'card', style: `--i:${i}`}, [
+            el('div', {className: 'card-head'}, [
+              el('h3', {textContent: entry.name}),
+              verdict
+                ? el('span', {className: 'verdict', textContent: VERDICTS[verdict]}, [])
+                : el('span', {className: 'num', textContent: 'Prototype'}),
+            ]),
+            entry.library ? el('div', {className: 'meta', textContent: `${entry.library} · MIT`}) : '',
+            el('p', {textContent: entry.summary}),
+            el('div', {className: 'actions'}, [
+              (() => {
+                const a = el('a', {className: 'open', textContent: verdict ? 'Open editor' : 'Open'})
+                a.dataset.slug = entry.slug
+                if (verdict) editorLinks.push(a)
+                else a.href = `${entry.slug}/`
+                return a
+              })(),
+              el('a', {className: 'pr', href: PR(entry.pr), textContent: `PR #${entry.pr}`}),
+            ]),
+          ]),
+        ])
+
+      document.getElementById('editors').append(
+        ...config.editors.map((e, i) => {
+          const card = renderCard(e, i, e.verdict)
+          card.querySelector('.verdict').dataset.v = e.verdict
+          return card
+        }),
+      )
+      document.getElementById('extras').append(...config.extras.map((e) => renderCard(e, 0)))
+
+      const update = () => {
+        const valid = /^hm:\/\/[a-z0-9]+([/?#]\S*)?$/i.test(docId)
+        customId.setAttribute('aria-invalid', String(!valid && custom.hasAttribute('data-open')))
+        if (valid) {
+          localStorage.setItem('seed-explorations-doc', docId)
+          hint.textContent = 'Every editor opens this document.'
+          delete hint.dataset.error
+        } else {
+          hint.textContent = 'Paste a link that starts with hm://'
+          hint.dataset.error = ''
+        }
+        const query = new URLSearchParams({site: config.site, id: valid ? docId : config.documents[0].id})
+        for (const a of editorLinks) a.href = `${a.dataset.slug}/?${query}`
+      }
+
+      chips.addEventListener('change', (e) => {
+        const value = e.target.value
+        if (value) {
+          delete custom.dataset.open
+          docId = value
+        } else {
+          custom.dataset.open = ''
+          customId.focus()
+          docId = customId.value.trim()
+        }
+        update()
+      })
+      customId.addEventListener('input', () => {
+        docId = customId.value.trim()
+        update()
+      })
+      document.getElementById('picker').addEventListener('submit', (e) => e.preventDefault())
+      update()
+
+      const built = new Date(config.builtAt)
+      document.getElementById('built').textContent = `Built from the open pull requests on ${built.toLocaleDateString(
+        undefined,
+        {day: 'numeric', month: 'long', year: 'numeric'},
+      )}`
+    </script>
+  </body>
+</html>
